@@ -13,12 +13,11 @@ import {
 import Sound from 'react-native-sound';
 
 let {width, height} = Dimensions.get('window');
+let stopSoundObj = null;
 
 export default class ChatMessageSound extends Component {
     constructor(props){
         super(props)
-
-        this.stopSoundObj = null;
     }
 
     static defaultProps = {
@@ -28,31 +27,34 @@ export default class ChatMessageSound extends Component {
     };
 
     playSound = (SoundUrl) => {
-        this.stopSound(this.stopSoundObj)
         const callback = (error, sound) => {
-            if(this.stopSoundObj && sound._filename == this.stopSoundObj._filename){
-                this.stopSoundObj = null;
-                return;
-            }
             if (error) {
                 Alert.alert('error', error.message);
             }
-            this.stopSoundObj = sound;
-            sound.play(() => {
-                this.stopSoundObj = null;
-                // Release when it's done so we're not using up resources
-                sound.release();
-            });
+            if(stopSoundObj){
+                stopSoundObj.stop(()=>{
+                    if(stopSoundObj && sound._filename == stopSoundObj._filename){
+                        stopSoundObj = null;
+                        return;
+                    }
+                    stopSoundObj = sound;
+                    sound.play(() => {
+                        stopSoundObj = null;
+                        sound.release();
+                    });
+
+                }).release()
+            }
+            else{
+                stopSoundObj = sound;
+                sound.play(() => {
+                    stopSoundObj = null;
+                    sound.release();
+                });
+            }
         };
         const sound = new Sound(SoundUrl,'', error => callback(error, sound));
     }
-
-    stopSound = (Sound) => {
-        if (!Sound) {
-            return;
-        }
-        Sound.stop().release();
-    };
 
     render() {
         let {data} = this.props;
