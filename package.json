@@ -1,0 +1,44 @@
+{
+	"name": "IM",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"test": "jest"
+	},
+	"dependencies": {
+		"react": "16.0.0-alpha.12",
+		"react-native": "0.48.3",
+		"react-native-audio": "^3.2.2",
+		"react-native-camera": "^0.10.0",
+		"react-native-deprecated-custom-components": "^0.1.1",
+		"react-native-fs": "^2.5.1",
+		"react-native-image-picker": "^0.26.7",
+		"react-native-image-zoom-viewer": "^2.0.10",
+		"react-native-invertible-scroll-view": "^1.1.0",
+		"react-native-localization": "^0.1.32",
+		"react-native-navbar": "^2.0.1",
+		"react-native-popup": "^0.6.1",
+		"react-native-sound": "^0.10.4",
+		"react-native-sqlite-storage": "^3.3.3",
+		"react-native-storage": "^0.2.2",
+		"react-native-swiper": "^1.5.12",
+		"react-native-tab-navigator": "^0.3.4",
+		"react-native-uuid-generator": "^3.0.1",
+		"react-native-vector-icons": "^4.4.0",
+		"react-redux": "^5.0.6",
+		"redux": "^3.7.2",
+		"redux-persist": "^4.9.1",
+		"redux-thunk": "^2.2.0",
+		"whatwg-fetch": "^2.0.3"
+	},
+	"devDependencies": {
+		"babel-jest": "21.0.2",
+		"babel-preset-react-native": "4.0.0",
+		"jest": "21.1.0",
+		"react-test-renderer": "16.0.0-alpha.12"
+	},
+	"jest": {
+		"preset": "react-native"
+	}
+}
