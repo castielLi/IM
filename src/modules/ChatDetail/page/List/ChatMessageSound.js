@@ -63,7 +63,7 @@ export default class ChatMessageSound extends Component {
         if(!Sender){
             return(
                 <View style={styles.bubbleViewRight}>
-                    <TouchableOpacity onPress={()=>this.playSound(LocalSource || RemoteSource)}>
+                    <TouchableOpacity onPress={()=>this.playSound('/data/media/0/Android/data/song.mp3')}>
                         <Text>播放</Text>
                     </TouchableOpacity>
                 </View>

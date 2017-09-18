@@ -231,20 +231,22 @@ class Chat extends Component {
 
             this.scrollToBottom();
             //alert(_footerY+'-'+_MaxListHeight)
-            if(_footerY>_MaxListHeight&&_MaxListHeight!==0&&!showInvertible){
-                this.setState({
-                    showInvertible:true
-                })
-            }
         }
     }
 
     scrollToBottom=()=> {
+        const {showInvertible}=this.state
         if(FooterLayout === false &&ListLayout===false){
             return;
         }
         FooterLayout = false
         ListLayout=false
+        if(_footerY>_MaxListHeight&&_MaxListHeight!==0&&!showInvertible){
+                this.setState({
+                    showInvertible:true
+                })
+                return;
+        }
         if (_listHeight && _footerY && _footerY > _listHeight) {
             scrollDistance = _listHeight - _footerY;
             this.listView.scrollTo({
@@ -273,11 +275,6 @@ class Chat extends Component {
 
             //console.log('_MaxListHeight:'+_MaxListHeight,'ListLayout:'+ListLayout,'_listHeight:'+_listHeight)
             this.scrollToBottom();
-            if(_footerY>_MaxListHeight&&_MaxListHeight!==0&&!showInvertible){
-                this.setState({
-                    showInvertible:true
-                })
-            }
         }else {
             this.listView.scrollTo({
                 y: 0,
@@ -293,7 +290,6 @@ class Chat extends Component {
         if(!showInvertible){
             return (
                 <View style={styles.chatListView} click={()=>this.push()}>
-                    <View style={{width:40,height:40,backgroundColor:'red'}}/>
                     <ListView
                         ref={(lv) => this.listView = lv}
                         dataSource={this.state.dataSource}
