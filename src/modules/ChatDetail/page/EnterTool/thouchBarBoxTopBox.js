@@ -144,7 +144,7 @@ class ThouchBarBoxTopBox extends Component {
     recordTimer = setTimeout(() => {
       audio = new Audio('Li', fileName);
       audio._record();
-    }, 500)
+    }, 200)
     this.setState({
       isShowModal: true,
       recordingModalStatus: 0,
@@ -155,7 +155,7 @@ class ThouchBarBoxTopBox extends Component {
 
   _onPressOut() {
     //检查录音时间
-    if (Date.now() - startTime < 500) {
+    if (Date.now() - startTime < 200) {
       startTime = 0;
       // 不录音
       clearTimeout(recordTimer);
@@ -170,26 +170,30 @@ class ThouchBarBoxTopBox extends Component {
       }, 1000)
       return;
     }
-    audio._stop(() => {
-      this.setState({
-          isShowModal: false,
-        })
-        //初始化消息
-      let message = createResourceMessageObj('audio', 'private', [{
-        FileType: 2,
-        LocalSource: this.state.audioPath + '/' + this.state.fileName + '.aac',
-        RemoteSource: ''
-      }], '', 'li');
-      //更新chatRecordStore
-      im.addMessage(message, (status, messageId) => {
-        message.MSGID = messageId;
-        //更新chatRecordStore
-        this.props.addMessage('li', message)
-      }, [(tips) => {
-        console.log(tips)
-      }]);
-    });
-    //发送
+    let stop = () => {
+        audio._stop(() => {
+          this.setState({
+              isShowModal: false,
+            })
+            //初始化消息
+          let message = createResourceMessageObj('audio', 'private', [{
+            FileType: 2,
+            LocalSource: this.state.audioPath + '/' + this.state.fileName + '.aac',
+            RemoteSource: ''
+          }], '', 'li');
+          //更新chatRecordStore
+          im.addMessage(message, (status, messageId) => {
+            message.MSGID = messageId;
+            //更新chatRecordStore
+            this.props.addMessage('li', message)
+          }, [(tips) => {
+            console.log(tips)
+          }]);
+        });
+      }
+      //延迟执行audio._stop
+    setTimeout(stop, 500)
+      //发送
     this.setState({
       speakTxt: '按住说话'
     })
