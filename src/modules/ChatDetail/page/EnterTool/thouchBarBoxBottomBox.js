@@ -56,40 +56,6 @@ const styles = StyleSheet.create({
     height:230,
     borderColor:'#ccc',
     borderTopWidth:1
-  },
-  wrapper:{
-    flex:1,
-  },
-  swiperSlide:{
-    flex:1,
-    flexWrap:'wrap',
-    flexDirection:'row',
-  },
-  plusItemBox:{
-    width:pxToPt(60),
-    height:pxToPt(70),
-    marginTop:20,
-    marginHorizontal:(width-4*pxToPt(60))/8,
-    alignItems:'center',
-  },
-  plusItemImgBox:{
-    height:pxToPt(50),
-    width:pxToPt(50),
-    borderRadius:pxToPt(10),
-    borderColor:'#ccc',
-    borderWidth:pxToPt(1), 
-    justifyContent:'center',
-    alignItems:'center'
-  },
-  img:{
-    height:pxToPt(25),
-    width:pxToPt(25),
-    resizeMode:'stretch',
-    margin:10
-  },
-  plusItemTit:{
-    fontSize:12,
-    color:'#bbb'
   }
 });
 
