@@ -96,7 +96,7 @@ class ThouchBarBoxTopBox extends Component {
       //this.input.blur();
       this.blur();
     }
-      this.props.pressExpression(); 
+      this.props.pressExpression();
   }
   toPlus() {
     if (this.props.thouchBarStore.isPlusPage) {
@@ -171,14 +171,14 @@ class ThouchBarBoxTopBox extends Component {
       return;
     }
     let stop = () => {
-        audio._stop(() => {
+        audio._stop((currentTime) => {
           this.setState({
               isShowModal: false,
             })
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
             FileType: 2,
-            LocalSource: this.state.audioPath + '/' + this.state.fileName + '.aac',
+            LocalSource: this.state.audioPath + '/' + this.state.fileName + '_'+ currentTime + '.aac',
             RemoteSource: ''
           }], '', 'li');
           //更新chatRecordStore
