@@ -80,7 +80,7 @@ class AutoExpandingTextInput extends Component {
     } 
 
     //限制高度 
-    if(height>(30+26*4)) return;
+    if(height>(30+26*3)) return;
     this.setState({
       inputHeight:height
     })
@@ -103,6 +103,7 @@ class AutoExpandingTextInput extends Component {
        returnKeyType='send'
        returnKeyLabel='发送'
        //onChange={this._onChange}
+       numberOfLines={6}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
        style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:60}]}  
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
     left:60,
     top:pxToPt(10), 
     fontSize:20, 
-    lineHeight:30, 
+    lineHeight:20, 
     width:width-180,  
     height:40,
     borderColor:'#ccc',
@@ -142,7 +143,8 @@ const styles = StyleSheet.create({
     padding:0,
     paddingLeft:5,
     paddingRight:5,
-    textAlignVertical: 'top'
+    textAlignVertical: 'center',
+    fontSize:16
   },
 
 });  
