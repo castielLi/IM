@@ -96,7 +96,7 @@ class ThouchBarBoxTopBox extends Component {
       //this.input.blur();
       this.blur();
     }
-    this.props.pressExpression();
+      this.props.pressExpression(); 
   }
   toPlus() {
     if (this.props.thouchBarStore.isPlusPage) {

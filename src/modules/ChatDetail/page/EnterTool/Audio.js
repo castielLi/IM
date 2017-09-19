@@ -44,7 +44,6 @@ export default class Audio {
     this._checkPermission().then((hasPermission) => {
       this.state.hasPermission = hasPermission;
       if (!hasPermission) return;
-      console.log('audioPath:', this.state.audioPath);
       this.prepareRecordingPath(this.state.audioPath);
       //录音过程中，每秒触发一次，回调函数参数data 是一个对象{currentTime:已经记录的秒数}
       AudioRecorder.onProgress = (data) => {
