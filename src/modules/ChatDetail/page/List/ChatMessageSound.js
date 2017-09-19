@@ -56,15 +56,25 @@ export default class ChatMessageSound extends Component {
         const sound = new Sound(SoundUrl,'', error => callback(error, sound));
     }
 
+    getSoundTime = (LocalPath)=>{
+        let Time = LocalPath.match(/_[0-9]+/)[0].slice(1);
+        let LocalSource = LocalPath.replace(/_[0-9]+/,'');
+        let soundWidth = 50;
+        if(Time>5){
+            soundWidth = (width-200)*(Time/55)+50;
+        }
+        return {Time,LocalSource,soundWidth}
+    }
     render() {
         let {data} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
+        let soundObjConfig = this.getSoundTime(LocalSource || RemoteSource)
         if(!Sender){
             return(
-                <View style={styles.bubbleViewRight}>
-                    <TouchableOpacity onPress={()=>this.playSound(LocalSource || RemoteSource)}>
-                        <Text>播放</Text>
+                <View style={[styles.bubbleViewRight,{width:soundObjConfig.soundWidth}]}>
+                    <TouchableOpacity onPress={()=>this.playSound(soundObjConfig.LocalSource)}>
+                        <Text>{soundObjConfig.Time}"</Text>
                     </TouchableOpacity>
                 </View>
             )
