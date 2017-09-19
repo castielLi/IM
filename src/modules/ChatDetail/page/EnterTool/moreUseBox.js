@@ -8,7 +8,8 @@ import {
   Image,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  PixelRatio
+  PixelRatio,
+  Platform
 } from 'react-native';  
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swiper from 'react-native-swiper';
@@ -55,12 +56,13 @@ imagePikerCallBack(response){
   }
   else {
     //console.log(response.uri)// 选择本地content://media/external/images/media/30；拍照file:///storage/emulated/0/Pictures/image-ad930ba1-fc6f-44c5-afb4-dda910fccc8c.jpg
-    //alert(response.path)
+    //alert(response.path)  //response.path限android,可得到图片的绝对路径
     // You can also display the image using data:
     // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
     //初始化消息
-    let message = createResourceMessageObj('image','private',[{FileType:0,LocalSource:response.uri,RemoteSource:''}],'','li');
+    let responsePath = Platform.OS === 'ios'? response.uri : response.path;
+    let message = createResourceMessageObj('image','private',[{FileType:0,LocalSource:responsePath,RemoteSource:''}],'','li');
     im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
