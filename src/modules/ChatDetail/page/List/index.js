@@ -176,27 +176,29 @@ class Chat extends Component {
     oldMsg = () => {
         // console.log('oldMsg');
         // this.changeType = 0;
-        // this.setState({
-        //     isRefreshing : true
-        // })
+        this.setState({
+            isRefreshing : true
+        })
 
-        // let that = this;
-        // this.im.getRecentChatRecode("2","chatroom",{start:2,limit:10},function (messages) {
-        //     //alert("消息记录为" + messages[0].status);
-        //     console.log(that.shortData)
-        //     that.shortData = that.shortData.concat(messages)
-        //     console.log(that.shortData)
-        //     this.data2 = this.prepareMessages(that.shortData);
-        //     this.setState({
-        //         dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
-        //     });
-        // })
+        let that = this;
+        this.im.getRecentChatRecode("2","chatroom",{start:0,limit:10},function (messages) {
+            //alert("消息记录为" + messages[0].status);
+            console.log(that.shortData)
+            that.shortData = that.shortData.concat(messages)
+            console.log(that.shortData)
+            this.data2 = this.prepareMessages(that.shortData);
+            this.setState({
+                dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
+            });
+        })
 
     }
 
     myRenderFooter(){
         //console.log('foot执行了')
+
         const {isRefreshing,showInvertible}=this.state
+        //alert(isRefreshing)
         if(!showInvertible) {
             return <View
                 onLayout={this._onFooterLayout}
