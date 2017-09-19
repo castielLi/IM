@@ -11,6 +11,7 @@ import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
+import * as Helper from '../Helper'
 
 
 
@@ -204,7 +205,7 @@ export default class IM {
                 if(message.type == "text"){
                     sendMessage.push(message);
                 }else{
-                    resourceQueue.push(message);
+                    resourceQueue.push({onprogress:null,message:message})
                 }
             })
 
@@ -287,48 +288,58 @@ export default class IM {
     uploadResource(obj){
 
         let message = obj["message"];
-        let progressHandles = obj["onprogress"];
+
+        let copyMessage = Object.assign({}, message);
+
+        let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
         let callback = obj["callback"];
 
-        //把资源存入数据库
-        for(let item in message.Resource){
-            storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
-        }
+        if(networkStatus == networkStatuesType.normal) {
+
+            //把资源存入数据库
+            for(let item in message.Resource){
+                storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
+            }
 
 
-        let uploadQueue = [];
-        for(let item in message.Resource) {
-            uploadQueue.push(methods.getUploadPathFromServer(message.Resource[item].LocalSource,item,function (progress,index) {
-                let onprogess = progressHandles[index*1];
-                onprogess("第"+(index * 1 + 1) +"张图片上传进度："+ progress.loaded/progress.total * 100);
-            },function (result) {
-                console.log("上传成功" + result);
-                message.Resource[item].RemoteSource = result.url;
+            let uploadQueue = [];
+            for(let item in message.Resource) {
+                uploadQueue.push(methods.getUploadPathFromServer(message.Resource[item].LocalSource,item,function (progress,index) {
+                    if(progressHandles != null) {
+                        let onprogess = progressHandles[index * 1];
+                        onprogess("第" + (index * 1 + 1) + "张图片上传进度：" + progress.loaded / progress.total * 100);
+                    }
+                },function (result) {
+                    console.log("上传成功" + result);
+                    message.Resource[item].RemoteSource = result.url;
 
-                //pop上传成功的资源
-                storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
-            },function(index){
-                console.log("上传失败" + index);
-            }));
-        }
+                    //pop上传成功的资源
+                    storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
+                },function(index){
+                    console.log("上传失败" + index);
+                }));
+            }
 
-        Promise.all(uploadQueue).then(function(values){
-            console.log(values);
+            Promise.all(uploadQueue).then(function(values){
+                console.log(values);
 
-            let copyMessage = Object.assign({}, message);
+                let copyMessage = Object.assign({}, message);
 
+                copyMessage.status = SendStatus.PrepareToSend;
+                currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+
+                currentObj.addMessageQueue(message);
+
+                //App上层修改message细节
+                AppMessageChangeStatusHandle(message);
+
+            }).catch(function (values) {
+                console.log('上传失败上传失败上传失败上传失败',values);
+            })
+        }else{
             copyMessage.status = SendStatus.PrepareToSend;
-            currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
-
-            currentObj.addMessageQueue(message);
-
-            //App上层修改message细节
-            AppMessageChangeStatusHandle(message);
-
-        }).catch(function (values) {
-            console.log('上传失败上传失败上传失败上传失败',values);
-        })
-
+            this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+        }
     }
 
 
@@ -348,10 +359,16 @@ export default class IM {
 
             sendMessageQueueState = sendMessageQueueType.excuting;
             console.log(sendMessageQueueState);
-            for(let item in sendMessageQueue){
-                obj.sendMessage(sendMessageQueue[item],obj);
-                sendMessageQueue.shift();
+
+            let copyMessageQueue = Helper.cloneArray(sendMessageQueue);
+            sendMessageQueue = [];
+
+            for(let item in copyMessageQueue){
+                obj.sendMessage(copyMessageQueue[item],obj);
+
+                // sendMessageQueue.shift();
             }
+            copyMessageQueue = [];
 
             sendMessageQueueState = sendMessageQueueType.empty;
             console.log(sendMessageQueueState);
@@ -367,15 +384,15 @@ export default class IM {
         let copyMessage = Object.assign({}, message);
 
         if(networkStatus == networkStatuesType.normal) {
-            let success = this.socket.sendMessage(message);
+            let success = this.socket.sendMessage(copyMessage);
 
 
             //心跳包不需要进行存储
             if(message.Command != MessageCommandEnum.MSG_HEART) {
-                console.log("添加" + message.MSGID + "进队列");
+                console.log("添加" + copyMessage.MSGID + "进队列");
                 //初始加入ack队列，发送次数默认为1次
-                obj.addAckQueue(message, 1);
-                console.log("ack queue 长度" + ackMessageQueue.length);
+                obj.addAckQueue(copyMessage, 1);
+                console.log("ack copyMessage 长度" + ackMessageQueue.length);
 
                 copyMessage.status = SendStatus.WaitAck;
                 this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
@@ -408,12 +425,19 @@ export default class IM {
 
             handleSqliteQueueState = handleSqliteQueueType.excuting;
             console.log(handleSqliteQueueState);
-            for(let item in handleSqliteQueue){
 
-                obj.updateSqliteMessage(handleSqliteQueue[item].message,handleSqliteQueue[item].type);
-                handleSqliteQueue.shift();
+
+
+            let copySqliteQueue = Helper.cloneArray(handleSqliteQueue);
+            handleSqliteQueue = [];
+
+            for(let item in copySqliteQueue){
+
+                obj.updateSqliteMessage(copySqliteQueue[item].message,copySqliteQueue[item].type);
+                // handleSqliteQueue.shift();
             }
 
+            copySqliteQueue = [];
 
             handleSqliteQueueState = handleSqliteQueueType.empty;
             console.log(handleSqliteQueueState);

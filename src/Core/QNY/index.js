@@ -86,6 +86,7 @@ export default class QNY {
 					reject && reject(index);
 				});
 			}).catch(e => {
+				console.log(e);
 				error(index);
 				reject && reject(index);
 			});
