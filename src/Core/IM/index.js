@@ -104,7 +104,7 @@ export default class IM {
         this.beginRunLoop();
 
         //获取之前没有发送出去的消息重新加入消息队列
-        // this.addAllUnsendMessageToSendQueue();
+        this.addAllUnsendMessageToSendQueue();
     }
 
     setNetworkStatus(netState) {
@@ -144,10 +144,8 @@ export default class IM {
 
                     _socket.reConnectNet();
 
-                    storeSqlite.getAllCurrentSendMessage(function(currentSendMessages){
-                        console.log(currentSendMessages);
-                        sendMessageQueue = currentSendMessages.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
-                    });
+                    //获取之前没有发送出去的消息重新加入消息队列
+                    currentObj.addAllUnsendMessageToSendQueue();
 
                 }
             },200);
@@ -534,8 +532,8 @@ export default class IM {
                     ackMessageQueue[item].message.status = MessageStatus.SendFailed;
                     obj.addUpdateSqliteQueue(ackMessageQueue[item].message,UpdateMessageSqliteType.storeMessage)
 
-                    ackMessageQueue.splice(item, 1);
                     obj.popCurrentMessageSqlite(ackMessageQueue[item].message.MSGID)
+                    ackMessageQueue.splice(item, 1);
                 }else {
                     obj.socket.sendMessage(ackMessageQueue[item].message);
                     console.log("重新发送" + ackMessageQueue[item].message.MSGID);
