@@ -16,7 +16,7 @@ export default class Audio {
       currentTime: 0.0,
       recording: false,
       finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/audio/' + name + '/' + fileName+'.aac',
+      audioPath: AudioUtils.DocumentDirectoryPath + '/audio/' + name + '/' + fileName + '.aac',
       hasPermission: undefined,
     };
 
@@ -91,7 +91,7 @@ export default class Audio {
       if (Platform.OS === 'android') {
         this._finishRecording(true, filePath);
       }
-      fn&&fn();
+      fn && fn();
       return filePath;
     } catch (error) {
       console.error(error);

@@ -58,6 +58,7 @@ class Chat extends Component {
 
         this.data = [];
         this.data2 = [];
+        this.shortData = [];
 
         this.state = {
             dataSource: ds,
@@ -75,7 +76,8 @@ class Chat extends Component {
         console.log(newData,11111111111111111111111111111111111)
         //alert(newData.length)
         this.data = newData;
-        this.data2 = this.prepareMessages(newData.concat().reverse());
+        this.shortData = newData.concat().reverse();
+        this.data2 = this.prepareMessages(this.shortData);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.data),
             dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
@@ -101,7 +103,8 @@ class Chat extends Component {
         console.log(chatRecordStore,11111111111111111111111111111111111)
         // let newData = chatRecordStore.ChatRecord.li;
         this.data = chatRecordStore;
-        this.data2 = this.prepareMessages(chatRecordStore.concat().reverse());
+        this.shortData = chatRecordStore.concat().reverse();
+        this.data2 = this.prepareMessages(this.shortData);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.data),
             dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
@@ -176,26 +179,18 @@ class Chat extends Component {
         // this.setState({
         //     isRefreshing : true
         // })
-        // fetch('http://gank.io/api/data/福利/5/'+this.index*10)
-        //     .then((response) => response.json())
-        //     .then((responseData) => {
-        //         let {results} = responseData;
-        //         this.index = this.index + 1;
-        //         this.jc = results.concat(this.jc)
-        //         this.jc2 = this.jc2.concat(results)
-        //         this.data = this.jc.slice(0);
-        //         this.data2 = this.jc2.slice(0);
-        //         console.log(this.data2)
-        //         const messagesData = this.prepareMessages(this.data2);
-        //         this.setState({
-        //             dataSource: this.state.dataSource.cloneWithRows(this.data),
-        //             dataSourceO: this.state.dataSourceO.cloneWithRows(messagesData.blob, messagesData.keys),
-        //             isRefreshing:false
-        //         });
-        //         //console.log(this.data);
-        //     })
-        //     .done();
-       // alert(this.im.getRecentChatRecode('li'))
+
+        // let that = this;
+        // this.im.getRecentChatRecode("2","chatroom",{start:2,limit:10},function (messages) {
+        //     //alert("消息记录为" + messages[0].status);
+        //     console.log(that.shortData)
+        //     that.shortData = that.shortData.concat(messages)
+        //     console.log(that.shortData)
+        //     this.data2 = this.prepareMessages(that.shortData);
+        //     this.setState({
+        //         dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
+        //     });
+        // })
 
     }
 
@@ -236,24 +231,22 @@ class Chat extends Component {
 
             this.scrollToBottom();
             //alert(_footerY+'-'+_MaxListHeight)
-            if(_footerY>_MaxListHeight&&_MaxListHeight!==0){
-                this.setState({
-                    showInvertible:true
-                },()=>this.listView.scrollTo({
-                    y: 0,
-                    x: 0,
-                    animated:false,
-                }))
-            }
         }
     }
 
     scrollToBottom=()=> {
+        const {showInvertible}=this.state
         if(FooterLayout === false &&ListLayout===false){
             return;
         }
         FooterLayout = false
         ListLayout=false
+        if(_footerY>_MaxListHeight&&_MaxListHeight!==0&&!showInvertible){
+                this.setState({
+                    showInvertible:true
+                })
+                return;
+        }
         if (_listHeight && _footerY && _footerY > _listHeight) {
             scrollDistance = _listHeight - _footerY;
             this.listView.scrollTo({
@@ -289,7 +282,6 @@ class Chat extends Component {
                 animated:true,
             });
         }
-
     }
 
     render() {
@@ -298,7 +290,6 @@ class Chat extends Component {
         if(!showInvertible){
             return (
                 <View style={styles.chatListView} click={()=>this.push()}>
-                    <View style={{width:40,height:40,backgroundColor:'red'}}/>
                     <ListView
                         ref={(lv) => this.listView = lv}
                         dataSource={this.state.dataSource}
