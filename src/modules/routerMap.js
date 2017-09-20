@@ -23,8 +23,8 @@ export const MainPage = {
 
 
 export const InitialRoute = {
-    key: 'Root',
-    routeId: 'Root'
+    key: 'ChatDetail',
+    routeId: 'ChatDetail'
 }
 
 export const RouteMap = {

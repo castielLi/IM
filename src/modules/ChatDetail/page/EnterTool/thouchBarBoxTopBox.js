@@ -53,8 +53,6 @@ class ThouchBarBoxTopBox extends Component {
         uri: '',
         type: ''
       },
-      audioPath: '',
-      imagePath: '',
       fileName: '',
       thouchBarTopBoxHeight: 0,
       isShowModal: false,
@@ -191,9 +189,9 @@ class ThouchBarBoxTopBox extends Component {
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
             FileType: 2,
-            LocalSource: this.state.audioPath + '/' + this.state.fileName + '_'+ currentTime?currentTime:1 + '.aac',
+            LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ currentTime?currentTime:1 + '.aac',
             RemoteSource: ''
-          }], '', 'li');
+          }], '', this.props.client);
           //更新chatRecordStore
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
@@ -219,7 +217,7 @@ class ThouchBarBoxTopBox extends Component {
     //结束录音
     audio._stop((currentTime)=>{
       //删除该录音文件
-      RNFS.unlink(this.state.audioPath + '/' + this.state.fileName  + '.aac')
+      RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
     });
     this.shouldPressSpeakBox = true;
     this.setState({
@@ -248,7 +246,7 @@ class ThouchBarBoxTopBox extends Component {
         <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
-        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData}></AutoExpandingTextInput>
+        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData} client={this.props.client}></AutoExpandingTextInput>
       </View>
     )
   }
@@ -295,17 +293,10 @@ class ThouchBarBoxTopBox extends Component {
 }
 
     //创建文件夹
-    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + 'Li';
-    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + 'Li';
-    this.state.audioPath = audioPath;
-    this.state.imagePath = imagePath;
-    RNFS.mkdir(audioPath)
-      .then((success) => {
-        console.log('create new dir success!');
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
+    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + this.props.client;
+    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + this.props.client;
+    this.audioPath = audioPath;
+    this.imagePath = imagePath;
   }
   renderModal() {
     //if(this.state.isShowModal){
