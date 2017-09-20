@@ -61,6 +61,7 @@ class ThouchBarBoxTopBox extends Component {
       recordingModalStatus: 0, //0:录音中 1:时间太短 2：取消发送,
       isOnPressSpeakBox:false //按下录音按钮
     };
+    this.shouldPressSpeakBox = true;
     this.changeThouchBarTopBoxHeight = this.changeThouchBarTopBoxHeight.bind(this);
     this.toRecord = this.toRecord.bind(this);
     this.toExpression = this.toExpression.bind(this);
@@ -140,6 +141,7 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressIn() {
+    if(!this.shouldPressSpeakBox) return;
     //开始录音
     let fileName = uuidv1();
     this.state.fileName = fileName;
@@ -155,7 +157,7 @@ class ThouchBarBoxTopBox extends Component {
     })
     //录音超过10秒自动结束
     checkMaxRecordTimeInterval = setInterval(()=>{
-      if(Date.now()-startTime>10000){
+      if(Date.now()-startTime>5000){
         this._onPressOut();
         clearInterval(checkMaxRecordTimeInterval)
       }
@@ -163,7 +165,8 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressOut() {
-    //检查录音时间
+    clearInterval(checkMaxRecordTimeInterval)
+    //针对点了立即放的情况
     if (Date.now() - startTime < 200) {
       startTime = 0;
       // 不录音
@@ -171,6 +174,7 @@ class ThouchBarBoxTopBox extends Component {
       this.setState({
           recordingModalStatus: 1
         })
+      this.shouldPressSpeakBox = true;
         //延迟一秒隐藏Modal
       modalTimer = setTimeout(() => {
         this.setState({
@@ -180,14 +184,14 @@ class ThouchBarBoxTopBox extends Component {
       return;
     }
     let stop = () => {
-        audio._stop((currentTime) => {
+        audio&&audio._stop((currentTime) => {
           this.setState({
               isShowModal: false,
             })
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
             FileType: 2,
-            LocalSource: this.state.audioPath + '/' + this.state.fileName + '_'+ currentTime + '.aac',
+            LocalSource: this.state.audioPath + '/' + this.state.fileName + '_'+ currentTime?currentTime:1 + '.aac',
             RemoteSource: ''
           }], '', 'li');
           //更新chatRecordStore
@@ -198,21 +202,26 @@ class ThouchBarBoxTopBox extends Component {
           }, [(tips) => {
             console.log(tips)
           }]);
+          //
+          this.shouldPressSpeakBox = true;
         });
       }
       //延迟执行audio._stop
     delayStopTimer = setTimeout(stop, 500)
       //发送
     this.setState({
-      speakTxt: '按住说话'
+      speakTxt: '按住说话',
+      isOnPressSpeakBox:false
     })
   }
   _onPressCancel() {
+    clearInterval(checkMaxRecordTimeInterval)
     //结束录音
     audio._stop((currentTime)=>{
       //删除该录音文件
       RNFS.unlink(this.state.audioPath + '/' + this.state.fileName  + '.aac')
     });
+    this.shouldPressSpeakBox = true;
     this.setState({
       isShowModal: false,
       speakTxt: '按住说话'
@@ -236,7 +245,7 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'rgba(0,0,0,0.5)':'transparent'}]} underlayColor={'#bbb'} activeOpacity={0.3} >
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
         <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData}></AutoExpandingTextInput>
@@ -432,6 +441,7 @@ const styles = StyleSheet.create({
     height: pxToPt(100),
     width: pxToPt(100),
     backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius:10
   },
   recordingModalItem: {
     flex: 1,
@@ -440,8 +450,9 @@ const styles = StyleSheet.create({
   },
   recordingModalText: {
     color: '#eee',
-    marginTop: 20,
-    fontSize:10
+    marginTop: 10,
+    fontSize:10,
+    fontWeight:'bold'
   }
 });
 
