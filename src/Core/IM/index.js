@@ -12,6 +12,7 @@ import * as configs from './IMconfig'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
 import * as Helper from '../Helper'
+import MessageType from './dto/MessageType'
 
 
 
@@ -206,6 +207,7 @@ export default class IM {
                     sendMessage.push(message);
                 }else{
                     resourceQueue.push({onprogress:null,message:message})
+                    console.log("加入资源队列" + message.MSGID);
                 }
             })
 
@@ -239,16 +241,16 @@ export default class IM {
 
 
             switch (message.type) {
-                case "text":
+                case MessageType.text:
                     this.addMessageQueue(message);
                     callback(true,message.MSGID);
                     break;
-                case "image":
+                case MessageType.image:
 
                     resourceQueue.push({onprogress:onprogess,message:message})
                     callback(true,message.MSGID);
                     break;
-                case "audio":
+                case MessageType.audio:
                     resourceQueue.push({onprogress:onprogess,message:message})
                     callback(true,message.MSGID);
                     break;
@@ -275,10 +277,14 @@ export default class IM {
 
             resourceQueueState = resourceQueueType.excuting;
 
-            for(let item in resourceQueue){
-                obj.uploadResource(resourceQueue[item]);
-                resourceQueue.shift();
+            let copyResourceQueue = Helper.cloneArray(resourceQueue);
+            resourceQueue = [];
+
+            for(let item in copyResourceQueue){
+                obj.uploadResource(copyResourceQueue[item]);
             }
+            copyResourceQueue=[];
+
             resourceQueueState = resourceQueueType.empty;
 
         }
@@ -321,7 +327,7 @@ export default class IM {
             }
 
             Promise.all(uploadQueue).then(function(values){
-                console.log(values);
+                console.log(values + "已经上传成功了" + message.MSGID);
 
                 let copyMessage = Object.assign({}, message);
 
@@ -334,7 +340,7 @@ export default class IM {
                 AppMessageChangeStatusHandle(message);
 
             }).catch(function (values) {
-                console.log('上传失败上传失败上传失败上传失败',values);
+                console.log('上传失败的内容是',values);
             })
         }else{
             copyMessage.status = SendStatus.PrepareToSend;
@@ -480,31 +486,25 @@ export default class IM {
 
             recMessageQueueState = recMessageQueueType.excuting;
 
-            for(let item in recieveMessageQueue){
-                obj.recMessage(recieveMessageQueue[item]);
-                recieveMessageQueue.shift();
+            let copyRecQueue = Helper.cloneArray(recieveMessageQueue);
+            recieveMessageQueue = [];
+
+            for(let item in copyRecQueue){
+                obj.receiveMessageOpreator(copyRecQueue[item])
+                // recieveMessageQueue.shift();
             }
+
+            copyRecQueue = [];
 
             recMessageQueueState = recMessageQueueType.empty;
 
         }
     }
 
-    recMessage(message,type=null) {
 
-        //处理收到消息的逻辑
-        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
-
-        if(type != null){
-            message.Command = MessageCommandEnum.MSG_HEART;
-            console.log("心跳包压入发送队列")
-            sendMessageQueue.push(message);
-            return;
-        }
+    receiveMessageOpreator(message){
 
         let updateMessage = {};
-
-
         for(let item in ackMessageQueue){
             if(ackMessageQueue[item].message.MSGID == message){
 
@@ -525,6 +525,22 @@ export default class IM {
 
         updateMessage.status = MessageStatus.SendSuccess;
         currentObj.addUpdateSqliteQueue(updateMessage,UpdateMessageSqliteType.storeMessage)
+    }
+
+
+    recMessage(message,type=null) {
+
+        //处理收到消息的逻辑
+        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
+
+        if(type != null){
+            message.Command = MessageCommandEnum.MSG_HEART;
+            console.log("心跳包压入发送队列")
+            sendMessageQueue.push(message);
+            return;
+        }
+
+        recieveMessageQueue.push(message);
     }
 
 
@@ -599,6 +615,10 @@ export default class IM {
 
             if(resourceQueueState == resourceQueueType.empty){
                 handleResource(obj)
+            }
+
+            if(recMessageQueueState == recMessageQueueType.empty){
+                handleRec(obj)
             }
 
             handleAckQueue(obj);
