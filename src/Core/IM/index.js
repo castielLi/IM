@@ -206,6 +206,9 @@ export default class IM {
                 if(message.type == "text"){
                     sendMessage.push(message);
                 }else{
+
+                    
+
                     resourceQueue.push({onprogress:null,message:message})
                     console.log("加入资源队列" + message.MSGID);
                 }
@@ -247,10 +250,21 @@ export default class IM {
                     break;
                 case MessageType.image:
 
+                    // let copyMessage = Object.assign({}, message);
+                    //
+                    // copyMessage.status = SendStatus.PrepareToUpload;
+                    // currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+
                     resourceQueue.push({onprogress:onprogess,message:message})
                     callback(true,message.MSGID);
                     break;
                 case MessageType.audio:
+
+                    let copyMessage = Object.assign({}, message);
+
+                    copyMessage.status = SendStatus.PrepareToUpload;
+                    currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+
                     resourceQueue.push({onprogress:onprogess,message:message})
                     callback(true,message.MSGID);
                     break;
