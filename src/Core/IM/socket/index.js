@@ -27,8 +27,8 @@ export default class Connect extends Component{
         __instance(this);
 
         _token = token;
-
-        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token + "/socket.io/?EIO=4&transport=websocket");
+        // "/socket.io/?EIO=4&transport=websocket"
+        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token );
         // this.webSocket = new WebSocket(configs.serverUrl);
         console.log("account token:" + token);
         this.reConnectNet = this.reConnectNet.bind(this);
@@ -77,8 +77,10 @@ export default class Connect extends Component{
         onRecieveMessage = callback;
     }
 
+
     reConnectNet(){
-       this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token + "/socket.io/?EIO=4&transport=websocket");
+        // + "/socket.io/?EIO=4&transport=websocket"
+       this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
        this.addEventListenner();
     }
 }
