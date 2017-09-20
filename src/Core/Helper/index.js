@@ -24,6 +24,7 @@ export function containsObject(obj, list) {
     return false;
 }
 
+//不能深拷贝方法，只能手动进行赋值方法
 export function cloneArray(obj){
     var str, newobj = obj.constructor === Array ? [] : {};
     if(typeof obj !== 'object'){
