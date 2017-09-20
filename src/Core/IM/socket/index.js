@@ -17,6 +17,8 @@ let __instance = (function () {
 
 let onRecieveMessage = "undefined";
 let _token = undefined;
+let netWorkStatus = undefined;
+let currentObj = undefined;
 
 export default class Connect extends Component{
 
@@ -27,6 +29,9 @@ export default class Connect extends Component{
         __instance(this);
 
         _token = token;
+
+        currentObj = this;
+
         // "/socket.io/?EIO=4&transport=websocket"
         this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token );
         // this.webSocket = new WebSocket(configs.serverUrl);
@@ -54,10 +59,16 @@ export default class Connect extends Component{
 
         this.webSocket.addEventListener('open', function (event) {
             console.log('Hello Server!');
+
         });
 
         this.webSocket.addEventListener('close', function (event) {
-            console.log('GoodBye Server!');
+
+            if(netWorkStatus == "none"){
+                console.log('GoodBye Server!');
+            }else{
+                currentObj.reConnectNet();
+            }
         });
     }
 
@@ -82,5 +93,9 @@ export default class Connect extends Component{
         // + "/socket.io/?EIO=4&transport=websocket"
        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
        this.addEventListenner();
+    }
+
+    setNetWorkStatus(status){
+        netWorkStatus = status;
     }
 }
