@@ -75,12 +75,12 @@ class ChatDetail extends ContainerComponent {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'>
-    		<NavigationTopBar
+    			<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
 				<Chat ref={e => this.chat = e}/>
-    		<ThouchBar client={'li'}></ThouchBar>
-    	</MyView>
+				<ThouchBar client={'li'}></ThouchBar>
+    		</MyView>
 
 		);
 	}
