@@ -188,10 +188,10 @@ class Chat extends Component {
                 let msg = messages.map((message)=>{
                     return DtoMethods.sqlMessageToMessage(message);
                 })
-                console.log(messages,msg)
-                console.log(that.shortData)
+                //console.log(messages,msg)
+                //console.log(that.shortData)
                 that.shortData = that.shortData.concat(msg)
-                console.log(that.shortData)
+                //console.log(that.shortData)
                 that.data2 = that.prepareMessages(that.shortData);
                 that.setState({
                     dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
