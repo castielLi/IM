@@ -34,7 +34,7 @@ render(){
 
       return(
           <View style={styles.ThouchBarBoxBottomBox}>
-          <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false} >
+          <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={true} autoplay={true}>
              <View style={styles.swiperSlide}>
               <TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,'[呲牙]')}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
