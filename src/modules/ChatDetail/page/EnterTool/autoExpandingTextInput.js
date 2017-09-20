@@ -44,11 +44,11 @@ class AutoExpandingTextInput extends Component {
   _onSubmitEditing(){
     if(this.state.data){
       //初始化消息
-      let message = createTextMessageObj(this.state.data,'private','','li');
+      let message = createTextMessageObj(this.state.data,'private','',this.props.client);
       im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage('li',message);
+        this.props.addMessage(this.props.client,message);
         this.input.clear();
         //在表情栏提交后不会获得焦点
         if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();

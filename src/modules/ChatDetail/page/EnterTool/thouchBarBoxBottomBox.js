@@ -37,11 +37,11 @@ render(){
    let {isExpressionPage,isPlusPage} = this.props.thouchBarStore;
     if(isExpressionPage){
       return(
-          <ExpressionBox setEmoji={this.props.setEmoji} _onSubmitEditing={this.props._onSubmitEditing} textInputData={this.props.textInputData}></ExpressionBox>
+          <ExpressionBox setEmoji={this.props.setEmoji} _onSubmitEditing={this.props._onSubmitEditing} textInputData={this.props.textInputData} client={this.props.client}></ExpressionBox>
         )
     }else if(isPlusPage){
       return(
-        <MoreUseBox></MoreUseBox>
+        <MoreUseBox client={this.props.client}></MoreUseBox>
         )
     }else{
       return(

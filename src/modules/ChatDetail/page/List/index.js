@@ -14,9 +14,11 @@ import {
     ActivityIndicator,
     TextInput,
     Modal,
+    TouchableWithoutFeedback
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/IM/redux/action'
 import ChatMessage from './ChatMessage'
 
@@ -301,43 +303,48 @@ class Chat extends Component {
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                <View style={styles.chatListView} click={()=>this.push()}>
-                    <ListView
-                        ref={(lv) => this.listView = lv}
-                        dataSource={this.state.dataSource}
-                        removeClippedSubviews={false}
-                        renderRow={this.renderRow}
-                        style={{paddingHorizontal:10}}
+                <TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>
+                    <View style={styles.chatListView} click={()=>this.push()}>
+                        <ListView
+                            ref={(lv) => this.listView = lv}
+                            dataSource={this.state.dataSource}
+                            removeClippedSubviews={false}
+                            renderRow={this.renderRow}
+                            style={{paddingHorizontal:10}}
 
-                        renderFooter={this.myRenderFooter.bind(this)}
-                        onLayout={this._onListViewLayout}
-                        enableEmptySections={true}
+                            renderFooter={this.myRenderFooter.bind(this)}
+                            onLayout={this._onListViewLayout}
+                            enableEmptySections={true}
 
-                        //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-                    />
-                    <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
-                </View>
+                            //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
+                        />
+                        <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                    </View>
+                </TouchableWithoutFeedback>     
             );
         }else{
             return(
-                <View style={styles.chatListView}>
-                    <ListView
-                        ref={(lv) => this.listView = lv}
-                        dataSource={this.state.dataSourceO}
-                        removeClippedSubviews={false}
-                        renderRow={this.renderRow}
-                        style={{paddingHorizontal:10}}
+                <TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>
+                    <View style={styles.chatListView}>
+                        <ListView
+                            ref={(lv) => this.listView = lv}
+                            dataSource={this.state.dataSourceO}
+                            removeClippedSubviews={false}
+                            renderRow={this.renderRow}
+                            style={{paddingHorizontal:10}}
 
-                        onEndReached={this.oldMsg}
-                        onEndReachedThreshold={20}
+                            onEndReached={this.oldMsg}
+                            onEndReachedThreshold={20}
 
-                        renderFooter={this.myRenderFooter.bind(this)}
-                        onLayout={this._onListViewLayout}
+                            renderFooter={this.myRenderFooter.bind(this)}
+                            onLayout={this._onListViewLayout}
 
-                        renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
-                    />
-                    <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
-                </View>)
+                            renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
+                        />
+                        <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                    </View>
+                </TouchableWithoutFeedback>
+                )
         }
     }
 }
@@ -417,6 +424,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    ...bindActionCreators(Actions, dispatch),
     ...bindActionCreators(commonActions,dispatch)
 });
 
