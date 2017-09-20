@@ -30,7 +30,7 @@ export const InitialRoute = {
 export const RouteMap = {
     'Root': {
         'Root': {
-            component: ChatDetail,
+            component: Camera,
             params: {}
         }
     },

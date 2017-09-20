@@ -442,7 +442,7 @@ IMFMDB.DeleteResource = function(messageId,localPath){
 
             let deleteSql = sqls.ExcuteIMSql.DeleteUploadFileRecode;
 
-            deleteSql = commonMethods.sqlFormat(deleteSql,messageId,localPath);
+            deleteSql = commonMethods.sqlFormat(deleteSql,[messageId,localPath]);
 
 
             tx.executeSql(deleteSql, [], (tx, results) => {

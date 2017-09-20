@@ -5,5 +5,7 @@
 
 export default MessageType = {
     text :"text",
-    image : "image"
+    image : "image",
+    audio:"audio",
+    video:"video"
 }
