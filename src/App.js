@@ -130,7 +130,7 @@ export default function App() {
         componentDidMount() {
             AppState.addEventListener('change', this._handleAppStateChange);
             AppState.addEventListener('memoryWarning', this._handleMemoryWarning);
-            NetInfo.addEventListener('change', this._handleConnectionInfoChange);
+            NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
         }
         componentWillUnmount() {
             AppState.removeEventListener('change', this._handleAppStateChange);

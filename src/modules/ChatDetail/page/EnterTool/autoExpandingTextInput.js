@@ -30,7 +30,6 @@ class AutoExpandingTextInput extends Component {
       firstInputHeight:0,
       isFirstInputHeight:true,
       inputHeight:0,
-      isLock:false
     } 
     this._onChangeText = this._onChangeText.bind(this);
     this._onSubmitEditing = this._onSubmitEditing.bind(this);
@@ -38,18 +37,11 @@ class AutoExpandingTextInput extends Component {
   }  
   
   _onChangeText(data){
-   this.state.isLock = false;
    this.state.data = data; 
    this.props.setTextInputData(data)
-   // this.setState({
-   //  data
-   // })
   }
   //0.45.1 multiline设为true，每次提交_onSubmitEditing会执行两次
   _onSubmitEditing(){
-    if(this.state.isLock) return;
-    this.state.isLock = true;
-    //
     if(this.state.data){
       //初始化消息
       let message = createTextMessageObj(this.state.data,'private','','li');
@@ -80,7 +72,7 @@ class AutoExpandingTextInput extends Component {
     } 
 
     //限制高度 
-    if(height>(30+26*4)) return;
+    if(height>(30+26*3)) return;
     this.setState({
       inputHeight:height
     })
@@ -103,6 +95,7 @@ class AutoExpandingTextInput extends Component {
        returnKeyType='send'
        returnKeyLabel='发送'
        //onChange={this._onChange}
+       numberOfLines={6}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
        style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:60}]}  
@@ -110,16 +103,11 @@ class AutoExpandingTextInput extends Component {
       </TextInput>  
     );  
   }
-  // componentDidMount(){
-   
-  //   //传递TextInput组件对象到父组件，父组件可以调用子组件方法
-  //   this.props.getInputObject(this.input);
-  // }
+
 
   componentWillReceiveProps(nextProps){
     if(nextProps.emojiText&&nextProps.emojiId!==this.props.emojiId){    
       this.state.data = this.state.data+nextProps.emojiText   //输入框添加emoji文字成功，但是onChange事件无法监听到，输入框高度无法改变
-      this.state.isLock = false;
       this.props.setTextInputData(true)
     }
   }
@@ -131,7 +119,7 @@ const styles = StyleSheet.create({
     left:60,
     top:pxToPt(10), 
     fontSize:20, 
-    lineHeight:30, 
+    lineHeight:20, 
     width:width-180,  
     height:40,
     borderColor:'#ccc',
@@ -142,7 +130,8 @@ const styles = StyleSheet.create({
     padding:0,
     paddingLeft:5,
     paddingRight:5,
-    textAlignVertical: 'top'
+    textAlignVertical: 'center',
+    fontSize:16
   },
 
 });  

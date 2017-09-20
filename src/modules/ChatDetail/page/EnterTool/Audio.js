@@ -44,11 +44,10 @@ export default class Audio {
     this._checkPermission().then((hasPermission) => {
       this.state.hasPermission = hasPermission;
       if (!hasPermission) return;
-      console.log('audioPath:', this.state.audioPath);
       this.prepareRecordingPath(this.state.audioPath);
       //录音过程中，每秒触发一次，回调函数参数data 是一个对象{currentTime:已经记录的秒数}
       AudioRecorder.onProgress = (data) => {
-        this.state.currentTime = Math.floor(data.currentTime)
+        this.state.currentTime = Math.floor(data.currentTime);
       };
       //停止录音时触发,ios下回调函数参数data是一个对象,android下data为空
       AudioRecorder.onFinished = (data) => {
@@ -80,7 +79,7 @@ export default class Audio {
 
   async _stop(fn) {
     if (!this.state.recording) {
-      console.warn('Can\'t stop, not recording!');
+      //console.warn('Can\'t stop, not recording!');
       return;
     }
 
@@ -91,7 +90,7 @@ export default class Audio {
       if (Platform.OS === 'android') {
         this._finishRecording(true, filePath);
       }
-      fn && fn();
+      fn && fn(this.state.currentTime);
       return filePath;
     } catch (error) {
       console.error(error);

@@ -12,7 +12,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   PixelRatio,
-  Modal
+  Modal,
+  PanResponder
 } from 'react-native';
 import {
   connect
@@ -39,7 +40,7 @@ var {
   height,
   width
 } = Dimensions.get('window');
-var audio, startTime, recordTimer, modalTimer;
+var audio, startTime, recordTimer, modalTimer,checkMaxRecordTimeInterval,delayStopTimer;
 class ThouchBarBoxTopBox extends Component {
   constructor(props) {
     super(props);
@@ -57,8 +58,10 @@ class ThouchBarBoxTopBox extends Component {
       fileName: '',
       thouchBarTopBoxHeight: 0,
       isShowModal: false,
-      recordingModalStatus: 0 //0:录音中 1:时间太短 2：取消发送
+      recordingModalStatus: 0, //0:录音中 1:时间太短 2：取消发送,
+      isOnPressSpeakBox:false //按下录音按钮
     };
+    this.shouldPressSpeakBox = true;
     this.changeThouchBarTopBoxHeight = this.changeThouchBarTopBoxHeight.bind(this);
     this.toRecord = this.toRecord.bind(this);
     this.toExpression = this.toExpression.bind(this);
@@ -69,6 +72,7 @@ class ThouchBarBoxTopBox extends Component {
     this.renderEnterBox = this.renderEnterBox.bind(this);
     this._onPressIn = this._onPressIn.bind(this);
     this._onPressOut = this._onPressOut.bind(this);
+    this._onPressCancel = this._onPressCancel.bind(this);
     this.renderModalBoxContent = this.renderModalBoxContent.bind(this);
     this.renderModal = this.renderModal.bind(this);
     this._onRequestClose = this._onRequestClose.bind(this);
@@ -96,7 +100,7 @@ class ThouchBarBoxTopBox extends Component {
       //this.input.blur();
       this.blur();
     }
-    this.props.pressExpression();
+      this.props.pressExpression();
   }
   toPlus() {
     if (this.props.thouchBarStore.isPlusPage) {
@@ -137,6 +141,7 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressIn() {
+    if(!this.shouldPressSpeakBox) return;
     //开始录音
     let fileName = uuidv1();
     this.state.fileName = fileName;
@@ -150,11 +155,18 @@ class ThouchBarBoxTopBox extends Component {
       recordingModalStatus: 0,
       speakTxt: '松开结束'
     })
-
+    //录音超过10秒自动结束
+    checkMaxRecordTimeInterval = setInterval(()=>{
+      if(Date.now()-startTime>5000){
+        this._onPressOut();
+        clearInterval(checkMaxRecordTimeInterval)
+      }
+    },1000)
   }
 
   _onPressOut() {
-    //检查录音时间
+    clearInterval(checkMaxRecordTimeInterval)
+    //针对点了立即放的情况
     if (Date.now() - startTime < 200) {
       startTime = 0;
       // 不录音
@@ -162,6 +174,7 @@ class ThouchBarBoxTopBox extends Component {
       this.setState({
           recordingModalStatus: 1
         })
+      this.shouldPressSpeakBox = true;
         //延迟一秒隐藏Modal
       modalTimer = setTimeout(() => {
         this.setState({
@@ -171,14 +184,14 @@ class ThouchBarBoxTopBox extends Component {
       return;
     }
     let stop = () => {
-        audio._stop(() => {
+        audio&&audio._stop((currentTime) => {
           this.setState({
               isShowModal: false,
             })
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
             FileType: 2,
-            LocalSource: this.state.audioPath + '/' + this.state.fileName + '.aac',
+            LocalSource: this.state.audioPath + '/' + this.state.fileName + '_'+ currentTime?currentTime:1 + '.aac',
             RemoteSource: ''
           }], '', 'li');
           //更新chatRecordStore
@@ -189,12 +202,28 @@ class ThouchBarBoxTopBox extends Component {
           }, [(tips) => {
             console.log(tips)
           }]);
+          //
+          this.shouldPressSpeakBox = true;
         });
       }
       //延迟执行audio._stop
-    setTimeout(stop, 500)
+    delayStopTimer = setTimeout(stop, 500)
       //发送
     this.setState({
+      speakTxt: '按住说话',
+      isOnPressSpeakBox:false
+    })
+  }
+  _onPressCancel() {
+    clearInterval(checkMaxRecordTimeInterval)
+    //结束录音
+    audio._stop((currentTime)=>{
+      //删除该录音文件
+      RNFS.unlink(this.state.audioPath + '/' + this.state.fileName  + '.aac')
+    });
+    this.shouldPressSpeakBox = true;
+    this.setState({
+      isShowModal: false,
       speakTxt: '按住说话'
     })
   }
@@ -216,14 +245,55 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <TouchableHighlight style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999}]} underlayColor={'#bbb'} activeOpacity={0.5} onPressIn={this._onPressIn} onPressOut={this._onPressOut}>
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
-        </TouchableHighlight>
+        </View>
         <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData}></AutoExpandingTextInput>
       </View>
     )
   }
+  componentDidMount(){
+    setTimeout(()=>{
+      //获取speakBox相对屏幕顶端偏移
+      this.re.measure((x,y,w,h,l,t)=>{this.speakBoxOffsetY = t})
+    })
+  }
   componentWillMount() {
+    this._gestureHandlers = {
+        onStartShouldSetResponder: () => true,  //对触摸进行响应
+        onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        //激活时做的动作
+        onResponderGrant: ()=>{
+          this.setState({
+            isOnPressSpeakBox:true
+          })
+          this._onPressIn();
+        }, 
+        //移动时作出的动作
+        onResponderMove: (e)=>{
+          if(e.nativeEvent.pageY<this.speakBoxOffsetY){
+              this.setState({
+              recordingModalStatus: 2,
+            })
+          }else{
+            this.setState({
+              recordingModalStatus: 0,
+            })
+          }
+        },  
+        //动作释放后做的动作
+        onResponderRelease: ()=>{
+          this.setState({
+            isOnPressSpeakBox:false
+          })
+          if(this.state.recordingModalStatus === 0){
+            this._onPressOut();
+          }else if(this.state.recordingModalStatus === 2){
+            this._onPressCancel();
+          }      
+        }, 
+}
+
     //创建文件夹
     let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + 'Li';
     let imagePath = RNFS.DocumentDirectoryPath + '/image/' + 'Li';
@@ -259,7 +329,7 @@ class ThouchBarBoxTopBox extends Component {
     if (this.state.recordingModalStatus === 0) {
       return <View style={styles.recordingModalItem}>
                 <Icon name="microphone" size={50} color="#eee" />
-                <Text style={styles.recordingModalText}>录音中...</Text>
+                <Text style={styles.recordingModalText}>手指上滑，取消发送</Text>
              </View>
     } else if (this.state.recordingModalStatus === 1) {
       return <View style={styles.recordingModalItem}>
@@ -371,6 +441,7 @@ const styles = StyleSheet.create({
     height: pxToPt(100),
     width: pxToPt(100),
     backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius:10
   },
   recordingModalItem: {
     flex: 1,
@@ -379,7 +450,9 @@ const styles = StyleSheet.create({
   },
   recordingModalText: {
     color: '#eee',
-    marginTop: 20
+    marginTop: 10,
+    fontSize:10,
+    fontWeight:'bold'
   }
 });
 
