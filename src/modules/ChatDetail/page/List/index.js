@@ -25,6 +25,7 @@ import Sound from 'react-native-sound';
 import RNFS from 'react-native-fs'
 import Ces from './ces';
 import IM from '../../../../Core/IM';
+import * as DtoMethods from '../../../../Core/IM/dto/Common'
 
 
 let _listHeight = 0; //list显示高度
@@ -176,44 +177,56 @@ class Chat extends Component {
     oldMsg = () => {
         // console.log('oldMsg');
         // this.changeType = 0;
-        // this.setState({
-        //     isRefreshing : true
-        // })
+        if(!this.state.isRefreshing){
+            this.setState({
+                isRefreshing : true
+            })
 
-        // let that = this;
-        // this.im.getRecentChatRecode("2","chatroom",{start:2,limit:10},function (messages) {
-        //     //alert("消息记录为" + messages[0].status);
-        //     console.log(that.shortData)
-        //     that.shortData = that.shortData.concat(messages)
-        //     console.log(that.shortData)
-        //     this.data2 = this.prepareMessages(that.shortData);
-        //     this.setState({
-        //         dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
-        //     });
-        // })
+            let that = this;
+            this.im.getRecentChatRecode("li","private",{start:0,limit:10},function (messages) {
+                //alert("消息记录为" + messages[0].status);
+                let msg = messages.map((message)=>{
+                    return DtoMethods.sqlMessageToMessage(message);
+                })
+                //console.log(messages,msg)
+                //console.log(that.shortData)
+                that.shortData = that.shortData.concat(msg)
+                //console.log(that.shortData)
+                that.data2 = that.prepareMessages(that.shortData);
+                that.setState({
+                    dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
+                },()=>{
+                    // that.setState({
+                    //     isRefreshing : false
+                    // })
+                });
+            })
+        }
 
     }
 
     myRenderFooter(){
         //console.log('foot执行了')
         const {isRefreshing,showInvertible}=this.state
+
+        console.log(isRefreshing)
         if(!showInvertible) {
             return <View
                 onLayout={this._onFooterLayout}
             />
         }
         else{
-            return(
-                <View
-                    style={{alignItems:'center',justifyContent:'center',}}
-                >
+            if(isRefreshing){
+                return(
                     <ActivityIndicator
-                        animating={isRefreshing}
                         size="small"
                         style={{height:40}}
                     />
-                </View>
-            )
+                )
+            }
+            else{
+                return null;
+            }
         }
     }
 
