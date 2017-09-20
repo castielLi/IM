@@ -188,7 +188,7 @@ class Chat extends Component {
                 let msg = messages.map((message)=>{
                     return DtoMethods.sqlMessageToMessage(message);
                 })
-                //console.log(messages,msg)
+                console.log(messages,msg)
                 //console.log(that.shortData)
                 that.shortData = that.shortData.concat(msg)
                 //console.log(that.shortData)
@@ -196,9 +196,9 @@ class Chat extends Component {
                 that.setState({
                     dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
                 },()=>{
-                    // that.setState({
-                    //     isRefreshing : false
-                    // })
+                    that.setState({
+                        isRefreshing : false
+                    })
                 });
             })
         }
@@ -209,7 +209,6 @@ class Chat extends Component {
         //console.log('foot执行了')
         const {isRefreshing,showInvertible}=this.state
 
-        console.log(isRefreshing)
         if(!showInvertible) {
             return <View
                 onLayout={this._onFooterLayout}
