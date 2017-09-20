@@ -34,11 +34,11 @@ export function sqliteMessageToMessage(sqliteMessage){
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
 
-    if(sqliteMessage.type != MessageType.image){
+    if(sqliteMessage.type == MessageType.image){
          message.type = "image"
          let file = new uploadResourceDto()
          file.type = ResourceTypeEnum.Image;
-         file.LocalSource =  message.localPath;
+         file.LocalSource =  sqliteMessage.localPath.split(",")[0];
          message.Resource = [file];
     }else{
         message.type = "text"
