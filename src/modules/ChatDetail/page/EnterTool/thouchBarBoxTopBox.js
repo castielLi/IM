@@ -155,7 +155,7 @@ class ThouchBarBoxTopBox extends Component {
     })
     //录音超过10秒自动结束
     checkMaxRecordTimeInterval = setInterval(()=>{
-      if(Date.now()-startTime>5000){
+      if(Date.now()-startTime>10000){
         this._onPressOut();
         clearInterval(checkMaxRecordTimeInterval)
       }
@@ -189,14 +189,14 @@ class ThouchBarBoxTopBox extends Component {
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
             FileType: 2,
-            LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ currentTime?currentTime:1 + '.aac',
+            LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
           }], '', this.props.client);
-          //更新chatRecordStore
+
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage('li', message)
+            this.props.addMessage(this.props.client, message)
           }, [(tips) => {
             console.log(tips)
           }]);
