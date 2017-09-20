@@ -300,12 +300,19 @@ class Chat extends Component {
     }
 
     render() {
+        this._gestureHandlers = {
+            onStartShouldSetResponder: () => true,  //对触摸进行响应
+            onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+            //动作释放后做的动作
+            onResponderRelease: ()=>{
+             this.props.changeThouchBarInit();
+            }, 
+        }
         //console.log('render执行了')
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                <TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>
-                    <View style={styles.chatListView} click={()=>this.push()}>
+                    <View style={styles.chatListView} click={()=>this.push()} {...this._gestureHandlers}>
                         <ListView
                             ref={(lv) => this.listView = lv}
                             dataSource={this.state.dataSource}
@@ -321,12 +328,10 @@ class Chat extends Component {
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
                     </View>
-                </TouchableWithoutFeedback>     
             );
         }else{
             return(
-                <TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>
-                    <View style={styles.chatListView}>
+                    <View style={styles.chatListView} {...this._gestureHandlers}>
                         <ListView
                             ref={(lv) => this.listView = lv}
                             dataSource={this.state.dataSourceO}
@@ -344,7 +349,6 @@ class Chat extends Component {
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
                     </View>
-                </TouchableWithoutFeedback>
                 )
         }
     }
