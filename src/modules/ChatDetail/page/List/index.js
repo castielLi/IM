@@ -198,9 +198,9 @@ class Chat extends Component {
                 that.setState({
                     dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
                 },()=>{
-                    that.setState({
-                        isRefreshing : false
-                    })
+                    // that.setState({
+                    //     isRefreshing : false
+                    // })
                 });
             })
         }
