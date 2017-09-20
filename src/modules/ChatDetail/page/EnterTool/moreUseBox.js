@@ -62,11 +62,11 @@ imagePikerCallBack(response){
 
     //初始化消息
     let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
-    let message = createResourceMessageObj('image','private',[{FileType:0,LocalSource:responsePath,RemoteSource:''}],'','li');
+    let message = createResourceMessageObj('image','private',[{FileType:0,LocalSource:responsePath,RemoteSource:''}],'',this.props.client);
     im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage('li',message)
+        this.props.addMessage(this.props.client,message)
       },[(tips)=>{console.log(tips)}]);
 
   }

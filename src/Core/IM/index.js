@@ -131,6 +131,8 @@ export default class IM {
 
             networkStatus = networkStatuesType.none;
 
+            _socket.setNetWorkStatus(networkStatuesType.none);
+
             checkNetEnvironmentInterval = setInterval(function () {
 
                 if(netState.type != 'NONE' && netState.type != 'none'){
@@ -138,6 +140,7 @@ export default class IM {
 
                     //todo:恢复网络了后要重新发送消息
 
+                    _socket.setNetWorkStatus(networkStatuesType.normal);
                     _socket.reConnectNet();
 
                     //获取之前没有发送出去的消息重新加入消息队列

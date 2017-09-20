@@ -8,13 +8,20 @@ import {
 	TextInput,
 	TouchableOpacity,
 	KeyboardAvoidingView,
-	Platform
+	Platform,
+	TouchableWithoutFeedback
 } from 'react-native';
+import {
+  connect
+} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as commonActions from '../../../Core/IM/redux/action';
+import RNFS from 'react-native-fs';
 import NavigationTopBar from '../../../Core/Component/NavigationBar/index'
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
-export default class ChatDetail extends ContainerComponent {
+class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
 			this.state = {};
@@ -39,7 +46,31 @@ export default class ChatDetail extends ContainerComponent {
 	goBottom() {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
+	componentWillMount(){
+		let client = 'li';
+		//如果是刚开聊的，之前redux里没记录的好友	
+		if(!this.props.ChatRecord[client]){//!this.props.ChatRecord[client]
+			this.props.addClient(client);
+			//新建文件夹
+			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
+			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + client;
+			RNFS.mkdir(audioPath)
+		      .then((success) => {
+		        console.log('create new dir success!');
+		      })
+		      .catch((err) => {
+		        console.log(err.message);
+		      });
+		    RNFS.mkdir(imagePath)
+		      .then((success) => {
+		        console.log('create new dir success!');
+		      })
+		      .catch((err) => {
+		        console.log(err.message);
+		      });
+		}
 
+	}
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
@@ -47,8 +78,8 @@ export default class ChatDetail extends ContainerComponent {
     		<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
-            <Chat ref={e => this.chat = e}/>
-    		<ThouchBar></ThouchBar>
+				<Chat ref={e => this.chat = e}/>
+    		<ThouchBar client={'li'}></ThouchBar>
     	</MyView>
 
 		);
@@ -62,3 +93,13 @@ const styles = StyleSheet.create({
 
 	},
 })
+
+const mapStateToProps = state => ({
+  ChatRecord: state.chatRecordStore.ChatRecord
+});
+const mapDispatchToProps = (dispatch) => {
+  return{
+    ...bindActionCreators(commonActions,dispatch)
+}};
+
+export default connect(mapStateToProps,mapDispatchToProps)(ChatDetail);
