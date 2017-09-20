@@ -25,7 +25,7 @@ export const ExcuteIMSql = {
     "UpdateMessageStatusByMessageId":"update MessageRecode set status = ? where messageId = ?",
     "AddSendMessage":"insert into SendMessageRecode (messageId,status,times) values (?,?,'0')",
     "GetAllSendMessages":"select messageId from SendMessageRecode",
-    "GetMessagesInMessageTableByIds":"select * from MessageRecode where messageId in (?)",
+    "GetMessagesInMessageTableByIds":"select * from MessageRecode where messageId in (?) order by Id desc",
     "DeleteAllSendMessages":"delete from SendMessageRecode",
     "DeleteSendMessageByMessageId":"delete from SendMessageRecode where messageId = ?",
     "UpdateChatLastContent":"update ChatRecode set LastMessage = ? where Client = ?",

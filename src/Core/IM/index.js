@@ -133,13 +133,13 @@ export default class IM {
     handleNetEnvironment(connectionInfo){
         netState = connectionInfo;
 
-        if(netState == "NONE" || netState == "none"){
+        if(netState.type == "NONE" || netState.type == "none"){
 
             networkStatus = networkStatuesType.none;
 
             checkNetEnvironmentInterval = setInterval(function () {
 
-                if(netState != 'NONE' && netState != 'none'){
+                if(netState.type != 'NONE' && netState.type != 'none'){
                     clearInterval(checkNetEnvironmentInterval);
 
                     //todo:恢复网络了后要重新发送消息
@@ -207,10 +207,12 @@ export default class IM {
                     sendMessage.push(message);
                 }else{
 
-                    
-
-                    resourceQueue.push({onprogress:null,message:message})
-                    console.log("加入资源队列" + message.MSGID);
+                    if(message.status == SendStatus.PrepareToUpload) {
+                        resourceQueue.push({onprogress: null, message: message})
+                        console.log("加入资源队列" + message.MSGID);
+                    }else{
+                        sendMessage.push(message);
+                    }
                 }
             })
 

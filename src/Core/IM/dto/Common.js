@@ -34,6 +34,8 @@ export function sqliteMessageToMessage(sqliteMessage){
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
 
+    message.status = sqliteMessage.status;
+
     if(sqliteMessage.type == MessageType.image){
          message.type = "image"
          let file = new uploadResourceDto()
