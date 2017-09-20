@@ -8,7 +8,8 @@ import {
 	TextInput,
 	TouchableOpacity,
 	KeyboardAvoidingView,
-	Platform
+	Platform,
+	TouchableWithoutFeedback
 } from 'react-native';
 import {
   connect
@@ -48,7 +49,7 @@ class ChatDetail extends ContainerComponent {
 	componentWillMount(){
 		let client = 'li';
 		//如果是刚开聊的，之前redux里没记录的好友	
-		//if(!this.props.ChatRecord[client]){
+		if(!this.props.ChatRecord[client]){
 			this.props.addClient(client);
 			//新建文件夹
 			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
@@ -67,7 +68,8 @@ class ChatDetail extends ContainerComponent {
 		      .catch((err) => {
 		        console.log(err.message);
 		      });
-		//}
+		}
+
 	}
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
@@ -76,7 +78,7 @@ class ChatDetail extends ContainerComponent {
     		<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
-            <Chat ref={e => this.chat = e}/>
+				<Chat ref={e => this.chat = e}/>
     		<ThouchBar client={'li'}></ThouchBar>
     	</MyView>
 
