@@ -57,7 +57,6 @@ export default class ChatMessageSound extends Component {
     }
 
     getSoundTime = (LocalPath)=>{
-        alert(LocalPath)
         let Time = LocalPath.match(/_[0-9]+/)[0].slice(1);
         let LocalSource = LocalPath.replace(/_[0-9]+/,'');
         let soundWidth = 50;
@@ -70,7 +69,7 @@ export default class ChatMessageSound extends Component {
         let {data} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
-        console.log(LocalSource,RemoteSource)
+        //console.log(LocalSource,RemoteSource)
         let soundObjConfig = this.getSoundTime(LocalSource || RemoteSource)
         if(!Sender){
             return(

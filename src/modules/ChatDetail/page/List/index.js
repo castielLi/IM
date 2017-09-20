@@ -303,7 +303,6 @@ class Chat extends Component {
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                <TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>
                     <View style={styles.chatListView} click={()=>this.push()}>
                         <ListView
                             ref={(lv) => this.listView = lv}
@@ -320,11 +319,9 @@ class Chat extends Component {
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
                     </View>
-                </TouchableWithoutFeedback>     
             );
         }else{
             return(
-                <TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>
                     <View style={styles.chatListView}>
                         <ListView
                             ref={(lv) => this.listView = lv}
@@ -343,7 +340,6 @@ class Chat extends Component {
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
                     </View>
-                </TouchableWithoutFeedback>
                 )
         }
     }
