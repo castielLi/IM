@@ -109,12 +109,6 @@ export default class IM {
         this.addAllUnsendMessageToSendQueue();
     }
 
-    setNetworkStatus(netState) {
-        if (netState == "NONE" || netState == "none") {
-            networkStatus = networkStatuesType.none;
-        }
-    }
-
     stopIM(){
         this.checkQueue(this.stopIMRunCycle);
     }
@@ -294,6 +288,12 @@ export default class IM {
             resourceQueueState = resourceQueueType.excuting;
 
             let copyResourceQueue = Helper.cloneArray(resourceQueue);
+
+            //cloneArry 方法不能拷贝方法
+            for(let item in resourceQueue){
+                copyResourceQueue[item].onprogress = resourceQueue[item].onprogress;
+            }
+
             resourceQueue = [];
 
             for(let item in copyResourceQueue){
