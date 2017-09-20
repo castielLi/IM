@@ -3,4 +3,4 @@
  */
 
 export const timeOutResend = 15000;
-export const RunloopIntervalTime = 200;
+export const RunloopIntervalTime = 300;

@@ -11,6 +11,8 @@ import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
+import * as Helper from '../Helper'
+import MessageType from './dto/MessageType'
 
 
 
@@ -104,7 +106,7 @@ export default class IM {
         this.beginRunLoop();
 
         //获取之前没有发送出去的消息重新加入消息队列
-        // this.addAllUnsendMessageToSendQueue();
+        this.addAllUnsendMessageToSendQueue();
     }
 
     setNetworkStatus(netState) {
@@ -144,10 +146,8 @@ export default class IM {
 
                     _socket.reConnectNet();
 
-                    storeSqlite.getAllCurrentSendMessage(function(currentSendMessages){
-                        console.log(currentSendMessages);
-                        sendMessageQueue = currentSendMessages.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
-                    });
+                    //获取之前没有发送出去的消息重新加入消息队列
+                    currentObj.addAllUnsendMessageToSendQueue();
 
                 }
             },200);
@@ -206,7 +206,8 @@ export default class IM {
                 if(message.type == "text"){
                     sendMessage.push(message);
                 }else{
-                    resourceQueue.push(message);
+                    resourceQueue.push({onprogress:null,message:message})
+                    console.log("加入资源队列" + message.MSGID);
                 }
             })
 
@@ -240,16 +241,16 @@ export default class IM {
 
 
             switch (message.type) {
-                case "text":
+                case MessageType.text:
                     this.addMessageQueue(message);
                     callback(true,message.MSGID);
                     break;
-                case "image":
+                case MessageType.image:
 
                     resourceQueue.push({onprogress:onprogess,message:message})
                     callback(true,message.MSGID);
                     break;
-                case "audio":
+                case MessageType.audio:
                     resourceQueue.push({onprogress:onprogess,message:message})
                     callback(true,message.MSGID);
                     break;
@@ -276,10 +277,14 @@ export default class IM {
 
             resourceQueueState = resourceQueueType.excuting;
 
-            for(let item in resourceQueue){
-                obj.uploadResource(resourceQueue[item]);
-                resourceQueue.shift();
+            let copyResourceQueue = Helper.cloneArray(resourceQueue);
+            resourceQueue = [];
+
+            for(let item in copyResourceQueue){
+                obj.uploadResource(copyResourceQueue[item]);
             }
+            copyResourceQueue=[];
+
             resourceQueueState = resourceQueueType.empty;
 
         }
@@ -289,48 +294,58 @@ export default class IM {
     uploadResource(obj){
 
         let message = obj["message"];
-        let progressHandles = obj["onprogress"];
+
+        let copyMessage = Object.assign({}, message);
+
+        let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
         let callback = obj["callback"];
 
-        //把资源存入数据库
-        for(let item in message.Resource){
-            storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
-        }
+        if(networkStatus == networkStatuesType.normal) {
+
+            //把资源存入数据库
+            for(let item in message.Resource){
+                storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
+            }
 
 
-        let uploadQueue = [];
-        for(let item in message.Resource) {
-            uploadQueue.push(methods.getUploadPathFromServer(message.Resource[item].LocalSource,item,function (progress,index) {
-                let onprogess = progressHandles[index*1];
-                onprogess("第"+(index * 1 + 1) +"张图片上传进度："+ progress.loaded/progress.total * 100);
-            },function (result) {
-                console.log("上传成功" + result);
-                message.Resource[item].RemoteSource = result.url;
+            let uploadQueue = [];
+            for(let item in message.Resource) {
+                uploadQueue.push(methods.getUploadPathFromServer(message.Resource[item].LocalSource,item,function (progress,index) {
+                    if(progressHandles != null) {
+                        let onprogess = progressHandles[index * 1];
+                        onprogess("第" + (index * 1 + 1) + "张图片上传进度：" + progress.loaded / progress.total * 100);
+                    }
+                },function (result) {
+                    console.log("上传成功" + result);
+                    message.Resource[item].RemoteSource = result.url;
 
-                //pop上传成功的资源
-                storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
-            },function(index){
-                console.log("上传失败" + index);
-            }));
-        }
+                    //pop上传成功的资源
+                    storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
+                },function(index){
+                    console.log("上传失败" + index);
+                }));
+            }
 
-        Promise.all(uploadQueue).then(function(values){
-            console.log(values);
+            Promise.all(uploadQueue).then(function(values){
+                console.log(values + "已经上传成功了" + message.MSGID);
 
-            let copyMessage = Object.assign({}, message);
+                let copyMessage = Object.assign({}, message);
 
+                copyMessage.status = SendStatus.PrepareToSend;
+                currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+
+                currentObj.addMessageQueue(message);
+
+                //App上层修改message细节
+                AppMessageChangeStatusHandle(message);
+
+            }).catch(function (values) {
+                console.log('上传失败的内容是',values);
+            })
+        }else{
             copyMessage.status = SendStatus.PrepareToSend;
-            currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
-
-            currentObj.addMessageQueue(message);
-
-            //App上层修改message细节
-            AppMessageChangeStatusHandle(message);
-
-        }).catch(function (values) {
-            console.log('上传失败上传失败上传失败上传失败',values);
-        })
-
+            this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+        }
     }
 
 
@@ -350,10 +365,16 @@ export default class IM {
 
             sendMessageQueueState = sendMessageQueueType.excuting;
             console.log(sendMessageQueueState);
-            for(let item in sendMessageQueue){
-                obj.sendMessage(sendMessageQueue[item],obj);
-                sendMessageQueue.shift();
+
+            let copyMessageQueue = Helper.cloneArray(sendMessageQueue);
+            sendMessageQueue = [];
+
+            for(let item in copyMessageQueue){
+                obj.sendMessage(copyMessageQueue[item],obj);
+
+                // sendMessageQueue.shift();
             }
+            copyMessageQueue = [];
 
             sendMessageQueueState = sendMessageQueueType.empty;
             console.log(sendMessageQueueState);
@@ -369,15 +390,15 @@ export default class IM {
         let copyMessage = Object.assign({}, message);
 
         if(networkStatus == networkStatuesType.normal) {
-            let success = this.socket.sendMessage(message);
+            let success = this.socket.sendMessage(copyMessage);
 
 
             //心跳包不需要进行存储
             if(message.Command != MessageCommandEnum.MSG_HEART) {
-                console.log("添加" + message.MSGID + "进队列");
+                console.log("添加" + copyMessage.MSGID + "进队列");
                 //初始加入ack队列，发送次数默认为1次
-                obj.addAckQueue(message, 1);
-                console.log("ack queue 长度" + ackMessageQueue.length);
+                obj.addAckQueue(copyMessage, 1);
+                console.log("ack copyMessage 长度" + ackMessageQueue.length);
 
                 copyMessage.status = SendStatus.WaitAck;
                 this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
@@ -410,12 +431,19 @@ export default class IM {
 
             handleSqliteQueueState = handleSqliteQueueType.excuting;
             console.log(handleSqliteQueueState);
-            for(let item in handleSqliteQueue){
 
-                obj.updateSqliteMessage(handleSqliteQueue[item].message,handleSqliteQueue[item].type);
-                handleSqliteQueue.shift();
+
+
+            let copySqliteQueue = Helper.cloneArray(handleSqliteQueue);
+            handleSqliteQueue = [];
+
+            for(let item in copySqliteQueue){
+
+                obj.updateSqliteMessage(copySqliteQueue[item].message,copySqliteQueue[item].type);
+                // handleSqliteQueue.shift();
             }
 
+            copySqliteQueue = [];
 
             handleSqliteQueueState = handleSqliteQueueType.empty;
             console.log(handleSqliteQueueState);
@@ -458,31 +486,25 @@ export default class IM {
 
             recMessageQueueState = recMessageQueueType.excuting;
 
-            for(let item in recieveMessageQueue){
-                obj.recMessage(recieveMessageQueue[item]);
-                recieveMessageQueue.shift();
+            let copyRecQueue = Helper.cloneArray(recieveMessageQueue);
+            recieveMessageQueue = [];
+
+            for(let item in copyRecQueue){
+                obj.receiveMessageOpreator(copyRecQueue[item])
+                // recieveMessageQueue.shift();
             }
+
+            copyRecQueue = [];
 
             recMessageQueueState = recMessageQueueType.empty;
 
         }
     }
 
-    recMessage(message,type=null) {
 
-        //处理收到消息的逻辑
-        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
-
-        if(type != null){
-            message.Command = MessageCommandEnum.MSG_HEART;
-            console.log("心跳包压入发送队列")
-            sendMessageQueue.push(message);
-            return;
-        }
+    receiveMessageOpreator(message){
 
         let updateMessage = {};
-
-
         for(let item in ackMessageQueue){
             if(ackMessageQueue[item].message.MSGID == message){
 
@@ -503,6 +525,22 @@ export default class IM {
 
         updateMessage.status = MessageStatus.SendSuccess;
         currentObj.addUpdateSqliteQueue(updateMessage,UpdateMessageSqliteType.storeMessage)
+    }
+
+
+    recMessage(message,type=null) {
+
+        //处理收到消息的逻辑
+        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
+
+        if(type != null){
+            message.Command = MessageCommandEnum.MSG_HEART;
+            console.log("心跳包压入发送队列")
+            sendMessageQueue.push(message);
+            return;
+        }
+
+        recieveMessageQueue.push(message);
     }
 
 
@@ -534,8 +572,8 @@ export default class IM {
                     ackMessageQueue[item].message.status = MessageStatus.SendFailed;
                     obj.addUpdateSqliteQueue(ackMessageQueue[item].message,UpdateMessageSqliteType.storeMessage)
 
-                    ackMessageQueue.splice(item, 1);
                     obj.popCurrentMessageSqlite(ackMessageQueue[item].message.MSGID)
+                    ackMessageQueue.splice(item, 1);
                 }else {
                     obj.socket.sendMessage(ackMessageQueue[item].message);
                     console.log("重新发送" + ackMessageQueue[item].message.MSGID);
@@ -577,6 +615,10 @@ export default class IM {
 
             if(resourceQueueState == resourceQueueType.empty){
                 handleResource(obj)
+            }
+
+            if(recMessageQueueState == recMessageQueueType.empty){
+                handleRec(obj)
             }
 
             handleAckQueue(obj);

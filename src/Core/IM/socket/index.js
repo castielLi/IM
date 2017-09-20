@@ -16,6 +16,7 @@ let __instance = (function () {
 }());
 
 let onRecieveMessage = "undefined";
+let _token = undefined;
 
 export default class Connect extends Component{
 
@@ -25,7 +26,9 @@ export default class Connect extends Component{
 
         __instance(this);
 
-        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token);
+        _token = token;
+
+        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token + "/socket.io/?EIO=4&transport=websocket");
         // this.webSocket = new WebSocket(configs.serverUrl);
         console.log("account token:" + token);
         this.reConnectNet = this.reConnectNet.bind(this);
@@ -52,6 +55,10 @@ export default class Connect extends Component{
         this.webSocket.addEventListener('open', function (event) {
             console.log('Hello Server!');
         });
+
+        this.webSocket.addEventListener('close', function (event) {
+            console.log('GoodBye Server!');
+        });
     }
 
     sendMessage(message){
@@ -71,7 +78,7 @@ export default class Connect extends Component{
     }
 
     reConnectNet(){
-       this.webSocket = new WebSocket(configs.serverUrl);
+       this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token + "/socket.io/?EIO=4&transport=websocket");
        this.addEventListenner();
     }
 }
