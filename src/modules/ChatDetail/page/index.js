@@ -49,7 +49,7 @@ class ChatDetail extends ContainerComponent {
 	componentWillMount(){
 		let client = 'li';
 		//如果是刚开聊的，之前redux里没记录的好友	
-		if(1){//!this.props.ChatRecord[client]
+		if(!this.props.ChatRecord[client]){//!this.props.ChatRecord[client]
 			this.props.addClient(client);
 			//新建文件夹
 			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
