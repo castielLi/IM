@@ -21,10 +21,7 @@ import {
 } from 'react-redux';
 import BaseComponent from '../../Core/Component'
 import * as router from '../routerMap'
-import IM from '../../Core/IM'
-import * as ActionForChatRecordStore from '../../Core/IM/redux/action'
-import {bindActionCreators} from 'redux';
- var im = new IM();
+
 class Root extends BaseComponent {
     constructor(props) {
         super(props);
@@ -48,20 +45,11 @@ class Root extends BaseComponent {
         console.log(route)
         return Navigator.SceneConfigs.FloatFromRight;
     }
-    componentWillMount(){
-        im.getChatList(function(chatListArr){
-            this.props.initChatRecord(ActionForChatRecordStore.initChatRecord(chatListArr))
-        })
-    }
-    componentWillReceiveProps(newProps){
-        console.log(newProps,'888888888888888888888888888888888888888888888888888888888888888888')
-    }
-
-
+    
     render() {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaa')
+        console.log('22222222')
         let initialRoute = this.route.initialRoute;
-        if(Object.keys(this.props.hasChatRecord)>0){
+        if(this.props.hasGetChatRecord){
             return ( < Navigator initialRoute = {
                     initialRoute
                 }
@@ -74,7 +62,7 @@ class Root extends BaseComponent {
                 />
             );
         }else{
-            return <Text>地球</Text>;
+            return <Text>地球</Text>
         }
 
     }
@@ -90,11 +78,8 @@ const styles = StyleSheet.create({
 function MapState(store) {
     return {
         isLoggedIn: store.loginStore.isLoggedIn,
-        hasChatRecord:store.chatRecordStore.ChatRecord
+        hasGetChatRecord:store.chatRecordStore.hasGetChatRecord
     }
 }
-function mapDispatch(dispatch){
-    return {...bindActionCreators(ActionForChatRecordStore, dispatch),}
-}
 
-export default connect(MapState,mapDispatch)(Root);
+export default connect(MapState)(Root);

@@ -35,24 +35,33 @@ export function updateMessage(message){
 		MSGID:message.MSGID,
 	}
 }
-//打开app的时候，初始化chatRecordStore.ChatRecord,给所以会话列表里的client添加10条初始数据
-export function initChatRecord(chatListArr){
-	let chatRecord = {li:[],2:[]};
-    // chatListArr.forEach((v,i)=>{
-     //    im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:10},function (messages) {
-     //    	let messageList = messages.map((message)=>{
-	// 							return DtoMethods.sqlMessageToMessage(message);
-	// 						})
-     //        chatRecord[v.Client] = messageList;
-	// 	})
-	// })
-	console.log('bbbbbbbbbbbbbbbbbbbbbb')
-    return{
-        type:'INIT_CHATRECORD',
-        chatRecord,
-    }
+//打开app的时候，初始化chatRecordStore.ChatRecord,给所有会话列表里的client添加10条初始数据
+export function getChatRecord(chatListArr){
+	return (dispatch)=>{
+		let chatRecord = {};
+		let count = 0;
+	    chatListArr.forEach((v,i)=>{
+	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:10},function (messages) {
+	        	count++;
+	        	let messageList = messages.map((message)=>{
+									return DtoMethods.sqlMessageToMessage(message);
+								})
+	            chatRecord[v.Client] = messageList;
+	            if(count>=chatListArr.length){
+	            	dispatch(initChatRecord(chatRecord))
+	            }
+			})
+		})
+		
+	}
 }
 
+export function initChatRecord(chatRecord){
+	return {
+		type:'INIT_CHATRECORD',
+        chatRecord,
+	}
+}
 //从id截取用户名
 function InterceptionClientFromId(str){
     let client = '';
