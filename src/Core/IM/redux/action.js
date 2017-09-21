@@ -1,3 +1,6 @@
+import IM from '../index';
+import * as DtoMethods from '../dto/Common'
+let im = new IM();
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
 	return{
@@ -32,7 +35,23 @@ export function updateMessage(message){
 		MSGID:message.MSGID,
 	}
 }
-
+//打开app的时候，初始化chatRecordStore.ChatRecord,给所以会话列表里的client添加10条初始数据
+export function initChatRecord(chatListArr){
+	let chatRecord = {li:[],2:[]};
+    // chatListArr.forEach((v,i)=>{
+     //    im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:10},function (messages) {
+     //    	let messageList = messages.map((message)=>{
+	// 							return DtoMethods.sqlMessageToMessage(message);
+	// 						})
+     //        chatRecord[v.Client] = messageList;
+	// 	})
+	// })
+	console.log('bbbbbbbbbbbbbbbbbbbbbb')
+    return{
+        type:'INIT_CHATRECORD',
+        chatRecord,
+    }
+}
 
 //从id截取用户名
 function InterceptionClientFromId(str){

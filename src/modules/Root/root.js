@@ -21,8 +21,10 @@ import {
 } from 'react-redux';
 import BaseComponent from '../../Core/Component'
 import * as router from '../routerMap'
-
-
+import IM from '../../Core/IM'
+import * as ActionForChatRecordStore from '../../Core/IM/redux/action'
+import {bindActionCreators} from 'redux';
+ var im = new IM();
 class Root extends BaseComponent {
     constructor(props) {
         super(props);
@@ -41,24 +43,40 @@ class Root extends BaseComponent {
         return this.route.getRoutePage(Route, navigator);
     }
 
+
     configureScene(route) {
         console.log(route)
         return Navigator.SceneConfigs.FloatFromRight;
     }
+    componentWillMount(){
+        im.getChatList(function(chatListArr){
+            this.props.initChatRecord(ActionForChatRecordStore.initChatRecord(chatListArr))
+        })
+    }
+    componentWillReceiveProps(newProps){
+        console.log(newProps,'888888888888888888888888888888888888888888888888888888888888888888')
+    }
+
 
     render() {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaa')
         let initialRoute = this.route.initialRoute;
-        return ( < Navigator initialRoute = {
-                initialRoute
-            }
-            configureScene = {
-                this.configureScene.bind(this)
-            }
-            renderScene = {
-                this.renderScene.bind(this)
-            }
-            />
-        );
+        if(Object.keys(this.props.hasChatRecord)>0){
+            return ( < Navigator initialRoute = {
+                    initialRoute
+                }
+                                 configureScene = {
+                                     this.configureScene.bind(this)
+                                 }
+                                 renderScene = {
+                                     this.renderScene.bind(this)
+                                 }
+                />
+            );
+        }else{
+            return <Text>地球</Text>;
+        }
+
     }
 }
 
@@ -71,9 +89,12 @@ const styles = StyleSheet.create({
 
 function MapState(store) {
     return {
-        isLoggedIn: store.loginStore.isLoggedIn
+        isLoggedIn: store.loginStore.isLoggedIn,
+        hasChatRecord:store.chatRecordStore.ChatRecord
     }
 }
+function mapDispatch(dispatch){
+    return {...bindActionCreators(ActionForChatRecordStore, dispatch),}
+}
 
-
-export default connect(MapState)(Root);
+export default connect(MapState,mapDispatch)(Root);

@@ -76,7 +76,7 @@ class Chat extends Component {
     componentWillReceiveProps(newProps){
         console.log(newProps,11111111111111111111111111111111111)
         let newData = newProps.chatRecordStore;
-        console.log(newData,11111111111111111111111111111111111)
+        console.log(newData,'22222222222222222222222222222222222222222222')
         //alert(newData.length)
         this.data = newData;
         this.shortData = newData.concat().reverse();
@@ -103,7 +103,7 @@ class Chat extends Component {
         this.im = new IM()
         //this.fetchData();
         let {chatRecordStore} = this.props;
-        console.log(chatRecordStore,11111111111111111111111111111111111)
+        console.log(chatRecordStore,'11111111111111111111111111111111111')
         // let newData = chatRecordStore.ChatRecord.li;
         this.data = chatRecordStore;
         this.shortData = chatRecordStore.concat().reverse();
