@@ -36,13 +36,17 @@ export default class ChatMessageText extends Component {
                     <Text style={styles.contentText}>
                         {
                             dataArr.map((v,i)=>{
-                                if (v["Content"] != null) {//文本  
+                                if (v["Content"] != null) {//文本
                                     return <Text key={i}>{v["Content"]}</Text>
-                                }else if (v["Resources"] != null) {//emoji
+                                }
+                                else if (v["Resources"] != null) {//emoji
+                                    if(!EMOJI_ENUM[v["Resources"]]){
+                                        return <Text key={i}>{v["Resources"]}</Text>
+                                    }
                                     return <Image   
                                                 key = {i}  
                                                 style = {styles.emoji}  
-                                                source={EMOJI_ENUM[v["Resources"].toLowerCase()]}  
+                                                source={EMOJI_ENUM[v["Resources"]]}
                                               /> 
                                 }  
                             })
@@ -57,15 +61,19 @@ export default class ChatMessageText extends Component {
                     <Text style={styles.contentText}>
                         {
                             dataArr.map((v,i)=>{
-                                if (v["Content"] != null) {//文本  
+                                if (v["Content"] != null) {//文本
                                     return <Text key={i}>{v["Content"]}</Text>
-                                }else if (v["Resources"] != null) {//emoji
-                                    return <Image   
-                                                key = {i}  
-                                                style = {styles.emoji}  
-                                                source={EMOJI_ENUM[v["Resources"].toLowerCase()]}  
-                                              /> 
-                                }  
+                                }
+                                else if (v["Resources"] != null) {//emoji
+                                    if(!EMOJI_ENUM[v["Resources"]]){
+                                        return <Text key={i}>{v["Resources"]}</Text>
+                                    }
+                                    return <Image
+                                        key = {i}
+                                        style = {styles.emoji}
+                                        source={EMOJI_ENUM[v["Resources"]]}
+                                    />
+                                }
                             })
                         }
                     </Text>
