@@ -329,7 +329,16 @@ export default class IM {
 
             let uploadQueue = [];
             for(let item in message.Resource) {
-                uploadQueue.push(methods.getUploadPathFromServer(message.Resource[item].LocalSource,item,function (progress,index) {
+
+                //整合audio下文件路径
+                let resource;
+                if(message.type == MessageType.audio){
+                   resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
+                }else{
+                    resource = message.Resource[item].LocalSource;
+                }
+
+                uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
                     if(progressHandles != null) {
                         let onprogess = progressHandles[index * 1];
                         onprogess("第" + (index * 1 + 1) + "张图片上传进度：" + progress.loaded / progress.total * 100);

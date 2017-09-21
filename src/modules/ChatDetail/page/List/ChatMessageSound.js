@@ -69,6 +69,7 @@ export default class ChatMessageSound extends Component {
         let {data} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
+        //console.log(LocalSource,RemoteSource)
         let soundObjConfig = this.getSoundTime(LocalSource || RemoteSource)
         if(!Sender){
             return(
