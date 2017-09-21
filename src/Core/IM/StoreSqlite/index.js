@@ -64,6 +64,10 @@ export function queryRecentMessage(account,way,range,callback){
     IMFMDB.getRangeMessages(account,way,range,callback)
 }
 
+export function getChatList(callback){
+    IMFMDB.getAllChatClientList(callback)
+}
+
 
 export function initIMDatabase(){
     IMFMDB.initIMDataBase();
@@ -260,7 +264,7 @@ IMFMDB.DeleteChatMessage = function(message,chatType,client){
 }
 
 //获取所有聊天用户
-IMFMDB.getAllChatClientList = function(){
+IMFMDB.getAllChatClientList = function(callback){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -269,6 +273,8 @@ IMFMDB.getAllChatClientList = function(){
             tx.executeSql(sqls.ExcuteIMSql.GetChatList, [], (tx, results) => {
 
                 console.log(results);
+
+                callback(results.rows.raw());
 
             }, errorDB);
 

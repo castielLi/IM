@@ -182,6 +182,11 @@ export default class IM {
         storeSqlite.queryRecentMessage(account,way,range,callback);
     }
 
+    //获取聊天列表
+    getChatList(callback){
+        storeSqlite.getChatList(callback);
+    }
+
 
 
 

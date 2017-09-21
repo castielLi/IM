@@ -62,6 +62,10 @@ export default function App() {
 
     im.connectIM(handleMessageResult,handleMessageChange)
 
+    im.getChatList(function(messages){
+        console.log(messages);
+    })
+
     // let sendMessage = setInterval(function(){
     //     let addMessage = new SendMessageDto();
     //     let messageBody = new SendMessageBodyDto();
