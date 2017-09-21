@@ -420,8 +420,8 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = state => ({
-    chatRecordStore: state.chatRecordStore.ChatRecord['li']
+const mapStateToProps = (state,props) => ({
+    chatRecordStore: state.chatRecordStore.ChatRecord[props.client]
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -78,7 +78,7 @@ class ChatDetail extends ContainerComponent {
     			<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
-				<Chat ref={e => this.chat = e}/>
+				<Chat ref={e => this.chat = e} client={'li'}/>
 				<ThouchBar client={'li'}></ThouchBar>
     		</MyView>
 
