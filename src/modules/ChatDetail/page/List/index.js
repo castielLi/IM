@@ -184,25 +184,28 @@ class Chat extends Component {
                 isRefreshing : true
             })
 
+            let dataLength = this.shortData.length;
             let that = this;
-            this.im.getRecentChatRecode("li","private",{start:0,limit:10},function (messages) {
-                //alert("消息记录为" + messages[0].status);
-                let msg = messages.map((message)=>{
-                    return DtoMethods.sqlMessageToMessage(message);
+            setTimeout(()=>{
+                this.im.getRecentChatRecode("li","private",{start:dataLength,limit:10},function (messages) {
+                    //alert("消息记录为" + messages[0].status);
+                    let msg = messages.map((message)=>{
+                        return DtoMethods.sqlMessageToMessage(message);
+                    })
+                    console.log(messages,msg)
+                    //console.log(that.shortData)
+                    that.shortData = that.shortData.concat(msg)
+                    //console.log(that.shortData)
+                    that.data2 = that.prepareMessages(that.shortData);
+                    that.setState({
+                        dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
+                    },()=>{
+                        that.setState({
+                            isRefreshing : false
+                        })
+                    });
                 })
-                console.log(messages,msg)
-                //console.log(that.shortData)
-                that.shortData = that.shortData.concat(msg)
-                //console.log(that.shortData)
-                that.data2 = that.prepareMessages(that.shortData);
-                that.setState({
-                    dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
-                },()=>{
-                    // that.setState({
-                    //     isRefreshing : false
-                    // })
-                });
-            })
+            },500)
         }
 
     }
