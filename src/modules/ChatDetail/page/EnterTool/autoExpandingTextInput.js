@@ -98,7 +98,7 @@ class AutoExpandingTextInput extends Component {
        numberOfLines={6}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
-       style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:60}]}  
+       style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:50}]}  
        >  
       </TextInput>  
     );  
@@ -116,16 +116,16 @@ class AutoExpandingTextInput extends Component {
 const styles = StyleSheet.create({  
   textInputStyle:{ 
     position:'absolute',
-    left:60,
+    left:50,
     top:pxToPt(10), 
     fontSize:20, 
     lineHeight:20, 
-    width:width-180,  
+    width:width-140,  
     height:40,
     borderColor:'#ccc',
     borderWidth:pxToPt(1),   
     backgroundColor:'#fff',  
-    borderRadius:10,
+    borderRadius:5,
     overflow:'hidden',
     padding:0,
     paddingLeft:5,
