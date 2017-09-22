@@ -23,8 +23,7 @@ import * as commonActions from '../../../../Core/IM/redux/action'
 import ChatMessage from './ChatMessage'
 
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
-import Sound from 'react-native-sound';
-import RNFS from 'react-native-fs'
+import {ListConst} from './typeConfig/index';
 import Ces from './ces';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
@@ -67,7 +66,7 @@ class Chat extends Component {
             dataSource: ds,
             dataSourceO: ds,
             showInvertible:false,
-            isRefreshing:false,
+            isRefreshing:0,
 
         };
 
@@ -177,22 +176,25 @@ class Chat extends Component {
         }
     }
     oldMsg = () => {
-        // console.log('oldMsg');
+        //console.log('oldMsg');
         // this.changeType = 0;
-        if(!this.state.isRefreshing){
+        let {msgState} = ListConst;
+        if(this.state.isRefreshing === msgState.END){
             this.setState({
-                isRefreshing : true
+                isRefreshing : msgState.LOADING
             })
-
-            let dataLength = this.shortData.length;
+            let dataLength = this.shortData.length-10;
             let that = this;
             setTimeout(()=>{
-                this.im.getRecentChatRecode("li","private",{start:dataLength,limit:10},function (messages) {
+                this.im.getRecentChatRecode("li","private",{start:dataLength,limit:11},function (messages) {
                     //alert("消息记录为" + messages[0].status);
+                    let msgLength = messages.length;
+                    messages.pop();
                     let msg = messages.map((message)=>{
                         return DtoMethods.sqlMessageToMessage(message);
                     })
-                    console.log(messages,msg)
+
+                    //console.l og(messages,msg)
                     //console.log(that.shortData)
                     that.shortData = that.shortData.concat(msg)
                     //console.log(that.shortData)
@@ -200,9 +202,16 @@ class Chat extends Component {
                     that.setState({
                         dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
                     },()=>{
-                        that.setState({
-                            isRefreshing : false
-                        })
+                        if(msgLength <= 10){
+                            that.setState({
+                                isRefreshing : msgState.NOMORE
+                            })
+                        }
+                        else{
+                            that.setState({
+                                isRefreshing : msgState.END
+                            })
+                        }
                     });
                 })
             },500)
@@ -212,7 +221,8 @@ class Chat extends Component {
 
     myRenderFooter(){
         //console.log('foot执行了')
-        const {isRefreshing,showInvertible}=this.state
+        const {isRefreshing,showInvertible}=this.state;
+        let {msgState} = ListConst;
 
         if(!showInvertible) {
             return <View
@@ -220,7 +230,7 @@ class Chat extends Component {
             />
         }
         else{
-            if(isRefreshing){
+            if(isRefreshing === msgState.LOADING){
                 return(
                     <ActivityIndicator
                         size="small"
@@ -334,7 +344,7 @@ class Chat extends Component {
                             style={{paddingHorizontal:10}}
 
                             onEndReached={this.oldMsg}
-                            onEndReachedThreshold={20}
+                            onEndReachedThreshold={5}
 
                             renderFooter={this.myRenderFooter.bind(this)}
                             onLayout={this._onListViewLayout}
@@ -392,7 +402,8 @@ const styles = StyleSheet.create({
     },
     userImage:{
         width:40,
-        height:40
+        height:40,
+        borderRadius:40,
     },
     bubbleView:{
         alignSelf:'flex-start',
