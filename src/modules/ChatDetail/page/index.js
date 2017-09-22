@@ -47,7 +47,7 @@ class ChatDetail extends ContainerComponent {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
 	componentWillMount(){
-		let client = '2';
+		let client = this.props.client;
 		//如果是刚开聊的，之前redux里没记录的好友	
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
@@ -78,8 +78,8 @@ class ChatDetail extends ContainerComponent {
     			<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
-				<Chat ref={e => this.chat = e} client={'2'}/>
-				<ThouchBar client={'2'}></ThouchBar>
+				<Chat ref={e => this.chat = e} client={this.props.client}/>
+				<ThouchBar client={this.props.client}></ThouchBar>
     		</MyView>
 
 		);
