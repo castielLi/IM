@@ -49,8 +49,8 @@ class ChatDetail extends ContainerComponent {
 	componentWillMount(){
 		let client = 'li';
 		//如果是刚开聊的，之前redux里没记录的好友	
-		if(!this.props.ChatRecord[client]){//!this.props.ChatRecord[client]
-			this.props.addClient(client);
+		//if(!this.props.ChatRecord[client]){//
+			//this.props.addClient(client);
 			//新建文件夹
 			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
 			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + client;
@@ -68,19 +68,19 @@ class ChatDetail extends ContainerComponent {
 		      .catch((err) => {
 		        console.log(err.message);
 		      });
-		}
+		//}
 
 	}
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'>
-    		<NavigationTopBar
+    			<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
-				<Chat ref={e => this.chat = e}/>
-    		<ThouchBar client={'li'}></ThouchBar>
-    	</MyView>
+				<Chat ref={e => this.chat = e} client={'li'}/>
+				<ThouchBar client={'li'}></ThouchBar>
+    		</MyView>
 
 		);
 	}

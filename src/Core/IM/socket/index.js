@@ -41,6 +41,8 @@ export default class Connect extends Component{
         this.addEventListenner = this.addEventListenner.bind(this);
 
         this.addEventListenner();
+
+
     }
 
     addEventListenner(){
@@ -61,6 +63,12 @@ export default class Connect extends Component{
             console.log('Hello Server!');
 
         });
+
+
+        this.webSocket.addEventListener('error',function(event){
+            console.log(event)
+        });
+
 
         this.webSocket.addEventListener('close', function (event) {
 

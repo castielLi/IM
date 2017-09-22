@@ -76,7 +76,7 @@ class Chat extends Component {
     componentWillReceiveProps(newProps){
         console.log(newProps,11111111111111111111111111111111111)
         let newData = newProps.chatRecordStore;
-        console.log(newData,11111111111111111111111111111111111)
+        console.log(newData,'22222222222222222222222222222222222222222222')
         //alert(newData.length)
         this.data = newData;
         this.shortData = newData.concat().reverse();
@@ -103,7 +103,7 @@ class Chat extends Component {
         this.im = new IM()
         //this.fetchData();
         let {chatRecordStore} = this.props;
-        console.log(chatRecordStore,11111111111111111111111111111111111)
+        console.log(chatRecordStore,'11111111111111111111111111111111111')
         // let newData = chatRecordStore.ChatRecord.li;
         this.data = chatRecordStore;
         this.shortData = chatRecordStore.concat().reverse();
@@ -184,25 +184,28 @@ class Chat extends Component {
                 isRefreshing : true
             })
 
+            let dataLength = this.shortData.length;
             let that = this;
-            this.im.getRecentChatRecode("li","private",{start:0,limit:10},function (messages) {
-                //alert("消息记录为" + messages[0].status);
-                let msg = messages.map((message)=>{
-                    return DtoMethods.sqlMessageToMessage(message);
+            setTimeout(()=>{
+                this.im.getRecentChatRecode("li","private",{start:dataLength,limit:10},function (messages) {
+                    //alert("消息记录为" + messages[0].status);
+                    let msg = messages.map((message)=>{
+                        return DtoMethods.sqlMessageToMessage(message);
+                    })
+                    console.log(messages,msg)
+                    //console.log(that.shortData)
+                    that.shortData = that.shortData.concat(msg)
+                    //console.log(that.shortData)
+                    that.data2 = that.prepareMessages(that.shortData);
+                    that.setState({
+                        dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
+                    },()=>{
+                        that.setState({
+                            isRefreshing : false
+                        })
+                    });
                 })
-                //console.log(messages,msg)
-                //console.log(that.shortData)
-                that.shortData = that.shortData.concat(msg)
-                //console.log(that.shortData)
-                that.data2 = that.prepareMessages(that.shortData);
-                that.setState({
-                    dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
-                },()=>{
-                    // that.setState({
-                    //     isRefreshing : false
-                    // })
-                });
-            })
+            },500)
         }
 
     }
@@ -211,7 +214,6 @@ class Chat extends Component {
         //console.log('foot执行了')
         const {isRefreshing,showInvertible}=this.state
 
-        console.log(isRefreshing)
         if(!showInvertible) {
             return <View
                 onLayout={this._onFooterLayout}
@@ -304,7 +306,6 @@ class Chat extends Component {
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                /*<TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>*/
                     <View style={styles.chatListView} click={()=>this.push()}>
                         <ListView
                             ref={(lv) => this.listView = lv}
@@ -321,11 +322,9 @@ class Chat extends Component {
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
                     </View>
-                  /*</TouchableWithoutFeedback>*/
             );
         }else{
             return(
-                /*<TouchableWithoutFeedback onPress={this.props.changeThouchBarInit}>*/
                     <View style={styles.chatListView}>
                         <ListView
                             ref={(lv) => this.listView = lv}
@@ -344,7 +343,6 @@ class Chat extends Component {
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
                     </View>
-                /*</TouchableWithoutFeedback>*/
                 )
         }
     }
@@ -420,8 +418,8 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapStateToProps = state => ({
-    chatRecordStore: state.chatRecordStore.ChatRecord['li']
+const mapStateToProps = (state,props) => ({
+    chatRecordStore: state.chatRecordStore.ChatRecord[props.client]
 });
 
 const mapDispatchToProps = dispatch => ({

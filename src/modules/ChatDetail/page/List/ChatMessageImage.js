@@ -61,11 +61,11 @@ class ChatMessageImage extends Component {
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         //let uri = LocalSource.substr(7);
 
-
+        console.log(LocalSource,RemoteSource)
         // this.Size = Image.getSize(LocalSource, (width, height) => {
         //     return {width,height}
         // })
-        this.getImageSize(LocalSource || RemoteSource)
+        //this.getImageSize(LocalSource || RemoteSource)
         //alert(this.Size.width+"11")
         if(!Sender){
             return(

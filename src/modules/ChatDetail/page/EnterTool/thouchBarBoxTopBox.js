@@ -140,6 +140,8 @@ class ThouchBarBoxTopBox extends Component {
 
   _onPressIn() {
     if(!this.shouldPressSpeakBox) return;
+    clearInterval(checkMaxRecordTimeInterval);
+    clearTimeout(recordTimer);
     //开始录音
     let fileName = uuidv1();
     this.state.fileName = fileName;
@@ -153,9 +155,9 @@ class ThouchBarBoxTopBox extends Component {
       recordingModalStatus: 0,
       speakTxt: '松开结束'
     })
-    //录音超过10秒自动结束
+    //录音超过60秒自动结束
     checkMaxRecordTimeInterval = setInterval(()=>{
-      if(Date.now()-startTime>10000){
+      if(Date.now()-startTime>60000){
         this._onPressOut();
         clearInterval(checkMaxRecordTimeInterval)
       }
@@ -205,7 +207,7 @@ class ThouchBarBoxTopBox extends Component {
         });
       }
       //延迟执行audio._stop
-    delayStopTimer = setTimeout(stop, 500)
+    delayStopTimer = setTimeout(stop, 800)
       //发送
     this.setState({
       speakTxt: '按住说话',
@@ -214,16 +216,20 @@ class ThouchBarBoxTopBox extends Component {
   }
   _onPressCancel() {
     clearInterval(checkMaxRecordTimeInterval)
-    //结束录音
-    audio._stop((currentTime)=>{
+    //结束录音 
+    let stop = ()=>{
+      audio._stop((currentTime)=>{
       //删除该录音文件
       RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
-    });
-    this.shouldPressSpeakBox = true;
-    this.setState({
-      isShowModal: false,
-      speakTxt: '按住说话'
-    })
+      });
+      this.shouldPressSpeakBox = true;
+      this.setState({
+        isShowModal: false,
+        speakTxt: '按住说话'
+      })
+    }
+    //延迟执行audio._stop
+    delayStopTimer = setTimeout(stop, 800)
   }
   _onRequestClose() {
       this.setState({
@@ -243,7 +249,7 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?50:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
         <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData} client={this.props.client}></AutoExpandingTextInput>
@@ -374,13 +380,6 @@ const styles = StyleSheet.create({
   thouchBarBoxTop: {
     height: pxToPt(62), //62
   },
-  inputBox: {
-    width: width - 170,
-
-    marginLeft: 57,
-    backgroundColor: '#fff',
-    borderRadius: 10
-  },
   button: {
     position: 'absolute',
     height: pxToPt(30),
@@ -397,7 +396,7 @@ const styles = StyleSheet.create({
   },
   smileButton: {
     bottom: pxToPt(15),
-    right: 60
+    right: 45
   },
   plusButton: {
     bottom: pxToPt(15),
@@ -406,10 +405,10 @@ const styles = StyleSheet.create({
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 180,
-    left: 60,
+    width: width - 140,
+    left: 50,
     top: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     borderColor: '#ccc',
     borderWidth: pxToPt(1),
     justifyContent: 'center',
