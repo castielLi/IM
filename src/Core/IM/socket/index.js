@@ -52,6 +52,7 @@ export default class Connect extends Component{
                 return ;
             }
             let message = JSON.parse(event.data);
+            console.log("消息类型是："+message.Command);
             if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
                 onRecieveMessage(message.MSGID);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
