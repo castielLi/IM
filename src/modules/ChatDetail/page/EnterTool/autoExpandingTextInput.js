@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   textInputStyle:{ 
     position:'absolute',
     left:50,
-    top:pxToPt(10), 
+    top:pxToPt(5), 
     fontSize:20, 
     lineHeight:20, 
     width:width-140,  

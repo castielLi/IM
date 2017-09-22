@@ -41,7 +41,7 @@ export function getChatRecord(chatListArr){
 		let chatRecord = {};
 		let count = 0;
 	    chatListArr.forEach((v,i)=>{
-	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:10},function (messages) {
+	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:11},function (messages) {
 	        	count++;
 	        	let messageList = messages.map((message)=>{
 									return DtoMethods.sqlMessageToMessage(message);
