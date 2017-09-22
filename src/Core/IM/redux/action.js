@@ -42,19 +42,23 @@ export function getChatRecord(chatListArr){
 	return (dispatch)=>{
 		let chatRecord = {};
 		let count = 0;
-	    chatListArr.forEach((v,i)=>{
-	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-	        	count++;
-	        	let messageList = messages.map((message)=>{
-									return DtoMethods.sqlMessageToMessage(message);
-								})
-	            chatRecord[v.Client] = messageList;
-	            if(count>=chatListArr.length){
-	            	dispatch(initChatRecord(chatRecord))
-	            }
+		if(chatListArr.length>0){
+			chatListArr.forEach((v,i)=>{
+		        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+		        	count++;
+		        	let messageList = messages.map((message)=>{
+										return DtoMethods.sqlMessageToMessage(message);
+									})
+		            chatRecord[v.Client] = messageList;
+		            if(count>=chatListArr.length){
+
+		            	dispatch(initChatRecord(chatRecord))
+		            }
+				})
 			})
-		})
-		
+		}else{
+			dispatch(initChatRecord(chatRecord))
+		}	
 	}
 }
 
