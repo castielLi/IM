@@ -325,17 +325,17 @@ class ThouchBarBoxTopBox extends Component {
   renderModalBoxContent() {
     if (this.state.recordingModalStatus === 0) {
       return <View style={styles.recordingModalItem}>
-                <Icon name="microphone" size={50} color="#eee" />
+                <Icon name="microphone" size={80} color="#eee" />
                 <Text style={styles.recordingModalText}>手指上滑，取消发送</Text>
              </View>
     } else if (this.state.recordingModalStatus === 1) {
       return <View style={styles.recordingModalItem}>
-                <Icon name="exclamation" size={50} color="#eee" />
+                <Icon name="exclamation" size={80} color="#eee" />
                 <Text style={styles.recordingModalText}>录音时间太短</Text>
              </View>
     } else if (this.state.recordingModalStatus === 2) {
       return <View style={styles.recordingModalItem}>
-                <Icon name="undo" size={50} color="#eee" />
+                <Icon name="undo" size={80} color="#eee" />
                 <Text style={styles.recordingModalText}>松开手指，取消发送</Text>
              </View>
     }
@@ -343,7 +343,7 @@ class ThouchBarBoxTopBox extends Component {
   render() {
     return (
       <View>
-        <View style={[styles.thouchBarBoxTop,{height:this.props.thouchBarStore.isRecordPage?pxToPt(62):Math.max(pxToPt(62),pxToPt(this.state.thouchBarTopBoxHeight+20))}]}>
+        <View style={[styles.thouchBarBoxTop,{height:this.props.thouchBarStore.isRecordPage?pxToPt(52):Math.max(pxToPt(52),pxToPt(this.state.thouchBarTopBoxHeight+20))}]}>
             {this.renderEnterBox()}
             <TouchableHighlight style={[styles.button,styles.voiceButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toRecord}>
               {this.renderVoiceButton()}
@@ -378,28 +378,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   thouchBarBoxTop: {
-    height: pxToPt(62), //62
+    height: pxToPt(52), //62
   },
   button: {
     position: 'absolute',
     height: pxToPt(30),
     width: pxToPt(30),
     borderWidth: pxToPt(1),
-    borderColor: '#575757',
+    borderColor: '#aaa',
     borderRadius: pxToPt(20),
     justifyContent: 'center',
     alignItems: 'center'
   },
   voiceButton: {
-    bottom: pxToPt(15),
+    bottom: pxToPt(10),
     left: 5
   },
   smileButton: {
-    bottom: pxToPt(15),
+    bottom: pxToPt(10),
     right: 45
   },
   plusButton: {
-    bottom: pxToPt(15),
+    bottom: pxToPt(10),
     right: 5
   },
   speakBox: {
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     height: pxToPt(40),
     width: width - 140,
     left: 50,
-    top: 10,
+    top: 5,
     borderRadius: 5,
     borderColor: '#ccc',
     borderWidth: pxToPt(1),
@@ -428,21 +428,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   recordingModal: {
-    height: pxToPt(100),
-    width: pxToPt(100),
+    height: pxToPt(200),
+    width: pxToPt(200),
     backgroundColor: 'rgba(0,0,0,0.5)',
     borderRadius:10
   },
   recordingModalItem: {
     flex: 1,
-    paddingTop: 10,
+    paddingTop: 40,
     alignItems: 'center'
   },
   recordingModalText: {
     color: '#eee',
-    marginTop: 10,
-    fontSize:10,
-    fontWeight:'bold'
+    marginTop: 40,
+    fontSize:20,
   }
 });
 
