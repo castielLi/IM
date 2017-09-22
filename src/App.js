@@ -64,7 +64,7 @@ export default function App() {
 
     im.getChatList((chatListArr) => {
         //初始化chatRecordStore
-        console.log(chatListArr,'00000000000000000000000')
+        console.log('44444444444444444444444')
         store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
     })
 

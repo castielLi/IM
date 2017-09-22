@@ -47,6 +47,7 @@ class ChatDetail extends ContainerComponent {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
 	componentWillMount(){
+		console.log('3333333333333333333333333333')
 		let client = this.props.client;
 		//如果是刚开聊的，之前redux里没记录的好友	
 		if(!this.props.ChatRecord[client]){//

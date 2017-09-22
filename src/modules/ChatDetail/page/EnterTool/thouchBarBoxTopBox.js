@@ -147,7 +147,7 @@ class ThouchBarBoxTopBox extends Component {
     this.state.fileName = fileName;
     startTime = Date.now();
     recordTimer = setTimeout(() => {
-      audio = new Audio('li', fileName);
+      audio = new Audio(this.props.client, fileName);
       audio._record();
     }, 200)
     this.setState({

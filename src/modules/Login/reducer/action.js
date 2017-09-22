@@ -4,9 +4,10 @@
 
 import * as TYPES from './actionTypes'
 
-export function signIn(){
+export function signIn(accountMessage){
     return {
-        type: TYPES.LOGGED_IN
+        type: TYPES.LOGGED_IN,
+        accountMessage
     };
 
 }
