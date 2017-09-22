@@ -249,7 +249,7 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?50:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
         <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData} client={this.props.client}></AutoExpandingTextInput>
@@ -380,13 +380,6 @@ const styles = StyleSheet.create({
   thouchBarBoxTop: {
     height: pxToPt(62), //62
   },
-  inputBox: {
-    width: width - 170,
-
-    marginLeft: 57,
-    backgroundColor: '#fff',
-    borderRadius: 10
-  },
   button: {
     position: 'absolute',
     height: pxToPt(30),
@@ -403,7 +396,7 @@ const styles = StyleSheet.create({
   },
   smileButton: {
     bottom: pxToPt(15),
-    right: 60
+    right: 45
   },
   plusButton: {
     bottom: pxToPt(15),
@@ -412,10 +405,10 @@ const styles = StyleSheet.create({
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 180,
-    left: 60,
+    width: width - 140,
+    left: 50,
     top: 10,
-    borderRadius: 10,
+    borderRadius: 5,
     borderColor: '#ccc',
     borderWidth: pxToPt(1),
     justifyContent: 'center',
