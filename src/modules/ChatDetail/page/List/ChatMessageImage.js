@@ -56,7 +56,7 @@ class ChatMessageImage extends Component {
     }
 
     render() {
-        let {data} = this.props;
+        let {data,isMe} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         //let uri = LocalSource.substr(7);
@@ -67,7 +67,7 @@ class ChatMessageImage extends Component {
         // })
         //this.getImageSize(LocalSource || RemoteSource)
         //alert(this.Size.width+"11")
-        if(!Sender){
+        if(isMe){
             return(
                 <View style={styles.bubbleViewRight}>
                     <TouchableOpacity onPress={()=>this.props.showImageModal(LocalSource || RemoteSource)}>

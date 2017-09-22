@@ -66,12 +66,12 @@ export default class ChatMessageSound extends Component {
         return {Time,LocalSource,soundWidth}
     }
     render() {
-        let {data} = this.props;
+        let {data,isMe} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         //console.log(LocalSource,RemoteSource)
         let soundObjConfig = this.getSoundTime(LocalSource || RemoteSource)
-        if(!Sender){
+        if(isMe){
             return(
                 <View style={[styles.bubbleViewRight,{width:soundObjConfig.soundWidth}]}>
                     <TouchableOpacity onPress={()=>this.playSound(soundObjConfig.LocalSource)}>

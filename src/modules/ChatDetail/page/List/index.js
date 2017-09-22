@@ -159,10 +159,10 @@ class Chat extends Component {
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let isSender = row.message.Data.Data.Sender;
-        if(isSender == ''){
+        if(isSender == '1'){
             return(
                 <View style={styles.itemViewRight}>
-                    <ChatMessage rowData={row}/>
+                    <ChatMessage rowData={row} userID={this.props.client}/>
                     <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
                 </View>
             )
@@ -171,7 +171,7 @@ class Chat extends Component {
             return(
                 <View style={styles.itemView}>
                     <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj3w0emfcbj20u011iabm.jpg'}} style={styles.userImage}/>
-                    <ChatMessage rowData={row}/>
+                    <ChatMessage rowData={row} userID={this.props.client}/>
                 </View>
             )
         }
