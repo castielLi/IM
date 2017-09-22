@@ -77,8 +77,8 @@ class Chat extends Component {
         let newData = newProps.chatRecordStore;
         console.log(newData,'22222222222222222222222222222222222222222222')
         //alert(newData.length)
-        this.data = newData;
-        this.shortData = newData.concat().reverse();
+        this.data = newData.concat().reverse();
+        this.shortData = newData;
         this.data2 = this.prepareMessages(this.shortData);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.data),
@@ -104,8 +104,11 @@ class Chat extends Component {
         let {chatRecordStore} = this.props;
         console.log(chatRecordStore,'11111111111111111111111111111111111')
         // let newData = chatRecordStore.ChatRecord.li;
-        this.data = chatRecordStore;
-        this.shortData = chatRecordStore.concat().reverse();
+        if(!chatRecordStore){
+            return;
+        }
+        this.data = chatRecordStore.concat().reverse();
+        this.shortData = chatRecordStore;
         this.data2 = this.prepareMessages(this.shortData);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.data),
@@ -183,7 +186,7 @@ class Chat extends Component {
             this.setState({
                 isRefreshing : msgState.LOADING
             })
-            let dataLength = this.shortData.length-10;
+            let dataLength = this.shortData.length;
             let that = this;
             setTimeout(()=>{
                 this.im.getRecentChatRecode("li","private",{start:dataLength,limit:11},function (messages) {
