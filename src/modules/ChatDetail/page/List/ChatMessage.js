@@ -28,12 +28,15 @@ export default class ChatMessage extends Component {
     };
 
     typeOption = (data)=> {
-        let {type} = data.message;
+        let {type,Data} = data.message;
+        let {userID} = this.props;
+        let isMe = Data.Data.Sender == '1';
         switch (type) {
             case 'text': {
                 return (
                     <ChatMessageText
                         data={data}
+                        isMe={isMe}
                     />
                 )
             }
@@ -42,6 +45,7 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageImage
                         data={data}
+                        isMe={isMe}
                     />
                 )
             }
@@ -50,6 +54,7 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageSound
                         data={data}
+                        isMe={isMe}
                     />
                 )
             }
