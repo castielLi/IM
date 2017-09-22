@@ -102,17 +102,25 @@ class Chat extends Component {
         this.im = new IM()
         //this.fetchData();
         let {chatRecordStore} = this.props;
+        let {isRefreshing} = this.state
         console.log(chatRecordStore,'11111111111111111111111111111111111')
         // let newData = chatRecordStore.ChatRecord.li;
         if(!chatRecordStore){
             return;
+        }
+        else if(chatRecordStore.length <11){
+            isRefreshing = ListConst.msgState.NOMORE;
+        }
+        else{
+            chatRecordStore.pop();
         }
         this.data = chatRecordStore.concat().reverse();
         this.shortData = chatRecordStore;
         this.data2 = this.prepareMessages(this.shortData);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(this.data),
-            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
+            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+            isRefreshing,
         });
     }
 
