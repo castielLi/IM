@@ -62,9 +62,11 @@ export default function App() {
 
     im.connectIM(handleMessageResult,handleMessageChange)
 
-    im.getChatList(function(messages){
-        console.log(messages);
+    im.getChatList((chatListArr) => {
+        //初始化chatRecordStore
+        store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
     })
+
 
     // let sendMessage = setInterval(function(){
     //     let addMessage = new SendMessageDto();
@@ -115,11 +117,7 @@ export default function App() {
             super();
 
             this.state = {
-                store: configureStore(() => {
-                    this.setState({
-                        isLoading: false
-                    })
-                }),
+                store,
                 appState: AppState.currentState,
                 memoryWarnings: 0,
                 connectionInfo:"NONE"

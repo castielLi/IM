@@ -140,6 +140,8 @@ class ThouchBarBoxTopBox extends Component {
 
   _onPressIn() {
     if(!this.shouldPressSpeakBox) return;
+    clearInterval(checkMaxRecordTimeInterval);
+    clearTimeout(recordTimer);
     //开始录音
     let fileName = uuidv1();
     this.state.fileName = fileName;
@@ -153,9 +155,9 @@ class ThouchBarBoxTopBox extends Component {
       recordingModalStatus: 0,
       speakTxt: '松开结束'
     })
-    //录音超过10秒自动结束
+    //录音超过60秒自动结束
     checkMaxRecordTimeInterval = setInterval(()=>{
-      if(Date.now()-startTime>10000){
+      if(Date.now()-startTime>60000){
         this._onPressOut();
         clearInterval(checkMaxRecordTimeInterval)
       }
@@ -205,7 +207,7 @@ class ThouchBarBoxTopBox extends Component {
         });
       }
       //延迟执行audio._stop
-    delayStopTimer = setTimeout(stop, 500)
+    delayStopTimer = setTimeout(stop, 800)
       //发送
     this.setState({
       speakTxt: '按住说话',
@@ -214,16 +216,20 @@ class ThouchBarBoxTopBox extends Component {
   }
   _onPressCancel() {
     clearInterval(checkMaxRecordTimeInterval)
-    //结束录音
-    audio._stop((currentTime)=>{
+    //结束录音 
+    let stop = ()=>{
+      audio._stop((currentTime)=>{
       //删除该录音文件
       RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
-    });
-    this.shouldPressSpeakBox = true;
-    this.setState({
-      isShowModal: false,
-      speakTxt: '按住说话'
-    })
+      });
+      this.shouldPressSpeakBox = true;
+      this.setState({
+        isShowModal: false,
+        speakTxt: '按住说话'
+      })
+    }
+    //延迟执行audio._stop
+    delayStopTimer = setTimeout(stop, 800)
   }
   _onRequestClose() {
       this.setState({

@@ -22,7 +22,6 @@ import {
 import BaseComponent from '../../Core/Component'
 import * as router from '../routerMap'
 
-
 class Root extends BaseComponent {
     constructor(props) {
         super(props);
@@ -41,24 +40,31 @@ class Root extends BaseComponent {
         return this.route.getRoutePage(Route, navigator);
     }
 
+
     configureScene(route) {
         console.log(route)
         return Navigator.SceneConfigs.FloatFromRight;
     }
-
+    
     render() {
+        console.log('22222222')
         let initialRoute = this.route.initialRoute;
-        return ( < Navigator initialRoute = {
-                initialRoute
-            }
-            configureScene = {
-                this.configureScene.bind(this)
-            }
-            renderScene = {
-                this.renderScene.bind(this)
-            }
-            />
-        );
+        if(this.props.hasGetChatRecord){
+            return ( < Navigator initialRoute = {
+                    initialRoute
+                }
+                                 configureScene = {
+                                     this.configureScene.bind(this)
+                                 }
+                                 renderScene = {
+                                     this.renderScene.bind(this)
+                                 }
+                />
+            );
+        }else{
+            return <Text>地球</Text>
+        }
+
     }
 }
 
@@ -71,9 +77,9 @@ const styles = StyleSheet.create({
 
 function MapState(store) {
     return {
-        isLoggedIn: store.loginStore.isLoggedIn
+        isLoggedIn: store.loginStore.isLoggedIn,
+        hasGetChatRecord:store.chatRecordStore.hasGetChatRecord
     }
 }
-
 
 export default connect(MapState)(Root);
