@@ -57,6 +57,8 @@ export default class Connect extends Component{
                 onRecieveMessage(message.MSGID);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
+            }else if(message.Command == MessageCommandEnum.MSG_BODY){
+                onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
             }
         });
 

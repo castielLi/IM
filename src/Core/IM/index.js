@@ -66,6 +66,8 @@ let AppMessageResultHandle = undefined;
 let AppMessageChangeStatusHandle = undefined;
 //function(message:message);
 
+//返回收到消息回调
+let AppReceiveMessageHandle = undefined;
 
 let __instance = (function () {
     let instance;
@@ -90,9 +92,10 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
+        AppReceiveMessageHandle = receiveMessageHandle;
     }
 
     startIM(){
@@ -537,28 +540,38 @@ export default class IM {
 
     receiveMessageOpreator(message){
 
-        let updateMessage = {};
-        for(let item in ackMessageQueue){
-            if(ackMessageQueue[item].message.MSGID == message){
+        //判断如果是ack消息
+        if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
+            let updateMessage = {};
+            for (let item in ackMessageQueue) {
+                if (ackMessageQueue[item].message.MSGID == message) {
 
-                currentObj.popCurrentMessageSqlite(message)
+                    currentObj.popCurrentMessageSqlite(message)
 
 
-                updateMessage = ackMessageQueue[item].message;
-                ackMessageQueue.splice(item, 1);
+                    updateMessage = ackMessageQueue[item].message;
+                    ackMessageQueue.splice(item, 1);
 
-                console.log("ack队列pop出：" + message)
-                console.log(ackMessageQueue.length);
-                break;
+                    console.log("ack队列pop出：" + message)
+                    console.log(ackMessageQueue.length);
+                    break;
+                }
             }
-        }
 
-        //回调App上层发送成功
-        AppMessageResultHandle(true,message);
+            //回调App上层发送成功
+            AppMessageResultHandle(true, message);
 
-        updateMessage.status = MessageStatus.SendSuccess;
-        currentObj.addUpdateSqliteQueue(updateMessage,UpdateMessageSqliteType.storeMessage)
-    }
+            updateMessage.status = MessageStatus.SendSuccess;
+            currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
+
+        //判断如果是他人发送的消息
+        }else if(message.Command == MessageCommandEnum.MSG_BODY){
+            //存入数据库
+            storeSqlite.storeRecMessage(message)
+
+            AppReceiveMessageHandle(message);
+        }}
+
 
 
     recMessage(message,type=null) {

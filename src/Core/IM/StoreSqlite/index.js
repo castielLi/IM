@@ -9,12 +9,12 @@ import * as commonMethods from './formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 
-export function storeSendMessage(message,way){
+export function storeSendMessage(message){
 
     IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Receiver)
 }
 
-export function storeRecMessage(message,way){
+export function storeRecMessage(message){
 
     IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
 }
@@ -102,6 +102,8 @@ IMFMDB.initIMDataBase = function(){
 IMFMDB.InsertMessageWithCondition = function(message,client){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
+
+    let way;
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -460,7 +462,6 @@ IMFMDB.DeleteResource = function(messageId,localPath){
 
     }, errorDB);
 }
-
 
 //添加消息进总消息表
 function insertChat(message,tx){

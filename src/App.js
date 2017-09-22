@@ -60,6 +60,12 @@ export default function App() {
        store.dispatch(ActionForChatRecordStore.updateMessage(message))
     }
 
+
+    let handleRecieveMessage = function(message){
+
+    }
+
+
     im.connectIM(handleMessageResult,handleMessageChange)
 
     im.getChatList((chatListArr) => {
