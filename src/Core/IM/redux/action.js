@@ -1,5 +1,7 @@
 import IM from '../index';
-import * as DtoMethods from '../dto/Common'
+import * as DtoMethods from '../dto/Common';
+import InitChatRecordConfig from '../dto/InitChatRecordConfig';
+
 let im = new IM();
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
@@ -41,7 +43,7 @@ export function getChatRecord(chatListArr){
 		let chatRecord = {};
 		let count = 0;
 	    chatListArr.forEach((v,i)=>{
-	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:11},function (messages) {
+	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 	        	count++;
 	        	let messageList = messages.map((message)=>{
 									return DtoMethods.sqlMessageToMessage(message);
