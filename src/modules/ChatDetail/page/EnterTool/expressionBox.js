@@ -75,7 +75,7 @@ render(){
           <View style={styles.sendBox}>
             <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
               <View style={[styles.send,{backgroundColor:this.props.textInputData?'#3399ff':'#fff'}]}>
-                <Text style={styles.sendText}>发送</Text>
+                <Text style={[styles.sendText,{color:this.props.textInputData?'#fff':'#aaa'}]}>发送</Text>
               </View>
             </TouchableWithoutFeedback>
           </View>
