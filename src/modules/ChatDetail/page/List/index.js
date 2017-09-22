@@ -213,7 +213,7 @@ class Chat extends Component {
                     that.setState({
                         dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
                     },()=>{
-                        if(msgLength <= 10){
+                        if(msgLength <11){
                             that.setState({
                                 isRefreshing : msgState.NOMORE
                             })
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
     userImage:{
         width:40,
         height:40,
-        borderRadius:40,
+        borderRadius:20,
     },
     bubbleView:{
         alignSelf:'flex-start',
