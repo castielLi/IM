@@ -5,7 +5,11 @@
 import * as TYPES from './actionTypes';
 
 const initialState = {
-    isLoggedIn : false
+    isLoggedIn : false,
+    accountMessage:{
+        client:'',
+        avatar:''
+    }
 };
 
 export default function loginStore(state=initialState, action){
@@ -16,18 +20,21 @@ export default function loginStore(state=initialState, action){
         case TYPES.LOGGED_IN:
             return {
                 ...state,
-                isLoggedIn: true
+                isLoggedIn: true,
+                accountMessage:action.accountMessage
             };
 
         case TYPES.LOGGED_OUT:
             return {
                 ...state,
-                isLoggedIn: false
+                isLoggedIn: false,
+                accountMessage:initialState.accountMessage
             };
         case TYPES.LOGGED_ERROR:
             return {
                 ...state,
-                isLoggedIn: false
+                isLoggedIn: false,
+                accountMessage:initialState.accountMessage
             }
 
         default:

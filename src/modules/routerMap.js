@@ -11,7 +11,11 @@
  * 路由配置项
  * 可配置默认参数 props: params
  */
-import Login from './Login/page/login'
+import Login from './Login/page/main'
+import PhoneLogin from './Login/page/phoneLogin'
+import EmailLogin from './Login/page/emailLogin'
+import Register from './Login/page/register'
+import FindPassword from './Login/page/findPassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Camera from './Camera'
@@ -47,6 +51,26 @@ export const RouteMap = {
     'Login': {
         'Login': {
             component: Login,
+            params: {}
+        },
+        'PhoneLogin':{
+            component: PhoneLogin,
+            params: {}
+        },
+        'EmailLogin':{
+            component: EmailLogin,
+            params: {}
+        }
+    },
+    'Register':{
+        'Register': {
+            component: Register,
+            params: {}
+        }
+    },
+    'FindPassword':{
+         'FindPassword': {
+            component: FindPassword,
             params: {}
         }
     },

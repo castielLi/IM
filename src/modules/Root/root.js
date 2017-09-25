@@ -47,7 +47,9 @@ class Root extends BaseComponent {
 
 
     configureScene(route) {
-        console.log(route)
+        if (route.sceneConfig) {
+             return route.sceneConfig;
+         }
         return Navigator.SceneConfigs.FloatFromRight;
     }
     

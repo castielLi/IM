@@ -19,6 +19,7 @@ let onRecieveMessage = "undefined";
 let _token = undefined;
 let netWorkStatus = undefined;
 let currentObj = undefined;
+let heartBeatCode = undefined;
 
 export default class Connect extends Component{
 
@@ -56,6 +57,7 @@ export default class Connect extends Component{
             if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
                 onRecieveMessage(message.MSGID);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
+                heartBeatCode = message;
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
             }else if(message.Command == MessageCommandEnum.MSG_BODY){
                 onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
@@ -65,6 +67,9 @@ export default class Connect extends Component{
         this.webSocket.addEventListener('open', function (event) {
             console.log('Hello Server!');
 
+            if(heartBeatCode != undefined){
+                currentObj.sendMessage(heartBeatCode);
+            }
         });
 
 
@@ -86,6 +91,11 @@ export default class Connect extends Component{
     sendMessage(message){
         if(this.webSocket.readyState == this.webSocket.OPEN){
             console.log("Socket Core: 发送消息"+message);
+
+            if(message.Command == MessageCommandEnum.MSG_HEART){
+                heartBeatCode = undefined;
+            }
+
             this.webSocket.send(JSON.stringify(message));
             return true;
         }
