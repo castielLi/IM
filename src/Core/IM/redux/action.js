@@ -11,10 +11,10 @@ export function addClient(client){
 	}
 }
 //向chatRecordStore中某确定的聊天对象添加 一条消息
-export function addMessage(client,message){
+export function addMessage(message){
 	return{
 		type:'ADD_MESSAGE',
-		client,
+		client:InterceptionClientFromId(message.MSGID),
 		message
 	}
 }

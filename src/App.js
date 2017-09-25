@@ -62,7 +62,7 @@ export default function App() {
 
 
     let handleRecieveMessage = function(message){
-
+        store.dispatch(ActionForChatRecordStore.addMessage(message))
     }
 
 

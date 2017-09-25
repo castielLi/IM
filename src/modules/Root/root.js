@@ -54,7 +54,6 @@ class Root extends BaseComponent {
     }
     
     render() {
-        console.log('22222222')
         let initialRoute = this.route.initialRoute;
             return ( < Navigator 
                         initialRoute = {

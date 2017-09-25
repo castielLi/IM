@@ -48,7 +48,7 @@ class AutoExpandingTextInput extends Component {
       im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(this.props.client,message);
+        this.props.addMessage(message);
         this.input.clear();
         //在表情栏提交后不会获得焦点
         if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();

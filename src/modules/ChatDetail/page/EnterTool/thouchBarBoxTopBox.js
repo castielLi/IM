@@ -198,7 +198,7 @@ class ThouchBarBoxTopBox extends Component {
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage(this.props.client, message)
+            this.props.addMessage( message)
           }, [(tips) => {
             console.log(tips)
           }]);
