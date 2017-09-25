@@ -541,7 +541,7 @@ export default class IM {
     receiveMessageOpreator(message){
 
         //判断如果是ack消息
-        if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
+        if(message.Command == undefined) {
             let updateMessage = {};
             for (let item in ackMessageQueue) {
                 if (ackMessageQueue[item].message.MSGID == message) {
