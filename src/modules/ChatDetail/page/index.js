@@ -48,7 +48,7 @@ class ChatDetail extends ContainerComponent {
 	}
 	componentWillMount(){
 		let client = this.props.client;
-		//如果是刚开聊的，之前redux里没记录的好友	
+		//如果是刚开聊的，chatRecordStore里没记录	
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
 			//新建文件夹
@@ -99,7 +99,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(commonActions,dispatch)
+    ...bindActionCreators(commonActions,dispatch),
+
 }};
 
 export default connect(mapStateToProps,mapDispatchToProps)(ChatDetail);

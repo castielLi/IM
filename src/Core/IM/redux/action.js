@@ -1,7 +1,7 @@
 import IM from '../index';
 import * as DtoMethods from '../dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
-
+import * as recentListAction from '../../../modules/RecentList/reducer/action';
 let im = new IM();
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
@@ -12,10 +12,15 @@ export function addClient(client){
 }
 //向chatRecordStore中某确定的聊天对象添加 一条消息
 export function addMessage(message){
-	return{
+	let client = InterceptionClientFromId(message.MSGID);
+	return (dispatch,getState)=>{
+		dispatch({
 		type:'ADD_MESSAGE',
-		client:InterceptionClientFromId(message.MSGID),
+		client,
 		message
+		})
+		//同时更新recentListStore
+		dispatch(recentListAction.updateRecentItemLastMessage(client,message.way,extractMessage(message)))
 	}
 }
 
@@ -61,4 +66,17 @@ function InterceptionClientFromId(str){
     let client = '';
     client = str.slice(0,str.indexOf('_'));
     return client;
+}
+//消息提取
+function extractMessage(message){
+	switch (message.type) {
+        case 'text':
+        	return message.Data.Data.Data;
+        case 'image':
+        	return '[图片]';
+        case 'audio':
+        	return '[语音]';
+        default:
+        	return '';
+	}
 }
