@@ -16,7 +16,7 @@ import MessageType from './dto/MessageType'
 
 
 
-let _socket = new Connect("1");
+let _socket = new Connect("2");
 
 //网络状态
 let networkStatus = "";

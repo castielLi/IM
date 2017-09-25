@@ -159,7 +159,7 @@ class Chat extends Component {
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let isSender = row.message.Data.Data.Sender;
-        if(isSender == '1'){
+        if(isSender == '2'){
             return(
                 <View style={styles.itemViewRight}>
                     <ChatMessage rowData={row} userID={this.props.client}/>

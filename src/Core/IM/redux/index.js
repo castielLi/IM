@@ -35,7 +35,7 @@
 //         ]
 //     }
 // }
-import InitChatRecordConfig from '../dto/InitChatRecordConfig';
+import InitChatRecordConfig from './InitChatRecordConfig';
 const initialState = {
     hasGetChatRecord:false,//是否初始化聊天数据完毕
     ChatRecord: {}

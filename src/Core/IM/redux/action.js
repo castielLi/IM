@@ -1,6 +1,6 @@
 import IM from '../index';
 import * as DtoMethods from '../dto/Common';
-import InitChatRecordConfig from '../dto/InitChatRecordConfig';
+import InitChatRecordConfig from './InitChatRecordConfig';
 
 let im = new IM();
 //向chatRecordStore增加新的聊天对象

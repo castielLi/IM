@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -68,19 +68,23 @@ class PhoneLogin extends ContainerComponent {
 
 	addUser = ()=>{
 		if(checkReg(1,this.state.phoneText)){
-		try{
 			var userData = [];
 			var user = {};
 			user.userName = this.state.phoneText;
 			user.passWord = this.state.passWordText;
 			userData.push(user);
-			//插入数据
-			sqLite.insertUserData(userData);
-			}catch(error) {
-				console.log(error);
-			}
-			//假设登录成功
+			//登录中
+			this.props.signDoing();
+			//服务器验证
+			//...
+			//验证通过
+			//存储登录状态
+            AsyncStorage.setItem('loginStatus','true');
+			//修改loginStore登录状态
 			this.props.signIn({ client:'1',avatar:''})
+			//初始化IM
+			//..
+			//跳转到最近聊天列表
 			this.route.push(this.props,{
 				key:'ChatDetail',
                 routeId: 'ChatDetail'

@@ -44,7 +44,7 @@ class AutoExpandingTextInput extends Component {
   _onSubmitEditing(){
     if(this.state.data){
       //初始化消息
-      let message = createTextMessageObj(this.state.data,'private','1',this.props.client);//(内容，way，发送者，接收者)
+      let message = createTextMessageObj(this.state.data,'private','2',this.props.client);//(内容，way，发送者，接收者)
       im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore

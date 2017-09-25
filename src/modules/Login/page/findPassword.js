@@ -12,9 +12,10 @@ import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
 import changePassword from './changePassword';
+import ContainerComponent from '../../../Core/Component/ContainerComponent';
 var sqLite = new SQLite();
 let db;
-export default class Login extends Component {
+export default class Login extends ContainerComponent {
 	constructor(props) {
 	  super(props);
 	
@@ -74,9 +75,10 @@ export default class Login extends Component {
 		return (
 
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.props.navigator.push({
-				sceneConfig: Navigator.SceneConfigs.FloatFromLeft,
-                component: PhoneLogin,
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.push(this.props,{
+				key:'Login',
+                routeId: 'Login',
+                sceneConfig: Navigator.SceneConfigs.FloatFromLeft
 				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>找回密码</Text>	
@@ -123,9 +125,9 @@ export default class Login extends Component {
 					{
 						this.state.phoneText && this.state.passWordText?
 						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.props.navigator.push({
-								sceneConfig: Navigator.SceneConfigs.FloatFromRight,
-                				component: changePassword,
+							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.route.push(this.props,{
+								key:'ChangePassword',
+                				routeId: 'ChangePassword'
 							})}}>
 								<Text style = {styles.loginText}>确定</Text>
 							</TouchableOpacity>)

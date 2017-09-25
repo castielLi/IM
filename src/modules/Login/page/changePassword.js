@@ -11,9 +11,10 @@ import Confirm from './confirm';
 import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
+import ContainerComponent from '../../../Core/Component/ContainerComponent';
 var sqLite = new SQLite();
 let db;
-export default class Login extends Component {
+export default class Login extends ContainerComponent {
 	constructor(props) {
 	  super(props);
 	
@@ -42,7 +43,11 @@ export default class Login extends Component {
 
 			//修改成功，页面跳转到登录页面
 			alert('密码修改成功，请重新登录!')
-			this.props.navigator.push({sceneConfig: Navigator.SceneConfigs.FloatFromRight,component: PhoneLogin,})
+			this.route.push(this.props,{
+				key:'Login',
+            	routeId: 'PhoneLogin',
+            	sceneConfig: Navigator.SceneConfigs.FloatFromLeft
+			});
 		}else {
 			alert('两次输入密码不匹配');
 		}

@@ -16,9 +16,11 @@ import PhoneLogin from './Login/page/phoneLogin'
 import EmailLogin from './Login/page/emailLogin'
 import Register from './Login/page/register'
 import FindPassword from './Login/page/findPassword'
+import ChangePassword from './Login/page/changePassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Camera from './Camera'
+import Start from './Start/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -35,6 +37,12 @@ export const RouteMap = {
     'Root': {
         'Root': {
             component: ChatDetail,
+            params: {}
+        }
+    },
+    'Start': {
+        'Start': {
+            component: Start,
             params: {}
         }
     },
@@ -71,6 +79,12 @@ export const RouteMap = {
     'FindPassword':{
          'FindPassword': {
             component: FindPassword,
+            params: {}
+        }
+    },
+    'ChangePassword':{
+         'ChangePassword': {
+            component: ChangePassword,
             params: {}
         }
     },

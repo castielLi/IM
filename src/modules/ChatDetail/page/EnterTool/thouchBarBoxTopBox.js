@@ -193,7 +193,7 @@ class ThouchBarBoxTopBox extends Component {
             FileType: 2,
             LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
-          }], '1', this.props.client);//(资源类型，way，资源，发送者，接收者)
+          }], '2', this.props.client);//(资源类型，way，资源，发送者，接收者)
 
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
