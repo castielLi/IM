@@ -8,14 +8,14 @@ import {
     View,
     Dimensions,
 } from 'react-native';
-
+import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
 
 let {width, height} = Dimensions.get('window');
 
-export default class ChatMessage extends Component {
+class ChatMessage extends Component {
     constructor(props){
         super(props)
 
@@ -30,7 +30,7 @@ export default class ChatMessage extends Component {
     typeOption = (data)=> {
         let {type,Data} = data.message;
         let {userID} = this.props;
-        let isMe = Data.Data.Sender == '1';
+        let isMe = Data.Data.Sender == this.props.accountId;
         switch (type) {
             case 'text': {
                 return (
@@ -75,3 +75,9 @@ export default class ChatMessage extends Component {
 const styles = StyleSheet.create({
 
 });
+
+const mapStateToProps = (state,props) => ({
+    accountId:state.loginStore.accountMessage.accountId
+});
+
+export default connect(mapStateToProps)(ChatMessage);

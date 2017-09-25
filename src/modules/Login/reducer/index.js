@@ -7,7 +7,7 @@ import * as TYPES from './actionTypes';
 const initialState = {
     isLoggedIn : false,
     accountMessage:{
-        client:'',
+        accountId:'',
         avatar:''
     }
 };

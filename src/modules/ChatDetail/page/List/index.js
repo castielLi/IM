@@ -159,7 +159,8 @@ class Chat extends Component {
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let isSender = row.message.Data.Data.Sender;
-        if(isSender == '2'){
+        
+        if(isSender == this.props.accountId){
             return(
                 <View style={styles.itemViewRight}>
                     <ChatMessage rowData={row} userID={this.props.client}/>
@@ -441,7 +442,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state,props) => ({
-    chatRecordStore: state.chatRecordStore.ChatRecord[props.client]
+    chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
+    accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({

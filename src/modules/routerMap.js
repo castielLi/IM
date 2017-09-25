@@ -29,8 +29,8 @@ export const MainPage = {
 
 
 export const InitialRoute = {
-    key: 'ChatDetail',
-    routeId: 'ChatDetail'
+    key: 'Start',
+    routeId: 'Start'
 }
 
 export const RouteMap = {

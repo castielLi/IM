@@ -193,7 +193,7 @@ class ThouchBarBoxTopBox extends Component {
             FileType: 2,
             LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
-          }], '2', this.props.client);//(资源类型，way，资源，发送者，接收者)
+          }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)
 
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
@@ -446,7 +446,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  thouchBarStore: state.thouchBarStore
+  thouchBarStore: state.thouchBarStore,
+  accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({

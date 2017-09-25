@@ -18,7 +18,8 @@ export default class Start extends ContainerComponent {
 
 
     componentWillMount(){
-        AsyncStorage.getItem('loginStatus')
+        setTimeout(()=>{
+            AsyncStorage.getItem('loginStatus')
             .then((value) => {
                 //已经登录
                 if(value === 'true'){
@@ -40,6 +41,7 @@ export default class Start extends ContainerComponent {
             }).catch((error) => {
 
                     })
+        },1000)
     }
     render() {
 
@@ -58,8 +60,6 @@ const styles = StyleSheet.create({
     width:null,
     height:null,
     resizeMode:'cover',
-    //祛除内部元素的白色背景
-    backgroundColor:'rgba(0,0,0,0)'
     }
 });
 
