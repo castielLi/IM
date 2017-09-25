@@ -266,6 +266,7 @@ class ThouchBarBoxTopBox extends Component {
     this._gestureHandlers = {
         onStartShouldSetResponder: () => true,  //对触摸进行响应
         onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
           this.setState({
