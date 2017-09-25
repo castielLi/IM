@@ -579,8 +579,8 @@ export default class IM {
         //处理收到消息的逻辑
         console.log("IM Core:消息内容"+message + " 开始执行pop程序");
 
-        if(type != null){
-            message.Command = MessageCommandEnum.MSG_HEART;
+        if(type == MessageCommandEnum.MSG_HEART){
+            // message.Command = MessageCommandEnum.MSG_HEART;
             console.log("心跳包压入发送队列")
             sendMessageQueue.push(message);
             return;

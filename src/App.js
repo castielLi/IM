@@ -66,7 +66,7 @@ export default function App() {
     }
 
 
-    im.connectIM(handleMessageResult,handleMessageChange)
+    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
 
     im.getChatList((chatListArr) => {
         //初始化chatRecordStore
