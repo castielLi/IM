@@ -9,7 +9,7 @@ import {
     Navigator
 } from 'react-native-deprecated-custom-components';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
-export default class Login extends ContainerComponent {
+export default class EmailLogin extends ContainerComponent {
 	constructor(props) {
 	  super(props);
 	

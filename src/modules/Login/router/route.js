@@ -52,7 +52,6 @@ class Route {
             // Component = Error;
             // params = {message: '当前页面没有找到：' + id};
         }
-
         return <Component navigator={navigator} {...params} />
 
     }

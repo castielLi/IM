@@ -10,7 +10,6 @@ import checkReg from './regExp';
 import Confirm from './confirm';
 import ContentPage from './contentPage';
 import SQLite from '../sqlite/sqlite';
-import {doLogin} from '../action/actions';
 import emailLogin from './emailLogin';
 import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
@@ -18,7 +17,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 var sqLite = new SQLite();
 let db;
-class Login extends ContainerComponent {
+class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
 		sqLite.close();
 	}
@@ -180,9 +179,6 @@ class Login extends ContainerComponent {
 		)
 	}
 
-	handleLogin=(a,b)=>{
-		this.props.dispatch(doLogin(a,b));
-	}
 } 
 
 function mapStateToProps(store) {
@@ -326,4 +322,4 @@ const mapDispatchToProps = (dispatch) => {
     ...bindActionCreators(Actions, dispatch),
 }};
 
- export default connect(mapStateToProps, mapDispatchToProps)(Login);
+ export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

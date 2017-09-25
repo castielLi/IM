@@ -9,7 +9,6 @@ import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
 import SQLite from '../sqlite/sqlite';
-import {doLogin} from '../action/actions';
 import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
 import changePassword from './changePassword';
@@ -151,9 +150,6 @@ export default class Login extends Component {
 		)
 	}
 
-	handleLogin=(a,b)=>{
-		this.props.dispatch(doLogin(a,b));
-	}
 } 
 
 function mapStateToProps(store) {
