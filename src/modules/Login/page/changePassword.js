@@ -8,12 +8,11 @@ import Main from './main';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
-import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
-var sqLite = new SQLite();
-let db;
+
+
 export default class Login extends ContainerComponent {
 	constructor(props) {
 	  super(props);

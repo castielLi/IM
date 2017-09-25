@@ -1,15 +1,13 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
-import SQLite from '../sqlite/sqlite';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
 import phoneLogin from './phoneLogin';
-let sqlite = new SQLite();
-let db;
+
+
 export default class ContentPage extends Component {
 	componentWillUnmount() {
-		sqlite.close();
 	}
 	static navigationOptions ={
 		header:null,

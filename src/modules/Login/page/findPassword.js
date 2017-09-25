@@ -8,13 +8,12 @@ import Main from './main';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
-import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
 import changePassword from './changePassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
-var sqLite = new SQLite();
-let db;
+
+
 export default class Login extends ContainerComponent {
 	constructor(props) {
 	  super(props);
@@ -54,22 +53,8 @@ export default class Login extends ContainerComponent {
 	}
 
 	addUser = ()=>{
-		try{
-			var userData = [];
-			var user = {};
-			user.userName = this.state.phoneText;
-			user.passWord = this.state.passWordText;
-			userData.push(user);
-			//插入数据
-			sqLite.insertUserData(userData);
-			}catch(error) {
-				console.log(error);
-			}
-			this.props.navigator.push({
-				sceneConfig: Navigator.SceneConfigs.FloatFromRight,
-                component: ContentPage,
-			});
-		}
+
+	}
 	
 	render(){
 		return (

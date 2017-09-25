@@ -9,25 +9,18 @@ import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
 import ContentPage from './contentPage';
-import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 
-var sqLite = new SQLite();
-let db;
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
 		sqLite.close();
 	}
 	componentWillMount(){
-		console.log(this.props)
-		if(!db){
-			db = sqLite.open();
-		}
-		sqLite.createTable();
+
 	}
 	constructor(props) {
 	  super(props);
