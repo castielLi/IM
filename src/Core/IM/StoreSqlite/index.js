@@ -8,13 +8,14 @@ import * as sqls from './IMExcuteSql'
 import * as commonMethods from './formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
+import ChatCommandEnum from '../dto/ChatCommandEnum'
 
-export function storeSendMessage(message,way){
+export function storeSendMessage(message){
 
     IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Receiver)
 }
 
-export function storeRecMessage(message,way){
+export function storeRecMessage(message){
 
     IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
 }
@@ -103,6 +104,8 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
+    let way;
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -113,7 +116,12 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                     //如果当前聊天对象在数据库中存在有数据
                     //添加数据进数据库
 
-                    let tableName = message.way == ChatWayEnum.Private?"Private_" + client:"ChatRoom_" + client;
+                    let tableName;
+                    if(message.way != "") {
+                        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
+                    }else{
+                        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
+                    }
 
                     let conetnt = getContentByMessage(message);
                     updateChat(conetnt,client,tx);
@@ -126,7 +134,13 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                     //如果当前聊天是新的聊天对象
                     let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
 
-                    let tableName = message.way == ChatWayEnum.Private?"Private_" + client:"ChatRoom_" + client;
+                    let tableName;
+                    if(message.way != "") {
+                        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
+                    }else{
+                        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
+                    }
+
 
                     createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
 
@@ -460,7 +474,6 @@ IMFMDB.DeleteResource = function(messageId,localPath){
 
     }, errorDB);
 }
-
 
 //添加消息进总消息表
 function insertChat(message,tx){
