@@ -43,7 +43,7 @@ const initialState = {
 export default function chatRecordStore(state = initialState, action) {
     switch (action.type) {
         case 'INIT_CHATRECORD':
-            state.ChatRecord = action.chatRecord;
+            state.ChatRecord[action.client] = action.messageList;
             return{
                 ...state,
                 hasGetChatRecord:true

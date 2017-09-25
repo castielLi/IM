@@ -443,7 +443,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state,props) => ({
     chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
-    accountId:state.loginStore.accountMessage.accountId
+    accountId:state.loginStore.accountMessage.accountId,
 });
 
 const mapDispatchToProps = dispatch => ({

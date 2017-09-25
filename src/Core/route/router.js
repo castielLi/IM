@@ -43,7 +43,6 @@ class Route {
             params = route.params || {},
             routeObj = this.routerMap[id],
             Component;
-            console.log(route,'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000')
         if (routeObj) {
             let ComponentInfo = routeObj[route.routeId]
             Component = ComponentInfo.component;
@@ -77,9 +76,9 @@ class Route {
 
 
     static push(props, route) {
-        InteractionManager.runAfterInteractions(() => {
+        //InteractionManager.runAfterInteractions(() => {
             props.navigator.push(route)
-        })
+        //})
     }
 
 

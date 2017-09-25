@@ -15,6 +15,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
+
 var sqLite = new SQLite();
 let db;
 class PhoneLogin extends ContainerComponent {
@@ -78,10 +79,11 @@ class PhoneLogin extends ContainerComponent {
 			//服务器验证
 			//...
 			//验证通过
-			//存储登录状态
-            AsyncStorage.setItem('loginStatus','true');
+			let account = { accountId:'1',avatar:''};
 			//修改loginStore登录状态
-			this.props.signIn({ accountId:'2',avatar:''})
+			this.props.signIn(account)
+			//存储登录状态
+            AsyncStorage.setItem('accountId',account.accountId);
 			//初始化IM
 			//..
 			//跳转到最近聊天列表
@@ -89,6 +91,7 @@ class PhoneLogin extends ContainerComponent {
 				key:'ChatDetail',
                 routeId: 'ChatDetail'
 			});
+			
 		}
 	}
 	

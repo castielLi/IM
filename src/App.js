@@ -10,7 +10,7 @@ import {
 } from 'react-redux';
 import { AppState , NetInfo} from 'react-native'
 import Root from './modules/Root/root'
-import configureStore from './store'
+import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
 import FMDB from './Core/DatabaseHelper'
 import BaseComponent from './Core/Component'
@@ -35,7 +35,7 @@ let network = new netWorking();
 export default function App() {
 
 
-    let store = configureStore();
+    let store = Store;
 
     //初始化app的http组件
     configureNetwork({
@@ -68,10 +68,10 @@ export default function App() {
 
     im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
 
-    im.getChatList((chatListArr) => {
-        //初始化chatRecordStore
-        store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
-    })
+    // im.getChatList((chatListArr) => {
+    //     //初始化chatRecordStore
+    //     store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
+    // })
 
 
     // let sendMessage = setInterval(function(){

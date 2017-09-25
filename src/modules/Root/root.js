@@ -39,7 +39,7 @@ class Root extends BaseComponent {
         // }
 
         if(Route.key === "ChatDetail"){
-            Route.params = {"client":"1"};
+            Route.params = {"client":"2"};
         }
 
         return this.route.getRoutePage(Route, navigator);

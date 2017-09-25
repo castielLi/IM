@@ -26,7 +26,18 @@ let middlewares = [
 let createAppStore = applyMiddleware(...middlewares)(createStore);
 
 
-export default function configureStore(onComplete){
+// export default function configureStore(onComplete){
+//     const store = autoRehydrate()(createAppStore)(reducers);
+//     let opt = {
+//         storage: AsyncStorage,
+//         transform: [],
+//         //whitelist: ['userStore'],
+//     };
+//     // persistStore(store, opt, onComplete);
+//     return store;
+// }
+
+function configureStore(onComplete){
     const store = autoRehydrate()(createAppStore)(reducers);
     let opt = {
         storage: AsyncStorage,
@@ -36,3 +47,8 @@ export default function configureStore(onComplete){
     // persistStore(store, opt, onComplete);
     return store;
 }
+
+export default configureStore();
+
+
+

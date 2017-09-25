@@ -38,34 +38,22 @@ export function updateMessage(message){
 	}
 }
 //打开app的时候，初始化chatRecordStore.ChatRecord,给所有会话列表里的client添加10条初始数据
-export function getChatRecord(chatListArr){
+export function getChatRecord(clientObj){
 	return (dispatch)=>{
-		let chatRecord = {};
-		let count = 0;
-		if(chatListArr.length>0){
-			chatListArr.forEach((v,i)=>{
-		        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-		        	count++;
-		        	let messageList = messages.map((message)=>{
-										return DtoMethods.sqlMessageToMessage(message);
-									})
-		            chatRecord[v.Client] = messageList;
-		            if(count>=chatListArr.length){
-
-		            	dispatch(initChatRecord(chatRecord))
-		            }
-				})
-			})
-		}else{
-			dispatch(initChatRecord(chatRecord))
-		}	
+        im.getRecentChatRecode(clientObj.Client,clientObj.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+        	let messageList = messages.map((message)=>{
+								return DtoMethods.sqlMessageToMessage(message);
+							})
+            dispatch(initChatRecord(clientObj.Client,messageList));
+		})
 	}
 }
 
-export function initChatRecord(chatRecord){
+export function initChatRecord(client,messageList){
 	return {
 		type:'INIT_CHATRECORD',
-        chatRecord,
+        client,
+        messageList
 	}
 }
 //从id截取用户名
