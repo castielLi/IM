@@ -68,10 +68,10 @@ export default function App() {
 
     im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
 
-    // im.getChatList((chatListArr) => {
-    //     //初始化chatRecordStore
-    //     store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
-    // })
+    im.getChatList((chatListArr) => {
+        //初始化chatRecordStore
+        store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
+    })
 
 
     // let sendMessage = setInterval(function(){
