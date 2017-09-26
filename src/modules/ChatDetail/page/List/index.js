@@ -60,20 +60,25 @@ class Chat extends Component {
         this.historyData2 = [];
         this.reduxData2 = [];
 
+        this.firstLoad = null;
+
         this.state = {
             dataSource: ds,
             dataSourceO: ds,
             showInvertible:false,
             isRefreshing:0,
-
         };
 
     }
 
     componentWillReceiveProps(newProps){
-        console.log(newProps,11111111111111111111111111111111111)
         let newData = newProps.chatRecordStore;
-        console.log(newData,'22222222222222222222222222222222222222222222')
+        if(!this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.firstLoad = ListConst.msgState.NOMORE;
+        }
+        else{
+            newData.pop();
+        }
 
         this.reduxData = newData.concat().reverse()
         this.shortData = this.historyData.concat(this.reduxData);
@@ -83,39 +88,52 @@ class Chat extends Component {
         this.shortData2 =  this.reduxData2.concat(this.historyData2);
         this.data2 = this.prepareMessages(this.shortData2);
 
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
-        });
+        if(this.firstLoad){
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+                isRefreshing:this.firstLoad,
+            },()=>{
+                this.firstLoad = null;
+            });
+        }
+        else{
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+            });
+        }
     }
 
     componentWillMount() {
         this.im = new IM()
-        let {chatRecordStore} = this.props;
-        let {isRefreshing} = this.state;
-        if(!chatRecordStore){
-            return;
-        }
-        else if(chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            isRefreshing = ListConst.msgState.NOMORE;
-        }
-        else{
-            chatRecordStore.pop();
-        }
-
-        this.reduxData = chatRecordStore.concat().reverse();
-        this.shortData = this.reduxData;
-        this.data = this.prepareMessages(this.shortData);
-
-        this.reduxData2 = chatRecordStore;
-        this.shortData2 = this.reduxData2;
-        this.data2 = this.prepareMessages(this.shortData2);
-
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-            isRefreshing,
-        });
+        // let {chatRecordStore} = this.props;
+        // let {isRefreshing} = this.state;
+        // if(!chatRecordStore){
+        //     return;
+        // }
+        // else if(chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+        //     isRefreshing = ListConst.msgState.NOMORE;
+        //     alert(chatRecordStore.length+'变成了 没有更多'+ InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER)
+        // }
+        // else{
+        //     chatRecordStore.pop();
+        // }
+        //
+        // alert(chatRecordStore)
+        // this.reduxData = chatRecordStore.concat().reverse();
+        // this.shortData = this.reduxData;
+        // this.data = this.prepareMessages(this.shortData);
+        //
+        // this.reduxData2 = chatRecordStore;
+        // this.shortData2 = this.reduxData2;
+        // this.data2 = this.prepareMessages(this.shortData2);
+        //
+        // this.setState({
+        //     dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+        //     dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+        //     isRefreshing,
+        // });
 
         this._gestureHandlers = {
             onStartShouldSetResponder: () => true,  //对触摸进行响应
@@ -126,20 +144,30 @@ class Chat extends Component {
             },
             //移动时作出的动作
             onResponderMove: (e)=>{
-                if(e.nativeEvent.pageY>this.move && this.state.isRefreshing == 0 && !this.state.showInvertible)
+                let {msgState} = ListConst;
+                if(e.nativeEvent.pageY>this.move && this.state.isRefreshing == msgState.END && !this.state.showInvertible)
                 {
                     this.setState({
                         isRefreshing : ListConst.msgState.LOADING,
                     })
                     let dataLength = this.shortData2.length;
-                    console.log('加载')
+                    let {client} = this.props;
                     let that = this;
                     setTimeout(()=>{
-                        this.im.getRecentChatRecode("li","private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+                        this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+
+                            let msgLength = messages.length;
+                            let noMore = msgState.END;
+
+                            if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                                messages.pop();
+                            }
+
                             let msg = messages.map((message)=>{
                                 return DtoMethods.sqlMessageToMessage(message);
                             });
                             let msg2 = msg.concat();
+
                             that.historyData = msg.reverse().concat(that.historyData);
                             that.shortData = that.historyData.concat(that.reduxData);
                             that.data = that.prepareMessages(that.shortData);
@@ -148,10 +176,17 @@ class Chat extends Component {
                             that.shortData2 = that.reduxData2.concat(that.historyData2);
                             that.data2 = that.prepareMessages(that.shortData2);
 
+                            if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                                noMore  = msgState.NOMORE;
+                            }
+                            else{
+                                noMore  = msgState.END;
+                            }
+
                             that.setState({
-                                isRefreshing : ListConst.msgState.END,
                                 dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
                                 dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
+                                isRefreshing:noMore,
                             })
                         })
                     },500)
@@ -205,39 +240,46 @@ class Chat extends Component {
     }
     oldMsg = () => {
         //console.log('oldMsg');
+        //alert(this.props.client+this.state.isRefreshing)
         let {msgState} = ListConst;
+        if(!this.firstOldMsg){
+            return this.firstOldMsg = true;
+        }
         if(this.state.isRefreshing === msgState.END){
             this.setState({
                 isRefreshing : msgState.LOADING
             })
             let dataLength = this.shortData2.length;
+            let {client} = this.props;
             let that = this;
             setTimeout(()=>{
-                this.im.getRecentChatRecode("li","private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+                this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
                     let msgLength = messages.length;
-                    messages.pop();
+                    let noMore = msgState.END;
+
+                    if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                        messages.pop();
+                    }
+
                     let msg = messages.map((message)=>{
                         return DtoMethods.sqlMessageToMessage(message);
-                    })
+                    });
 
                     that.historyData2 = that.historyData2.concat(msg);
-                    that.shortData2 = that.reduxData2.concat(that.historyData2)
+                    that.shortData2 = that.reduxData2.concat(that.historyData2);
                     that.data2 = that.prepareMessages(that.shortData2);
 
+                    if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                        noMore  = msgState.NOMORE;
+                    }
+                    else{
+                        noMore  = msgState.END;
+                    }
+
                     that.setState({
-                        dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys)
-                    },()=>{
-                        if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                            that.setState({
-                                isRefreshing : msgState.NOMORE
-                            })
-                        }
-                        else{
-                            that.setState({
-                                isRefreshing : msgState.END
-                            })
-                        }
+                        dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
+                        isRefreshing:noMore,
                     });
                 })
             },500)
@@ -370,6 +412,7 @@ class Chat extends Component {
                             removeClippedSubviews={false}
                             renderRow={this.renderRow}
                             style={{paddingHorizontal:10}}
+                            pageSize={10}
 
                             onEndReached={this.oldMsg}
                             onEndReachedThreshold={5}
