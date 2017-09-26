@@ -44,11 +44,11 @@ class AutoExpandingTextInput extends Component {
   _onSubmitEditing(){
     if(this.state.data){
       //初始化消息
-      let message = createTextMessageObj(this.state.data,'private','',this.props.client);
+      let message = createTextMessageObj(this.state.data,'private',this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
       im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(this.props.client,message);
+        this.props.addMessage(message);
         this.input.clear();
         //在表情栏提交后不会获得焦点
         if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
 });  
 
 const mapStateToProps = state => ({
-    thouchBarStore: state.thouchBarStore
+    thouchBarStore: state.thouchBarStore,
+    accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = (dispatch) => {

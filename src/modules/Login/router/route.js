@@ -38,7 +38,7 @@ class Route {
     }
 
 
-    static getRoutePage(route, navigator) { //这里route参数是一个对象{id:xx,routeId:xx,params:{xxx}}
+    static getRoutePage(route, navigator) { //这里route参数是一个对象{key:xx,routeId:xx,params:{xxx}}
         let id = route.key,
             params = route.params || {},
             routeObj = this.routerMap[id],
@@ -52,7 +52,6 @@ class Route {
             // Component = Error;
             // params = {message: '当前页面没有找到：' + id};
         }
-
         return <Component navigator={navigator} {...params} />
 
     }
@@ -76,9 +75,9 @@ class Route {
 
 
     static push(props, route) {
-        //InteractionManager.runAfterInteractions(() => {
+        InteractionManager.runAfterInteractions(() => {
             props.navigator.push(route)
-        //})
+        })
     }
 
 

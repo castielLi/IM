@@ -11,10 +11,16 @@
  * 路由配置项
  * 可配置默认参数 props: params
  */
-import Login from './Login/page/login'
+import Login from './Login/page/main'
+import PhoneLogin from './Login/page/phoneLogin'
+import EmailLogin from './Login/page/emailLogin'
+import Register from './Login/page/register'
+import FindPassword from './Login/page/findPassword'
+import ChangePassword from './Login/page/changePassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Camera from './Camera'
+import Start from './Start/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -23,14 +29,20 @@ export const MainPage = {
 
 
 export const InitialRoute = {
-    key: 'ChatDetail',
-    routeId: 'ChatDetail'
+    key: 'Start',
+    routeId: 'Start'
 }
 
 export const RouteMap = {
     'Root': {
         'Root': {
             component: ChatDetail,
+            params: {}
+        }
+    },
+    'Start': {
+        'Start': {
+            component: Start,
             params: {}
         }
     },
@@ -47,6 +59,32 @@ export const RouteMap = {
     'Login': {
         'Login': {
             component: Login,
+            params: {}
+        },
+        'PhoneLogin':{
+            component: PhoneLogin,
+            params: {}
+        },
+        'EmailLogin':{
+            component: EmailLogin,
+            params: {}
+        }
+    },
+    'Register':{
+        'Register': {
+            component: Register,
+            params: {}
+        }
+    },
+    'FindPassword':{
+         'FindPassword': {
+            component: FindPassword,
+            params: {}
+        }
+    },
+    'ChangePassword':{
+         'ChangePassword': {
+            component: ChangePassword,
             params: {}
         }
     },

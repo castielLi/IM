@@ -27,10 +27,10 @@ export default class ChatMessageText extends Component {
     };
 
     render() {
-        let {data} = this.props;
+        let {data,isMe} = this.props;
         let {Sender,Data,Receiver} = data.message.Data.Data;
         let dataArr = stringToContentArray(Data)
-        if(!Sender){
+        if(isMe){
             return(
                 <View style={styles.bubbleViewRight}>
                     <Text style={styles.contentText}>

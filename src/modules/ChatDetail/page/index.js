@@ -47,10 +47,10 @@ class ChatDetail extends ContainerComponent {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
 	componentWillMount(){
-		let client = 'li';
-		//如果是刚开聊的，之前redux里没记录的好友	
-		//if(!this.props.ChatRecord[client]){//
-			//this.props.addClient(client);
+		let client = this.props.client;
+		//如果是刚开聊的，chatRecordStore里没记录	
+		if(!this.props.ChatRecord[client]){//
+			this.props.addClient(client);
 			//新建文件夹
 			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
 			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + client;
@@ -68,7 +68,7 @@ class ChatDetail extends ContainerComponent {
 		      .catch((err) => {
 		        console.log(err.message);
 		      });
-		//}
+		}
 
 	}
 	render() {
@@ -78,8 +78,8 @@ class ChatDetail extends ContainerComponent {
     			<NavigationTopBar
 				// leftButton={this._leftButton}
 				title={this._title} />
-				<Chat ref={e => this.chat = e} client={'li'}/>
-				<ThouchBar client={'li'}></ThouchBar>
+				<Chat ref={e => this.chat = e} client={this.props.client}/>
+				<ThouchBar client={this.props.client}></ThouchBar>
     		</MyView>
 
 		);
@@ -99,7 +99,8 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(commonActions,dispatch)
+    ...bindActionCreators(commonActions,dispatch),
+
 }};
 
 export default connect(mapStateToProps,mapDispatchToProps)(ChatDetail);

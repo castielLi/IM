@@ -1,7 +1,7 @@
 import IM from '../index';
 import * as DtoMethods from '../dto/Common';
-import InitChatRecordConfig from '../dto/InitChatRecordConfig';
-
+import InitChatRecordConfig from './InitChatRecordConfig';
+import * as recentListAction from '../../../modules/RecentList/reducer/action';
 let im = new IM();
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
@@ -11,11 +11,16 @@ export function addClient(client){
 	}
 }
 //向chatRecordStore中某确定的聊天对象添加 一条消息
-export function addMessage(client,message){
-	return{
+export function addMessage(message){
+	let client = InterceptionClientFromId(message.MSGID);
+	return (dispatch,getState)=>{
+		dispatch({
 		type:'ADD_MESSAGE',
 		client,
 		message
+		})
+		//同时更新recentListStore
+		dispatch(recentListAction.updateRecentItemLastMessage(client,message.way,extractMessage(message)))
 	}
 }
 
@@ -38,30 +43,22 @@ export function updateMessage(message){
 	}
 }
 //打开app的时候，初始化chatRecordStore.ChatRecord,给所有会话列表里的client添加10条初始数据
-export function getChatRecord(chatListArr){
+export function getChatRecord(clientObj){
 	return (dispatch)=>{
-		let chatRecord = {};
-		let count = 0;
-	    chatListArr.forEach((v,i)=>{
-	        im.getRecentChatRecode(v.Client,v.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-	        	count++;
-	        	let messageList = messages.map((message)=>{
-									return DtoMethods.sqlMessageToMessage(message);
-								})
-	            chatRecord[v.Client] = messageList;
-	            if(count>=chatListArr.length){
-	            	dispatch(initChatRecord(chatRecord))
-	            }
-			})
+        im.getRecentChatRecode(clientObj.Client,clientObj.Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+        	let messageList = messages.map((message)=>{
+								return DtoMethods.sqlMessageToMessage(message);
+							})
+            dispatch(initChatRecord(clientObj.Client,messageList));
 		})
-		
 	}
 }
 
-export function initChatRecord(chatRecord){
+export function initChatRecord(client,messageList){
 	return {
 		type:'INIT_CHATRECORD',
-        chatRecord,
+        client,
+        messageList
 	}
 }
 //从id截取用户名
@@ -69,4 +66,17 @@ function InterceptionClientFromId(str){
     let client = '';
     client = str.slice(0,str.indexOf('_'));
     return client;
+}
+//消息提取
+function extractMessage(message){
+	switch (message.type) {
+        case 'text':
+        	return message.Data.Data.Data;
+        case 'image':
+        	return '[图片]';
+        case 'audio':
+        	return '[语音]';
+        default:
+        	return '';
+	}
 }

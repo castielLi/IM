@@ -147,7 +147,7 @@ class ThouchBarBoxTopBox extends Component {
     this.state.fileName = fileName;
     startTime = Date.now();
     recordTimer = setTimeout(() => {
-      audio = new Audio('li', fileName);
+      audio = new Audio(this.props.client, fileName);
       audio._record();
     }, 200)
     this.setState({
@@ -193,12 +193,12 @@ class ThouchBarBoxTopBox extends Component {
             FileType: 2,
             LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
-          }], '', this.props.client);
+          }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)
 
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage(this.props.client, message)
+            this.props.addMessage( message)
           }, [(tips) => {
             console.log(tips)
           }]);
@@ -266,6 +266,7 @@ class ThouchBarBoxTopBox extends Component {
     this._gestureHandlers = {
         onStartShouldSetResponder: () => true,  //对触摸进行响应
         onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
           this.setState({
@@ -446,7 +447,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  thouchBarStore: state.thouchBarStore
+  thouchBarStore: state.thouchBarStore,
+  accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({

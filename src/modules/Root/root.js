@@ -33,37 +33,40 @@ class Root extends BaseComponent {
         this.navigator = navigator;
         console.log('renderScene启动')
         //如果已登录，再点击登录页面或者再返回登录页面，将跳转到TestRefresh
-        if(Route.key === 'Login' && this.props.isLoggedIn === true){
-        	Route.routeId = 'TestRefresh';
-        	Route.key = 'TestRefresh';
+        // if(Route.key === 'Login' && this.props.isLoggedIn === true){
+        // 	Route.routeId = 'TestRefresh';
+        // 	Route.key = 'TestRefresh';
+        // }
+
+        if(Route.key === "ChatDetail"){
+            Route.params = {"client":"2"};
         }
+
         return this.route.getRoutePage(Route, navigator);
     }
 
 
     configureScene(route) {
-        console.log(route)
+        if (route.sceneConfig) {
+             return route.sceneConfig;
+         }
         return Navigator.SceneConfigs.FloatFromRight;
     }
     
     render() {
-        console.log('22222222')
         let initialRoute = this.route.initialRoute;
-        if(this.props.hasGetChatRecord){
-            return ( < Navigator initialRoute = {
-                    initialRoute
-                }
-                                 configureScene = {
-                                     this.configureScene.bind(this)
-                                 }
-                                 renderScene = {
-                                     this.renderScene.bind(this)
-                                 }
-                />
+            return ( < Navigator 
+                        initialRoute = {
+                            initialRoute
+                        }
+                        configureScene = {
+                            this.configureScene.bind(this)
+                        }
+                        renderScene = {
+                            this.renderScene.bind(this)
+                        }
+                    />
             );
-        }else{
-            return <Text>地球</Text>
-        }
 
     }
 }

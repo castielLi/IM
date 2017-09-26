@@ -35,7 +35,7 @@
 //         ]
 //     }
 // }
-import InitChatRecordConfig from '../dto/InitChatRecordConfig';
+import InitChatRecordConfig from './InitChatRecordConfig';
 const initialState = {
     hasGetChatRecord:false,//是否初始化聊天数据完毕
     ChatRecord: {}
@@ -43,7 +43,7 @@ const initialState = {
 export default function chatRecordStore(state = initialState, action) {
     switch (action.type) {
         case 'INIT_CHATRECORD':
-            state.ChatRecord = action.chatRecord;
+            state.ChatRecord[action.client] = action.messageList;
             return{
                 ...state,
                 hasGetChatRecord:true
@@ -67,26 +67,36 @@ export default function chatRecordStore(state = initialState, action) {
                 ...state
             };
         case 'UPDATE_MESSAGES_STATUS':
-            state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
-                if(itemArr.message.MSGID === action.MSGID){
-                    itemArr.status = action.status;
-                }
-            });
-            //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
-            state.ChatRecord[action.client] = state.ChatRecord[action.client].concat([]);
-            return {
-                ...state
-            };
+            if(state.ChatRecord[action.client]){
+                state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
+                    if(itemArr.message.MSGID === action.MSGID){
+                        itemArr.status = action.status;
+                    }
+                });
+                //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
+                state.ChatRecord[action.client] = state.ChatRecord[action.client].concat([]);
+                return {
+                    ...state
+                };
+            }else{
+                return state;
+            }            
+            
 
         case 'UPDATE_MESSAGES':
-            state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
-                if(itemArr.message.MSGID === action.MSGID){
-                    itemArr.message = action.message;
-                }
-            });
-            return {
-                ...state
-            };
+            if(state.ChatRecord[action.client]){
+                state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
+                    if(itemArr.message.MSGID === action.MSGID){
+                        itemArr.message = action.message;
+                    }
+                });
+                return {
+                    ...state
+                };
+            }else{
+                return state;
+            }      
+            
 
         default:
             return state;
