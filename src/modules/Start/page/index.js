@@ -22,37 +22,32 @@ class Start extends ContainerComponent {
 
 
     componentWillMount(){
-
-            AsyncStorage.getItem('accountId')
+        AsyncStorage.getItem('accountId')
             .then((value) => {
                 //已经登录
                 if(value){
-                    alert('你的账号：'+value)
-
                     let im = new IM();
                     im.setSocket(value);
-                    im.addAllUnsendMessageToSendQueue();
-
                     this.props.signIn({ accountId:value,avatar:''})
                     //切换至最近聊天列表
                     this.route.push(this.props,{
                         key:'RecentList',
                         routeId: 'RecentList'
                     });
-                    
-                //未登录
+
+                    //未登录
                 }else{
                     //切换至登录页面
                     this.route.push(this.props,{
                         key:'Login',
                         routeId: 'Login'
                     });
-                }                
+                }
             }).catch((error) => {
-                alert(error)
-                    })
-
+            alert(error)
+        })
     }
+
     render() {
 
         return (

@@ -14,6 +14,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
+import IM from '../../../Core/IM'
 
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
@@ -72,9 +73,17 @@ class PhoneLogin extends ContainerComponent {
 			//服务器验证
 			//...
 			//验证通过
-			let account = { accountId:'1',avatar:''};
+			let account = { accountId:'2',avatar:''};
 			//修改loginStore登录状态
 			this.props.signIn(account)
+
+
+			//初始化im
+            let im = new IM();
+            im.setSocket("2");
+
+
+
 			//存储登录状态
             AsyncStorage.setItem('accountId',account.accountId);
 			//初始化IM
