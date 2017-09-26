@@ -13,10 +13,12 @@ import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
 import * as Helper from '../Helper'
 import MessageType from './dto/MessageType'
+import netWorking from '../Networking/Network'
 
 
 
 let _socket = new Connect();
+let _network = new netWorking();
 
 //网络状态
 let networkStatus = "";
@@ -53,7 +55,7 @@ let loopState;
 let netState;
 
 //假设账号token就是1
-let ME = "1";
+let ME = "";
 
 let currentObj = undefined;
 
@@ -92,6 +94,7 @@ export default class IM {
 
     setSocket(account){
         _socket.startConnect(account);
+        ME = account;
     }
 
 
@@ -572,6 +575,8 @@ export default class IM {
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
             //存入数据库
             storeSqlite.storeRecMessage(message)
+
+
 
             AppReceiveMessageHandle(message);
         }}
