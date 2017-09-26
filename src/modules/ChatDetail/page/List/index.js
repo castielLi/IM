@@ -25,7 +25,7 @@ import ChatMessage from './ChatMessage';
 
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-import InitChatRecordConfig from '../../../../Core/IM/dto/InitChatRecordConfig';
+import InitChatRecordConfig from '../../../../Core/IM/redux/InitChatRecordConfig';
 import Ces from './ces';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
@@ -88,18 +88,6 @@ class Chat extends Component {
             dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
         });
     }
-
-    // shouldComponentUpdate(nextProps,nextState) {
-    //     // let newData = nextProps.chatRecordStore;
-    //     // if(newData != this.props.chatRecordStore)
-    //     // console.log(newData,11111111111111111111111111111111111)
-    //     // this.data = newData;
-    //     // this.data2 = this.prepareMessages(newData.concat().reverse());
-    //     // this.setState({
-    //     //     dataSource: this.state.dataSource.cloneWithRows(this.data),
-    //     //     dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
-    //     // });
-    // }
 
     componentWillMount() {
         this.im = new IM()
@@ -192,7 +180,7 @@ class Chat extends Component {
         if(isSender == this.props.accountId){
             return(
                 <View style={styles.itemViewRight}>
-                    <ChatMessage rowData={row} userID={this.props.client}/>
+                    <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
                     <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
                 </View>
             )
@@ -201,7 +189,7 @@ class Chat extends Component {
             return(
                 <View style={styles.itemView}>
                     <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj3w0emfcbj20u011iabm.jpg'}} style={styles.userImage}/>
-                    <ChatMessage rowData={row} userID={this.props.client}/>
+                    <ChatMessage style={styles.bubbleView} rowData={row}/>
                 </View>
             )
         }
@@ -449,19 +437,11 @@ const styles = StyleSheet.create({
         alignSelf:'flex-start',
         marginLeft:10,
         backgroundColor: '#fff',
-        maxWidth:width-150,
-        padding:12,
-        justifyContent:'center',
-        borderRadius:5
     },
     bubbleViewRight:{
         alignSelf:'flex-start',
         marginRight:10,
         backgroundColor: '#98E165',
-        maxWidth:width-150,
-        padding:10,
-        justifyContent:'center',
-        borderRadius:5
     },
     contentText:{
         includeFontPadding:false,
