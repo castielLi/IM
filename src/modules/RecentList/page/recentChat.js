@@ -68,7 +68,7 @@ class RecentChat extends ContainerComponent {
 					{
 						text:'删除',
 						type:'delete',
-						onPress:function(){alert('删除了当前行!')}
+						onPress:this.props.deleteRecentItem.bind(this,rowID)
 					},]
 				}
 				rowID = {rowID}
