@@ -12,7 +12,6 @@ import { AppState , NetInfo} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
-import FMDB from './Core/DatabaseHelper'
 import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
@@ -41,9 +40,6 @@ export default function App() {
     configureNetwork({
         "Content-Type": "application/json"
     }, 'fetch', false)
-
-    //初始化app的database
-    FMDB.initDatabase()
 
 
     //初始化路由表
