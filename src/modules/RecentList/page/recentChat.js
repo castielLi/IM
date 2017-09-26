@@ -49,10 +49,16 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-	        this.props.initRecentList(chatListArr)
+			if(chatListArr.length>0){
+				
+				this.props.initRecentList(chatListArr)
+			}else{
+				this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
+			}
+	        
 	    })
-		//this.props.initRecentList([{Client:'2',Type:'pravite',LastMessage:'hahahaha'},])
 	}
+
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
 	}
@@ -225,7 +231,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    recentListStore:state.recentListStore
+    recentListStore:state.recentListStore,
+    accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = (dispatch) => {

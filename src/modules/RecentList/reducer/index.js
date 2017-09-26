@@ -2,7 +2,6 @@
 
 const initialState = {
     data:[
-        {Client:'li',Type:'pravite',LastMessage:'hahahaha'},
     ]
 };
 

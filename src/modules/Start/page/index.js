@@ -30,7 +30,7 @@ class Start extends ContainerComponent {
                     alert('你的账号：'+value)
 
                     let im = new IM();
-                    im.setSocket("1");
+                    im.setSocket(value);
                     im.addAllUnsendMessageToSendQueue();
 
                     this.props.signIn({ accountId:value,avatar:''})
