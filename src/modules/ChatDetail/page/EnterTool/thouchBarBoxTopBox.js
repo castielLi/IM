@@ -32,6 +32,7 @@ import {
   createResourceMessageObj
 } from './createMessageObj';
 import IM from '../../../../Core/IM/index';
+import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
@@ -190,7 +191,7 @@ class ThouchBarBoxTopBox extends Component {
             })
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
-            FileType: 2,
+            FileType: ResourceTypeEnum.audio,
             LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
           }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)

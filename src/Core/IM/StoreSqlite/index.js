@@ -567,13 +567,13 @@ function getContentByMessage(message){
     let content = "";
     if(message.Resource != null && message.Resource.length > 0 && message.Resource.length < 2){
         switch (message.Resource[0].FileType){
-            case ResourceTypeEnum.Image:
+            case ResourceTypeEnum.image:
                 content = "[图片]";
                 break;
-            case ResourceTypeEnum.Audio:
+            case ResourceTypeEnum.audio:
                 content = "[音频]";
                 break;
-            case ResourceTypeEnum.Video:
+            case ResourceTypeEnum.video:
                 content = "[视频]";
                 break;
         }
