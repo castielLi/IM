@@ -12,18 +12,29 @@ export function addClient(client){
 }
 //向chatRecordStore中某确定的聊天对象添加 一条消息
 export function addMessage(message){
-	let client = InterceptionClientFromId(message.MSGID);
+	//let client = InterceptionClientFromId(message.MSGID);
 	return (dispatch,getState)=>{
 		dispatch({
 		type:'ADD_MESSAGE',
-		client,
+		client:message.Data.Data.Receiver,
 		message
 		})
 		//同时更新recentListStore
-		dispatch(recentListAction.updateRecentItemLastMessage(client,message.way,extractMessage(message)))
+		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message)))
 	}
 }
-
+export function receiveMessage(message){
+	//let client = InterceptionClientFromId(message.MSGID);
+	return (dispatch,getState)=>{
+		dispatch({
+		type:'RECEIVE_MESSAGE',
+		client:message.Data.Data.Sender,
+		message
+		})
+		//同时更新recentListStore
+		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message)))
+	}
+}
 //修改某条消息的状态 {status:'修改该状态',message:{...}}
 export function updateMessageStatus(status,MSGID){
 	return{

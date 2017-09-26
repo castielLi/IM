@@ -70,7 +70,23 @@ export default function chatRecordStore(state = initialState, action) {
             }else{
                 return state;
             }
-            
+        
+        case 'RECEIVE_MESSAGE':
+            //若超过50条，删除最旧的一条消息
+            if(state.ChatRecord[action.client]){
+                if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
+                    state.ChatRecord[action.client].pop();
+                }
+                state.ChatRecord[action.client].unshift({status:'loading',message:action.message});
+                 //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
+                state.ChatRecord[action.client] = state.ChatRecord[action.client].concat([]);
+                 return {
+                    ...state
+                };
+            }else{
+                return state;
+            }
+             
         case 'UPDATE_MESSAGES_STATUS':
             if(state.ChatRecord[action.client]){
                 state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {

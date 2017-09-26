@@ -58,16 +58,12 @@ export default function App() {
 
 
     let handleRecieveMessage = function(message){
-        store.dispatch(ActionForChatRecordStore.addMessage(message))
+        store.dispatch(ActionForChatRecordStore.receiveMessage(message))
     }
 
 
     im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
 
-    im.getChatList((chatListArr) => {
-        //初始化chatRecordStore
-        store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
-    })
 
 
     // let sendMessage = setInterval(function(){
