@@ -44,6 +44,7 @@ class RecentChat extends ContainerComponent {
 			
 		};
 		this.goToChatDetail = this.goToChatDetail.bind(this);
+		this.deleteSomeRow = this.deleteSomeRow.bind(this);
 	}
 	componentWillMount(){
 		//初始化recentListStore
@@ -54,6 +55,10 @@ class RecentChat extends ContainerComponent {
 	}
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
+	}
+	deleteSomeRow(rowID,rowData){
+		this.props.deleteRecentItem(rowID);
+		//删除rowData对应的数据库
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
@@ -68,7 +73,7 @@ class RecentChat extends ContainerComponent {
 					{
 						text:'删除',
 						type:'delete',
-						onPress:this.props.deleteRecentItem.bind(this,rowID)
+						onPress:this.deleteSomeRow.bind(this,rowID,rowData)
 					},]
 				}
 				rowID = {rowID}

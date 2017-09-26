@@ -77,7 +77,7 @@ class ChatDetail extends ContainerComponent {
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<NavigationTopBar
-				// leftButton={this._leftButton}
+				leftButton={this._leftButton}
 				title={this._title} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
 				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
