@@ -15,7 +15,7 @@ import ChatMessageSound from './ChatMessageSound';
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessage extends Component {
+export default class ChatMessage extends Component {
     constructor(props){
         super(props)
 
@@ -27,16 +27,14 @@ class ChatMessage extends Component {
     static propTypes = {
     };
 
-    typeOption = (data)=> {
-        let {type,Data} = data.message;
-        let {userID} = this.props;
-        let isMe = Data.Data.Sender == this.props.accountId;
+    typeOption = (data,style)=> {
+        let {type} = data.message;
         switch (type) {
             case 'text': {
                 return (
                     <ChatMessageText
                         data={data}
-                        isMe={isMe}
+                        style={style}
                     />
                 )
             }
@@ -45,7 +43,7 @@ class ChatMessage extends Component {
                 return (
                     <ChatMessageImage
                         data={data}
-                        isMe={isMe}
+                        style={style}
                     />
                 )
             }
@@ -54,7 +52,7 @@ class ChatMessage extends Component {
                 return (
                     <ChatMessageSound
                         data={data}
-                        isMe={isMe}
+                        style={style}
                     />
                 )
             }
@@ -63,9 +61,9 @@ class ChatMessage extends Component {
     };
 
     render() {
-        let {rowData} = this.props;
+        let {rowData,style} = this.props;
         return (
-            this.typeOption(rowData)
+            this.typeOption(rowData,style)
         )
     }
 }
@@ -76,8 +74,8 @@ const styles = StyleSheet.create({
 
 });
 
-const mapStateToProps = (state,props) => ({
-    accountId:state.loginStore.accountMessage.accountId
-});
-
-export default connect(mapStateToProps)(ChatMessage);
+// const mapStateToProps = (state,props) => ({
+//     accountId:state.loginStore.accountMessage.accountId
+// });
+//
+// export default connect(mapStateToProps)(ChatMessage);
