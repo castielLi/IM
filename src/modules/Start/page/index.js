@@ -22,7 +22,7 @@ class Start extends ContainerComponent {
 
 
     componentWillMount(){
-        setTimeout(()=>{
+
             AsyncStorage.getItem('accountId')
             .then((value) => {
                 //已经登录
@@ -51,7 +51,7 @@ class Start extends ContainerComponent {
             }).catch((error) => {
                 alert(error)
                     })
-        },1000)
+
     }
     render() {
 
