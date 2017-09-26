@@ -23,26 +23,17 @@ let heartBeatCode = undefined;
 
 export default class Connect extends Component{
 
-    constructor(token) {
+    constructor() {
         super();
         if (__instance()) return __instance();
 
         __instance(this);
 
-        _token = token;
-
         currentObj = this;
 
-        // "/socket.io/?EIO=4&transport=websocket"
-        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token );
-        // this.webSocket = new WebSocket(configs.serverUrl);
-        console.log("account token:" + token);
         this.reConnectNet = this.reConnectNet.bind(this);
 
         this.addEventListenner = this.addEventListenner.bind(this);
-
-        this.addEventListenner();
-
 
     }
 
@@ -109,6 +100,11 @@ export default class Connect extends Component{
         onRecieveMessage = callback;
     }
 
+    startConnect(token){
+        _token = token;
+        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
+        this.addEventListenner();
+    }
 
     reConnectNet(){
         // + "/socket.io/?EIO=4&transport=websocket"

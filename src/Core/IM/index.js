@@ -16,7 +16,7 @@ import MessageType from './dto/MessageType'
 
 
 
-let _socket = new Connect("1");
+let _socket = new Connect();
 
 //网络状态
 let networkStatus = "";
@@ -90,6 +90,10 @@ export default class IM {
         currentObj = this;
     }
 
+    setSocket(account){
+        _socket.startConnect(account);
+    }
+
 
     //赋值外部IM接口
     connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle){
@@ -109,7 +113,7 @@ export default class IM {
         this.beginRunLoop();
 
         //获取之前没有发送出去的消息重新加入消息队列
-        this.addAllUnsendMessageToSendQueue();
+        // this.addAllUnsendMessageToSendQueue();
     }
 
     stopIM(){

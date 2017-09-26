@@ -12,7 +12,6 @@ import { AppState , NetInfo} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
-import FMDB from './Core/DatabaseHelper'
 import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
@@ -42,9 +41,6 @@ export default function App() {
         "Content-Type": "application/json"
     }, 'fetch', false)
 
-    //初始化app的database
-    FMDB.initDatabase()
-
 
     //初始化路由表
     Route.initRouteMap(router);
@@ -68,10 +64,10 @@ export default function App() {
 
     im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
 
-    // im.getChatList((chatListArr) => {
-    //     //初始化chatRecordStore
-    //     store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
-    // })
+    im.getChatList((chatListArr) => {
+        //初始化chatRecordStore
+        store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
+    })
 
 
     // let sendMessage = setInterval(function(){

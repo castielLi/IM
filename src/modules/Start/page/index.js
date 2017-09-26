@@ -8,6 +8,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
+import IM from '../../../Core/IM'
 
 class Start extends ContainerComponent {
     constructor(){
@@ -21,35 +22,32 @@ class Start extends ContainerComponent {
 
 
     componentWillMount(){
-        setTimeout(()=>{
-            AsyncStorage.getItem('accountId')
+        AsyncStorage.getItem('accountId')
             .then((value) => {
                 //已经登录
-                if(value){
-                    alert('你的账号：'+value)
-                    //初始化IM
-                    //...
-                    //
+                if(value === 's'){
+                    let im = new IM();
+                    im.setSocket(value);
                     this.props.signIn({ accountId:value,avatar:''})
                     //切换至最近聊天列表
                     this.route.push(this.props,{
                         key:'RecentList',
                         routeId: 'RecentList'
                     });
-                    
-                //未登录
+
+                    //未登录
                 }else{
                     //切换至登录页面
                     this.route.push(this.props,{
                         key:'Login',
                         routeId: 'Login'
                     });
-                }                
+                }
             }).catch((error) => {
-                alert(error)
-                    })
-        },1000)
+            alert(error)
+        })
     }
+
     render() {
 
         return (

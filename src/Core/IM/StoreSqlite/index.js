@@ -2,7 +2,6 @@
  * Created by apple on 2017/8/9.
  */
 import { Platform, StyleSheet } from 'react-native';
-import FMDB from '../../DatabaseHelper/index'
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
 import * as commonMethods from './formatQuerySql'

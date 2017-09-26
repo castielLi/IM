@@ -75,7 +75,9 @@ function extractMessage(message){
         case 'image':
         	return '[图片]';
         case 'audio':
-        	return '[语音]';
+        	return '[音频]';
+        case 'video':
+        	return '[视频]';
         default:
         	return '';
 	}
