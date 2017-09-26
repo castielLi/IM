@@ -52,8 +52,8 @@ class ChatDetail extends ContainerComponent {
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
 			//新建文件夹
-			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
-			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + client;
+			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + type + '-' +client;
+			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + type + '-' +client;
 			RNFS.mkdir(audioPath)
 		      .then((success) => {
 		        console.log('create new dir success!');
@@ -80,7 +80,7 @@ class ChatDetail extends ContainerComponent {
 				// leftButton={this._leftButton}
 				title={this._title} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
-				<ThouchBar client={this.props.client}></ThouchBar>
+				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>
 
 		);
