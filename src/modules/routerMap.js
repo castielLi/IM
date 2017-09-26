@@ -21,6 +21,7 @@ import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Camera from './Camera'
 import Start from './Start/page'
+import RecentList from './RecentList/page/recentChat'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -96,6 +97,11 @@ export const RouteMap = {
     },'Camera': {
         'Camera': {
             component: Camera,
+            params: {}
+        }
+    },'RecentList': {
+        'RecentList': {
+            component: RecentList,
             params: {}
         }
     },

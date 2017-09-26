@@ -47,7 +47,7 @@ class ChatDetail extends ContainerComponent {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
 	componentWillMount(){
-		let client = this.props.client;
+		let {client,type} = this.props;
 		//如果是刚开聊的，chatRecordStore里没记录	
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
@@ -69,7 +69,8 @@ class ChatDetail extends ContainerComponent {
 		        console.log(err.message);
 		      });
 		}
-
+		//初始化chatRecordStore
+		this.props.getChatRecord(client,type)
 	}
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;

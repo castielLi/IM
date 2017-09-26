@@ -38,9 +38,7 @@ class Root extends BaseComponent {
         // 	Route.key = 'TestRefresh';
         // }
 
-        if(Route.key === "ChatDetail"){
-            Route.params = {"client":"2"};
-        }
+
 
         return this.route.getRoutePage(Route, navigator);
     }

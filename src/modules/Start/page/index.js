@@ -33,8 +33,8 @@ class Start extends ContainerComponent {
                     this.props.signIn({ accountId:value,avatar:''})
                     //切换至最近聊天列表
                     this.route.push(this.props,{
-                        key:'ChatDetail',
-                        routeId: 'ChatDetail'
+                        key:'RecentList',
+                        routeId: 'RecentList'
                     });
                     
                 //未登录
