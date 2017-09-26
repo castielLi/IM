@@ -50,7 +50,7 @@ class RecentChat extends ContainerComponent {
 		im.getChatList((chatListArr) => {
 	        this.props.initRecentList(chatListArr)
 	    })
-		//this.props.initRecentList([{Client:'li',Type:'pravite',LastMessage:'hahahaha'},])
+		//this.props.initRecentList([{Client:'2',Type:'pravite',LastMessage:'hahahaha'},])
 	}
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
