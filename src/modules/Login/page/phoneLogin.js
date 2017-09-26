@@ -72,7 +72,7 @@ class PhoneLogin extends ContainerComponent {
 			//服务器验证
 			//...
 			//验证通过
-			let account = { accountId:'1',avatar:''};
+			let account = { accountId:'2',avatar:''};
 			//修改loginStore登录状态
 			this.props.signIn(account)
 			//存储登录状态
