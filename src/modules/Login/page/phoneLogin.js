@@ -90,8 +90,8 @@ class PhoneLogin extends ContainerComponent {
 			//..
 			//跳转到最近聊天列表
 			this.route.push(this.props,{
-				key:'RecentList',
-                routeId: 'RecentList'
+				key:'MainTabbar',
+                routeId: 'MainTabbar'
 			});
 			
 		}

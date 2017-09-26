@@ -41,6 +41,7 @@ class TabBarComponent extends DisplayComponent {
                     onPress={() => this.setState({ selectedTab: 'home' })}>
                     {this.route.getComponentByRouteId("MainTabbar","TabOne")}
                 </TabNavigator.Item>
+
                 <TabNavigator.Item
                     selected={this.state.selectedTab === 'profile'}
                     title="Profile"
@@ -52,8 +53,38 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: 'home' })}>
+                    onPress={() => this.setState({ selectedTab: 'profile' })}>
                     {this.route.getComponentByRouteId("MainTabbar","TabTwo")}
+                </TabNavigator.Item>
+
+                <TabNavigator.Item
+                    selected={this.state.selectedTab === 'contacts'}
+                    title="Contacts"
+                    renderIcon={() =>  <Image source={require('../resources/action.png')}
+                                              style={[styles.icon]}
+                                              resizeMode={Image.resizeMode.contain}
+                    />}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/action.png')}
+                                                      style={[styles.icon]}
+                                                      resizeMode={Image.resizeMode.contain}
+                    />}
+                    onPress={() => this.setState({ selectedTab: 'contacts' })}>
+                    {this.route.getComponentByRouteId("MainTabbar","TabThree")}
+                </TabNavigator.Item>
+
+                <TabNavigator.Item
+                    selected={this.state.selectedTab === 'me'}
+                    title="Me"
+                    renderIcon={() =>  <Image source={require('../resources/action.png')}
+                                              style={[styles.icon]}
+                                              resizeMode={Image.resizeMode.contain}
+                    />}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/action.png')}
+                                                      style={[styles.icon]}
+                                                      resizeMode={Image.resizeMode.contain}
+                    />}
+                    onPress={() => this.setState({ selectedTab: 'me' })}>
+                    {this.route.getComponentByRouteId("MainTabbar","TabFour")}
                 </TabNavigator.Item>
             </TabNavigator>
         )

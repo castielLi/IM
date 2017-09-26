@@ -136,7 +136,7 @@ class RecentChat extends ContainerComponent {
 					>
 					</ListView>
 				</View>
-				<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>
+				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
 			</View>
 		)
 	}
