@@ -24,13 +24,7 @@ import {
 import IM from '../../../Core/IM';
 let im = new IM();
 class RecentChat extends ContainerComponent {
-	componentWillMount() {
-		Platform.OS === 'ios' ? this.setState({
-			isAndroid: true
-		}) : this.setState({
-			isAndroid: false
-		})
-	}
+
 	constructor(props) {
 		super(props);
 		var ds = new ListView.DataSource({
@@ -47,6 +41,11 @@ class RecentChat extends ContainerComponent {
 		this.deleteSomeRow = this.deleteSomeRow.bind(this);
 	}
 	componentWillMount(){
+		Platform.OS === 'ios' ? this.setState({
+			isAndroid: true
+		}) : this.setState({
+			isAndroid: false
+		})
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
 			if(chatListArr.length>0){

@@ -22,6 +22,7 @@ import ChatDetail from './ChatDetail/page'
 import Camera from './Camera'
 import Start from './Start/page'
 import RecentList from './RecentList/page/recentChat'
+import Contacts from './Contacts/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -102,6 +103,11 @@ export const RouteMap = {
     },'RecentList': {
         'RecentList': {
             component: RecentList,
+            params: {}
+        }
+    },'Contacts': {
+        'Contacts': {
+            component: Contacts,
             params: {}
         }
     },
