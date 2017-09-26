@@ -21,6 +21,7 @@ import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/IM/redux/action';
 import {createResourceMessageObj} from './createMessageObj';
 import IM from '../../../../Core/IM/index';
+import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
@@ -62,7 +63,7 @@ imagePikerCallBack(response){
 
     //初始化消息
     let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
-    let message = createResourceMessageObj('image','private',[{FileType:0,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
+    let message = createResourceMessageObj('image','private',[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
     im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore

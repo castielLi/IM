@@ -53,7 +53,7 @@ let loopState;
 let netState;
 
 //假设账号token就是1
-let ME = "1";
+let ME = "";
 
 let currentObj = undefined;
 
@@ -92,6 +92,7 @@ export default class IM {
 
     setSocket(account){
         _socket.startConnect(account);
+        ME = account;
     }
 
 
