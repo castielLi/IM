@@ -26,15 +26,8 @@ class Start extends ContainerComponent {
             .then((value) => {
                 //已经登录
                 if(value){
-
                     let im = new IM();
-<<<<<<< Updated upstream
                     im.setSocket(value);
-=======
-                    im.setSocket("2");
->>>>>>> Stashed changes
-                    im.addAllUnsendMessageToSendQueue();
-
                     this.props.signIn({ accountId:value,avatar:''})
                     //切换至最近聊天列表
                     this.route.push(this.props,{
