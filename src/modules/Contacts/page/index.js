@@ -24,15 +24,15 @@ var originData = [
 			'title':'A',
 			'client': [{
 					'name': "1",
-					'type':"pravite",
+					'type':"private",
 					'pic':''
 				}, {
 					'name': "阿玛尼",
-					'type':"pravite",
+					'type':"private",
 					'pic':''
 				}, {
 					'name': "爱多多",
-					'type':"pravite",
+					'type':"private",
 					'pic':''
 				}]
 			},
@@ -40,15 +40,63 @@ var originData = [
 			'title':'B',
 			'client': [{
 					'name': "2",
-					'type':"pravite",
+					'type':"private",
 					'pic':''
 				}, {
 					'name': "保持",
-					'type':"pravite",
+					'type':"private",
 					'pic':''
 				}, {
 					'name': "保时捷",
-					'type':"pravite",
+					'type':"private",
+					'pic':''
+				}]
+			},
+			{
+			'title':'C',
+			'client': [{
+					'name': "草料",
+					'type':"private",
+					'pic':''
+				}, {
+					'name': "保持",
+					'type':"private",
+					'pic':''
+				}, {
+					'name': "保时捷",
+					'type':"private",
+					'pic':''
+				},{
+					'name': "保持",
+					'type':"private",
+					'pic':''
+				}, {
+					'name': "保时捷",
+					'type':"private",
+					'pic':''
+				},{
+					'name': "保持",
+					'type':"private",
+					'pic':''
+				}, {
+					'name': "保时捷",
+					'type':"private",
+					'pic':''
+				},{
+					'name': "保持",
+					'type':"private",
+					'pic':''
+				}, {
+					'name': "保时捷",
+					'type':"private",
+					'pic':''
+				},{
+					'name': "保持",
+					'type':"private",
+					'pic':''
+				}, {
+					'name': "保时捷",
+					'type':"private",
 					'pic':''
 				}]
 			}
@@ -129,8 +177,7 @@ class Contacts extends ContainerComponent {
 		this.formateData(originData);
 	}
 	goToChat = (item)=>{
-		this.props.addRecentItem(item.name,item.type);
-		this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail'});
+		this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
 	}
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.name;

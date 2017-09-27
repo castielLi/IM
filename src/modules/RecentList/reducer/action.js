@@ -15,15 +15,6 @@ export function deleteRecentItem(index){
     };
 
 }
-//增加一个item
-export function addRecentItem(client,type){
-    return {
-        type: 'ADD_RECENTITEM',
-        Type:type,
-        Client:client,
-    };
-
-}
 //更新某个item最后一条数据
 export function updateRecentItemLastMessage(client,type,lastMessage){
     return {
