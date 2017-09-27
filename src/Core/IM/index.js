@@ -576,7 +576,9 @@ export default class IM {
             //存入数据库
             storeSqlite.storeRecMessage(message)
 
+            console.log('receiveMessageOpreator:  ',message)
 
+            //todo : 添加非文字类型的消息的下载程序
 
             AppReceiveMessageHandle(message);
         }}

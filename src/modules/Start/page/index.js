@@ -26,13 +26,14 @@ class Start extends ContainerComponent {
             .then((value) => {
                 //已经登录
                 if(value){
+                    alert(value)
                     let im = new IM();
                     im.setSocket(value);
                     this.props.signIn({ accountId:value,avatar:''})
                     //切换至最近聊天列表
                     this.route.push(this.props,{
-                        key:'RecentList',
-                        routeId: 'RecentList'
+                        key:'MainTabbar',
+                        routeId: 'MainTabbar'
                     });
 
                     //未登录
