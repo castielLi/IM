@@ -15,117 +15,45 @@ import {
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as recentListActions from '../../RecentList/reducer/action';
 var {height, width} = Dimensions.get('window');
 var originData = [
 		{
 			'title':'A',
 			'client': [{
-					'name': "阿童木",
+					'name': "1",
+					'type':"pravite",
 					'pic':''
 				}, {
 					'name': "阿玛尼",
+					'type':"pravite",
 					'pic':''
 				}, {
 					'name': "爱多多",
+					'type':"pravite",
 					'pic':''
 				}]
 			},
 			{
 			'title':'B',
 			'client': [{
-					'name': "办事处",
+					'name': "2",
+					'type':"pravite",
 					'pic':''
 				}, {
 					'name': "保持",
+					'type':"pravite",
 					'pic':''
 				}, {
 					'name': "保时捷",
+					'type':"pravite",
 					'pic':''
 				}]
-			},{
-			'title':'C',
-			'client': [{
-					'name': "参数",
-					'pic':''
-				}, {
-					'name': "处理",
-					'pic':''
-				}, {
-					'name': "长安",
-					'pic':''
-				}]
-			},{
-			'title':'D',
-			'client': [{
-					'name': "德行",
-					'pic':''
-				}, {
-					'name': "地方",
-					'pic':''
-				}, {
-					'name': "德国",
-					'pic':''
-				}]
-			},{
-			'title':'E',
-			'client': [{
-					'name': "任务发图",
-					'pic':''
-				}, {
-					'name': "耳机",
-					'pic':''
-				}, {
-					'name': "二二",
-					'pic':''
-				}]
-			},{
-			'title':'F',
-			'client': [{
-					'name': "分工",
-					'pic':''
-				}, {
-					'name': "返回",
-					'pic':''
-				}, {
-					'name': "发现",
-					'pic':''
-				}]
-			},{
-			'title':'G',
-			'client': [{
-					'name': "分工",
-					'pic':''
-				}, {
-					'name': "返回",
-					'pic':''
-				}, {
-					'name': "发现",
-					'pic':''
-				}]
-			},{
-			'title':'H',
-			'client': [{
-					'name': "分工",
-					'pic':''
-				}, {
-					'name': "返回",
-					'pic':''
-				}, {
-					'name': "发现",
-					'pic':''
-				}]
-			},{
-			'title':'I',
-			'client': [{
-					'name': "index",
-					'pic':''
-				}, {
-					'name': "ice",
-					'pic':''
-				},]
-			},
+			}
 	]
-export default class Contacts extends ContainerComponent {
+class Contacts extends ContainerComponent {
 
 	constructor(props) {
 		super(props);
@@ -135,6 +63,7 @@ export default class Contacts extends ContainerComponent {
 				data:[]}
 			],
 			sections:[],
+			totalItemLength:0,
 			//右边title导航
 			rightSectionItemModalIndex:''
 		}
@@ -143,15 +72,18 @@ export default class Contacts extends ContainerComponent {
 	formateData =(originData)=>{
 		var clientInfos = [];
 		var clientSections = [];
+		let totalItemLength = 0;
 		originData.forEach((v,i)=>{
 			let obj = {};
 			obj.key = v.title;
 			obj.data = v.client;
+			totalItemLength+=v.client.length;
 			clientInfos.push(obj);
 			clientSections.push(v.title); 
 		})
 		this.setState({
 			data:clientInfos,
+			totalItemLength,
 			sections:clientSections
 		})
 	}
@@ -184,8 +116,7 @@ export default class Contacts extends ContainerComponent {
 		                 
 		                 ref={'sectionItem' + i}>
 	                    <View style={styles.rightSectionView}>
-		                    <Text style={styles.rightSectionItem}>{this.state.sections[i]}</Text>
-		                    
+		                    <Text style={styles.rightSectionItem}>{this.state.sections[i]}</Text>                 
 	                    </View>
 	                </TouchableWithoutFeedback>
 	                <Text style={[styles.rightSectionItemModal,{right:i===this.state.rightSectionItemModalIndex?50:-999}]}>{this.state.sections[i]}</Text>
@@ -197,9 +128,13 @@ export default class Contacts extends ContainerComponent {
 	componentWillMount(){
 		this.formateData(originData);
 	}
+	goToChat = (item)=>{
+		this.props.addRecentItem(item.name,item.type);
+		this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail'});
+	}
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.name;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
 					<View  style={styles.itemBox} >
 						<Image source={require('../resource/other.jpg')} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
@@ -265,7 +200,7 @@ export default class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>23位联系人</Text></View>
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.state.totalItemLength+'位联系人'}</Text></View>
 	}
 	render() {
 		return (
@@ -380,3 +315,13 @@ const styles = StyleSheet.create({
 	}
 })
 
+const mapStateToProps = state => ({
+    //accountId:state.loginStore.accountMessage.accountId
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return{
+    ...bindActionCreators(recentListActions, dispatch),
+}};
+
+ export default connect(mapStateToProps, mapDispatchToProps)(Contacts);

@@ -49,13 +49,15 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-			if(chatListArr.length>0){
-				this.props.initRecentList(chatListArr)
-			}else{
-				alert('getChatList方法未检测到数据，添加默认数据')
-				this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
-			}
+			//测试用
+			// if(chatListArr.length>0){
+			// 	this.props.initRecentList(chatListArr)
+			// }else{
+			// 	alert('getChatList方法未检测到数据，添加默认数据')
+			// 	this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
+			// }
 	        
+	        this.props.initRecentList(chatListArr)
 	    })
 	}
 

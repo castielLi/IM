@@ -7,12 +7,20 @@ export function initRecentList(data){
     };
 
 }
-
 //RecentList删除一个item ,index为数组索引
 export function deleteRecentItem(index){
     return {
         type: 'DELETE_RECENTITEM',
         index
+    };
+
+}
+//增加一个item
+export function addRecentItem(client,type){
+    return {
+        type: 'ADD_RECENTITEM',
+        Type:type,
+        Client:client,
     };
 
 }
