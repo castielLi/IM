@@ -58,7 +58,7 @@ export const RouteMap = {
             params: {}
         },
         'TabTwo': {
-            component: RecentList,
+            component: Contacts,
             params: {}
         },
         'TabThree': {

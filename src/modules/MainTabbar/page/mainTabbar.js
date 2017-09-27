@@ -10,11 +10,11 @@ import {connect} from 'react-redux';
 
 
 class TabBarComponent extends DisplayComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
-            selectedTab: 'home',
+            selectedTab: '齐信',
             isLogged: false
         }
     }
@@ -27,8 +27,8 @@ class TabBarComponent extends DisplayComponent {
             <TabNavigator>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === 'home'}
-                    title="Home"
+                    selected={this.state.selectedTab === '齐信'}
+                    title="齐信"
                     renderIcon={() =>  <Image source={require('../resources/action.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
@@ -38,13 +38,13 @@ class TabBarComponent extends DisplayComponent {
                                                       resizeMode={Image.resizeMode.contain}
                     />}
                     badgeText="1"
-                    onPress={() => this.setState({ selectedTab: 'home' })}>
-                    {this.route.getComponentByRouteId("MainTabbar","TabOne")}
+                    onPress={() => this.setState({ selectedTab: '齐信' })}>
+                    {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === 'profile'}
-                    title="Profile"
+                    selected={this.state.selectedTab === '通讯录'}
+                    title="通讯录"
                     renderIcon={() =>  <Image source={require('../resources/action.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
@@ -53,13 +53,13 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: 'profile' })}>
-                    {this.route.getComponentByRouteId("MainTabbar","TabTwo")}
+                    onPress={() => this.setState({ selectedTab: '通讯录' })}>
+                    {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === 'contacts'}
-                    title="Contacts"
+                    selected={this.state.selectedTab === '发现'}
+                    title="发现"
                     renderIcon={() =>  <Image source={require('../resources/action.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
@@ -68,13 +68,13 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: 'contacts' })}>
-                    {this.route.getComponentByRouteId("MainTabbar","TabThree")}
+                    onPress={() => this.setState({ selectedTab: '发现' })}>
+                    {this.route.getComponentByRouteIdNavigator("MainTabbar","TabThree",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === 'me'}
-                    title="Me"
+                    selected={this.state.selectedTab === '我'}
+                    title="我"
                     renderIcon={() =>  <Image source={require('../resources/action.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
@@ -83,8 +83,8 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: 'me' })}>
-                    {this.route.getComponentByRouteId("MainTabbar","TabFour")}
+                    onPress={() => this.setState({ selectedTab: '我' })}>
+                    {this.route.getComponentByRouteIdNavigator("MainTabbar","TabFour",this.props.navigator)}
                 </TabNavigator.Item>
             </TabNavigator>
         )
