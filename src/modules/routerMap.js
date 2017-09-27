@@ -49,12 +49,24 @@ export const RouteMap = {
         }
     },
     'MainTabbar': {
+        'MainTabbar':{
+            component: MainTabbar,
+            params: {}
+        },
         'TabOne': {
-            component: Login,
+            component: RecentList,
             params: {}
         },
         'TabTwo': {
-            component: Login,
+            component: Contacts,
+            params: {}
+        },
+        'TabThree': {
+            component: RecentList,
+            params: {}
+        },
+        'TabFour': {
+            component: RecentList,
             params: {}
         }
     },
