@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Image} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
-import DisplayComponent from '../../../Core/Component/index'
+import DisplayComponent from '../../../Core/Component/index';
 import {connect} from 'react-redux';
 
 
@@ -37,7 +37,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    badgeText="1"
+                    badgeText={this.props.unReadMessageStore}
                     onPress={() => this.setState({ selectedTab: '齐信' })}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    loginStore: state.loginStore
+    loginStore: state.loginStore,
+    unReadMessageStore:state.unReadMessageStore.unReadMessageNumber
 });
 
 const mapDispatchToProps = dispatch => ({

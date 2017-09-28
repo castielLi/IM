@@ -1,4 +1,5 @@
 
+import {addUnReadMessageNumber,cutUnReadMessageNumber} from '../../MainTabbar/reducer/action';
 //登陆成功过后，初始化RecentListStore数据 
 export function initRecentList(data){
     return {
@@ -25,7 +26,24 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
             let chatDetail = getState().chatDetailPageStore;
             if(!chatDetail.isChatDetailPageOpen || (chatDetail.isChatDetailPageOpen&&chatDetail.client!==client&&chatDetail.type!==type)){
                 isAddUnReadMessage = true;//添加未读消息
+                //更改unReadMessageStore状态
+                dispatch(addUnReadMessageNumber())
             }      
+        }
+        if(lastMessage === false){
+            //更改unReadMessageStore状态
+            let existItem = false;
+            let recentList = getState().recentListStore.data;
+            recentList.every((v,i)=>{
+                if(v.Client === client){
+                    //说明recentListStore存在对应的item
+                    existItem = true;
+                    dispatch(cutUnReadMessageNumber(v.unReadMessageCount));
+                    //终止循环
+                    return false;
+                }
+                return true;
+            })
         }
         dispatch({
             type: 'UPDATE_RECENTITEM_LASTMESSAGE',

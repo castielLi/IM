@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 import loginStore from '../../modules/Login/reducer';
 import chatRecordStore from '../../Core/IM/redux/index';
 import recentListStore from '../../modules/RecentList/reducer';
+import unReadMessageStore from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
 export default combineReducers({
 	//登录状态
@@ -18,5 +19,7 @@ export default combineReducers({
     //大图展示状态
     imageModalStore,
     //聊天页面状态
-    chatDetailPageStore
+    chatDetailPageStore,
+    //未读消息状态
+    unReadMessageStore
 });
