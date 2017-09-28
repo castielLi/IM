@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -19,8 +19,6 @@ import IM from '../../../Core/IM'
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
 		sqLite.close();
-	}
-	componentWillMount(){
 
 	}
 	constructor(props) {
@@ -61,6 +59,7 @@ class PhoneLogin extends ContainerComponent {
 
 	}
 
+
 	addUser = ()=>{
 		if(checkReg(1,this.state.phoneText)){
 			var userData = [];
@@ -88,6 +87,7 @@ class PhoneLogin extends ContainerComponent {
             AsyncStorage.setItem('accountId',account.accountId);
 			//初始化IM
 			//..
+			Keyboard.dismiss();//关闭软键盘
 			//跳转到最近聊天列表
 			this.route.push(this.props,{
 				key:'MainTabbar',
@@ -101,12 +101,12 @@ class PhoneLogin extends ContainerComponent {
 		return (
 
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.push(this.props,{
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
 					key:'Login',
-                	routeId: 'Login',
-                	sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-
-				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+            		routeId: 'Login',
+            		sceneConfig: Navigator.SceneConfigs.FloatFromLeft
+				});}}>
+				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>	
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>

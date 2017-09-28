@@ -16,21 +16,16 @@ import Swipeout from 'react-native-swipeout';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import Features from './features';
 import * as recentListActions from '../reducer/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
 } from './check';
 import IM from '../../../Core/IM';
+import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
 let im = new IM();
 class RecentChat extends ContainerComponent {
-	componentWillMount() {
-		Platform.OS === 'ios' ? this.setState({
-			isAndroid: true
-		}) : this.setState({
-			isAndroid: false
-		})
-	}
 	constructor(props) {
 		super(props);
 		var ds = new ListView.DataSource({
@@ -41,6 +36,7 @@ class RecentChat extends ContainerComponent {
 			sectionID: '',
 			rowID: '',
 			dataSource: ds,
+			showFeatures:false,//显示功能块组件 
 			
 		};
 		this.goToChatDetail = this.goToChatDetail.bind(this);
@@ -60,7 +56,9 @@ class RecentChat extends ContainerComponent {
 	        this.props.initRecentList(chatListArr)
 	    })
 	}
-
+	changeShowFeature=(newState)=>{
+		this.setState({showFeatures:newState});
+	}
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
 	}
@@ -106,7 +104,7 @@ class RecentChat extends ContainerComponent {
 							</View>
 							<View style = {styles.userTime}>
 								<Text style ={styles.LastMessageTime}>20:11</Text>
-								<Text style = {styles.MessageNumber}>5</Text>
+								{rowData.unReadMessageCount?<Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text>:null}
 							</View>
 						</View>
 					</View>
@@ -115,20 +113,27 @@ class RecentChat extends ContainerComponent {
 			</View>
 		)
 	}
+	_rightButton = ()=>{
+		return (
+			<View style = {styles.header}>
+                <Text style = {styles.headerTitle}>奇信</Text>
+                <View style = {styles.RightLogo}>
+                    <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
+                        <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress = {()=>{this.setState({showFeatures:!this.state.showFeatures})}}>
+                        <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
+                    </TouchableOpacity>
+                </View>
+            </View>
+		)
+	}
 	render() {
 		return (
 			<View style = {styles.container}>
-				<View style = {styles.header}>
-					<Text style = {styles.headerTitle}>奇信</Text>
-					<View style = {styles.RightLogo}>
-					<TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
-						<Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
-					</TouchableOpacity>
-						<TouchableOpacity>
-							<Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
-						</TouchableOpacity>
-					</View>
-				</View>
+				<NavigationTopBar
+					rightButton= {this._rightButton}
+				/>
 				<View style = {styles.content}>
 					<ListView
 					style = {{height:checkDeviceHeight(1110)}}
@@ -139,6 +144,9 @@ class RecentChat extends ContainerComponent {
 					</ListView>
 				</View>
 				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
+				{
+					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
+				}
 			</View>
 		)
 	}
@@ -150,10 +158,10 @@ const styles = StyleSheet.create({
 		backgroundColor: "#ffffff"
 	},
 	header: {
+		width:checkDeviceWidth(750),
 		flexDirection: 'row',
 		alignItems: 'center',
 		justifyContent: 'space-between',
-		height: checkDeviceHeight(90),
 		backgroundColor: '#38373d',
 	},
 	headerTitle: {

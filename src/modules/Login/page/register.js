@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -103,7 +103,7 @@ export default class Register extends ContainerComponent {
 					{
 						this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.nickNameText?
 						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.register} onPress = {()=>{Alert.alert('网络有问题')}}>
+							<TouchableOpacity activeOpacity = {0.8} style={styles.register} onPress = {()=>{Keyboard.dismiss();Alert.alert('网络有问题')}}>
 								<Text style = {styles.registerText}>注册</Text>
 							</TouchableOpacity>)
 						:(
