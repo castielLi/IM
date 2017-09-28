@@ -44,7 +44,7 @@ export default class ContainerComponent extends Component {
     confirm(title,content,okButtonTitle="OK",oKCallback=undefined,cancelButtonTitle="Cancel",cancelCallback=undefined,) {
         this.popup.confirm({
             title: title,
-            content: ['content'],
+            content: [content],
             ok: {
                 text: okButtonTitle,
                 style: {

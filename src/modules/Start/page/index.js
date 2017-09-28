@@ -26,7 +26,7 @@ class Start extends ContainerComponent {
             .then((value) => {
                 //已经登录
                 if(value){
-                    alert(value)
+                    alert('你的账户:'+value)
                     let im = new IM();
                     im.setSocket(value);
                     this.props.signIn({ accountId:value,avatar:''})

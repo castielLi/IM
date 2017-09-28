@@ -45,14 +45,6 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-			//测试用
-			// if(chatListArr.length>0){
-			// 	this.props.initRecentList(chatListArr)
-			// }else{
-			// 	alert('getChatList方法未检测到数据，添加默认数据')
-			// 	this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
-			// }
-	        
 	        this.props.initRecentList(chatListArr)
 	    })
 	}
@@ -63,8 +55,14 @@ class RecentChat extends ContainerComponent {
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
 	}
 	deleteSomeRow(rowID,rowData){
-		this.props.deleteRecentItem(rowID);
-		//删除rowData对应的数据库
+		let oKCallback = ()=>{
+			this.props.deleteRecentItem(rowID);
+			//删除ChatRecode表中记录
+			im.deleteChatRecode(rowData.Client);
+			//删除该与client的所以聊天记录
+			im.deleteCurrentChatMessage(rowData.Client,rowData.Type);
+		}
+		this.confirm('提示','删除后，将清空该聊天的消息记录',okButtonTitle="删除",oKCallback,cancelButtonTitle="取消",cancelCallback=undefined)	
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
@@ -103,7 +101,7 @@ class RecentChat extends ContainerComponent {
 								<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 							</View>
 							<View style = {styles.userTime}>
-								<Text style ={styles.LastMessageTime}>20:11</Text>
+								<Text style ={styles.LastMessageTime}>{dateFtt('hh:mm:ss',new Date(parseInt(rowData.Time)))}</Text>
 								{rowData.unReadMessageCount?<Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text>:null}
 							</View>
 						</View>
@@ -129,6 +127,7 @@ class RecentChat extends ContainerComponent {
 		)
 	}
 	render() {
+		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
 				<NavigationTopBar
@@ -147,6 +146,7 @@ class RecentChat extends ContainerComponent {
 				{
 					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
 				}
+				<PopContent ref={(p)=>{this.popup = p}}></PopContent>
 			</View>
 		)
 	}
@@ -251,3 +251,23 @@ const mapDispatchToProps = (dispatch) => {
 }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);
+
+
+function dateFtt(fmt,date)   
+{ //author: meizz   
+  var o = {   
+    "M+" : date.getMonth()+1,                 //月份   
+    "d+" : date.getDate(),                    //日   
+    "h+" : date.getHours(),                   //小时   
+    "m+" : date.getMinutes(),                 //分   
+    "s+" : date.getSeconds(),                 //秒   
+    "q+" : Math.floor((date.getMonth()+3)/3), //季度   
+    "S"  : date.getMilliseconds()             //毫秒   
+  };   
+  if(/(y+)/.test(fmt))   
+    fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));   
+  for(var k in o)   
+    if(new RegExp("("+ k +")").test(fmt))   
+  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+  return fmt;   
+}
