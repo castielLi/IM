@@ -61,54 +61,33 @@ export default class ChatMessageSound extends Component {
         let LocalSource = LocalPath.replace(/_[0-9]+/,'');
         let soundWidth = 50;
         if(Time>5){
-            soundWidth = (width-200)*(Time/55)+50;
+            soundWidth = (width-260)*((Time-5)/55)+50;
         }
         return {Time,LocalSource,soundWidth}
     }
     render() {
-        let {data} = this.props;
+        let {data,style} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
+        //console.log(LocalSource,RemoteSource)
         let soundObjConfig = this.getSoundTime(LocalSource || RemoteSource)
-        if(!Sender){
-            return(
-                <View style={[styles.bubbleViewRight,{width:soundObjConfig.soundWidth}]}>
-                    <TouchableOpacity onPress={()=>this.playSound(soundObjConfig.LocalSource)}>
-                        <Text>{soundObjConfig.Time}"</Text>
-                    </TouchableOpacity>
-                </View>
-            )
-        }
-        else{
-            return(
-                <View style={styles.bubbleView}>
-                    <TouchableOpacity onPress={()=>this.playSound(LocalSource || RemoteSource)}>
-                        <Text>播放</Text>
-                    </TouchableOpacity>
-                </View>
-            )
-        }
+
+        return(
+            <View style={[style,{width:soundObjConfig.soundWidth},styles.bubble]}>
+                <TouchableOpacity onPress={()=>this.playSound(soundObjConfig.LocalSource)}>
+                    <Text>{soundObjConfig.Time}"</Text>
+                </TouchableOpacity>
+            </View>
+        )
     }
 }
 
 
 
 const styles = StyleSheet.create({
-    bubbleView:{
-        alignSelf:'flex-start',
-        marginLeft:10,
-        backgroundColor: '#fff',
+    bubble:{
         maxWidth:width-150,
         padding:12,
-        justifyContent:'center',
-        borderRadius:5
-    },
-    bubbleViewRight:{
-        alignSelf:'flex-start',
-        marginRight:10,
-        backgroundColor: '#98E165',
-        maxWidth:width-150,
-        padding:10,
         justifyContent:'center',
         borderRadius:5
     },

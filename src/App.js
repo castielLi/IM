@@ -10,9 +10,8 @@ import {
 } from 'react-redux';
 import { AppState , NetInfo} from 'react-native'
 import Root from './modules/Root/root'
-import configureStore from './store'
+import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
-import FMDB from './Core/DatabaseHelper'
 import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
@@ -35,15 +34,12 @@ let network = new netWorking();
 export default function App() {
 
 
-    let store = configureStore();
+    let store = Store;
 
     //初始化app的http组件
     configureNetwork({
         "Content-Type": "application/json"
     }, 'fetch', false)
-
-    //初始化app的database
-    FMDB.initDatabase()
 
 
     //初始化路由表
@@ -60,7 +56,15 @@ export default function App() {
        store.dispatch(ActionForChatRecordStore.updateMessage(message))
     }
 
-    im.connectIM(handleMessageResult,handleMessageChange)
+
+    let handleRecieveMessage = function(message){
+        store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+    }
+
+
+    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
+
+
 
     // let sendMessage = setInterval(function(){
     //     let addMessage = new SendMessageDto();
@@ -111,11 +115,7 @@ export default function App() {
             super();
 
             this.state = {
-                store: configureStore(() => {
-                    this.setState({
-                        isLoading: false
-                    })
-                }),
+                store,
                 appState: AppState.currentState,
                 memoryWarnings: 0,
                 connectionInfo:"NONE"
