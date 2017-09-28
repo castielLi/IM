@@ -398,7 +398,7 @@ export default class IM {
     addMessageQueue(message){
 
         sendMessageQueue.push(message);
-        console.log("message 加入发送队列")
+        console.log("message 加入发送队列",message)
 
     }
 
