@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -60,7 +60,7 @@ export default class Login extends ContainerComponent {
 		return (
 
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.push(this.props,{
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
 				key:'Login',
                 routeId: 'Login',
                 sceneConfig: Navigator.SceneConfigs.FloatFromLeft
@@ -121,7 +121,10 @@ export default class Login extends ContainerComponent {
 							)
 					}
 				<View style= {styles.footer}>
-					<TouchableOpacity onPress = {()=>{this.props.navigator.push({sceneConfig: Navigator.SceneConfigs.FloatFromRight,component: emailLogin,})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
+					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{
+						key:'Login',
+						routeId:'EmailLogin'
+					})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
 					<TouchableOpacity  activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
 				</View>
 				</View>
