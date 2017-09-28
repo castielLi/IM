@@ -21,7 +21,7 @@ export default class EmailLogin extends ContainerComponent {
 	render(){
 		return (
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.push(this.props,{key:'Login',
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{key:'Login',
                 	routeId: 'Login',
                 	sceneConfig: Navigator.SceneConfigs.FloatFromLeft});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
