@@ -5,6 +5,7 @@
 import Connect from './socket'
 import * as methods from './Common'
 import * as storeSqlite from './StoreSqlite'
+import * as ChatSqlite from './StoreSqlite/ChatManagement'
 import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "./dto/MessageStatus"
 import SendStatus from './dto/SendStatus'
@@ -178,27 +179,27 @@ export default class IM {
 
     //删除当前聊天所有消息
     deleteCurrentChatMessage(name,chatType){
-        storeSqlite.deleteClientRecode(name,chatType);
+        ChatSqlite.deleteClientRecode(name,chatType);
     }
 
     //删除ChatRecode中某条记录
     deleteChatRecode(name){
-        storeSqlite.deleteChatRecode(name);
+        ChatSqlite.deleteChatRecode(name);
     }
     //删除当条消息
     deleteMessage(message,chatType,client){
-        storeSqlite.deleteMessage(message,chatType,client);
+        ChatSqlite.deleteMessage(message,chatType,client);
     }
 
 
     //获取当前用户或者群组的聊天记录
     getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
-        storeSqlite.queryRecentMessage(account,way,range,callback);
+        ChatSqlite.queryRecentMessage(account,way,range,callback);
     }
 
     //获取聊天列表
     getChatList(callback){
-        storeSqlite.getChatList(callback);
+        ChatSqlite.getChatList(callback);
     }
 
 
@@ -206,7 +207,7 @@ export default class IM {
 
     //获取当前所有未发出去的消息添加入消息队列
     addAllUnsendMessageToSendQueue(){
-        storeSqlite.getAllCurrentSendMessage(function(currentSendMessages){
+        ChatSqlite.getAllCurrentSendMessage(function(currentSendMessages){
             console.log("复制未发送的消息进入发送队列");
             if(currentSendMessages == null){
                 return;
@@ -258,7 +259,7 @@ export default class IM {
             this.storeSendMessage(message);
 
             //把消息存入发送队列sqlite中
-            storeSqlite.addMessageToSendSqlite(message);
+            ChatSqlite.addMessageToSendSqlite(message);
 
 
             switch (message.type) {
@@ -342,7 +343,7 @@ export default class IM {
 
             //把资源存入数据库
             for(let item in message.Resource){
-                storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
+                ChatSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
             }
 
 
@@ -367,7 +368,7 @@ export default class IM {
                     message.Resource[item].RemoteSource = result.url;
 
                     //pop上传成功的资源
-                    storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
+                    ChatSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
                 },function(index){
                     console.log("上传失败" + index);
                 }));
@@ -459,9 +460,9 @@ export default class IM {
     //存储消息
     storeSendMessage(message){
         if(message.Data.Data.Receiver != ME){
-            storeSqlite.storeSendMessage(message);
+            ChatSqlite.storeSendMessage(message);
         }else{
-            storeSqlite.storeRecMessage(message);
+            ChatSqlite.storeRecMessage(message);
         }
     }
 
@@ -502,17 +503,17 @@ export default class IM {
         //根据类别修改消息结果或者是发送消息的消息状态
         if(way == UpdateMessageSqliteType.storeMessage){
             //修改message表中message状态
-            storeSqlite.updateMessageStatus(message);
+            ChatSqlite.updateMessageStatus(message);
         }else{
             //修改发送队列中message状态
-            storeSqlite.updateSendMessageStatus(message);
+            ChatSqlite.updateSendMessageStatus(message);
         }
 
     }
 
     //删除数据库中发送队列的message
     popCurrentMessageSqlite(messageId){
-        storeSqlite.popMessageInSendSqlite(messageId);
+        ChatSqlite.popMessageInSendSqlite(messageId);
     }
 
 
@@ -578,7 +579,7 @@ export default class IM {
         //判断如果是他人发送的消息
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
             //存入数据库
-            storeSqlite.storeRecMessage(message)
+            ChatSqlite.storeRecMessage(message)
 
             console.log('receiveMessageOpreator:  ',message)
 
