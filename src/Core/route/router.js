@@ -74,11 +74,26 @@ class Route {
         return <Component {...params}/>;
     }
 
+    static getComponentByRouteIdNavigator(key, routeId, navigator) {
+        let id = key,
+            routeObj = this.routerMap[id],
+            params = {},
+            Component;
+        if (routeObj) {
+            let ComponentInfo = routeObj[routeId];
+            Component = ComponentInfo.component;
+            Object.assign(params, ComponentInfo.params);
+        } else {
+            // Component = Error;
+            // params = {message: '当前页面没有找到：' + id};
+        }
+        return <Component {...params} navigator={navigator}/>;
+    }
 
     static push(props, route) {
-        //InteractionManager.runAfterInteractions(() => {
+        InteractionManager.runAfterInteractions(() => {
             props.navigator.push(route)
-        //})
+        })
     }
 
 

@@ -7,7 +7,6 @@ export function initRecentList(data){
     };
 
 }
-
 //RecentList删除一个item ,index为数组索引
 export function deleteRecentItem(index){
     return {

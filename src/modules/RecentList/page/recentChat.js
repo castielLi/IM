@@ -17,14 +17,11 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../reducer/action';
-import Features from './features';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
 } from './check';
 import IM from '../../../Core/IM';
-import NavigationTopBar from '../../../Core/Component/NavigationBar/index'
-
 let im = new IM();
 class RecentChat extends ContainerComponent {
 	componentWillMount() {
@@ -43,7 +40,6 @@ class RecentChat extends ContainerComponent {
 			isAndroid: '',
 			sectionID: '',
 			rowID: '',
-            showFeatures:false,//显示功能块组件
 			dataSource: ds,
 			
 		};
@@ -53,19 +49,17 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-			if(chatListArr.length>0){
-				this.props.initRecentList(chatListArr)
-			}else{
-				alert('getChatList方法未检测到数据，添加默认数据')
-				this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
-			}
+			//测试用
+			// if(chatListArr.length>0){
+			// 	this.props.initRecentList(chatListArr)
+			// }else{
+			// 	alert('getChatList方法未检测到数据，添加默认数据')
+			// 	this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
+			// }
 	        
+	        this.props.initRecentList(chatListArr)
 	    })
 	}
-
-    changeShowFeature=(newState)=>{
-        this.setState({showFeatures:newState});
-    }
 
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
@@ -74,23 +68,6 @@ class RecentChat extends ContainerComponent {
 		this.props.deleteRecentItem(rowID);
 		//删除rowData对应的数据库
 	}
-
-    _rightButton = ()=>{
-        return (
-			<View style = {styles.header}>
-				<Text style = {styles.headerTitle}>奇信</Text>
-				<View style = {styles.RightLogo}>
-					<TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
-						<Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
-					</TouchableOpacity>
-					<TouchableOpacity onPress = {()=>{this.setState({showFeatures:!this.state.showFeatures})}}>
-						<Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
-					</TouchableOpacity>
-				</View>
-			</View>
-        )
-    }
-
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
 			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9',marginLeft:checkDeviceWidth(20)}}>
@@ -138,24 +115,20 @@ class RecentChat extends ContainerComponent {
 			</View>
 		)
 	}
-
 	render() {
 		return (
 			<View style = {styles.container}>
-				<NavigationTopBar
-					rightButton= {this._rightButton}
-				/>
-				{/*<View style = {styles.header}>*/}
-					{/*<Text style = {styles.headerTitle}>奇信</Text>*/}
-					{/*<View style = {styles.RightLogo}>*/}
-					{/*<TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>*/}
-						{/*<Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>*/}
-					{/*</TouchableOpacity>*/}
-						{/*<TouchableOpacity>*/}
-							{/*<Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>*/}
-						{/*</TouchableOpacity>*/}
-					{/*</View>*/}
-				{/*</View>*/}
+				<View style = {styles.header}>
+					<Text style = {styles.headerTitle}>奇信</Text>
+					<View style = {styles.RightLogo}>
+					<TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
+						<Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
+					</TouchableOpacity>
+						<TouchableOpacity>
+							<Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
+						</TouchableOpacity>
+					</View>
+				</View>
 				<View style = {styles.content}>
 					<ListView
 					style = {{height:checkDeviceHeight(1110)}}
@@ -165,10 +138,7 @@ class RecentChat extends ContainerComponent {
 					>
 					</ListView>
 				</View>
-				<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>
-                {
-                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
-                }
+				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
 			</View>
 		)
 	}
@@ -179,13 +149,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#ffffff"
 	},
-    header:{
-        width:checkDeviceWidth(750),
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between',
-        backgroundColor:'#38373d',
-    },
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		height: checkDeviceHeight(90),
+		backgroundColor: '#38373d',
+	},
 	headerTitle: {
 		color: '#ffffff',
 		fontSize: checkDeviceHeight(36),

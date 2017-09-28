@@ -19,14 +19,16 @@ export default function recentListStore(state=initialState, action){
             return {
                 ...state
             };
-
         case 'UPDATE_RECENTITEM_LASTMESSAGE':
             let existItem = false;//recentListStore是否存在这个client对应的item
-            state.data.forEach((v,i)=>{
+            state.data.every((v,i)=>{
                 if(v.Client === action.Client){
                     existItem = true;
-                    v.LastMessage = action.LastMessage
+                    v.LastMessage = action.LastMessage;
+                     //终止本次循环
+                    return false;
                 }
+                 return true;
             })
             if(existItem === false){
                 state.data.unshift({Client:action.Client,Type:action.Type,LastMessage:action.LastMessage})
