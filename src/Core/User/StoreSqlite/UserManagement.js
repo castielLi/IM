@@ -3,7 +3,7 @@
  */
 
 let SQLite = require('react-native-sqlite-storage')
-import * as sqls from './IMExcuteSql'
+import * as sqls from '../../IM/StoreSqlite/IMExcuteSql'
 
 export function GetChatList(callback){
     USERFMDB.getChatList(callback);
