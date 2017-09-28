@@ -3,7 +3,7 @@
  */
 
 export const InitIMTable = {
-    "createChatRecodeTable":"CREATE TABLE IF NOT EXISTS ChatRecode (Client varchar(255), Type varchar(255), LastMessage varchar(255))",
+    "createChatRecodeTable":"CREATE TABLE IF NOT EXISTS ChatRecode (Client varchar(255), Type varchar(255), LastMessage varchar(255),Time varchar(255))",
     "createMessageRecodeTable":"CREATE TABLE IF NOT EXISTS MessageRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255),send varchar(255), rec varchar(255) , time varchar(255), content varchar(255), type varchar(255), localPath varchar(255), url varchar(255) , status varchar(255))",
     "CreateSendMessageTable":"CREATE TABLE IF NOT EXISTS SendMessageRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255),status varchar(255),times varchar(255))",
     "CreateChatTableIndex":"CREATE INDEX index_id ON MessageRecode(messageId)",
@@ -28,7 +28,7 @@ export const ExcuteIMSql = {
     "GetMessagesInMessageTableByIds":"select * from MessageRecode where messageId in (?) order by Id desc",
     "DeleteAllSendMessages":"delete from SendMessageRecode",
     "DeleteSendMessageByMessageId":"delete from SendMessageRecode where messageId = ?",
-    "UpdateChatLastContent":"update ChatRecode set LastMessage = ? where Client = ?",
+    "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ? where Client = ?",
     "InsertMessageToRecode":"insert into MessageRecode (messageId,send,rec,time,content,type,localPath,url,status) values (?,?,?,?,?,?,?,?,?)",
     "InsertUploadFileRecode":"insert into ResourceRecode(messageId,localResource) values (?,?)",
     "DeleteUploadFileRecode":"Delete from ResourceRecode where messageId = ? and localResource = ?",

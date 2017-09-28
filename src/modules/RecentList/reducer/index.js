@@ -29,6 +29,7 @@ export default function recentListStore(state=initialState, action){
                         v.unReadMessageCount = 0;
                     }else{
                         v.LastMessage = action.LastMessage;
+                        v.Time = action.Time
                     }          
                     //如果允许添加未读消息
                     if(action.isAddUnReadMessage===true){
@@ -44,7 +45,7 @@ export default function recentListStore(state=initialState, action){
                 if(action.LastMessage === false){
                     return state;
                 }
-                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage};
+                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage,Time:action.Time};
                 //如果允许添加未读消息
                 if(action.isAddUnReadMessage===true){
                     obj.unReadMessageCount = 1;

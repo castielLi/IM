@@ -20,7 +20,7 @@ export function addMessage(message){
 		message
 		})
 		//同时更新recentListStore
-		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message)))
+		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message),message.Data.LocalTime))
 	}
 }
 export function receiveMessage(message){
@@ -32,7 +32,7 @@ export function receiveMessage(message){
 		message
 		})
 		//同时更新recentListStore
-		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),true))
+		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
 	}
 }
 //修改某条消息的状态 {status:'修改该状态',message:{...}}

@@ -126,7 +126,9 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                     }
 
                     let conetnt = getContentByMessage(message);
-                    updateChat(conetnt,client,tx);
+                    let time = message.Data.LocalTime;
+ 
+                    updateChat(conetnt,time,client,tx);
 
                     insertChat(message,tx);
 
@@ -153,10 +155,12 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                         //添加数据进数据库
 
                         let conetnt = getContentByMessage(message);
-
-                        updateChat(conetnt,client,tx);
+                        let time = message.Data.LocalTime;
 
                         insertClientRecode(client,message.way,tx);
+                        updateChat(conetnt,time,client,tx);
+
+                        
 
                         insertChat(message,tx);
 
@@ -530,17 +534,17 @@ function insertChatToSpecialRecode(message,tableName,tx){
 
 
 //修改chat列表中最近的聊天记录
-function updateChat(content,client,tx){
+function updateChat(content,time,client,tx){
 
     let updateSql = sqls.ExcuteIMSql.UpdateChatLastContent;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[content,client]);
+    updateSql = commonMethods.sqlFormat(updateSql,[content,time,client]);
 
     tx.executeSql(updateSql, [], (tx, results) => {
 
         console.log("更改最近一条消息记录为");
 
-    }, (err)=>{errorDB('为'+client+"在会话列表中更新了最新的聊天记录")
+    }, (err)=>{errorDB('为'+client+"在会话列表中更新了最新的聊天记录",err)
     });
 }
 
