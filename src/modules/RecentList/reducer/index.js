@@ -23,16 +23,34 @@ export default function recentListStore(state=initialState, action){
             let existItem = false;//recentListStore是否存在这个client对应的item
             state.data.every((v,i)=>{
                 if(v.Client === action.Client){
-                    existItem = true;
-                    v.LastMessage = action.LastMessage;
-                     //终止本次循环
+                    //说明recentListStore存在对应的item
+                    existItem = true;                  
+                    if(action.LastMessage === false){
+                        v.unReadMessageCount = 0;
+                    }else{
+                        v.LastMessage = action.LastMessage;
+                    }          
+                    //如果允许添加未读消息
+                    if(action.isAddUnReadMessage===true){
+                        v.unReadMessageCount = v.unReadMessageCount?(v.unReadMessageCount+1):1;
+                    }
+                    //终止循环
                     return false;
                 }
                  return true;
             })
+            //recentListStore不存在对应的item
             if(existItem === false){
-                state.data.unshift({Client:action.Client,Type:action.Type,LastMessage:action.LastMessage})
-            }
+                if(action.LastMessage === false){
+                    return state;
+                }
+                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage};
+                //如果允许添加未读消息
+                if(action.isAddUnReadMessage===true){
+                    obj.unReadMessageCount = 1;
+                }
+                state.data.unshift(obj)
+            }          
             return {
                 ...state
             };

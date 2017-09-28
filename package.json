@@ -22,7 +22,6 @@
 		"react-native-sound": "^0.10.4",
 		"react-native-sqlite-storage": "^3.3.3",
 		"react-native-storage": "^0.2.2",
-		"react-native-swipeout": "^2.2.2",
 		"react-native-swiper": "^1.5.12",
 		"react-native-tab-navigator": "^0.3.4",
 		"react-native-uuid-generator": "^3.0.1",

@@ -167,7 +167,7 @@ class Contacts extends ContainerComponent {
 		                    <Text style={styles.rightSectionItem}>{this.state.sections[i]}</Text>                 
 	                    </View>
 	                </TouchableWithoutFeedback>
-	                <Text style={[styles.rightSectionItemModal,{right:i===this.state.rightSectionItemModalIndex?50:-999}]}>{this.state.sections[i]}</Text>
+	                {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{this.state.sections[i]}</Text>:null}                
                 </View>)
         }
         return array;

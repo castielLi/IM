@@ -104,7 +104,7 @@ class RecentChat extends ContainerComponent {
 							</View>
 							<View style = {styles.userTime}>
 								<Text style ={styles.LastMessageTime}>20:11</Text>
-								<Text style = {styles.MessageNumber}>5</Text>
+								{rowData.unReadMessageCount?<Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text>:null}
 							</View>
 						</View>
 					</View>
