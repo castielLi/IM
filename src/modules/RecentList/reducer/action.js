@@ -27,7 +27,6 @@ export function updateRecentItemLastMessage(client,type,lastMessage,isReceiveMes
                 isAddUnReadMessage = true;//添加未读消息
             }      
         }
-        isAddUnReadMessage&&alert('添加未读消息标记')
         dispatch({
             type: 'UPDATE_RECENTITEM_LASTMESSAGE',
             Type:type,

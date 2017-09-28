@@ -26,7 +26,10 @@ export function deleteClientRecode(name,chatType){
 export function deleteMessage(message,chatType,client){
     IMFMDB.DeleteChatMessage(message,chatType,client);
 }
-
+//删除ChatRecode中某条记录
+export function deleteChatRecode(name){
+    IMFMDB.DeleteClientRecodeByName(name);
+}
 export function InsertResource(messageId,localPath){
     IMFMDB.InsertResource(messageId,localPath);
 }
@@ -469,6 +472,21 @@ IMFMDB.DeleteResource = function(messageId,localPath){
                 console.log("delete resource success")
 
             }, errorDB);
+        });
+
+    }, errorDB);
+}
+
+IMFMDB.DeleteClientRecodeByName = function(name){
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            deleteClientRecodeByName(name,tx)
+          
         });
 
     }, errorDB);

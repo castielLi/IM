@@ -45,14 +45,6 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-			//测试用
-			// if(chatListArr.length>0){
-			// 	this.props.initRecentList(chatListArr)
-			// }else{
-			// 	alert('getChatList方法未检测到数据，添加默认数据')
-			// 	this.props.initRecentList([{Client:this.props.accountId==='1'?'2':'1',Type:'pravite',LastMessage:'默认数据'},])
-			// }
-	        
 	        this.props.initRecentList(chatListArr)
 	    })
 	}
@@ -63,8 +55,14 @@ class RecentChat extends ContainerComponent {
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
 	}
 	deleteSomeRow(rowID,rowData){
-		this.props.deleteRecentItem(rowID);
-		//删除rowData对应的数据库
+		let oKCallback = ()=>{
+			this.props.deleteRecentItem(rowID);
+			//删除ChatRecode表中记录
+			im.deleteChatRecode(rowData.Client);
+			//删除该与client的所以聊天记录
+			im.deleteCurrentChatMessage(rowData.Client,rowData.Type);
+		}
+		this.confirm('提示','删除后，将清空该聊天的消息记录',okButtonTitle="删除",oKCallback,cancelButtonTitle="取消",cancelCallback=undefined)	
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
@@ -129,6 +127,7 @@ class RecentChat extends ContainerComponent {
 		)
 	}
 	render() {
+		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
 				<NavigationTopBar
@@ -147,6 +146,7 @@ class RecentChat extends ContainerComponent {
 				{
 					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
 				}
+				<PopContent ref={(p)=>{this.popup = p}}></PopContent>
 			</View>
 		)
 	}

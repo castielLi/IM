@@ -181,6 +181,10 @@ export default class IM {
         storeSqlite.deleteClientRecode(name,chatType);
     }
 
+    //删除ChatRecode中某条记录
+    deleteChatRecode(name){
+        storeSqlite.deleteChatRecode(name);
+    }
     //删除当条消息
     deleteMessage(message,chatType,client){
         storeSqlite.deleteMessage(message,chatType,client);
