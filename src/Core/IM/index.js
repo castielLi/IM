@@ -589,7 +589,10 @@ export default class IM {
                 message.Resource[0].LocalSource = null;
 
                 let fromUrl = message.Resource[0].RemoteSource,
-                    toFile = `${RNFS.DocumentDirectoryPath}/${((Math.random() * 1000) | 0)}.jpg`;
+                    sender = message.Data.Data.Sender,
+                    type = message.type,
+                    way = message.way,
+                    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${((Math.random() * 1000) | 0)}.jpg`;
 
                 updateMessage = (result) => {
                     message.Resource[0].LocalSource = 'file://' + toFile
