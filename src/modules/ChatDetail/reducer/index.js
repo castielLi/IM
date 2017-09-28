@@ -77,23 +77,3 @@ export function imageModalStore(state = initialModalState,action){
             return state;
     }
 }
-
-//聊天页面状态 
-
-initialChatDetailPageState = {
-    isChatDetailPageOpen:false,//聊天页面是否打开
-    client:'',//聊天对象
-    type:''
-}
-export function chatDetailPageStore(state = initialChatDetailPageState,action){
-    switch (action.type) {
-        case 'CHANGE_CHATDETAILPAGE_STATUS':
-            return {
-                isChatDetailPageOpen:action.status,
-                client:action.client,
-                type:action.way
-            };
-        default:
-            return state;
-    }
-}

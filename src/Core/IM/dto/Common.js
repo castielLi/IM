@@ -73,7 +73,7 @@ export function sqlMessageToMessage(sqliteMessage){
         message.type = msgType;
         let file = new uploadResourceDto();
         file.FileType = ResourceTypeEnum.msgType;
-        file.LocalSource =  sqliteMessage.localPath.split(",")[0];
+        file.LocalSource =  sqliteMessage.localPath;
         file.RemoteSource =  'asd';
         message.Resource = [file];
     }else{

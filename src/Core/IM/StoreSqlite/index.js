@@ -2,19 +2,19 @@
  * Created by apple on 2017/8/9.
  */
 import { Platform, StyleSheet } from 'react-native';
+import FMDB from '../../DatabaseHelper/index'
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
 import * as commonMethods from './formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
-import ChatCommandEnum from '../dto/ChatCommandEnum'
 
-export function storeSendMessage(message){
+export function storeSendMessage(message,way){
 
     IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Receiver)
 }
 
-export function storeRecMessage(message){
+export function storeRecMessage(message,way){
 
     IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
 }
@@ -64,10 +64,6 @@ export function queryRecentMessage(account,way,range,callback){
     IMFMDB.getRangeMessages(account,way,range,callback)
 }
 
-export function getChatList(callback){
-    IMFMDB.getAllChatClientList(callback)
-}
-
 
 export function initIMDatabase(){
     IMFMDB.initIMDataBase();
@@ -103,8 +99,6 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
-    let way;
-
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -115,12 +109,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                     //如果当前聊天对象在数据库中存在有数据
                     //添加数据进数据库
 
-                    let tableName;
-                    if(message.way != "") {
-                        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
-                    }else{
-                        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
-                    }
+                    let tableName = message.way == ChatWayEnum.Private?"Private_" + client:"ChatRoom_" + client;
 
                     let conetnt = getContentByMessage(message);
                     updateChat(conetnt,client,tx);
@@ -133,13 +122,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                     //如果当前聊天是新的聊天对象
                     let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
 
-                    let tableName;
-                    if(message.way != "") {
-                        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
-                    }else{
-                        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
-                    }
-
+                    let tableName = message.way == ChatWayEnum.Private?"Private_" + client:"ChatRoom_" + client;
 
                     createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
 
@@ -277,7 +260,7 @@ IMFMDB.DeleteChatMessage = function(message,chatType,client){
 }
 
 //获取所有聊天用户
-IMFMDB.getAllChatClientList = function(callback){
+IMFMDB.getAllChatClientList = function(){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -286,8 +269,6 @@ IMFMDB.getAllChatClientList = function(callback){
             tx.executeSql(sqls.ExcuteIMSql.GetChatList, [], (tx, results) => {
 
                 console.log(results);
-
-                callback(results.rows.raw());
 
             }, errorDB);
 
@@ -474,6 +455,7 @@ IMFMDB.DeleteResource = function(messageId,localPath){
     }, errorDB);
 }
 
+
 //添加消息进总消息表
 function insertChat(message,tx){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
@@ -567,13 +549,13 @@ function getContentByMessage(message){
     let content = "";
     if(message.Resource != null && message.Resource.length > 0 && message.Resource.length < 2){
         switch (message.Resource[0].FileType){
-            case ResourceTypeEnum.image:
+            case ResourceTypeEnum.Image:
                 content = "[图片]";
                 break;
-            case ResourceTypeEnum.audio:
+            case ResourceTypeEnum.Audio:
                 content = "[音频]";
                 break;
-            case ResourceTypeEnum.video:
+            case ResourceTypeEnum.Video:
                 content = "[视频]";
                 break;
         }
