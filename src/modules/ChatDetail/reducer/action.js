@@ -43,15 +43,3 @@ export function hideImageModal(){
 		type:'HIDE_MODAL'
 	}
 }
-
-
-
-//聊天页面状态 聊天对象
-export function changeChatDetailPageStatus(status,client,way){
-	return{
-		type:'CHANGE_CHATDETAILPAGE_STATUS',
-		status,
-		way,
-		client
-	}
-}

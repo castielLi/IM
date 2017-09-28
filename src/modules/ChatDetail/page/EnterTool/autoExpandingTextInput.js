@@ -44,11 +44,11 @@ class AutoExpandingTextInput extends Component {
   _onSubmitEditing(){
     if(this.state.data){
       //初始化消息
-      let message = createTextMessageObj(this.state.data,'private',this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
+      let message = createTextMessageObj(this.state.data,'private','',this.props.client);
       im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(message);
+        this.props.addMessage(this.props.client,message);
         this.input.clear();
         //在表情栏提交后不会获得焦点
         if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
@@ -98,7 +98,7 @@ class AutoExpandingTextInput extends Component {
        numberOfLines={6}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
-       style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:50}]}  
+       style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:60}]}  
        >  
       </TextInput>  
     );  
@@ -116,16 +116,16 @@ class AutoExpandingTextInput extends Component {
 const styles = StyleSheet.create({  
   textInputStyle:{ 
     position:'absolute',
-    left:50,
-    top:pxToPt(5), 
+    left:60,
+    top:pxToPt(10), 
     fontSize:20, 
     lineHeight:20, 
-    width:width-140,  
+    width:width-180,  
     height:40,
     borderColor:'#ccc',
     borderWidth:pxToPt(1),   
     backgroundColor:'#fff',  
-    borderRadius:5,
+    borderRadius:10,
     overflow:'hidden',
     padding:0,
     paddingLeft:5,
@@ -137,8 +137,7 @@ const styles = StyleSheet.create({
 });  
 
 const mapStateToProps = state => ({
-    thouchBarStore: state.thouchBarStore,
-    accountId:state.loginStore.accountMessage.accountId
+    thouchBarStore: state.thouchBarStore
 });
 
 const mapDispatchToProps = (dispatch) => {

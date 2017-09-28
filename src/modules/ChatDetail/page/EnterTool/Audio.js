@@ -11,12 +11,12 @@ import {
 console.log(AudioUtils.DocumentDirectoryPath) ///data/data/com.weixinrecord/files
 
 export default class Audio {
-  constructor(name,type,fileName) {
+  constructor(name, fileName) {
     this.state = {
       currentTime: 0.0,
       recording: false,
       finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/audio/' + type + '-' +name + '/' + fileName + '.aac',
+      audioPath: AudioUtils.DocumentDirectoryPath + '/audio/' + name + '/' + fileName + '.aac',
       hasPermission: undefined,
     };
 

@@ -13,12 +13,10 @@ import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
 import * as Helper from '../Helper'
 import MessageType from './dto/MessageType'
-import netWorking from '../Networking/Network'
 
 
 
-let _socket = new Connect();
-let _network = new netWorking();
+let _socket = new Connect("1");
 
 //网络状态
 let networkStatus = "";
@@ -55,7 +53,7 @@ let loopState;
 let netState;
 
 //假设账号token就是1
-let ME = "";
+let ME = "1";
 
 let currentObj = undefined;
 
@@ -68,8 +66,6 @@ let AppMessageResultHandle = undefined;
 let AppMessageChangeStatusHandle = undefined;
 //function(message:message);
 
-//返回收到消息回调
-let AppReceiveMessageHandle = undefined;
 
 let __instance = (function () {
     let instance;
@@ -92,17 +88,11 @@ export default class IM {
         currentObj = this;
     }
 
-    setSocket(account){
-        _socket.startConnect(account);
-        ME = account;
-    }
-
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle){
+    connectIM(getMessageResultHandle,changeMessageHandle){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
-        AppReceiveMessageHandle = receiveMessageHandle;
     }
 
     startIM(){
@@ -116,7 +106,7 @@ export default class IM {
         this.beginRunLoop();
 
         //获取之前没有发送出去的消息重新加入消息队列
-        // this.addAllUnsendMessageToSendQueue();
+        this.addAllUnsendMessageToSendQueue();
     }
 
     stopIM(){
@@ -141,8 +131,6 @@ export default class IM {
 
             networkStatus = networkStatuesType.none;
 
-            _socket.setNetWorkStatus(networkStatuesType.none);
-
             checkNetEnvironmentInterval = setInterval(function () {
 
                 if(netState.type != 'NONE' && netState.type != 'none'){
@@ -150,7 +138,6 @@ export default class IM {
 
                     //todo:恢复网络了后要重新发送消息
 
-                    _socket.setNetWorkStatus(networkStatuesType.normal);
                     _socket.reConnectNet();
 
                     //获取之前没有发送出去的消息重新加入消息队列
@@ -190,11 +177,6 @@ export default class IM {
     //获取当前用户或者群组的聊天记录
     getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
         storeSqlite.queryRecentMessage(account,way,range,callback);
-    }
-
-    //获取聊天列表
-    getChatList(callback){
-        storeSqlite.getChatList(callback);
     }
 
 
@@ -344,16 +326,7 @@ export default class IM {
 
             let uploadQueue = [];
             for(let item in message.Resource) {
-
-                //整合audio下文件路径
-                let resource;
-                if(message.type == MessageType.audio){
-                   resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
-                }else{
-                    resource = message.Resource[item].LocalSource;
-                }
-
-                uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
+                uploadQueue.push(methods.getUploadPathFromServer(message.Resource[item].LocalSource,item,function (progress,index) {
                     if(progressHandles != null) {
                         let onprogess = progressHandles[index * 1];
                         onprogess("第" + (index * 1 + 1) + "张图片上传进度：" + progress.loaded / progress.total * 100);
@@ -547,40 +520,28 @@ export default class IM {
 
     receiveMessageOpreator(message){
 
-        //判断如果是ack消息
-        if(message.Command == undefined) {
-            let updateMessage = {};
-            for (let item in ackMessageQueue) {
-                if (ackMessageQueue[item].message.MSGID == message) {
+        let updateMessage = {};
+        for(let item in ackMessageQueue){
+            if(ackMessageQueue[item].message.MSGID == message){
 
-                    currentObj.popCurrentMessageSqlite(message)
+                currentObj.popCurrentMessageSqlite(message)
 
 
-                    updateMessage = ackMessageQueue[item].message;
-                    ackMessageQueue.splice(item, 1);
+                updateMessage = ackMessageQueue[item].message;
+                ackMessageQueue.splice(item, 1);
 
-                    console.log("ack队列pop出：" + message)
-                    console.log(ackMessageQueue.length);
-                    break;
-                }
+                console.log("ack队列pop出：" + message)
+                console.log(ackMessageQueue.length);
+                break;
             }
+        }
 
-            //回调App上层发送成功
-            AppMessageResultHandle(true, message);
+        //回调App上层发送成功
+        AppMessageResultHandle(true,message);
 
-            updateMessage.status = MessageStatus.SendSuccess;
-            currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
-
-        //判断如果是他人发送的消息
-        }else if(message.Command == MessageCommandEnum.MSG_BODY){
-            //存入数据库
-            storeSqlite.storeRecMessage(message)
-
-
-
-            AppReceiveMessageHandle(message);
-        }}
-
+        updateMessage.status = MessageStatus.SendSuccess;
+        currentObj.addUpdateSqliteQueue(updateMessage,UpdateMessageSqliteType.storeMessage)
+    }
 
 
     recMessage(message,type=null) {
@@ -588,8 +549,8 @@ export default class IM {
         //处理收到消息的逻辑
         console.log("IM Core:消息内容"+message + " 开始执行pop程序");
 
-        if(type == MessageCommandEnum.MSG_HEART){
-            // message.Command = MessageCommandEnum.MSG_HEART;
+        if(type != null){
+            message.Command = MessageCommandEnum.MSG_HEART;
             console.log("心跳包压入发送队列")
             sendMessageQueue.push(message);
             return;

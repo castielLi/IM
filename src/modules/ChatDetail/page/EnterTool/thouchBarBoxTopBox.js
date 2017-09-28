@@ -32,7 +32,6 @@ import {
   createResourceMessageObj
 } from './createMessageObj';
 import IM from '../../../../Core/IM/index';
-import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
@@ -141,14 +140,12 @@ class ThouchBarBoxTopBox extends Component {
 
   _onPressIn() {
     if(!this.shouldPressSpeakBox) return;
-    clearInterval(checkMaxRecordTimeInterval);
-    clearTimeout(recordTimer);
     //开始录音
     let fileName = uuidv1();
     this.state.fileName = fileName;
     startTime = Date.now();
     recordTimer = setTimeout(() => {
-      audio = new Audio(this.props.client,this.props.type, fileName);
+      audio = new Audio('li', fileName);
       audio._record();
     }, 200)
     this.setState({
@@ -156,9 +153,9 @@ class ThouchBarBoxTopBox extends Component {
       recordingModalStatus: 0,
       speakTxt: '松开结束'
     })
-    //录音超过60秒自动结束
+    //录音超过10秒自动结束
     checkMaxRecordTimeInterval = setInterval(()=>{
-      if(Date.now()-startTime>60000){
+      if(Date.now()-startTime>10000){
         this._onPressOut();
         clearInterval(checkMaxRecordTimeInterval)
       }
@@ -191,15 +188,15 @@ class ThouchBarBoxTopBox extends Component {
             })
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
-            FileType: ResourceTypeEnum.audio,
+            FileType: 2,
             LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
-          }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)
+          }], '', this.props.client);
 
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage( message)
+            this.props.addMessage(this.props.client, message)
           }, [(tips) => {
             console.log(tips)
           }]);
@@ -208,7 +205,7 @@ class ThouchBarBoxTopBox extends Component {
         });
       }
       //延迟执行audio._stop
-    delayStopTimer = setTimeout(stop, 800)
+    delayStopTimer = setTimeout(stop, 500)
       //发送
     this.setState({
       speakTxt: '按住说话',
@@ -217,20 +214,16 @@ class ThouchBarBoxTopBox extends Component {
   }
   _onPressCancel() {
     clearInterval(checkMaxRecordTimeInterval)
-    //结束录音 
-    let stop = ()=>{
-      audio._stop((currentTime)=>{
+    //结束录音
+    audio._stop((currentTime)=>{
       //删除该录音文件
       RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
-      });
-      this.shouldPressSpeakBox = true;
-      this.setState({
-        isShowModal: false,
-        speakTxt: '按住说话'
-      })
-    }
-    //延迟执行audio._stop
-    delayStopTimer = setTimeout(stop, 800)
+    });
+    this.shouldPressSpeakBox = true;
+    this.setState({
+      isShowModal: false,
+      speakTxt: '按住说话'
+    })
   }
   _onRequestClose() {
       this.setState({
@@ -250,7 +243,7 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?50:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?60:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
         <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData} client={this.props.client}></AutoExpandingTextInput>
@@ -267,7 +260,6 @@ class ThouchBarBoxTopBox extends Component {
     this._gestureHandlers = {
         onStartShouldSetResponder: () => true,  //对触摸进行响应
         onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
-        onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
           this.setState({
@@ -301,8 +293,8 @@ class ThouchBarBoxTopBox extends Component {
 }
 
     //创建文件夹
-    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + this.props.type +'-'+this.props.client;
-    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + this.props.type +'-'+this.props.client;
+    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + this.props.client;
+    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + this.props.client;
     this.audioPath = audioPath;
     this.imagePath = imagePath;
   }
@@ -327,17 +319,17 @@ class ThouchBarBoxTopBox extends Component {
   renderModalBoxContent() {
     if (this.state.recordingModalStatus === 0) {
       return <View style={styles.recordingModalItem}>
-                <Icon name="microphone" size={80} color="#eee" />
+                <Icon name="microphone" size={50} color="#eee" />
                 <Text style={styles.recordingModalText}>手指上滑，取消发送</Text>
              </View>
     } else if (this.state.recordingModalStatus === 1) {
       return <View style={styles.recordingModalItem}>
-                <Icon name="exclamation" size={80} color="#eee" />
+                <Icon name="exclamation" size={50} color="#eee" />
                 <Text style={styles.recordingModalText}>录音时间太短</Text>
              </View>
     } else if (this.state.recordingModalStatus === 2) {
       return <View style={styles.recordingModalItem}>
-                <Icon name="undo" size={80} color="#eee" />
+                <Icon name="undo" size={50} color="#eee" />
                 <Text style={styles.recordingModalText}>松开手指，取消发送</Text>
              </View>
     }
@@ -345,7 +337,7 @@ class ThouchBarBoxTopBox extends Component {
   render() {
     return (
       <View>
-        <View style={[styles.thouchBarBoxTop,{height:this.props.thouchBarStore.isRecordPage?pxToPt(52):Math.max(pxToPt(52),pxToPt(this.state.thouchBarTopBoxHeight+20))}]}>
+        <View style={[styles.thouchBarBoxTop,{height:this.props.thouchBarStore.isRecordPage?pxToPt(62):Math.max(pxToPt(62),pxToPt(this.state.thouchBarTopBoxHeight+20))}]}>
             {this.renderEnterBox()}
             <TouchableHighlight style={[styles.button,styles.voiceButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toRecord}>
               {this.renderVoiceButton()}
@@ -380,37 +372,44 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   thouchBarBoxTop: {
-    height: pxToPt(52), //62
+    height: pxToPt(62), //62
+  },
+  inputBox: {
+    width: width - 170,
+
+    marginLeft: 57,
+    backgroundColor: '#fff',
+    borderRadius: 10
   },
   button: {
     position: 'absolute',
     height: pxToPt(30),
     width: pxToPt(30),
     borderWidth: pxToPt(1),
-    borderColor: '#aaa',
+    borderColor: '#575757',
     borderRadius: pxToPt(20),
     justifyContent: 'center',
     alignItems: 'center'
   },
   voiceButton: {
-    bottom: pxToPt(10),
+    bottom: pxToPt(15),
     left: 5
   },
   smileButton: {
-    bottom: pxToPt(10),
-    right: 45
+    bottom: pxToPt(15),
+    right: 60
   },
   plusButton: {
-    bottom: pxToPt(10),
+    bottom: pxToPt(15),
     right: 5
   },
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 140,
-    left: 50,
-    top: 5,
-    borderRadius: 5,
+    width: width - 180,
+    left: 60,
+    top: 10,
+    borderRadius: 10,
     borderColor: '#ccc',
     borderWidth: pxToPt(1),
     justifyContent: 'center',
@@ -430,26 +429,26 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   recordingModal: {
-    height: pxToPt(200),
-    width: pxToPt(200),
+    height: pxToPt(100),
+    width: pxToPt(100),
     backgroundColor: 'rgba(0,0,0,0.5)',
     borderRadius:10
   },
   recordingModalItem: {
     flex: 1,
-    paddingTop: 40,
+    paddingTop: 10,
     alignItems: 'center'
   },
   recordingModalText: {
     color: '#eee',
-    marginTop: 40,
-    fontSize:20,
+    marginTop: 10,
+    fontSize:10,
+    fontWeight:'bold'
   }
 });
 
 const mapStateToProps = state => ({
-  thouchBarStore: state.thouchBarStore,
-  accountId:state.loginStore.accountMessage.accountId
+  thouchBarStore: state.thouchBarStore
 });
 
 const mapDispatchToProps = dispatch => ({

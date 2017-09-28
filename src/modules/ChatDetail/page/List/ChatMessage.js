@@ -8,7 +8,7 @@ import {
     View,
     Dimensions,
 } from 'react-native';
-import {connect} from 'react-redux';
+
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
@@ -27,14 +27,13 @@ export default class ChatMessage extends Component {
     static propTypes = {
     };
 
-    typeOption = (data,style)=> {
+    typeOption = (data)=> {
         let {type} = data.message;
         switch (type) {
             case 'text': {
                 return (
                     <ChatMessageText
                         data={data}
-                        style={style}
                     />
                 )
             }
@@ -43,7 +42,6 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageImage
                         data={data}
-                        style={style}
                     />
                 )
             }
@@ -52,7 +50,6 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageSound
                         data={data}
-                        style={style}
                     />
                 )
             }
@@ -61,9 +58,9 @@ export default class ChatMessage extends Component {
     };
 
     render() {
-        let {rowData,style} = this.props;
+        let {rowData} = this.props;
         return (
-            this.typeOption(rowData,style)
+            this.typeOption(rowData)
         )
     }
 }
@@ -73,9 +70,3 @@ export default class ChatMessage extends Component {
 const styles = StyleSheet.create({
 
 });
-
-// const mapStateToProps = (state,props) => ({
-//     accountId:state.loginStore.accountMessage.accountId
-// });
-//
-// export default connect(mapStateToProps)(ChatMessage);
