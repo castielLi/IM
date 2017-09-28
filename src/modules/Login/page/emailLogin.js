@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {ScrollView,View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,KeyboardAvoidingView}from 'react-native';
+import {ScrollView,View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,KeyboardAvoidingView}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import Main from './main';
 import checkReg from './regExp';
@@ -62,7 +62,7 @@ export default class EmailLogin extends ContainerComponent {
 					{
 						this.state.phoneText && this.state.passWordText?
 						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{checkReg(2,this.state.phoneText)}}>
+							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{Keyboard.dismiss();checkReg(2,this.state.phoneText)}}>
 								<Text style = {styles.loginText}>登录</Text>
 							</TouchableOpacity>)
 						:(
