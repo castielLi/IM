@@ -79,8 +79,8 @@ class PhoneLogin extends ContainerComponent {
 
 			//初始化im
             let im = new IM();
-            im.setSocket("1");
-            im.initIMDatabase("1")
+            im.setSocket("2");
+            im.initIMDatabase("2")
 
 			//存储登录状态
             AsyncStorage.setItem('accountId',account.accountId);
