@@ -72,7 +72,7 @@ class PhoneLogin extends ContainerComponent {
 			//服务器验证
 			//...
 			//验证通过
-			let account = { accountId:'1',avatar:''};
+			let account = { accountId:'2',avatar:''};
 			//修改loginStore登录状态
 			this.props.signIn(account)
 
@@ -80,8 +80,7 @@ class PhoneLogin extends ContainerComponent {
 			//初始化im
             let im = new IM();
             im.setSocket("1");
-
-
+            im.initIMDatabase("1")
 
 			//存储登录状态
             AsyncStorage.setItem('accountId',account.accountId);
