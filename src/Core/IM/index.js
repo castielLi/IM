@@ -141,6 +141,10 @@ export default class IM {
         clearInterval(checkQueueInterval)
     }
 
+    setNetEnvironment(connecttionInfo){
+        networkStatus = connecttionInfo?networkStatuesType.normal:networkStatuesType.none;
+    }
+
     //网络状态变换回调
     handleNetEnvironment(connectionInfo){
         netState = connectionInfo;

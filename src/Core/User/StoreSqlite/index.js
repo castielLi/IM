@@ -4,6 +4,7 @@
 
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './UserExcuteSql'
+import { Platform, StyleSheet } from 'react-native';
 
 export function GetRelationList(callback){
     USERFMDB.GetRelationList(callback);

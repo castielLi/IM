@@ -8,7 +8,7 @@ import React, {
 import {
     Provider
 } from 'react-redux';
-import { AppState , NetInfo} from 'react-native'
+import { AppState , NetInfo,Platform} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
@@ -130,6 +130,15 @@ export default function App() {
         componentDidMount() {
             AppState.addEventListener('change', this._handleAppStateChange);
             AppState.addEventListener('memoryWarning', this._handleMemoryWarning);
+
+            if(Platform.OS === 'android'){
+                NetInfo.isConnected.fetch().done((isConnected) => {
+                    console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+                    im.setNetEnvironment(isConnected);
+                });
+            }
+
+
             NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
         }
         componentWillUnmount() {
