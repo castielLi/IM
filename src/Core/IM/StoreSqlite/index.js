@@ -74,11 +74,10 @@ export function getChatList(callback){
 
 var databaseObj = {
     // name :"IM.db",
-    location:"Documents"
-
 }
 if(Platform.OS === 'ios'){
     databaseObj.createFromLocation='1'
+    databaseObj.location = "Documents"
 }
 
 
