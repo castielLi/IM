@@ -87,8 +87,7 @@ export default class IM {
         __instance(this);
         this.socket = _socket;
         this.socket.onRecieveCallback(this.recMessage)
-        //初始化IM的数据库
-        storeSqlite.initIMDatabase();
+
         this.startIM();
         currentObj = this;
     }
@@ -96,6 +95,15 @@ export default class IM {
     setSocket(account){
         _socket.startConnect(account);
         ME = account;
+    }
+
+    //初始化IM的数据库
+    initIMDatabase(AccountId){
+        storeSqlite.initIMDatabase(AccountId,function(){
+
+            //获取之前没有发送出去的消息重新加入消息队列
+            currentObj.addAllUnsendMessageToSendQueue();
+        });
     }
 
 
@@ -116,8 +124,7 @@ export default class IM {
         this.beginHeartBeat();
         this.beginRunLoop();
 
-        //获取之前没有发送出去的消息重新加入消息队列
-        // this.addAllUnsendMessageToSendQueue();
+
     }
 
     stopIM(){
@@ -132,6 +139,10 @@ export default class IM {
         clearInterval(heartBeatInterval)
         clearInterval(loopInterval)
         clearInterval(checkQueueInterval)
+    }
+
+    setNetEnvironment(connecttionInfo){
+        networkStatus = connecttionInfo?networkStatuesType.normal:networkStatuesType.none;
     }
 
     //网络状态变换回调

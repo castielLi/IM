@@ -8,6 +8,7 @@ import * as commonMethods from './formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
+import RNFS from 'react-native-fs';
 
 export function storeSendMessage(message){
 
@@ -71,21 +72,38 @@ export function getChatList(callback){
     IMFMDB.getAllChatClientList(callback)
 }
 
-
-export function initIMDatabase(){
-    IMFMDB.initIMDataBase();
-    // IMFMDB.getAllChatList();
-}
-
 var databaseObj = {
-    name :"IM.db",//数据库文件
+    // name :"IM.db",
+    location:"Documents"
+
 }
 if(Platform.OS === 'ios'){
     databaseObj.createFromLocation='1'
 }
 
+
+export function initIMDatabase(AccountId,callback){
+
+    databaseObj.name =  AccountId + "/IM.db";
+
+    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
+        NSURLIsExcludedFromBackupKey:true
+    }).then((success) => {
+        console.log('Create directory success!');
+    })
+        .catch((err) => {
+            console.log(err.message);
+        });
+
+    IMFMDB.initIMDataBase(AccountId,callback);
+}
+
+
+
 let IMFMDB = {};
-IMFMDB.initIMDataBase = function(){
+IMFMDB.initIMDataBase = function(AccountId,callback){
+
+
     var db = SQLite.openDatabase({
         ...databaseObj
 
@@ -95,6 +113,7 @@ IMFMDB.initIMDataBase = function(){
                 let sql = sqls.InitIMTable[key];
                 tx.executeSql(sql, [], (tx, results) => {
                     console.log('create IM database success');
+                    callback();
                 }, (err)=>{errorDB('创建数据表',err)});
             }
         });
