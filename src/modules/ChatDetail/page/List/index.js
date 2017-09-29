@@ -72,7 +72,7 @@ class Chat extends Component {
     }
 
     componentWillReceiveProps(newProps){
-        let newData = newProps.chatRecordStore;
+        let newData = newProps.chatRecordStore.concat();
         if(!this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             this.firstLoad = ListConst.msgState.NOMORE;
         }

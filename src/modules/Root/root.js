@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
 function MapState(store) {
     return {
         isLoggedIn: store.loginStore.isLoggedIn,
-        hasGetChatRecord:store.chatRecordStore.hasGetChatRecord
     }
 }
 
