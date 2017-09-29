@@ -80,9 +80,9 @@ export default class Zoom extends ContainerComponent {
 		)
 	}
 	_renderItem = (info)=>{
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{'未开发'}}>
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
 					<View  style={styles.itemBox} >
-						<Image source={require('../resource/user_3.png')} style={styles.pic} ></Image>
+						<Image source={require('../resource/yaoyiyao.png')} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{info.item.name}</Text>
 					</View>
 			   </TouchableHighlight>

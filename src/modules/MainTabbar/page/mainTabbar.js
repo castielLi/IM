@@ -29,11 +29,12 @@ class TabBarComponent extends DisplayComponent {
                 <TabNavigator.Item
                     selected={this.state.selectedTab === '齐信'}
                     title="齐信"
-                    renderIcon={() =>  <Image source={require('../resources/action.png')}
+                    selectedTitleStyle={{color:'#1aad19'}}
+                    renderIcon={() =>  <Image source={require('../resources/qixin_.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
                     />}
-                    renderSelectedIcon={() =>  <Image source={require('../resources/action.png')}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/qixin.png')}
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
@@ -45,11 +46,12 @@ class TabBarComponent extends DisplayComponent {
                 <TabNavigator.Item
                     selected={this.state.selectedTab === '通讯录'}
                     title="通讯录"
-                    renderIcon={() =>  <Image source={require('../resources/action.png')}
+                    selectedTitleStyle={{color:'#1aad19'}}
+                    renderIcon={() =>  <Image source={require('../resources/contact.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
                     />}
-                    renderSelectedIcon={() =>  <Image source={require('../resources/action.png')}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/contact_.png')}
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
@@ -60,11 +62,12 @@ class TabBarComponent extends DisplayComponent {
                 <TabNavigator.Item
                     selected={this.state.selectedTab === '发现'}
                     title="发现"
-                    renderIcon={() =>  <Image source={require('../resources/action.png')}
+                    selectedTitleStyle={{color:'#1aad19'}}
+                    renderIcon={() =>  <Image source={require('../resources/zoom.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
                     />}
-                    renderSelectedIcon={() =>  <Image source={require('../resources/action.png')}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/zoom_.png')}
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
@@ -75,11 +78,12 @@ class TabBarComponent extends DisplayComponent {
                 <TabNavigator.Item
                     selected={this.state.selectedTab === '我'}
                     title="我"
-                    renderIcon={() =>  <Image source={require('../resources/action.png')}
+                    selectedTitleStyle={{color:'#1aad19'}}
+                    renderIcon={() =>  <Image source={require('../resources/me.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
                     />}
-                    renderSelectedIcon={() =>  <Image source={require('../resources/action.png')}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/me.png')}
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
