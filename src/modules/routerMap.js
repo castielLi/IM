@@ -16,9 +16,14 @@ import PhoneLogin from './Login/page/phoneLogin'
 import EmailLogin from './Login/page/emailLogin'
 import Register from './Login/page/register'
 import FindPassword from './Login/page/findPassword'
+import ChangePassword from './Login/page/changePassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Camera from './Camera'
+import Start from './Start/page'
+import RecentList from './RecentList/page/recentChat'
+import Contacts from './Contacts/page'
+import Zoom from './Zoom/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -27,8 +32,8 @@ export const MainPage = {
 
 
 export const InitialRoute = {
-    key: 'ChatDetail',
-    routeId: 'ChatDetail'
+    key: 'Start',
+    routeId: 'Start'
 }
 
 export const RouteMap = {
@@ -38,13 +43,31 @@ export const RouteMap = {
             params: {}
         }
     },
+    'Start': {
+        'Start': {
+            component: Start,
+            params: {}
+        }
+    },
     'MainTabbar': {
+        'MainTabbar':{
+            component: MainTabbar,
+            params: {}
+        },
         'TabOne': {
-            component: Login,
+            component: RecentList,
             params: {}
         },
         'TabTwo': {
-            component: Login,
+            component: Contacts,
+            params: {}
+        },
+        'TabThree': {
+            component: Zoom,
+            params: {}
+        },
+        'TabFour': {
+            component: RecentList,
             params: {}
         }
     },
@@ -74,6 +97,12 @@ export const RouteMap = {
             params: {}
         }
     },
+    'ChangePassword':{
+         'ChangePassword': {
+            component: ChangePassword,
+            params: {}
+        }
+    },
     'ChatDetail': {
         'ChatDetail': {
             component: ChatDetail,
@@ -82,6 +111,21 @@ export const RouteMap = {
     },'Camera': {
         'Camera': {
             component: Camera,
+            params: {}
+        }
+    },'RecentList': {
+        'RecentList': {
+            component: RecentList,
+            params: {}
+        }
+    },'Contacts': {
+        'Contacts': {
+            component: Contacts,
+            params: {}
+        }
+    },'Zoom': {
+        'Zoom': {
+            component: Zoom,
             params: {}
         }
     },

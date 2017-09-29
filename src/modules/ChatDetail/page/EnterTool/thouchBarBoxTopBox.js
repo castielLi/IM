@@ -32,6 +32,7 @@ import {
   createResourceMessageObj
 } from './createMessageObj';
 import IM from '../../../../Core/IM/index';
+import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
@@ -147,7 +148,7 @@ class ThouchBarBoxTopBox extends Component {
     this.state.fileName = fileName;
     startTime = Date.now();
     recordTimer = setTimeout(() => {
-      audio = new Audio(this.props.client, fileName);
+      audio = new Audio(this.props.client,this.props.type, fileName);
       audio._record();
     }, 200)
     this.setState({
@@ -190,15 +191,15 @@ class ThouchBarBoxTopBox extends Component {
             })
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
-            FileType: 2,
+            FileType: ResourceTypeEnum.audio,
             LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
             RemoteSource: ''
-          }], '1', this.props.client);//(资源类型，way，资源，发送者，接收者)
+          }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)
 
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage(this.props.client, message)
+            this.props.addMessage( message)
           }, [(tips) => {
             console.log(tips)
           }]);
@@ -266,6 +267,7 @@ class ThouchBarBoxTopBox extends Component {
     this._gestureHandlers = {
         onStartShouldSetResponder: () => true,  //对触摸进行响应
         onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
           this.setState({
@@ -299,8 +301,8 @@ class ThouchBarBoxTopBox extends Component {
 }
 
     //创建文件夹
-    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + this.props.client;
-    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + this.props.client;
+    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + this.props.type +'-'+this.props.client;
+    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + this.props.type +'-'+this.props.client;
     this.audioPath = audioPath;
     this.imagePath = imagePath;
   }
@@ -446,7 +448,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-  thouchBarStore: state.thouchBarStore
+  thouchBarStore: state.thouchBarStore,
+  accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({

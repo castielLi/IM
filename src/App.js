@@ -8,11 +8,10 @@ import React, {
 import {
     Provider
 } from 'react-redux';
-import { AppState , NetInfo} from 'react-native'
+import { AppState , NetInfo,Platform} from 'react-native'
 import Root from './modules/Root/root'
-import configureStore from './store'
+import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
-import FMDB from './Core/DatabaseHelper'
 import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
@@ -35,15 +34,12 @@ let network = new netWorking();
 export default function App() {
 
 
-    let store = configureStore();
+    let store = Store;
 
     //初始化app的http组件
     configureNetwork({
         "Content-Type": "application/json"
     }, 'fetch', false)
-
-    //初始化app的database
-    FMDB.initDatabase()
 
 
     //初始化路由表
@@ -62,16 +58,12 @@ export default function App() {
 
 
     let handleRecieveMessage = function(message){
-
+        store.dispatch(ActionForChatRecordStore.receiveMessage(message))
     }
 
 
     im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
 
-    im.getChatList((chatListArr) => {
-        //初始化chatRecordStore
-        store.dispatch(ActionForChatRecordStore.getChatRecord(chatListArr))
-    })
 
 
     // let sendMessage = setInterval(function(){
@@ -138,6 +130,15 @@ export default function App() {
         componentDidMount() {
             AppState.addEventListener('change', this._handleAppStateChange);
             AppState.addEventListener('memoryWarning', this._handleMemoryWarning);
+
+            if(Platform.OS === 'android'){
+                NetInfo.isConnected.fetch().done((isConnected) => {
+                    console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+                    im.setNetEnvironment(isConnected);
+                });
+            }
+
+
             NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
         }
         componentWillUnmount() {

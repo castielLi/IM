@@ -2,13 +2,13 @@
  * Created by apple on 2017/8/9.
  */
 import { Platform, StyleSheet } from 'react-native';
-import FMDB from '../../DatabaseHelper/index'
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
 import * as commonMethods from './formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
+import RNFS from 'react-native-fs';
 
 export function storeSendMessage(message){
 
@@ -27,7 +27,10 @@ export function deleteClientRecode(name,chatType){
 export function deleteMessage(message,chatType,client){
     IMFMDB.DeleteChatMessage(message,chatType,client);
 }
-
+//删除ChatRecode中某条记录
+export function deleteChatRecode(name){
+    IMFMDB.DeleteClientRecodeByName(name);
+}
 export function InsertResource(messageId,localPath){
     IMFMDB.InsertResource(messageId,localPath);
 }
@@ -69,21 +72,38 @@ export function getChatList(callback){
     IMFMDB.getAllChatClientList(callback)
 }
 
-
-export function initIMDatabase(){
-    IMFMDB.initIMDataBase();
-    // IMFMDB.getAllChatList();
-}
-
 var databaseObj = {
-    name :"IM.db",//数据库文件
+    // name :"IM.db",
+    location:"Documents"
+
 }
 if(Platform.OS === 'ios'){
     databaseObj.createFromLocation='1'
 }
 
+
+export function initIMDatabase(AccountId,callback){
+
+    databaseObj.name =  AccountId + "/IM.db";
+
+    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
+        NSURLIsExcludedFromBackupKey:true
+    }).then((success) => {
+        console.log('Create directory success!');
+    })
+        .catch((err) => {
+            console.log(err.message);
+        });
+
+    IMFMDB.initIMDataBase(AccountId,callback);
+}
+
+
+
 let IMFMDB = {};
-IMFMDB.initIMDataBase = function(){
+IMFMDB.initIMDataBase = function(AccountId,callback){
+
+
     var db = SQLite.openDatabase({
         ...databaseObj
 
@@ -93,6 +113,7 @@ IMFMDB.initIMDataBase = function(){
                 let sql = sqls.InitIMTable[key];
                 tx.executeSql(sql, [], (tx, results) => {
                     console.log('create IM database success');
+                    callback();
                 }, (err)=>{errorDB('创建数据表',err)});
             }
         });
@@ -124,7 +145,9 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                     }
 
                     let conetnt = getContentByMessage(message);
-                    updateChat(conetnt,client,tx);
+                    let time = message.Data.LocalTime;
+
+                    updateChat(conetnt,time,client,tx);
 
                     insertChat(message,tx);
 
@@ -151,10 +174,12 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
                         //添加数据进数据库
 
                         let conetnt = getContentByMessage(message);
-
-                        updateChat(conetnt,client,tx);
+                        let time = message.Data.LocalTime;
 
                         insertClientRecode(client,message.way,tx);
+                        updateChat(conetnt,time,client,tx);
+
+
 
                         insertChat(message,tx);
 
@@ -475,6 +500,21 @@ IMFMDB.DeleteResource = function(messageId,localPath){
     }, errorDB);
 }
 
+IMFMDB.DeleteClientRecodeByName = function(name){
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            deleteClientRecodeByName(name,tx)
+
+        });
+
+    }, errorDB);
+}
+
 //添加消息进总消息表
 function insertChat(message,tx){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
@@ -513,17 +553,17 @@ function insertChatToSpecialRecode(message,tableName,tx){
 
 
 //修改chat列表中最近的聊天记录
-function updateChat(content,client,tx){
+function updateChat(content,time,client,tx){
 
     let updateSql = sqls.ExcuteIMSql.UpdateChatLastContent;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[content,client]);
+    updateSql = commonMethods.sqlFormat(updateSql,[content,time,client]);
 
     tx.executeSql(updateSql, [], (tx, results) => {
 
         console.log("更改最近一条消息记录为");
 
-    }, (err)=>{errorDB('为'+client+"在会话列表中更新了最新的聊天记录")
+    }, (err)=>{errorDB('为'+client+"在会话列表中更新了最新的聊天记录",err)
     });
 }
 
@@ -568,13 +608,13 @@ function getContentByMessage(message){
     let content = "";
     if(message.Resource != null && message.Resource.length > 0 && message.Resource.length < 2){
         switch (message.Resource[0].FileType){
-            case ResourceTypeEnum.Image:
+            case ResourceTypeEnum.image:
                 content = "[图片]";
                 break;
-            case ResourceTypeEnum.Audio:
+            case ResourceTypeEnum.audio:
                 content = "[音频]";
                 break;
-            case ResourceTypeEnum.Video:
+            case ResourceTypeEnum.video:
                 content = "[视频]";
                 break;
         }

@@ -30,6 +30,7 @@ let SOUTH_CHINA_HTTPS_UPLOAD_CLIENT = 'https://upload-z2.qbox.me';//客户端
 export default {
 	RPC_TIMEOUT,
 	TOKEN_URL,
+    QIY_URL,
     //华东访问地址
     EAST_CHINA_HTTP_DOWNLOAD,
     EAST_CHINA_HTTPS_DOWNLOAD,

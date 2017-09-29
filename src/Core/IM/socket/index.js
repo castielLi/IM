@@ -23,26 +23,17 @@ let heartBeatCode = undefined;
 
 export default class Connect extends Component{
 
-    constructor(token) {
+    constructor() {
         super();
         if (__instance()) return __instance();
 
         __instance(this);
 
-        _token = token;
-
         currentObj = this;
 
-        // "/socket.io/?EIO=4&transport=websocket"
-        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + token );
-        // this.webSocket = new WebSocket(configs.serverUrl);
-        console.log("account token:" + token);
         this.reConnectNet = this.reConnectNet.bind(this);
 
         this.addEventListenner = this.addEventListenner.bind(this);
-
-        this.addEventListenner();
-
 
     }
 
@@ -53,9 +44,9 @@ export default class Connect extends Component{
                 return ;
             }
             let message = JSON.parse(event.data);
-            console.log("消息类型是："+message.Command);
+            console.log("消息类型是："+message.Command,message,'-----------------------------------------------------------------------------');
             if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
-                onRecieveMessage(message.MSGID);
+                onRecieveMessage(message.MSGID,MessageCommandEnum.MSG_REV_ACK);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
                 heartBeatCode = message;
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
@@ -90,7 +81,7 @@ export default class Connect extends Component{
 
     sendMessage(message){
         if(this.webSocket.readyState == this.webSocket.OPEN){
-            console.log("Socket Core: 发送消息"+message);
+            console.log("Socket Core: 发送消息:   ",message);
 
             if(message.Command == MessageCommandEnum.MSG_HEART){
                 heartBeatCode = undefined;
@@ -109,6 +100,11 @@ export default class Connect extends Component{
         onRecieveMessage = callback;
     }
 
+    startConnect(token){
+        _token = token;
+        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
+        this.addEventListenner();
+    }
 
     reConnectNet(){
         // + "/socket.io/?EIO=4&transport=websocket"

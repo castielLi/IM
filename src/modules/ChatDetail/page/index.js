@@ -16,6 +16,8 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as commonActions from '../../../Core/IM/redux/action';
+import * as recentListActions from '../../RecentList/reducer/action';
+import * as chatDetailActions from '../reducer/action';
 import RNFS from 'react-native-fs';
 import NavigationTopBar from '../../../Core/Component/NavigationBar/index'
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
@@ -47,14 +49,13 @@ class ChatDetail extends ContainerComponent {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
 	componentWillMount(){
-		console.log('3333333333333333333333333333')
-		let client = this.props.client;
-		//如果是刚开聊的，之前redux里没记录的好友	
+		let {client,type} = this.props;
+		//如果是刚开聊的，chatRecordStore里没记录	
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
 			//新建文件夹
-			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + client;
-			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + client;
+			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + type + '-' +client;
+			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + type + '-' +client;
 			RNFS.mkdir(audioPath)
 		      .then((success) => {
 		        console.log('create new dir success!');
@@ -70,17 +71,27 @@ class ChatDetail extends ContainerComponent {
 		        console.log(err.message);
 		      });
 		}
+		//初始化chatRecordStore
+		this.props.getChatRecord(client,type)
+		//修改chatDetailPageStore
+		this.props.changeChatDetailPageStatus(true,client,type)
+		//清空未读消息计数红点
+		this.props.updateRecentItemLastMessage(client,type,false);
 
+	}
+	componentWillUnmount(){
+		//修改chatDetailPageStore
+		this.props.changeChatDetailPageStatus(false,'','')
 	}
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<NavigationTopBar
-				// leftButton={this._leftButton}
+				leftButton={this._leftButton}
 				title={this._title} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
-				<ThouchBar client={this.props.client}></ThouchBar>
+				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>
 
 		);
@@ -100,7 +111,9 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(commonActions,dispatch)
+    ...bindActionCreators(commonActions,dispatch),
+    ...bindActionCreators(chatDetailActions,dispatch),
+    ...bindActionCreators(recentListActions,dispatch),
 }};
 
 export default connect(mapStateToProps,mapDispatchToProps)(ChatDetail);

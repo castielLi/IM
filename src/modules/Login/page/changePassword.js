@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -8,12 +8,12 @@ import Main from './main';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
-import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
-var sqLite = new SQLite();
-let db;
-export default class Login extends Component {
+import ContainerComponent from '../../../Core/Component/ContainerComponent';
+
+
+export default class Login extends ContainerComponent {
 	constructor(props) {
 	  super(props);
 	
@@ -42,7 +42,12 @@ export default class Login extends Component {
 
 			//修改成功，页面跳转到登录页面
 			alert('密码修改成功，请重新登录!')
-			this.props.navigator.push({sceneConfig: Navigator.SceneConfigs.FloatFromRight,component: PhoneLogin,})
+			Keyboard.dismiss();
+			this.route.push(this.props,{
+				key:'Login',
+            	routeId: 'PhoneLogin',
+            	sceneConfig: Navigator.SceneConfigs.FloatFromLeft
+			});
 		}else {
 			alert('两次输入密码不匹配');
 		}
@@ -54,9 +59,10 @@ export default class Login extends Component {
 		return (
 
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.props.navigator.push({
-				sceneConfig: Navigator.SceneConfigs.FloatFromLeft,
-                component: PhoneLogin,
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
+					key:'Login',
+					routeId:'PhoneLogin',
+					sceneConfig: Navigator.SceneConfigs.FloatFromLeft,
 				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>找回密码</Text>	
@@ -89,7 +95,7 @@ export default class Login extends Component {
 						<TextInput
 						ref = {(c)=>{this._textInput = c}}
 						maxLength = {16}
-						style = {[styles.textInput,{marginLeft:-10,}]} 
+						style = {[styles.textInput,]} 
 						placeholderTextColor = '#cecece' 
 						secureTextEntry = {true} 
 						placeholder = '再次输入新密码' 
@@ -109,7 +115,7 @@ export default class Login extends Component {
 							)
 					}
 				<View style= {styles.footer}>
-					<TouchableOpacity onPress = {()=>{this.props.navigator.push({sceneConfig: Navigator.SceneConfigs.FloatFromRight,component: emailLogin,})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
+					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
 					<TouchableOpacity  activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
 				</View>
 				</View>

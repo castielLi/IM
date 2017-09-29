@@ -8,7 +8,7 @@ import {
     View,
     Dimensions,
 } from 'react-native';
-
+import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
@@ -27,16 +27,14 @@ export default class ChatMessage extends Component {
     static propTypes = {
     };
 
-    typeOption = (data)=> {
-        let {type,Data} = data.message;
-        let {userID} = this.props;
-        let isMe = Data.Data.Sender == '1';
+    typeOption = (data,style)=> {
+        let {type} = data.message;
         switch (type) {
             case 'text': {
                 return (
                     <ChatMessageText
                         data={data}
-                        isMe={isMe}
+                        style={style}
                     />
                 )
             }
@@ -45,7 +43,7 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageImage
                         data={data}
-                        isMe={isMe}
+                        style={style}
                     />
                 )
             }
@@ -54,7 +52,7 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageSound
                         data={data}
-                        isMe={isMe}
+                        style={style}
                     />
                 )
             }
@@ -63,9 +61,9 @@ export default class ChatMessage extends Component {
     };
 
     render() {
-        let {rowData} = this.props;
+        let {rowData,style} = this.props;
         return (
-            this.typeOption(rowData)
+            this.typeOption(rowData,style)
         )
     }
 }
@@ -75,3 +73,9 @@ export default class ChatMessage extends Component {
 const styles = StyleSheet.create({
 
 });
+
+// const mapStateToProps = (state,props) => ({
+//     accountId:state.loginStore.accountMessage.accountId
+// });
+//
+// export default connect(mapStateToProps)(ChatMessage);

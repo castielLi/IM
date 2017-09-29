@@ -13,10 +13,13 @@ import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
 import * as Helper from '../Helper'
 import MessageType from './dto/MessageType'
+import netWorking from '../Networking/Network'
+import RNFS from 'react-native-fs'
 
 
 
-let _socket = new Connect("1");
+let _socket = new Connect();
+let _network = new netWorking();
 
 //网络状态
 let networkStatus = "";
@@ -53,7 +56,7 @@ let loopState;
 let netState;
 
 //假设账号token就是1
-let ME = "1";
+let ME = "";
 
 let currentObj = undefined;
 
@@ -84,10 +87,23 @@ export default class IM {
         __instance(this);
         this.socket = _socket;
         this.socket.onRecieveCallback(this.recMessage)
-        //初始化IM的数据库
-        storeSqlite.initIMDatabase();
+
         this.startIM();
         currentObj = this;
+    }
+
+    setSocket(account){
+        _socket.startConnect(account);
+        ME = account;
+    }
+
+    //初始化IM的数据库
+    initIMDatabase(AccountId){
+        storeSqlite.initIMDatabase(AccountId,function(){
+
+            //获取之前没有发送出去的消息重新加入消息队列
+            currentObj.addAllUnsendMessageToSendQueue();
+        });
     }
 
 
@@ -108,8 +124,7 @@ export default class IM {
         this.beginHeartBeat();
         this.beginRunLoop();
 
-        //获取之前没有发送出去的消息重新加入消息队列
-        this.addAllUnsendMessageToSendQueue();
+
     }
 
     stopIM(){
@@ -124,6 +139,10 @@ export default class IM {
         clearInterval(heartBeatInterval)
         clearInterval(loopInterval)
         clearInterval(checkQueueInterval)
+    }
+
+    setNetEnvironment(connecttionInfo){
+        networkStatus = connecttionInfo?networkStatuesType.normal:networkStatuesType.none;
     }
 
     //网络状态变换回调
@@ -174,6 +193,10 @@ export default class IM {
         storeSqlite.deleteClientRecode(name,chatType);
     }
 
+    //删除ChatRecode中某条记录
+    deleteChatRecode(name){
+        storeSqlite.deleteChatRecode(name);
+    }
     //删除当条消息
     deleteMessage(message,chatType,client){
         storeSqlite.deleteMessage(message,chatType,client);
@@ -391,7 +414,7 @@ export default class IM {
     addMessageQueue(message){
 
         sendMessageQueue.push(message);
-        console.log("message 加入发送队列")
+        console.log("message 加入发送队列",message)
 
     }
 
@@ -541,7 +564,7 @@ export default class IM {
     receiveMessageOpreator(message){
 
         //判断如果是ack消息
-        if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
+        if(message.Command == undefined) {
             let updateMessage = {};
             for (let item in ackMessageQueue) {
                 if (ackMessageQueue[item].message.MSGID == message) {
@@ -567,7 +590,38 @@ export default class IM {
         //判断如果是他人发送的消息
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
             //存入数据库
-            storeSqlite.storeRecMessage(message)
+
+            console.log('改变前=============================:  ',message)
+
+            if(message.type == 'text')
+            {
+                storeSqlite.storeRecMessage(message)
+            }
+            else{
+
+                message.Resource[0].LocalSource = null;
+
+                console.log('下载前=============================:  ',message)
+
+                let fromUrl = message.Resource[0].RemoteSource,
+                    sender = message.Data.Data.Sender,
+                    type = message.type,
+                    way = message.way,
+                    format = fromUrl.slice(fromUrl.lastIndexOf('.')),
+                    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+
+                updateMessage = (result) => {
+                    message.Resource[0].LocalSource = 'file://' + toFile
+                    console.log('下载成功后=============================:  ',message)
+                    storeSqlite.storeRecMessage(message)
+                }
+
+                _network.methodDownload(fromUrl,toFile,updateMessage)
+
+                console.log('receiveMessageOpreator:  ',message)
+            }
+
+            //todo : 添加非文字类型的消息的下载程序
 
             AppReceiveMessageHandle(message);
         }}

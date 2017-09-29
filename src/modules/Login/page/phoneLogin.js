@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -9,24 +9,17 @@ import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
 import ContentPage from './contentPage';
-import SQLite from '../sqlite/sqlite';
 import emailLogin from './emailLogin';
 import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
-var sqLite = new SQLite();
-let db;
+import IM from '../../../Core/IM'
+
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
 		sqLite.close();
-	}
-	componentWillMount(){
-		console.log(this.props)
-		if(!db){
-			db = sqLite.open();
-		}
-		sqLite.createTable();
+
 	}
 	constructor(props) {
 	  super(props);
@@ -66,25 +59,40 @@ class PhoneLogin extends ContainerComponent {
 
 	}
 
+
 	addUser = ()=>{
 		if(checkReg(1,this.state.phoneText)){
-		try{
 			var userData = [];
 			var user = {};
 			user.userName = this.state.phoneText;
 			user.passWord = this.state.passWordText;
 			userData.push(user);
-			//插入数据
-			sqLite.insertUserData(userData);
-			}catch(error) {
-				console.log(error);
-			}
-			//假设登录成功
-			this.props.signIn({ client:'1',avatar:''})
+			//登录中
+			this.props.signDoing();
+			//服务器验证
+			//...
+			//验证通过
+			let account = { accountId:'2',avatar:''};
+			//修改loginStore登录状态
+			this.props.signIn(account)
+
+
+			//初始化im
+            let im = new IM();
+            im.setSocket("2");
+            im.initIMDatabase("2")
+
+			//存储登录状态
+            AsyncStorage.setItem('accountId',account.accountId);
+			//初始化IM
+			//..
+			Keyboard.dismiss();//关闭软键盘
+			//跳转到最近聊天列表
 			this.route.push(this.props,{
-				key:'ChatDetail',
-                routeId: 'ChatDetail'
+				key:'MainTabbar',
+                routeId: 'MainTabbar'
 			});
+			
 		}
 	}
 	
@@ -92,12 +100,12 @@ class PhoneLogin extends ContainerComponent {
 		return (
 
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.push(this.props,{
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
 					key:'Login',
-                	routeId: 'Login',
-                	sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-
-				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+            		routeId: 'Login',
+            		sceneConfig: Navigator.SceneConfigs.FloatFromLeft
+				});}}>
+				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>	
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
