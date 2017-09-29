@@ -18,7 +18,6 @@ import {
 	checkDeviceWidth
 } from './check';
 import IM from '../../../Core/IM';
-import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
 import NavigationBar from 'react-native-navbar';
 import Features from './features';
 
@@ -67,8 +66,6 @@ export default class Zoom extends ContainerComponent {
 	}
 	_rightButton = ()=>{
 		return (
-			<View style = {styles.header}>
-                <Text style = {styles.headerTitle}>奇信</Text>
                 <View style = {styles.RightLogo}>
                     <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
                         <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
@@ -77,13 +74,12 @@ export default class Zoom extends ContainerComponent {
                         <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
                     </TouchableOpacity>
                 </View>
-            </View>
 		)
 	}
 	_renderItem = (info)=>{
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
 					<View  style={styles.itemBox} >
-						<Image source={require('../resource/yaoyiyao.png')} style={styles.pic} ></Image>
+						<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{info.item.name}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -101,7 +97,7 @@ export default class Zoom extends ContainerComponent {
 				<NavigationBar
 					tintColor = '#38373d'
 					leftButton = {<Text style={styles.headerTitle}>云信</Text>}
-					//rightButton= {this._rightButton()}
+					rightButton= {this._rightButton()}
 				/>
 				<SectionList
 			      keyExtractor={(item,index)=>("index"+index+item)}
@@ -124,22 +120,16 @@ const styles = StyleSheet.create({
 		flex: 1,
 		backgroundColor: "#f2f2f2"
 	},
-	header: {
-		width:checkDeviceWidth(750),
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		backgroundColor: '#38373d',
-	},
 	headerTitle: {
 		color: '#ffffff',
 		fontSize: checkDeviceHeight(36),
 		marginLeft: checkDeviceWidth(20),
+		textAlignVertical:'center',
 	},
 	RightLogo: {
+		marginRight:checkDeviceWidth(40),
 		flexDirection: 'row',
-		marginRight: checkDeviceWidth(40),
-
+		alignItems:'center',
 	},
 	headerLogo: {
 		height: checkDeviceWidth(40),
