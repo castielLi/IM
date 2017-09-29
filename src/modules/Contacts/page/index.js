@@ -18,6 +18,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../RecentList/reducer/action';
+import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
+import NavigationBar from 'react-native-navbar';
 var {height, width} = Dimensions.get('window');
 var originData = [
 		{
@@ -249,9 +251,28 @@ class Contacts extends ContainerComponent {
 	_renderFooter = () =>{
 		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.state.totalItemLength+'位联系人'}</Text></View>
 	}
+		//定义上导航的左按钮
+	_rightButton() {
+			return {
+				title: '+',
+				handler: () => alert('message'),
+				tintColor:'#fff',
+			}
+		}
+		//定义上导航的标题
+	_title() {
+		return {
+			title: "通讯录",
+			tintColor:'#fff',
+		}
+	}
 	render() {
 		return (
 			<View style={styles.container}>
+				<NavigationBar
+					tintColor="#38373d"
+					rightButton={this._rightButton()}
+					title={this._title()} />
 			    <SectionList
 			      ref={'mySectionList'}
 			      keyExtractor={(item,index)=>("index"+index+item)}
