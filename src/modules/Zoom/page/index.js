@@ -19,6 +19,7 @@ import {
 } from './check';
 import IM from '../../../Core/IM';
 import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
+import NavigationBar from 'react-native-navbar';
 import Features from './features';
 
 var originData = [
@@ -97,8 +98,10 @@ export default class Zoom extends ContainerComponent {
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
-				<NavigationTopBar
-					rightButton= {this._rightButton}
+				<NavigationBar
+					tintColor = '#38373d'
+					leftButton = {<Text style={styles.headerTitle}>云信</Text>}
+					//rightButton= {this._rightButton()}
 				/>
 				<SectionList
 			      keyExtractor={(item,index)=>("index"+index+item)}
