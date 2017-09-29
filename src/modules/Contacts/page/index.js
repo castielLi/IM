@@ -202,7 +202,6 @@ class Contacts extends ContainerComponent {
 							style={styles.search}
 							underlineColorAndroid = 'transparent'
 						>
-							<Icon name="search" size={16} color="#aaa" />
 						</TextInput>
 					</View>
 					<View style={styles.listOtherUseBox}>
