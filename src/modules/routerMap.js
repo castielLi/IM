@@ -23,6 +23,7 @@ import Camera from './Camera'
 import Start from './Start/page'
 import RecentList from './RecentList/page/recentChat'
 import Contacts from './Contacts/page'
+import Zoom from './Zoom/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -62,7 +63,7 @@ export const RouteMap = {
             params: {}
         },
         'TabThree': {
-            component: RecentList,
+            component: Zoom,
             params: {}
         },
         'TabFour': {
@@ -120,6 +121,11 @@ export const RouteMap = {
     },'Contacts': {
         'Contacts': {
             component: Contacts,
+            params: {}
+        }
+    },'Zoom': {
+        'Zoom': {
+            component: Zoom,
             params: {}
         }
     },

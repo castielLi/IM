@@ -37,7 +37,6 @@
 // }
 import InitChatRecordConfig from './InitChatRecordConfig';
 const initialState = {
-    hasGetChatRecord:false,//是否初始化聊天数据完毕
     ChatRecord: {}
 }
 export default function chatRecordStore(state = initialState, action) {
@@ -46,7 +45,6 @@ export default function chatRecordStore(state = initialState, action) {
             state.ChatRecord[action.client] = action.messageList;
             return{
                 ...state,
-                hasGetChatRecord:true
             }
         //第一次聊天，向聊天记录redux中添加用户标记
         case 'ADD_CLIENT':
@@ -65,7 +63,7 @@ export default function chatRecordStore(state = initialState, action) {
                  //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
                 state.ChatRecord[action.client] = state.ChatRecord[action.client].concat([]);
                  return {
-                    ...state
+                    ...state,
                 };
             }else{
                 return state;
@@ -101,8 +99,8 @@ export default function chatRecordStore(state = initialState, action) {
                 };
             }else{
                 return state;
-            }            
-            
+            }
+
 
         case 'UPDATE_MESSAGES':
             if(state.ChatRecord[action.client]){
