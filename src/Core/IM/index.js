@@ -14,6 +14,7 @@ import * as DtoMethods from './dto/Common'
 import * as Helper from '../Helper'
 import MessageType from './dto/MessageType'
 import netWorking from '../Networking/Network'
+import RNFS from 'react-native-fs'
 
 
 
@@ -578,9 +579,30 @@ export default class IM {
         //判断如果是他人发送的消息
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
             //存入数据库
-            storeSqlite.storeRecMessage(message)
+            console.log('改变前=============================:  ',message)
+            if(message.type == 'text')
+            {
+                storeSqlite.storeRecMessage(message)
+            }
+            else{
 
-            console.log('receiveMessageOpreator:  ',message)
+                message.Resource[0].LocalSource = null;
+                console.log('下载前=============================:  ',message)
+                let fromUrl = message.Resource[0].RemoteSource,
+                    sender = message.Data.Data.Sender,
+                    type = message.type,
+                    way = message.way,
+                    format = fromUrl.slice(fromUrl.lastIndexOf('.')),
+                    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+
+
+                updateMessage = (result) => {
+                    message.Resource[0].LocalSource = 'file://' + toFile
+                    console.log('下载成功后=============================:  ',message)
+                    storeSqlite.storeRecMessage(message)
+                }
+                _network.methodDownload(fromUrl,toFile,updateMessage)
+            }
 
             //todo : 添加非文字类型的消息的下载程序
 
