@@ -9,6 +9,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import IM from '../../../Core/IM'
+import User from '../../../Core/User'
 
 class Start extends ContainerComponent {
     constructor(){
@@ -29,8 +30,11 @@ class Start extends ContainerComponent {
                     alert('你的账户:'+value)
                     let im = new IM();
                     im.setSocket(value);
-
                     im.initIMDatabase(value)
+
+
+                    let user = new User()
+                    user.initIMDatabase(value);
 
                     this.props.signIn({ accountId:value,avatar:''})
                     //切换至最近聊天列表

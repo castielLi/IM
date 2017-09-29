@@ -15,6 +15,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import IM from '../../../Core/IM'
+import User from '../../../Core/User'
 
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
@@ -81,6 +82,10 @@ class PhoneLogin extends ContainerComponent {
             let im = new IM();
             im.setSocket("2");
             im.initIMDatabase("2")
+
+			//初始化用户系统
+			let user = new User();
+            user.initIMDatabase("2");
 
 			//存储登录状态
             AsyncStorage.setItem('accountId',account.accountId);

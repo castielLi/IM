@@ -17,9 +17,13 @@ export default class User {
         if (__instance()) return __instance();
 
         __instance(this);
-        //初始化数据库
-        storeSqlite.initIMDatabase()
+    }
 
+    //初始化数据库
+    initIMDatabase(AccountId){
+        storeSqlite.initIMDatabase(AccountId,function(){
+
+        });
     }
 
     getAllRelation(){
