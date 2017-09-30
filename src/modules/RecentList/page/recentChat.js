@@ -18,6 +18,8 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Features from './features';
 import * as recentListActions from '../reducer/action';
+import * as chatRecordActions from '../../../Core/IM/redux/action';
+
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
@@ -56,7 +58,10 @@ class RecentChat extends ContainerComponent {
 	}
 	deleteSomeRow(rowID,rowData){
 		let oKCallback = ()=>{
+			//清空recentListStore中对应记录
 			this.props.deleteRecentItem(rowID);
+			//清空chatRecordStore中对应记录
+			this.props.initChatRecord(rowData.Client,[])
 			//删除ChatRecode表中记录
 			im.deleteChatRecode(rowData.Client);
 			//删除该与client的所以聊天记录
@@ -241,7 +246,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(recentListActions, dispatch),
-}};
+    ...bindActionCreators(chatRecordActions, dispatch),
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);
 
