@@ -32,15 +32,15 @@ class ChatDetail extends ContainerComponent {
 		}
 		//定义上导航的左按钮
 	_leftButton() {
-			return {
-				title: 'back',
-				handler: () => this.route.pop(this.props),
-			}
+        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
+					<Text style={styles.back}>{'< 云信'}</Text>
+				</TouchableOpacity>
 		}
 		//定义上导航的标题
 	_title() {
 		return {
-			title: "聊天"
+			title: "聊天",
+            tintColor:'#fff',
 		}
 	}
 
@@ -89,6 +89,7 @@ class ChatDetail extends ContainerComponent {
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<NavigationBar
+					tintColor="#38373d"
 				leftButton={this._leftButton()}
 				title={this._title()} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
@@ -105,6 +106,12 @@ const styles = StyleSheet.create({
 		backgroundColor: '#a3bee4',
 
 	},
+    back:{
+        color: '#ffffff',
+        fontSize: 15,
+        marginLeft: 20,
+        textAlignVertical:'center',
+	}
 })
 
 const mapStateToProps = state => ({
