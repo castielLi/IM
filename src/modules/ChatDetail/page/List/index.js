@@ -74,7 +74,6 @@ class Chat extends Component {
 
     componentWillReceiveProps(newProps){
         let newData = newProps.chatRecordStore.concat();
-        console.log(this.firstLoad,newData.length)
         if(!this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             this.firstLoad = ListConst.msgState.NOMORE;
         }
@@ -139,7 +138,6 @@ class Chat extends Component {
         //     isRefreshing,
         // });
 
-        console.log(chatRecordStore, this.firstLoad)
         if(!chatRecordStore.length){
             return;
         }
@@ -286,7 +284,6 @@ class Chat extends Component {
         }
         if(this.state.isRefreshing === msgState.END){
 
-            alert('old')
             this.setState({
                 isRefreshing : msgState.LOADING
             })
