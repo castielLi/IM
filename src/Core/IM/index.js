@@ -202,6 +202,10 @@ export default class IM {
         storeSqlite.deleteMessage(message,chatType,client);
     }
 
+    //修改某client的未读消息数量
+    updateUnReadMessageNumber(name,number){
+        storeSqlite.updateUnReadMessageNumber(name,number)
+    }
 
     //获取当前用户或者群组的聊天记录
     getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
