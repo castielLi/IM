@@ -73,19 +73,19 @@ class PhoneLogin extends ContainerComponent {
 			//服务器验证
 			//...
 			//验证通过
-			let account = { accountId:'2',avatar:''};
+			let account = { accountId:'1',avatar:''};
 			//修改loginStore登录状态
 			this.props.signIn(account)
 
 
 			//初始化im
             let im = new IM();
-            im.setSocket("2");
-            im.initIMDatabase("2")
+            im.setSocket("1");
+            im.initIMDatabase("1")
 
 			//初始化用户系统
 			let user = new User();
-            user.initIMDatabase("2");
+            user.initIMDatabase("1");
 
 			//存储登录状态
             AsyncStorage.setItem('accountId',account.accountId);

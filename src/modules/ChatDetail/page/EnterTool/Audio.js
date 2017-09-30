@@ -16,7 +16,7 @@ export default class Audio {
       currentTime: 0.0,
       recording: false,
       finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/audio/' + type + '-' +name + '/' + fileName + '.aac',
+      audioPath: AudioUtils.DocumentDirectoryPath + '/audio/' + type + '-' +name + '/' + fileName +'.aac',
       hasPermission: undefined,
     };
 

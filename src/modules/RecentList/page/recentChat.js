@@ -23,7 +23,7 @@ import {
 	checkDeviceWidth
 } from './check';
 import IM from '../../../Core/IM';
-import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
+import NavigationBar from 'react-native-navbar';
 let im = new IM();
 class RecentChat extends ContainerComponent {
 	constructor(props) {
@@ -113,8 +113,6 @@ class RecentChat extends ContainerComponent {
 	}
 	_rightButton = ()=>{
 		return (
-			<View style = {styles.header}>
-                <Text style = {styles.headerTitle}>奇信</Text>
                 <View style = {styles.RightLogo}>
                     <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
                         <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
@@ -123,15 +121,16 @@ class RecentChat extends ContainerComponent {
                         <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
                     </TouchableOpacity>
                 </View>
-            </View>
 		)
 	}
 	render() {
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
-				<NavigationTopBar
-					rightButton= {this._rightButton}
+				<NavigationBar
+					tintColor = '#38373d'
+					leftButton = {<Text style={styles.headerTitle}>云信</Text>}
+					rightButton= {this._rightButton()}
 				/>
 				<View style = {styles.content}>
 					<ListView
@@ -155,24 +154,18 @@ class RecentChat extends ContainerComponent {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#ffffff"
-	},
-	header: {
-		width:checkDeviceWidth(750),
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		backgroundColor: '#38373d',
+		backgroundColor: "#f2f2f2"
 	},
 	headerTitle: {
 		color: '#ffffff',
 		fontSize: checkDeviceHeight(36),
 		marginLeft: checkDeviceWidth(20),
+		textAlignVertical:'center',
 	},
 	RightLogo: {
+		marginRight:checkDeviceWidth(40),
 		flexDirection: 'row',
-		marginRight: checkDeviceWidth(40),
-
+		alignItems:'center',
 	},
 	headerLogo: {
 		height: checkDeviceWidth(40),
