@@ -192,10 +192,11 @@ class ThouchBarBoxTopBox extends Component {
             //初始化消息
           let message = createResourceMessageObj('audio', 'private', [{
             FileType: ResourceTypeEnum.audio,
-            LocalSource: this.audioPath + '/' + this.state.fileName + '_'+ (currentTime?currentTime:1) + '.aac',
-            RemoteSource: ''
+            LocalSource: this.audioPath + '/' + this.state.fileName + '.aac',
+            RemoteSource: '',
+              Time:currentTime?currentTime:1
           }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)
-
+            //发送消息到IM
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore

@@ -50,9 +50,11 @@ class ChatDetail extends ContainerComponent {
 	}
 	componentWillMount(){
 		let {client,type} = this.props;
-		//如果是刚开聊的，chatRecordStore里没记录	
+		//如果chatRecordStore里没记录
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
+            //初始化chatRecordStore
+            this.props.getChatRecord(client,type)
 			//新建文件夹
 			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + type + '-' +client;
 			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + type + '-' +client;
@@ -71,8 +73,7 @@ class ChatDetail extends ContainerComponent {
 		        console.log(err.message);
 		      });
 		}
-		//初始化chatRecordStore
-		this.props.getChatRecord(client,type)
+
 		//修改chatDetailPageStore
 		this.props.changeChatDetailPageStatus(true,client,type)
 		//清空未读消息计数红点

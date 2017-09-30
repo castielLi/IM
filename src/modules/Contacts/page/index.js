@@ -11,14 +11,14 @@ import {
 	TouchableHighlight,
 	TouchableWithoutFeedback,
 	TextInput,
-	Dimensions
+	Dimensions,
+    TouchableOpacity
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../RecentList/reducer/action';
-import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
 import NavigationBar from 'react-native-navbar';
 var {height, width} = Dimensions.get('window');
 var originData = [
@@ -252,11 +252,9 @@ class Contacts extends ContainerComponent {
 	}
 		//定义上导航的左按钮
 	_rightButton() {
-			return {
-				title: '+',
-				handler: () => alert('message'),
-				tintColor:'#fff',
-			}
+			return <TouchableOpacity onPress={()=>alert('开发中')}>
+						<Text style={styles.moreUse}>+</Text>
+			       </TouchableOpacity>
 		}
 		//定义上导航的标题
 	_title() {
@@ -338,6 +336,12 @@ const styles = StyleSheet.create({
 		backgroundColor:'#fff',
 		borderRadius:5,
 		color:'#000'
+	},
+    moreUse:{
+		color:'#fff',
+		fontSize:30,
+		textAlignVertical:'center',
+		marginRight:20
 	},
 	listFooterBox:{
 		borderTopWidth:1,
