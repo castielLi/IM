@@ -56,26 +56,32 @@ export default class ChatMessageSound extends Component {
         const sound = new Sound(SoundUrl,'', error => callback(error, sound));
     }
 
-    getSoundTime = (LocalPath)=>{
-        let Time = LocalPath.match(/_[0-9]+/)[0].slice(1);
-        let LocalSource = LocalPath.replace(/_[0-9]+/,'');
+    getSoundTime = (Time)=>{
+        //let Time = LocalPath.match(/_[0-9]+/)[0].slice(1);
+        //let LocalSource = LocalPath.replace(/_[0-9]+/,'');
+        // let soundWidth = 50;
+        // if(Time>5){
+        //     soundWidth = (width-260)*((Time-5)/55)+50;
+        // }
+        //  return {Time,LocalSource,soundWidth}
         let soundWidth = 50;
         if(Time>5){
             soundWidth = (width-260)*((Time-5)/55)+50;
         }
-        return {Time,LocalSource,soundWidth}
+        return soundWidth;
+
     }
     render() {
         let {data,style} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
-        let {LocalSource,RemoteSource} = data.message.Resource[0];
+        let {LocalSource,RemoteSource,Time} = data.message.Resource[0];
         //console.log(LocalSource,RemoteSource)
-        let soundObjConfig = this.getSoundTime(LocalSource || RemoteSource)
+        let soundObjConfig = this.getSoundTime(Time);
 
         return(
-            <View style={[style,{width:soundObjConfig.soundWidth},styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.playSound(soundObjConfig.LocalSource)}>
-                    <Text>{soundObjConfig.Time}"</Text>
+            <View style={[style,{width:soundObjConfig},styles.bubble]}>
+                <TouchableOpacity onPress={()=>this.playSound(LocalSource || RemoteSource)}>
+                    <Text>{Time}"</Text>
                 </TouchableOpacity>
             </View>
         )

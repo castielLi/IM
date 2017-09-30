@@ -591,27 +591,24 @@ export default class IM {
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
             //存入数据库
 
-            console.log('改变前=============================:  ',message)
-
             if(message.type == 'text')
             {
                 storeSqlite.storeRecMessage(message)
             }
             else{
 
-                message.Resource[0].LocalSource = null;
-
-                console.log('下载前=============================:  ',message)
-
                 let fromUrl = message.Resource[0].RemoteSource,
                     sender = message.Data.Data.Sender,
                     type = message.type,
                     way = message.way,
-                    format = fromUrl.slice(fromUrl.lastIndexOf('.')),
-                    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+                    toFile;
 
+                let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
+                toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+
+                message.Resource[0].LocalSource = null;
                 updateMessage = (result) => {
-                    message.Resource[0].LocalSource = 'file://' + toFile
+                    message.Resource[0].LocalSource = 'file://' + toFile;
                     console.log('下载成功后=============================:  ',message)
                     storeSqlite.storeRecMessage(message)
                 }
