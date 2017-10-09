@@ -24,6 +24,10 @@ let _network = new netWorking();
 //网络状态
 let networkStatus = "";
 
+//缓存消息
+let cacheMessage = [];
+
+
 //发送消息队列
 let sendMessageQueue = [];
 let sendMessageQueueState;
@@ -484,34 +488,35 @@ export default class IM {
 
     //向sqlite队列中push元素
     addUpdateSqliteQueue(message,type){
-        handleSqliteQueue.push({message:message,type:type});
+        // handleSqliteQueue.push({message:message,type:type});
+        this.updateSqliteMessage(message,type);
     }
 
 
     //处理更新sqlite队列
-    handleUpdateSqlite(obj){
-        if(handleSqliteQueue.length > 0){
-
-            handleSqliteQueueState = handleSqliteQueueType.excuting;
-            console.log(handleSqliteQueueState);
-
-
-
-            let copySqliteQueue = Helper.cloneArray(handleSqliteQueue);
-            handleSqliteQueue = [];
-
-            for(let item in copySqliteQueue){
-
-                obj.updateSqliteMessage(copySqliteQueue[item].message,copySqliteQueue[item].type);
-                // handleSqliteQueue.shift();
-            }
-
-            copySqliteQueue = [];
-
-            handleSqliteQueueState = handleSqliteQueueType.empty;
-            console.log(handleSqliteQueueState);
-        }
-    }
+    // handleUpdateSqlite(obj){
+    //     if(handleSqliteQueue.length > 0){
+    //
+    //         handleSqliteQueueState = handleSqliteQueueType.excuting;
+    //         console.log(handleSqliteQueueState);
+    //
+    //
+    //
+    //         let copySqliteQueue = Helper.cloneArray(handleSqliteQueue);
+    //         handleSqliteQueue = [];
+    //
+    //         for(let item in copySqliteQueue){
+    //
+    //             obj.updateSqliteMessage(copySqliteQueue[item].message,copySqliteQueue[item].type);
+    //             // handleSqliteQueue.shift();
+    //         }
+    //
+    //         copySqliteQueue = [];
+    //
+    //         handleSqliteQueueState = handleSqliteQueueType.empty;
+    //         console.log(handleSqliteQueueState);
+    //     }
+    // }
 
     //更改消息状态
     updateSqliteMessage(message,way){
@@ -591,6 +596,8 @@ export default class IM {
             updateMessage.status = MessageStatus.SendSuccess;
             currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 
+            AppReceiveMessageHandle(message);
+
         //判断如果是他人发送的消息
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
             //存入数据库
@@ -615,6 +622,8 @@ export default class IM {
                     message.Resource[0].LocalSource = 'file://' + toFile;
                     console.log('下载成功后=============================:  ',message)
                     storeSqlite.storeRecMessage(message)
+
+                    AppReceiveMessageHandle(message);
                 }
 
                 _network.methodDownload(fromUrl,toFile,updateMessage)
@@ -622,9 +631,6 @@ export default class IM {
                 console.log('receiveMessageOpreator:  ',message)
             }
 
-            //todo : 添加非文字类型的消息的下载程序
-
-            AppReceiveMessageHandle(message);
         }}
 
 
@@ -699,7 +705,7 @@ export default class IM {
     beginRunLoop(){
         let handleSend = this.handleSendMessageQueue;
         let handleRec = this.handleRecieveMessageQueue;
-        let handleUpdateSqlite = this.handleUpdateSqlite;
+        // let handleUpdateSqlite = this.handleUpdateSqlite;
         let handleAckQueue = this.handAckQueue;
         let handleResource = this.handleResourceQueue;
         let obj = this;
@@ -710,9 +716,9 @@ export default class IM {
                 handleSend(obj);
             }
 
-            if(handleSqliteQueueState == handleSqliteQueueType.empty){
-                handleUpdateSqlite(obj);
-            }
+            // if(handleSqliteQueueState == handleSqliteQueueType.empty){
+            //     handleUpdateSqlite(obj);
+            // }
 
             if(resourceQueueState == resourceQueueType.empty){
                 handleResource(obj)
