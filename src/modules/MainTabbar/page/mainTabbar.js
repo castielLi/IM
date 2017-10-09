@@ -19,8 +19,6 @@ class TabBarComponent extends DisplayComponent {
         }
     }
 
-
-
     render() {
 
         return (

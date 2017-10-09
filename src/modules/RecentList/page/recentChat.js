@@ -19,7 +19,7 @@ import {bindActionCreators} from 'redux';
 import Features from './features';
 import * as recentListActions from '../reducer/action';
 import * as chatRecordActions from '../../../Core/IM/redux/action';
-
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
@@ -47,7 +47,15 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-	        this.props.initRecentList(chatListArr)
+	        this.props.initRecentList(chatListArr);
+	        //初始化unReadMessageStore
+			let unReadMessageCount = 0;
+            chatListArr.forEach((v,i)=>{
+            	if(v.unReadMessageCount){
+                    unReadMessageCount+=v.unReadMessageCount;
+				}
+			})
+            this.props.initUnReadMessageNumber(unReadMessageCount)
 	    })
 	}
 	changeShowFeature=(newState)=>{
@@ -247,6 +255,8 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(recentListActions, dispatch),
     ...bindActionCreators(chatRecordActions, dispatch),
+	  ...bindActionCreators(unReadMessageActions, dispatch),
+
 
   }};
 

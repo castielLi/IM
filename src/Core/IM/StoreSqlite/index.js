@@ -525,12 +525,10 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
     }, () => {
 
         db.transaction((tx) => {
-
             updateUnReadMessage(name,number,tx)
-
         });
 
-    }, errorDB);
+    }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
 //添加消息进总消息表
 function insertChat(message,tx){
@@ -610,15 +608,13 @@ function deleteClientRecodeByName(name,tx){
 }
 
 function updateUnReadMessage(name,number,tx){
-    let deleteSql = sqls.ExcuteIMSql.UpdateChatLastContent;
-
-    deleteSql = commonMethods.sqlFormat(deleteSql,[name,number]);
-
-    tx.executeSql(deleteSql, [], (tx, results) => {
+    let updateSql = sqls.ExcuteIMSql.UpdateChatUnReadMessageaNumber;
+    updateSql = commonMethods.sqlFormat(updateSql,[number,name]);
+    tx.executeSql(updateSql, [], (tx, results) => {
 
         console.log("update unReadMessageNumber success");
 
-    }, errorDB);
+    }, (err)=>{errorDB('update unReadMessageNumber',err)});
 }
 
 function deleteClientChatList(tableName,tx){
