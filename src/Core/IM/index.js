@@ -596,7 +596,7 @@ export default class IM {
             updateMessage.status = MessageStatus.SendSuccess;
             currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 
-            AppReceiveMessageHandle(message);
+
 
         //判断如果是他人发送的消息
         }else if(message.Command == MessageCommandEnum.MSG_BODY){
@@ -631,7 +631,8 @@ export default class IM {
                 console.log('receiveMessageOpreator:  ',message)
             }
 
-        }}
+        }
+    }
 
 
 
