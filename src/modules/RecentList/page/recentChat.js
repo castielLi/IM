@@ -79,7 +79,7 @@ class RecentChat extends ContainerComponent {
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
-			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9',marginLeft:checkDeviceWidth(20)}}>
+			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9',paddingLeft:checkDeviceWidth(20),backgroundColor:'#fff'}}>
 				<Swipeout
 				right = {
 					[{

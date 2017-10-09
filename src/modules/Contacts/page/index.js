@@ -179,8 +179,10 @@ class Contacts extends ContainerComponent {
 		this.formateData(originData);
 	}
 	goToChat = (item)=>{
-		this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-	}
+		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{client:item.name,type:item.type}});
+
+    }
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.name;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
@@ -195,6 +197,10 @@ class Contacts extends ContainerComponent {
 		var txt = info.section.key;
 		return <Text style={styles.sectionHeader}>{txt}</Text>
 	}
+    goToNewFriend = () =>{
+        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
+
+    }
 	_renderHeader = () => {
 		return  <View>
 					<View style={styles.listHeaderBox}>
@@ -205,7 +211,7 @@ class Contacts extends ContainerComponent {
 						</TextInput>
 					</View>
 					<View style={styles.listOtherUseBox}>
-						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
+						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
 							<View>
 								<View  style={styles.itemBox} >
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>

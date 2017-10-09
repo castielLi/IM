@@ -78,9 +78,12 @@ export default class Zoom extends ContainerComponent {
 	}
 	_renderItem = (info)=>{
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
-					<View  style={styles.itemBox} >
-						<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
-						<Text style={styles.itemText}>{info.item.name}</Text>
+					<View style={styles.itemBox}>
+						<View  style={styles.itemLeftBox} >
+							<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
+							<Text style={styles.itemText}>{info.item.name}</Text>
+						</View>
+						<Text style={styles.arrow}>{'>'}</Text>
 					</View>
 			   </TouchableHighlight>
 	}
@@ -139,26 +142,39 @@ const styles = StyleSheet.create({
 	sction:{
 		height:30
 	},
-	itemBox:{
-		height:60,
+    itemBox:{
+		height:50,
+		flexDirection:'row',
+		paddingHorizontal:15,
+		alignItems:'center',
+		justifyContent:'space-between',
+        backgroundColor:'#fff'
+	},
+    itemLeftBox:{
+		height:40,
 		flexDirection:'row',
 		alignItems:'center',
-		backgroundColor:'#fff'
+
 	},
 	pic:{
 		width:30,
 		height:30,
 		resizeMode:'stretch',
-		marginHorizontal:20,
+		marginRight:15
 	},
 	itemText:{
 		fontSize:20,
-		color:'#000'
+		color:'#000',
+		textAlignVertical:'center'
 	},
 	ItemSeparator:{
 		height:1,
 		backgroundColor: '#eee', 
 	},
+    arrow:{
+        fontSize:20,
+        color:'#aaa'
+    },
 });
 
 
