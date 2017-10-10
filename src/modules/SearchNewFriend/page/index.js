@@ -27,19 +27,7 @@ class SearchNewFriend extends ContainerComponent {
             text:''
         }
     }
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <Text style={styles.back}>{'< 通讯录'}</Text>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "新的朋友",
-            tintColor:'#fff',
-        }
-    }
+
 
     backToAddFriends = ()=>{
         this.route.pop(this.props);
@@ -57,13 +45,17 @@ class SearchNewFriend extends ContainerComponent {
                                 underlineColorAndroid = 'transparent'
                                 autoFocus = {true}
                                 placeholder = '微信号/手机号'
+                                defaultValue = {this.state.text}
                                 onChangeText={(v)=>{this.setState({text:v})}}
                             >
                             </TextInput>
+                            {this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:''})}}/>}
+
+
                         </View>
                         <Text style={styles.cancel} onPress={this.backToAddFriends}>取消</Text>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                    {this.state.text === ''?null:<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
                             <View style={styles.greenBox}>
                                 <Icon name="search" size={20} color="#fff" />
@@ -73,7 +65,8 @@ class SearchNewFriend extends ContainerComponent {
                                 <Text style={{fontSize:16,color:'green'}}>{this.state.text}</Text>
                             </Text>
                         </View>
-                    </TouchableHighlight>
+                    </TouchableHighlight>}
+
 
                 </View>
             </View>
