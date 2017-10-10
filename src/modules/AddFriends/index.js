@@ -28,7 +28,7 @@ export default class AddFriends extends ContainerComponent {
             {typeName:'面对面建群',intro:'与身边的朋友进入同一个群聊',typeID:2,source:require('./resource/sweep.png')},
             {typeName:'扫一扫',intro:'扫描二维码名片',typeID:3,source:require('./resource/sweep.png')},
             {typeName:'手机联系人',intro:'添加或邀请通讯录中的朋友',typeID:4,source:require('./resource/sweep.png')},
-            {typeName:'公众好',intro:'获取更多资讯和服务',typeID:5,source:require('./resource/sweep.png')}
+            {typeName:'公众号',intro:'获取更多资讯和服务',typeID:5,source:require('./resource/sweep.png')}
         ]
     };
 
