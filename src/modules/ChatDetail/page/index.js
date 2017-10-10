@@ -46,7 +46,7 @@ class ChatDetail extends ContainerComponent {
     //定义上导航的右按钮
     _leftButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-			<Text style={styles.back}>{'< 云信'}</Text>
+			<Text style={styles.back}>{'< 返回'}</Text>
 		</TouchableOpacity>
     }
 		//定义上导航的标题
