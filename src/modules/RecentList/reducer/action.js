@@ -1,5 +1,8 @@
 
 import {addUnReadMessageNumber,cutUnReadMessageNumber} from '../../MainTabbar/reducer/action';
+import IM from '../../../Core/IM';
+
+let im = new IM();
 //登陆成功过后，初始化RecentListStore数据 
 export function initRecentList(data){
     return {
@@ -24,10 +27,30 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
         if(isReceiveMessage === true){
             //获取chatDetail状态
             let chatDetail = getState().chatDetailPageStore;
+
             if(!chatDetail.isChatDetailPageOpen || (chatDetail.isChatDetailPageOpen&&chatDetail.client!==client&&chatDetail.type!==type)){
                 isAddUnReadMessage = true;//添加未读消息
                 //更改unReadMessageStore状态
-                dispatch(addUnReadMessageNumber())
+                let chatList = getState().recentListStore;
+                existItem = false;
+                let clientUnReadNumber = 0;
+                let length = chatList.data.length;
+                for(let i=0;i<chatList.data.length;i++){
+                    if(chatList.data[i].Client === client){
+                        clientUnReadNumber = chatList.data[i].unReadMessageCount;
+                        existItem = true;
+                        break;
+                    }
+                }
+                if(existItem){
+                    im.updateUnReadMessageNumber(client,clientUnReadNumber+1);
+                }else{
+                    im.updateUnReadMessageNumber(client,1);
+                }
+
+                dispatch(addUnReadMessageNumber());
+
+
             }      
         }
         if(lastMessage === false){
@@ -38,6 +61,7 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
                 if(v.Client === client){
                     //说明recentListStore存在对应的item
                     existItem = true;
+                    im.updateUnReadMessageNumber(client,0);
                     dispatch(cutUnReadMessageNumber(v.unReadMessageCount));
                     //终止循环
                     return false;

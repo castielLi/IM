@@ -31,6 +31,10 @@ export function deleteMessage(message,chatType,client){
 export function deleteChatRecode(name){
     IMFMDB.DeleteClientRecodeByName(name);
 }
+//修改某client的未读消息数量
+export function updateUnReadMessageNumber(name,number){
+    IMFMDB.updateUnReadMessageNumber(name,number);
+}
 export function InsertResource(messageId,localPath){
     IMFMDB.InsertResource(messageId,localPath);
 }
@@ -515,6 +519,17 @@ IMFMDB.DeleteClientRecodeByName = function(name){
     }, errorDB);
 }
 
+IMFMDB.updateUnReadMessageNumber = function(name,number){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            updateUnReadMessage(name,number,tx)
+        });
+
+    }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
+}
 //添加消息进总消息表
 function insertChat(message,tx){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
@@ -590,6 +605,16 @@ function deleteClientRecodeByName(name,tx){
         console.log("delete recode success");
 
     }, errorDB);
+}
+
+function updateUnReadMessage(name,number,tx){
+    let updateSql = sqls.ExcuteIMSql.UpdateChatUnReadMessageaNumber;
+    updateSql = commonMethods.sqlFormat(updateSql,[number,name]);
+    tx.executeSql(updateSql, [], (tx, results) => {
+
+        console.log("update unReadMessageNumber success");
+
+    }, (err)=>{errorDB('update unReadMessageNumber',err)});
 }
 
 function deleteClientChatList(tableName,tx){

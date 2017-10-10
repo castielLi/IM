@@ -25,6 +25,9 @@ import RecentList from './RecentList/page/recentChat'
 import Contacts from './Contacts/page'
 import Zoom from './Zoom/page'
 import AddFriends from './AddFriends'
+import ClientInformation from './ClientInformation/page'
+import InformationSetting from './InformationSetting/page'
+import NewFriend from './NewFriend/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -130,12 +133,29 @@ export const RouteMap = {
             params: {}
         }
     },'AddFriends':{
-            'AddFriends':{
-                component: AddFriends,
-                params: {}
-            }
-    }
-
+        'AddFriends':{
+            component: AddFriends,
+            params: {}
+        }
+    },
+    'ClientInformation': {
+        'ClientInformation': {
+            component: ClientInformation,
+            params: {}
+        }
+    },
+    'InformationSetting': {
+        'InformationSetting': {
+            component: InformationSetting,
+            params: {}
+        }
+    },
+    'NewFriend': {
+        'NewFriend': {
+            component: NewFriend,
+            params: {}
+        }
+    },
 };
 
 

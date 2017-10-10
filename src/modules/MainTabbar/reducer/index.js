@@ -22,6 +22,11 @@ export default function unReadMessageStore(state=initialState, action){
                 ...state,
                 unReadMessageNumber:state.unReadMessageNumber-action.cutNumber
             };
+        case 'INIT_UNREADMESSAGE_NUMBER':
+            return {
+                ...state,
+                unReadMessageNumber:action.number
+            };
         default:
             return state;
     }
