@@ -24,6 +24,7 @@ import Start from './Start/page'
 import RecentList from './RecentList/page/recentChat'
 import Contacts from './Contacts/page'
 import Zoom from './Zoom/page'
+import AddFriends from './AddFriends'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -67,7 +68,7 @@ export const RouteMap = {
             params: {}
         },
         'TabFour': {
-            component: RecentList,
+            component: AddFriends,
             params: {}
         }
     },
@@ -128,7 +129,12 @@ export const RouteMap = {
             component: Zoom,
             params: {}
         }
-    },
+    },'AddFriends':{
+            'AddFriends':{
+                component: AddFriends,
+                params: {}
+            }
+    }
 
 };
 
