@@ -53,7 +53,7 @@ export function updateMessage(message){
 		MSGID:message.MSGID,
 	}
 }
-//打开app的时候，初始化chatRecordStore.ChatRecord,给所有会话列表里的client添加10条初始数据
+//打开聊天窗口的时候，给client对应的chatRecordStore.ChatRecord数据添加10条初始数据
 export function getChatRecord(Client,Type){
 	return (dispatch)=>{
         im.getRecentChatRecode(Client,Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {

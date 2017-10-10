@@ -19,10 +19,10 @@ import * as commonActions from '../../../Core/IM/redux/action';
 import * as recentListActions from '../../RecentList/reducer/action';
 import * as chatDetailActions from '../reducer/action';
 import RNFS from 'react-native-fs';
-import NavigationTopBar from '../../../Core/Component/NavigationBar/index'
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
+import NavigationBar from 'react-native-navbar';
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
@@ -32,15 +32,15 @@ class ChatDetail extends ContainerComponent {
 		}
 		//定义上导航的左按钮
 	_leftButton() {
-			return {
-				title: 'back',
-				handler: () => this.route.pop(this.props),
-			}
+        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
+					<Text style={styles.back}>{'< 云信'}</Text>
+				</TouchableOpacity>
 		}
 		//定义上导航的标题
 	_title() {
 		return {
-			title: "聊天"
+			title: "聊天",
+            tintColor:'#fff',
 		}
 	}
 
@@ -50,9 +50,11 @@ class ChatDetail extends ContainerComponent {
 	}
 	componentWillMount(){
 		let {client,type} = this.props;
-		//如果是刚开聊的，chatRecordStore里没记录	
+		//如果chatRecordStore里没记录
 		if(!this.props.ChatRecord[client]){//
 			this.props.addClient(client);
+            //初始化chatRecordStore
+            this.props.getChatRecord(client,type)
 			//新建文件夹
 			let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + type + '-' +client;
 			let imagePath = RNFS.DocumentDirectoryPath + '/image/' + type + '-' +client;
@@ -71,8 +73,7 @@ class ChatDetail extends ContainerComponent {
 		        console.log(err.message);
 		      });
 		}
-		//初始化chatRecordStore
-		this.props.getChatRecord(client,type)
+
 		//修改chatDetailPageStore
 		this.props.changeChatDetailPageStatus(true,client,type)
 		//清空未读消息计数红点
@@ -87,9 +88,10 @@ class ChatDetail extends ContainerComponent {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'>
-    			<NavigationTopBar
-				leftButton={this._leftButton}
-				title={this._title} />
+    			<NavigationBar
+					tintColor="#38373d"
+				leftButton={this._leftButton()}
+				title={this._title()} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
 				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>
@@ -104,6 +106,12 @@ const styles = StyleSheet.create({
 		backgroundColor: '#a3bee4',
 
 	},
+    back:{
+        color: '#ffffff',
+        fontSize: 15,
+        marginLeft: 20,
+        textAlignVertical:'center',
+	}
 })
 
 const mapStateToProps = state => ({

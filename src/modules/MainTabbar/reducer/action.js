@@ -15,3 +15,11 @@ export function cutUnReadMessageNumber(cutNumber){
 
 }
 
+export function initUnReadMessageNumber(number){
+    return {
+        type: 'INIT_UNREADMESSAGE_NUMBER',
+        number
+    };
+
+}
+

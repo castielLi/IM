@@ -11,13 +11,15 @@ import {
 	TouchableHighlight,
 	TouchableWithoutFeedback,
 	TextInput,
-	Dimensions
+	Dimensions,
+    TouchableOpacity
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../RecentList/reducer/action';
+import NavigationBar from 'react-native-navbar';
 var {height, width} = Dimensions.get('window');
 var originData = [
 		{
@@ -200,7 +202,6 @@ class Contacts extends ContainerComponent {
 							style={styles.search}
 							underlineColorAndroid = 'transparent'
 						>
-							<Icon name="search" size={16} color="#aaa" />
 						</TextInput>
 					</View>
 					<View style={styles.listOtherUseBox}>
@@ -249,9 +250,26 @@ class Contacts extends ContainerComponent {
 	_renderFooter = () =>{
 		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.state.totalItemLength+'位联系人'}</Text></View>
 	}
+		//定义上导航的左按钮
+	_rightButton() {
+			return <TouchableOpacity onPress={()=>alert('开发中')}>
+						<Text style={styles.moreUse}>+</Text>
+			       </TouchableOpacity>
+		}
+		//定义上导航的标题
+	_title() {
+		return {
+			title: "通讯录",
+			tintColor:'#fff',
+		}
+	}
 	render() {
 		return (
 			<View style={styles.container}>
+				<NavigationBar
+					tintColor="#38373d"
+					rightButton={this._rightButton()}
+					title={this._title()} />
 			    <SectionList
 			      ref={'mySectionList'}
 			      keyExtractor={(item,index)=>("index"+index+item)}
@@ -318,6 +336,12 @@ const styles = StyleSheet.create({
 		backgroundColor:'#fff',
 		borderRadius:5,
 		color:'#000'
+	},
+    moreUse:{
+		color:'#fff',
+		fontSize:30,
+		textAlignVertical:'center',
+		marginRight:20
 	},
 	listFooterBox:{
 		borderTopWidth:1,

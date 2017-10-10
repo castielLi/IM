@@ -8,5 +8,6 @@ export default class SendMessageDto{
         this.FileType = 0;
         this.LocalSource = "";
         this.RemoteSource = [];
+        this.Time = [];
     }
 }

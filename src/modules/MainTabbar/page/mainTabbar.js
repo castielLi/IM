@@ -19,8 +19,6 @@ class TabBarComponent extends DisplayComponent {
         }
     }
 
-
-
     render() {
 
         return (
@@ -83,7 +81,7 @@ class TabBarComponent extends DisplayComponent {
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
                     />}
-                    renderSelectedIcon={() =>  <Image source={require('../resources/me.png')}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/me_.png')}
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}

@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import Camera from 'react-native-camera';
 import BaseComponent from '../../Core/Component'
-import NavigationTopBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM'
 
 import ChatCommandEnum from '../../Core/IM/dto/ChatCommandEnum'
@@ -25,6 +24,7 @@ import SendMessageDto from '../../Core/IM/dto/SendMessageDto'
 import messageBodyChatDto from '../../Core/IM/dto/messageBodyChatDto'
 import uploadResourceDto from '../../Core/IM/dto/uploadResourceDto'
 import { NativeModules } from 'react-native';
+import NavigationBar from 'react-native-navbar';
 
 
 export default class BadInstagramCloneApp extends BaseComponent {
@@ -56,9 +56,9 @@ export default class BadInstagramCloneApp extends BaseComponent {
     render() {
         return (
             <View style={styles.container}>
-                <NavigationTopBar
+                <NavigationBar
                     // leftButton={this._leftButton}
-                    title={this._title} />
+                    title={this._title()} />
                 <Camera
                     captureTarget={Camera.constants.CaptureTarget.disk}
                     ref={(cam) => {

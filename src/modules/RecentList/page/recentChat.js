@@ -18,12 +18,14 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Features from './features';
 import * as recentListActions from '../reducer/action';
+import * as chatRecordActions from '../../../Core/IM/redux/action';
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
 } from './check';
 import IM from '../../../Core/IM';
-import NavigationTopBar from '../../../Core/Component/NavigationBar/index';
+import NavigationBar from 'react-native-navbar';
 let im = new IM();
 class RecentChat extends ContainerComponent {
 	constructor(props) {
@@ -45,7 +47,15 @@ class RecentChat extends ContainerComponent {
 	componentWillMount(){
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-	        this.props.initRecentList(chatListArr)
+	        this.props.initRecentList(chatListArr);
+	        //初始化unReadMessageStore
+			let unReadMessageCount = 0;
+            chatListArr.forEach((v,i)=>{
+            	if(v.unReadMessageCount){
+                    unReadMessageCount+=v.unReadMessageCount;
+				}
+			})
+            this.props.initUnReadMessageNumber(unReadMessageCount)
 	    })
 	}
 	changeShowFeature=(newState)=>{
@@ -56,7 +66,10 @@ class RecentChat extends ContainerComponent {
 	}
 	deleteSomeRow(rowID,rowData){
 		let oKCallback = ()=>{
+			//清空recentListStore中对应记录
 			this.props.deleteRecentItem(rowID);
+			//清空chatRecordStore中对应记录
+			this.props.initChatRecord(rowData.Client,[])
 			//删除ChatRecode表中记录
 			im.deleteChatRecode(rowData.Client);
 			//删除该与client的所以聊天记录
@@ -113,8 +126,6 @@ class RecentChat extends ContainerComponent {
 	}
 	_rightButton = ()=>{
 		return (
-			<View style = {styles.header}>
-                <Text style = {styles.headerTitle}>奇信</Text>
                 <View style = {styles.RightLogo}>
                     <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
                         <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
@@ -123,15 +134,16 @@ class RecentChat extends ContainerComponent {
                         <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
                     </TouchableOpacity>
                 </View>
-            </View>
 		)
 	}
 	render() {
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
-				<NavigationTopBar
-					rightButton= {this._rightButton}
+				<NavigationBar
+					tintColor = '#38373d'
+					leftButton = {<Text style={styles.headerTitle}>云信</Text>}
+					rightButton= {this._rightButton()}
 				/>
 				<View style = {styles.content}>
 					<ListView
@@ -155,24 +167,18 @@ class RecentChat extends ContainerComponent {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#ffffff"
-	},
-	header: {
-		width:checkDeviceWidth(750),
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'space-between',
-		backgroundColor: '#38373d',
+		backgroundColor: "#f2f2f2"
 	},
 	headerTitle: {
 		color: '#ffffff',
 		fontSize: checkDeviceHeight(36),
 		marginLeft: checkDeviceWidth(20),
+		textAlignVertical:'center',
 	},
 	RightLogo: {
+		marginRight:checkDeviceWidth(40),
 		flexDirection: 'row',
-		marginRight: checkDeviceWidth(40),
-
+		alignItems:'center',
 	},
 	headerLogo: {
 		height: checkDeviceWidth(40),
@@ -248,7 +254,11 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(recentListActions, dispatch),
-}};
+    ...bindActionCreators(chatRecordActions, dispatch),
+	  ...bindActionCreators(unReadMessageActions, dispatch),
+
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);
 

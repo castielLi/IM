@@ -12,15 +12,17 @@ export function GetRelationList(callback){
 
 var databaseObj = {
     name: "Account.db",//数据库文件
-    location:'Documents'
+
 }
 if (Platform.OS === 'ios') {
     databaseObj.createFromLocation = '1'
+    databaseObj.location = 'Documents'
 }
 
 export function initIMDatabase(AccountId,callback){
 
-    databaseObj.name =  AccountId + "/Account.db";
+    // databaseObj.name =  AccountId + "/Account.db";
+    databaseObj.name = 'Account.db';
 
     USERFMDB.initIMDataBase(AccountId,callback);
 }

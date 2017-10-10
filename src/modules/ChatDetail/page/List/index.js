@@ -261,7 +261,6 @@ class Chat extends Component {
                     if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                         messages.pop();
                     }
-
                     let msg = messages.map((message)=>{
                         return DtoMethods.sqlMessageToMessage(message);
                     });
