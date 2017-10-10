@@ -156,7 +156,7 @@ class RecentChat extends ContainerComponent {
 				</View>
 				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
 				{
-					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
+					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
 				}
 				<PopContent ref={(p)=>{this.popup = p}}></PopContent>
 			</View>

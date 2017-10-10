@@ -18,43 +18,37 @@ import NavigationBar from 'react-native-navbar';
 
 let {height,width} = Dimensions.get('window');
 
-class InformationSetting extends ContainerComponent {
+class ChatSetting extends ContainerComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);
         this.state = {
-            notSeeHisZoom:false,
-            notSeeMyZoom:false,
-            joinBlackList:false
+            isStickyChat:false,//置顶聊天
+            notDisturb:false,//消息免打扰
         }
     }
     //定义上导航的左按钮
     _leftButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <Text style={styles.back}>{'< 详细资料'}</Text>
+            <Text style={styles.back}>{'< 返回'}</Text>
         </TouchableOpacity>
     }
     //定义上导航的标题
     _title() {
         return {
-            title: "资料设置",
+            title: "聊天设置",
             tintColor:'#fff',
         }
     }
 
-    changeNotSeeMyZoom = ()=>{
+    changeIsStickyChat = ()=>{
         this.setState({
-            notSeeMyZoom:!this.state.notSeeMyZoom
+            isStickyChat:!this.state.isStickyChat
         })
     }
-    changeNotSeeHisZoom = ()=>{
+    changeNotDisturb = ()=>{
         this.setState({
-            notSeeHisZoom:!this.state.notSeeHisZoom
-        })
-    }
-    changeJoinBlackList = ()=>{
-        this.setState({
-            joinBlackList:!this.state.joinBlackList
+            notDisturb:!this.state.notDisturb
         })
     }
     render() {
@@ -65,48 +59,42 @@ class InformationSetting extends ContainerComponent {
                     leftButton={this._leftButton()}
                     title={this._title()} />
                 <View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>设置备注和标签</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
-                        </View>
-                    </TouchableHighlight>
-                    <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>不让他看我朋友圈</Text>
+                            <Text style={styles.remarks}>置顶聊天</Text>
                             <Switch
-                                value={this.state.notSeeMyZoom}
-                                onValueChange={this.changeNotSeeMyZoom}
+                                value={this.state.isStickyChat}
+                                onValueChange={this.changeIsStickyChat}
                             ></Switch>
                         </View>
                     </View>
                     <View>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>不看他朋友圈</Text>
+                            <Text style={styles.remarks}>消息免打扰</Text>
                             <Switch
-                                value={this.state.notSeeHisZoom}
-                                onValueChange={this.changeNotSeeHisZoom}
+                                value={this.state.notDisturb}
+                                onValueChange={this.changeNotDisturb}
                             ></Switch>
                         </View>
                     </View>
-                    <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>加入黑名单</Text>
-                            <Switch
-                                value={this.state.joinBlackList}
-                                onValueChange={this.changeJoinBlackList}
-                            ></Switch>
+                            <Text style={styles.remarks}>设置当前聊天背景</Text>
+                            <Text style={styles.arrow}>{'>'}</Text>
                         </View>
-                    </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                        <View  style={styles.remarksBox}>
+                            <Text style={styles.remarks}>清空聊天记录</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>投诉</Text>
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('删除')} style={{borderRadius:5,marginTop:15,marginHorizontal:20}}>
-                        <Text style={styles.sendMessage}>删除</Text>
-                    </TouchableHighlight>
+
                 </View>
             </View>
             )
@@ -170,4 +158,4 @@ const mapDispatchToProps = dispatch => ({
 
 });
 
- export default connect(mapStateToProps, mapDispatchToProps)(InformationSetting);
+ export default connect(mapStateToProps, mapDispatchToProps)(ChatSetting);

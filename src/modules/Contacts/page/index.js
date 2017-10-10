@@ -256,9 +256,13 @@ class Contacts extends ContainerComponent {
 	_renderFooter = () =>{
 		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.state.totalItemLength+'位联系人'}</Text></View>
 	}
-		//定义上导航的左按钮
+    goToAddFriends = ()=>{
+        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
+
+    }
+		//定义上导航的右按钮
 	_rightButton() {
-			return <TouchableOpacity onPress={()=>alert('开发中')}>
+			return <TouchableOpacity onPress={this.goToAddFriends}>
 						<Text style={styles.moreUse}>+</Text>
 			       </TouchableOpacity>
 		}

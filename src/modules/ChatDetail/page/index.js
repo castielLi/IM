@@ -23,6 +23,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
@@ -30,12 +32,23 @@ class ChatDetail extends ContainerComponent {
 			this._leftButton = this._leftButton.bind(this);
 			this._title = this._title.bind(this);
 		}
+    goToChatSeeting = ()=>{
+        this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
+    }
 		//定义上导航的左按钮
-	_leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-					<Text style={styles.back}>{'< 云信'}</Text>
+	_rightButton() {
+        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={this.goToChatSeeting}>
+
+						<Icon name="user" size={22} color="#fff" style={styles.right}/>
+
 				</TouchableOpacity>
 		}
+    //定义上导航的右按钮
+    _leftButton() {
+        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
+			<Text style={styles.back}>{'< 云信'}</Text>
+		</TouchableOpacity>
+    }
 		//定义上导航的标题
 	_title() {
 		return {
@@ -90,8 +103,9 @@ class ChatDetail extends ContainerComponent {
 			<MyView style={styles.container} behavior='padding'>
     			<NavigationBar
 					tintColor="#38373d"
-				leftButton={this._leftButton()}
-				title={this._title()} />
+					leftButton={this._leftButton()}
+					rightButton={this._rightButton()}
+					title={this._title()} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
 				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>
@@ -110,6 +124,10 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 15,
         marginLeft: 20,
+        textAlignVertical:'center',
+	},
+	right:{
+        marginRight: 20,
         textAlignVertical:'center',
 	}
 })

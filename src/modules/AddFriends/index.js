@@ -10,6 +10,7 @@ import {
     Dimensions,
     TouchableOpacity,
     TextInput,
+    TouchableWithoutFeedback
 } from 'react-native';
 
 import ContainerComponent from '../../Core/Component/ContainerComponent';
@@ -41,14 +42,23 @@ export default class AddFriends extends ContainerComponent {
             tintColor:'#fff',
         }
     }
+    toBack = () =>{
+        this.route.pop(this.props);
+
+    }
     _leftButton = () => {
         return (
             <View style={styles.leftButtonView}>
-                <TouchableOpacity style={styles.goBackView}>
+                <TouchableOpacity style={styles.goBackView} onPress={this.toBack}
+                >
                     <Image source={require('./resource/goBack.png')} style={styles.goBack}/>
                 </TouchableOpacity>
             </View>
         )
+    }
+    goToSearchNewFriend = () =>{
+        this.route.push(this.props,{key:'SearchNewFriend',routeId:'SearchNewFriend',params:{}});
+
     }
 
     render() {
@@ -60,13 +70,15 @@ export default class AddFriends extends ContainerComponent {
                     leftButton={this._leftButton()}
                 />
                 <View>
-                    <View style={styles.searchView}>
-                        <View style={styles.search}>
-                            <Icon name="search" size={22} color="#66CD00" style={styles.searchIcon}/>
-                            <Text style={styles.searchText}>奇信号/QQ号/手机号</Text>
+                    <TouchableWithoutFeedback onPress={this.goToSearchNewFriend}>
+                        <View style={styles.searchView}>
+                            <View style={styles.search}>
+                                <Icon name="search" size={22} color="#66CD00" style={styles.searchIcon}/>
+                                <Text style={styles.searchText}>奇信号/QQ号/手机号</Text>
+                            </View>
+                            <View style={styles.searchLine}/>
                         </View>
-                        <View style={styles.searchLine}/>
-                    </View>
+                    </TouchableWithoutFeedback>
                     <View style={styles.userInfo}>
                         <Text>我的手机号:{'13658309970'.replace(/(^\d{3}|\d{4}\B)/g,"$1 ")}</Text>
                     </View>
