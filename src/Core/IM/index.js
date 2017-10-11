@@ -3,7 +3,6 @@
  */
 
 import Connect from './socket'
-import * as methods from './Common'
 import * as storeSqlite from './StoreSqlite'
 import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "./dto/MessageStatus"
@@ -11,10 +10,14 @@ import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './dto/Common'
-import * as Helper from '../Helper'
 import MessageType from './dto/MessageType'
 import netWorking from '../Networking/Network'
-import RNFS from 'react-native-fs'
+import SendManager from './SendManager'
+import AckManager from './AckManager'
+import FileManager from './FileManager'
+import ReceiveManager from './ReceiveManager'
+import UpdateMessageSqliteType from './UpdateMessageSqliteType'
+import networkStatuesType from './networkStatuesType'
 
 
 
@@ -26,23 +29,6 @@ let networkStatus = "";
 
 //缓存消息
 let cacheMessage = [];
-
-
-//发送消息队列
-let sendMessageQueue = [];
-let sendMessageQueueState;
-
-//收到消息队列
-let recieveMessageQueue = [];
-let recMessageQueueState;
-
-//ack队列
-let ackMessageQueue = [];
-let ackMessageQueueState;
-
-//资源队列
-let resourceQueueState;
-let resourceQueue = [];
 
 let heartBeatInterval;
 let loopInterval;
@@ -99,6 +85,12 @@ export default class IM {
 
         this.startIM();
         currentObj = this;
+
+        //依赖注入
+        SendManager.Ioc(this);
+        ReceiveManager.Ioc(this);
+        AckManager.Ioc(this);
+        FileManager.Ioc(this);
     }
 
     setSocket(account){
@@ -125,12 +117,6 @@ export default class IM {
 
     startIM(){
         loopState = loopStateType.wait;
-        sendMessageQueueState = sendMessageQueueType.empty;
-        handleSqliteQueueState = handleSqliteQueueType.empty;
-        recMessageQueueState = recMessageQueueType.empty;
-        ackMessageQueueState = ackQueueType.empty;
-        resourceQueueState = resourceQueueType.empty;
-
         //初始化timer间隔
         sendMessageIntervalTime = configs.SendMessageIntervalTime;
         ackMessageIntervalTime = configs.ackIntervalTime;
@@ -162,6 +148,7 @@ export default class IM {
 
     setNetEnvironment(connecttionInfo){
         networkStatus = connecttionInfo?networkStatuesType.normal:networkStatuesType.none;
+        window.networkStatus = networkStatus;
     }
 
     //网络状态变换回调
@@ -171,6 +158,8 @@ export default class IM {
         if(netState.type == "NONE" || netState.type == "none"){
 
             networkStatus = networkStatuesType.none;
+
+            window.networkStatus = networkStatus;
 
             _socket.setNetWorkStatus(networkStatuesType.none);
 
@@ -191,6 +180,8 @@ export default class IM {
             },200);
         }else{
             networkStatus = networkStatuesType.normal;
+
+            window.networkStatus = networkStatus;
         }
     }
 
@@ -198,7 +189,11 @@ export default class IM {
     //检查send 和 rec队列执行回调
     checkQueue(emptyCallBack,inEmptyCallBack){
         checkQueueInterval = setInterval(function () {
-            if(sendMessageQueue.length == 0 && recieveMessageQueue.length == 0){
+
+            let sendQueueLength = SendManager.checkQueueLength();
+            let recQueueLength = ReceiveManager.checkQueueLength();
+
+            if(sendQueueLength == 0 && recQueueLength.length == 0){
 
                 emptyCallBack && emptyCallBack();
             }else{
@@ -259,7 +254,9 @@ export default class IM {
                 }else{
 
                     if(message.status == SendStatus.PrepareToUpload) {
-                        resourceQueue.push({onprogress: null, message: message})
+
+                        FileManager.addResource(message,null);
+
                         console.log("加入资源队列" + message.MSGID);
                     }else{
                         sendMessage.push(message);
@@ -267,7 +264,10 @@ export default class IM {
                 }
             })
 
-            sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
+            // sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
+            for(let item in sendMessage){
+                SendManager.addSendMessage(sendMessage[item]);
+            }
         });
     }
 
@@ -336,7 +336,6 @@ export default class IM {
                 console.log("添加" + copyMessage.MSGID + "进队列");
                 //初始加入ack队列，发送次数默认为1次
                 AckManager.addAckQueue(copyMessage, 1);
-                console.log("ack copyMessage 长度" + ackMessageQueue.length);
 
                 copyMessage.status = SendStatus.WaitAck;
                 this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
@@ -462,18 +461,17 @@ export default class IM {
 
             if(sendMessageInterval == -1) {
                 sendMessageInterval = setInterval(function () {
-                    if (sendMessageQueueState == sendMessageQueueType.empty) {
 
                         SendManager.handleSendMessageQueue();
-                    }
+
                 }, sendMessageIntervalTime);
             }
 
             if(recMessageInterval == -1) {
                 recMessageInterval = setInterval(function () {
-                    if (recMessageQueueState == recMessageQueueType.empty) {
+
                         ReceiveManager.handleRecieveMessageQueue();
-                    }
+
                 }, recMessageIntervalTime)
             }
 
@@ -483,10 +481,8 @@ export default class IM {
                 }, ackMessageIntervalTime)
             }
 
-            if(resourceQueueState == resourceQueueType.empty){
-                FileManager.handleResourceQueue();
-            }
 
+            FileManager.handleResourceQueue();
 
         }, configs.RunloopIntervalTime);
     }
@@ -494,323 +490,9 @@ export default class IM {
 
 }
 
-let SendManager = {};
-SendManager.addSendMessage = function(message,callback){
-
-    sendMessageQueue.push(message);
-    console.log("message 加入发送队列",message)
-    callback && callback(true,message.MSGID);
-
-}
-
-SendManager.handleSendMessageQueue = function(){
-    if(sendMessageQueue.length > 0){
-
-
-
-        sendMessageQueueState = sendMessageQueueType.excuting;
-        console.log(sendMessageQueueState);
-
-        let copyMessageQueue = Helper.cloneArray(sendMessageQueue);
-        sendMessageQueue = [];
-
-        for(let item in copyMessageQueue){
-            currentObj.sendMessage(copyMessageQueue[item]);
-
-            // sendMessageQueue.shift();
-        }
-        copyMessageQueue = [];
-
-        sendMessageQueueState = sendMessageQueueType.empty;
-        console.log(sendMessageQueueState);
-    }
-}
-
-
-let AckManager = {};
-//处理ack队列
-AckManager.handAckQueue = function(){
-
-    if(ackMessageQueue.length < 1){
-        return;
-    }
-
-    console.log("开始执行ack队列超时处理")
-    let time = new Date().getTime();
-    for(let item in ackMessageQueue){
-        if(time - ackMessageQueue[item].time > configs.timeOutResend){
-
-            if(ackMessageQueue[item].hasSend > 3) {
-
-                //回调App上层发送失败
-                // AppMessageResultHandle(false,ackMessageQueue[item].message);
-
-                ackMessageQueue[item].message.status = MessageStatus.SendFailed;
-                currentObj.addUpdateSqliteQueue(ackMessageQueue[item].message,UpdateMessageSqliteType.storeMessage)
-
-                currentObj.popCurrentMessageSqlite(ackMessageQueue[item].message.MSGID)
-                ackMessageQueue.splice(item, 1);
-            }else {
-                currentObj.reSendMessage(ackMessageQueue[item].message)
-                console.log("重新发送" + ackMessageQueue[item].message.MSGID);
-                ackMessageQueue[item].time = time;
-                ackMessageQueue[item].hasSend += 1;
-            }
-        }
-    }
-}
-
-//添加消息至ack队列
-AckManager.addAckQueue = function(message,times){
-    let time = new Date().getTime();
-    ackMessageQueue.push({"message":message,"time":time,"hasSend":times});
-    console.log("message 加入发送队列")
-}
-
-
-AckManager.receiveMessageOpreator = function(message){
-
-    //判断如果是ack消息
-    if(message.Command == undefined) {
-        let updateMessage = {};
-        for (let item in ackMessageQueue) {
-            if (ackMessageQueue[item].message.MSGID == message) {
-
-                currentObj.popCurrentMessageSqlite(message)
-
-
-                updateMessage = ackMessageQueue[item].message;
-                ackMessageQueue.splice(item, 1);
-
-                console.log("ack队列pop出：" + message)
-                console.log(ackMessageQueue.length);
-                break;
-            }
-        }
-
-        //回调App上层发送成功
-        currentObj.MessageResultHandle(true, message);
-
-        updateMessage.status = MessageStatus.SendSuccess;
-        currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
-
-
-
-        //判断如果是他人发送的消息
-    }else if(message.Command == MessageCommandEnum.MSG_BODY){
-        //存入数据库
-
-        if(message.type == 'text')
-        {
-            storeSqlite.storeRecMessage(message)
-            //回调App上层发送成功
-            currentObj.ReceiveMessageHandle(message);
-        }
-        else{
-
-            currentObj.addDownloadResource(message,function (message) {
-                currentObj.storeRecMessage(message)
-
-                currentObj.ReceiveMessageHandle(message);
-            })
-        }
-
-    }
-}
-
-
-
-let ReceiveManager = {};
-ReceiveManager.handleRecieveMessageQueue = function(){
-
-    if(recieveMessageQueue.length > 0){
-
-        recMessageQueueState = recMessageQueueType.excuting;
-
-        let copyRecQueue = Helper.cloneArray(recieveMessageQueue);
-        recieveMessageQueue = [];
-
-        for(let item in copyRecQueue){
-            currentObj.receiveMessageOpreator(copyRecQueue[item])
-            // recieveMessageQueue.shift();
-        }
-
-        copyRecQueue = [];
-
-        recMessageQueueState = recMessageQueueType.empty;
-
-    }
-}
-
-ReceiveManager.addReceiveMessage = function(message){
-    recieveMessageQueue.push(message);
-    console.log("message 加入接受队列")
-}
-
-
-let FileManager = {};
-FileManager.addResource = function(message,onprogress,callback){
-
-    resourceQueue.push({onprogress:onprogress,message:message})
-    callback(true,message.MSGID);
-}
-
-//执行resource队列
-FileManager.handleResourceQueue = function(){
-
-    if(resourceQueue.length > 0){
-
-        resourceQueueState = resourceQueueType.excuting;
-
-        let copyResourceQueue = Helper.cloneArray(resourceQueue);
-
-        //cloneArry 方法不能拷贝方法
-        for(let item in resourceQueue){
-            copyResourceQueue[item].onprogress = resourceQueue[item].onprogress;
-        }
-
-        resourceQueue = [];
-
-        for(let item in copyResourceQueue){
-            FileManager.uploadResource(copyResourceQueue[item]);
-        }
-        copyResourceQueue=[];
-
-        resourceQueueState = resourceQueueType.empty;
-
-    }
-}
-
-//执行upload函数体
-FileManager.uploadResource = function(obj){
-
-    let message = obj["message"];
-
-    let copyMessage = Object.assign({}, message);
-
-    let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
-    let callback = obj["callback"];
-
-    if(networkStatus == networkStatuesType.normal) {
-
-        //把资源存入数据库
-        for(let item in message.Resource){
-             currentObj.addResourceSqlite(message,item)
-        }
-
-
-        let uploadQueue = [];
-        for(let item in message.Resource) {
-
-            //整合audio下文件路径
-            let resource;
-            if(message.type == MessageType.audio){
-                resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
-            }else{
-                resource = message.Resource[item].LocalSource;
-            }
-
-            uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
-                if(progressHandles != null) {
-                    let onprogess = progressHandles[index * 1];
-                    onprogess("第" + (index * 1 + 1) + "张图片上传进度：" + progress.loaded / progress.total * 100);
-                }
-            },function (result) {
-                console.log("上传成功" + result);
-                message.Resource[item].RemoteSource = result.url;
-
-                //pop上传成功的资源
-                currentObj.deleteResourceSqlite(message,item)
-            },function(index){
-                console.log("上传失败" + index);
-            }));
-        }
-
-        Promise.all(uploadQueue).then(function(values){
-            console.log(values + "已经上传成功了" + message.MSGID);
-
-            let copyMessage = Object.assign({}, message);
-
-            copyMessage.status = SendStatus.PrepareToSend;
-            currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
-
-            //返回IM logic 添加message到发送队列中
-            currentObj.addSendMessageQueue(message);
-
-            //App上层修改message细节
-            currentObj.MessageChangeStatusHandle(message);
-
-        }).catch(function (values) {
-            console.log('上传失败的内容是',values);
-        })
-    }else{
-        copyMessage.status = SendStatus.PrepareToSend;
-        currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
-    }
-}
-
-FileManager.downloadResource = function(message,callback){
-
-    let fromUrl = message.Resource[0].RemoteSource,
-        sender = message.Data.Data.Sender,
-        type = message.type,
-        way = message.way,
-        toFile;
-
-    let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
-
-    message.Resource[0].LocalSource = null;
-    updateMessage = (result) => {
-        message.Resource[0].LocalSource = 'file://' + toFile;
-        console.log('下载成功后=============================:  ',message)
-        callback(message)
-    }
-
-    _network.methodDownload(fromUrl,toFile,updateMessage)
-
-    console.log('receiveMessageOpreator:  ',message)
-}
-
-
-
 let loopStateType = {
     normal : "normal",
     noNet : "noNet",
     wait : "wait"
 };
 
-let sendMessageQueueType = {
-    excuting : "excuting",
-    empty : "empty"
-}
-
-let recMessageQueueType = {
-    excuting : "excuting",
-    empty : "empty"
-}
-
-let handleSqliteQueueType = {
-    excuting : "excuting",
-    empty : "empty"
-}
-
-let resourceQueueType = {
-    excuting : "excuting",
-    empty : "empty"
-}
-
-let ackQueueType = {
-    excuting : "excuting",
-    empty : "empty"
-}
-
-let networkStatuesType = {
-    none : "none",
-    normal : "normal"
-}
-
-let UpdateMessageSqliteType = {
-    storeMessage:"storeMessage",
-    changeSendMessage:"changeSendMessage"
-}
