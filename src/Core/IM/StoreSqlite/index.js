@@ -77,7 +77,7 @@ export function getChatList(callback){
 }
 
 var databaseObj = {
-    // name :"IM.db",
+    name :"IM.db",
 }
 if(Platform.OS === 'ios'){
     databaseObj.createFromLocation='1'
@@ -88,7 +88,7 @@ if(Platform.OS === 'ios'){
 export function initIMDatabase(AccountId,callback){
 
     // databaseObj.name =  AccountId + "/IM.db";
-    databaseObj.name = 'IM.db'
+    // databaseObj.name = 'IM.db'
 
     RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
         NSURLIsExcludedFromBackupKey:true
@@ -316,7 +316,6 @@ IMFMDB.getAllChatClientList = function(callback){
             tx.executeSql(sqls.ExcuteIMSql.GetChatList, [], (tx, results) => {
 
                 console.log(results);
-
                 callback(results.rows.raw());
 
             }, errorDB);
