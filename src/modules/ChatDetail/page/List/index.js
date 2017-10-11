@@ -40,10 +40,9 @@ let _MaxListHeight = 0; //记录最大list高度
 let FooterLayout = false;
 let ListLayout = false;
 
-
-
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
+
 
 class Chat extends Component {
     constructor(props){
@@ -62,6 +61,7 @@ class Chat extends Component {
         this.reduxData2 = [];
 
         this.firstLoad = null;
+        this.timestamp = 0;
 
         this.state = {
             dataSource: ds,
@@ -235,33 +235,78 @@ class Chat extends Component {
     prepareMessages(messages) {
         //console.log(messages)
         return {
-            keys: messages.map(m => m.message.MSGID),
+            keys: messages.map((m,i) => m.message.MSGID),
             blob: messages.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
                 o[m.message.MSGID] = {
                     ...m,
+                    index:i,
                 };
                 return o;
             }, {})
         };
     }
 
+    timestampFormat = (time)=>{
+        let nowTime = new Date();
+        if(time.toLocaleDateString() == nowTime.toLocaleDateString()){
+            return time.getHours()+':'+time.getMinutes()
+        }
+        else{
+            return time.getMonth()+1+'月'+time.getDate()+'日'+' '+time.getHours()+':'+time.getMinutes()
+        }
+    }
+
+    getTimestamp = (LocalTime,rowid) =>{
+        let timer = null;
+        if(this.state.showInvertible){
+            let prevTime;
+            let index = this.data2.blob[rowid].index;
+            this.shortData2[index+1] ?
+                prevTime = parseInt(this.shortData2[index+1].message.Data.LocalTime) : prevTime = 0;
+            console.log(this.shortData2,rowid,this.shortData2[index])
+            if((LocalTime - prevTime) > 180000){
+                timer = new Date(LocalTime);
+            }
+            return timer;
+        }
+        else{
+            if((LocalTime - this.timestamp) > 180000){
+                timer = new Date(LocalTime);
+                this.timestamp = LocalTime;
+            }
+            return timer;
+        }
+    }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
-        let isSender = row.message.Data.Data.Sender;
-        
-        if(isSender == this.props.accountId){
+        let {Sender} = row.message.Data.Data;
+        let LocalTime = parseInt(row.message.Data.LocalTime);
+
+        let timer = this.getTimestamp(LocalTime,rowid);
+
+        if(Sender == this.props.accountId){
             return(
-                <View style={styles.itemViewRight} key={rowid}>
-                    <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
-                    <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                <View key={rowid} style={styles.itemViewRight}>
+                    <View style={styles.timestampView}>
+                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                    </View>
+                    <View style={styles.infoViewRight}>
+                        <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
+                        <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                    </View>
                 </View>
             )
         }
         else{
             return(
-                <View style={styles.itemView} key={rowid}>
-                    <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj3w0emfcbj20u011iabm.jpg'}} style={styles.userImage}/>
-                    <ChatMessage style={styles.bubbleView} rowData={row}/>
+                <View key={rowid} style={styles.itemView}>
+                    <View style={styles.timestampView}>
+                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                    </View>
+                    <View style={styles.infoView}>
+                        <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                        <ChatMessage style={styles.bubbleView} rowData={row}/>
+                    </View>>
                 </View>
             )
         }
@@ -495,18 +540,31 @@ const styles = StyleSheet.create({
         borderBottomColor: 'transparent',
     },
     chatListView:{
-        backgroundColor:'#ddd',
+        backgroundColor:'#e8e8e8',
         flex:1,
         overflow:'hidden',
     },
     itemView:{
-        marginBottom:10,
-        flexDirection:'row',
+        marginTop:10,
     },
     itemViewRight:{
+        marginTop:10,
+    },
+    timestampView:{
+        alignItems:'center'
+    },
+    timestamp:{
+        backgroundColor:'#cfcfcf',
+        paddingHorizontal:5,
+        borderRadius:3,
         marginBottom:10,
+    },
+    infoView:{
         flexDirection:'row',
-        justifyContent:'flex-end'
+    },
+    infoViewRight:{
+        flexDirection:'row',
+        justifyContent:'flex-end',
     },
     userImage:{
         width:40,
