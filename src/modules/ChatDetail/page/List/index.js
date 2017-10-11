@@ -78,7 +78,7 @@ class Chat extends Component {
             this.firstLoad = ListConst.msgState.NOMORE;
         }
         else{
-            newData.pop();
+            newData = newData.slice(0,10);
         }
 
         this.reduxData = newData.concat().reverse()
@@ -145,7 +145,7 @@ class Chat extends Component {
             this.firstLoad = ListConst.msgState.NOMORE;
         }
         else{
-            chatRecordStore.pop();
+            chatRecordStore = chatRecordStore.slice(0,10);
         }
 
         this.reduxData = chatRecordStore.concat().reverse()
