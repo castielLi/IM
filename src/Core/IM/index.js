@@ -233,7 +233,6 @@ export default class IM {
 
 
 
-
     //获取当前所有未发出去的消息添加入消息队列
     addAllUnsendMessageToSendQueue(){
         storeSqlite.getAllCurrentSendMessage(function(currentSendMessages){
