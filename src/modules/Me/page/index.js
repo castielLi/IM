@@ -17,6 +17,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import RNFS from 'react-native-fs'
 import * as loginStoreAction from '../../Login/reducer/action';
 import {bindActionCreators} from 'redux';
+import {closeImDb} from '../../../Core/IM/StoreSqlite';
+import {closeAccountDb} from '../../../Core/User/StoreSqlite';
+
 let {height,width} = Dimensions.get('window');
 
 class Me extends ContainerComponent {
@@ -33,6 +36,8 @@ class Me extends ContainerComponent {
         RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/IM.db');
 
         this.props.signOut();
+        closeImDb();
+        closeAccountDb();
         this.route.push(this.props,{
             key:'Login',
             routeId: 'Login'
