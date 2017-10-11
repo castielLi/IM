@@ -89,10 +89,7 @@ const styles = StyleSheet.create({
     back:{
         flexDirection:'row',
         flex:1,
-        //color: '#ffffff',
-        //fontSize: 15,
         marginLeft: 10,
-        //textAlignVertical:'center',
     },
     rightButton:{
         color: '#ffffff',

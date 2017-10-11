@@ -14,6 +14,7 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import NavigationBar from 'react-native-navbar';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 let {height,width} = Dimensions.get('window');
 
@@ -29,7 +30,12 @@ class ClientInformation extends ContainerComponent {
     //定义上导航的左按钮
     _leftButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <Text style={styles.back}>{'< 通讯录'}</Text>
+            <View style={styles.back}>
+
+                <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
+
+                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
+            </View>
         </TouchableOpacity>
     }
     //定义上导航的标题
@@ -45,7 +51,8 @@ class ClientInformation extends ContainerComponent {
 
     _rightButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={this.goToInformationSetting}>
-            <Text style={styles.rightButton}>{'...'}</Text>
+            <Icon name="ellipsis-h" size={20} color="#fff" style={{textAlignVertical:'center',marginRight:10}}/>
+
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
@@ -117,10 +124,9 @@ const styles = StyleSheet.create({
 
     },
     back:{
-        color: '#ffffff',
-        fontSize: 15,
+        flexDirection:'row',
+        flex:1,
         marginLeft: 10,
-        textAlignVertical:'center',
     },
     rightButton:{
         color: '#ffffff',
