@@ -318,7 +318,7 @@ class Chat extends Component {
                     <View style={styles.infoView}>
                         <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
                         <ChatMessage style={styles.bubbleView} rowData={row}/>
-                    </View>>
+                    </View>
                 </View>
             )
         }
@@ -557,19 +557,19 @@ const styles = StyleSheet.create({
         overflow:'hidden',
     },
     itemView:{
-        marginTop:10,
+        marginBottom:10,
     },
     itemViewRight:{
-        marginTop:10,
+        marginBottom:10,
     },
     timestampView:{
-        alignItems:'center'
+        alignItems:'center',
     },
     timestamp:{
         backgroundColor:'#cfcfcf',
         paddingHorizontal:5,
         borderRadius:3,
-        marginBottom:10,
+        marginVertical:10
     },
     infoView:{
         flexDirection:'row',

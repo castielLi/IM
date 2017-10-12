@@ -60,19 +60,21 @@ export default class ChatMessageText extends Component {
 
 const styles = StyleSheet.create({
     bubble:{
-        maxWidth:width-150,
-        padding:12,
+        maxWidth:width-100,
         justifyContent:'center',
-        borderRadius:5
+        borderRadius:5,
+        paddingHorizontal:10,
+        paddingVertical:10,
     },
     contentText:{
         includeFontPadding:false,
-        fontSize:16
+        fontSize:16,
+        lineHeight:20,
     },
     emoji:{
-        width:25,
-        height:25,
-        resizeMode:'stretch'
+        width:50,
+        height:50,
+        resizeMode:'cover'
     }
 });
 
