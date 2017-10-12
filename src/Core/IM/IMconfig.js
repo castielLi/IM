@@ -4,3 +4,6 @@
 
 export const timeOutResend = 15000;
 export const RunloopIntervalTime = 300;
+export const SendMessageIntervalTime = 100;
+export const RecMessageIntervalTime = 100;
+export const ackIntervalTime = 100;
