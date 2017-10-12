@@ -37,7 +37,8 @@ class SearchNewFriend extends ContainerComponent {
         return (
             <View style={styles.container}>
                 <View>
-                    <View style={[styles.listHeaderBox,{paddingTop:Platform.OS === 'ios'?36:10}]}>
+                    {Platform.OS === 'ios'? <View style={{height:26,backgroundColor:'#ddd'}}></View>:null }
+                    <View style={styles.listHeaderBox}>
                         <View style={styles.searchBox}>
                             <Icon name="search" size={20} color="#aaa" />
                             <TextInput
@@ -120,6 +121,8 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor:'#fff',
         color:'#000',
+        padding:0,
+        fontSize:12
     },
     itemBox:{
         height:60,

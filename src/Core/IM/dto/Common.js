@@ -75,6 +75,10 @@ export function sqlMessageToMessage(sqliteMessage){
         file.FileType = ResourceTypeEnum.msgType;
         file.LocalSource =  sqliteMessage.localPath.split(",")[0];
         file.RemoteSource =  sqliteMessage.url.split(",")[0];
+        if(sqliteMessage.type != MessageType.image){
+            file.Time = sqliteMessage.resourceTime;
+        }
+
         message.Resource = [file];
     }else{
         message.type = "text"

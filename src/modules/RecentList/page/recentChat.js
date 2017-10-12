@@ -68,6 +68,8 @@ class RecentChat extends ContainerComponent {
 		let oKCallback = ()=>{
 			//清空recentListStore中对应记录
 			this.props.deleteRecentItem(rowID);
+			//如果该row上有未读消息，减少unReadMessageStore记录
+			this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
 			//清空chatRecordStore中对应记录
 			this.props.initChatRecord(rowData.Client,[])
 			//删除ChatRecode表中记录

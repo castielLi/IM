@@ -16,6 +16,7 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RNFS from 'react-native-fs'
 import * as loginStoreAction from '../../Login/reducer/action';
+import * as chatRecordStoreAction from '../../../Core/IM/redux/action';
 import {bindActionCreators} from 'redux';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {closeAccountDb} from '../../../Core/User/StoreSqlite';
@@ -31,12 +32,13 @@ class Me extends ContainerComponent {
     loginOut = ()=>{
         AsyncStorage.setItem('accountId','');
         if(Platform.OS === 'android'){
-            RNFS.moveFile('/data/data/com.im/databases/Account.db','/data/data/com.im/files/'+this.props.accountId+'/Account.db');
-            RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/IM.db');
+            RNFS.moveFile('/data/data/com.im/databases/Account.db','/data/data/com.im/files/'+this.props.accountId+'/database/Account.db');
+            RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/database/IM.db');
         }
 
 
         this.props.signOut();
+        this.props.clearChatRecord();
         closeImDb();
         closeAccountDb();
         this.route.push(this.props,{
@@ -47,6 +49,7 @@ class Me extends ContainerComponent {
     render() {
         return (
             <View style={styles.container}>
+                <Text>{"你的账户："+this.props.accountId}</Text>
                 <Text onPress={this.loginOut}>退出登录</Text>
             </View>
             )
@@ -70,6 +73,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(loginStoreAction, dispatch),
+    ...bindActionCreators(chatRecordStoreAction, dispatch),
 
 });
 
