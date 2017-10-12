@@ -89,7 +89,7 @@ AckManager.receiveMessageOpreator = function(message){
 
         if(message.type == 'text')
         {
-            storeSqlite.storeRecMessage(message)
+            currentObj.storeRecMessage(message)
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
         }
