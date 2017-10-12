@@ -33,6 +33,11 @@ export default class User {
     }
 
 
+    AddNewRelation(friendList,blackList,GroupList){
+
+    }
+
+
     AddNewRelation(){
 
     }

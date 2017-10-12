@@ -70,12 +70,19 @@ export default class ContainerComponent extends Component {
     }
 
     fetchData(method,requestURL,callback,params){
-        let network = netWorking();
+        let network = new netWorking();
         if(method == 'GET'){
             network.methodGET(requestURL,callback,false);
         }else{
             network.methodPOST(requestURL,params,callback,false);
         }
+    }
+
+    setFetchAuthorization(authorization){
+
+        netWorking.setNeedAuth(true)
+        netWorking.setAuthorization(authorization);
+
     }
 
 }
