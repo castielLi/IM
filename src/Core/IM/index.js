@@ -96,6 +96,7 @@ export default class IM {
     setSocket(account){
         _socket.startConnect(account);
         ME = account;
+        FileManager.setAccountId(account);
     }
 
     //初始化IM的数据库

@@ -78,6 +78,12 @@ function InterceptionClientFromId(str){
     client = str.slice(0,str.indexOf('_'));
     return client;
 }
+//注销清空store
+export function clearChatRecord(){
+    return{
+        type:'CLEAR_CHATRECORD',
+    }
+}
 //消息提取
 function extractMessage(message){
 	switch (message.type) {

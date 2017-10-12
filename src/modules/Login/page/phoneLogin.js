@@ -135,8 +135,9 @@ class PhoneLogin extends ContainerComponent {
                     //如果是android
                 }else{
                     //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
-                    let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/IM.db';
-                    let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/Account.db';
+;
+                    let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
+                    let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/database/Account.db';
 
                     RNFS.exists(ImDbPath).then((bool)=>{if(bool){
                         RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
@@ -144,6 +145,9 @@ class PhoneLogin extends ContainerComponent {
                                 //初始化im
                                 let im = new IM();
                                 im.setSocket(account.accountId);
+                                //初始化用户系统
+                                let user = new User();
+                                //初始化IM
                                 //..
                                 Keyboard.dismiss();//关闭软键盘
                                 //跳转到最近聊天列表

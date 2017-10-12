@@ -21,7 +21,7 @@ if (Platform.OS === 'ios') {
 
 export function initIMDatabase(AccountId,callback){
     if(Platform.OS === 'ios'){
-        databaseObj.name =  AccountId + "/Account.db"
+        databaseObj.name =  AccountId + "/database/Account.db"
     }
 
     USERFMDB.initIMDataBase(AccountId,callback);

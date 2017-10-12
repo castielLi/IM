@@ -87,10 +87,10 @@ if(Platform.OS === 'ios'){
 
 export function initIMDatabase(AccountId,callback){
     if(Platform.OS === 'ios'){
-        databaseObj.name =  AccountId + "/IM.db"
+        databaseObj.name =  AccountId + "/database/IM.db"
     }
 
-    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
+    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId+"/database",{
         NSURLIsExcludedFromBackupKey:true
     }).then((success) => {
         console.log('Create directory success!');
@@ -554,9 +554,15 @@ function insertChat(message,tx){
     }else{
         localPath = " ";
     }
+    let sourceTime = " ";
+    //音频视频才有时间
+    if(message.type === 'audio'||message.type === 'video'){
+        //默认一条消息只能有一条音频或者视频
+        sourceTime = message.Resource[0].Time;
+    }
     let url = " ";
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,url,message.status]);
+    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
 

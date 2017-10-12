@@ -14,9 +14,13 @@ let currentObj = undefined;
 let _network = new netWorking();
 
 let resourceQueue = [];
-
+let ME = "";
 FileManager.Ioc = function(im){
     currentObj = im;
+}
+
+FileManager.setAccountId = function(accountId){
+    ME = accountId;
 }
 
 FileManager.addResource = function(message,onprogress,callback){
@@ -124,7 +128,8 @@ FileManager.downloadResource = function(message,callback){
         toFile;
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+    toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+
 
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
