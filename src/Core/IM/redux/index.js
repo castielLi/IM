@@ -11,6 +11,7 @@
 //                             FileType:0,//0:image、1:video、3:audio
 //                             LocalSource:'',//网络路径
 //                             RemoteSource:'',//本地路径
+//                             Time:'',//资源时间
 //                         }],
         //                 Data:{
         //                     IsAck :true;
