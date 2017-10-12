@@ -51,7 +51,7 @@ class ClientInformation extends ContainerComponent {
 
     _rightButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={this.goToInformationSetting}>
-            <Icon name="ellipsis-h" size={20} color="#fff" style={{textAlignVertical:'center',marginRight:10}}/>
+            <Icon name="ellipsis-h" size={20} color="#fff" style={{marginRight:10,textAlignVertical:'center'}}/>
 
         </TouchableOpacity>
     }
@@ -97,7 +97,6 @@ class ClientInformation extends ContainerComponent {
                                 </View>
                             </View>
                             <Text style={styles.arrow}>{'>'}</Text>
-
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
@@ -106,7 +105,7 @@ class ClientInformation extends ContainerComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={{borderRadius:5,marginTop:15,marginHorizontal:20}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
                     </TouchableHighlight>
 
@@ -125,6 +124,7 @@ const styles = StyleSheet.create({
     },
     back:{
         flexDirection:'row',
+        alignItems:'center',
         flex:1,
         marginLeft: 10,
     },
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     address:{
         fontSize:14,
         color:'#000',
-        width:100
+        width:80
     },
     place:{
         fontSize:14,
@@ -206,23 +206,26 @@ const styles = StyleSheet.create({
         justifyContent:'space-between'
     },
     photos:{
-        flexDirection:'row'
+        flexDirection:'row',
     },
     photo:{
-        width:60,
-        height:60,
+        width:50,
+        height:50,
         marginRight:8
     },
-    sendMessage:{
-        width:width - 40,
+    sendMessageBox:{
         height:50,
         borderRadius:5,
+        marginTop:15,
+        marginHorizontal:20,
         backgroundColor:'#009600',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    sendMessage:{
         textAlignVertical:'center',
-        textAlign:'center',
         color:'#fff',
         fontSize:20,
-        alignSelf:'center'
     }
 });
 

@@ -114,9 +114,13 @@ export default function chatRecordStore(state = initialState, action) {
                 };
             }else{
                 return state;
-            }      
-            
+            }
 
+        //注销清空store
+        case 'CLEAR_CHATRECORD':
+            return {
+                ...initialState
+            };
         default:
             return state;
     }

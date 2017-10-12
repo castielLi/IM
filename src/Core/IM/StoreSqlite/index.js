@@ -87,10 +87,10 @@ if(Platform.OS === 'ios'){
 
 export function initIMDatabase(AccountId,callback){
     if(Platform.OS === 'ios'){
-        databaseObj.name =  AccountId + "/IM.db"
+        databaseObj.name =  AccountId + "/database/IM.db"
     }
 
-    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
+    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId+"/database",{
         NSURLIsExcludedFromBackupKey:true
     }).then((success) => {
         console.log('Create directory success!');

@@ -110,7 +110,7 @@ class InformationSetting extends ContainerComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('删除')} style={{borderRadius:5,marginTop:15,marginHorizontal:20}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('删除')} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>删除</Text>
                     </TouchableHighlight>
                 </View>
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
     },
     back:{
         flexDirection:'row',
+        alignItems:'center',
         flex:1,
         marginLeft: 10,
     },
@@ -153,16 +154,19 @@ const styles = StyleSheet.create({
         fontSize:20,
         color:'#aaa'
     },
-    sendMessage:{
-        width:width - 40,
+    sendMessageBox:{
         height:55,
         borderRadius:5,
+        marginTop:15,
+        marginHorizontal:20,
         backgroundColor:'#dc0000',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    sendMessage:{
         textAlignVertical:'center',
-        textAlign:'center',
         color:'#fff',
         fontSize:20,
-        alignSelf:'center'
     }
 });
 
