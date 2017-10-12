@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -80,48 +80,68 @@ class PhoneLogin extends ContainerComponent {
             AsyncStorage.setItem('accountId',account.accountId);
 			//修改loginStore登录状态
 			this.props.signIn(account);
+			//如果是ios
+            if(Platform.OS === 'ios'){
+                //初始化im
+                let im = new IM();
+                im.setSocket(account.accountId);
+                im.initIMDatabase(account.accountId)
 
-                    //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
-                    let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/IM.db';
-                    let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/Account.db';
+                //初始化用户系统
+                let user = new User();
+                user.initIMDatabase(account.accountId);
+                //初始化IM
+                //..
+                Keyboard.dismiss();//关闭软键盘
+                //跳转到最近聊天列表
+                this.route.push(this.props,{
+                    key:'MainTabbar',
+                    routeId: 'MainTabbar'
+                });
+                //如果是android
+            }else{
+                //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
+                let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/IM.db';
+                let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/Account.db';
 
-                    RNFS.exists(ImDbPath).then((bool)=>{console.log(bool);if(bool){
-                        RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                            RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
-                                //初始化im
-                                let im = new IM();
-                                im.setSocket(account.accountId);
-                                //初始化用户系统
-                                let user = new User();
-                                //初始化IM
-                                //..
-                                Keyboard.dismiss();//关闭软键盘
-                                //跳转到最近聊天列表
-                                this.route.push(this.props,{
-                                    key:'MainTabbar',
-                                    routeId: 'MainTabbar'
-                                });
-                            })
+                RNFS.exists(ImDbPath).then((bool)=>{if(bool){
+                    RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
+                        RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
+                            //初始化im
+                            let im = new IM();
+                            im.setSocket(account.accountId);
+                            //初始化用户系统
+                            let user = new User();
+                            //初始化IM
+                            //..
+                            Keyboard.dismiss();//关闭软键盘
+                            //跳转到最近聊天列表
+                            this.route.push(this.props,{
+                                key:'MainTabbar',
+                                routeId: 'MainTabbar'
+                            });
                         })
-					}else{
-                    	console.log('yes')
-                        //初始化im
-                        let im = new IM();
-                        im.setSocket(account.accountId);
-                        im.initIMDatabase(account.accountId)
+                    })
+                }else{
+                    //初始化im
+                    let im = new IM();
+                    im.setSocket(account.accountId);
+                    im.initIMDatabase(account.accountId)
 
-                        //初始化用户系统
-                        let user = new User();
-                        user.initIMDatabase(account.accountId);
-                        //初始化IM
-                        //..
-                        Keyboard.dismiss();//关闭软键盘
-                        //跳转到最近聊天列表
-                        this.route.push(this.props,{
-                            key:'MainTabbar',
-                            routeId: 'MainTabbar'
-                        });
-					}})
+                    //初始化用户系统
+                    let user = new User();
+                    user.initIMDatabase(account.accountId);
+                    //初始化IM
+                    //..
+                    Keyboard.dismiss();//关闭软键盘
+                    //跳转到最近聊天列表
+                    this.route.push(this.props,{
+                        key:'MainTabbar',
+                        routeId: 'MainTabbar'
+                    });
+                }})
+			}
+
 
 
 

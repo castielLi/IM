@@ -86,9 +86,9 @@ if(Platform.OS === 'ios'){
 
 
 export function initIMDatabase(AccountId,callback){
-
-    // databaseObj.name =  AccountId + "/IM.db";
-    // databaseObj.name = 'IM.db'
+    if(Platform.OS === 'ios'){
+        databaseObj.name =  AccountId + "/IM.db"
+    }
 
     RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
         NSURLIsExcludedFromBackupKey:true

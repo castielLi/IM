@@ -9,7 +9,7 @@ import {Text,
     Image,
     TouchableHighlight,
     Dimensions,
-    AsyncStorage
+    AsyncStorage,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
@@ -30,10 +30,11 @@ class Me extends ContainerComponent {
 
     loginOut = ()=>{
         AsyncStorage.setItem('accountId','');
-        RNFS.moveFile('/data/data/com.im/databases/Account.db','/data/data/com.im/files/'+this.props.accountId+'/Account.db');
+        if(Platform.OS === 'android'){
+            RNFS.moveFile('/data/data/com.im/databases/Account.db','/data/data/com.im/files/'+this.props.accountId+'/Account.db');
+            RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/IM.db');
+        }
 
-
-        RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/IM.db');
 
         this.props.signOut();
         closeImDb();
