@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from './check';
 import {
     Navigator
@@ -16,6 +16,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
+import RNFS from 'react-native-fs'
 
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
@@ -73,31 +74,77 @@ class PhoneLogin extends ContainerComponent {
 			//服务器验证
 			//...
 			//验证通过
-			let account = { accountId:'2',avatar:''};
-			//修改loginStore登录状态
-			this.props.signIn(account)
+			let account = { accountId:user.passWord,avatar:''};
 
-
-			//初始化im
-            let im = new IM();
-            im.setSocket("2");
-            im.initIMDatabase("2")
-
-			//初始化用户系统
-			let user = new User();
-            user.initIMDatabase("2");
-
-			//存储登录状态
+            //存储登录状态
             AsyncStorage.setItem('accountId',account.accountId);
-			//初始化IM
-			//..
-			Keyboard.dismiss();//关闭软键盘
-			//跳转到最近聊天列表
-			this.route.push(this.props,{
-				key:'MainTabbar',
-                routeId: 'MainTabbar'
-			});
-			
+			//修改loginStore登录状态
+			this.props.signIn(account);
+			//如果是ios
+            if(Platform.OS === 'ios'){
+                //初始化im
+                let im = new IM();
+                im.setSocket(account.accountId);
+                im.initIMDatabase(account.accountId)
+
+                //初始化用户系统
+                let user = new User();
+                user.initIMDatabase(account.accountId);
+                //初始化IM
+                //..
+                Keyboard.dismiss();//关闭软键盘
+                //跳转到最近聊天列表
+                this.route.push(this.props,{
+                    key:'MainTabbar',
+                    routeId: 'MainTabbar'
+                });
+                //如果是android
+            }else{
+                //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
+                let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/IM.db';
+                let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/Account.db';
+
+                RNFS.exists(ImDbPath).then((bool)=>{if(bool){
+                    RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
+                        RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
+                            //初始化im
+                            let im = new IM();
+                            im.setSocket(account.accountId);
+                            //初始化用户系统
+                            let user = new User();
+                            //初始化IM
+                            //..
+                            Keyboard.dismiss();//关闭软键盘
+                            //跳转到最近聊天列表
+                            this.route.push(this.props,{
+                                key:'MainTabbar',
+                                routeId: 'MainTabbar'
+                            });
+                        })
+                    })
+                }else{
+                    //初始化im
+                    let im = new IM();
+                    im.setSocket(account.accountId);
+                    im.initIMDatabase(account.accountId)
+
+                    //初始化用户系统
+                    let user = new User();
+                    user.initIMDatabase(account.accountId);
+                    //初始化IM
+                    //..
+                    Keyboard.dismiss();//关闭软键盘
+                    //跳转到最近聊天列表
+                    this.route.push(this.props,{
+                        key:'MainTabbar',
+                        routeId: 'MainTabbar'
+                    });
+                }})
+			}
+
+
+
+
 		}
 	}
 	

@@ -66,7 +66,9 @@ export default class QNY {
 				}
 
 			}).then(response => {
-				return response.json();
+				if(response != undefined) {
+                    return response.json();
+                }
 			}).then(response => {
 				let formInput = {
 					key: key,

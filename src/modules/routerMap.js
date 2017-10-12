@@ -30,6 +30,7 @@ import InformationSetting from './InformationSetting/page'
 import NewFriend from './NewFriend/page'
 import SearchNewFriend from './SearchNewFriend/page'
 import ChatSetting from './ChatSetting/page'
+import Me from './Me/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -73,7 +74,7 @@ export const RouteMap = {
             params: {}
         },
         'TabFour': {
-            component: AddFriends,
+            component: Me,
             params: {}
         }
     },
@@ -172,6 +173,12 @@ export const RouteMap = {
     'ChatSetting': {
         'ChatSetting': {
             component: ChatSetting,
+            params: {}
+        }
+    },
+    'Me': {
+        'Me': {
+            component: Me,
             params: {}
         }
     },

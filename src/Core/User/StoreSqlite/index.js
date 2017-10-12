@@ -27,7 +27,9 @@ export function initIMDatabase(AccountId,callback){
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
-
+export function closeAccountDb(){
+    USERFMDB.closeAccountDb()
+}
 
 
 let USERFMDB = {};
@@ -64,6 +66,16 @@ USERFMDB.GetRelationList = function(callback){
 
         }, errorDB);
     }, errorDB);
+}
+
+USERFMDB.closeAccountDb = function(){
+     var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.close();
+
+    });
 }
 
 function errorDB(type,err) {

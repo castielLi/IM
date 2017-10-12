@@ -77,7 +77,7 @@ export function getChatList(callback){
 }
 
 var databaseObj = {
-    // name :"IM.db",
+    name :"IM.db",
 }
 if(Platform.OS === 'ios'){
     databaseObj.createFromLocation='1'
@@ -86,9 +86,9 @@ if(Platform.OS === 'ios'){
 
 
 export function initIMDatabase(AccountId,callback){
-
-    // databaseObj.name =  AccountId + "/IM.db";
-    databaseObj.name = 'IM.db'
+    if(Platform.OS === 'ios'){
+        databaseObj.name =  AccountId + "/IM.db"
+    }
 
     RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
         NSURLIsExcludedFromBackupKey:true
@@ -102,7 +102,9 @@ export function initIMDatabase(AccountId,callback){
     IMFMDB.initIMDataBase(AccountId,callback);
 }
 
-
+export function closeImDb(){
+    IMFMDB.closeImDb()
+}
 
 let IMFMDB = {};
 IMFMDB.initIMDataBase = function(AccountId,callback){
@@ -316,7 +318,6 @@ IMFMDB.getAllChatClientList = function(callback){
             tx.executeSql(sqls.ExcuteIMSql.GetChatList, [], (tx, results) => {
 
                 console.log(results);
-
                 callback(results.rows.raw());
 
             }, errorDB);
@@ -530,6 +531,17 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
 
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
+
+IMFMDB.closeImDb = function(){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.close();
+
+    });
+}
+
 //添加消息进总消息表
 function insertChat(message,tx){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
