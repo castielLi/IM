@@ -246,13 +246,25 @@ class Chat extends Component {
         };
     }
 
-    timestampFormat = (time)=>{
-        let nowTime = new Date();
-        if(time.toLocaleDateString() == nowTime.toLocaleDateString()){
-            return time.getHours()+':'+time.getMinutes()
+    timeFormat = (time) => {
+        if(time < 10){
+            return '0'+time;
         }
         else{
-            return time.getMonth()+1+'月'+time.getDate()+'日'+' '+time.getHours()+':'+time.getMinutes()
+            return time;
+        }
+    }
+
+    timestampFormat = (time)=>{
+        let nowTime = new Date();
+        let Hours = this.timeFormat(time.getHours());
+        let Minutes = this.timeFormat(time.getMinutes());
+
+        if(time.toLocaleDateString() == nowTime.toLocaleDateString()){
+            return Hours+':'+Minutes;
+        }
+        else{
+            return time.getMonth()+1+'月'+time.getDate()+'日'+' '+Hours+':'+Minutes;
         }
     }
 
@@ -466,7 +478,7 @@ class Chat extends Component {
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                    <View style={[styles.chatListView,{backgroundColor:'red'}]}>
+                    <View style={[styles.chatListView]}>
                         <ListView
                             ref={(lv) => this.listView = lv}
                             dataSource={this.state.dataSource}
