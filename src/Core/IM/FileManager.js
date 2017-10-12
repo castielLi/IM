@@ -6,10 +6,12 @@ import * as Helper from '../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
 import * as methods from './Common'
+import netWorking from '../Networking/Network'
 
 
 let FileManager = {};
 let currentObj = undefined;
+let _network = new netWorking();
 
 let resourceQueue = [];
 
