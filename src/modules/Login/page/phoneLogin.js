@@ -18,6 +18,9 @@ import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
 
+
+let currentObj = undefined;
+
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
 		sqLite.close();
@@ -33,6 +36,7 @@ class PhoneLogin extends ContainerComponent {
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
 	  this.addUser = this.addUser.bind(this)
+	  currentObj = this;
 	}
 	//当点击短信验证的时候检测手机号码的方法
 	changeShowConfirm=()=>{
@@ -64,65 +68,54 @@ class PhoneLogin extends ContainerComponent {
 
 	addUser = ()=>{
 		if(checkReg(1,this.state.phoneText)){
-			var userData = [];
-			var user = {};
-			user.userName = this.state.phoneText;
-			user.passWord = this.state.passWordText;
-			userData.push(user);
-			//登录中
-			this.props.signDoing();
-			//服务器验证
-			//...
-			//验证通过
-			let account = { accountId:user.passWord,avatar:''};
 
-            //存储登录状态
-            AsyncStorage.setItem('accountId',account.accountId);
-			//修改loginStore登录状态
-			this.props.signIn(account);
-			//如果是ios
-            if(Platform.OS === 'ios'){
-                //初始化im
-                let im = new IM();
-                im.setSocket(account.accountId);
-                im.initIMDatabase(account.accountId)
 
-                //初始化用户系统
-                let user = new User();
-                user.initIMDatabase(account.accountId);
-                //初始化IM
-                //..
-                Keyboard.dismiss();//关闭软键盘
-                //跳转到最近聊天列表
-                this.route.push(this.props,{
-                    key:'MainTabbar',
-                    routeId: 'MainTabbar'
-                });
-                //如果是android
-            }else{
-                //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
-                let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
-                let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/database/Account.db';
+			//登录api
+			this.fetchData("POST","/Member/Login",function(result){
 
-                RNFS.exists(ImDbPath).then((bool)=>{if(bool){
-                    RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                        RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
-                            //初始化im
-                            let im = new IM();
-                            im.setSocket(account.accountId);
-                            //初始化用户系统
-                            let user = new User();
-                            //初始化IM
-                            //..
-                            Keyboard.dismiss();//关闭软键盘
-                            //跳转到最近聊天列表
-                            this.route.push(this.props,{
-                                key:'MainTabbar',
-                                routeId: 'MainTabbar'
-                            });
-                        })
-                    })
-                }else{
+
+				//todo: 存储用户信息
+
+				console.log(result)
+
+				currentObj.setFetchAuthorization(result.Data["SessionToken"])
+
+				currentObj.fetchData("POST","/Member/GetContactList",function(result){
+
+                    console.log(result)
+
+                    //初始化用户系统
+                    let user = new User();
+
+                    //添加名单
+
+                    user.AddNewRelation(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"])
+
+
+                    //初始化IM
+
+
+				},{"Account": "wg003662"})
+
+
+                var userData = [];
+                var user = {};
+                user.userName = currentObj.state.phoneText;
+                user.passWord = currentObj.state.passWordText;
+                userData.push(user);
+                //登录中
+                currentObj.props.signDoing();
+                //服务器验证
+                //...
+                //验证通过
+                let account = { accountId:user.passWord,avatar:''};
+
+                //存储登录状态
+                AsyncStorage.setItem('accountId',account.accountId);
+                //修改loginStore登录状态
+                currentObj.props.signIn(account);
+                //如果是ios
+                if(Platform.OS === 'ios'){
                     //初始化im
                     let im = new IM();
                     im.setSocket(account.accountId);
@@ -135,16 +128,65 @@ class PhoneLogin extends ContainerComponent {
                     //..
                     Keyboard.dismiss();//关闭软键盘
                     //跳转到最近聊天列表
-                    this.route.push(this.props,{
+                    currentObj.route.push(currentObj.props,{
                         key:'MainTabbar',
                         routeId: 'MainTabbar'
                     });
-                }})
-			}
+                    //如果是android
+                }else{
+                    //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
+;
+                    let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
+                    let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/database/Account.db';
+
+                    RNFS.exists(ImDbPath).then((bool)=>{if(bool){
+                        RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
+                            RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
+                                //初始化im
+                                let im = new IM();
+                                im.setSocket(account.accountId);
+                                //初始化用户系统
+                                let user = new User();
+                                //初始化IM
+                                //..
+                                Keyboard.dismiss();//关闭软键盘
+                                //跳转到最近聊天列表
+                                this.route.push(this.props,{
+                                    key:'MainTabbar',
+                                    routeId: 'MainTabbar'
+                                });
+                            })
+                        })
+                    }else{
+                        //初始化im
+                        let im = new IM();
+                        im.setSocket(account.accountId);
+                        im.initIMDatabase(account.accountId)
+
+                        //初始化用户系统
+                        let user = new User();
+                        user.initIMDatabase(account.accountId);
+                        //初始化IM
+                        //..
+                        Keyboard.dismiss();//关闭软键盘
+                        //跳转到最近聊天列表
+                        currentObj.route.push(currentObj.props,{
+                            key:'MainTabbar',
+                            routeId: 'MainTabbar'
+                        });
+                    }})
+                }
 
 
-
-
+			},{
+                "Account": "wg003662",
+                "DeviceNumber": "1",
+                "DeviceType": "Mobile",
+                "Key": "wg003662",
+                "LoginIP": "192.168.1.103",
+                "Password": "w123456789",
+                "Session": "9a9b245c-f382-4db4-99cd-52805413a423"
+            })
 		}
 	}
 	
