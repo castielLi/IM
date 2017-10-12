@@ -49,6 +49,7 @@ class Me extends ContainerComponent {
     render() {
         return (
             <View style={styles.container}>
+                <Text>{"你的账户："+this.props.accountId}</Text>
                 <Text onPress={this.loginOut}>退出登录</Text>
             </View>
             )
