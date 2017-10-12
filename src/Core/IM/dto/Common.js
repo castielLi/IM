@@ -60,7 +60,7 @@ export function sqlMessageToMessage(sqliteMessage){
     messageData.Sender = sqliteMessage.send;
     messageData.Receiver = sqliteMessage.rec;
 
-    messageBody.LocalTime = new Date().getTime();
+    messageBody.LocalTime = sqliteMessage.time;
     messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
     messageBody.Data = messageData;
 
