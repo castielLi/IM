@@ -313,9 +313,144 @@ export default class IM {
         });
     }
 
+
     //IM logic添加message 到 SendManager发送队列中
     addSendMessageQueue(message){
         SendManager.addSendMessage(message)
+    }
+
+
+    //向resource队列中添加对象
+    addResourceQueue(object){
+
+        resourceQueue.push(object);
+        console.log("message 加入资源队列")
+    }
+
+    //执行resource队列
+    handleResourceQueue(obj){
+
+        if(resourceQueue.length > 0){
+
+            resourceQueueState = resourceQueueType.excuting;
+
+            let copyResourceQueue = Helper.cloneArray(resourceQueue);
+
+            //cloneArry 方法不能拷贝方法
+            for(let item in resourceQueue){
+                copyResourceQueue[item].onprogress = resourceQueue[item].onprogress;
+            }
+
+            resourceQueue = [];
+
+            for(let item in copyResourceQueue){
+                obj.uploadResource(copyResourceQueue[item]);
+            }
+            copyResourceQueue=[];
+
+            resourceQueueState = resourceQueueType.empty;
+
+        }
+    }
+
+    //执行upload函数体
+    uploadResource(obj){
+
+        let message = obj["message"];
+
+        let copyMessage = Object.assign({}, message);
+
+        let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
+        let callback = obj["callback"];
+
+        if(networkStatus == networkStatuesType.normal) {
+
+            //把资源存入数据库
+            for(let item in message.Resource){
+                storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
+            }
+
+
+            let uploadQueue = [];
+            for(let item in message.Resource) {
+
+                //整合audio下文件路径
+                let resource;
+                if(message.type == MessageType.audio){
+                   resource = message.Resource[item].LocalSource;//.split("_")[0] + ".aac";
+                }else{
+                    resource = message.Resource[item].LocalSource;
+                }
+
+                uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
+                    if(progressHandles != null) {
+                        let onprogess = progressHandles[index * 1];
+                        onprogess("第" + (index * 1 + 1) + "张图片上传进度：" + progress.loaded / progress.total * 100);
+                    }
+                },function (result) {
+                    console.log("上传成功" + result);
+                    message.Resource[item].RemoteSource = result.url;
+
+                    //pop上传成功的资源
+                    storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
+                },function(index){
+                    console.log("上传失败" + index);
+                }));
+            }
+
+            Promise.all(uploadQueue).then(function(values){
+                console.log(values + "已经上传成功了" + message.MSGID);
+
+                let copyMessage = Object.assign({}, message);
+
+                copyMessage.status = SendStatus.PrepareToSend;
+                currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+
+                currentObj.addMessageQueue(message);
+
+                //App上层修改message细节
+                AppMessageChangeStatusHandle(message);
+
+            }).catch(function (values) {
+                console.log('上传失败的内容是',values);
+            })
+        }else{
+            copyMessage.status = SendStatus.PrepareToSend;
+            this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+        }
+    }
+
+
+
+
+    //添加消息至消息队列
+    addMessageQueue(message){
+
+        sendMessageQueue.push(message);
+        console.log("message 加入发送队列",message)
+
+    }
+
+    //处理消息队列
+    handleSendMessageQueue(obj){
+        if(sendMessageQueue.length > 0){
+
+            sendMessageQueueState = sendMessageQueueType.excuting;
+            console.log(sendMessageQueueState);
+
+            let copyMessageQueue = Helper.cloneArray(sendMessageQueue);
+            sendMessageQueue = [];
+
+            for(let item in copyMessageQueue){
+                obj.sendMessage(copyMessageQueue[item],obj);
+
+                // sendMessageQueue.shift();
+            }
+            copyMessageQueue = [];
+
+            sendMessageQueueState = sendMessageQueueType.empty;
+            console.log(sendMessageQueueState);
+        }
     }
 
     //发送消息

@@ -15,14 +15,24 @@ import {
     checkDeviceHeight,
     checkDeviceWidth
 } from './check';
+import ContainerComponent from '../../../Core/Component/ContainerComponent';
 
-export default class Features extends Component {
+export default class Features extends ContainerComponent {
+    constructor(props){
+        super(props);
+        this.render = this.render.bind(this);
+        this.state = {
 
+        }
+    }
 	changeFeatureState = ()=>{
 		let newState = !this.props.showFeatures;
 		this.props.changeShowFeature(newState);
 	}
+    goToAddFriends = ()=>{
+        this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
 
+    }
 	render(){
 		return (
 			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} underlayColor='#00000000' onPress = {()=>{this.changeFeatureState()}}>
@@ -39,7 +49,7 @@ export default class Features extends Component {
 						<Text style = {styles.Text}>收付款</Text>
 					</View>
 				</TouchableOpacity>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToAddFriends();}}>
 					<View style = {styles.featureBox}>
 						<Image style={styles.logo} source = {require('../resource/addFriends.png')}></Image>
 						<Text style = {styles.Text}>添加朋友</Text>

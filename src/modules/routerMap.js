@@ -24,6 +24,12 @@ import Start from './Start/page'
 import RecentList from './RecentList/page/recentChat'
 import Contacts from './Contacts/page'
 import Zoom from './Zoom/page'
+import AddFriends from './AddFriends'
+import ClientInformation from './ClientInformation/page'
+import InformationSetting from './InformationSetting/page'
+import NewFriend from './NewFriend/page'
+import SearchNewFriend from './SearchNewFriend/page'
+import ChatSetting from './ChatSetting/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -67,7 +73,7 @@ export const RouteMap = {
             params: {}
         },
         'TabFour': {
-            component: RecentList,
+            component: AddFriends,
             params: {}
         }
     },
@@ -108,28 +114,67 @@ export const RouteMap = {
             component: ChatDetail,
             params: {}
         }
-    },'Camera': {
+    },
+    'Camera': {
         'Camera': {
             component: Camera,
             params: {}
         }
-    },'RecentList': {
+    },
+    'RecentList': {
         'RecentList': {
             component: RecentList,
             params: {}
         }
-    },'Contacts': {
+    },
+    'Contacts': {
         'Contacts': {
             component: Contacts,
             params: {}
         }
-    },'Zoom': {
+    },
+    'Zoom': {
         'Zoom': {
             component: Zoom,
             params: {}
         }
     },
-
+    'AddFriends':{
+        'AddFriends':{
+            component: AddFriends,
+            params: {}
+        }
+    },
+    'ClientInformation': {
+        'ClientInformation': {
+            component: ClientInformation,
+            params: {}
+        }
+    },
+    'InformationSetting': {
+        'InformationSetting': {
+            component: InformationSetting,
+            params: {}
+        }
+    },
+    'NewFriend': {
+        'NewFriend': {
+            component: NewFriend,
+            params: {}
+        }
+    },
+    'SearchNewFriend': {
+        'SearchNewFriend': {
+            component: SearchNewFriend,
+            params: {}
+        }
+    },
+    'ChatSetting': {
+        'ChatSetting': {
+            component: ChatSetting,
+            params: {}
+        }
+    },
 };
 
 

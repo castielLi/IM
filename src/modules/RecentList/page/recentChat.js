@@ -38,7 +38,7 @@ class RecentChat extends ContainerComponent {
 			sectionID: '',
 			rowID: '',
 			dataSource: ds,
-			showFeatures:false,//显示功能块组件 
+			showFeatures:false,//显示功能块组件
 			
 		};
 		this.goToChatDetail = this.goToChatDetail.bind(this);
@@ -74,12 +74,14 @@ class RecentChat extends ContainerComponent {
 			im.deleteChatRecode(rowData.Client);
 			//删除该与client的所以聊天记录
 			im.deleteCurrentChatMessage(rowData.Client,rowData.Type);
+
 		}
-		this.confirm('提示','删除后，将清空该聊天的消息记录',okButtonTitle="删除",oKCallback,cancelButtonTitle="取消",cancelCallback=undefined)	
+		this.confirm('提示','删除后，将清空该聊天的消息记录',okButtonTitle="删除",oKCallback,cancelButtonTitle="取消",cancelCallback=undefined);
+
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
-			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9',marginLeft:checkDeviceWidth(20)}}>
+			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
 				<Swipeout
 				right = {
 					[{
@@ -102,6 +104,7 @@ class RecentChat extends ContainerComponent {
             		rowID:rowID,
           			})
         		}}
+				autoClose={true}
 				>
 				<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 					<View style = {styles.ListContainer}>
@@ -156,7 +159,7 @@ class RecentChat extends ContainerComponent {
 				</View>
 				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
 				{
-					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
+					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
 				}
 				<PopContent ref={(p)=>{this.popup = p}}></PopContent>
 			</View>
@@ -189,6 +192,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		height: checkDeviceHeight(130),
 		backgroundColor: '#ffffff',
+        paddingLeft:checkDeviceWidth(20),
 	},
 	userLogo: {
 		height: checkDeviceHeight(130),

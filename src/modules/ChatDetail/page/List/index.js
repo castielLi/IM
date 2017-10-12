@@ -43,6 +43,7 @@ let ListLayout = false;
 
 
 let {width, height} = Dimensions.get('window');
+let firstOldMsg;
 
 class Chat extends Component {
     constructor(props){
@@ -107,8 +108,10 @@ class Chat extends Component {
 
     componentWillMount() {
         this.im = new IM()
-        // let {chatRecordStore} = this.props;
-        // let {isRefreshing} = this.state;
+
+
+        let chatRecordStore = this.props.chatRecordStore.concat();
+        let {isRefreshing} = this.state;
         // if(!chatRecordStore){
         //     return;
         // }
@@ -134,6 +137,40 @@ class Chat extends Component {
         //     dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
         //     isRefreshing,
         // });
+
+        if(!chatRecordStore.length){
+            return;
+        }
+        else if(!this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.firstLoad = ListConst.msgState.NOMORE;
+        }
+        else{
+            chatRecordStore.pop();
+        }
+
+        this.reduxData = chatRecordStore.concat().reverse()
+        this.shortData = this.historyData.concat(this.reduxData);
+        this.data = this.prepareMessages(this.shortData);
+
+        this.reduxData2 = chatRecordStore;
+        this.shortData2 =  this.reduxData2.concat(this.historyData2);
+        this.data2 = this.prepareMessages(this.shortData2);
+
+        if(this.firstLoad){
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+                isRefreshing:this.firstLoad,
+            },()=>{
+                this.firstLoad = null;
+            });
+        }
+        else{
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+            });
+        }
 
         this._gestureHandlers = {
             onStartShouldSetResponder: () => true,  //对触摸进行响应
@@ -214,7 +251,7 @@ class Chat extends Component {
         
         if(isSender == this.props.accountId){
             return(
-                <View style={styles.itemViewRight}>
+                <View style={styles.itemViewRight} key={rowid}>
                     <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
                     <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
                 </View>
@@ -222,7 +259,7 @@ class Chat extends Component {
         }
         else{
             return(
-                <View style={styles.itemView}>
+                <View style={styles.itemView} key={rowid}>
                     <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj3w0emfcbj20u011iabm.jpg'}} style={styles.userImage}/>
                     <ChatMessage style={styles.bubbleView} rowData={row}/>
                 </View>
@@ -242,10 +279,11 @@ class Chat extends Component {
         //console.log('oldMsg');
         //alert(this.props.client+this.state.isRefreshing)
         let {msgState} = ListConst;
-        if(!this.firstOldMsg){
-            return this.firstOldMsg = true;
+        if(!firstOldMsg){
+            return firstOldMsg = true;
         }
         if(this.state.isRefreshing === msgState.END){
+
             this.setState({
                 isRefreshing : msgState.LOADING
             })
@@ -315,7 +353,7 @@ class Chat extends Component {
     _onFooterLayout = (event) =>{
         const {showInvertible}=this.state
         if(!showInvertible) {
-            FooterLayout = event.nativeEvent.layout.y>_footerY;
+            //FooterLayout = event.nativeEvent.layout.y>_footerY;
             _footerY = event.nativeEvent.layout.y;
             this.scrollToBottom();
         }
@@ -323,9 +361,9 @@ class Chat extends Component {
 
     scrollToBottom=()=> {
         const {showInvertible}=this.state
-        if(FooterLayout === false &&ListLayout===false){
-            return;
-        }
+        // if(FooterLayout === false &&ListLayout===false){
+        //     return;
+        // }
         FooterLayout = false
         ListLayout=false
         if (_listHeight && _footerY && _footerY > _listHeight) {
@@ -351,7 +389,7 @@ class Chat extends Component {
             if(!_MaxListHeight){
                 _MaxListHeight = event.nativeEvent.layout.height;
             }
-            ListLayout = event.nativeEvent.layout.height!==_listHeight;
+            //ListLayout = event.nativeEvent.layout.height!==_listHeight;
             _listHeight = event.nativeEvent.layout.height;
             this.scrollToBottom();
         }else {
@@ -383,7 +421,7 @@ class Chat extends Component {
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                    <View style={styles.chatListView}>
+                    <View style={[styles.chatListView,{backgroundColor:'red'}]}>
                         <ListView
                             ref={(lv) => this.listView = lv}
                             dataSource={this.state.dataSource}
