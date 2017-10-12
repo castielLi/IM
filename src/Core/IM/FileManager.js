@@ -68,11 +68,11 @@ FileManager.uploadResource = function(obj){
 
             //整合audio下文件路径
             let resource;
-            if(message.type == MessageType.audio){
-                resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
-            }else{
+            // if(message.type == MessageType.audio){
+            //     resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
+            // }else{
                 resource = message.Resource[item].LocalSource;
-            }
+            // }
 
             uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
                 if(progressHandles != null) {
