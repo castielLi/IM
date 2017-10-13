@@ -11,6 +11,8 @@ import * as Actions from '../../Login/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 
+let currentObj = undefined;
+
 class Start extends ContainerComponent {
     constructor(){
         super()
@@ -19,31 +21,52 @@ class Start extends ContainerComponent {
             selectedTab: 'home',
             isLogged: false
         }
+        currentObj = this;
     }
 
 
     componentWillMount(){
+
+        //改成 toekn
+
         AsyncStorage.getItem('accountId')
             .then((value) => {
                 //已经登录
                 if(value){
-                    alert('你的账户:'+value)
-                    let im = new IM();
-                    im.setSocket(value);
-                    im.initIMDatabase(value)
+
+                    this.setFetchAuthorization("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2NvdW50Ijoid2cwMDM2NjIiLCJEZXZpY2VUeXBlIjoiTW9iaWxlIiwiZXhwIjoxNTA4NDg0MTk0LCJpYXQiOjE1MDc4NzkzOTR9.vftpqv5103wPB_3TKks07AxscrZiKOKKEYjiRc9i3W0")
+                    // this.setFetchAuthorization("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2NvdW50Ijoid2cwMDM2NjIiLCJEZXZpY2VUeXBlIjoiTW9iaWxlIiwiZXhwIjoxNTA4NDg0NzE1LCJpYXQiOjE1MDc4Nzk5MTV9.nfiBb1IDdrN_CxV9AER67JT9IeDF1ao6uC7WN-yr46M")
+                    this.fetchData("POST","/Member/LoginByToken",function(result){
+
+                        if(result.Data != null){
+
+                            alert('你的账户:'+value)
+                            let im = new IM();
+                            im.setSocket(value);
+                            im.initIMDatabase(value)
 
 
-                    let user = new User()
-                    user.initIMDatabase(value);
+                            let user = new User()
+                            user.initIMDatabase(value);
 
-                    this.props.signIn({ accountId:value,avatar:''})
-                    //切换至最近聊天列表
-                    this.route.push(this.props,{
-                        key:'MainTabbar',
-                        routeId: 'MainTabbar'
+                            currentObj.props.signIn({ accountId:value,avatar:''})
+                            //切换至最近聊天列表
+                            currentObj.route.push(currentObj.props,{
+                                key:'MainTabbar',
+                                routeId: 'MainTabbar'
+                            });
+
+                        }else{
+
+                            currentObj.route.push(currentObj.props,{
+                                key:'Login',
+                                routeId: 'Login'
+                            });
+                        }
+
+
                     });
 
-                    //未登录
                 }else{
                     //切换至登录页面
                     this.route.push(this.props,{
