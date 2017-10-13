@@ -89,10 +89,10 @@ class PhoneLogin extends ContainerComponent {
                 //服务器验证
                 //...
                 //验证通过
-                let account = { accountId:user.passWord,avatar:''};
+                let account = { accountId:user.passWord,SessionToken:result.Data["SessionToken"]};
 
                 //存储登录状态
-                AsyncStorage.setItem('accountId',account.accountId);
+                AsyncStorage.setItem('account',JSON.stringify(account));
                 //修改loginStore登录状态
                 currentObj.props.signIn(account);
                 //如果是ios
@@ -127,7 +127,7 @@ class PhoneLogin extends ContainerComponent {
                                 //..
                                 Keyboard.dismiss();//关闭软键盘
                                 //跳转到最近聊天列表
-                                this.route.push(this.props,{
+                                currentObj.route.push(currentObj.props,{
                                     key:'MainTabbar',
                                     routeId: 'MainTabbar'
                                 });

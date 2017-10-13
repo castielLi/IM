@@ -8,7 +8,7 @@ const initialState = {
     isLoggedIn : false,
     accountMessage:{
         accountId:'',
-        avatar:''
+        SessionToken:''
     }
 };
 
