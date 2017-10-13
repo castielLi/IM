@@ -33,8 +33,8 @@ export default class User {
     }
 
 
-    AddNewRelation(friendList,blackList,GroupList){
-
+    initRelations(friendList,blackList,GroupList,callback){
+        storeSqlite.initRelations(friendList,blackList,GroupList,callback);
     }
 
 

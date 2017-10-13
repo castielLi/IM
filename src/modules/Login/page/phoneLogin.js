@@ -71,31 +71,12 @@ class PhoneLogin extends ContainerComponent {
 
 
 			//登录api
+
+			this.showLoading();
 			this.fetchData("POST","/Member/Login",function(result){
-
-
 				//todo: 存储用户信息
-
 				console.log(result)
-
 				currentObj.setFetchAuthorization(result.Data["SessionToken"])
-
-				currentObj.fetchData("POST","/Member/GetContactList",function(result){
-
-                    console.log(result)
-
-                    //初始化用户系统
-                    let user = new User();
-
-                    //添加名单
-
-                    user.AddNewRelation(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"])
-
-
-                    //初始化IM
-
-
-				},{"Account": "wg003662"})
 
 
                 var userData = [];
@@ -127,15 +108,10 @@ class PhoneLogin extends ContainerComponent {
                     //初始化IM
                     //..
                     Keyboard.dismiss();//关闭软键盘
-                    //跳转到最近聊天列表
-                    currentObj.route.push(currentObj.props,{
-                        key:'MainTabbar',
-                        routeId: 'MainTabbar'
-                    });
                     //如果是android
                 }else{
                     //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
-;
+
                     let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
                     let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/database/Account.db';
 
@@ -169,13 +145,29 @@ class PhoneLogin extends ContainerComponent {
                         //初始化IM
                         //..
                         Keyboard.dismiss();//关闭软键盘
-                        //跳转到最近聊天列表
+                    }})
+                }
+
+
+                currentObj.fetchData("POST","/Member/GetContactList",function(result){
+
+                    console.log(result)
+
+                    //初始化用户系统
+                    let user = new User();
+
+                    //添加名单
+
+                    user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+
+                    	currentObj.hideLoading();
                         currentObj.route.push(currentObj.props,{
                             key:'MainTabbar',
                             routeId: 'MainTabbar'
                         });
-                    }})
-                }
+
+                    })
+                },{"Account": "wg003662"})
 
 
 			},{
@@ -191,8 +183,10 @@ class PhoneLogin extends ContainerComponent {
 	}
 	
 	render(){
-		return (
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
 
+		return (
 			<View style= {styles.container}>
 				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
 					key:'Login',
@@ -276,6 +270,8 @@ class PhoneLogin extends ContainerComponent {
 					cancelSend = {this.cancelSend}
 					></Confirm>:null
 				}
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 			</View>
 			
 		)

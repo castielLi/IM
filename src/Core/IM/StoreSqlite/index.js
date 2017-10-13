@@ -4,7 +4,7 @@
 import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
-import * as commonMethods from './formatQuerySql'
+import * as commonMethods from '../../Helper/formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
