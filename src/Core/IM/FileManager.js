@@ -130,10 +130,11 @@ FileManager.downloadResource = function(message,callback){
     let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
     toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
 
+    console.log('下载前=============================:  ',message,toFile)
 
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
-        message.Resource[0].LocalSource = 'file://' + toFile;
+        message.Resource[0].LocalSource = toFile;
         console.log('下载成功后=============================:  ',message)
         callback(message)
     }

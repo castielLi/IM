@@ -275,7 +275,7 @@ class ThouchBarBoxTopBox extends Component {
             isOnPressSpeakBox:true
           })
           this._onPressIn();
-        }, 
+        },
         //移动时作出的动作
         onResponderMove: (e)=>{
           if(e.nativeEvent.pageY<this.speakBoxOffsetY){
@@ -287,7 +287,7 @@ class ThouchBarBoxTopBox extends Component {
               recordingModalStatus: 0,
             })
           }
-        },  
+        },
         //动作释放后做的动作
         onResponderRelease: ()=>{
           this.setState({
@@ -297,8 +297,8 @@ class ThouchBarBoxTopBox extends Component {
             this._onPressOut();
           }else if(this.state.recordingModalStatus === 2){
             this._onPressCancel();
-          }      
-        }, 
+          }
+        },
 }
 
     //创建文件夹

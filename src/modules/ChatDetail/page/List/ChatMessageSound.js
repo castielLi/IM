@@ -81,7 +81,7 @@ export default class ChatMessageSound extends Component {
 
         return(
             <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.playSound(LocalSource || RemoteSource)}>
+                <TouchableOpacity onPress={()=>this.playSound(LocalSource)}>
                     <Text>{Time}"</Text>
                 </TouchableOpacity>
             </View>
