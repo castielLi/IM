@@ -156,6 +156,7 @@ class RecentChat extends ContainerComponent {
 						dataSource = {this.state.dataSource.cloneWithRows(this.props.recentListStore.data)}
 						renderRow = {this._renderRow}
 						enableEmptySections = {true}
+						removeClippedSubviews={false}
 					>
 					</ListView>
 				</View>
