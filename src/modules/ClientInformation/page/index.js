@@ -15,6 +15,11 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import User from '../../../Core/User'
+import Relation from '../../../Core/User/dto/RelationModel'
+import netWorking from '../../../Core/Networking/Network'
+import RNFS from 'react-native-fs'
+
 
 let {height,width} = Dimensions.get('window');
 
@@ -27,6 +32,46 @@ class ClientInformation extends ContainerComponent {
             isLogged: false
         }
     }
+
+    componentDidMount() {
+        let user = new User();
+        let _network = new netWorking();
+        let propsRelation = this.props.Relation;
+        let Relation = new Relation();
+        Relation.OtherComment = propsRelation.OtherComment;
+        Relation.RelationId = propsRelation.RelationId;
+        Relation.Nick = propsRelation.Nick;
+        Relation.Remark = propsRelation.Remark;
+        Relation.BlackList = propsRelation.BlackList;
+        Relation.avator = propsRelation.avator;
+        Relation.Email = propsRelation.Email;
+        Relation.LocalImage = propsRelation.LocalImage;
+        this.fetchData("POST","Member/GetFriendUserInfo",function(result){
+            console.log(result)
+            let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
+            if(Relation.Nick != Nickname || Relation.OtherComment != Gender || Relation.Email != Email){
+                Relation.Nick = Nickname;
+                Relation.OtherComment = Gender;
+                Relation.Email = Email;
+            }
+            updateImage = (result) => {
+                console.log('下载成功,对数据库进行更改')
+                RNFS.unlink(Relation.LocalImage).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+            };
+            if(Relation.avator != HeadImageUrl){
+                Relation.avator = HeadImageUrl;
+                toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${new Date().getTime()}${format}`;
+                _network.methodDownload(HeadImageUrl,toFile,updateImage)
+            }
+
+            user.updateRelation(Relation)
+
+        },{
+            "Account":Relation.RelationId
+        })
+    }
+
+
     //定义上导航的左按钮
     _leftButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>

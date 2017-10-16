@@ -49,6 +49,11 @@ export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
     USERFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
 }
 
+//修改关系
+export function updateRelation(Relation) {
+    USERFMDB.updateRelation(Relation);
+}
+
 
 export function closeAccountDb(){
     USERFMDB.closeAccountDb()

@@ -53,6 +53,11 @@ export default class User {
 
     }
 
+    //修改关系
+    updateRelation(Relation){
+        storeSqlite.updateRelation(Relation)
+    }
+
     //修改群备注
     updateGroupComment(RelationId,Comment){
 
