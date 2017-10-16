@@ -49,6 +49,10 @@ export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
     USERFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
 }
 
+//获取所有关系的头像和名字
+export function getAllRelationAvatorAndName(callback){
+    USERFMDB.GetAllRelationAvatorAndName(callback);
+}
 
 export function closeAccountDb(){
     USERFMDB.closeAccountDb()
@@ -243,6 +247,27 @@ USERFMDB.updateRelation =function(Relation){
         }, errorDB);
     }, errorDB);
 }
+
+//获取所有关系的头像和名字
+USERFMDB.GetAllRelationAvatorAndName = function(callback){
+   let sql = sqls.ExcuteIMSql.GetAllRelationAvatorAndName;
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
 
 // //修改群备注
 // USERFMDB.updateGroupComment = function(RelationId,Comment){

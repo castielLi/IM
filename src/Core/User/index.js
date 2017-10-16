@@ -59,6 +59,10 @@ export default class User {
     }
 
 
+    //获取所有关系的名字和头像
+    getAllRelationNameAndAvator(callback){
+       storeSqlite.getAllRelationAvatorAndName(callback);
+    }
 
     AddNewRelation(){
 
