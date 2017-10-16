@@ -36,7 +36,7 @@ class Me extends ContainerComponent {
             //删除Account.db
             RNFS.unlink('/data/data/com.im/databases/Account.db');
         }else{
-            RNFS.unlink(RNFS.DocumentDirectoryPath+"/"+AccountId+"/database/Account.db")
+            RNFS.unlink(RNFS.DocumentDirectoryPath+"/"+accountId+"/database/Account.db")
         }
 
         this.props.signOut();

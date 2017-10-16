@@ -91,7 +91,7 @@ class Contacts extends ContainerComponent {
 	}
 	goToChat = (item)=>{
 		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{...item}});
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{Relation:item}});
 
     }
 	_renderItem = (info) => {

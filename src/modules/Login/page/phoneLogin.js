@@ -14,6 +14,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
+import * as relationActions from '../../../Core/User/redux/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
@@ -142,11 +143,16 @@ class PhoneLogin extends ContainerComponent {
                     })
                 }
                 Keyboard.dismiss();//关闭软键盘
+				//创建avator文件夹
+				RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+account.accountId+"/image/avator",{NSURLIsExcludedFromBackupKey:true});
                 currentObj.fetchData("POST","/Member/GetContactList",function(result){
                     let user = new User();
                     //添加名单
                     user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
-
+						//初始化relationStore
+						user.getAllRelationNameAndAvator((relationData)=>{
+							this.props.initRelation(relationData);
+						})
                         currentObj.hideLoading();
                         currentObj.route.push(currentObj.props,{
                             key:'MainTabbar',
@@ -406,6 +412,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
-}};
+      ...bindActionCreators(relationActions, dispatch),
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

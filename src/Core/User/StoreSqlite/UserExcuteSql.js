@@ -20,5 +20,5 @@ export const ExcuteIMSql = {
     "UpdateRelationAvator":"update Relation set localImage = ? where RelationId = ?",
     "UpdateGroupComment":"update Relation set OtherComment = ? where RelationId =?",
     "UpdateRelation":"update Relation set OtherComment = ?,Nick=?,Remark=?,BlackList=?,avator=?,Email=?,localImage=? where RelationId=?",
-    "GetAllRelationAvatorAndName":"select RelationId,avator,Nick from Relation"
+    "GetAllRelationAvatorAndName":"select RelationId,avator,localImage,Nick from Relation"
 }
