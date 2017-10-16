@@ -53,6 +53,11 @@ export default class User {
 
     }
 
+    //修改群备注
+    updateGroupComment(RelationId,Comment){
+
+    }
+
 
 
     AddNewRelation(){

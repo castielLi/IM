@@ -17,5 +17,7 @@ export const ExcuteIMSql = {
     "InitRelations":"insert into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email) values(?,?,?,?,?,?,?,?,' ')",
     "SetBlackList":"update Relation set BlackList = ? where RelationId = ?",
     "DeleteRelation":"delete from Relation where RelationId = ?",
-    "UpdateRelationAvator":"update Relation set localImage = ? where RelationId = ?"
+    "UpdateRelationAvator":"update Relation set localImage = ? where RelationId = ?",
+    "UpdateGroupComment":"update Relation set OtherComment = ? where RelationId =?",
+    "UpdateRelation":"update Relation set OtherComment = ?,Nick=?,Remark=?,BlackList=?,avator=?,Email=?,localImage=? where RelationId=?"
 }
