@@ -7,6 +7,7 @@ import chatRecordStore from '../../Core/IM/redux/index';
 import recentListStore from '../../modules/RecentList/reducer';
 import unReadMessageStore from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
+import contactsStore from '../../modules/Contacts/reducer'
 export default combineReducers({
 	//登录状态
     loginStore,
@@ -21,5 +22,7 @@ export default combineReducers({
     //聊天页面状态
     chatDetailPageStore,
     //未读消息状态
-    unReadMessageStore
+    unReadMessageStore,
+    //联系人状态
+    contactsStore
 });

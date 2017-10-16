@@ -105,34 +105,27 @@ class PhoneLogin extends ContainerComponent {
                     //初始化用户系统
                     let user = new User();
                     user.initIMDatabase(account.accountId);
-                    //初始化IM
-                    //..
-                    Keyboard.dismiss();//关闭软键盘
+
+
                     //如果是android
                 }else{
-                    //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
+
 
                     let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
-                    let AccountDbPath = '/data/data/com.im/files/'+account.accountId+'/database/Account.db';
-
+					//文件夹判断是否是第一次登录
                     RNFS.exists(ImDbPath).then((bool)=>{if(bool){
+                    	//若不是
+                        //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
                         RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                            RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
                                 //初始化im
                                 let im = new IM();
                                 im.setSocket(account.accountId);
                                 //初始化用户系统
                                 let user = new User();
-                                //初始化IM
-                                //..
-                                Keyboard.dismiss();//关闭软键盘
-                                //跳转到最近聊天列表
-                                currentObj.route.push(currentObj.props,{
-                                    key:'MainTabbar',
-                                    routeId: 'MainTabbar'
-                                });
-                            })
+
+
                         })
+						//若是第一次登陆
                     }else{
                         //初始化im
                         let im = new IM();
@@ -142,25 +135,19 @@ class PhoneLogin extends ContainerComponent {
                         //初始化用户系统
                         let user = new User();
                         user.initIMDatabase(account.accountId);
-                        //初始化IM
-                        //..
-                        Keyboard.dismiss();//关闭软键盘
-                    }})
+
+
+                    }
+
+                    })
                 }
-
-
+                Keyboard.dismiss();//关闭软键盘
                 currentObj.fetchData("POST","/Member/GetContactList",function(result){
-
-                    console.log(result)
-
-                    //初始化用户系统
                     let user = new User();
-
                     //添加名单
-
                     user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
 
-                    	currentObj.hideLoading();
+                        currentObj.hideLoading();
                         currentObj.route.push(currentObj.props,{
                             key:'MainTabbar',
                             routeId: 'MainTabbar'
@@ -170,14 +157,15 @@ class PhoneLogin extends ContainerComponent {
                 },{"Account": "wg003662"})
 
 
+
 			},{
                 "Account": "wg003662",
                 "DeviceNumber": "1",
                 "DeviceType": "Mobile",
                 "Key": "wg003662",
-                "LoginIP": "192.168.1.103",
+                "LoginIP": "192.168.0.103",
                 "Password": "w123456789",
-                "Session": "9a9b245c-f382-4db4-99cd-52805413a423"
+                "Session": "fe89f150-23f8-42f9-b239-bfdde6e8a2ae"
             })
 		}
 	}

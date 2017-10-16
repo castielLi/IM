@@ -19,90 +19,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../RecentList/reducer/action';
+import * as contactsActions from '../reducer/action';
+import User from '../../../Core/User';
 import NavigationBar from 'react-native-navbar';
+import {initSection} from './formateData';
 var {height, width} = Dimensions.get('window');
-var originData = [
-		{
-			'title':'A',
-			'client': [{
-					'name': "1",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "阿玛尼",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "爱多多",
-					'type':"private",
-					'pic':''
-				}]
-			},
-			{
-			'title':'B',
-			'client': [{
-					'name': "2",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				}]
-			},
-			{
-			'title':'C',
-			'client': [{
-					'name': "草料",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				}]
-			}
-	]
+
 class Contacts extends ContainerComponent {
 
 	constructor(props) {
@@ -119,24 +41,7 @@ class Contacts extends ContainerComponent {
 		}
 
 	}
-	formateData =(originData)=>{
-		var clientInfos = [];
-		var clientSections = [];
-		let totalItemLength = 0;
-		originData.forEach((v,i)=>{
-			let obj = {};
-			obj.key = v.title;
-			obj.data = v.client;
-			totalItemLength+=v.client.length;
-			clientInfos.push(obj);
-			clientSections.push(v.title); 
-		})
-		this.setState({
-			data:clientInfos,
-			totalItemLength,
-			sections:clientSections
-		})
-	}
+
 	onPressRightSectionItemIn = (index) =>{
 		this.refs.mySectionList.scrollToLocation({
 		animated : true,
@@ -155,8 +60,9 @@ class Contacts extends ContainerComponent {
 		})
 	}
 	_getSections = ()=>{
+		let sections = initSection(this.props.friendList)
         let array = new Array();
-        for (let i = 0; i < this.state.sections.length; i++) {
+        for (let i = 0; i < sections.length; i++) {
             array.push(
                 <View key={i}>
                 	<TouchableWithoutFeedback
@@ -166,28 +72,33 @@ class Contacts extends ContainerComponent {
 		                 
 		                 ref={'sectionItem' + i}>
 	                    <View style={styles.rightSectionView}>
-		                    <Text style={styles.rightSectionItem}>{this.state.sections[i]}</Text>                 
+		                    <Text style={styles.rightSectionItem}>{sections[i]}</Text>
 	                    </View>
 	                </TouchableWithoutFeedback>
-	                {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{this.state.sections[i]}</Text>:null}                
+	                {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
                 </View>)
         }
         return array;
     }
 
 	componentWillMount(){
-		this.formateData(originData);
+		//读取account.db数据
+		let user = new User();
+        user.getAllRelation((data)=>{
+            this.props.initFriendList(data);
+		})
+
 	}
 	goToChat = (item)=>{
 		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{client:item.name,type:item.type}});
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{...item}});
 
     }
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.name;
+		var txt = '  ' + info.item.Nick;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
 					<View  style={styles.itemBox} >
-						<Image source={require('../resource/other.jpg')} style={styles.pic} ></Image>
+						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -254,7 +165,7 @@ class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.state.totalItemLength+'位联系人'}</Text></View>
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.props.friendList.length+'位联系人'}</Text></View>
 	}
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
@@ -285,7 +196,7 @@ class Contacts extends ContainerComponent {
 			      keyExtractor={(item,index)=>("index"+index+item)}
 			      renderSectionHeader={this._sectionComp}
 			      renderItem={this._renderItem}
-			      sections={this.state.data}
+			      sections={this.props.friendList}
 			      ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
 				  ListFooterComponent = {this._renderFooter}
@@ -397,12 +308,14 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    //accountId:state.loginStore.accountMessage.accountId
+	friendList: state.contactsStore.FriendList
 });
 
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(recentListActions, dispatch),
-}};
+      ...bindActionCreators(contactsActions, dispatch),
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Contacts);

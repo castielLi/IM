@@ -26,10 +26,8 @@ export default class User {
         });
     }
 
-    getAllRelation(){
-        return storeSqlite.GetRelationList(function(relations){
-
-        })
+    getAllRelation(callback){
+        return storeSqlite.GetRelationList(callback)
     }
 
 

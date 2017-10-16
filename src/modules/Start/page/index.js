@@ -38,10 +38,9 @@ class Start extends ContainerComponent {
                     this.setFetchAuthorization(account.SessionToken)
                     // this.setFetchAuthorization("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2NvdW50Ijoid2cwMDM2NjIiLCJEZXZpY2VUeXBlIjoiTW9iaWxlIiwiZXhwIjoxNTA4NDg0NzE1LCJpYXQiOjE1MDc4Nzk5MTV9.nfiBb1IDdrN_CxV9AER67JT9IeDF1ao6uC7WN-yr46M")
                     this.fetchData("POST","/Member/LoginByToken",function(result){
-
                         if(result.Data != null){
-
-                            alert('你的账户:'+account.accountId)
+                            //缓存token
+                            AsyncStorage.setItem('account',JSON.stringify({ accountId:account.accountId,SessionToken:result.Data["SessionToken"]}));
                             let im = new IM();
                             im.setSocket(account.accountId);
                             im.initIMDatabase(account.accountId)
