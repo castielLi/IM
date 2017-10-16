@@ -26,10 +26,8 @@ export default class User {
         });
     }
 
-    getAllRelation(){
-        return storeSqlite.GetRelationList(function(relations){
-
-        })
+    getAllRelation(callback){
+        return storeSqlite.GetRelationList(callback)
     }
 
 
@@ -64,6 +62,10 @@ export default class User {
     }
 
 
+    //获取所有关系的名字和头像
+    getAllRelationNameAndAvator(callback){
+       storeSqlite.getAllRelationAvatorAndName(callback);
+    }
 
     AddNewRelation(){
 

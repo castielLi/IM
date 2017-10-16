@@ -29,29 +29,27 @@ class Start extends ContainerComponent {
 
         //改成 toekn
 
-        AsyncStorage.getItem('accountId')
+        AsyncStorage.getItem('account')
             .then((value) => {
+                let account = JSON.parse(value);
                 //已经登录
-                if(value){
+                if(account){
 
-                    this.setFetchAuthorization("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2NvdW50Ijoid2cwMDM2NjIiLCJEZXZpY2VUeXBlIjoiTW9iaWxlIiwiZXhwIjoxNTA4NDg0MTk0LCJpYXQiOjE1MDc4NzkzOTR9.vftpqv5103wPB_3TKks07AxscrZiKOKKEYjiRc9i3W0")
+                    this.setFetchAuthorization(account.SessionToken)
                     // this.setFetchAuthorization("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2NvdW50Ijoid2cwMDM2NjIiLCJEZXZpY2VUeXBlIjoiTW9iaWxlIiwiZXhwIjoxNTA4NDg0NzE1LCJpYXQiOjE1MDc4Nzk5MTV9.nfiBb1IDdrN_CxV9AER67JT9IeDF1ao6uC7WN-yr46M")
                     this.fetchData("POST","/Member/LoginByToken",function(result){
-
                         if(result.Data != null){
-
-                            // currentObj.setFetchAuthorization(result.Data["SessionToken"])
-
-                            alert('你的账户:'+value)
+                            //缓存token
+                            AsyncStorage.setItem('account',JSON.stringify({ accountId:account.accountId,SessionToken:result.Data["SessionToken"]}));
                             let im = new IM();
-                            im.setSocket(value);
-                            im.initIMDatabase(value)
+                            im.setSocket(account.accountId);
+                            im.initIMDatabase(account.accountId)
 
 
                             let user = new User()
-                            user.initIMDatabase(value);
+                            user.initIMDatabase(account.accountId);
 
-                            currentObj.props.signIn({ accountId:value,avatar:''})
+                            currentObj.props.signIn(account)
                             //切换至最近聊天列表
                             currentObj.route.push(currentObj.props,{
                                 key:'MainTabbar',

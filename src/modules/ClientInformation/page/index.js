@@ -46,6 +46,7 @@ class ClientInformation extends ContainerComponent {
         Relation.avator = propsRelation.avator;
         Relation.Email = propsRelation.Email;
         Relation.LocalImage = propsRelation.LocalImage;
+        console.log(Relation)
         this.fetchData("POST","Member/GetFriendUserInfo",function(result){
             console.log(result)
             let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
@@ -60,7 +61,7 @@ class ClientInformation extends ContainerComponent {
             };
             if(Relation.avator != HeadImageUrl){
                 Relation.avator = HeadImageUrl;
-                toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${new Date().getTime()}${format}`;
+                toFile = `${RNFS.DocumentDirectoryPath}/${ME}/image/${new Date().getTime()}${format}`;
                 _network.methodDownload(HeadImageUrl,toFile,updateImage)
             }
 
@@ -91,7 +92,7 @@ class ClientInformation extends ContainerComponent {
         }
     }
     goToInformationSetting= ()=>{
-        this.route.push(this.props,{key:'InformationSetting',routeId:'InformationSetting',params:{client:this.props.client,type:this.props.type}});
+        this.route.push(this.props,{key:'InformationSetting',routeId:'InformationSetting',params:{client:this.props.RelationId,type:this.props.Type}});
     }
 
     _rightButton() {
@@ -101,7 +102,7 @@ class ClientInformation extends ContainerComponent {
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.props.client,type:this.props.type}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.props.RelationId,type:this.props.Type}});
     }
     render() {
         return (
@@ -113,10 +114,10 @@ class ClientInformation extends ContainerComponent {
                     title={this._title()} />
                 <View>
                     <View style={styles.basicBox}>
-                        <Image style={styles.headPic} source={require('../resource/other.jpg')}></Image>
+                        <Image style={styles.headPic} source={{uri:this.props.avator}}></Image>
                         <View style={styles.basicBoxRight}>
-                            <Text style={styles.name}>{this.props.client}</Text>
-                            <Text style={styles.id}>{'微信号：'+this.props.client}</Text>
+                            <Text style={styles.name}>{this.props.Nick}</Text>
+                            <Text style={styles.id}>{'微信号：'+this.props.RelationId}</Text>
                         </View>
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>

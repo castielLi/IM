@@ -54,6 +54,10 @@ export function updateRelation(Relation) {
     USERFMDB.updateRelation(Relation);
 }
 
+//获取所有关系的头像和名字
+export function getAllRelationAvatorAndName(callback){
+    USERFMDB.GetAllRelationAvatorAndName(callback);
+}
 
 export function closeAccountDb(){
     USERFMDB.closeAccountDb()
@@ -109,6 +113,13 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         let sql = sqls.ExcuteIMSql.InitRelations;
 
         let friend = friendList[item];
+
+        //判断是否当前好友同样在黑名单中
+        for(let i in blackList) {
+            if(blackList[i].Account == friend.Account){
+                continue;
+            }
+        }
 
         sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",false,"private",friend.HeadImageUrl,friend.Email]);
         relationsSqls.push(sql);
@@ -248,6 +259,27 @@ USERFMDB.updateRelation =function(Relation){
         }, errorDB);
     }, errorDB);
 }
+
+//获取所有关系的头像和名字
+USERFMDB.GetAllRelationAvatorAndName = function(callback){
+   let sql = sqls.ExcuteIMSql.GetAllRelationAvatorAndName;
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
 
 // //修改群备注
 // USERFMDB.updateGroupComment = function(RelationId,Comment){

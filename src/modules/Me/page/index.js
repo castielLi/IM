@@ -30,12 +30,14 @@ class Me extends ContainerComponent {
 
 
     loginOut = ()=>{
-        AsyncStorage.setItem('accountId','');
+        AsyncStorage.setItem('account','');
         if(Platform.OS === 'android'){
-            RNFS.moveFile('/data/data/com.im/databases/Account.db','/data/data/com.im/files/'+this.props.accountId+'/database/Account.db');
             RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/database/IM.db');
+            //删除Account.db
+            RNFS.unlink('/data/data/com.im/databases/Account.db');
+        }else{
+            RNFS.unlink(RNFS.DocumentDirectoryPath+"/"+AccountId+"/database/Account.db")
         }
-
 
         this.props.signOut();
         this.props.clearChatRecord();
