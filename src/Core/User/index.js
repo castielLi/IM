@@ -31,10 +31,36 @@ export default class User {
     }
 
 
+    //初始化好友列表
     initRelations(friendList,blackList,GroupList,callback){
         storeSqlite.initRelations(friendList,blackList,GroupList,callback);
     }
 
+    //更改好友黑名单设置
+    changeRelationBlackList(isBlackList,RelationId){
+       storeSqlite.changeRelationBliackList(isBlackList,RelationId);
+    }
+
+    //删除好友或者退出群组
+    deleteRelation(Relation){
+       storeSqlite.deleteRelation(Relation)
+    }
+
+    //更新关系头像
+    updateAvator(RelationId,localImagePath,avatorUrl){
+
+    }
+
+    //修改群备注
+    updateGroupComment(RelationId,Comment){
+
+    }
+
+
+    //获取所有关系的名字和头像
+    getAllRelationNameAndAvator(callback){
+       storeSqlite.getAllRelationAvatorAndName(callback);
+    }
 
     AddNewRelation(){
 

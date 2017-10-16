@@ -28,11 +28,31 @@ export function initIMDatabase(AccountId,callback){
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
-
+//初始化好友列表
 export function initRelations(friendList,blackList,GroupList,callback){
     USERFMDB.InitRelations(friendList,blackList,GroupList,callback)
 }
 
+//更改好友黑名单设置
+export function changeRelationBliackList(isBlackList,RelationId){
+    USERFMDB.UpdateBlackListByRelation(isBlackList,RelationId)
+}
+
+
+//删除关系
+export function deleteRelation(Relation){
+    USERFMDB.DeleteRelation(Relation)
+}
+
+//更新关系头像
+export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
+    USERFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
+}
+
+//获取所有关系的头像和名字
+export function getAllRelationAvatorAndName(callback){
+    USERFMDB.GetAllRelationAvatorAndName(callback);
+}
 
 export function closeAccountDb(){
     USERFMDB.closeAccountDb()
@@ -57,6 +77,7 @@ USERFMDB.initIMDataBase = function(){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
+//获取好友列表
 USERFMDB.GetRelationList = function(callback){
 
     var db = SQLite.openDatabase({
@@ -75,6 +96,7 @@ USERFMDB.GetRelationList = function(callback){
     }, errorDB);
 }
 
+//初始化好友列表
 USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
     let relationsSqls = [];
@@ -132,6 +154,144 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         }, errorDB);
     }, errorDB);
 }
+
+//拉入或移除黑名单
+USERFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
+    let updateSql = sqls.ExcuteIMSql.SetBlackList;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[isBlackList,RelationId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("修改黑名单关系成功")
+
+            }, errorDB);
+
+
+
+        }, errorDB);
+    }, errorDB);
+
+}
+
+//删除关系
+USERFMDB.DeleteRelation = function(Relation){
+    let deleteSql = sqls.ExcuteIMSql.DeleteRelation;
+
+    deleteSql = commonMethods.sqlFormat(deleteSql,[Relation.RelationId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(deleteSql, [], (tx, results) => {
+
+                console.log("删除关系成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+//更新关系头像
+USERFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
+
+    let updateSql = sqls.ExcuteIMSql.UpdateRelationAvator;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[AvatorUrl,LocalImage,RelationId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("更新头像成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+
+//修改关系
+USERFMDB.updateRelation =function(Relation){
+    let updateSql = sqls.ExcuteIMSql.UpdateRelation;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.avator,Relation.Email,Relation.LocalImage])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("更新关系成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+//获取所有关系的头像和名字
+USERFMDB.GetAllRelationAvatorAndName = function(callback){
+   let sql = sqls.ExcuteIMSql.GetAllRelationAvatorAndName;
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+
+// //修改群备注
+// USERFMDB.updateGroupComment = function(RelationId,Comment){
+//     let updateSql = sqls.ExcuteIMSql.UpdateGroupComment;
+//
+//     updateSql = commonMethods.sqlFormat(updateSql,[Comment,RelationId])
+//
+//     var db = SQLite.openDatabase({
+//         ...databaseObj
+//     }, () => {
+//
+//         db.transaction((tx) => {
+//
+//             tx.executeSql(updateSql, [], (tx, results) => {
+//
+//                 console.log("修改群信息成功")
+//
+//             }, errorDB);
+//
+//         }, errorDB);
+//     }, errorDB);
+// }
+
+
 
 USERFMDB.closeAccountDb = function(){
      var db = SQLite.openDatabase({
