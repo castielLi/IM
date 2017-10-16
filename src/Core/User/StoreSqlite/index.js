@@ -201,7 +201,72 @@ USERFMDB.DeleteRelation = function(Relation){
 //更新关系头像
 USERFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
 
+    let updateSql = sqls.ExcuteIMSql.UpdateRelationAvator;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[AvatorUrl,LocalImage,RelationId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("更新头像成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
 }
+
+
+//修改关系
+USERFMDB.updateRelation =function(Relation){
+    let updateSql = sqls.ExcuteIMSql.UpdateRelation;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.avator,Relation.Email,Relation.LocalImage])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("更新关系成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+// //修改群备注
+// USERFMDB.updateGroupComment = function(RelationId,Comment){
+//     let updateSql = sqls.ExcuteIMSql.UpdateGroupComment;
+//
+//     updateSql = commonMethods.sqlFormat(updateSql,[Comment,RelationId])
+//
+//     var db = SQLite.openDatabase({
+//         ...databaseObj
+//     }, () => {
+//
+//         db.transaction((tx) => {
+//
+//             tx.executeSql(updateSql, [], (tx, results) => {
+//
+//                 console.log("修改群信息成功")
+//
+//             }, errorDB);
+//
+//         }, errorDB);
+//     }, errorDB);
+// }
+
+
 
 USERFMDB.closeAccountDb = function(){
      var db = SQLite.openDatabase({
