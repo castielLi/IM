@@ -40,6 +40,8 @@ class Start extends ContainerComponent {
 
                         if(result.Data != null){
 
+                            // currentObj.setFetchAuthorization(result.Data["SessionToken"])
+
                             alert('你的账户:'+value)
                             let im = new IM();
                             im.setSocket(value);

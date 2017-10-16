@@ -28,9 +28,25 @@ export function initIMDatabase(AccountId,callback){
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
-
+//初始化好友列表
 export function initRelations(friendList,blackList,GroupList,callback){
     USERFMDB.InitRelations(friendList,blackList,GroupList,callback)
+}
+
+//更改好友黑名单设置
+export function changeRelationBliackList(isBlackList,RelationId){
+    USERFMDB.UpdateBlackListByRelation(isBlackList,RelationId)
+}
+
+
+//删除关系
+export function deleteRelation(Relation){
+    USERFMDB.DeleteRelation(Relation)
+}
+
+//更新关系头像
+export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
+    USERFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
 }
 
 
@@ -57,6 +73,7 @@ USERFMDB.initIMDataBase = function(){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
+//获取好友列表
 USERFMDB.GetRelationList = function(callback){
 
     var db = SQLite.openDatabase({
@@ -75,6 +92,7 @@ USERFMDB.GetRelationList = function(callback){
     }, errorDB);
 }
 
+//初始化好友列表
 USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
     let relationsSqls = [];
@@ -131,6 +149,58 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
         }, errorDB);
     }, errorDB);
+}
+
+//拉入或移除黑名单
+USERFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
+    let updateSql = sqls.ExcuteIMSql.SetBlackList;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[isBlackList,RelationId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("修改黑名单关系成功")
+
+            }, errorDB);
+
+
+
+        }, errorDB);
+    }, errorDB);
+
+}
+
+//删除关系
+USERFMDB.DeleteRelation = function(Relation){
+    let deleteSql = sqls.ExcuteIMSql.DeleteRelation;
+
+    deleteSql = commonMethods.sqlFormat(deleteSql,[Relation.RelationId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(deleteSql, [], (tx, results) => {
+
+                console.log("删除关系成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+//更新关系头像
+USERFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
+
 }
 
 USERFMDB.closeAccountDb = function(){
