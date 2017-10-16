@@ -109,6 +109,13 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
         let friend = friendList[item];
 
+        //判断是否当前好友同样在黑名单中
+        for(let i in blackList) {
+            if(blackList[i].Account == friend.Account){
+                continue;
+            }
+        }
+
         sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",false,"private",friend.HeadImageUrl,friend.Email]);
         relationsSqls.push(sql);
     }
