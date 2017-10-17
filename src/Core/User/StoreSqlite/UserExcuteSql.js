@@ -14,11 +14,11 @@ export const InitIMTable = {
 export const ExcuteIMSql = {
 
     "GetAllRelation":"select * from Relation",
-    "InitRelations":"insert into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email) values(?,?,?,?,?,?,?,?,' ')",
+    "InitRelations":"insert into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage) values(?,?,?,?,?,?,?,?,' ')",
     "SetBlackList":"update Relation set BlackList = ? where RelationId = ?",
     "DeleteRelation":"delete from Relation where RelationId = ?",
     "UpdateRelationAvator":"update Relation set localImage = ? where RelationId = ?",
     "UpdateGroupComment":"update Relation set OtherComment = ? where RelationId =?",
     "UpdateRelation":"update Relation set OtherComment = ?,Nick=?,Remark=?,BlackList=?,avator=?,Email=?,localImage=? where RelationId=?",
-    "GetAllRelationAvatorAndName":"select RelationId,avator,Nick from Relation"
+    "GetAllRelationAvatorAndName":"select RelationId,avator,LocalImage,Nick from Relation"
 }
