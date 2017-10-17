@@ -14,8 +14,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
-import * as relationActions from '../../../Core/User/redux/action';
-import * as contactsActions from '../../Contacts/reducer/action';
+import * as relationActions from '../../Contacts/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
@@ -171,11 +170,7 @@ class PhoneLogin extends ContainerComponent {
 
                                user.getAllRelation((data)=>{
                                    //初始化联系人store
-                                   currentObj.props.initFriendList(data);
-                               })
-                               user.getAllRelationNameAndAvator((relationData)=>{
-                                   //初始化联系人store
-                                   currentObj.props.initRelation(relationData);
+                                   currentObj.props.initRelation(data);
                                    currentObj.hideLoading();
                                    currentObj.route.push(currentObj.props,{
                                        key:'MainTabbar',
@@ -443,7 +438,6 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
-      ...bindActionCreators(contactsActions, dispatch),
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

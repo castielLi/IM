@@ -125,6 +125,13 @@ class Route {
         props.navigator.pop();
     }
 
+    static popToSpecialRoute(props,specialRoute){
+
+        InteractionManager.runAfterInteractions(() => {
+            props.navigator.jumpTo(specialRoute)
+        })
+    }
+
     static toLogin() {
 
     }

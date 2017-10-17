@@ -141,7 +141,7 @@ class RecentChat extends ContainerComponent {
 			//清空recentListStore中对应记录
 			this.props.deleteRecentItem(rowID);
 			//如果该row上有未读消息，减少unReadMessageStore记录
-			this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
+            rowData.unReadMessageCount&&this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
 			//清空chatRecordStore中对应记录
 			this.props.initChatRecord(rowData.Client,[])
 			//删除ChatRecode表中记录
@@ -154,13 +154,19 @@ class RecentChat extends ContainerComponent {
 
 	}
 	_renderAvator= (oneRealationObj)=>{
-		if(oneRealationObj.localImage&&oneRealationObj.localImage!==' '){
-			return 	<Image style = {styles.avatar} source = {require('../resource/user_5.png')}></Image>
+			if(oneRealationObj){
+                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!==' ')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
 
-        }else{
-			return 	<Image style = {styles.avatar} source = {{uri:oneRealationObj.avator}}></Image>
-
-        }
+            }else{
+				return null
+			}
+	}
+    formateRelationDataMethod = (arr) =>{
+		let obj = {};
+		arr.forEach((v,i)=>{
+			obj[v.RelationId] = v;
+		})
+		return obj
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
@@ -192,11 +198,11 @@ class RecentChat extends ContainerComponent {
 				<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 					<View style = {styles.ListContainer}>
 						<View style = {styles.userLogo}>
-							{this._renderAvator(this.props.relationStore[rowData.Client])}
+							{this._renderAvator(this.formateRelationData[rowData.Client])}
 						</View>
 						<View style = {styles.ChatContent}>
 							<View style = {styles.Message}>
-								<Text style = {styles.NickName}>{rowData.Client}</Text>
+								<Text style = {styles.NickName}>{this.formateRelationData[rowData.Client]?this.formateRelationData[rowData.Client].Nick:''}</Text>
 								<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 							</View>
 							<View style = {styles.userTime}>
@@ -223,6 +229,7 @@ class RecentChat extends ContainerComponent {
 		)
 	}
 	render() {
+		this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
