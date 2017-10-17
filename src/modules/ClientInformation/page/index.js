@@ -37,38 +37,39 @@ class ClientInformation extends ContainerComponent {
         let user = new User();
         let _network = new netWorking();
         let propsRelation = this.props.Relation;
-        let Relation = new Relation();
-        Relation.OtherComment = propsRelation.OtherComment;
-        Relation.RelationId = propsRelation.RelationId;
-        Relation.Nick = propsRelation.Nick;
-        Relation.Remark = propsRelation.Remark;
-        Relation.BlackList = propsRelation.BlackList;
-        Relation.avator = propsRelation.avator;
-        Relation.Email = propsRelation.Email;
-        Relation.LocalImage = propsRelation.LocalImage;
-        console.log(Relation)
+        let _Relation = new Relation();
+        _Relation.OtherComment = propsRelation.OtherComment;
+        _Relation.RelationId = propsRelation.RelationId;
+        _Relation.Nick = propsRelation.Nick;
+        _Relation.Remark = propsRelation.Remark;
+        _Relation.BlackList = propsRelation.BlackList;
+        _Relation.avator = propsRelation.avator;
+        _Relation.Email = propsRelation.Email;
+        _Relation.type = propsRelation.Type;
+        _Relation.LocalImage = propsRelation.LocalImage;
+        console.log(_Relation)
         this.fetchData("POST","Member/GetFriendUserInfo",function(result){
             console.log(result)
             let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
-            if(Relation.Nick != Nickname || Relation.OtherComment != Gender || Relation.Email != Email){
-                Relation.Nick = Nickname;
-                Relation.OtherComment = Gender;
-                Relation.Email = Email;
+            if(_Relation.Nick != Nickname || _Relation.OtherComment != Gender || _Relation.Email != Email){
+                _Relation.Nick = Nickname;
+                _Relation.OtherComment = Gender;
+                _Relation.Email = Email;
             }
             updateImage = (result) => {
                 console.log('下载成功,对数据库进行更改')
-                RNFS.unlink(Relation.LocalImage).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+                RNFS.unlink(_Relation.LocalImage).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
             };
-            if(Relation.avator != HeadImageUrl){
-                Relation.avator = HeadImageUrl;
+            if(_Relation.avator != HeadImageUrl){
+                _Relation.avator = HeadImageUrl;
                 toFile = `${RNFS.DocumentDirectoryPath}/${ME}/image/${new Date().getTime()}${format}`;
                 _network.methodDownload(HeadImageUrl,toFile,updateImage)
             }
 
-            user.updateRelation(Relation)
+            user.updateRelation(_Relation)
 
         },{
-            "Account":Relation.RelationId
+            "Account":_Relation.RelationId
         })
     }
 
