@@ -22,7 +22,7 @@ import * as recentListActions from '../../RecentList/reducer/action';
 import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import NavigationBar from 'react-native-navbar';
-import {initSection} from './formateData';
+import {initSection,initDataFormate} from './formateData';
 var {height, width} = Dimensions.get('window');
 
 class Contacts extends ContainerComponent {
@@ -185,6 +185,7 @@ class Contacts extends ContainerComponent {
 		}
 	}
 	render() {
+		let friendList = initDataFormate(this.props.friendList);
 		return (
 			<View style={styles.container}>
 				<NavigationBar
@@ -196,7 +197,7 @@ class Contacts extends ContainerComponent {
 			      keyExtractor={(item,index)=>("index"+index+item)}
 			      renderSectionHeader={this._sectionComp}
 			      renderItem={this._renderItem}
-			      sections={this.props.friendList}
+			      sections={friendList}
 			      ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
 				  ListFooterComponent = {this._renderFooter}

@@ -15,6 +15,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import * as relationActions from '../../../Core/User/redux/action';
+import * as contactsActions from '../../Contacts/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
@@ -164,7 +165,13 @@ class PhoneLogin extends ContainerComponent {
                        currentObj.fetchData("POST","/Member/GetContactList",function(result){
                            //添加名单
                            user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+
+                               user.getAllRelation((data)=>{
+                                   //初始化联系人store
+                                   this.props.initFriendList(data);
+                               })
                                user.getAllRelationNameAndAvator((relationData)=>{
+                                   //初始化联系人store
                                    currentObj.props.initRelation(relationData);
                                    currentObj.hideLoading();
                                    currentObj.route.push(currentObj.props,{
@@ -433,7 +440,7 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
-
+      ...bindActionCreators(contactsActions, dispatch),
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

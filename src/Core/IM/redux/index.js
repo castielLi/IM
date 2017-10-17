@@ -55,8 +55,10 @@ export default function chatRecordStore(state = initialState, action) {
             };
 
         case 'ADD_MESSAGE':
-            //若超过50条，删除最旧的一条消息
-            if(state.ChatRecord[action.client]){
+                //若超过50条，删除最旧的一条消息
+                if(state.ChatRecord[action.client]===undefined){
+                    state.ChatRecord[action.client] = []
+                }
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
                 }
@@ -66,13 +68,13 @@ export default function chatRecordStore(state = initialState, action) {
                  return {
                     ...state,
                 };
-            }else{
-                return state;
-            }
+
         
         case 'RECEIVE_MESSAGE':
             //若超过50条，删除最旧的一条消息
-            if(state.ChatRecord[action.client]){
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = []
+            }
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
                 }
@@ -82,12 +84,12 @@ export default function chatRecordStore(state = initialState, action) {
                  return {
                     ...state
                 };
-            }else{
-                return state;
-            }
+
              
         case 'UPDATE_MESSAGES_STATUS':
-            if(state.ChatRecord[action.client]){
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = []
+            }
                 state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
                     if(itemArr.message.MSGID === action.MSGID){
                         itemArr.status = action.status;
@@ -98,13 +100,13 @@ export default function chatRecordStore(state = initialState, action) {
                 return {
                     ...state
                 };
-            }else{
-                return state;
-            }
+
 
 
         case 'UPDATE_MESSAGES':
-            if(state.ChatRecord[action.client]){
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = []
+            }
                 state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
                     if(itemArr.message.MSGID === action.MSGID){
                         itemArr.message = action.message;
@@ -113,9 +115,7 @@ export default function chatRecordStore(state = initialState, action) {
                 return {
                     ...state
                 };
-            }else{
-                return state;
-            }
+
 
         //注销清空store
         case 'CLEAR_CHATRECORD':
