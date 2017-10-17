@@ -141,7 +141,7 @@ class RecentChat extends ContainerComponent {
 			//清空recentListStore中对应记录
 			this.props.deleteRecentItem(rowID);
 			//如果该row上有未读消息，减少unReadMessageStore记录
-			this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
+            rowData.unReadMessageCount&&this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
 			//清空chatRecordStore中对应记录
 			this.props.initChatRecord(rowData.Client,[])
 			//删除ChatRecode表中记录
@@ -202,7 +202,7 @@ class RecentChat extends ContainerComponent {
 						</View>
 						<View style = {styles.ChatContent}>
 							<View style = {styles.Message}>
-								<Text style = {styles.NickName}>{rowData.Client}</Text>
+								<Text style = {styles.NickName}>{this.formateRelationData[rowData.Client]?this.formateRelationData[rowData.Client].Nick:''}</Text>
 								<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 							</View>
 							<View style = {styles.userTime}>

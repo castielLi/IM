@@ -8,4 +8,11 @@ export function initRelation(relationData){
     };
 
 }
+//从relationStore中删除指定好友
+export function deleteRelation(relationId){
+    return {
+        type: 'DELETE_RELATION',
+        relationId
+    };
 
+}

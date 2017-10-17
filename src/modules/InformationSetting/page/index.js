@@ -17,7 +17,14 @@ import {connect} from 'react-redux';
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
+import * as relationActions from '../../Contacts/reducer/action';
+import * as recentListActions from '../../RecentList/reducer/action';
+import * as chatRecordActions from '../../../Core/IM/redux/action';
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
+import {bindActionCreators} from 'redux';
+import IM from '../../../Core/IM';
 
+let im = new IM();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -73,6 +80,7 @@ class InformationSetting extends ContainerComponent {
 
 
     handlePress(i){
+        let {client,type,accountId} = this.props;
         //删除好友
         if(1 == i){
             this.fetchData("POST","Member/DeleteFriend",function(result){
@@ -82,6 +90,24 @@ class InformationSetting extends ContainerComponent {
                   if(result.Data){
 
                       //todo： 添加更改rudex 好友列表和消息列表
+                      currentObj.props.deleteRelation(client);
+                      //清空chatRecordStore中对应记录
+                      currentObj.props.initChatRecord(client,[])
+                      //删除ChatRecode表中记录
+                      im.deleteChatRecode(client);
+                      //删除该与client的所以聊天记录
+                      im.deleteCurrentChatMessage(client,type);
+                      //如果该client在最近聊天中有记录
+                      currentObj.props.recentListStore.data.forEach((v,i)=>{
+                          if(v.Client === client){
+                              //清空recentListStore中对应记录
+                              currentObj.props.deleteRecentItem(i);
+                              //如果该row上有未读消息，减少unReadMessageStore记录
+                              v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+                          }
+                      })
+
+
 
                       let pages = currentObj.props.navigator.getCurrentRoutes();
 
@@ -95,7 +121,7 @@ class InformationSetting extends ContainerComponent {
                   }
 
 
-            },{"Applicant":this.props.accountId,"Friend":this.props.client})
+            },{"Applicant":accountId,"Friend":client})
         }
     }
 
@@ -222,11 +248,15 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId
+    accountId:state.loginStore.accountMessage.accountId,
+    recentListStore:state.recentListStore,
 });
 
 const mapDispatchToProps = dispatch => ({
-
+    ...bindActionCreators(relationActions, dispatch),
+    ...bindActionCreators(recentListActions, dispatch),
+    ...bindActionCreators(chatRecordActions, dispatch),
+    ...bindActionCreators(unReadMessageActions, dispatch),
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(InformationSetting);
