@@ -1,6 +1,6 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform}from 'react-native';
-import {checkDeviceHeight,checkDeviceWidth} from './check';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
@@ -106,10 +106,6 @@ class PhoneLogin extends ContainerComponent {
                         let im = new IM();
                         im.setSocket(account.accountId);
                         im.initIMDatabase(account.accountId)
-
-
-
-
                         //如果是android
                     }else{
 
@@ -136,16 +132,30 @@ class PhoneLogin extends ContainerComponent {
                         })
                     }
                     //删除Account.db
+
+					let AccountPath = "";
+
                     if(Platform.OS === 'android'){
                         //删除Account.db
-                        RNFS.unlink('/data/data/com.im/databases/Account.db').then(()=>{
-                            dealCommon();
-						});
+                        AccountPath = '/data/data/com.im/databases/Account.db';
                     }else{
-                        RNFS.unlink(RNFS.DocumentDirectoryPath+"/"+this.props.accountId+"/database/Account.db").then(()=>{
-                            dealCommon();
-						})
+
+                        AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
                     }
+
+                    RNFS.exists(AccountPath).then((exist)=>{
+                    	if(exist){
+
+                            RNFS.unlink(AccountPath).then(()=>{
+                                dealCommon();
+                            });
+						}else{
+                            dealCommon();
+                    	}
+                    })
+
+
+
                    function dealCommon(){
                        //初始化用户系统
                        let user = new User();
@@ -168,8 +178,6 @@ class PhoneLogin extends ContainerComponent {
                            })
                        },{"Account": currentObj.state.phoneText})
 				   }
-
-
 
                 },{
                     "Account": currentObj.state.phoneText,
