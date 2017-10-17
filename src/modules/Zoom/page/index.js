@@ -52,6 +52,51 @@ var originData = [
 			},			
 	]
 
+
+let styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f2f2f2"
+    },
+    sction:{
+        height:30
+    },
+    itemBox:{
+        height:50,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff'
+    },
+    itemLeftBox:{
+        height:40,
+        flexDirection:'row',
+        alignItems:'center',
+
+    },
+    pic:{
+        width:30,
+        height:30,
+        resizeMode:'stretch',
+        marginRight:15
+    },
+    itemText:{
+        fontSize:20,
+        color:'#000',
+        textAlignVertical:'center'
+    },
+    ItemSeparator:{
+        height:1,
+        backgroundColor: '#eee',
+    },
+    arrow:{
+        fontSize:20,
+        color:'#aaa'
+    },
+});
+
+
 export default class Zoom extends ContainerComponent {
 	constructor(props) {
 		super(props);
@@ -59,6 +104,10 @@ export default class Zoom extends ContainerComponent {
 			showFeatures:false,//显示功能块组件 
 			
 		};
+	}
+
+	componentWillMount(){
+        styles = super.componentWillMount(styles)
 	}
 
 	changeShowFeature=(newState)=>{
@@ -118,63 +167,6 @@ export default class Zoom extends ContainerComponent {
 	}
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#f2f2f2"
-	},
-	headerTitle: {
-		color: '#ffffff',
-		fontSize: checkDeviceHeight(36),
-		marginLeft: checkDeviceWidth(20),
-		textAlignVertical:'center',
-	},
-	RightLogo: {
-		marginRight:checkDeviceWidth(40),
-		flexDirection: 'row',
-		alignItems:'center',
-	},
-	headerLogo: {
-		height: checkDeviceWidth(40),
-		width: checkDeviceHeight(40),
-		resizeMode: 'stretch',
-	},
-	sction:{
-		height:30
-	},
-    itemBox:{
-		height:50,
-		flexDirection:'row',
-		paddingHorizontal:15,
-		alignItems:'center',
-		justifyContent:'space-between',
-        backgroundColor:'#fff'
-	},
-    itemLeftBox:{
-		height:40,
-		flexDirection:'row',
-		alignItems:'center',
 
-	},
-	pic:{
-		width:30,
-		height:30,
-		resizeMode:'stretch',
-		marginRight:15
-	},
-	itemText:{
-		fontSize:20,
-		color:'#000',
-		textAlignVertical:'center'
-	},
-	ItemSeparator:{
-		height:1,
-		backgroundColor: '#eee', 
-	},
-    arrow:{
-        fontSize:20,
-        color:'#aaa'
-    },
-});
 
 
