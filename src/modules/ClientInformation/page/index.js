@@ -15,6 +15,11 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import User from '../../../Core/User'
+import Relation from '../../../Core/User/dto/RelationModel'
+import netWorking from '../../../Core/Networking/Network'
+import RNFS from 'react-native-fs'
+
 
 let {height,width} = Dimensions.get('window');
 
@@ -27,6 +32,58 @@ class ClientInformation extends ContainerComponent {
             isLogged: false
         }
     }
+
+    componentDidMount() {
+        let {accountId} = this.props.loginStore;
+        let user = new User();
+        let _network = new netWorking();
+        let propsRelation = this.props.Relation;
+        let _Relation = new Relation();
+        _Relation.OtherComment = propsRelation.OtherComment;
+        _Relation.RelationId = propsRelation.RelationId;
+        _Relation.Nick = propsRelation.Nick;
+        _Relation.Remark = propsRelation.Remark;
+        _Relation.BlackList = propsRelation.BlackList;
+        _Relation.avator = propsRelation.avator;
+        _Relation.Email = propsRelation.Email;
+        _Relation.type = propsRelation.Type;
+        _Relation.LocalImage = propsRelation.LocalImage;
+        console.log(_Relation)
+        this.fetchData("POST","Member/GetFriendUserInfo",function(result){
+            let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
+            let isUpdate;
+            let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
+            let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
+
+            if(_Relation.Nick != Nickname || _Relation.OtherComment != Gender || _Relation.Email != Email){
+                _Relation.Nick = Nickname;
+                _Relation.OtherComment = Gender;
+                _Relation.Email = Email;
+                isUpdate = true;
+            }
+            updateImage = (result) => {
+                console.log('下载成功,对数据库进行更改')
+                //LocalImage = toFile;
+                if(propsRelation.LocalImage){
+                    RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+                }
+            };
+            if(_Relation.avator == HeadImageUrl){
+                _Relation.avator = HeadImageUrl;
+                isUpdate = true;
+                _network.methodDownload(HeadImageUrl,toFile,updateImage)
+            }
+
+            if(isUpdate){
+                user.updateRelation(_Relation)
+            }
+
+        },{
+            "Account":_Relation.RelationId
+        })
+    }
+
+
     //定义上导航的左按钮
     _leftButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
@@ -231,7 +288,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    
+    loginStore : state.loginStore.accountMessage,
 });
 
 const mapDispatchToProps = dispatch => ({

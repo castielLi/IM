@@ -50,6 +50,11 @@ export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
     USERFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
 }
 
+//修改关系
+export function updateRelation(Relation) {
+    USERFMDB.updateRelation(Relation);
+}
+
 //获取所有关系的头像和名字
 export function getAllRelationAvatorAndName(callback){
     USERFMDB.GetAllRelationAvatorAndName(callback);
