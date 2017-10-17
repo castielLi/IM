@@ -17,6 +17,7 @@ import * as Actions from '../reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
+import UUIDGenerator from 'react-native-uuid-generator';
 
 
 let currentObj = undefined;
@@ -28,7 +29,7 @@ class PhoneLogin extends ContainerComponent {
 	}
 	constructor(props) {
 	  super(props);
-	
+
 	  this.state = {
 	  	phoneText:'',//账号框的内容
 		passWordText:'',//密码框的内容
@@ -67,66 +68,44 @@ class PhoneLogin extends ContainerComponent {
 
 
 	addUser = ()=>{
-		if(checkReg(1,this.state.phoneText)){
+		// if(checkReg(1,this.state.phoneText)){
 
 
 			//登录api
 
-			this.showLoading();
-			this.fetchData("POST","/Member/Login",function(result){
-				//todo: 存储用户信息
-				console.log(result)
-				currentObj.setFetchAuthorization(result.Data["SessionToken"])
+            UUIDGenerator.getRandomUUID().then((uuid) => {
+
+                currentObj.showLoading();
+                currentObj.fetchData("POST","/Member/Login",function(result){
+                    //todo: 存储用户信息
+                    console.log(result)
+
+                    if(result.Data == null){
+                        alert("登录出错");
+                        return;
+                    }
+
+                    currentObj.setFetchAuthorization(result.Data["SessionToken"])
 
 
-                var userData = [];
-                var user = {};
-                user.userName = currentObj.state.phoneText;
-                user.passWord = currentObj.state.passWordText;
-                userData.push(user);
-                //登录中
-                currentObj.props.signDoing();
-                //服务器验证
-                //...
-                //验证通过
-                let account = { accountId:user.passWord,SessionToken:result.Data["SessionToken"]};
+                    var userData = [];
+                    var user = {};
+                    user.userName = currentObj.state.phoneText;
+                    user.passWord = currentObj.state.passWordText;
+                    userData.push(user);
+                    //登录中
+                    currentObj.props.signDoing();
+                    //服务器验证
+                    //...
+                    //验证通过
+                    let account = { accountId:user.userName,SessionToken:result.Data["SessionToken"]};
 
-                //存储登录状态
-                AsyncStorage.setItem('account',JSON.stringify(account));
-                //修改loginStore登录状态
-                currentObj.props.signIn(account);
-                //如果是ios
-                if(Platform.OS === 'ios'){
-                    //初始化im
-                    let im = new IM();
-                    im.setSocket(account.accountId);
-                    im.initIMDatabase(account.accountId)
-
-                    //初始化用户系统
-                    let user = new User();
-                    user.initIMDatabase(account.accountId);
-
-
-                    //如果是android
-                }else{
-
-
-                    let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
-					//文件夹判断是否是第一次登录
-                    RNFS.exists(ImDbPath).then((bool)=>{if(bool){
-                    	//若不是
-                        //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
-                        RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                                //初始化im
-                                let im = new IM();
-                                im.setSocket(account.accountId);
-                                //初始化用户系统
-                                let user = new User();
-
-
-                        })
-						//若是第一次登陆
-                    }else{
+                    //存储登录状态
+                    AsyncStorage.setItem('account',JSON.stringify(account));
+                    //修改loginStore登录状态
+                    currentObj.props.signIn(account);
+                    //如果是ios
+                    if(Platform.OS === 'ios'){
                         //初始化im
                         let im = new IM();
                         im.setSocket(account.accountId);
@@ -137,39 +116,72 @@ class PhoneLogin extends ContainerComponent {
                         user.initIMDatabase(account.accountId);
 
 
+                        //如果是android
+                    }else{
+
+
+                        let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
+                        //文件夹判断是否是第一次登录
+                        RNFS.exists(ImDbPath).then((bool)=>{if(bool){
+                            //若不是
+                            //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
+                            RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
+                                //初始化im
+                                let im = new IM();
+                                im.setSocket(account.accountId);
+                                //初始化用户系统
+                                let user = new User();
+
+
+                            })
+                            //若是第一次登陆
+                        }else{
+                            //初始化im
+                            let im = new IM();
+                            im.setSocket(account.accountId);
+                            im.initIMDatabase(account.accountId)
+
+                            //初始化用户系统
+                            let user = new User();
+                            user.initIMDatabase(account.accountId);
+
+
+                        }
+
+                        })
                     }
+                    Keyboard.dismiss();//关闭软键盘
+                    currentObj.fetchData("POST","/Member/GetContactList",function(result){
+                        let user = new User();
+                        //添加名单
+                        user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
 
-                    })
-                }
-                Keyboard.dismiss();//关闭软键盘
-                currentObj.fetchData("POST","/Member/GetContactList",function(result){
-                    let user = new User();
-                    //添加名单
-                    user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+                            currentObj.hideLoading();
+                            currentObj.route.push(currentObj.props,{
+                                key:'MainTabbar',
+                                routeId: 'MainTabbar'
+                            });
 
-                        currentObj.hideLoading();
-                        currentObj.route.push(currentObj.props,{
-                            key:'MainTabbar',
-                            routeId: 'MainTabbar'
-                        });
-
-                    })
-                },{"Account": "wg003662"})
+                        })
+                    },{"Account": currentObj.state.phoneText})
 
 
 
-			},{
-                "Account": "wg003662",
-                "DeviceNumber": "1",
-                "DeviceType": "Mobile",
-                "Key": "wg003662",
-                "LoginIP": "192.168.0.103",
-                "Password": "w123456789",
-                "Session": "fe89f150-23f8-42f9-b239-bfdde6e8a2ae"
-            })
-		}
+                },{
+                    "Account": currentObj.state.phoneText,
+                    "DeviceNumber": "1",
+                    "DeviceType": "Mobile",
+                    "Key": currentObj.state.phoneText,
+                    "LoginIP": "192.168.0.103",
+                    "Password": currentObj.state.passWordText,
+                    "Session": uuid
+                })
+
+
+			});
+		// }
 	}
-	
+
 	render(){
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -183,7 +195,7 @@ class PhoneLogin extends ContainerComponent {
 				});}}>
 				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
-					<Text style= {styles.loginTitle}>使用手机号登录</Text>	
+					<Text style= {styles.loginTitle}>使用手机号登录</Text>
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
 						<View style = {styles.area}>
 							<Text style = {styles.areaTitle}>国家/地区</Text>
@@ -199,12 +211,13 @@ class PhoneLogin extends ContainerComponent {
 						<TextInput
 						style = {styles.textInput}
 						maxLength = {11}
-						placeholderTextColor = '#cecece' 
-						placeholder = '请输入手机号码' 
+						placeholderTextColor = '#cecece'
+						// placeholder = '请输入手机号码'
+						placeholder = 'wg003662'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						></TextInput>
-						
+
 					</View>
 					<View style = {styles.inputBox}>
 						<View style={styles.imageBox}>
@@ -213,14 +226,15 @@ class PhoneLogin extends ContainerComponent {
 									<Image style = {[styles.loginImage,{width:checkDeviceWidth(35)}]} source = {require('../resource/password.png')}></Image>
 								):(<Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/code.png')}></Image>)
 							}
-						</View>	
+						</View>
 						<TextInput
 						ref = {(c)=>{this._textInput = c}}
 						maxLength = {16}
-						style = {[styles.textInput,{marginLeft:-10,}]} 
-						placeholderTextColor = '#cecece' 
-						secureTextEntry = {true} 
-						placeholder = '请输入密码' 
+						style = {[styles.textInput,{marginLeft:-10,}]}
+						placeholderTextColor = '#cecece'
+						secureTextEntry = {true}
+						// placeholder = '请输入密码'
+						placeholder = 'w123456789'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
 						></TextInput>
@@ -253,7 +267,7 @@ class PhoneLogin extends ContainerComponent {
 				</View>
 				{
 					this.state.showConfirm?
-					<Confirm 
+					<Confirm
 					phoneText = {this.state.phoneText}
 					cancelSend = {this.cancelSend}
 					></Confirm>:null
@@ -261,11 +275,11 @@ class PhoneLogin extends ContainerComponent {
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
 			</View>
-			
+
 		)
 	}
 
-} 
+}
 
 function mapStateToProps(store) {
 	return {
@@ -400,7 +414,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    
+
 });
 
 const mapDispatchToProps = (dispatch) => {
