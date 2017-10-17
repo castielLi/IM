@@ -14,7 +14,12 @@ export function initDataFormate(arr){
                 }
             }
             if(exist === false){
-                needArr.push({'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
+                if(needArr[needArr.length-1].key<=firstLetter){
+                    needArr.push({'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
+
+                }else{
+                    needArr.splice(needArr.length-2,0,{'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
+                }
             }
         }
 

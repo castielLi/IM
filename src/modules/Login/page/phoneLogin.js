@@ -135,26 +135,39 @@ class PhoneLogin extends ContainerComponent {
 
                         })
                     }
-                    //初始化用户系统
-                    let user = new User();
-                    user.initIMDatabase(account.accountId);
-                    Keyboard.dismiss();//关闭软键盘
-                    currentObj.fetchData("POST","/Member/GetContactList",function(result){
-                        //添加名单
-                        user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
-                        	user.getAllRelationNameAndAvator((relationData)=>{
-                                currentObj.props.initRelation(relationData);
-                                currentObj.hideLoading();
-                                currentObj.route.push(currentObj.props,{
-                                    key:'MainTabbar',
-                                    routeId: 'MainTabbar'
-                                });
-							})
+                    //删除Account.db
+                    if(Platform.OS === 'android'){
+                        //删除Account.db
+                        RNFS.unlink('/data/data/com.im/databases/Account.db').then(()=>{
+                            dealCommon();
+						});
+                    }else{
+                        RNFS.unlink(RNFS.DocumentDirectoryPath+"/"+this.props.accountId+"/database/Account.db").then(()=>{
+                            dealCommon();
+						})
+                    }
+                   function dealCommon(){
+                       //初始化用户系统
+                       let user = new User();
+                       user.initIMDatabase(account.accountId);
+                       Keyboard.dismiss();//关闭软键盘
+                       currentObj.fetchData("POST","/Member/GetContactList",function(result){
+                           //添加名单
+                           user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+                               user.getAllRelationNameAndAvator((relationData)=>{
+                                   currentObj.props.initRelation(relationData);
+                                   currentObj.hideLoading();
+                                   currentObj.route.push(currentObj.props,{
+                                       key:'MainTabbar',
+                                       routeId: 'MainTabbar'
+                                   });
+                               })
 
 
 
-                        })
-                    },{"Account": currentObj.state.phoneText})
+                           })
+                       },{"Account": currentObj.state.phoneText})
+				   }
 
 
 
