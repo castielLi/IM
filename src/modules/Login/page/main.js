@@ -2,7 +2,7 @@ import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions}from 'react-native';
 import Login from './phoneLogin';
 import Register from './register';
-import {checkDeviceHeight,checkDeviceWidth} from './check';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';

@@ -22,7 +22,7 @@ import * as recentListActions from '../../RecentList/reducer/action';
 import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import NavigationBar from 'react-native-navbar';
-import {initSection} from './formateData';
+import {initSection,initDataFormate} from './formateData';
 var {height, width} = Dimensions.get('window');
 
 class Contacts extends ContainerComponent {
@@ -39,7 +39,7 @@ class Contacts extends ContainerComponent {
 			//右边title导航
 			rightSectionItemModalIndex:''
 		}
-
+        this.friendList = []
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -60,35 +60,31 @@ class Contacts extends ContainerComponent {
 		})
 	}
 	_getSections = ()=>{
-		let sections = initSection(this.props.friendList)
-        let array = new Array();
-        for (let i = 0; i < sections.length; i++) {
-            array.push(
-                <View key={i}>
-                	<TouchableWithoutFeedback
-	                	 onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
-	                	 onPressOut={this.onPressRightSectionItemOut}
-	                	 //pointerEvents="none"
-		                 
-		                 ref={'sectionItem' + i}>
-	                    <View style={styles.rightSectionView}>
-		                    <Text style={styles.rightSectionItem}>{sections[i]}</Text>
-	                    </View>
-	                </TouchableWithoutFeedback>
-	                {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
-                </View>)
-        }
-        return array;
+		if(this.friendList.length === 0){
+			return null
+		}else{
+            let sections = initSection(this.friendList)
+            let array = new Array();
+            for (let i = 0; i < sections.length; i++) {
+                array.push(
+					<View key={i}>
+						<TouchableWithoutFeedback
+							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
+							onPressOut={this.onPressRightSectionItemOut}
+							//pointerEvents="none"
+
+							ref={'sectionItem' + i}>
+							<View style={styles.rightSectionView}>
+								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
+							</View>
+						</TouchableWithoutFeedback>
+                        {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
+					</View>)
+            }
+            return array;
+		}
     }
 
-	componentWillMount(){
-		//读取account.db数据
-		let user = new User();
-        user.getAllRelation((data)=>{
-            this.props.initFriendList(data);
-		})
-
-	}
 	goToChat = (item)=>{
 		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
         this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{Relation:item}});
@@ -165,7 +161,7 @@ class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.props.friendList.length+'位联系人'}</Text></View>
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.friendList.length+'位联系人'}</Text></View>
 	}
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
@@ -185,6 +181,7 @@ class Contacts extends ContainerComponent {
 		}
 	}
 	render() {
+		this.friendList = initDataFormate('private',this.props.friendList);
 		return (
 			<View style={styles.container}>
 				<NavigationBar
@@ -196,7 +193,7 @@ class Contacts extends ContainerComponent {
 			      keyExtractor={(item,index)=>("index"+index+item)}
 			      renderSectionHeader={this._sectionComp}
 			      renderItem={this._renderItem}
-			      sections={this.props.friendList}
+			      sections={this.friendList}
 			      ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
 				  ListFooterComponent = {this._renderFooter}

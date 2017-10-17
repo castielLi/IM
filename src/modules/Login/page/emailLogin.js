@@ -1,6 +1,6 @@
 import React,{Component}from 'react';
 import {ScrollView,View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,KeyboardAvoidingView}from 'react-native';
-import {checkDeviceHeight,checkDeviceWidth} from './check';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import Main from './main';
 import checkReg from './regExp';
 import findPassword from './findPassword';

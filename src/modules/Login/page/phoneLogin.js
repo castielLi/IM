@@ -1,6 +1,6 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform}from 'react-native';
-import {checkDeviceHeight,checkDeviceWidth} from './check';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
@@ -15,6 +15,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import * as relationActions from '../../../Core/User/redux/action';
+import * as contactsActions from '../../Contacts/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
@@ -106,10 +107,6 @@ class PhoneLogin extends ContainerComponent {
                         let im = new IM();
                         im.setSocket(account.accountId);
                         im.initIMDatabase(account.accountId)
-
-
-
-
                         //如果是android
                     }else{
 
@@ -135,28 +132,62 @@ class PhoneLogin extends ContainerComponent {
 
                         })
                     }
-                    //初始化用户系统
-                    let user = new User();
-                    user.initIMDatabase(account.accountId);
-                    Keyboard.dismiss();//关闭软键盘
-                    currentObj.fetchData("POST","/Member/GetContactList",function(result){
-                        //添加名单
-                        user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
-                        	user.getAllRelationNameAndAvator((relationData)=>{
-                                currentObj.props.initRelation(relationData);
-                                currentObj.hideLoading();
-                                currentObj.route.push(currentObj.props,{
-                                    key:'MainTabbar',
-                                    routeId: 'MainTabbar'
-                                });
-							})
+                    //创建文件夹
+                    let avatorPath = RNFS.DocumentDirectoryPath + '/' +account.accountId+'/image/avator';
+                    RNFS.mkdir(avatorPath);
+                    //删除Account.db
+
+					let AccountPath = "";
+
+                    if(Platform.OS === 'android'){
+                        //删除Account.db
+                        AccountPath = '/data/data/com.im/databases/Account.db';
+                    }else{
+
+                        AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
+                    }
+
+                    RNFS.exists(AccountPath).then((exist)=>{
+                    	if(exist){
+
+                            RNFS.unlink(AccountPath).then(()=>{
+                                dealCommon();
+                            });
+						}else{
+                            dealCommon();
+                    	}
+                    })
 
 
 
-                        })
-                    },{"Account": currentObj.state.phoneText})
+                   function dealCommon(){
+                       //初始化用户系统
+                       let user = new User();
+                       user.initIMDatabase(account.accountId);
+                       Keyboard.dismiss();//关闭软键盘
+                       currentObj.fetchData("POST","/Member/GetContactList",function(result){
+                           //添加名单
+                           user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+
+                               user.getAllRelation((data)=>{
+                                   //初始化联系人store
+                                   currentObj.props.initFriendList(data);
+                               })
+                               user.getAllRelationNameAndAvator((relationData)=>{
+                                   //初始化联系人store
+                                   currentObj.props.initRelation(relationData);
+                                   currentObj.hideLoading();
+                                   currentObj.route.push(currentObj.props,{
+                                       key:'MainTabbar',
+                                       routeId: 'MainTabbar'
+                                   });
+                               })
 
 
+
+                           })
+                       },{"Account": currentObj.state.phoneText})
+				   }
 
                 },{
                     "Account": currentObj.state.phoneText,
@@ -412,7 +443,7 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
-
+      ...bindActionCreators(contactsActions, dispatch),
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

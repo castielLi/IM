@@ -32,7 +32,7 @@ class NewFriend extends ContainerComponent {
 
                     <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
 
-                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
+                    <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
             </View>
         </TouchableOpacity>
     }

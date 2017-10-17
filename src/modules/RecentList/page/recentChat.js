@@ -27,6 +27,75 @@ import {
 import IM from '../../../Core/IM';
 import NavigationBar from 'react-native-navbar';
 let im = new IM();
+
+let styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f2f2f2"
+    },
+    ListContainer: {
+        flexDirection: 'row',
+        height: checkDeviceHeight(130),
+        backgroundColor: '#ffffff',
+        paddingLeft:checkDeviceWidth(20),
+    },
+    userLogo: {
+        height: checkDeviceHeight(130),
+        width: checkDeviceWidth(125),
+        justifyContent: 'center',
+    },
+    avatar: {
+        height: checkDeviceHeight(105),
+        width: checkDeviceHeight(105),
+        borderRadius: checkDeviceHeight(50),
+        resizeMode: 'stretch',
+    },
+    ChatContent: {
+        flex: 1,
+        height: checkDeviceHeight(130),
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+    },
+    Message: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    NickName: {
+        fontSize: checkDeviceHeight(34),
+        color: '#373737',
+        lineHeight: checkDeviceHeight(34),
+        marginBottom: checkDeviceHeight(20),
+    },
+    ChatMessage: {
+        fontSize: checkDeviceHeight(30),
+        lineHeight: checkDeviceHeight(35),
+        color: '#999999',
+    },
+    userTime: {
+        height: checkDeviceHeight(130),
+        width: checkDeviceWidth(110),
+        justifyContent: 'center',
+        alignItems: "flex-end",
+        marginRight: checkDeviceWidth(20),
+    },
+    LastMessageTime: {
+        fontSize: checkDeviceHeight(24),
+        color: '#999999',
+        marginBottom: checkDeviceHeight(20),
+    },
+    MessageNumber: {
+        lineHeight: checkDeviceHeight(30),
+        height: checkDeviceHeight(30),
+        width: checkDeviceWidth(40),
+        borderRadius: 10,
+        color: '#ffffff',
+        textAlign: 'center',
+        fontSize: checkDeviceHeight(24),
+        backgroundColor: '#e64545'
+    },
+});
+
+
 class RecentChat extends ContainerComponent {
 	constructor(props) {
 		super(props);
@@ -45,6 +114,9 @@ class RecentChat extends ContainerComponent {
 		this.deleteSomeRow = this.deleteSomeRow.bind(this);
 	}
 	componentWillMount(){
+
+		styles = super.componentWillMount(styles)
+
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
 	        this.props.initRecentList(chatListArr);
@@ -178,89 +250,6 @@ class RecentChat extends ContainerComponent {
 		)
 	}
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#f2f2f2"
-	},
-	headerTitle: {
-		color: '#ffffff',
-		fontSize: checkDeviceHeight(36),
-		marginLeft: checkDeviceWidth(20),
-		textAlignVertical:'center',
-	},
-	RightLogo: {
-		marginRight:checkDeviceWidth(40),
-		flexDirection: 'row',
-		alignItems:'center',
-	},
-	headerLogo: {
-		height: checkDeviceWidth(40),
-		width: checkDeviceHeight(40),
-		resizeMode: 'stretch',
-	},
-	ListContainer: {
-		flexDirection: 'row',
-		height: checkDeviceHeight(130),
-		backgroundColor: '#ffffff',
-        paddingLeft:checkDeviceWidth(20),
-	},
-	userLogo: {
-		height: checkDeviceHeight(130),
-		width: checkDeviceWidth(125),
-		justifyContent: 'center',
-	},
-	avatar: {
-		height: checkDeviceHeight(105),
-		width: checkDeviceHeight(105),
-		borderRadius: checkDeviceHeight(50),
-		resizeMode: 'stretch',
-	},
-	ChatContent: {
-		flex: 1,
-		height: checkDeviceHeight(130),
-		justifyContent: 'space-between',
-		flexDirection: 'row',
-	},
-	Message: {
-		flex: 1,
-		justifyContent: 'center',
-	},
-	NickName: {
-		fontSize: checkDeviceHeight(34),
-		color: '#373737',
-		lineHeight: checkDeviceHeight(34),
-		marginBottom: checkDeviceHeight(20),
-	},
-	ChatMessage: {
-		fontSize: checkDeviceHeight(30),
-		lineHeight: checkDeviceHeight(35),
-		color: '#999999',
-	},
-	userTime: {
-		height: checkDeviceHeight(130),
-		width: checkDeviceWidth(110),
-		justifyContent: 'center',
-		alignItems: "flex-end",
-		marginRight: checkDeviceWidth(20),
-	},
-	LastMessageTime: {
-		fontSize: checkDeviceHeight(24),
-		color: '#999999',
-		marginBottom: checkDeviceHeight(20),
-	},
-	MessageNumber: {
-		lineHeight: checkDeviceHeight(30),
-		height: checkDeviceHeight(30),
-		width: checkDeviceWidth(40),
-		borderRadius: 10,
-		color: '#ffffff',
-		textAlign: 'center',
-		fontSize: checkDeviceHeight(24),
-		backgroundColor: '#e64545'
-	},
-});
 
 const mapStateToProps = state => ({
     recentListStore:state.recentListStore,

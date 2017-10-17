@@ -10,6 +10,7 @@ import Popup from 'react-native-popup';
 import Loading from './Popup/loading'
 import Route from '../route/router'
 import style from '../StyleSheet/style'
+import StyleSheetHelper from '../StyleSheet/index'
 import {
     View
 } from 'react-native';
@@ -27,6 +28,10 @@ export default class ContainerComponent extends Component {
         this.Localization = Localization;
     }
 
+    componentWillMount(newStyles){
+        const styles = StyleSheetHelper.mergeStyleSheets(style,newStyles);
+        return styles;
+    }
 
 
     alert(content) {

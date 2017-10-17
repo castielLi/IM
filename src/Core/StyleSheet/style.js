@@ -6,18 +6,29 @@ import React, { Component } from 'react';
 import {
     StyleSheet
 } from 'react-native';
+import {checkDeviceHeight,checkDeviceWidth} from '../Helper/UIAdapter';
 
 const style = StyleSheet.create({
     container: {
         flex: 1,
     },
-    //signout只是测试例子
-    signout:{
-        height:40,
-        width:310,
-        backgroundColor:'rgba(53, 79, 138,1.0)',
-        borderRadius:8,
-    }
+    headerTitle: {
+        color: '#ffffff',
+        fontSize: checkDeviceHeight(36),
+        marginLeft: checkDeviceWidth(20),
+        textAlignVertical:'center',
+        marginTop:10
+    },
+    RightLogo: {
+        marginRight:checkDeviceWidth(40),
+        flexDirection: 'row',
+        alignItems:'center',
+    },
+    headerLogo: {
+        height: checkDeviceWidth(40),
+        width: checkDeviceHeight(40),
+        resizeMode: 'stretch',
+    },
 
 });
 
