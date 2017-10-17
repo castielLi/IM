@@ -12,5 +12,6 @@ export default class Relation{
         this.avator = "";
         this.Email = "";
         this.LocalImage = "";
+        this.type = "";
     }
 }

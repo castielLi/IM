@@ -6,6 +6,7 @@ let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './UserExcuteSql'
 import { Platform, StyleSheet } from 'react-native';
 import * as commonMethods from '../../Helper/formatQuerySql'
+import ChatWayEnum from '../dto/ChatWayEnum'
 
 export function GetRelationList(callback){
     USERFMDB.GetRelationList(callback);
@@ -52,6 +53,11 @@ export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
 //获取所有关系的头像和名字
 export function getAllRelationAvatorAndName(callback){
     USERFMDB.GetAllRelationAvatorAndName(callback);
+}
+
+//添加新的关系
+export function addNewRelation(Relation){
+
 }
 
 export function closeAccountDb(){
@@ -161,6 +167,33 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         }, errorDB);
     }, errorDB);
 }
+
+//添加新关系
+USERFMDB.AddNewRelation = function(Relation){
+    let sql = sqls.ExcuteIMSql.InitRelations;
+
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.type,Relation.avator,Relation.Email]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+
+                tx.executeSql(sql, [], (tx, results) => {
+
+                    console.log("添加关系成功")
+
+                }, errorDB);
+
+
+            callback();
+
+        }, errorDB);
+    }, errorDB);
+}
+
 
 //拉入或移除黑名单
 USERFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
@@ -274,31 +307,6 @@ USERFMDB.GetAllRelationAvatorAndName = function(callback){
         }, errorDB);
     }, errorDB);
 }
-
-
-// //修改群备注
-// USERFMDB.updateGroupComment = function(RelationId,Comment){
-//     let updateSql = sqls.ExcuteIMSql.UpdateGroupComment;
-//
-//     updateSql = commonMethods.sqlFormat(updateSql,[Comment,RelationId])
-//
-//     var db = SQLite.openDatabase({
-//         ...databaseObj
-//     }, () => {
-//
-//         db.transaction((tx) => {
-//
-//             tx.executeSql(updateSql, [], (tx, results) => {
-//
-//                 console.log("修改群信息成功")
-//
-//             }, errorDB);
-//
-//         }, errorDB);
-//     }, errorDB);
-// }
-
-
 
 USERFMDB.closeAccountDb = function(){
      var db = SQLite.openDatabase({
