@@ -2,7 +2,7 @@
  * Created by apple on 2017/6/7.
  */
 
-const initialState = [];
+const initialState = {};
 
 export default function relationStore(state=initialState, action){
 
