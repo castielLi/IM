@@ -16,18 +16,25 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionSheet from 'react-native-actionsheet'
 
 let {height,width} = Dimensions.get('window');
+let currentObj;
+
+const options = ['取消','确认删除']
+const title = '你确定要删除这位好友么'
 
 class InformationSetting extends ContainerComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);
+        this.handlePress = this.handlePress.bind(this);
         this.state = {
             notSeeHisZoom:false,
             notSeeMyZoom:false,
             joinBlackList:false
         }
+        currentObj = this;
     }
     //定义上导航的左按钮
     _leftButton() {
@@ -63,6 +70,41 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:!this.state.joinBlackList
         })
     }
+
+
+    handlePress(i){
+        //删除好友
+        if(1 == i){
+            this.fetchData("POST","Member/DeleteFriend",function(result){
+
+                  console.log(result);
+
+                  if(result.Data){
+
+                      //todo： 添加更改rudex 好友列表和消息列表
+
+                      let pages = currentObj.props.navigator.getCurrentRoutes();
+
+                      let target = pages[pages.length - 3];
+
+                      currentObj.route.popToSpecialRoute(currentObj.props,target);
+
+                      currentObj.route.popToRoute();
+                  }else{
+                      alert("http请求出错")
+                  }
+
+
+            },{"Applicant":this.props.accountId,"Friend":this.props.client})
+        }
+    }
+
+    showActionSheet() {
+        this.ActionSheet.show()
+    }
+
+
+
     render() {
         return (
             <View style={styles.container}>
@@ -110,9 +152,17 @@ class InformationSetting extends ContainerComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('删除')} style={styles.sendMessageBox}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>删除</Text>
                     </TouchableHighlight>
+                    <ActionSheet
+                        ref={o => this.ActionSheet = o}
+                        title={title}
+                        options={options}
+                        cancelButtonIndex={0}
+                        destructiveButtonIndex={1}
+                        onPress={this.handlePress}
+                    />
                 </View>
             </View>
             )
@@ -172,7 +222,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    
+    accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({

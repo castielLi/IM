@@ -45,10 +45,11 @@ class Start extends ContainerComponent {
                             let im = new IM();
                             im.setSocket(account.accountId);
 
+                            let user = new User();
                             if(Platform.OS === 'ios'){
                                 im.initIMDatabase(account.accountId)
+                                user.initIMDatabase(account.accountId)
                             }
-                            let user = new User();
                             user.getAllRelation((data)=>{
                                 //初始化联系人store
                                 currentObj.props.initRelation(data);
