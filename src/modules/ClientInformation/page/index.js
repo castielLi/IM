@@ -52,6 +52,9 @@ class ClientInformation extends ContainerComponent {
         this.fetchData("POST","Member/GetFriendUserInfo",function(result){
             let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
             let isUpdate;
+            let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
+            let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
+
             if(_Relation.Nick != Nickname || _Relation.OtherComment != Gender || _Relation.Email != Email){
                 _Relation.Nick = Nickname;
                 _Relation.OtherComment = Gender;
@@ -60,13 +63,14 @@ class ClientInformation extends ContainerComponent {
             }
             updateImage = (result) => {
                 console.log('下载成功,对数据库进行更改')
-                RNFS.unlink(_Relation.LocalImage).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+                //LocalImage = toFile;
+                if(propsRelation.LocalImage){
+                    RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+                }
             };
-            if(_Relation.avator != HeadImageUrl){
+            if(_Relation.avator == HeadImageUrl){
                 _Relation.avator = HeadImageUrl;
                 isUpdate = true;
-                let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
-                toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/${new Date().getTime()}.jpg`;
                 _network.methodDownload(HeadImageUrl,toFile,updateImage)
             }
 
