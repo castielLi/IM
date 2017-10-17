@@ -14,6 +14,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
+import * as relationActions from '../../../Core/User/redux/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
@@ -88,17 +89,12 @@ class PhoneLogin extends ContainerComponent {
                     currentObj.setFetchAuthorization(result.Data["SessionToken"])
 
 
-                    var userData = [];
-                    var user = {};
-                    user.userName = currentObj.state.phoneText;
-                    user.passWord = currentObj.state.passWordText;
-                    userData.push(user);
                     //登录中
                     currentObj.props.signDoing();
                     //服务器验证
                     //...
                     //验证通过
-                    let account = { accountId:user.userName,SessionToken:result.Data["SessionToken"]};
+                    let account = { accountId:currentObj.state.phoneText,SessionToken:result.Data["SessionToken"]};
 
                     //存储登录状态
                     AsyncStorage.setItem('account',JSON.stringify(account));
@@ -111,9 +107,7 @@ class PhoneLogin extends ContainerComponent {
                         im.setSocket(account.accountId);
                         im.initIMDatabase(account.accountId)
 
-                        //初始化用户系统
-                        let user = new User();
-                        user.initIMDatabase(account.accountId);
+
 
 
                         //如果是android
@@ -129,9 +123,6 @@ class PhoneLogin extends ContainerComponent {
                                 //初始化im
                                 let im = new IM();
                                 im.setSocket(account.accountId);
-                                //初始化用户系统
-                                let user = new User();
-
 
                             })
                             //若是第一次登陆
@@ -139,28 +130,28 @@ class PhoneLogin extends ContainerComponent {
                             //初始化im
                             let im = new IM();
                             im.setSocket(account.accountId);
-                            im.initIMDatabase(account.accountId)
-
-                            //初始化用户系统
-                            let user = new User();
-                            user.initIMDatabase(account.accountId);
-
-
+                            im.initIMDatabase(account.accountId);
                         }
 
                         })
                     }
+                    //初始化用户系统
+                    let user = new User();
+                    user.initIMDatabase(account.accountId);
                     Keyboard.dismiss();//关闭软键盘
                     currentObj.fetchData("POST","/Member/GetContactList",function(result){
-                        let user = new User();
                         //添加名单
                         user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+                        	user.getAllRelationNameAndAvator((relationData)=>{
+                                currentObj.props.initRelation(relationData);
+                                currentObj.hideLoading();
+                                currentObj.route.push(currentObj.props,{
+                                    key:'MainTabbar',
+                                    routeId: 'MainTabbar'
+                                });
+							})
 
-                            currentObj.hideLoading();
-                            currentObj.route.push(currentObj.props,{
-                                key:'MainTabbar',
-                                routeId: 'MainTabbar'
-                            });
+
 
                         })
                     },{"Account": currentObj.state.phoneText})
@@ -420,6 +411,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
-}};
+      ...bindActionCreators(relationActions, dispatch),
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);
