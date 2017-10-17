@@ -119,39 +119,39 @@ class Contacts extends ContainerComponent {
 					</View>
 					<View style={styles.listOtherUseBox}>
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
-							<View>
+							<View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
 									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
 								</View>
-								<View style={styles.ItemSeparator}><Text></Text></View>
+								{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
 							</View>
-							<View style={styles.ItemSeparator}><Text></Text></View>
+							{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
 							</View>
-							<View style={styles.ItemSeparator}><Text></Text></View>
+							{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
-							</View>
-							<View style={styles.ItemSeparator}><Text></Text></View>
+								</View>
+							{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					</View>
@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
 		paddingLeft:10
 	},
 	itemBox:{
+		flex:1,
 		height: 60, 
 		flexDirection:'row',
 		alignItems:'center',
@@ -239,8 +240,10 @@ const styles = StyleSheet.create({
 		fontSize: 15
 	},
 	ItemSeparator:{
-		height:1,
-		backgroundColor: '#eee', 
+		// height:1,
+		borderBottomColor : '#eee',
+		borderBottomWidth:1
+		// backgroundColor: '#eee',
 	},
 	listHeaderBox:{
 		backgroundColor: '#ddd', 
