@@ -56,7 +56,7 @@ class ClientInformation extends ContainerComponent {
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.props.RelationId,type:this.props.Type}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.props.Relation.RelationId,type:this.props.Relation.Type}});
     }
     render() {
         return (

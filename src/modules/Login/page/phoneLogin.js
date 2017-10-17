@@ -29,7 +29,7 @@ class PhoneLogin extends ContainerComponent {
 	}
 	constructor(props) {
 	  super(props);
-	
+
 	  this.state = {
 	  	phoneText:'',//账号框的内容
 		passWordText:'',//密码框的内容
@@ -181,7 +181,7 @@ class PhoneLogin extends ContainerComponent {
 			});
 		// }
 	}
-	
+
 	render(){
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -195,7 +195,7 @@ class PhoneLogin extends ContainerComponent {
 				});}}>
 				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
-					<Text style= {styles.loginTitle}>使用手机号登录</Text>	
+					<Text style= {styles.loginTitle}>使用手机号登录</Text>
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
 						<View style = {styles.area}>
 							<Text style = {styles.areaTitle}>国家/地区</Text>
@@ -211,13 +211,13 @@ class PhoneLogin extends ContainerComponent {
 						<TextInput
 						style = {styles.textInput}
 						maxLength = {11}
-						placeholderTextColor = '#cecece' 
+						placeholderTextColor = '#cecece'
 						// placeholder = '请输入手机号码'
 						placeholder = 'wg003662'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						></TextInput>
-						
+
 					</View>
 					<View style = {styles.inputBox}>
 						<View style={styles.imageBox}>
@@ -226,13 +226,13 @@ class PhoneLogin extends ContainerComponent {
 									<Image style = {[styles.loginImage,{width:checkDeviceWidth(35)}]} source = {require('../resource/password.png')}></Image>
 								):(<Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/code.png')}></Image>)
 							}
-						</View>	
+						</View>
 						<TextInput
 						ref = {(c)=>{this._textInput = c}}
 						maxLength = {16}
-						style = {[styles.textInput,{marginLeft:-10,}]} 
-						placeholderTextColor = '#cecece' 
-						secureTextEntry = {true} 
+						style = {[styles.textInput,{marginLeft:-10,}]}
+						placeholderTextColor = '#cecece'
+						secureTextEntry = {true}
 						// placeholder = '请输入密码'
 						placeholder = 'w123456789'
 						underlineColorAndroid= {'transparent'}
@@ -267,7 +267,7 @@ class PhoneLogin extends ContainerComponent {
 				</View>
 				{
 					this.state.showConfirm?
-					<Confirm 
+					<Confirm
 					phoneText = {this.state.phoneText}
 					cancelSend = {this.cancelSend}
 					></Confirm>:null
@@ -275,11 +275,11 @@ class PhoneLogin extends ContainerComponent {
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
 			</View>
-			
+
 		)
 	}
 
-} 
+}
 
 function mapStateToProps(store) {
 	return {
@@ -414,7 +414,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    
+
 });
 
 const mapDispatchToProps = (dispatch) => {

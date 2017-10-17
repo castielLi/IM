@@ -10,7 +10,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
-
+import * as relationActions from '../../../Core/User/redux/action';
 let currentObj = undefined;
 
 class Start extends ContainerComponent {
@@ -48,7 +48,10 @@ class Start extends ContainerComponent {
 
                             let user = new User()
                             user.initIMDatabase(account.accountId);
-
+                            //初始化relationStore
+                            user.getAllRelationNameAndAvator((relationData)=>{
+                                this.props.initRelation(relationData);
+                            })
                             currentObj.props.signIn(account)
                             //切换至最近聊天列表
                             currentObj.route.push(currentObj.props,{
@@ -107,6 +110,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
-}};
+      ...bindActionCreators(relationActions, dispatch),
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Start);

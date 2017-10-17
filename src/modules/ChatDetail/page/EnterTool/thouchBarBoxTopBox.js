@@ -302,8 +302,8 @@ class ThouchBarBoxTopBox extends Component {
 }
 
     //创建文件夹
-    let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/' + this.props.type +'-'+this.props.client;
-    let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/' + this.props.type +'-'+this.props.client;
+    let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + this.props.type +'-'+this.props.client;
+    let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + this.props.type +'-'+this.props.client;
     this.audioPath = audioPath;
     this.imagePath = imagePath;
   }

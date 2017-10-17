@@ -69,8 +69,8 @@ class ChatDetail extends ContainerComponent {
             //初始化chatRecordStore
             this.props.getChatRecord(client,type)
 			//新建文件夹
-			let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/' + type + '-' +client;
-			let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/' + type + '-' +client;
+			let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
+			let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
 			RNFS.mkdir(audioPath)
 		      .then((success) => {
 		        console.log('create new dir success!');
