@@ -3,7 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Image,AsyncStorage} from 'react-native';
+import {StyleSheet, Image,AsyncStorage,Platform} from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -11,8 +11,7 @@ import * as Actions from '../../Login/reducer/action';
 
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
-import * as relationActions from '../../../Core/User/redux/action';
-import * as contactsActions from '../../Contacts/reducer/action';
+import * as relationActions from '../../Contacts/reducer/action';
 let currentObj = undefined;
 
 class Start extends ContainerComponent {
@@ -45,19 +44,16 @@ class Start extends ContainerComponent {
                             AsyncStorage.setItem('account',JSON.stringify({ accountId:account.accountId,SessionToken:result.Data["SessionToken"]}));
                             let im = new IM();
                             im.setSocket(account.accountId);
-                            im.initIMDatabase(account.accountId)
 
-
+                            if(Platform.OS === 'ios'){
+                                im.initIMDatabase(account.accountId)
+                            }
                             let user = new User();
                             user.getAllRelation((data)=>{
                                 //初始化联系人store
-                                currentObj.props.initFriendList(data);
+                                currentObj.props.initRelation(data);
                             })
 
-                            user.getAllRelationNameAndAvator((relationData)=>{
-                                //初始化relationStore
-                                currentObj.props.initRelation(relationData);
-                            })
                             currentObj.props.signIn(account)
                             //切换至最近聊天列表
                             currentObj.route.push(currentObj.props,{
@@ -117,7 +113,6 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
-      ...bindActionCreators(contactsActions, dispatch),
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Start);

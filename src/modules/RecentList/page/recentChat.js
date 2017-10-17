@@ -154,13 +154,19 @@ class RecentChat extends ContainerComponent {
 
 	}
 	_renderAvator= (oneRealationObj)=>{
-		if(oneRealationObj.localImage&&oneRealationObj.localImage!==' '){
-			return 	<Image style = {styles.avatar} source = {require('../resource/user_5.png')}></Image>
+			if(oneRealationObj){
+                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!==' ')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
 
-        }else{
-			return 	<Image style = {styles.avatar} source = {{uri:oneRealationObj.avator}}></Image>
-
-        }
+            }else{
+				return null
+			}
+	}
+    formateRelationDataMethod = (arr) =>{
+		let obj = {};
+		arr.forEach((v,i)=>{
+			obj[v.RelationId] = v;
+		})
+		return obj
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
@@ -192,7 +198,7 @@ class RecentChat extends ContainerComponent {
 				<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 					<View style = {styles.ListContainer}>
 						<View style = {styles.userLogo}>
-							{this._renderAvator(this.props.relationStore[rowData.Client])}
+							{this._renderAvator(this.formateRelationData[rowData.Client])}
 						</View>
 						<View style = {styles.ChatContent}>
 							<View style = {styles.Message}>
@@ -223,6 +229,7 @@ class RecentChat extends ContainerComponent {
 		)
 	}
 	render() {
+		this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>

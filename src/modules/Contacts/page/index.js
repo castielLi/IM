@@ -39,7 +39,7 @@ class Contacts extends ContainerComponent {
 			//右边title导航
 			rightSectionItemModalIndex:''
 		}
-        this.friendList = []
+        this.relationStore = []
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -60,10 +60,10 @@ class Contacts extends ContainerComponent {
 		})
 	}
 	_getSections = ()=>{
-		if(this.friendList.length === 0){
+		if(this.relationStore.length === 0){
 			return null
 		}else{
-            let sections = initSection(this.friendList)
+            let sections = initSection(this.relationStore)
             let array = new Array();
             for (let i = 0; i < sections.length; i++) {
                 array.push(
@@ -161,7 +161,7 @@ class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.friendList.length+'位联系人'}</Text></View>
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'位联系人'}</Text></View>
 	}
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
@@ -181,7 +181,7 @@ class Contacts extends ContainerComponent {
 		}
 	}
 	render() {
-		this.friendList = initDataFormate('private',this.props.friendList);
+		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
 				<NavigationBar
@@ -193,7 +193,7 @@ class Contacts extends ContainerComponent {
 			      keyExtractor={(item,index)=>("index"+index+item)}
 			      renderSectionHeader={this._sectionComp}
 			      renderItem={this._renderItem}
-			      sections={this.friendList}
+			      sections={this.relationStore}
 			      ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
 				  ListFooterComponent = {this._renderFooter}
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-	friendList: state.contactsStore.FriendList
+    relationStore: state.relationStore
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -1,10 +1,10 @@
 
 
 
-export function initFriendList(friendData){
+export function initRelation(relationData){
     return {
-        type: 'INIT_FRIENDLIST',
-        friendData:friendData
+        type: 'INIT_RELATION',
+        relationData
     };
 
 }
