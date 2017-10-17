@@ -81,6 +81,15 @@ class RecentChat extends ContainerComponent {
 		this.confirm('提示','删除后，将清空该聊天的消息记录',okButtonTitle="删除",oKCallback,cancelButtonTitle="取消",cancelCallback=undefined);
 
 	}
+	_renderAvator= (oneRealationObj)=>{
+		if(oneRealationObj.localImage&&oneRealationObj.localImage!==' '){
+			return 	<Image style = {styles.avatar} source = {require('../resource/user_5.png')}></Image>
+
+        }else{
+			return 	<Image style = {styles.avatar} source = {{uri:oneRealationObj.avator}}></Image>
+
+        }
+	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		return (
 			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
@@ -111,7 +120,7 @@ class RecentChat extends ContainerComponent {
 				<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 					<View style = {styles.ListContainer}>
 						<View style = {styles.userLogo}>
-							<Image style = {styles.avatar} source = {require('../resource/user_5.png')}></Image>
+							{this._renderAvator(this.props.relationStore[rowData.Client])}
 						</View>
 						<View style = {styles.ChatContent}>
 							<View style = {styles.Message}>
@@ -255,7 +264,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     recentListStore:state.recentListStore,
-    accountId:state.loginStore.accountMessage.accountId
+    accountId:state.loginStore.accountMessage.accountId,
+	relationStore:state.relationStore,
 });
 
 const mapDispatchToProps = (dispatch) => {
