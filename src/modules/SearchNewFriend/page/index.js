@@ -24,7 +24,8 @@ class SearchNewFriend extends ContainerComponent {
         super()
         this.render = this.render.bind(this);
         this.state = {
-            text:''
+            text:'',
+            searchResult:true
         }
     }
 
@@ -33,6 +34,35 @@ class SearchNewFriend extends ContainerComponent {
         this.route.pop(this.props);
 
     }
+
+    viewUserInfo = (Relation,isFriend)=>{
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{Relation,isFriend}});
+    }
+
+    searchUser = (Account)=>{
+        let that = this;
+        let Applicant = this.props.loginStore.accountId;
+        let isFriend;
+        this.fetchData("POST","Member/GetFriendUserInfo",function(result){
+            if(result.Result){
+                that.fetchData("POST","Member/IsFriend",function(results){
+                    if(results.Result){
+                        if(results.Data){
+                            isFriend=true;
+                        }else{
+                            isFriend=false;
+                        }
+                        that.viewUserInfo(result.Data,isFriend);
+                    }
+                },{Applicant,Friend:Account})
+            }else{
+                that.setState({
+                    searchResult:false
+                })
+            }
+        },{Account})
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -56,7 +86,7 @@ class SearchNewFriend extends ContainerComponent {
                         </View>
                         <Text style={styles.cancel} onPress={this.backToAddFriends}>取消</Text>
                     </View>
-                    {this.state.text === ''?null:<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                    {this.state.text === ''?null:<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.searchUser(this.state.text)}>
                         <View  style={styles.itemBox}>
                             <View style={styles.greenBox}>
                                 <Icon name="search" size={20} color="#fff" />
@@ -164,7 +194,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    
+    loginStore : state.loginStore.accountMessage,
 });
 
 const mapDispatchToProps = dispatch => ({

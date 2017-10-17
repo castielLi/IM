@@ -33,12 +33,45 @@ class ClientInformation extends ContainerComponent {
         }
     }
 
-    componentDidMount() {
-        let {accountId} = this.props.loginStore;
+    isUpdateFriendInfo = (_Relation,UserInfo,propsRelation) =>{
+        let isUpdate;
         let user = new User();
         let _network = new netWorking();
+        let {accountId} = this.props.loginStore;
+        let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
+        let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
+
+        if(_Relation.Nick != UserInfo.Nickname || _Relation.OtherComment != UserInfo.Gender || _Relation.Email != UserInfo.Email){
+            _Relation.Nick = UserInfo.Nickname;
+            _Relation.OtherComment = UserInfo.Gender;
+            _Relation.Email = UserInfo.Email;
+            isUpdate = true;
+        }
+        updateImage = (result) => {
+            console.log('下载成功,对数据库进行更改')
+            //LocalImage = toFile;
+            if(propsRelation.LocalImage){
+                RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+            }
+        };
+        if(_Relation.avator == UserInfo.HeadImageUrl){
+            _Relation.avator = UserInfo.HeadImageUrl;
+            isUpdate = true;
+            _network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
+        }
+
+        if(isUpdate){
+            user.updateRelation(_Relation)
+        }
+    }
+    componentDidMount() {
+        if(1){
+            alert('跳出')
+            return;
+        }
         let propsRelation = this.props.Relation;
         let _Relation = new Relation();
+        let that = this;
         _Relation.OtherComment = propsRelation.OtherComment;
         _Relation.RelationId = propsRelation.RelationId;
         _Relation.Nick = propsRelation.Nick;
@@ -48,36 +81,10 @@ class ClientInformation extends ContainerComponent {
         _Relation.Email = propsRelation.Email;
         _Relation.type = propsRelation.Type;
         _Relation.LocalImage = propsRelation.LocalImage;
-        console.log(_Relation)
         this.fetchData("POST","Member/GetFriendUserInfo",function(result){
-            let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
-            let isUpdate;
-            let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
-            let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
-
-            if(_Relation.Nick != Nickname || _Relation.OtherComment != Gender || _Relation.Email != Email){
-                _Relation.Nick = Nickname;
-                _Relation.OtherComment = Gender;
-                _Relation.Email = Email;
-                isUpdate = true;
+            if(result.Result){
+                that.isUpdateFriendInfo(_Relation,result.Data,propsRelation);
             }
-            updateImage = (result) => {
-                console.log('下载成功,对数据库进行更改')
-                //LocalImage = toFile;
-                if(propsRelation.LocalImage){
-                    RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
-                }
-            };
-            if(_Relation.avator == HeadImageUrl){
-                _Relation.avator = HeadImageUrl;
-                isUpdate = true;
-                _network.methodDownload(HeadImageUrl,toFile,updateImage)
-            }
-
-            if(isUpdate){
-                user.updateRelation(_Relation)
-            }
-
         },{
             "Account":_Relation.RelationId
         })
@@ -115,7 +122,19 @@ class ClientInformation extends ContainerComponent {
     goToChatDetail = ()=>{
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.props.Relation.RelationId,type:this.props.Relation.Type}});
     }
+
+    addFriend = (Respondent)=>{
+        let {accountId} = this.props.loginStore;
+        this.fetchData("POST","Member/ApplyFriend",function(result){
+            if(result.Result && !result.Data){
+                console.log('已成功添加别单方面删除的好友')
+                alert('chenggong')
+            }
+        },{Applicant:accountId,Respondent})
+    }
     render() {
+        let {HeadImageUrl,Account,Nickname} = this.props.Relation;
+        let isFriend = this.props.isFriend;
         return (
             <View style={styles.container}>
                 <NavigationBar
@@ -125,10 +144,10 @@ class ClientInformation extends ContainerComponent {
                     title={this._title()} />
                 <View>
                     <View style={styles.basicBox}>
-                        <Image style={styles.headPic} source={{uri:this.props.avator}}></Image>
+                        <Image style={styles.headPic} source={{uri:HeadImageUrl}}/>
                         <View style={styles.basicBoxRight}>
-                            <Text style={styles.name}>{this.props.Nick}</Text>
-                            <Text style={styles.id}>{'微信号：'+this.props.RelationId}</Text>
+                            <Text style={styles.name}>{Nickname}</Text>
+                            <Text style={styles.id}>{'微信号：'+Account}</Text>
                         </View>
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
@@ -162,9 +181,14 @@ class ClientInformation extends ContainerComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
+
+                    {isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
-                    </TouchableHighlight>
+                    </TouchableHighlight> :
+
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(Account)}} style={styles.sendMessageBox}>
+                        <Text style={styles.sendMessage}>添加到通讯录</Text>
+                    </TouchableHighlight>}
 
                 </View>
             </View>
