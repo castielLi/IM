@@ -42,8 +42,8 @@ export default class User {
     }
 
     //删除好友或者退出群组
-    deleteRelation(Relation){
-       storeSqlite.deleteRelation(Relation)
+    deleteRelation(RelationId){
+       storeSqlite.deleteRelation(RelationId)
     }
 
     //更新关系头像

@@ -17,9 +17,11 @@ import {connect} from 'react-redux';
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
+import User from '../../../Core/User'
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
+let user = new User();
 
 const options = ['取消','确认删除']
 const title = '你确定要删除这位好友么'
@@ -90,6 +92,9 @@ class InformationSetting extends ContainerComponent {
                       currentObj.route.popToSpecialRoute(currentObj.props,target);
 
                       currentObj.route.popToRoute();
+
+                      user.deleteRelation(currentObj.props.client)
+
                   }else{
                       alert("http请求出错")
                   }
