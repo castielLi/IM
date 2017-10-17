@@ -132,6 +132,9 @@ class PhoneLogin extends ContainerComponent {
 
                         })
                     }
+                    //创建文件夹
+                    let avatorPath = RNFS.DocumentDirectoryPath + '/' +account.accountId+'/image/avator';
+                    RNFS.mkdir(avatorPath);
                     //删除Account.db
 
 					let AccountPath = "";
@@ -168,7 +171,7 @@ class PhoneLogin extends ContainerComponent {
 
                                user.getAllRelation((data)=>{
                                    //初始化联系人store
-                                   this.props.initFriendList(data);
+                                   currentObj.props.initFriendList(data);
                                })
                                user.getAllRelationNameAndAvator((relationData)=>{
                                    //初始化联系人store

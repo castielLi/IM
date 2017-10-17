@@ -1,7 +1,14 @@
 import HanZi_PinYin from './getFirestLetter';
-export function initDataFormate(arr){
+export function initDataFormate(type='private',arr){
+    let snapArr = [];
+    arr.forEach((v,i)=>{
+        if(v.Type === type){
+            snapArr.push(v)
+        }
+    })
+
     let needArr = [];
-    arr.forEach((value,index)=>{
+    snapArr.forEach((value,index)=>{
         let firstLetter = HanZi_PinYin.get(value.Nick).slice(0,1);
         let exist = false;
         if(needArr.length === 0){

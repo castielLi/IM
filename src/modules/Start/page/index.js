@@ -51,7 +51,7 @@ class Start extends ContainerComponent {
                             let user = new User();
                             user.getAllRelation((data)=>{
                                 //初始化联系人store
-                                this.props.initFriendList(data);
+                                currentObj.props.initFriendList(data);
                             })
 
                             user.getAllRelationNameAndAvator((relationData)=>{
