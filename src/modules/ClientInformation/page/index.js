@@ -34,6 +34,7 @@ class ClientInformation extends ContainerComponent {
     }
 
     componentDidMount() {
+        let {accountId} = this.props.loginStore;
         let user = new User();
         let _network = new netWorking();
         let propsRelation = this.props.Relation;
@@ -49,12 +50,13 @@ class ClientInformation extends ContainerComponent {
         _Relation.LocalImage = propsRelation.LocalImage;
         console.log(_Relation)
         this.fetchData("POST","Member/GetFriendUserInfo",function(result){
-            console.log(result)
             let {Gender,Nickname,HeadImageUrl,Email} = result.Data;
+            let isUpdate;
             if(_Relation.Nick != Nickname || _Relation.OtherComment != Gender || _Relation.Email != Email){
                 _Relation.Nick = Nickname;
                 _Relation.OtherComment = Gender;
                 _Relation.Email = Email;
+                isUpdate = true;
             }
             updateImage = (result) => {
                 console.log('下载成功,对数据库进行更改')
@@ -62,11 +64,15 @@ class ClientInformation extends ContainerComponent {
             };
             if(_Relation.avator != HeadImageUrl){
                 _Relation.avator = HeadImageUrl;
-                toFile = `${RNFS.DocumentDirectoryPath}/${ME}/image/${new Date().getTime()}${format}`;
+                isUpdate = true;
+                let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
+                toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/${new Date().getTime()}.jpg`;
                 _network.methodDownload(HeadImageUrl,toFile,updateImage)
             }
 
-            user.updateRelation(_Relation)
+            if(isUpdate){
+                user.updateRelation(_Relation)
+            }
 
         },{
             "Account":_Relation.RelationId
@@ -278,7 +284,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    
+    loginStore : state.loginStore.accountMessage,
 });
 
 const mapDispatchToProps = dispatch => ({
