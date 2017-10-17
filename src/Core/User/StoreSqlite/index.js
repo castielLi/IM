@@ -41,8 +41,8 @@ export function changeRelationBliackList(isBlackList,RelationId){
 
 
 //删除关系
-export function deleteRelation(Relation){
-    USERFMDB.DeleteRelation(Relation)
+export function deleteRelation(RelationId){
+    USERFMDB.DeleteRelation(RelationId)
 }
 
 //更新关系头像
@@ -231,10 +231,10 @@ USERFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
 }
 
 //删除关系
-USERFMDB.DeleteRelation = function(Relation){
+USERFMDB.DeleteRelation = function(RelationId){
     let deleteSql = sqls.ExcuteIMSql.DeleteRelation;
 
-    deleteSql = commonMethods.sqlFormat(deleteSql,[Relation.RelationId]);
+    deleteSql = commonMethods.sqlFormat(deleteSql,[RelationId]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
