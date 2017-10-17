@@ -307,10 +307,10 @@ USERFMDB.GetAllRelationAvatorAndName = function(callback){
 
                 callback(results.rows.raw());
 
-            }, errorDB);
+            }, (err)=>{errorDB('查找',err)});
 
-        }, errorDB);
-    }, errorDB);
+        });
+    }, (err)=>{errorDB('打开数据',err)});
 }
 
 USERFMDB.closeAccountDb = function(){

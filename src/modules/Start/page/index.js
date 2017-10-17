@@ -46,11 +46,10 @@ class Start extends ContainerComponent {
                             im.initIMDatabase(account.accountId)
 
 
-                            let user = new User()
-                            user.initIMDatabase(account.accountId);
+                            let user = new User();
                             //初始化relationStore
                             user.getAllRelationNameAndAvator((relationData)=>{
-                                this.props.initRelation(relationData);
+                                currentObj.props.initRelation(relationData);
                             })
                             currentObj.props.signIn(account)
                             //切换至最近聊天列表
