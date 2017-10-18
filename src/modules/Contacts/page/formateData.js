@@ -9,7 +9,7 @@ export function initDataFormate(type='private',arr){
 
     let needArr = [];
     snapArr.forEach((value,index)=>{
-        let firstLetter = HanZi_PinYin.get(value.Nick).slice(0,1);
+        let firstLetter = HanZi_PinYin.get(value.Nick.slice(0,1)).slice(0,1);
         let exist = false;
         if(needArr.length === 0){
             needArr.push({'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
