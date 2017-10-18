@@ -68,6 +68,7 @@ export default class netWorking {
         },
         (result)=>{
             console.log(result)
+            callback(false);
         }
       )
     }

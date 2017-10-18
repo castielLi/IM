@@ -31,7 +31,7 @@ export default class Loading extends Component {
     hide(){
 
         this.setState({
-            isVisible: true,
+            isVisible: false,
         });
     };
 
