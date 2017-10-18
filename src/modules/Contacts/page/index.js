@@ -72,7 +72,7 @@ class Contacts extends ContainerComponent {
 							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
 							onPressOut={this.onPressRightSectionItemOut}
 							//pointerEvents="none"
-
+							disabled={true}
 							ref={'sectionItem' + i}>
 							<View style={styles.rightSectionView}>
 								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
