@@ -28,6 +28,7 @@ class Start extends ContainerComponent {
 
     componentWillMount(){
 
+
         //改成 toekn
 
         AsyncStorage.getItem('account')

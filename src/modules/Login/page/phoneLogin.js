@@ -176,7 +176,6 @@ class PhoneLogin extends ContainerComponent {
                        	   console.log(result);
                            //添加名单
                            user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
-
                                user.getAllRelation((data)=>{
                                    //初始化联系人store
                                    currentObj.props.initRelation(data);
