@@ -37,26 +37,23 @@ export default class MyNavigationBar extends Component {
         }
         else if(typeof left == 'string'){
             return(
-                <View style={styles.back}>
-                    <View style={{justifyContent: 'center'}}>
-                        <Text style={{fontSize:14,textAlignVertical:'center',color:'#fff'}}>{left}</Text>
-                    </View>
+                <View style={styles.leftTextView}>
+                    <Text style={styles.leftTextContent}>{left}</Text>
                 </View>
             )
         }
         else{
             return(
-                <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>letf.func}>
-                    <View style={styles.back}>
-                        <View style={{justifyContent: 'center'}}>
-                            <Icon name="angle-left" size={35} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
+                <TouchableOpacity style={styles.leftView} onPress={left.func}>
+
+                        <View style={styles.justifyCenter}>
+                            <Icon name="angle-left" size={35} color="#fff" style={styles.leftIcon}/>
                         </View>
-                        {letf.text ?
-                            <View style={{justifyContent: 'center'}}>
-                                <Text style={{fontSize:14,textAlignVertical:'center',color:'#fff'}}>{left.text}</Text>
+                        {left.text ?
+                            <View style={styles.justifyCenter}>
+                                <Text style={styles.leftText}>{left.text}</Text>
                             </View> : null
                         }
-                    </View>
                 </TouchableOpacity>
             )
         }
@@ -78,19 +75,17 @@ export default class MyNavigationBar extends Component {
         if(!right){
             return null;
         }
-        right.map((item,index)=>{
-            return (
-                <TouchableOpacity key={index} style={{justifyContent:'center'}} onPress={()=>item.func}>
-                    <View style={styles.back}>
-                        <View style={{justifyContent: 'center'}}>
-                            <Icon name={item.icon} size={35} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
+        return(
+            <View style={styles.rightView}>
+                {right.map((item,index)=>
+                    <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func}>
+                        <View style={styles.rightBox}>
+                            <Icon name={item.icon} size={25} color="#fff"/>
                         </View>
-                    </View>
-                </TouchableOpacity>
-            )
-        })
-
-
+                    </TouchableOpacity>
+                )}
+            </View>
+        )
     };
 
     render() {
@@ -107,5 +102,42 @@ export default class MyNavigationBar extends Component {
 }
 
 const styles = StyleSheet.create({
-
+    justifyCenter:{
+        justifyContent:'center'
+    },
+    leftTextView:{
+        justifyContent: 'center',
+        marginLeft:11
+    },
+    leftTextContent:{
+        fontSize:17,
+        textAlignVertical:'center',
+        color:'#fff',
+        fontWeight:'500',
+        letterSpacing:0.5
+    },
+    leftView:{
+        alignItems:'center',
+        paddingLeft:11,
+        flexDirection:'row'
+    },
+    leftIcon:{
+        textAlignVertical:'center',
+        marginRight:8
+    },
+    leftText:{
+        fontSize:14,
+        textAlignVertical:'center',
+        color:'#fff'
+    },
+    rightView:{
+        alignItems:'center',
+        flexDirection:'row'
+    },
+    rightBox:{
+        justifyContent: 'center',
+        alignItems:'center',
+        flex:1,
+        paddingHorizontal:15
+    }
 });
