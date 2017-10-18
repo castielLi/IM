@@ -82,6 +82,7 @@ class PhoneLogin extends ContainerComponent {
                     console.log(result)
 
                     if(result.Data == null){
+                        currentObj.hideLoading()
                         alert("登录出错");
                         return;
                     }

@@ -84,7 +84,9 @@ class SearchNewFriend extends ContainerComponent {
 
 
                         </View>
-                        <Text style={styles.cancel} onPress={this.backToAddFriends}>取消</Text>
+                        <View style={styles.cancelView}>
+                            <Text style={styles.cancel} onPress={this.backToAddFriends}>取消</Text>
+                        </View>
                     </View>
                     {this.state.text === ''?null:<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.searchUser(this.state.text)}>
                         <View  style={styles.itemBox}>
@@ -139,6 +141,12 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff',
         borderRadius:5,
         paddingHorizontal:10
+    },
+    cancelView:{
+        width:60,
+        justifyContent: 'center',
+        fontSize:18,
+        color:'green'
     },
     cancel:{
         width:60,
