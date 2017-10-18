@@ -66,7 +66,6 @@ class ClientInformation extends ContainerComponent {
     }
     componentDidMount() {
         if(1){
-            alert('跳出')
             return;
         }
         let propsRelation = this.props.Relation;
@@ -124,13 +123,13 @@ class ClientInformation extends ContainerComponent {
     }
 
     addFriend = (Respondent)=>{
-        let {accountId} = this.props.loginStore;
+        let Applicant = this.props.loginStore.accountId;
         this.fetchData("POST","Member/ApplyFriend",function(result){
             if(result.Result && !result.Data){
-                console.log('已成功添加别单方面删除的好友')
-                alert('chenggong')
+                console.log('已成功添加被单方面删除的好友')
+                alert('成功')
             }
-        },{Applicant:accountId,Respondent})
+        },{Applicant,Respondent})
     }
     render() {
         let {HeadImageUrl,Account,Nickname} = this.props.Relation;
@@ -160,7 +159,7 @@ class ClientInformation extends ContainerComponent {
                         <Text style={styles.address}>地区</Text>
                         <Text style={styles.place}>重庆 大渡口</Text>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('相册')}>
+                    {isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('相册')}>
                         <View  style={styles.photoBox}>
                             <View style={{flexDirection:'row',alignItems:'center'}}>
                                 <Text style={styles.address}>个人相册</Text>
@@ -174,21 +173,21 @@ class ClientInformation extends ContainerComponent {
                             </View>
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
+                    </TouchableHighlight> : null}
+                    {isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
                         <View  style={[styles.remarksBox,{marginTop:0}]}>
                             <Text style={styles.remarks}>更多</Text>
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
-                    </TouchableHighlight>
+                    </TouchableHighlight> : null}
 
-                    {isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
-                    </TouchableHighlight> :
+                    </TouchableHighlight>
 
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(Account)}} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>添加到通讯录</Text>
-                    </TouchableHighlight>}
+                    </TouchableHighlight>
 
                 </View>
             </View>

@@ -21,6 +21,9 @@ import {bindActionCreators} from 'redux';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {closeAccountDb} from '../../../Core/User/StoreSqlite';
 
+import MyNavigationBar from '../../../Core/Component/NavigationBar'
+import NavigationBar from 'react-native-navbar';
+
 let {height,width} = Dimensions.get('window');
 
 class Me extends ContainerComponent {
@@ -42,9 +45,19 @@ class Me extends ContainerComponent {
             routeId: 'Login'
         });
     }
+    _title() {
+        return {
+            title: "新的朋友",
+            tintColor:'#fff',
+        }
+    }
     render() {
         return (
             <View style={styles.container}>
+                <NavigationBar
+                    tintColor="#38373d"
+                    title={this._title()}
+                />
                 <Text>{"你的账户："+this.props.accountId}</Text>
                 <Text onPress={this.loginOut}>退出登录</Text>
             </View>
@@ -57,8 +70,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#eee',
-        justifyContent:'center',
-        alignItems:'center'
+
     }
 });
 
