@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
 	},
 	listHeaderBox:{
 		backgroundColor: '#ddd', 
-		alignItems: 'center', 
+		alignItems: 'center',
 		height:50,
 		padding:10
 	},
@@ -267,14 +267,14 @@ const styles = StyleSheet.create({
 	listFooterBox:{
 		borderTopWidth:1,
 		borderColor:'#eee',
-		backgroundColor: "#ffffff", 
-		alignItems: 'center', 
+		backgroundColor: "#ffffff",
+		alignItems: 'center',
 		height: 50
 	},
 	listFooter:{
 		height: 50,
 		textAlignVertical: 'center',
-		fontSize: 18, 
+		fontSize: 15,
 		color: '#aaa'
 	},
 	rightSection:{

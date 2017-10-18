@@ -77,9 +77,15 @@ class PhoneLogin extends ContainerComponent {
             UUIDGenerator.getRandomUUID().then((uuid) => {
 
                 currentObj.showLoading();
+                Keyboard.dismiss();//关闭软键盘
                 currentObj.fetchData("POST","/Member/Login",function(result){
                     //todo: 存储用户信息
                     console.log(result)
+
+					if(result == false){
+                    	currentObj.hideLoading()
+						alert("http请求出错")
+					}
 
                     if(result.Data == null){
                         currentObj.hideLoading()
@@ -164,8 +170,10 @@ class PhoneLogin extends ContainerComponent {
                        //初始化用户系统
                        let user = new User();
                        user.initIMDatabase(account.accountId);
-                       Keyboard.dismiss();//关闭软键盘
+
                        currentObj.fetchData("POST","/Member/GetContactList",function(result){
+
+                       	   console.log(result);
                            //添加名单
                            user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
 
