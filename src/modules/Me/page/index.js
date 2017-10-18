@@ -45,18 +45,19 @@ class Me extends ContainerComponent {
             routeId: 'Login'
         });
     }
-    _title() {
-        return {
-            title: "新的朋友",
-            tintColor:'#fff',
-        }
+    csFunc = (x)=>{
+        alert('测试执行成功'+x)
     }
     render() {
         return (
             <View style={styles.container}>
-                <NavigationBar
-                    tintColor="#38373d"
-                    title={this._title()}
+                <MyNavigationBar
+                    heading={'测试tile'}
+                    left={{func:()=>{this.csFunc('需要的参数')},text:'注释'}}
+                    right={[
+                        {func:()=>{this.csFunc('需要的参数')},icon:'search'},
+                        {func:()=>{this.csFunc('需要的参数')},icon:'angle-left'}
+                        ]}
                 />
                 <Text>{"你的账户："+this.props.accountId}</Text>
                 <Text onPress={this.loginOut}>退出登录</Text>
