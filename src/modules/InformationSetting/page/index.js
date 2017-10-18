@@ -110,7 +110,6 @@ class InformationSetting extends ContainerComponent {
 
 
                       let pages = currentObj.props.navigator.getCurrentRoutes();
-
                       let target = pages[pages.length - 3];
 
                       currentObj.route.popToSpecialRoute(currentObj.props,target);

@@ -30,9 +30,14 @@ class NewFriend extends ContainerComponent {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
             <View style={styles.back}>
 
-                    <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
+                <View style={{justifyContent: 'center'}}>
+                    <Icon name="angle-left" size={35} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
+                </View>
 
-                    <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
+                    <View style={{justifyContent: 'center'}}>
+                        <Text style={{fontSize:14,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
+                    </View>
+
             </View>
         </TouchableOpacity>
     }

@@ -119,14 +119,25 @@ class RecentChat extends ContainerComponent {
 
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
-	        this.props.initRecentList(chatListArr);
-	        //初始化unReadMessageStore
-			let unReadMessageCount = 0;
+			//将IM.db最近聊天列表与Acount.db好友列表作对比，如果Acount.db中不存在这个好友，则不添加到recentListStore
+			let needArr = [];
+            //初始化unReadMessageStore
+            let unReadMessageCount = 0;
             chatListArr.forEach((v,i)=>{
-            	if(v.unReadMessageCount){
+                if(v.unReadMessageCount){
                     unReadMessageCount+=v.unReadMessageCount;
+                }
+
+                for( let j=0;j<this.props.relationStore.length;j++){
+					if(value.Client === this.props.relationStore[j]){
+                        needArr.push(v);
+                        break;
+					}
 				}
 			})
+
+	        this.props.initRecentList(needArr);
+
             this.props.initUnReadMessageNumber(unReadMessageCount)
 	    })
 	}

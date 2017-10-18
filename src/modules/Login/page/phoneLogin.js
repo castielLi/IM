@@ -82,6 +82,7 @@ class PhoneLogin extends ContainerComponent {
                     console.log(result)
 
                     if(result.Data == null){
+                        currentObj.hideLoading()
                         alert("登录出错");
                         return;
                     }
@@ -267,16 +268,13 @@ class PhoneLogin extends ContainerComponent {
 							<Text style = {styles.changeLogin}>通过密码登录</Text>
 						}
 					</TouchableOpacity>
-					{
-						this.state.phoneText && this.state.passWordText?
-						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.addUser()}}>
+
+
+							<TouchableOpacity activeOpacity = {0.8} style={[styles.Login,{backgroundColor:this.state.phoneText && this.state.passWordText?'#1aad19':'#ccc'}]} onPress = {()=>{this.addUser()}} disabled={!(this.state.phoneText && this.state.passWordText)}>
 								<Text style = {styles.loginText}>登录</Text>
-							</TouchableOpacity>)
-						:(
-							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notLogin.png')}></Image>
-							)
-					}
+							</TouchableOpacity>
+
+
 				<View style= {styles.footer}>
 					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
 					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
@@ -408,7 +406,7 @@ const styles = StyleSheet.create({
 		marginBottom:checkDeviceHeight(60),
 	},
 	loginText:{
-		color:'white',
+		color:'#fff',
 		fontSize:checkDeviceHeight(36),
 	},
 	Login:{
