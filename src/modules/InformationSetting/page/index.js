@@ -83,11 +83,18 @@ class InformationSetting extends ContainerComponent {
         let {client,type,accountId} = this.props;
         //删除好友
         if(1 == i){
+            currentObj.showLoading()
             this.fetchData("POST","Member/DeleteFriend",function(result){
 
                   console.log(result);
 
-                  if(result.Data){
+                  currentObj.hideLoading()
+                  if(!result.success){
+                      alert(result.errorMessage);
+                      return;
+                  }
+
+                  if(result.data.Data){
 
                       //todo： 添加更改rudex 好友列表和消息列表
                       currentObj.props.deleteRelation(client);
