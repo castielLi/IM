@@ -12,6 +12,7 @@ import {
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 
+let rootNavigator;
 
 class Route {
 
@@ -30,13 +31,18 @@ class Route {
         let {
             RouteMap,
             MainPage,
-            InitialRoute
+            InitialRoute,
+            LoginRoute
         } = router;
         this.routerMap = Object.assign(this.routerMap, RouteMap);
         this.mainPage = MainPage;
         this.initialRoute = InitialRoute;
+        this.loginRoute = LoginRoute
     }
 
+    static setRootNavigator(navigator){
+        rootNavigator = navigator;
+    }
 
     static getRoutePage(route, navigator) { //这里route参数是一个对象{id:xx,routeId:xx,params:{xxx}}
         let id = route.key,
@@ -101,7 +107,7 @@ class Route {
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[0][0] == this.mainPage["key"]) {
+            if (routes[i][0] == this.mainPage["key"]) {
                 contain = true;
                 break;
             }
@@ -132,8 +138,24 @@ class Route {
         })
     }
 
-    static toLogin() {
+    static ToLogin() {
+        let routes = rootNavigator.getCurrentRoutes();
 
+        let contain = false;
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i][0] == this.loginRoute["key"]) {
+                contain = true;
+                break;
+            }
+        }
+        if (!contain) {
+            let loginRoute = this.loginRoute;
+            rootNavigator.replaceAtIndex(this.loginRoute,1,function(){
+                rootNavigator.jumpTo(loginRoute)
+            });
+        }else{
+            rootNavigator.jumpTo(this.loginRoute)
+        }
     }
 }
 

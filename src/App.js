@@ -8,7 +8,7 @@ import React, {
 import {
     Provider
 } from 'react-redux';
-import { AppState , NetInfo,Platform} from 'react-native'
+import { AppState , NetInfo,Platform,Alert} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
@@ -28,8 +28,10 @@ import messageBodyChatDto from './Core/IM/dto/messageBodyChatDto'
 import * as ActionForChatRecordStore from './Core/IM/redux/action'
 
 import netWorking from './Core/Networking/Network'
-
+import DisplayComponent from './Core/Component'
+import route from './Core/route/router'
 let network = new netWorking();
+
 
 export default function App() {
 
@@ -61,9 +63,21 @@ export default function App() {
         store.dispatch(ActionForChatRecordStore.receiveMessage(message))
     }
 
+    let handleKickOutMessage = function(){
+        Alert.alert(
+            '下线通知',
+            "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
+            [
+                {text: '确定', onPress: () => {
+                    route.ToLogin();
+                }},
+                {text: '不是本人操作',style:{color:"red"}, onPress: () => {
 
-    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
+                }},
+            ]);
+    }
 
+    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage)
 
 
     // let sendMessage = setInterval(function(){
@@ -110,7 +124,7 @@ export default function App() {
     // im.deleteMessage(deleteMessage,"chatroom","hello");
 
 
-    class InitApp extends BaseComponent {
+    class InitApp extends DisplayComponent {
         constructor() {
             super();
 

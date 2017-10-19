@@ -67,6 +67,10 @@ let AppMessageChangeStatusHandle = undefined;
 //返回收到消息回调
 let AppReceiveMessageHandle = undefined;
 
+//踢出消息回调
+let AppKickOutHandle = undefined;
+
+
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -110,10 +114,11 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
+        AppKickOutHandle = kickOutMessage;
     }
 
     startIM(){
@@ -421,6 +426,9 @@ export default class IM {
             console.log("心跳包压入发送队列")
             SendManager.addSendMessage(message)
             return;
+        }else if(type == MessageCommandEnum.MSG_KICKOUT){
+            console.log("设备被踢出消息")
+            AppKickOutHandle();
         }
 
         ReceiveManager.addReceiveMessage(message)

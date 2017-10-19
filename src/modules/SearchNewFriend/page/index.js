@@ -73,7 +73,7 @@ class SearchNewFriend extends ContainerComponent {
                 if(contain){
 
                 }else{
-                    
+
                 }
 
             }else{

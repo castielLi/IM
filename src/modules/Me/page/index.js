@@ -46,10 +46,7 @@ class Me extends ContainerComponent {
         this.props.clearChatRecord();
         closeImDb();
         closeAccountDb();
-        this.route.push(this.props,{
-            key:'Login',
-            routeId: 'Login'
-        });
+        this.route.ToLogin();
     }
     csFunc = (x)=>{
         alert('测试执行成功'+x)
