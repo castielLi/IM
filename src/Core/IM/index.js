@@ -135,6 +135,10 @@ export default class IM {
 
     }
 
+    logout(){
+        this.socket.logout();
+    }
+
     stopIM(){
         this.checkQueue(this.stopIMRunCycle);
     }

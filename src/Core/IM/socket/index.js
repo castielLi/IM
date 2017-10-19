@@ -20,7 +20,7 @@ let _token = undefined;
 let netWorkStatus = undefined;
 let currentObj = undefined;
 let heartBeatCode = undefined;
-let kicked = false;
+let NeedToReConnect = true;
 
 export default class Connect extends Component{
 
@@ -54,7 +54,7 @@ export default class Connect extends Component{
             }else if(message.Command == MessageCommandEnum.MSG_BODY){
                 onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
             }else if(message.Command == MessageCommandEnum.MSG_KICKOUT){
-                kicked = true;
+                NeedToReConnect = false;
                 onRecieveMessage(message,MessageCommandEnum.MSG_KICKOUT);
             }
         });
@@ -79,9 +79,10 @@ export default class Connect extends Component{
                 console.log('GoodBye Server!');
                 currentObj.webSocket.close();
             }else{
-                if(!kicked) {
+                if(NeedToReConnect) {
                     currentObj.reConnectNet();
                 }
+                NeedToReConnect = !NeedToReConnect;
             }
         });
     }
@@ -101,6 +102,10 @@ export default class Connect extends Component{
     }
 
 
+    logout(){
+        NeedToReConnect = false;
+        this.webSocket.close();
+    }
 
 
     onRecieveCallback(callback){

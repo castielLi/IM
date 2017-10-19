@@ -72,7 +72,7 @@ export default function App() {
                     route.ToLogin();
                 }},
                 {text: '不是本人操作',style:{color:"red"}, onPress: () => {
-
+                    route.ToLogin();
                 }},
             ]);
     }

@@ -24,8 +24,9 @@ import {closeAccountDb} from '../../../Core/User/StoreSqlite';
 import Features from '../../Common/menu/features';
 
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
-
+import IM from '../../../Core/IM'
 let {height,width} = Dimensions.get('window');
+let im = new IM();
 
 class Me extends ContainerComponent {
     constructor(props){
@@ -46,6 +47,7 @@ class Me extends ContainerComponent {
         this.props.clearChatRecord();
         closeImDb();
         closeAccountDb();
+        im.logout();
         this.route.ToLogin();
     }
     csFunc = (x)=>{
