@@ -22,6 +22,13 @@ var UsingFramework = ""
 var NeedAuth = false;
 
 
+let resultData = {};
+resultData.success = false;
+resultData.errorMessage = "";
+resultData.data = {};
+resultData.errorCode = -1;
+
+
 export default class netWorking {
   constructor() {
     if (__instance()) return __instance();
@@ -64,11 +71,26 @@ export default class netWorking {
 
       }).then(
         (result)=>{
-            callback(result.data);
+
+            if(result.Data){
+
+                resultData.success = true;
+                resultData.data = result;
+                resultData.errorMessage = "";
+            }else{
+                resultData.success = false;
+                resultData.data = {};
+                resultData.errorMessage = "错误代码:" + result.Result;
+                resultData.errorCode = result.Result;
+            }
+            callback(resultData);
         },
-        (result)=>{
-            console.log(result)
-            callback(false);
+        (error)=>{
+            resultData.success = false;
+            resultData.errorMessage = error.errorMessage;
+            resultData.data = {};
+            resultData.errorCode = -1;
+            callback(resultData);
         }
       )
     }
@@ -88,17 +110,32 @@ export default class netWorking {
 
              res(result.json());
            }else {
-             rej(result);
+             rej(error);
            }
          })
 
        }).then(
-         (result)=>{
-           callback(result);
-         },
-         (result)=>{
-           console.log(result)
-         }
+           (result)=>{
+               if(result.Data){
+
+                   resultData.success = true;
+                   resultData.data = result;
+                   resultData.errorMessage = "";
+               }else{
+                   resultData.success = false;
+                   resultData.data = {};
+                   resultData.errorCode = result.Result;
+                   resultData.errorMessage = "错误代码:" + result.Result;
+               }
+               callback(resultData);
+           },
+           (error)=>{
+               resultData.success = false;
+               resultData.errorMessage = error.errorMessage;
+               resultData.data = {};
+               resultData.errorCode = -1;
+               callback(resultData);
+           }
        )
      }
   }

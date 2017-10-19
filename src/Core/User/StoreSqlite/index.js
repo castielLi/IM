@@ -101,7 +101,7 @@ USERFMDB.GetRelationList = function(callback){
 
                 callback(results.rows.raw());
 
-            }, errorDB);
+            }, (err)=>{errorDB('获取好友列表',err)});
 
         }, errorDB);
     }, errorDB);
@@ -169,7 +169,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
                    console.log("添加关系成功")
 
-                }, errorDB);
+                }, (err)=>{errorDB('初始化关系表内容',err)});
             }
 
             callback();

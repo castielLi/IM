@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 let {height,width} = Dimensions.get('window');
+let currentObj;
 
 class SearchNewFriend extends ContainerComponent {
     constructor(){
@@ -27,6 +28,7 @@ class SearchNewFriend extends ContainerComponent {
             text:'',
             searchResult:true
         }
+        currentObj = this;
     }
 
 
@@ -39,28 +41,31 @@ class SearchNewFriend extends ContainerComponent {
         this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{Relation,isFriend}});
     }
 
-    searchUser = (Account)=>{
+    searchUser = (keyword)=>{
         let that = this;
         let Applicant = this.props.loginStore.accountId;
         let isFriend;
-        this.fetchData("POST","Member/GetFriendUserInfo",function(result){
-            if(result.Result){
-                that.fetchData("POST","Member/IsFriend",function(results){
-                    if(results.Result){
-                        if(results.Data){
-                            isFriend=true;
-                        }else{
-                            isFriend=false;
-                        }
-                        that.viewUserInfo(result.Data,isFriend);
-                    }
-                },{Applicant,Friend:Account})
+        current.showLoading()
+        this.fetchData("POST","Member/SearchUser",function(result){
+            console.log(result)
+            currentObj.hideLoading();
+
+            currentObj.hideLoading()
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
+
+
+            if(result.data.Data){
+
+
             }else{
                 that.setState({
                     searchResult:false
                 })
             }
-        },{Account})
+        },{"Keyword":keyword})
     }
 
     render() {
@@ -144,9 +149,7 @@ const styles = StyleSheet.create({
     },
     cancelView:{
         width:60,
-        justifyContent: 'center',
-        fontSize:18,
-        color:'green'
+        justifyContent: 'center'
     },
     cancel:{
         width:60,

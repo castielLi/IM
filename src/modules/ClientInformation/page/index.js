@@ -22,6 +22,7 @@ import RNFS from 'react-native-fs'
 
 
 let {height,width} = Dimensions.get('window');
+let currentObj;
 
 class ClientInformation extends ContainerComponent {
     constructor(){
@@ -31,6 +32,7 @@ class ClientInformation extends ContainerComponent {
             selectedTab: 'home',
             isLogged: false
         }
+        currentObj = this;
     }
 
     isUpdateFriendInfo = (_Relation,UserInfo,propsRelation) =>{
@@ -81,7 +83,14 @@ class ClientInformation extends ContainerComponent {
         _Relation.type = propsRelation.Type;
         _Relation.LocalImage = propsRelation.LocalImage;
         this.fetchData("POST","Member/GetFriendUserInfo",function(result){
-            if(result.Result){
+
+            currentObj.hideLoading()
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
+
+            if(result.data.Data){
                 that.isUpdateFriendInfo(_Relation,result.Data,propsRelation);
             }
         },{
