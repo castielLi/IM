@@ -14,7 +14,7 @@ import {
 import {
     checkDeviceHeight,
     checkDeviceWidth
-} from './check';
+} from '../../../Core/Helper/UIAdapter';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 
 export default class Features extends ContainerComponent {

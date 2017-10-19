@@ -23,7 +23,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
-} from './check';
+} from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
 import NavigationBar from 'react-native-navbar';
 let im = new IM();
