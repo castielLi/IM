@@ -75,17 +75,29 @@ export default class MyNavigationBar extends Component {
         if(!right){
             return null;
         }
-        return(
-            <View style={styles.rightView}>
-                {right.map((item,index)=>
-                    <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func}>
-                        <View style={styles.rightBox}>
-                            <Icon name={item.icon} size={25} color="#fff"/>
-                        </View>
-                    </TouchableOpacity>
-                )}
-            </View>
-        )
+        if(right instanceof Array){
+            return(
+                <View style={styles.rightView}>
+                    {right.map((item,index)=>
+                        <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func}>
+                            <View style={styles.rightBox}>
+                                <Icon name={item.icon} size={25} color="#fff"/>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            )}
+        else if(right instanceof Object)
+        {
+            return(
+                <TouchableOpacity style={styles.justifyCenter} onPress={right.func}>
+                    <View style={styles.rightBox}>
+                        <Text style={{color:'#fff'}}>{right.text}</Text>
+                    </View>
+                </TouchableOpacity>
+            )
+        }
+
     };
 
     render() {

@@ -21,7 +21,7 @@ import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../RecentList/reducer/action';
 import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
 var {height, width} = Dimensions.get('window');
 
@@ -173,21 +173,14 @@ class Contacts extends ContainerComponent {
 						<Text style={styles.moreUse}>+</Text>
 			       </TouchableOpacity>
 		}
-		//定义上导航的标题
-	_title() {
-		return {
-			title: "通讯录",
-			tintColor:'#fff',
-		}
-	}
+
 	render() {
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
-				<NavigationBar
-					tintColor="#38373d"
-					rightButton={this._rightButton()}
-					title={this._title()} />
+				<MyNavigationBar
+					left = {'云信'}
+				/>
 			    <SectionList
 			      ref={'mySectionList'}
 			      keyExtractor={(item,index)=>("index"+index+item)}

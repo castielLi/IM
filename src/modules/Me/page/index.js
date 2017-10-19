@@ -52,11 +52,10 @@ class Me extends ContainerComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    heading={'测试tile'}
-                    left={{func:()=>{this.csFunc('需要的参数')},text:'注释'}}
+                    left = {'云信'}
                     right={[
                         {func:()=>{this.csFunc('需要的参数')},icon:'search'},
-                        {func:()=>{this.csFunc('需要的参数')},icon:'angle-left'}
+                        {func:()=>{this.csFunc('需要的参数')},icon:'list-ul'}
                         ]}
                 />
                 <Text>{"你的账户："+this.props.accountId}</Text>

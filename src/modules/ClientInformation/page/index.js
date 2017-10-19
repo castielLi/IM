@@ -13,7 +13,7 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import User from '../../../Core/User'
 import Relation from '../../../Core/User/dto/RelationModel'
@@ -136,11 +136,11 @@ class ClientInformation extends ContainerComponent {
         let isFriend = this.props.isFriend;
         return (
             <View style={styles.container}>
-                <NavigationBar
-                    tintColor="#38373d"
-                    leftButton={this._leftButton()}
-                    rightButton={this._rightButton()}
-                    title={this._title()} />
+                <MyNavigationBar
+                    heading={"详细资料"}
+                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
+                    right={[{func:()=>{this.goToInformationSetting()},icon:'ellipsis-h'}]}
+                />
                 <View>
                     <View style={styles.basicBox}>
                         <Image style={styles.headPic} source={{uri:HeadImageUrl}}/>
