@@ -55,6 +55,7 @@ export default class Connect extends Component{
                 onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
             }else if(message.Command == MessageCommandEnum.MSG_KICKOUT){
                 NeedToReConnect = false;
+                currentObj.webSocket.close();
                 onRecieveMessage(message,MessageCommandEnum.MSG_KICKOUT);
             }
         });
