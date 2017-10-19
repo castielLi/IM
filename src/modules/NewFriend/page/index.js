@@ -14,7 +14,7 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 let {height,width} = Dimensions.get('window');
@@ -48,15 +48,18 @@ class NewFriend extends ContainerComponent {
             tintColor:'#fff',
         }
     }
-
+    goToAddFriends = ()=>{
+        this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
+    }
 
     render() {
         return (
             <View style={styles.container}>
-                <NavigationBar
-                    tintColor="#38373d"
-                    leftButton={this._leftButton()}
-                    title={this._title()} />
+                <MyNavigationBar
+                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
+                    heading={"新的朋友"}
+                    right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
+                />
                 <View>
                     <View style={styles.listHeaderBox}>
                         <TextInput

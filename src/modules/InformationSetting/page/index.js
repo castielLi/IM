@@ -14,7 +14,7 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
 import * as relationActions from '../../Contacts/reducer/action';
@@ -140,10 +140,10 @@ class InformationSetting extends ContainerComponent {
     render() {
         return (
             <View style={styles.container}>
-                <NavigationBar
-                    tintColor="#38373d"
-                    leftButton={this._leftButton()}
-                    title={this._title()} />
+                <MyNavigationBar
+                    heading={"资料设置"}
+                    left={{func:()=>{this.route.pop(this.props)},text:'详细资料'}}
+                />
                 <View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>

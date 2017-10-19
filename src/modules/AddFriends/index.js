@@ -15,7 +15,7 @@ import {
 
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../Core/Component/NavigationBar';
 
 
 export default class AddFriends extends ContainerComponent {
@@ -42,20 +42,7 @@ export default class AddFriends extends ContainerComponent {
             tintColor:'#fff',
         }
     }
-    toBack = () =>{
-        this.route.pop(this.props);
 
-    }
-    _leftButton = () => {
-        return (
-            <View style={styles.leftButtonView}>
-                <TouchableOpacity style={styles.goBackView} onPress={this.toBack}
-                >
-                    <Image source={require('./resource/goBack.png')} style={styles.goBack}/>
-                </TouchableOpacity>
-            </View>
-        )
-    }
     goToSearchNewFriend = () =>{
         this.route.push(this.props,{key:'SearchNewFriend',routeId:'SearchNewFriend',params:{}});
 
@@ -64,10 +51,9 @@ export default class AddFriends extends ContainerComponent {
     render() {
         return(
             <View style={styles.container}>
-                <NavigationBar
-                    tintColor = '#38373d'
-                    title={this._title()}
-                    leftButton={this._leftButton()}
+                <MyNavigationBar
+                    heading={'添加朋友'}
+                    left={{func:()=>{this.route.pop(this.props)}}}
                 />
                 <View>
                     <TouchableWithoutFeedback onPress={this.goToSearchNewFriend}>

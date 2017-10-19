@@ -22,7 +22,7 @@ import RNFS from 'react-native-fs';
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 class ChatDetail extends ContainerComponent {
@@ -102,11 +102,10 @@ class ChatDetail extends ContainerComponent {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'>
-    			<NavigationBar
-					tintColor="#38373d"
-					leftButton={this._leftButton()}
-					rightButton={this._rightButton()}
-					title={this._title()} />
+    			<MyNavigationBar
+					left={{func:()=>{this.route.pop(this.props)}}}
+					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
+					heading={'聊天'} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
 				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>

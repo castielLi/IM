@@ -16,7 +16,7 @@ import Swipeout from 'react-native-swipeout';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import Features from './features';
+import Features from '../../Common/menu/features';
 import * as recentListActions from '../reducer/action';
 import * as chatRecordActions from '../../../Core/IM/redux/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
@@ -25,7 +25,7 @@ import {
 	checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar';
 let im = new IM();
 
 let styles = StyleSheet.create({
@@ -244,10 +244,12 @@ class RecentChat extends ContainerComponent {
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
-				<NavigationBar
-					tintColor = '#38373d'
-					leftButton = {<Text style={styles.headerTitle}>云信</Text>}
-					rightButton= {this._rightButton()}
+				<MyNavigationBar
+					left = {'云信'}
+					right = {[
+						{func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
+					]}
 				/>
 				<View style = {styles.content}>
 					<ListView

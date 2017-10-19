@@ -14,46 +14,56 @@ import {
 import {
     checkDeviceHeight,
     checkDeviceWidth
-} from './check';
+} from '../../../Core/Helper/UIAdapter';
+import ContainerComponent from '../../../Core/Component/ContainerComponent';
 
-export default class Features extends Component {
+export default class Features extends ContainerComponent {
+    constructor(props){
+        super(props);
+        this.render = this.render.bind(this);
+        this.state = {
 
+        }
+    }
 	changeFeatureState = ()=>{
 		let newState = !this.props.showFeatures;
 		this.props.changeShowFeature(newState);
 	}
+    goToAddFriends = ()=>{
+        this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
 
+    }
 	render(){
 		return (
-			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} underlayColor='#00000000' onPressIn = {()=>{this.changeFeatureState()}}>
+			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} onPressIn = {()=>{this.changeFeatureState()}}>
 			<View style = {styles.container}>
 				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
 					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('../resource/weChat.png')}></Image>
+						<Image style={styles.logo} source = {require('./resource/weChat.png')}/>
 						<Text style = {styles.Text}>发起群聊</Text>
 					</View>
 				</TouchableOpacity>
 				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
 					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('../resource/pay.png')}></Image>
+						<Image style={styles.logo} source = {require('./resource/pay.png')}/>
 						<Text style = {styles.Text}>收付款</Text>
 					</View>
 				</TouchableOpacity>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToAddFriends();}}>
 					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('../resource/addFriends.png')}></Image>
+						<Image style={styles.logo} source = {require('./resource/addFriends.png')}/>
 						<Text style = {styles.Text}>添加朋友</Text>
 					</View>
 				</TouchableOpacity>
 				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
 					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('../resource/sweep.png')}></Image>
+						<Image style={styles.logo} source = {require('./resource/sweep.png')}/>
 						<Text style = {styles.Text}>扫一扫</Text>
 					</View>
 				</TouchableOpacity>
 				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
 					<View style = {[styles.featureBox,{borderBottomWidth:0}]}>
-					<Image style={styles.logo} source = {require('../resource/help.png')}></Image>
+					<Image style={styles.logo} source = {require('./resource/help.png')}/>
 					<Text style = {styles.Text}>帮助与反馈</Text>
 				</View>	
 				</TouchableOpacity>

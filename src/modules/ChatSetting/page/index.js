@@ -14,7 +14,7 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import NavigationBar from 'react-native-navbar';
+import MyNavigationBar from '../../../Core/Component/NavigationBar';
 
 let {height,width} = Dimensions.get('window');
 
@@ -54,10 +54,9 @@ class ChatSetting extends ContainerComponent {
     render() {
         return (
             <View style={styles.container}>
-                <NavigationBar
-                    tintColor="#38373d"
-                    leftButton={this._leftButton()}
-                    title={this._title()} />
+                <MyNavigationBar
+                    left={{func:()=>{this.route.pop(this.props)}}}
+                    heading={'聊天设置'} />
                 <View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>

@@ -43,6 +43,11 @@ export const InitialRoute = {
     routeId: 'Start'
 }
 
+export const LoginRoute = {
+    key: 'Login',
+    routeId: 'Login'
+}
+
 export const RouteMap = {
     'Root': {
         'Root': {

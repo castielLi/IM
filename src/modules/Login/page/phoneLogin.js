@@ -25,7 +25,7 @@ let currentObj = undefined;
 
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
-		sqLite.close();
+		// sqLite.close();
 
 	}
 	constructor(props) {

@@ -35,7 +35,7 @@ export default class Features extends ContainerComponent {
     }
 	render(){
 		return (
-			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} underlayColor='#00000000' onPress = {()=>{this.changeFeatureState()}}>
+			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} underlayColor='#00000000' onPressIn = {()=>{this.changeFeatureState()}}>
 			<View style = {styles.container}>
 				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
 					<View style = {styles.featureBox}>
