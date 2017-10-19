@@ -474,7 +474,7 @@ class Chat extends Component {
         }
     }
     render() {
-        //console.log('render执行了')
+        //、console.log('render执行了')
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
