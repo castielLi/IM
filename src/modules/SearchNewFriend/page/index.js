@@ -42,14 +42,9 @@ class SearchNewFriend extends ContainerComponent {
     }
 
     searchUser = (keyword)=>{
-        let that = this;
-        let Applicant = this.props.loginStore.accountId;
-        let isFriend;
+
         currentObj.showLoading()
         this.fetchData("POST","Member/SearchUser",function(result){
-            console.log(result)
-            currentObj.hideLoading();
-
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);
@@ -61,20 +56,20 @@ class SearchNewFriend extends ContainerComponent {
 
 
                 let relations = currentObj.props.relations;
-
-                let contain = false;
+                let needRelation = null;
+                let hasRelation = false;
                 for(let item in relations){
                      if(relations[item].RelationId == result.data.Data.Account){
-                         contain = !contain;
+                         hasRelation = !hasRelation;
+                         needRelation = relations[item];
                          break;
                      }
                 }
-
-                if(contain){
-
-                }else{
-                    
+                if(hasRelation===false){
+                    needRelation = result.data.Data;
                 }
+                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+
 
             }else{
                 that.setState({

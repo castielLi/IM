@@ -72,7 +72,7 @@ export default class netWorking {
       }).then(
         (result)=>{
 
-            if(result.Data){
+            if(result.Data !=null){
 
                 resultData.success = true;
                 resultData.data = result;
@@ -116,7 +116,7 @@ export default class netWorking {
 
        }).then(
            (result)=>{
-               if(result.Data){
+               if(result.Data != null){
 
                    resultData.success = true;
                    resultData.data = result;
