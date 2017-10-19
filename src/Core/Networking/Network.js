@@ -22,6 +22,12 @@ var UsingFramework = ""
 var NeedAuth = false;
 
 
+let resultData = {};
+resultData.success = false;
+resultData.errorMessage = "";
+resultData.data = {};
+
+
 export default class netWorking {
   constructor() {
     if (__instance()) return __instance();
@@ -64,11 +70,16 @@ export default class netWorking {
 
       }).then(
         (result)=>{
-            callback(result.data);
+            resultData.success = true;
+            resultData.data = result.data;
+            resultData.errorMessage = "";
+            callback(resultData);
         },
-        (result)=>{
-            console.log(result)
-            callback(false);
+        (error)=>{
+            resultData.success = false;
+            resultData.errorMessage = error.errorMessage;
+            resultData.data = {};
+            callback(resultData);
         }
       )
     }
@@ -88,7 +99,7 @@ export default class netWorking {
 
              res(result.json());
            }else {
-             rej(result);
+             rej(error);
            }
          })
 
@@ -96,8 +107,9 @@ export default class netWorking {
          (result)=>{
            callback(result);
          },
-         (result)=>{
-           console.log(result)
+         (error)=>{
+             console.log(error)
+             callback(error)
          }
        )
      }
