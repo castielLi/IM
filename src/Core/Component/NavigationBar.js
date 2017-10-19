@@ -44,17 +44,16 @@ export default class MyNavigationBar extends Component {
         }
         else{
             return(
-                <TouchableOpacity style={styles.leftView} onPress={left.func}>
 
-                        <View style={styles.justifyCenter}>
-                            <Icon name="angle-left" size={35} color="#fff" style={styles.leftIcon}/>
-                        </View>
+                <View style={styles.justifyCenter}>
+                    <TouchableOpacity style={styles.leftView} onPress={left.func}>
+                        <Icon name="angle-left" size={35} color="#fff" style={styles.leftIcon}/>
                         {left.text ?
-                            <View style={styles.justifyCenter}>
-                                <Text style={styles.leftText}>{left.text}</Text>
-                            </View> : null
+                                <Text style={styles.leftText}>{left.text}</Text> : null
                         }
-                </TouchableOpacity>
+                    </TouchableOpacity>
+
+                </View>
             )
         }
     };
@@ -130,17 +129,25 @@ const styles = StyleSheet.create({
     },
     leftView:{
         alignItems:'center',
-        paddingLeft:11,
-        flexDirection:'row'
+        flexDirection:'row',
+        flex:1,
+        paddingHorizontal:15
+    },
+    leftBox:{
+        justifyContent: 'center',
+        alignItems:'center',
+        flex:1,
+        paddingLeft:15,
+        paddingRight:8
     },
     leftIcon:{
         textAlignVertical:'center',
-        marginRight:8
     },
     leftText:{
         fontSize:14,
         textAlignVertical:'center',
-        color:'#fff'
+        color:'#fff',
+        marginLeft:5
     },
     rightView:{
         alignItems:'center',
