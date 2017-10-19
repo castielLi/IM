@@ -48,14 +48,18 @@ class NewFriend extends ContainerComponent {
             tintColor:'#fff',
         }
     }
-
+    goToAddFriends = ()=>{
+        this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
+    }
 
     render() {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
-                    heading={"新的朋友"} />
+                    heading={"新的朋友"}
+                    right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
+                />
                 <View>
                     <View style={styles.listHeaderBox}>
                         <TextInput

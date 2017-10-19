@@ -19,7 +19,7 @@ import {
 } from './check';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import Features from './features';
+import Features from '../../Common/menu/features';
 
 var originData = [
 		{
@@ -162,7 +162,7 @@ export default class Zoom extends ContainerComponent {
 				  stickySectionHeadersEnabled={false} 
 				/>
 				{
-					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
+                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
 				}
 			</View>
 		)

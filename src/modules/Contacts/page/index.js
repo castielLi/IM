@@ -24,6 +24,7 @@ import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
 var {height, width} = Dimensions.get('window');
+import Features from '../../Common/menu/features';
 
 class Contacts extends ContainerComponent {
 
@@ -37,7 +38,9 @@ class Contacts extends ContainerComponent {
 			sections:[],
 			totalItemLength:0,
 			//右边title导航
-			rightSectionItemModalIndex:''
+			rightSectionItemModalIndex:'',
+
+            showFeatures:false,//显示功能块组件
 		}
         this.relationStore = []
 	}
@@ -174,12 +177,20 @@ class Contacts extends ContainerComponent {
 			       </TouchableOpacity>
 		}
 
+
+    changeShowFeature=(newState)=>{
+        this.setState({showFeatures:newState});
+    }
 	render() {
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
 					left = {'云信'}
+					right={[
+                        {func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
+                    ]}
 				/>
 			    <SectionList
 			      ref={'mySectionList'}
@@ -195,6 +206,9 @@ class Contacts extends ContainerComponent {
 				<View style={styles.rightSection}>
 					{this._getSections()}
 				</View>
+                {
+                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
+                }
 		    </View>
 	);
 }

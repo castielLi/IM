@@ -16,7 +16,7 @@ import Swipeout from 'react-native-swipeout';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import Features from './features';
+import Features from '../../Common/menu/features';
 import * as recentListActions from '../reducer/action';
 import * as chatRecordActions from '../../../Core/IM/redux/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
