@@ -82,18 +82,19 @@ class PhoneLogin extends ContainerComponent {
                     //todo: 存储用户信息
                     console.log(result)
 
-					if(result == false){
+					if(!result.success){
                     	currentObj.hideLoading()
-						alert("http请求出错")
+
+						if(result.errorCode == 1003){
+                    		currentObj.alert("账号或者密码错误","错误");
+						}else{
+							alert(result.errorMessage);
+						}
+                    	return;
 					}
 
-                    if(result.Data == null){
-                        currentObj.hideLoading()
-                        alert("登录出错");
-                        return;
-                    }
 
-                    currentObj.setFetchAuthorization(result.Data["SessionToken"])
+                    currentObj.setFetchAuthorization(result.data.Data["SessionToken"])
 
 
                     //登录中
@@ -101,7 +102,7 @@ class PhoneLogin extends ContainerComponent {
                     //服务器验证
                     //...
                     //验证通过
-                    let account = { accountId:currentObj.state.phoneText,SessionToken:result.Data["SessionToken"]};
+                    let account = { accountId:currentObj.state.phoneText,SessionToken:result.data.Data["SessionToken"]};
 
                     //存储登录状态
                     AsyncStorage.setItem('account',JSON.stringify(account));
@@ -174,8 +175,14 @@ class PhoneLogin extends ContainerComponent {
                        currentObj.fetchData("POST","/Member/GetContactList",function(result){
 
                        	   console.log(result);
+
+                       	   if(!result.success){
+                               alert("初始化account出错" + result.errorMessage);
+                               return;
+						   }
+
                            //添加名单
-                           user.initRelations(result.Data["FriendList"],result.Data["BlackList"],result.Data["GroupList"],function(){
+                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],result.data.Data["GroupList"],function(){
                                user.getAllRelation((data)=>{
                                    //初始化联系人store
                                    currentObj.props.initRelation(data);

@@ -49,7 +49,15 @@ class SearchNewFriend extends ContainerComponent {
         this.fetchData("POST","Member/SearchUser",function(result){
             console.log(result)
             currentObj.hideLoading();
-            if(result.Result){
+
+            currentObj.hideLoading()
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
+
+
+            if(result.data.Data){
 
 
             }else{

@@ -34,8 +34,26 @@ export default class ContainerComponent extends Component {
     }
 
 
-    alert(content) {
-        this.popup.alert(content);
+    alert(content,title="") {
+        if(title == ""){
+
+            this.popup.alert(content);
+        }else{
+            this.popup.tip({
+                title: title,
+                content: [content],
+                btn: {
+                    text: '确定',
+                    // style: {
+                    //     color: 'red'
+                    // },
+                    // callback: () => {
+                    //     this.popup.alert('over!');
+                    // },
+                },
+            });
+        }
+
     }
 
     showLoading(){

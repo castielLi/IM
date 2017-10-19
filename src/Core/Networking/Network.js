@@ -26,6 +26,7 @@ let resultData = {};
 resultData.success = false;
 resultData.errorMessage = "";
 resultData.data = {};
+resultData.errorCode = -1;
 
 
 export default class netWorking {
@@ -70,15 +71,25 @@ export default class netWorking {
 
       }).then(
         (result)=>{
-            resultData.success = true;
-            resultData.data = result.data;
-            resultData.errorMessage = "";
+
+            if(result.Data){
+
+                resultData.success = true;
+                resultData.data = result;
+                resultData.errorMessage = "";
+            }else{
+                resultData.success = false;
+                resultData.data = {};
+                resultData.errorMessage = "错误代码:" + result.Result;
+                resultData.errorCode = result.Result;
+            }
             callback(resultData);
         },
         (error)=>{
             resultData.success = false;
             resultData.errorMessage = error.errorMessage;
             resultData.data = {};
+            resultData.errorCode = -1;
             callback(resultData);
         }
       )
@@ -104,13 +115,27 @@ export default class netWorking {
          })
 
        }).then(
-         (result)=>{
-           callback(result);
-         },
-         (error)=>{
-             console.log(error)
-             callback(error)
-         }
+           (result)=>{
+               if(result.Data){
+
+                   resultData.success = true;
+                   resultData.data = result;
+                   resultData.errorMessage = "";
+               }else{
+                   resultData.success = false;
+                   resultData.data = {};
+                   resultData.errorCode = result.Result;
+                   resultData.errorMessage = "错误代码:" + result.Result;
+               }
+               callback(resultData);
+           },
+           (error)=>{
+               resultData.success = false;
+               resultData.errorMessage = error.errorMessage;
+               resultData.data = {};
+               resultData.errorCode = -1;
+               callback(resultData);
+           }
        )
      }
   }
