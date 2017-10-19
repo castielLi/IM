@@ -23,7 +23,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
-} from './check';
+} from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 let im = new IM();

@@ -45,7 +45,7 @@ class SearchNewFriend extends ContainerComponent {
         let that = this;
         let Applicant = this.props.loginStore.accountId;
         let isFriend;
-        current.showLoading()
+        currentObj.showLoading()
         this.fetchData("POST","Member/SearchUser",function(result){
             console.log(result)
             currentObj.hideLoading();
@@ -60,6 +60,22 @@ class SearchNewFriend extends ContainerComponent {
             if(result.data.Data){
 
 
+                let relations = currentObj.props.relations;
+
+                let contain = false;
+                for(let item in relations){
+                     if(relations[item].RelationId == result.data.Data.Account){
+                         contain = !contain;
+                         break;
+                     }
+                }
+
+                if(contain){
+
+                }else{
+                    
+                }
+
             }else{
                 that.setState({
                     searchResult:false
@@ -69,6 +85,8 @@ class SearchNewFriend extends ContainerComponent {
     }
 
     render() {
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
         return (
             <View style={styles.container}>
                 <View>
@@ -106,6 +124,8 @@ class SearchNewFriend extends ContainerComponent {
                     </TouchableHighlight>}
 
 
+                    <Popup ref={ popup => this.popup = popup}/>
+                    <Loading ref = { loading => this.loading = loading}/>
                 </View>
             </View>
             )
@@ -206,6 +226,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     loginStore : state.loginStore.accountMessage,
+    relations : state.relationStore
 });
 
 const mapDispatchToProps = dispatch => ({
