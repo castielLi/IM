@@ -58,7 +58,7 @@ class PhoneLogin extends ContainerComponent {
 		})
 	}
 	componentWillUpdate() {
-		console.log(this.props.loading)
+
 		if(!this.state.textMessage){
 			this._textInput.setNativeProps({maxLength:6})
 		}else if(this.state.textMessage){
@@ -80,7 +80,7 @@ class PhoneLogin extends ContainerComponent {
                 Keyboard.dismiss();//关闭软键盘
                 currentObj.fetchData("POST","/Member/Login",function(result){
                     //todo: 存储用户信息
-                    console.log(result)
+
 
 					if(!result.success){
                     	currentObj.hideLoading()
@@ -174,7 +174,6 @@ class PhoneLogin extends ContainerComponent {
 
                        currentObj.fetchData("POST","/Member/GetContactList",function(result){
 
-                       	   console.log(result);
 
                        	   if(!result.success){
                                alert("初始化account出错" + result.errorMessage);
@@ -245,7 +244,7 @@ class PhoneLogin extends ContainerComponent {
 						maxLength = {11}
 						placeholderTextColor = '#cecece'
 						// placeholder = '请输入手机号码'
-						placeholder = 'wg003662'
+						placeholder = 'wg003723'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						></TextInput>
@@ -266,7 +265,7 @@ class PhoneLogin extends ContainerComponent {
 						placeholderTextColor = '#cecece'
 						secureTextEntry = {true}
 						// placeholder = '请输入密码'
-						placeholder = 'w123456789'
+						placeholder = 'b123456789'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
 						></TextInput>

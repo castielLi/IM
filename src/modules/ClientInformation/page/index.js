@@ -20,7 +20,7 @@ import Relation from '../../../Core/User/dto/RelationModel'
 import netWorking from '../../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import IM from '../../../Core/IM'
-
+import {addApplyFriendMessage} from '../../../Core/IM/action/createMessage';
 
 import ChatCommandEnum from '../../../Core/IM/dto/ChatCommandEnum'
 import MessageBodyTypeEnum from '../../../Core/IM/dto/MessageBodyTypeEnum'
@@ -81,34 +81,6 @@ class ClientInformation extends ContainerComponent {
         }
     }
     componentDidMount() {
-
-        // let propsRelation = this.props.Relation;
-        // let _Relation = new Relation();
-        // let that = this;
-        // _Relation.OtherComment = propsRelation.OtherComment;
-        // _Relation.RelationId = propsRelation.RelationId;
-        // _Relation.Nick = propsRelation.Nick;
-        // _Relation.Remark = propsRelation.Remark;
-        // _Relation.BlackList = propsRelation.BlackList;
-        // _Relation.avator = propsRelation.avator;
-        // _Relation.Email = propsRelation.Email;
-        // _Relation.type = propsRelation.Type;
-        // _Relation.LocalImage = propsRelation.LocalImage;
-        // console.log('ghhhhhhhhhhhhhhhhhhh')
-        // this.fetchData("POST","Member/GetFriendUserInfo",function(result){
-        //     console.log(result,'sssssssssssssssssssssssssssssssssssssssssssss')
-        //     currentObj.hideLoading()
-        //     if(!result.success){
-        //         alert(result.errorMessage);
-        //         return;
-        //     }
-        //
-        //     if(result.data.Data){
-        //         that.isUpdateFriendInfo(_Relation,result.Data,propsRelation);
-        //     }
-        // },{
-        //     "Account":_Relation.RelationId
-        // })
 
         if(this.props.hasRelation){
             let needRelation = currentObj.props.Relation;
@@ -185,26 +157,11 @@ class ClientInformation extends ContainerComponent {
         let Applicant = this.props.loginStore.accountId;
         this.fetchData("POST","Member/ApplyFriend",function(result){
             if(result.Result && !result.Data){
-
                 //todo：添加一个申请好友发送界面，仿造微信
 
-                let addMessage = new SendMessageDto();
-                let messageBody = new SendMessageBodyDto();
-                let messageData = new messageBodyChatDto();
-
-                messageData.Data = "我是台台以台以台台";
-                messageData.Command = ChatCommandEnum.MSG_BODY_APP_APPLYFRIEND
-                messageData.Sender = Applicant;
-                messageData.Receiver = Respondent;
-
-                messageBody.LocalTime = new Date().getTime();
-                messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
-                messageBody.Data = messageData;
+                let addMessage = addApplyFriendMessage("我是台台以台以台台",Applicant,Respondent);
 
 
-                addMessage.Command = MessageCommandEnum.MSG_BODY;
-                addMessage.Data = messageBody;
-                addMessage.type = "friend";
 
                 im.addMessage(addMessage,function(){
 
