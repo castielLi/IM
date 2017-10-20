@@ -39,4 +39,24 @@ ReceiveManager.addReceiveMessage = function(message){
     console.log("message 加入接受队列")
 }
 
+ReceiveManager.receiveMessageOpreator = function(message){
+    if(message.type == 'text')
+    {
+        currentObj.storeRecMessage(message)
+        //回调App上层发送成功
+        currentObj.ReceiveMessageHandle(message);
+    }else if(message.type == ""){
+        //回调App上层发送成功
+        currentObj.ReceiveMessageHandle(message);
+    }
+    else{
+
+        currentObj.addDownloadResource(message,function (message) {
+            currentObj.storeRecMessage(message)
+
+            currentObj.ReceiveMessageHandle(message);
+        })
+    }
+}
+
 export default ReceiveManager;
