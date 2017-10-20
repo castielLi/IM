@@ -177,6 +177,9 @@ class ClientInformation extends ContainerComponent {
                 console.log('已成功添加被单方面删除的好友')
                 alert('成功')
             }
+            else if(result.Result && result.Data){
+                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.Data}})
+            }
         },{Applicant,Respondent})
     }
     render() {

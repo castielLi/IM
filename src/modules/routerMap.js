@@ -31,6 +31,7 @@ import NewFriend from './NewFriend/page'
 import SearchNewFriend from './SearchNewFriend/page'
 import ChatSetting from './ChatSetting/page'
 import Me from './Me/page'
+import Validate from './AddFriends/validate'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -184,6 +185,12 @@ export const RouteMap = {
     'Me': {
         'Me': {
             component: Me,
+            params: {}
+        }
+    },
+    'Validate': {
+        'Validate': {
+            component: Validate,
             params: {}
         }
     },
