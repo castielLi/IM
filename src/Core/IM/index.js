@@ -419,7 +419,11 @@ export default class IM {
 
 
     receiveMessageOpreator(message){
-        AckManager.receiveMessageOpreator(message);
+        if(message.Command == undefined) {
+            AckManager.receiveMessageOpreator(message);
+        }else if(message.Command == MessageCommandEnum.MSG_BODY){
+            ReceiveManager.receiveMessageOpreator(message);
+        }
     }
 
     recMessage(message,type=null) {

@@ -168,6 +168,9 @@ class ClientInformation extends ContainerComponent {
                 })
 
             }
+            else if(result.Result && result.Data){
+                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.Data}})
+            }
         },{Applicant,Respondent})
     }
     render() {
