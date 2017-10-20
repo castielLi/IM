@@ -11,6 +11,8 @@ export default function relationStore(state=initialState, action){
 
         case 'INIT_RELATION':
             return action.relationData;
+        case 'CLEAR_RELATION':
+            return initialState;
         case 'DELETE_RELATION':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relationId){

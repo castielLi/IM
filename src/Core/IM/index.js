@@ -316,6 +316,8 @@ export default class IM {
                 case MessageType.audio:
                     FileManager.addResource(message,onprogess,callback);
                     break;
+                case MessageType.friend:
+                    SendManager.addSendMessage(message,callback);
                 default:
                     break;
             }

@@ -23,3 +23,10 @@ export function initUnReadMessageNumber(number){
 
 }
 
+export function clearAllTabberMessageNumber(){
+    return {
+        type: 'CLEAR_ALLTABBERMESSAGE_NUMBER',
+    };
+
+}
+
