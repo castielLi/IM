@@ -29,13 +29,15 @@ class ClientInformation extends ContainerComponent {
         super()
         this.render = this.render.bind(this);
         this.state = {
-            selectedTab: 'home',
-            isLogged: false
+                Account:'',
+                Nickname:'',
+                PhoneNumber:'',
+                HeadImageUrl:''
         }
         currentObj = this;
     }
 
-    isUpdateFriendInfo = (_Relation,UserInfo,propsRelation) =>{
+    isUpdateFriendInfo = (UserInfo,propsRelation) =>{
         let isUpdate;
         let user = new User();
         let _network = new netWorking();
@@ -43,10 +45,10 @@ class ClientInformation extends ContainerComponent {
         let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
         let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
 
-        if(_Relation.Nick != UserInfo.Nickname || _Relation.OtherComment != UserInfo.Gender || _Relation.Email != UserInfo.Email){
-            _Relation.Nick = UserInfo.Nickname;
-            _Relation.OtherComment = UserInfo.Gender;
-            _Relation.Email = UserInfo.Email;
+        if(propsRelation.Nick !== UserInfo.Nickname || _Relation.OtherComment !== UserInfo.Gender || _Relation.Email !== UserInfo.Email){
+            propsRelation.Nick = UserInfo.Nickname;
+            propsRelation.OtherComment = UserInfo.Gender;
+            propsRelation.Email = UserInfo.Email;
             isUpdate = true;
         }
         updateImage = (result) => {
@@ -55,9 +57,10 @@ class ClientInformation extends ContainerComponent {
             if(propsRelation.LocalImage){
                 RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
             }
+
         };
-        if(_Relation.avator == UserInfo.HeadImageUrl){
-            _Relation.avator = UserInfo.HeadImageUrl;
+        if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
+            propsRelation.avator = UserInfo.HeadImageUrl;
             isUpdate = true;
             _network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
         }
@@ -67,35 +70,71 @@ class ClientInformation extends ContainerComponent {
         }
     }
     componentDidMount() {
-        if(1){
-            return;
+
+        // let propsRelation = this.props.Relation;
+        // let _Relation = new Relation();
+        // let that = this;
+        // _Relation.OtherComment = propsRelation.OtherComment;
+        // _Relation.RelationId = propsRelation.RelationId;
+        // _Relation.Nick = propsRelation.Nick;
+        // _Relation.Remark = propsRelation.Remark;
+        // _Relation.BlackList = propsRelation.BlackList;
+        // _Relation.avator = propsRelation.avator;
+        // _Relation.Email = propsRelation.Email;
+        // _Relation.type = propsRelation.Type;
+        // _Relation.LocalImage = propsRelation.LocalImage;
+        // console.log('ghhhhhhhhhhhhhhhhhhh')
+        // this.fetchData("POST","Member/GetFriendUserInfo",function(result){
+        //     console.log(result,'sssssssssssssssssssssssssssssssssssssssssssss')
+        //     currentObj.hideLoading()
+        //     if(!result.success){
+        //         alert(result.errorMessage);
+        //         return;
+        //     }
+        //
+        //     if(result.data.Data){
+        //         that.isUpdateFriendInfo(_Relation,result.Data,propsRelation);
+        //     }
+        // },{
+        //     "Account":_Relation.RelationId
+        // })
+
+        if(this.props.hasRelation){
+            let needRelation = currentObj.props.Relation;
+
+            let accountId = currentObj.props.Relation.RelationId;
+            this.showLoading()
+            this.fetchData("POST","Member/GetFriendUserInfo",function(result){
+                currentObj.hideLoading();
+                if(!result.success){
+                    alert(result.errorMessage);
+                    return;
+                }
+
+                if(result.data.Data){
+                    let {Account,Nickname,PhoneNumber,HeadImageUrl} = result.data.Data;
+                    currentObj.setState({
+                        Account,
+                        Nickname,
+                        PhoneNumber,
+                        HeadImageUrl
+                    })
+                    currentObj.isUpdateFriendInfo(result.data.Data,needRelation);
+
+                }
+            },{
+                "Account":accountId
+            })
+        }else{
+
+            let {Account,Nickname,PhoneNumber,HeadImageUrl} = currentObj.props.Relation;
+            currentObj.setState({
+                Account,
+                Nickname,
+                PhoneNumber,
+                HeadImageUrl
+            })
         }
-        let propsRelation = this.props.Relation;
-        let _Relation = new Relation();
-        let that = this;
-        _Relation.OtherComment = propsRelation.OtherComment;
-        _Relation.RelationId = propsRelation.RelationId;
-        _Relation.Nick = propsRelation.Nick;
-        _Relation.Remark = propsRelation.Remark;
-        _Relation.BlackList = propsRelation.BlackList;
-        _Relation.avator = propsRelation.avator;
-        _Relation.Email = propsRelation.Email;
-        _Relation.type = propsRelation.Type;
-        _Relation.LocalImage = propsRelation.LocalImage;
-        this.fetchData("POST","Member/GetFriendUserInfo",function(result){
-
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-
-            if(result.data.Data){
-                that.isUpdateFriendInfo(_Relation,result.Data,propsRelation);
-            }
-        },{
-            "Account":_Relation.RelationId
-        })
     }
 
 
@@ -128,7 +167,7 @@ class ClientInformation extends ContainerComponent {
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.props.Relation.RelationId,type:this.props.Relation.Type}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.Account,type:'pravite'}});
     }
 
     addFriend = (Respondent)=>{
@@ -141,8 +180,10 @@ class ClientInformation extends ContainerComponent {
         },{Applicant,Respondent})
     }
     render() {
-        let {HeadImageUrl,Account,Nickname} = this.props.Relation;
-        let isFriend = this.props.isFriend;
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
+        let {HeadImageUrl,Account,Nickname} = this.state;
+        let hasRelation = this.props.hasRelation;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -168,7 +209,7 @@ class ClientInformation extends ContainerComponent {
                         <Text style={styles.address}>地区</Text>
                         <Text style={styles.place}>重庆 大渡口</Text>
                     </View>
-                    {isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('相册')}>
+                    {hasRelation ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('相册')}>
                         <View  style={styles.photoBox}>
                             <View style={{flexDirection:'row',alignItems:'center'}}>
                                 <Text style={styles.address}>个人相册</Text>
@@ -183,22 +224,23 @@ class ClientInformation extends ContainerComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight> : null}
-                    {isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
+                    {hasRelation ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
                         <View  style={[styles.remarksBox,{marginTop:0}]}>
                             <Text style={styles.remarks}>更多</Text>
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight> : null}
-
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
+                    {hasRelation ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(Account)}} style={styles.sendMessageBox}>
+                    </TouchableHighlight>: null}
+                    {hasRelation ? null: <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(Account)}} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>添加到通讯录</Text>
-                    </TouchableHighlight>
+                    </TouchableHighlight>}
+
 
                 </View>
+                <Popup ref={ popup => this.popup = popup}/>
+                <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
             
