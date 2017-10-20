@@ -201,6 +201,12 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
+//添加申请好友和收到好友申请的消息
+IMFMDB.InsertFriendMessage = function(message){
+
+}
+
+
 //删除当前用户的聊天记录
 IMFMDB.DeleteChatByClientId = function(name,chatType){
     var db = SQLite.openDatabase({

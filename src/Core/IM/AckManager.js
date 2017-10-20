@@ -92,6 +92,9 @@ AckManager.receiveMessageOpreator = function(message){
             currentObj.storeRecMessage(message)
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
+        }else if(message.type == ""){
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
         }
         else{
 

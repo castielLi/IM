@@ -19,8 +19,19 @@ import User from '../../../Core/User'
 import Relation from '../../../Core/User/dto/RelationModel'
 import netWorking from '../../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
+import IM from '../../../Core/IM'
 
 
+import ChatCommandEnum from '../../../Core/IM/dto/ChatCommandEnum'
+import MessageBodyTypeEnum from '../../../Core/IM/dto/MessageBodyTypeEnum'
+import MessageCommandEnum from '../../../Core/IM/dto/MessageCommandEnum'
+
+import SendMessageBodyDto from '../../../Core/IM/dto/SendMessageBodyDto'
+import SendMessageDto from '../../../Core/IM/dto/SendMessageDto'
+import messageBodyChatDto from '../../../Core/IM/dto/messageBodyChatDto'
+
+
+let im = new IM();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -174,8 +185,31 @@ class ClientInformation extends ContainerComponent {
         let Applicant = this.props.loginStore.accountId;
         this.fetchData("POST","Member/ApplyFriend",function(result){
             if(result.Result && !result.Data){
-                console.log('已成功添加被单方面删除的好友')
-                alert('成功')
+
+                //todo：添加一个申请好友发送界面，仿造微信
+
+                let addMessage = new SendMessageDto();
+                let messageBody = new SendMessageBodyDto();
+                let messageData = new messageBodyChatDto();
+
+                messageData.Data = "我是台台以台以台台";
+                messageData.Command = ChatCommandEnum.MSG_BODY_APP_APPLYFRIEND
+                messageData.Sender = Applicant;
+                messageData.Receiver = Respondent;
+
+                messageBody.LocalTime = new Date().getTime();
+                messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
+                messageBody.Data = messageData;
+
+
+                addMessage.Command = MessageCommandEnum.MSG_BODY;
+                addMessage.Data = messageBody;
+                addMessage.type = "friend";
+
+                im.addMessage(addMessage,function(){
+
+                })
+
             }
         },{Applicant,Respondent})
     }
