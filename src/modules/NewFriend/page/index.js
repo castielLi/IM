@@ -10,12 +10,15 @@ import {Text,
     Image,
     TouchableHighlight,
     Dimensions,
-    Switch
+    Switch,
+    ListView
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Swipeout from 'react-native-swipeout';
+import IM from '../../../Core/IM';
 
 let {height,width} = Dimensions.get('window');
 
@@ -23,35 +26,63 @@ class NewFriend extends ContainerComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);
-
-    }
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <View style={styles.back}>
-
-                <View style={{justifyContent: 'center'}}>
-                    <Icon name="angle-left" size={35} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
-                </View>
-
-                    <View style={{justifyContent: 'center'}}>
-                        <Text style={{fontSize:14,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
-                    </View>
-
-            </View>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "新的朋友",
-            tintColor:'#fff',
-        }
+        let ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2,
+        })
+        this.im = new IM();
+        this.state = {
+            dataSource: ds,
+        };
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
     }
 
+    componentWillMount(){
+        this.im.getAllApplyFriendMessage(function (result) {
+            alert(result)
+        })
+    }
+
+    _renderRow = (rowData, sectionID, rowID)=>{
+        return(
+            <View>
+                <Swipeout
+                    right = {
+                        [{
+                            text:'删除',
+                            type:'delete',
+                            onPress:()=>{alert('删除')}
+                        }]
+                    }
+                    rowID = {rowID}
+                    sectionID = {sectionID}
+                    close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}
+                    onOpen={(sectionID, rowID) => {
+                        this.setState({
+                            sectionID:sectionID,
+                            rowID:rowID,
+                        })
+                    }}
+                    autoClose={true}
+                >
+
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                        <View  style={styles.itemBox}>
+                            <View style={styles.basicBox}>
+                                <Image style={styles.headPic} source={require('../resource/other.jpg')}/>
+                                <View style={styles.basicBoxRight}>
+                                    <Text style={styles.name}>张彤</Text>
+                                    <Text style={styles.description}>我是张彤</Text>
+                                </View>
+                            </View>
+                            <Text style={styles.arrow}>{'已添加'}</Text>
+                        </View>
+                    </TouchableHighlight>
+                </Swipeout>
+            </View>
+        )
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -68,18 +99,13 @@ class NewFriend extends ContainerComponent {
                         >
                         </TextInput>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
-                        <View  style={styles.itemBox}>
-                            <View style={styles.basicBox}>
-                                <Image style={styles.headPic} source={require('../resource/other.jpg')}></Image>
-                                <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>张彤</Text>
-                                    <Text style={styles.description}>我是张彤</Text>
-                                </View>
-                            </View>
-                            <Text style={styles.arrow}>{'已添加'}</Text>
-                        </View>
-                    </TouchableHighlight>
+                    <ListView
+                        dataSource = {this.state.dataSource.cloneWithRows([1,2,3,4,5])}
+                        renderRow = {this._renderRow}
+                        enableEmptySections = {true}
+                        removeClippedSubviews={false}
+                    >
+                    </ListView>
 
                 </View>
             </View>

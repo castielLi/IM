@@ -245,10 +245,12 @@ IMFMDB.GetFriendMessage = function(callback){
     }, () => {
         db.transaction((tx) => {
             tx.querySql(querySql, [], (tx, results) => {
-
+                console.log(results)
                 callback(results.row.raw());
 
-            }, (err)=>{errorDB('获取好友申请消息',err)});
+            }, (err)=>{
+                errorDB('获取好友申请消息',err);
+                console.log(err)});
         });
     }, errorDB);
 }
