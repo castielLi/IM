@@ -12,12 +12,20 @@ import RNFS from 'react-native-fs';
 
 export function storeSendMessage(message){
 
-    IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Receiver)
+    if(message.type != "friend") {
+        IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
+    }else{
+        IMFMDB.InsertFriendMessage(message);
+    }
 }
 
 export function storeRecMessage(message){
 
-    IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
+    if(message.type != "friend") {
+        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
+    }else{
+        IMFMDB.InsertFriendMessage(message);
+    }
 }
 
 export function deleteClientRecode(name,chatType){
@@ -203,7 +211,56 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
 //添加申请好友和收到好友申请的消息
 IMFMDB.InsertFriendMessage = function(message){
+    let insertSql = sqls.ExcuteIMSql.AddNewMessageToApplyFriend;
 
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,message.status,message.Data.Data.Data])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(insertSql, [], (tx, results) => {
+               console.log("添加好友申请消息成功");
+            }, (err)=>{errorDB('添加好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
+//获取所有好友申请表中的数据
+IMFMDB.GetFriendMessage = function(callback){
+    let querySql = sqls.ExcuteIMSql.QueryApplyFriend;
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.querySql(querySql, [], (tx, results) => {
+
+                callback(results.row.raw());
+
+            }, (err)=>{errorDB('获取好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
+
+//更新好友申请表
+IMFMDB.UpdateFriendMessage = function(message){
+    let updateSql = sqls.ExcuteIMSql.UpdateApplyFriend;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.Id])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.querySql(updateSql, [], (tx, results) => {
+
+                console.log("修改好友申请表成功")
+
+            }, (err)=>{errorDB('修改好友申请消息',err)});
+        });
+    }, errorDB);
 }
 
 
