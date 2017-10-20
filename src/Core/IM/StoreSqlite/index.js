@@ -84,6 +84,14 @@ export function getChatList(callback){
     IMFMDB.getAllChatClientList(callback)
 }
 
+export function getAllApplyFriendMessage(callback){
+    IMFMDB.GetFriendMessage(callback);
+}
+
+export function updateApplyFriendMessage(message){
+    IMFMDB.UpdateFriendMessage(message)
+}
+
 var databaseObj = {
     name :"IM.db",
 }
@@ -213,7 +221,9 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 IMFMDB.InsertFriendMessage = function(message){
     let insertSql = sqls.ExcuteIMSql.AddNewMessageToApplyFriend;
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,message.status,message.Data.Data.Data])
+    let time = new Date().getTime();
+
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,message.status,message.Data.Data.Data,time])
 
     var db = SQLite.openDatabase({
         ...databaseObj

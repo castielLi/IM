@@ -281,6 +281,17 @@ export default class IM {
     }
 
 
+    //获取所有好友申请消息
+    getAllApplyFriendMessage(callback){
+        storeSqlite.getAllApplyFriendMessage(callback);
+    }
+
+    //修改好友申请消息
+    updateApplyFriendMessage(message){
+        storeSqlite.updateApplyFriendMessage(message);
+    }
+
+
     //外部接口，添加消息
     addMessage(message,callback=function(success,content){},onprogess="undefined") {
 
