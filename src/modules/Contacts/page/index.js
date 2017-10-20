@@ -75,7 +75,6 @@ class Contacts extends ContainerComponent {
 							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
 							onPressOut={this.onPressRightSectionItemOut}
 							//pointerEvents="none"
-							disabled={true}
 							ref={'sectionItem' + i}>
 							<View style={styles.rightSectionView}>
 								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
@@ -127,7 +126,6 @@ class Contacts extends ContainerComponent {
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
 									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
 								</View>
-								{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
@@ -136,7 +134,6 @@ class Contacts extends ContainerComponent {
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
 							</View>
-							{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
@@ -145,7 +142,6 @@ class Contacts extends ContainerComponent {
 								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
 							</View>
-							{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
@@ -154,7 +150,6 @@ class Contacts extends ContainerComponent {
 								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
 								</View>
-							{/*<View style={styles.ItemSeparator}><Text></Text></View>*/}
 							</View>
 					   </TouchableHighlight>
 					</View>
@@ -164,7 +159,7 @@ class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'位联系人'}</Text></View>
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.props.relationStore.length+'位联系人'}</Text></View>
 	}
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
