@@ -16,8 +16,8 @@ import {
 
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
-
-
+import IM from '../../Core/IM';
+import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
 export default class Validate extends ContainerComponent {
     constructor(props){
         super(props)
@@ -49,13 +49,19 @@ export default class Validate extends ContainerComponent {
         })
     }
 
+    sendApplyMessage= ()=>{
+        let addMessage = addApplyFriendMessage("我是台台以台以台台",Applicant,Respondent);
+        im.addMessage(addMessage,function(){
+
+        })
+    }
     render() {
         return(
             <View style={styles.container}>
                 <MyNavigationBar
                     heading={'验证申请'}
                     left={{func:()=>{this.route.pop(this.props)}}}
-                    right={{func:()=>{},text:'发送'}}
+                    right={{func:this.sendApplyMessage,text:'发送'}}
                 />
                 <View style={styles.Box}>
                     <View style={styles.rowBox}>
