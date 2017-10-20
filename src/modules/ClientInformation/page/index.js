@@ -43,7 +43,8 @@ class ClientInformation extends ContainerComponent {
                 Account:'',
                 Nickname:'',
                 PhoneNumber:'',
-                HeadImageUrl:''
+                HeadImageUrl:'',
+                isRenderSendMessage:false//针对单方面添加好友，直接显示发送消息
         }
         currentObj = this;
     }
@@ -155,19 +156,17 @@ class ClientInformation extends ContainerComponent {
 
     addFriend = (Respondent)=>{
         let Applicant = this.props.loginStore.accountId;
+        currentObj.showLoading()
         this.fetchData("POST","Member/ApplyFriend",function(result){
-            if(result.Result && !result.Data){
-                //todo：添加一个申请好友发送界面，仿造微信
-
-                let addMessage = addApplyFriendMessage("我是台台以台以台台",Applicant,Respondent);
-
-
-
-                im.addMessage(addMessage,function(){
-
+            currentObj.hideLoading()
+            //单方面添加好友
+            if(result.Result && result.Data===null){
+                currentObj.setState({
+                    isRenderSendMessage:true
                 })
 
             }
+            //双方互不为好友
             else if(result.Result && result.Data){
                 currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.Data}})
             }
@@ -176,7 +175,7 @@ class ClientInformation extends ContainerComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let {HeadImageUrl,Account,Nickname} = this.state;
+        let {HeadImageUrl,Account,Nickname,isRenderSendMessage} = this.state;
         let hasRelation = this.props.hasRelation;
         return (
             <View style={styles.container}>
@@ -224,10 +223,10 @@ class ClientInformation extends ContainerComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight> : null}
-                    {hasRelation ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
+                    {hasRelation||isRenderSendMessage ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
                     </TouchableHighlight>: null}
-                    {hasRelation ? null: <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(Account)}} style={styles.sendMessageBox}>
+                    {hasRelation ||isRenderSendMessage? null: <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(Account)}} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>添加到通讯录</Text>
                     </TouchableHighlight>}
 

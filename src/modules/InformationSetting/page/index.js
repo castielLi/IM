@@ -85,9 +85,6 @@ class InformationSetting extends ContainerComponent {
         if(1 == i){
             currentObj.showLoading()
             this.fetchData("POST","Member/DeleteFriend",function(result){
-
-                  console.log(result);
-
                   currentObj.hideLoading()
                   if(!result.success){
                       alert(result.errorMessage);
@@ -138,6 +135,8 @@ class InformationSetting extends ContainerComponent {
 
 
     render() {
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -196,6 +195,8 @@ class InformationSetting extends ContainerComponent {
                         onPress={this.handlePress}
                     />
                 </View>
+                <Popup ref={ popup => this.popup = popup}/>
+                <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
             
