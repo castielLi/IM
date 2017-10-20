@@ -19,6 +19,10 @@ export default function recentListStore(state=initialState, action){
             return {
                 ...state
             };
+        case 'CLEAR_RECENTLIST':
+            return {
+                ...initialState
+            };
         case 'UPDATE_RECENTITEM_LASTMESSAGE':
             let existItem = false;//recentListStore是否存在这个client对应的item
             state.data.every((v,i)=>{

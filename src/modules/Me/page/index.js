@@ -40,15 +40,7 @@ class Me extends ContainerComponent {
 
 
     loginOut = ()=>{
-        AsyncStorage.setItem('account','');
-        RNFS.moveFile('/data/data/com.im/databases/IM.db','/data/data/com.im/files/'+this.props.accountId+'/database/IM.db');
-
         this.props.signOut();
-        this.props.clearChatRecord();
-        closeImDb();
-        closeAccountDb();
-        im.logout();
-        this.route.ToLogin();
     }
     csFunc = (x)=>{
         alert('测试执行成功'+x)

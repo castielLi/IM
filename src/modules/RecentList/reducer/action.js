@@ -80,3 +80,11 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
     }
 
 }
+
+
+export function clearRecentList(){
+    return {
+        type: 'CLEAR_RECENTLIST',
+    };
+
+}

@@ -26,7 +26,7 @@ import SendMessageDto from './Core/IM/dto/SendMessageDto'
 import messageBodyChatDto from './Core/IM/dto/messageBodyChatDto'
 
 import * as ActionForChatRecordStore from './Core/IM/redux/action'
-
+import * as ActionForLoginStore from './modules/Login/reducer/action';
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
 import route from './Core/route/router'
@@ -69,10 +69,10 @@ export default function App() {
             "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
             [
                 {text: '确定', onPress: () => {
-                    route.ToLogin();
+                    store.dispatch(ActionForLoginStore.signOut());
                 }},
                 {text: '不是本人操作',style:{color:"red"}, onPress: () => {
-                    route.ToLogin();
+                    store.dispatch(ActionForLoginStore.signOut());
                 }},
             ]);
     }

@@ -27,6 +27,10 @@ export default function unReadMessageStore(state=initialState, action){
                 ...state,
                 unReadMessageNumber:action.number
             };
+        case 'CLEAR_ALLTABBERMESSAGE_NUMBER':
+            return {
+                ...initialState
+            };
         default:
             return state;
     }
