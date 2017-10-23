@@ -33,7 +33,7 @@ import messageBodyChatDto from '../dto/messageBodyChatDto';
     return addMessage;
 }
 //发送文本
- export  function addTextMessage(text,way,Sender,Receiver,messageDataCommand) {
+ export function addTextMessage(text,way,Sender,Receiver,messageDataCommand) {
      return createMessageObj('text',text,way,null,Sender,Receiver,messageDataCommand,MessageBodyTypeEnum.MSG_BODY_CHAT)
 };
  //发送资源
