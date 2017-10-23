@@ -11,7 +11,7 @@ import messageBodyChatDto from '../dto/messageBodyChatDto';
     let messageBody = new SendMessageBodyDto();
     let messageData = new messageBodyChatDto();
 
-    messageData.Data = type;
+    messageData.Data = text;
     //messageData.Command = ChatCommandEnum.MSG_BODY_CHAT_C2C;
      messageData.Command = messageDataCommand;
 

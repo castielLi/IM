@@ -8,6 +8,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
+import * as friendApplicationActions from '../../NewFriend/reducer/action'
 
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
@@ -67,6 +68,12 @@ class Start extends ContainerComponent {
                                 im.initIMDatabase(account.accountId)
                                 user.initIMDatabase(account.accountId)
                             }
+
+                            im.getAllApplyFriendMessage((result) => {
+
+                                currentObj.props.initFriendApplication(result);
+
+                            })
                             user.getAllRelation((data)=>{
                                 //初始化联系人store
                                 currentObj.props.initRelation(data);
@@ -133,6 +140,7 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
+      ...bindActionCreators(friendApplicationActions, dispatch),
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Start);

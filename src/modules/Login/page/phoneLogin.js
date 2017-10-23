@@ -170,6 +170,7 @@ class PhoneLogin extends ContainerComponent {
                    function dealCommon(){
                        //初始化用户系统
                        let user = new User();
+                       let im = new IM();
                        user.initIMDatabase(account.accountId);
 
                        currentObj.fetchData("POST","/Member/GetContactList",function(result){
@@ -180,6 +181,11 @@ class PhoneLogin extends ContainerComponent {
                                return;
 						   }
 
+                           im.getAllApplyFriendMessage((result) => {
+
+                               currentObj.props.initFriendApplication(result);
+
+                           })
                            //添加名单
                            user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],result.data.Data["GroupList"],function(){
                                user.getAllRelation((data)=>{

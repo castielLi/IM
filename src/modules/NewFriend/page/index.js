@@ -19,6 +19,8 @@ import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swipeout from 'react-native-swipeout';
 import IM from '../../../Core/IM';
+import {bindActionCreators} from 'redux';
+import * as friendApplicationActions from '../reducer/action'
 
 let {height,width} = Dimensions.get('window');
 
@@ -39,11 +41,30 @@ class NewFriend extends ContainerComponent {
     }
 
     componentWillMount(){
-        this.im.getAllApplyFriendMessage(function (result) {
-            alert(result)
-        })
+        // this.im.getAllApplyFriendMessage(function(result){
+        //
+        //     this.applyData = result;
+        //     this.sqlData = result;
+        //
+        // })
     }
 
+    componentWillReceiveProps(nextProps){
+        //let reduxData = nextProps.friendApplicationStore;
+        //this.applyData = sqlData.concat(reduxData)
+        this.applyData = nextProps.friendApplicationStore;
+    }
+
+    agreeApply = (index,data)=>{
+        alert('同意好友申请')
+        //this.props.acceptFriendApplication(index)
+        let {status,Id} = data;
+        this.im.updateApplyFriendMessage()
+    };
+    deleteApply = (index)=>{
+        alert('删除好友申请')
+        //this.props.deleteFriendApplication(index)
+    };
     _renderRow = (rowData, sectionID, rowID)=>{
         return(
             <View>
@@ -52,7 +73,7 @@ class NewFriend extends ContainerComponent {
                         [{
                             text:'删除',
                             type:'delete',
-                            onPress:()=>{alert('删除')}
+                            onPress:()=>{this.deleteApply(index)}
                         }]
                     }
                     rowID = {rowID}
@@ -77,6 +98,14 @@ class NewFriend extends ContainerComponent {
                                 </View>
                             </View>
                             <Text style={styles.arrow}>{'已添加'}</Text>
+                            <TouchableHighlight
+                                underlayColor="#1FB579"
+                                onPress={()=>{this.agreeApply(rowID,rowData)}}
+                                style={styles.btnBox}>
+                                <View style={styles.btnView}>
+                                    <Text style={styles.btnText}>接受</Text>
+                                </View>
+                            </TouchableHighlight>
                         </View>
                     </TouchableHighlight>
                 </Swipeout>
@@ -175,15 +204,30 @@ const styles = StyleSheet.create({
         fontSize:15,
         color:'#aaa'
     },
+    btnBox:{
+        backgroundColor:'#1fd094',
+        width:50,
+        height:30,
+        borderRadius:8,
+    },
+    btnView:{
+        flex:1,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    btnText:{
+        color:'#ffffff',
+        fontSize:14,
+    },
 });
 
 
 const mapStateToProps = state => ({
-    
+    friendApplicationStore : state.friendApplicationStore,
 });
 
 const mapDispatchToProps = dispatch => ({
-
+    ...bindActionCreators(friendApplicationActions, dispatch),
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(NewFriend);

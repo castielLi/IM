@@ -244,13 +244,11 @@ IMFMDB.GetFriendMessage = function(callback){
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-            tx.querySql(querySql, [], (tx, results) => {
-                console.log(results)
+            tx.executeSql(querySql, [], (tx, results) => {
+
                 callback(results.row.raw());
 
-            }, (err)=>{
-                errorDB('获取好友申请消息',err);
-                console.log(err)});
+            }, (err)=>{errorDB('获取好友申请消息',err)});
         });
     }, errorDB);
 }
@@ -266,7 +264,7 @@ IMFMDB.UpdateFriendMessage = function(message){
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-            tx.querySql(updateSql, [], (tx, results) => {
+            tx.executeSql(updateSql, [], (tx, results) => {
 
                 console.log("修改好友申请表成功")
 
