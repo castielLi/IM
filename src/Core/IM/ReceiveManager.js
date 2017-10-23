@@ -5,7 +5,6 @@ import * as Helper from '../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from './dto/MessageType'
 
-
 let ReceiveManager = {};
 let currentObj = undefined;
 

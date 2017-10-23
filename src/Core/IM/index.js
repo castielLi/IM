@@ -451,7 +451,7 @@ export default class IM {
             AppKickOutHandle();
         }
 
-        ReceiveManager.addReceiveMessage(message)
+        currentObj.receiveMessageOpreator(message)
     }
 
 

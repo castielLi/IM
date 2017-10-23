@@ -50,7 +50,7 @@ export default class Connect extends Component{
             let message = JSON.parse(event.data);
             console.log("消息类型是："+message.Command,message,'-----------------------------------------------------------------------------');
             if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
-                onRecieveMessage(message.MSGID,MessageCommandEnum.MSG_REV_ACK);
+                onRecieveMessage(message.Data,MessageCommandEnum.MSG_REV_ACK);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
                 heartBeatCode = message;
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);

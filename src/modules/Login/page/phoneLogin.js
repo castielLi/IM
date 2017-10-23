@@ -203,7 +203,7 @@ class PhoneLogin extends ContainerComponent {
                 },{
                     "Account": currentObj.state.phoneText,
                     "DeviceNumber": "1",
-                    "DeviceType": "Mobile",
+                    "DeviceType": "1",
                     "Key": currentObj.state.phoneText,
                     "LoginIP": "192.168.0.103",
                     "Password": currentObj.state.passWordText,
