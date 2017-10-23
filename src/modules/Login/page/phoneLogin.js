@@ -102,7 +102,9 @@ class PhoneLogin extends ContainerComponent {
                     //服务器验证
                     //...
                     //验证通过
-                    let account = { accountId:currentObj.state.phoneText,SessionToken:result.data.Data["SessionToken"]};
+                    let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
+                    ,gender:result.data.Data["Gender"],nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
+					,device:"Mobile",deviceId:"1"};
 
                     //存储登录状态
                     AsyncStorage.setItem('account',JSON.stringify(account));
@@ -112,7 +114,7 @@ class PhoneLogin extends ContainerComponent {
                     if(Platform.OS === 'ios'){
                         //初始化im
                         let im = new IM();
-                        im.setSocket(account.accountId);
+                        im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                         im.initIMDatabase(account.accountId)
                         //如果是android
                     }else{

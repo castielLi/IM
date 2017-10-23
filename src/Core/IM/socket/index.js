@@ -17,6 +17,9 @@ let __instance = (function () {
 
 let onRecieveMessage = "undefined";
 let _token = undefined;
+let _deviceId = undefined;
+let _device = undefined;
+let _imToken = undefined;
 let netWorkStatus = undefined;
 let currentObj = undefined;
 let heartBeatCode = undefined;
@@ -113,15 +116,23 @@ export default class Connect extends Component{
         onRecieveMessage = callback;
     }
 
-    startConnect(token){
+    startConnect(token,Device,DeviceId,IMToken){
         _token = token;
-        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
+        _deviceId = DeviceId;
+        _device = Device;
+        _imToken = IMToken;
+
+        // AppId = 1
+        // Device = DeviceType
+        // DeviceNumber = DeviceId
+
+        this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+Device+"&Token="+ IMToken + "&DeviceId="+DeviceId);
         this.addEventListenner();
     }
 
     reConnectNet(){
         // + "/socket.io/?EIO=4&transport=websocket"
-       this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
+       this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+_device+"&Token="+ _imToken + "&DeviceId="+_deviceId);
        this.addEventListenner();
     }
 

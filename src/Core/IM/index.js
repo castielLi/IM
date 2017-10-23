@@ -97,8 +97,8 @@ export default class IM {
         FileManager.Ioc(this);
     }
 
-    setSocket(account){
-        _socket.startConnect(account);
+    setSocket(account,device,deviceId,imToken){
+        _socket.startConnect(account,device,deviceId,imToken);
         ME = account;
         FileManager.setAccountId(account);
     }
@@ -106,7 +106,6 @@ export default class IM {
     //初始化IM的数据库
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
-
             //获取之前没有发送出去的消息重新加入消息队列
             currentObj.addAllUnsendMessageToSendQueue();
         });

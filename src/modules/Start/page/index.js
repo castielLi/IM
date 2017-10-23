@@ -58,9 +58,13 @@ class Start extends ContainerComponent {
 
                         if(result.data.Data != null){
                             //缓存token
-                            AsyncStorage.setItem('account',JSON.stringify({ accountId:account.accountId,SessionToken:result.data.Data["SessionToken"]}));
+                            AsyncStorage.setItem('account',JSON.stringify(
+                                { accountId:account.accountId,SessionToken:result.data.Data["SessionToken"],IMToken:account.IMToken
+                                    ,gender:account.gender,nick:account.nick,avator:account.avator,phone:account.phone
+                                    ,device:account.device,deviceId:account.deviceId}
+                            ));
                             let im = new IM();
-                            im.setSocket(account.accountId);
+                            im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
 
                             let user = new User();
                             if(Platform.OS === 'ios'){

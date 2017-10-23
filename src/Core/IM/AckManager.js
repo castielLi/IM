@@ -5,6 +5,7 @@ import * as Helper from '../Helper'
 import * as configs from './IMconfig'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 
+//todo: 删除ack manager 和send manager合并成一个
 
 let AckManager = {};
 let currentObj = undefined;
