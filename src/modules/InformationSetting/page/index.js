@@ -41,7 +41,8 @@ class InformationSetting extends ContainerComponent {
         this.state = {
             notSeeHisZoom:false,
             notSeeMyZoom:false,
-            joinBlackList:false
+            joinBlackList:false,
+            currentRelation:{}
         }
         currentObj = this;
     }
@@ -75,7 +76,8 @@ class InformationSetting extends ContainerComponent {
 
         if(setting != undefined){
             this.setState({
-                joinBlackList:setting.BlackList =="false"?false:true
+                joinBlackList:setting.BlackList,
+                currentRelation:setting
             })
         }
     }
@@ -96,6 +98,9 @@ class InformationSetting extends ContainerComponent {
         })
 
         //todo：这里改state只是控制显示。 改redux 该个用户的blacklist 这样修改了 下次进来才是对的
+        let relation = this.state.currentRelation;
+        relation.BlackList = value;
+        this.props.changeRelation(relation)
 
         currentObj.showLoading()
         if(!value){

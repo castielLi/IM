@@ -8,11 +8,19 @@ export default function relationStore(state=initialState, action){
 
     switch(action.type){
 
-
         case 'INIT_RELATION':
             return action.relationData;
         case 'CLEAR_RELATION':
             return initialState;
+        case 'Change_RELATION':
+            for(let i=0;i<state.length;i++){
+                if(state[i].RelationId === action.relation.relationId){
+                   state[i] = action.relation;
+                    break;
+                }
+            }
+            return state.concat([]);
+
         case 'DELETE_RELATION':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relationId){
