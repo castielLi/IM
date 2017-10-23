@@ -18,6 +18,9 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
+
+let currentObj = undefined;
+
 export default class Validate extends ContainerComponent {
     constructor(props){
         super(props)
@@ -25,6 +28,7 @@ export default class Validate extends ContainerComponent {
             privilege:false,
             text:''
         }
+        currentObj = this;
     }
 
     static defaultProps = {
@@ -50,12 +54,16 @@ export default class Validate extends ContainerComponent {
     }
 
     sendApplyMessage= ()=>{
+        currentObj.showLoading()
         let addMessage = addApplyFriendMessage("我是台台以台以台台",Applicant,Respondent);
         im.addMessage(addMessage,function(){
-
+            currentObj.hideLoading()
+            currentObj.alert("申请消息已经发送,等待对方验证","提醒");
         })
     }
     render() {
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
         return(
             <View style={styles.container}>
                 <MyNavigationBar
@@ -87,6 +95,8 @@ export default class Validate extends ContainerComponent {
                         </View>
                     </View>
                 </View>
+                <Popup ref={ popup => this.popup = popup}/>
+                <Loading ref = { loading => this.loading = loading}/>
             </View>
         )
     }

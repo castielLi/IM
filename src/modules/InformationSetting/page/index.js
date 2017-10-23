@@ -23,8 +23,10 @@ import * as chatRecordActions from '../../../Core/IM/redux/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import IM from '../../../Core/IM';
+import User from '../../../Core/User'
 
 let im = new IM();
+let user = new User();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -62,6 +64,22 @@ class InformationSetting extends ContainerComponent {
         }
     }
 
+    componentWillMount(){
+        let setting = undefined;
+        for(let item in this.props.relations){
+            if(this.props.relations[item].RelationId == this.props.client){
+                setting = this.props.relations[item];
+                break;
+            }
+        }
+
+        if(setting != undefined){
+            this.setState({
+                joinBlackList:setting.BlackList =="false"?false:true
+            })
+        }
+    }
+
     changeNotSeeMyZoom = ()=>{
         this.setState({
             notSeeMyZoom:!this.state.notSeeMyZoom
@@ -72,10 +90,39 @@ class InformationSetting extends ContainerComponent {
             notSeeHisZoom:!this.state.notSeeHisZoom
         })
     }
-    changeJoinBlackList = ()=>{
+    changeJoinBlackList = (value)=>{
         this.setState({
-            joinBlackList:!this.state.joinBlackList
+            joinBlackList:value
         })
+
+        //todo：这里改state只是控制显示。 改redux 该个用户的blacklist 这样修改了 下次进来才是对的
+
+        currentObj.showLoading()
+        if(!value){
+            currentObj.fetchData("POST","Member/RemoveBlackMember",function(result){
+
+                currentObj.hideLoading()
+                if(result.success) {
+                    user.changeRelationBlackList(value, currentObj.props.client);
+                }
+
+            },{"Applicant":currentObj.props.accountId
+                ,"Account":currentObj.props.client,
+              "IsDelete":false})
+
+        }else{
+            currentObj.fetchData("POST","Member/AddBlackMember",function(result){
+
+                currentObj.hideLoading()
+                if(result.success) {
+                    user.changeRelationBlackList(value, currentObj.props.client);
+                }
+
+            },{"Applicant":currentObj.props.accountId
+                ,"Account":currentObj.props.client})
+        }
+
+
     }
 
 
@@ -257,6 +304,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     accountId:state.loginStore.accountMessage.accountId,
     recentListStore:state.recentListStore,
+    relations:state.relationStore
 });
 
 const mapDispatchToProps = dispatch => ({

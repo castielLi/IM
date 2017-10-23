@@ -5,6 +5,7 @@ import * as Helper from '../Helper'
 import * as configs from './IMconfig'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 
+//todo: 删除ack manager 和send manager合并成一个
 
 let AckManager = {};
 let currentObj = undefined;
@@ -68,16 +69,17 @@ AckManager.receiveMessageOpreator = function(message){
             ackMessageQueue.splice(item, 1);
 
             console.log("ack队列pop出：" + message)
+
+            //回调App上层发送成功
+            currentObj.MessageResultHandle(true, message);
+
+            updateMessage.status = MessageStatus.SendSuccess;
+            currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
+
             console.log(ackMessageQueue.length);
             break;
         }
     }
-
-    //回调App上层发送成功
-    currentObj.MessageResultHandle(true, message);
-
-    updateMessage.status = MessageStatus.SendSuccess;
-    currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 }
 
 export default AckManager;
