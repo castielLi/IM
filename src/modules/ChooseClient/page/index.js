@@ -18,6 +18,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import * as recentListActions from '../../Contacts/reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
@@ -195,7 +196,7 @@ class ChooseClient extends ContainerComponent {
 				user.AddNewRelation(relation);
 
 				//todo 添加群聊到redux
-
+                currentObj.props.addRelation(relation);
                 currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 
 			}else{
@@ -358,7 +359,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-
+      ...bindActionCreators(recentListActions, dispatch),
 
   }};
 
