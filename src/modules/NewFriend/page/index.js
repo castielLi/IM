@@ -57,14 +57,21 @@ class NewFriend extends ContainerComponent {
     }
 
     agreeApply = (index,data)=>{
-        alert('同意好友申请')
+        alert('同意好友申请');
+        let that = this;
         let {key} = data;
-        this.im.updateApplyFriendMessage('added',key)
-        this.props.acceptFriendApplication(index)
+        this.fetchData('POST','Member/AcceptFriend',function (result) {
+            //if(result.Result && result.Data){
+                //that.im.updateApplyFriendMessage('added',key);
+                //that.props.acceptFriendApplication(index);
+            //}
+        },{
+            key
+        })
     };
     deleteApply = (index)=>{
         alert('删除好友申请')
-        this.props.deleteFriendApplication(index)
+        //this.props.deleteFriendApplication(index)
     };
     _renderRow = (rowData, sectionID, rowID)=>{
         return(
