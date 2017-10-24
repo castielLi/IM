@@ -221,9 +221,10 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 IMFMDB.InsertFriendMessage = function(message){
     let insertSql = sqls.ExcuteIMSql.AddNewMessageToApplyFriend;
 
+    let status = 'wait';
     let time = new Date().getTime();
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,message.status,message.Data.Data.Data,time])
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,message.Data.Data.Data,time])
 
     var db = SQLite.openDatabase({
         ...databaseObj

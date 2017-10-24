@@ -3,6 +3,7 @@ import * as DtoMethods from '../dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
 import * as recentListAction from '../../../modules/RecentList/reducer/action';
 let im = new IM();
+import * as friendApplicationActions from '../../../modules/NewFriend/reducer/action'
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
 	return{
@@ -25,15 +26,23 @@ export function addMessage(message){
 }
 export function receiveMessage(message){
 	//let client = InterceptionClientFromId(message.MSGID);
-	return (dispatch,getState)=>{
-		dispatch({
-		type:'RECEIVE_MESSAGE',
-		client:message.Data.Data.Sender,
-		message
-		})
-		//同时更新recentListStore
-		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
-	}
+    let {type} = message;
+    if(type = 'friend'){
+		return (dispatch) =>{
+			dispatch(friendApplicationActions.getApplicantInfo(message))
+		}
+    }
+    else{
+        return (dispatch,getState)=>{
+            dispatch({
+                type:'RECEIVE_MESSAGE',
+                client:message.Data.Data.Sender,
+                message
+            })
+            //同时更新recentListStore
+            dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+        }
+    }
 }
 //修改某条消息的状态 {status:'修改该状态',message:{...}}
 export function updateMessageStatus(status,MSGID){

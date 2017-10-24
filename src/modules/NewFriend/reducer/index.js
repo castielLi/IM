@@ -35,12 +35,12 @@ export default function friendApplicationStore(state = initialState,action){
             };
 
         case 'ACCEPT_FRIEND_APPLICATION':
-            state.applicationRecord[action.index].statues = 'added';
+            state.applicationRecord[action.index].status = 'added';
             return {
                 ...state,
             };
         case 'UPDATE_FRIEND_APPLICATION':
-            state.applicationRecord[action.index].statues = 'expired';
+            state.applicationRecord[action.index].status = 'expired';
             return {
                 ...state,
             };

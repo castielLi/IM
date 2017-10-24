@@ -35,6 +35,7 @@ class NewFriend extends ContainerComponent {
         this.state = {
             dataSource: ds,
         };
+        this.applyData = [];
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
@@ -129,7 +130,7 @@ class NewFriend extends ContainerComponent {
                         </TextInput>
                     </View>
                     <ListView
-                        dataSource = {this.state.dataSource.cloneWithRows([1,2,3,4,5])}
+                        dataSource = {this.state.dataSource.cloneWithRows(this.applyData)}
                         renderRow = {this._renderRow}
                         enableEmptySections = {true}
                         removeClippedSubviews={false}
