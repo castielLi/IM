@@ -31,7 +31,7 @@ AckManager.handAckQueue = function(){
             if(ackMessageQueue[item].hasSend > 3) {
 
                 //回调App上层发送失败
-                // AppMessageResultHandle(false,ackMessageQueue[item].message);
+                currentObj.MessageResultHandle(false,ackMessageQueue[item].message);
 
                 ackMessageQueue[item].message.status = MessageStatus.SendFailed;
                 currentObj.addUpdateSqliteQueue(ackMessageQueue[item].message,UpdateMessageSqliteType.storeMessage)

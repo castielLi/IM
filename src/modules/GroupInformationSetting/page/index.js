@@ -47,6 +47,7 @@ class GroupInformationSetting extends ContainerComponent {
         this.state = {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
+            members:[]
         }
         currentObj = this;
     }
@@ -61,6 +62,21 @@ class GroupInformationSetting extends ContainerComponent {
         })
     }
 
+
+    componentDidMount(){
+        currentObj.showLoading()
+        currentObj.fetchData("POST","Member/GetGroupMemberList",function(result){
+            currentObj.hideLoading();
+
+            if(!result.success){
+                alert(result.errorMessage)
+                return;
+            }else{
+                
+            }
+
+        },{"GroupId":this.props.groupId})
+    }
 
 
     handlePress(i){

@@ -106,9 +106,11 @@ class Route {
     static toMain(props) {
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
+        let route;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i][0] == this.mainPage["key"]) {
+            if (routes[i]["key"] == this.mainPage["key"]) {
                 contain = true;
+                route = routes[i];
                 break;
             }
         }
@@ -119,7 +121,7 @@ class Route {
             }
         }
         InteractionManager.runAfterInteractions(() => {
-            props.navigator.popToTop();
+            props.navigator.jumpTo(route);
         })
     }
 
@@ -143,7 +145,7 @@ class Route {
 
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i][0] == this.loginRoute["key"]) {
+            if (routes[i]["key"] == this.loginRoute["key"]) {
                 contain = true;
                 break;
             }

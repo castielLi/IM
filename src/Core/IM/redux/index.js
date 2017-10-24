@@ -37,6 +37,7 @@
 //     }
 // }
 import InitChatRecordConfig from './InitChatRecordConfig';
+import MessageStatus from '../dto/MessageStatus'
 const initialState = {
     ChatRecord: {}
 }
@@ -62,7 +63,7 @@ export default function chatRecordStore(state = initialState, action) {
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
                 }
-                state.ChatRecord[action.client].unshift({status:'loading',message:action.message});
+                state.ChatRecord[action.client].unshift({status:'WaitOpreator',message:action.message});
                  //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
                 state.ChatRecord[action.client] = state.ChatRecord[action.client].concat([]);
                  return {
@@ -78,7 +79,7 @@ export default function chatRecordStore(state = initialState, action) {
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
                 }
-                state.ChatRecord[action.client].unshift({status:'loading',message:action.message});
+                state.ChatRecord[action.client].unshift({status:'WaitOpreator',message:action.message});
                  //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
                 state.ChatRecord[action.client] = state.ChatRecord[action.client].concat([]);
                  return {
@@ -92,7 +93,7 @@ export default function chatRecordStore(state = initialState, action) {
             }
                 state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
                     if(itemArr.message.MSGID === action.MSGID){
-                        itemArr.status = action.status;
+                        itemArr.status = action.status ? MessageStatus.SendSuccess : MessageStatus.SendFailed;
                     }
                 });
                 //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
