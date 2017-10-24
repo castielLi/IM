@@ -37,6 +37,7 @@
 //     }
 // }
 import InitChatRecordConfig from './InitChatRecordConfig';
+import MessageStatus from '../dto/MessageStatus'
 const initialState = {
     ChatRecord: {}
 }
@@ -92,7 +93,7 @@ export default function chatRecordStore(state = initialState, action) {
             }
                 state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
                     if(itemArr.message.MSGID === action.MSGID){
-                        itemArr.status = action.status ? 'SendSuccess' : 'SendFailed';
+                        itemArr.status = action.status ? MessageStatus.SendSuccess : MessageStatus.SendFailed;
                     }
                 });
                 //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
