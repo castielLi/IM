@@ -299,6 +299,9 @@ export default class IM {
             callback(false, "message type error");
         }
 
+
+
+
         //先生成唯一的messageID并且添加message进sqlite保存
         UUIDGenerator.getRandomUUID().then((uuid) => {
             messageId = message.Data.Data.Receiver + "_" +uuid;

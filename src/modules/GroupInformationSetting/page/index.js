@@ -1,3 +1,6 @@
+/**
+ * Created by apple on 2017/10/24.
+ */
 
 import React, {Component} from 'react';
 import {Text,
@@ -30,10 +33,10 @@ let user = new User();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
-const options = ['取消','确认删除']
-const title = '你确定要删除这位好友么'
+const options = ['取消','确认']
+const title = '推出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
-class InformationSetting extends ContainerComponent {
+class GroupInformationSetting extends ContainerComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);
@@ -75,9 +78,8 @@ class InformationSetting extends ContainerComponent {
         }
 
         if(setting != undefined){
-            let value = setting.BlackList == "false"?false:true;
             this.setState({
-                joinBlackList:value,
+                joinBlackList:setting.BlackList,
                 currentRelation:setting
             })
         }
@@ -114,7 +116,7 @@ class InformationSetting extends ContainerComponent {
 
             },{"Applicant":currentObj.props.accountId
                 ,"Account":currentObj.props.client,
-              "IsDelete":false})
+                "IsDelete":false})
 
         }else{
             currentObj.fetchData("POST","Member/AddBlackMember",function(result){
@@ -138,43 +140,43 @@ class InformationSetting extends ContainerComponent {
         if(1 == i){
             currentObj.showLoading()
             this.fetchData("POST","Member/DeleteFriend",function(result){
-                  currentObj.hideLoading()
-                  if(!result.success){
-                      alert(result.errorMessage);
-                      return;
-                  }
+                currentObj.hideLoading()
+                if(!result.success){
+                    alert(result.errorMessage);
+                    return;
+                }
 
-                  if(result.data.Data){
+                if(result.data.Data){
 
-                      //todo： 添加更改rudex 好友列表和消息列表
-                      currentObj.props.deleteRelation(client);
-                      //清空chatRecordStore中对应记录
-                      currentObj.props.initChatRecord(client,[])
-                      //删除ChatRecode表中记录
-                      im.deleteChatRecode(client);
-                      //删除该与client的所以聊天记录
-                      im.deleteCurrentChatMessage(client,type);
-                      //如果该client在最近聊天中有记录
-                      currentObj.props.recentListStore.data.forEach((v,i)=>{
-                          if(v.Client === client){
-                              //清空recentListStore中对应记录
-                              currentObj.props.deleteRecentItem(i);
-                              //如果该row上有未读消息，减少unReadMessageStore记录
-                              v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-                          }
-                      })
+                    //todo： 添加更改rudex 好友列表和消息列表
+                    currentObj.props.deleteRelation(client);
+                    //清空chatRecordStore中对应记录
+                    currentObj.props.initChatRecord(client,[])
+                    //删除ChatRecode表中记录
+                    im.deleteChatRecode(client);
+                    //删除该与client的所以聊天记录
+                    im.deleteCurrentChatMessage(client,type);
+                    //如果该client在最近聊天中有记录
+                    currentObj.props.recentListStore.data.forEach((v,i)=>{
+                        if(v.Client === client){
+                            //清空recentListStore中对应记录
+                            currentObj.props.deleteRecentItem(i);
+                            //如果该row上有未读消息，减少unReadMessageStore记录
+                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+                        }
+                    })
 
 
 
-                      let pages = currentObj.props.navigator.getCurrentRoutes();
-                      let target = pages[pages.length - 3];
+                    let pages = currentObj.props.navigator.getCurrentRoutes();
+                    let target = pages[pages.length - 3];
 
-                      currentObj.route.popToSpecialRoute(currentObj.props,target);
+                    currentObj.route.popToSpecialRoute(currentObj.props,target);
 
-                      currentObj.route.popToRoute();
-                  }else{
-                      alert("http请求出错")
-                  }
+                    currentObj.route.popToRoute();
+                }else{
+                    alert("http请求出错")
+                }
 
 
             },{"Applicant":accountId,"Friend":client})
@@ -251,8 +253,8 @@ class InformationSetting extends ContainerComponent {
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
-            )
-            
+        )
+
     }
 }
 
@@ -320,4 +322,4 @@ const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(unReadMessageActions, dispatch),
 });
 
- export default connect(mapStateToProps, mapDispatchToProps)(InformationSetting);
+export default connect(mapStateToProps, mapDispatchToProps)(InformationSetting);
