@@ -128,7 +128,10 @@ class Contacts extends ContainerComponent {
 								</View>
 							</View>
 					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
+
+                           this.route.push(this.props,{key:'Contacts',routeId:'GroupList',params:{}});
+					   }}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>

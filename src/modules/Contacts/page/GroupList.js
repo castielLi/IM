@@ -88,9 +88,7 @@ class GroupList extends ContainerComponent {
     }
 
     goToChat = (item)=>{
-        //this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
-
+        // this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
     }
     _renderItem = (info) => {
         var txt = '  ' + info.item.Nick;
@@ -140,7 +138,7 @@ class GroupList extends ContainerComponent {
 
 
     render() {
-        this.relationStore = initDataFormate('private',this.props.relationStore);
+        this.relationStore = initDataFormate('chatroom',this.props.relationStore);
         return (
             <View style={styles.container}>
                 <MyNavigationBar
