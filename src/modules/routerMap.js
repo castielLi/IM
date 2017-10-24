@@ -30,9 +30,12 @@ import InformationSetting from './InformationSetting/page'
 import NewFriend from './NewFriend/page'
 import SearchNewFriend from './SearchNewFriend/page'
 import ChatSetting from './ChatSetting/page'
-import Me from './Me/page'
+//import Me from './Me/page'
+
 import Validate from './AddFriends/validate'
 import ChooseClient from './ChooseClient/page'
+import Me from './GroupInformationSetting/page'
+import MoreGroupList from './MoreGroupList/page'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -198,6 +201,18 @@ export const RouteMap = {
     'ChooseClient': {
         'ChooseClient': {
             component: ChooseClient,
+            params: {}
+        }
+    },
+    // 'GroupInformationSetting': {
+    //     'GroupInformationSetting': {
+    //         component: GroupInformationSetting,
+    //         params: {}
+    //     }
+    // },
+    'MoreGroupList': {
+        'MoreGroupList': {
+            component: MoreGroupList,
             params: {}
         }
     },

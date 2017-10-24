@@ -180,6 +180,7 @@ class ChooseClient extends ContainerComponent {
     }
 	render() {
 		let chooseArr = this.state.chooseArr;
+		console.log(chooseArr)
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
