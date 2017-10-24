@@ -25,7 +25,7 @@ class TabBarComponent extends DisplayComponent {
             <TabNavigator>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === '齐信'}
+                    selected={this.state.selectedTab === '云信'}
                     title="齐信"
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/qixin_.png')}

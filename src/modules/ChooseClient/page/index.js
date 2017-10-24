@@ -18,13 +18,12 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-//import * as recentListActions from '../../RecentList/reducer/action';
-//import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
 var {height, width} = Dimensions.get('window');
-import Features from '../../Common/menu/features';
+
+let currentObj = undefined;
 
 class ChooseClient extends ContainerComponent {
 
@@ -40,11 +39,12 @@ class ChooseClient extends ContainerComponent {
 			//右边title导航
 			rightSectionItemModalIndex:'',
 
-            showFeatures:false,//显示功能块组件
 			chooseArr:[],//选择的好友的id
             chooseObj:[],//选择的好友的id
 		}
         this.relationStore = []
+		this._rightButton = this._rightButton.bind(this);
+		currentObj = this;
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -89,11 +89,6 @@ class ChooseClient extends ContainerComponent {
 		}
     }
 
-	goToChat = (item)=>{
-		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
-
-    }
     choose=(item)=>{
 		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
 		let obj = {...this.state.chooseObj};
@@ -160,24 +155,29 @@ class ChooseClient extends ContainerComponent {
 	_renderSeparator = () =>{
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
-	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.props.relationStore.length+'位联系人'}</Text></View>
-	}
+
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
 
     }
 		//定义上导航的右按钮
-	_rightButton() {
-			return <TouchableOpacity onPress={this.goToAddFriends}>
-						<Text style={styles.moreUse}>+</Text>
-			       </TouchableOpacity>
+	_rightButton(chooseArr) {
+
+		let accounts = "";
+		for(let item in chooseArr){
+			if((item + 1)< chooseArr.length){
+				accounts += chooseArr[item]+",";
+			}
 		}
 
+		this.showLoading()
+		this.fetchData("POST","Member/CreateGroup",function(){
 
-    changeShowFeature=(newState)=>{
-        this.setState({showFeatures:newState});
-    }
+		},{"Operater":this.props.client})
+
+	}
+
+
 	render() {
 		let chooseArr = this.state.chooseArr;
 		this.relationStore = initDataFormate('private',this.props.relationStore);
@@ -186,7 +186,7 @@ class ChooseClient extends ContainerComponent {
 				<MyNavigationBar
 					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
 					heading={"选择联系人"}
-					right={{func:(chooseArr)=>{alert('群聊')},text:'完成',disabled:chooseArr.length>0?false:true}}
+					right={{func:(chooseArr)=>{this._rightButton(chooseArr)},text:'完成',disabled:chooseArr.length>0?false:true}}
 				/>
 			    <SectionList
 			      ref={'mySectionList'}
@@ -196,15 +196,11 @@ class ChooseClient extends ContainerComponent {
 			      sections={this.relationStore}
 			      ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
-				  ListFooterComponent = {this._renderFooter}
 				  stickySectionHeadersEnabled={true}
 				/>
 				<View style={styles.rightSection}>
 					{this._getSections()}
 				</View>
-                {
-                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
-                }
 		    </View>
 	);
 }
