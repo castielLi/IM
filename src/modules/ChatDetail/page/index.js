@@ -35,7 +35,7 @@ class ChatDetail extends ContainerComponent {
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
 
-        if(type === 'pravite'){
+        if(type === 'private'){
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
 
         }else{
@@ -111,7 +111,7 @@ class ChatDetail extends ContainerComponent {
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<MyNavigationBar
-					left={{func:()=>{this.route.pop(this.props)}}}
+					left={{func:()=>{this.route.toMain(this.props)}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={'聊天'} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
