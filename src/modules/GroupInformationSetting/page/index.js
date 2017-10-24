@@ -56,14 +56,14 @@ class GroupInformationSetting extends ContainerComponent {
 
                 <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
 
-                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'详细资料'}</Text>
+                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'返回'}</Text>
             </View>
         </TouchableOpacity>
     }
     //定义上导航的标题
     _title() {
         return {
-            title: "资料设置",
+            title: "聊天信息",
             tintColor:'#fff',
         }
     }
@@ -135,11 +135,11 @@ class GroupInformationSetting extends ContainerComponent {
 
 
     handlePress(i){
-        let {client,type,accountId} = this.props;
+        let {group,type,accountId} = this.props;
         //删除好友
         if(1 == i){
             currentObj.showLoading()
-            this.fetchData("POST","Member/DeleteFriend",function(result){
+            this.fetchData("POST","Member/ExitGroup",function(result){
                 currentObj.hideLoading()
                 if(!result.success){
                     alert(result.errorMessage);
@@ -148,32 +148,7 @@ class GroupInformationSetting extends ContainerComponent {
 
                 if(result.data.Data){
 
-                    //todo： 添加更改rudex 好友列表和消息列表
-                    currentObj.props.deleteRelation(client);
-                    //清空chatRecordStore中对应记录
-                    currentObj.props.initChatRecord(client,[])
-                    //删除ChatRecode表中记录
-                    im.deleteChatRecode(client);
-                    //删除该与client的所以聊天记录
-                    im.deleteCurrentChatMessage(client,type);
-                    //如果该client在最近聊天中有记录
-                    currentObj.props.recentListStore.data.forEach((v,i)=>{
-                        if(v.Client === client){
-                            //清空recentListStore中对应记录
-                            currentObj.props.deleteRecentItem(i);
-                            //如果该row上有未读消息，减少unReadMessageStore记录
-                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-                        }
-                    })
-
-
-
-                    let pages = currentObj.props.navigator.getCurrentRoutes();
-                    let target = pages[pages.length - 3];
-
-                    currentObj.route.popToSpecialRoute(currentObj.props,target);
-
-                    currentObj.route.popToRoute();
+                    
                 }else{
                     alert("http请求出错")
                 }

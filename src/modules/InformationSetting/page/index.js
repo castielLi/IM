@@ -98,7 +98,6 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:value
         })
 
-        //todo：这里改state只是控制显示。 改redux 该个用户的blacklist 这样修改了 下次进来才是对的
         let relation = this.state.currentRelation;
         relation.BlackList = value;
         this.props.changeRelation(relation)

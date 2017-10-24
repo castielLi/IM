@@ -35,6 +35,7 @@ class NewFriend extends ContainerComponent {
         this.state = {
             dataSource: ds,
         };
+        this.applyData = [];
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
@@ -56,10 +57,17 @@ class NewFriend extends ContainerComponent {
     }
 
     agreeApply = (index,data)=>{
-        alert('同意好友申请')
-        //this.props.acceptFriendApplication(index)
-        let {status,Id} = data;
-        this.im.updateApplyFriendMessage()
+        alert('同意好友申请');
+        let that = this;
+        let {key} = data;
+        this.fetchData('POST','Member/AcceptFriend',function (result) {
+            //if(result.Result && result.Data){
+                //that.im.updateApplyFriendMessage('added',key);
+                //that.props.acceptFriendApplication(index);
+            //}
+        },{
+            key
+        })
     };
     deleteApply = (index)=>{
         alert('删除好友申请')
@@ -73,7 +81,7 @@ class NewFriend extends ContainerComponent {
                         [{
                             text:'删除',
                             type:'delete',
-                            onPress:()=>{this.deleteApply(index)}
+                            onPress:()=>{this.deleteApply(rowID)}
                         }]
                     }
                     rowID = {rowID}
@@ -129,7 +137,7 @@ class NewFriend extends ContainerComponent {
                         </TextInput>
                     </View>
                     <ListView
-                        dataSource = {this.state.dataSource.cloneWithRows([1,2,3,4,5])}
+                        dataSource = {this.state.dataSource.cloneWithRows(this.applyData)}
                         renderRow = {this._renderRow}
                         enableEmptySections = {true}
                         removeClippedSubviews={false}

@@ -6,7 +6,7 @@
 export default class messageBodyChatDto{
     constructor(){
         this.Command = -1;
-        this.Data = "";
+        this.Data = undefined;
         this.Sender = "";
         this.Receiver = "";
     }

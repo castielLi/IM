@@ -38,7 +38,7 @@ export const ExcuteIMSql = {
     "QueryMessageResourceExist":"select * from ResourceRecode where messageId = ? and localResource = ?",
     "AddNewMessageToApplyFriend":"insert into ApplyFriend (send,rec,status,comment,time) values(?,?,?,?,?)",
     "QueryApplyFriend":"select * from ApplyFriend",
-    "UpdateApplyFriend":"update ApplyFriend set status = ? where Id = ?"
+    "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?"
 }
 
 
