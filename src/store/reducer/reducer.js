@@ -8,7 +8,7 @@ import recentListStore from '../../modules/RecentList/reducer';
 import unReadMessageStore from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../modules/Contacts/reducer';
-import friendApplicationStore from '../../modules/NewFriend/reducer'
+import friendApplicationStore from '../../modules/NewFriend/reducer/index'
 export default combineReducers({
 	//登录状态
     loginStore,

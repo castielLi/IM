@@ -55,7 +55,7 @@ export default class Validate extends ContainerComponent {
 
     sendApplyMessage= ()=>{
         currentObj.showLoading()
-        let addMessage = addApplyFriendMessage("我是台台以台以台台",Applicant,Respondent);
+        let addMessage = addApplyFriendMessage({text:'我是台台台台',key:currentObj.props.validateID},Applicant,Respondent);
         im.addMessage(addMessage,function(){
             currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒");
