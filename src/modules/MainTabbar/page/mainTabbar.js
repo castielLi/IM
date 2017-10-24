@@ -14,7 +14,7 @@ class TabBarComponent extends DisplayComponent {
         super(props)
         this.render = this.render.bind(this);
         this.state = {
-            selectedTab: '齐信',
+            selectedTab: '云信',
             isLogged: false
         }
     }

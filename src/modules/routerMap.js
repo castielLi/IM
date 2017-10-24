@@ -39,8 +39,8 @@ import GroupInformationSetting from './GroupInformationSetting/page'
 import MoreGroupList from './MoreGroupList/page'
 
 export const MainPage = {
-    key: 'ChatDetail',
-    routeId: 'ChatDetail'
+    key: 'MainTabbar',
+    routeId: 'MainTabbar'
 }
 
 
