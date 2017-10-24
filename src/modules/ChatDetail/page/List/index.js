@@ -15,7 +15,8 @@ import {
     TextInput,
     Modal,
     TouchableWithoutFeedback,
-    PanResponder
+    PanResponder,
+
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -48,7 +49,7 @@ class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            return r1.message.MSGID !== r2.message.MSGID;
+            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
         }});
 
         this.data = [];
@@ -289,13 +290,31 @@ class Chat extends Component {
             return timer;
         }
     }
+
+
+    messagesStatus = (status)=>{
+        if(status === 'WaitOpreator'){
+            return (
+                <ActivityIndicator
+                    size="small"
+                />
+            )
+        }
+        else if(status === 'SendSuccess'){
+            return null;
+        }
+        else{
+            return (
+                <Image source={require('../../resource/fail.png')} style={{width:20,height:20}}/>
+            )
+        }
+    }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
         let LocalTime = parseInt(row.message.Data.LocalTime);
 
         let timer = this.getTimestamp(LocalTime,rowid);
-
         if(Sender == this.props.accountId){
             return(
                 <View key={rowid} style={styles.itemViewRight}>
@@ -303,6 +322,13 @@ class Chat extends Component {
                         {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                     </View>
                     <View style={styles.infoViewRight}>
+                        <View style={styles.msgStatus}>
+                            <TouchableOpacity>
+                                {
+                                    this.messagesStatus(row.status)
+                                }
+                            </TouchableOpacity>
+                        </View>
                         <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
                         <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
                     </View>
@@ -555,6 +581,10 @@ const styles = StyleSheet.create({
         backgroundColor:'#e8e8e8',
         flex:1,
         overflow:'hidden',
+    },
+    msgStatus:{
+        justifyContent:'center',
+        marginRight:10
     },
     itemView:{
         marginBottom:10,
