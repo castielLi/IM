@@ -46,7 +46,7 @@ export default class MyNavigationBar extends Component {
             return(
 
                 <View style={styles.justifyCenter}>
-                    <TouchableOpacity style={styles.leftView} onPress={left.func}>
+                    <TouchableOpacity style={styles.leftView} onPress={left.func} disabled={left.disabled?true:false}>
                         <Icon name="angle-left" size={35} color="#fff" style={styles.leftIcon}/>
                         {left.text ?
                                 <Text style={styles.leftText}>{left.text}</Text> : null
@@ -70,6 +70,7 @@ export default class MyNavigationBar extends Component {
     };
 
     _rightButton = ()=>{
+
         let {right} = this.props;
         if(!right){
             return null;
@@ -78,7 +79,8 @@ export default class MyNavigationBar extends Component {
             return(
                 <View style={styles.rightView}>
                     {right.map((item,index)=>
-                        <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func}>
+
+                        <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func} disabled={item.disabled?true:false}>
                             <View style={styles.rightBox}>
                                 <Icon name={item.icon} size={25} color="#fff"/>
                             </View>
@@ -89,7 +91,7 @@ export default class MyNavigationBar extends Component {
         else if(right instanceof Object)
         {
             return(
-                <TouchableOpacity style={styles.justifyCenter} onPress={right.func}>
+                <TouchableOpacity style={styles.justifyCenter} onPress={right.func} disabled={right.disabled?true:false}>
                     <View style={styles.rightBox}>
                         <Text style={{color:'#fff'}}>{right.text}</Text>
                     </View>

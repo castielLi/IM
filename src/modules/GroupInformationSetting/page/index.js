@@ -13,7 +13,10 @@ import {Text,
     Image,
     TouchableHighlight,
     Dimensions,
-    Switch
+    Switch,
+    FlatList,
+    TouchableWithoutFeedback,
+    ScrollView
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
@@ -34,7 +37,7 @@ let {height,width} = Dimensions.get('window');
 let currentObj;
 
 const options = ['取消','确认']
-const title = '推出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
+const title = '退出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
 class GroupInformationSetting extends ContainerComponent {
     constructor(){
@@ -42,204 +45,212 @@ class GroupInformationSetting extends ContainerComponent {
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
         this.state = {
-            notSeeHisZoom:false,
-            notSeeMyZoom:false,
-            joinBlackList:false,
-            currentRelation:{}
+            isStickyChat:false,//置顶聊天
+            notDisturb:false,//消息免打扰
         }
         currentObj = this;
     }
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <View style={styles.back}>
-
-                <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
-
-                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'详细资料'}</Text>
-            </View>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "资料设置",
-            tintColor:'#fff',
-        }
-    }
-
-    componentWillMount(){
-        let setting = undefined;
-        for(let item in this.props.relations){
-            if(this.props.relations[item].RelationId == this.props.client){
-                setting = this.props.relations[item];
-                break;
-            }
-        }
-
-        if(setting != undefined){
-            this.setState({
-                joinBlackList:setting.BlackList,
-                currentRelation:setting
-            })
-        }
-    }
-
-    changeNotSeeMyZoom = ()=>{
+    changeIsStickyChat = ()=>{
         this.setState({
-            notSeeMyZoom:!this.state.notSeeMyZoom
+            isStickyChat:!this.state.isStickyChat
         })
     }
-    changeNotSeeHisZoom = ()=>{
+    changeNotDisturb = ()=>{
         this.setState({
-            notSeeHisZoom:!this.state.notSeeHisZoom
+            notDisturb:!this.state.notDisturb
         })
     }
-    changeJoinBlackList = (value)=>{
-        this.setState({
-            joinBlackList:value
-        })
 
-        //todo：这里改state只是控制显示。 改redux 该个用户的blacklist 这样修改了 下次进来才是对的
-        let relation = this.state.currentRelation;
-        relation.BlackList = value;
-        this.props.changeRelation(relation)
-
-        currentObj.showLoading()
-        if(!value){
-            currentObj.fetchData("POST","Member/RemoveBlackMember",function(result){
-
-                currentObj.hideLoading()
-                if(result.success) {
-                    user.changeRelationBlackList(value, currentObj.props.client);
-                }
-
-            },{"Applicant":currentObj.props.accountId
-                ,"Account":currentObj.props.client,
-                "IsDelete":false})
-
-        }else{
-            currentObj.fetchData("POST","Member/AddBlackMember",function(result){
-
-                currentObj.hideLoading()
-                if(result.success) {
-                    user.changeRelationBlackList(value, currentObj.props.client);
-                }
-
-            },{"Applicant":currentObj.props.accountId
-                ,"Account":currentObj.props.client})
-        }
-
-
-    }
 
 
     handlePress(i){
-        let {client,type,accountId} = this.props;
-        //删除好友
-        if(1 == i){
-            currentObj.showLoading()
-            this.fetchData("POST","Member/DeleteFriend",function(result){
-                currentObj.hideLoading()
-                if(!result.success){
-                    alert(result.errorMessage);
-                    return;
-                }
-
-                if(result.data.Data){
-
-                    //todo： 添加更改rudex 好友列表和消息列表
-                    currentObj.props.deleteRelation(client);
-                    //清空chatRecordStore中对应记录
-                    currentObj.props.initChatRecord(client,[])
-                    //删除ChatRecode表中记录
-                    im.deleteChatRecode(client);
-                    //删除该与client的所以聊天记录
-                    im.deleteCurrentChatMessage(client,type);
-                    //如果该client在最近聊天中有记录
-                    currentObj.props.recentListStore.data.forEach((v,i)=>{
-                        if(v.Client === client){
-                            //清空recentListStore中对应记录
-                            currentObj.props.deleteRecentItem(i);
-                            //如果该row上有未读消息，减少unReadMessageStore记录
-                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-                        }
-                    })
-
-
-
-                    let pages = currentObj.props.navigator.getCurrentRoutes();
-                    let target = pages[pages.length - 3];
-
-                    currentObj.route.popToSpecialRoute(currentObj.props,target);
-
-                    currentObj.route.popToRoute();
-                }else{
-                    alert("http请求出错")
-                }
-
-
-            },{"Applicant":accountId,"Friend":client})
-        }
+        // let {group,type,accountId} = this.props;
+        // //删除好友
+        // if(1 == i){
+        //     currentObj.showLoading()
+        //     this.fetchData("POST","Member/ExitGroup",function(result){
+        //         currentObj.hideLoading()
+        //         if(!result.success){
+        //             alert(result.errorMessage);
+        //             return;
+        //         }
+        //
+        //         if(result.data.Data){
+        //
+        //
+        //         }else{
+        //             alert("http请求出错")
+        //         }
+        //
+        //
+        //     },{"Applicant":accountId,"Friend":client})
+        // }
     }
 
     showActionSheet() {
         this.ActionSheet.show()
     }
 
+    _footer = () => {
+        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{}})}}>
+                    <View style={styles.listFooter}>
+                        <Text style={styles.listFooterText}>查看更多群成员</Text>
+                        <Icon name="angle-right" size={20} color="#aaa" />
+                    </View>
+                </TouchableOpacity>
 
+    }
 
+    _renderItem = (item) => {
+        //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
+        if(item.index === 14){
+            return  <TouchableWithoutFeedback onPress={()=>{alert('clientInformation')}}>
+                        <View style={styles.itemBox}>
+                            <View style={styles.lastItemBox}>
+                                <Text style={styles.lastItemText}>+</Text>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+
+        }
+        else if(item.index>14) {
+            return null;
+        }
+        else{
+            return   <TouchableWithoutFeedback onPress={()=>{alert('clientInformation')}}>
+                        <View style={styles.itemBox}>
+                            <Image style={styles.itemImage} source={{uri:item.item.avator}}></Image>
+                            <Text style={styles.itemText}>{item.item.nick}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+
+        }
+
+    }
     render() {
+        let data = [{nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
+
+
+        ]
         let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <MyNavigationBar
-                    heading={"资料设置"}
-                    left={{func:()=>{this.route.pop(this.props)},text:'详细资料'}}
+                    heading={"群聊天设置"}
+                    left={{func:()=>{this.route.pop(this.props)},text:'返回'}}
                 />
                 <View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <View>
+                        <FlatList
+                            ListFooterComponent={this._footer}
+                            renderItem={this._renderItem}
+                            //每行有3列。每列对应一个item
+                            numColumns ={5}
+                            //多列的行容器的样式
+                            columnWrapperStyle={{marginTop:10}}
+                            //要想numColumns有效必须设置horizontal={false}
+                            horizontal={false}
+                            keyExtractor={(item,index)=>(index)}
+                            style={{backgroundColor:'#fff'}}
+                            data={data}>
+                        </FlatList>
+                    </View>
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                            <View  style={styles.remarksBox}>
+                                <Text style={styles.remarks}>群聊名称</Text>
+                                <View style={{flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={styles.arrowText}>{'IM群'}</Text>
+                                    <Icon name="angle-right" size={20} color="#aaa" />
+                                </View>
+
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                            <View  style={styles.remarksBox}>
+                                <Text style={styles.remarks}>群二维码</Text>
+                                <View style={{flexDirection:'row',alignItems:'center'}}>
+                                    <Icon name="qrcode" size={20} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
+                                    <Icon name="angle-right" size={20} color="#aaa" />
+                                </View>
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                            <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
+                                <View style={{maxWidth:width-100}}>
+                                    <Text style={styles.remarks}>群公告</Text>
+                                    <Text style={styles.remarksText} numberOfLines={3}>群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告</Text>
+                                </View>
+
+                                <Icon name="angle-right" size={20} color="#aaa" />
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginBottom:15}}>
+                            <View  style={styles.remarksBox}>
+                                <Text style={styles.remarks}>群管理</Text>
+                                <Icon name="angle-right" size={20} color="#aaa" />
+                            </View>
+                        </TouchableHighlight>
+                    </View>
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>设置备注和标签</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
-                        </View>
-                    </TouchableHighlight>
-                    <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>不让他看我朋友圈</Text>
+                            <Text style={styles.remarks}>置顶聊天</Text>
                             <Switch
-                                value={this.state.notSeeMyZoom}
-                                onValueChange={this.changeNotSeeMyZoom}
+                                value={this.state.isStickyChat}
+                                onValueChange={this.changeIsStickyChat}
                             ></Switch>
                         </View>
                     </View>
                     <View>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>不看他朋友圈</Text>
+                            <Text style={styles.remarks}>消息免打扰</Text>
                             <Switch
-                                value={this.state.notSeeHisZoom}
-                                onValueChange={this.changeNotSeeHisZoom}
+                                value={this.state.notDisturb}
+                                onValueChange={this.changeNotDisturb}
                             ></Switch>
                         </View>
                     </View>
-                    <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>加入黑名单</Text>
-                            <Switch
-                                value={this.state.joinBlackList}
-                                onValueChange={this.changeJoinBlackList}
-                            ></Switch>
-                        </View>
-                    </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>投诉</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            <Text style={styles.remarks}>设置当前聊天背景</Text>
+                            <Icon name="angle-right" size={20} color="#aaa" />
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={styles.sendMessageBox}>
-                        <Text style={styles.sendMessage}>删除</Text>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                        <View  style={styles.remarksBox}>
+                            <Text style={styles.remarks}>清空聊天记录</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                        <View  style={styles.remarksBox}>
+                            <Text style={styles.remarks}>投诉</Text>
+                            <Icon name="angle-right" size={20} color="#aaa" />
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={[styles.sendMessageBox,{marginBottom:20}]}>
+                        <Text style={styles.sendMessage}>删除并退出</Text>
                     </TouchableHighlight>
                     <ActionSheet
                         ref={o => this.ActionSheet = o}
@@ -252,7 +263,7 @@ class GroupInformationSetting extends ContainerComponent {
                 </View>
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
-            </View>
+            </ScrollView>
         )
 
     }
@@ -288,9 +299,18 @@ const styles = StyleSheet.create({
         fontSize:18,
         color:'#000'
     },
+    remarksText:{
+        fontSize:16,
+        color:'#aaa',
+    },
     arrow:{
         fontSize:20,
-        color:'#aaa'
+        color:'#bbb'
+    },
+    arrowText:{
+        fontSize:16,
+        color:'#aaa',
+        marginRight:10,
     },
     sendMessageBox:{
         height:55,
@@ -305,6 +325,44 @@ const styles = StyleSheet.create({
         textAlignVertical:'center',
         color:'#fff',
         fontSize:20,
+    },
+    itemBox:{
+        width:width/5,
+        height:70,
+        alignItems:'center',
+    },
+    itemImage:{
+        width:50,
+        height:50,
+        borderRadius:5
+    },
+    itemText:{
+        fontSize:14,
+        color:'#000'
+    },
+    lastItemBox:{
+        width:49,
+        height:49,
+        borderWidth:1,
+        borderColor:'#aaa',
+        borderRadius:5,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    lastItemText:{
+        fontSize:25,
+        color:'#ccc'
+    },
+    listFooter:{
+        height:50,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center',
+    },
+    listFooterText:{
+        fontSize:16,
+        color:'#aaa',
+        marginRight:10
     }
 });
 
@@ -322,4 +380,4 @@ const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(unReadMessageActions, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InformationSetting);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupInformationSetting);

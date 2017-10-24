@@ -8,7 +8,8 @@ const initialState = {
     isLoggedIn : false,
     accountMessage:{
         accountId:'',
-        SessionToken:''
+        SessionToken:'',
+        nick:''
     }
 };
 

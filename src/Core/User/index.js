@@ -67,7 +67,8 @@ export default class User {
        storeSqlite.getAllRelationAvatorAndName(callback);
     }
 
-    AddNewRelation(){
-
+    //添加新关系
+    AddNewRelation(Relation){
+        storeSqlite.addNewRelation(Relation)
     }
 }

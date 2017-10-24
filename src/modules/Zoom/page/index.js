@@ -16,7 +16,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
-} from './check';
+} from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import Features from '../../Common/menu/features';

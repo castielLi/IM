@@ -27,19 +27,6 @@ class ChatSetting extends ContainerComponent {
             notDisturb:false,//消息免打扰
         }
     }
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <Text style={styles.back}>{'< 返回'}</Text>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "聊天设置",
-            tintColor:'#fff',
-        }
-    }
 
     changeIsStickyChat = ()=>{
         this.setState({

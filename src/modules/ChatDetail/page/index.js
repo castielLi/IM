@@ -33,7 +33,15 @@ class ChatDetail extends ContainerComponent {
 			this._title = this._title.bind(this);
 		}
     goToChatSeeting = ()=>{
-        this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
+        let {client,type} = this.props;
+
+        if(type === 'pravite'){
+            this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
+
+        }else{
+            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{client}});
+
+        }
     }
 		//定义上导航的左按钮
 	_rightButton() {

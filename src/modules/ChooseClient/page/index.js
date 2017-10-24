@@ -18,13 +18,14 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../RecentList/reducer/action';
-import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
+import RelationModel from '../../../Core/User/dto/RelationModel'
 var {height, width} = Dimensions.get('window');
-import Features from '../../Common/menu/features';
+
+let currentObj = undefined;
+let user = new User();
 
 class ChooseClient extends ContainerComponent {
 
@@ -40,9 +41,12 @@ class ChooseClient extends ContainerComponent {
 			//右边title导航
 			rightSectionItemModalIndex:'',
 
-            showFeatures:false,//显示功能块组件
+			chooseArr:[],//选择的好友的id
+            chooseObj:[],//选择的好友的id
 		}
         this.relationStore = []
+		this._rightButton = this._rightButton.bind(this);
+		currentObj = this;
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -87,15 +91,27 @@ class ChooseClient extends ContainerComponent {
 		}
     }
 
-	goToChat = (item)=>{
-		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
-
-    }
+    choose=(item)=>{
+		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
+		let obj = {...this.state.chooseObj};
+		this.setState({
+            chooseObj:obj
+		})
+		//对象转为所需数组
+		let arr = Object.keys(obj);
+		let needArr = [];
+		for(let i=0;i<arr.length;i++){
+			if(obj[arr[i]]) needArr.push(arr[i])
+		}
+        this.setState({
+            chooseArr:needArr
+        })
+	}
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nick;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
 					<View  style={styles.itemBox} >
+						<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}></View>
 						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
@@ -120,35 +136,18 @@ class ChooseClient extends ContainerComponent {
 						</TextInput>
 					</View>
 					<View style={styles.listOtherUseBox}>
-						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
-							<View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
-									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
-								</View>
-							</View>
-					   </TouchableHighlight>
+
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
+								<Text style={[styles.itemText,{paddingLeft:10}]}>选择一个群</Text>
 							</View>
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
-							</View>
-							</View>
-					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
+								<Text style={[styles.itemText,{paddingLeft:10}]}>面对面建群</Text>
 								</View>
 							</View>
 					   </TouchableHighlight>
@@ -158,34 +157,69 @@ class ChooseClient extends ContainerComponent {
 	_renderSeparator = () =>{
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
-	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.props.relationStore.length+'位联系人'}</Text></View>
-	}
+
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
 
     }
 		//定义上导航的右按钮
 	_rightButton() {
-			return <TouchableOpacity onPress={this.goToAddFriends}>
-						<Text style={styles.moreUse}>+</Text>
-			       </TouchableOpacity>
+
+        let chooseArr = this.state.chooseArr;
+		let accounts = "";
+		for(let item in chooseArr){
+			if((item*1 + 1) == chooseArr.length){
+				accounts += chooseArr[item];
+			}else{
+				accounts+= chooseArr[item]+",";
+			}
 		}
 
+		this.showLoading()
+		this.fetchData("POST","Member/CreateGroup",function(result){
+			currentObj.hideLoading();
 
-    changeShowFeature=(newState)=>{
-        this.setState({showFeatures:newState});
-    }
+			console.log(result);
+
+			if(result.success){
+
+				if(result.data.Data == null){
+					alert("返回群数据出错")
+					return;
+				}
+				let relation = new RelationModel();
+				relation.RelationId = result.data.Data;
+				relation.owner = currentObj.props.accountId;
+				relation.Nick = currentObj.props.accountName + "发起的群聊"
+
+				user.AddNewRelation(relation);
+
+				//todo 添加群聊到redux
+
+                currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
+
+			}else{
+				alert(result.errorMessage);
+				return;
+			}
+
+		},{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
+
+	}
+
+
 	render() {
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
+		let chooseArr = this.state.chooseArr;
+		console.log(chooseArr)
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
-					left = {'云信'}
-					right={[
-                        {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
-                    ]}
+					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
+					heading={"选择联系人"}
+					right={{func:()=>{this._rightButton()},text:'完成',disabled:chooseArr.length>0?false:true}}
 				/>
 			    <SectionList
 			      ref={'mySectionList'}
@@ -195,15 +229,13 @@ class ChooseClient extends ContainerComponent {
 			      sections={this.relationStore}
 			      ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
-				  ListFooterComponent = {this._renderFooter}
 				  stickySectionHeadersEnabled={true}
 				/>
 				<View style={styles.rightSection}>
 					{this._getSections()}
 				</View>
-                {
-                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
-                }
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 		    </View>
 	);
 }
@@ -230,10 +262,19 @@ const styles = StyleSheet.create({
 		alignItems:'center',
 		paddingLeft:10
 	},
+    circle:{
+		width:20,
+		height:20,
+		borderWidth:1,
+		borderColor:'#aaa',
+		backgroundColor:'green',
+		borderRadius:15
+	},
 	pic:{
 		width:40,
 		height:40,
-		resizeMode:'stretch'
+		resizeMode:'stretch',
+		marginLeft:10
 	},
 	itemText:{		
 		textAlignVertical: 'center', 
@@ -310,13 +351,14 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    relationStore: state.relationStore
+    relationStore: state.relationStore,
+	accountName:state.loginStore.accountMessage.nick,
+    accountId:state.loginStore.accountMessage.accountId,
 });
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(recentListActions, dispatch),
-      ...bindActionCreators(contactsActions, dispatch),
+
 
   }};
 
