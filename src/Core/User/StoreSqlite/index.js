@@ -62,7 +62,7 @@ export function getAllRelationAvatorAndName(callback){
 
 //添加新的关系
 export function addNewRelation(Relation){
-
+    USERFMDB.AddNewRelation(Relation)
 }
 
 export function closeAccountDb(){
@@ -153,8 +153,10 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         let group = GroupList[item];
 
         group.Name = group.Name == null?"未命名":group.Name;
+        group.Description = group.Description == null?" ":group.Description;
+        group.ProfilePicture = group.ProfilePicture == null?" ":group.ProfilePicture;
 
-        sql = commonMethods.sqlFormat(sql,[group.GroupId," ",group.Name," ",false,"chatroom"," "," "]);
+        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name," ",false,"chatroom",group.ProfilePicture," ",group.Owner]);
         relationsSqls.push(sql);
     }
 
@@ -184,7 +186,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 USERFMDB.AddNewRelation = function(Relation){
     let sql = sqls.ExcuteIMSql.InitRelations;
 
-    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.type,Relation.avator,Relation.Email]);
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.type,Relation.avator,Relation.Email,Relation.owner]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -200,7 +202,7 @@ USERFMDB.AddNewRelation = function(Relation){
                 }, errorDB);
 
 
-            callback();
+            // callback();
 
         }, errorDB);
     }, errorDB);

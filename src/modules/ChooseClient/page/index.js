@@ -21,9 +21,11 @@ import {bindActionCreators} from 'redux';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
+import RelationModel from '../../../Core/User/dto/RelationModel'
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
+let user = new User();
 
 class ChooseClient extends ContainerComponent {
 
@@ -161,24 +163,54 @@ class ChooseClient extends ContainerComponent {
 
     }
 		//定义上导航的右按钮
-	_rightButton(chooseArr) {
+	_rightButton() {
 
+        let chooseArr = this.state.chooseArr;
 		let accounts = "";
 		for(let item in chooseArr){
-			if((item + 1)< chooseArr.length){
-				accounts += chooseArr[item]+",";
+			if((item*1 + 1) == chooseArr.length){
+				accounts += chooseArr[item];
+			}else{
+				accounts+= chooseArr[item]+",";
 			}
 		}
 
 		this.showLoading()
-		this.fetchData("POST","Member/CreateGroup",function(){
+		this.fetchData("POST","Member/CreateGroup",function(result){
+			currentObj.hideLoading();
 
-		},{"Operater":this.props.client})
+			console.log(result);
+
+			if(result.success){
+
+				if(result.data.Data == null){
+					alert("返回群数据出错")
+					return;
+				}
+				let relation = new RelationModel();
+				relation.RelationId = result.data.Data;
+				relation.owner = currentObj.props.accountId;
+				relation.Nick = currentObj.props.accountName + "发起的群聊"
+
+				user.AddNewRelation(relation);
+
+				//todo 添加群聊到redux
+
+                currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
+
+			}else{
+				alert(result.errorMessage);
+				return;
+			}
+
+		},{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
 
 	}
 
 
 	render() {
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
 		let chooseArr = this.state.chooseArr;
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
@@ -186,7 +218,7 @@ class ChooseClient extends ContainerComponent {
 				<MyNavigationBar
 					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
 					heading={"选择联系人"}
-					right={{func:(chooseArr)=>{this._rightButton(chooseArr)},text:'完成',disabled:chooseArr.length>0?false:true}}
+					right={{func:()=>{this._rightButton()},text:'完成',disabled:chooseArr.length>0?false:true}}
 				/>
 			    <SectionList
 			      ref={'mySectionList'}
@@ -201,6 +233,8 @@ class ChooseClient extends ContainerComponent {
 				<View style={styles.rightSection}>
 					{this._getSections()}
 				</View>
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 		    </View>
 	);
 }
@@ -316,7 +350,9 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    relationStore: state.relationStore
+    relationStore: state.relationStore,
+	accountName:state.loginStore.accountMessage.nick,
+    accountId:state.loginStore.accountMessage.accountId,
 });
 
 const mapDispatchToProps = (dispatch) => {

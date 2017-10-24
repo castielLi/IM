@@ -26,7 +26,7 @@ class TabBarComponent extends DisplayComponent {
 
                 <TabNavigator.Item
                     selected={this.state.selectedTab === '云信'}
-                    title="齐信"
+                    title="云信"
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/qixin_.png')}
                                               style={[styles.icon]}
@@ -37,7 +37,7 @@ class TabBarComponent extends DisplayComponent {
                                                       resizeMode={Image.resizeMode.contain}
                     />}
                     badgeText={this.props.unReadMessageStore}
-                    onPress={() => this.setState({ selectedTab: '齐信' })}>
+                    onPress={() => this.setState({ selectedTab: '云信' })}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
 
