@@ -258,7 +258,7 @@ IMFMDB.GetFriendMessage = function(callback){
 IMFMDB.UpdateFriendMessage = function(message){
     let updateSql = sqls.ExcuteIMSql.UpdateApplyFriend;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.Id])
+    updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.key])
 
     var db = SQLite.openDatabase({
         ...databaseObj

@@ -57,13 +57,13 @@ class NewFriend extends ContainerComponent {
 
     agreeApply = (index,data)=>{
         alert('同意好友申请')
-        //this.props.acceptFriendApplication(index)
-        let {status,Id} = data;
-        this.im.updateApplyFriendMessage()
+        let {key} = data;
+        this.im.updateApplyFriendMessage('added',key)
+        this.props.acceptFriendApplication(index)
     };
     deleteApply = (index)=>{
         alert('删除好友申请')
-        //this.props.deleteFriendApplication(index)
+        this.props.deleteFriendApplication(index)
     };
     _renderRow = (rowData, sectionID, rowID)=>{
         return(
@@ -73,7 +73,7 @@ class NewFriend extends ContainerComponent {
                         [{
                             text:'删除',
                             type:'delete',
-                            onPress:()=>{this.deleteApply(index)}
+                            onPress:()=>{this.deleteApply(rowID)}
                         }]
                     }
                     rowID = {rowID}
