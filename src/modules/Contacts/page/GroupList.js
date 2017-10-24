@@ -88,7 +88,7 @@ class GroupList extends ContainerComponent {
     }
 
     goToChat = (item)=>{
-        // this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type}});
     }
     _renderItem = (info) => {
         var txt = '  ' + info.item.Nick;
@@ -123,17 +123,7 @@ class GroupList extends ContainerComponent {
         return <View style={styles.ItemSeparator}><Text></Text></View>
     }
     _renderFooter = () =>{
-        return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.props.relationStore.length+'位联系人'}</Text></View>
-    }
-    goToAddFriends = ()=>{
-        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
-
-    }
-    //定义上导航的右按钮
-    _rightButton() {
-        return <TouchableOpacity onPress={this.goToAddFriends}>
-            <Text style={styles.moreUse}>+</Text>
-        </TouchableOpacity>
+        return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'个群聊'}</Text></View>
     }
 
 
@@ -142,7 +132,7 @@ class GroupList extends ContainerComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left = {'云信'}
+                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
                 />
                 <SectionList
                     ref={'mySectionList'}
@@ -274,4 +264,4 @@ const mapDispatchToProps = (dispatch) => {
 
     }};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Contacts);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupList);
