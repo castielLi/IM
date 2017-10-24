@@ -179,14 +179,14 @@ class ChooseClient extends ContainerComponent {
         this.setState({showFeatures:newState});
     }
 	render() {
-		console.log(this.state.chooseArr.length)
+		let chooseArr = this.state.chooseArr;
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
 					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
 					heading={"选择联系人"}
-					right={{func:(this.props.chooseArr)=>{alert('群聊')},text:'完成',disabled:this.state.chooseArr.length>0?false:true}}
+					right={{func:(chooseArr)=>{alert('群聊')},text:'完成',disabled:chooseArr.length>0?false:true}}
 				/>
 			    <SectionList
 			      ref={'mySectionList'}
