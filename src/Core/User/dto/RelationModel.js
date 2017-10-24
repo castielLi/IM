@@ -13,5 +13,6 @@ export default class Relation{
         this.Email = "";
         this.LocalImage = "";
         this.type = "";
+        this.owner = "";
     }
 }
