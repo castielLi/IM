@@ -32,6 +32,7 @@ import SearchNewFriend from './SearchNewFriend/page'
 import ChatSetting from './ChatSetting/page'
 import Me from './Me/page'
 import Validate from './AddFriends/validate'
+import GroupList from './Contacts/page/GroupList'
 
 export const MainPage = {
     key: 'ChatDetail',
@@ -138,6 +139,10 @@ export const RouteMap = {
         'Contacts': {
             component: Contacts,
             params: {}
+        },
+        'GroupList':{
+            component:GroupList,
+            params:{}
         }
     },
     'Zoom': {
@@ -193,7 +198,7 @@ export const RouteMap = {
             component: Validate,
             params: {}
         }
-    },
+    }
 };
 
 

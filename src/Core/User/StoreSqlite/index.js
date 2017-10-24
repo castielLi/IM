@@ -152,6 +152,8 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
         let group = GroupList[item];
 
+        group.Name = group.Name == null?"未命名":group.Name;
+
         sql = commonMethods.sqlFormat(sql,[group.GroupId," ",group.Name," ",false,"chatroom"," "," "]);
         relationsSqls.push(sql);
     }
