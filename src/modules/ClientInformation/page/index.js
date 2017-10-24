@@ -159,15 +159,16 @@ class ClientInformation extends ContainerComponent {
         currentObj.showLoading()
         this.fetchData("POST","Member/ApplyFriend",function(result){
             currentObj.hideLoading()
+            console.log(result,'ssssssssssssss');
             //单方面添加好友
-            if(result.Result && result.Data===null){
+            if(result.success && result.data.Data===''){
                 currentObj.setState({
                     isRenderSendMessage:true
                 })
 
             }
             //双方互不为好友
-            else if(result.Result && result.Data){
+            else if(result.success && result.data.Data){
                 currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.Data}})
             }
         },{Applicant,Respondent})

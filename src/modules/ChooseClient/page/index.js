@@ -18,8 +18,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../RecentList/reducer/action';
-import * as contactsActions from '../reducer/action';
+//import * as recentListActions from '../../RecentList/reducer/action';
+//import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
@@ -41,6 +41,8 @@ class ChooseClient extends ContainerComponent {
 			rightSectionItemModalIndex:'',
 
             showFeatures:false,//显示功能块组件
+			chooseArr:[],//选择的好友的id
+            chooseObj:[],//选择的好友的id
 		}
         this.relationStore = []
 	}
@@ -92,10 +94,27 @@ class ChooseClient extends ContainerComponent {
         this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
 
     }
+    choose=(item)=>{
+		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
+		let obj = {...this.state.chooseObj};
+		this.setState({
+            chooseObj:obj
+		})
+		//对象转为所需数组
+		let arr = Object.keys(obj);
+		let needArr = [];
+		for(let i=0;i<arr.length;i++){
+			if(obj[arr[i]]) needArr.push(arr[i])
+		}
+        this.setState({
+            chooseArr:needArr
+        })
+	}
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nick;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
 					<View  style={styles.itemBox} >
+						<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}></View>
 						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
@@ -120,35 +139,18 @@ class ChooseClient extends ContainerComponent {
 						</TextInput>
 					</View>
 					<View style={styles.listOtherUseBox}>
-						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
-							<View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
-									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
-								</View>
-							</View>
-					   </TouchableHighlight>
+
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
+								<Text style={[styles.itemText,{paddingLeft:10}]}>选择一个群</Text>
 							</View>
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
-							</View>
-							</View>
-					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
+								<Text style={[styles.itemText,{paddingLeft:10}]}>面对面建群</Text>
 								</View>
 							</View>
 					   </TouchableHighlight>
@@ -177,15 +179,14 @@ class ChooseClient extends ContainerComponent {
         this.setState({showFeatures:newState});
     }
 	render() {
+		console.log(this.state.chooseArr.length)
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
-					left = {'云信'}
-					right={[
-                        {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
-                    ]}
+					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
+					heading={"选择联系人"}
+					right={{func:(this.props.chooseArr)=>{alert('群聊')},text:'完成',disabled:this.state.chooseArr.length>0?false:true}}
 				/>
 			    <SectionList
 			      ref={'mySectionList'}
@@ -230,10 +231,19 @@ const styles = StyleSheet.create({
 		alignItems:'center',
 		paddingLeft:10
 	},
+    circle:{
+		width:20,
+		height:20,
+		borderWidth:1,
+		borderColor:'#aaa',
+		backgroundColor:'green',
+		borderRadius:15
+	},
 	pic:{
 		width:40,
 		height:40,
-		resizeMode:'stretch'
+		resizeMode:'stretch',
+		marginLeft:10
 	},
 	itemText:{		
 		textAlignVertical: 'center', 
@@ -315,8 +325,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(recentListActions, dispatch),
-      ...bindActionCreators(contactsActions, dispatch),
+
 
   }};
 

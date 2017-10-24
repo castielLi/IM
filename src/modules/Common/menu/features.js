@@ -29,6 +29,10 @@ export default class Features extends ContainerComponent {
 		let newState = !this.props.showFeatures;
 		this.props.changeShowFeature(newState);
 	}
+    goToChooseClient = ()=>{
+        this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{}});
+
+    }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
 
@@ -37,7 +41,7 @@ export default class Features extends ContainerComponent {
 		return (
 			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} onPressIn = {()=>{this.changeFeatureState()}}>
 			<View style = {styles.container}>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToChooseClient();}}>
 					<View style = {styles.featureBox}>
 						<Image style={styles.logo} source = {require('./resource/weChat.png')}/>
 						<Text style = {styles.Text}>发起群聊</Text>
