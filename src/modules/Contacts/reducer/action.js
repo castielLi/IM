@@ -22,6 +22,7 @@ export function changeRelation(relation){
     }
 }
 
+
 //从relationStore中删除指定好友
 export function deleteRelation(relationId){
     return {
