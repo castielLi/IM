@@ -7,7 +7,7 @@ const initialState = {
     unSettingNumber:0//我的
 };
 
-export default function unReadMessageStore(state=initialState, action){
+export  function unReadMessageStore(state=initialState, action){
 
     switch(action.type){
 
@@ -33,6 +33,21 @@ export default function unReadMessageStore(state=initialState, action){
             };
         default:
             return state;
+    }
+
+}
+
+const initialTabBarState = 0;
+
+export  function tabBarStore(state=initialTabBarState,action){
+    switch(action.type){
+
+
+        case 'CHANGE_TABBAR':
+            return action.index
+
+        default:
+            return initialTabBarState;
     }
 
 }

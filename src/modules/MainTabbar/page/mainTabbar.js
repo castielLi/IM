@@ -7,25 +7,23 @@ import {StyleSheet, Image} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import DisplayComponent from '../../../Core/Component/index';
 import {connect} from 'react-redux';
-
-
+import {bindActionCreators} from 'redux';
+import tabBarPageEnum from './tabBarPageEnum';
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 class TabBarComponent extends DisplayComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
-        this.state = {
-            selectedTab: '云信',
-            isLogged: false
-        }
+
     }
 
     render() {
-
+        let selectedTab = tabBarPageEnum[this.props.tabBarStore];
         return (
             <TabNavigator>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === '云信'}
+                    selected={selectedTab === '云信'}
                     title="云信"
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/qixin_.png')}
@@ -37,12 +35,12 @@ class TabBarComponent extends DisplayComponent {
                                                       resizeMode={Image.resizeMode.contain}
                     />}
                     badgeText={this.props.unReadMessageStore}
-                    onPress={() => this.setState({ selectedTab: '云信' })}>
+                    onPress={() => this.props.changeTabBar(0)}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === '通讯录'}
+                    selected={selectedTab === '通讯录'}
                     title="通讯录"
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/contact.png')}
@@ -53,12 +51,12 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: '通讯录' })}>
+                    onPress={() => this.props.changeTabBar(1)}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === '发现'}
+                    selected={selectedTab === '发现'}
                     title="发现"
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/zoom.png')}
@@ -69,12 +67,12 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: '发现' })}>
+                    onPress={() => this.props.changeTabBar(2)}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabThree",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
-                    selected={this.state.selectedTab === '我'}
+                    selected={selectedTab === '我'}
                     title="我"
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/me.png')}
@@ -85,7 +83,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.setState({ selectedTab: '我' })}>
+                    onPress={() => this.props.changeTabBar(3)}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabFour",this.props.navigator)}
                 </TabNavigator.Item>
             </TabNavigator>
@@ -102,11 +100,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     loginStore: state.loginStore,
-    unReadMessageStore:state.unReadMessageStore.unReadMessageNumber
+    unReadMessageStore:state.unReadMessageStore.unReadMessageNumber,
+    tabBarStore:state.tabBarStore
 });
 
 const mapDispatchToProps = dispatch => ({
-    // ...bindActionCreators(tabbarAction,dispatch)
+    ...bindActionCreators(unReadMessageActions, dispatch),
 });
 
 

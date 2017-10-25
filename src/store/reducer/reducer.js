@@ -5,7 +5,7 @@ import { combineReducers } from 'redux';
 import loginStore from '../../modules/Login/reducer';
 import chatRecordStore from '../../Core/IM/redux/index';
 import recentListStore from '../../modules/RecentList/reducer';
-import unReadMessageStore from '../../modules/MainTabbar/reducer';
+import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../modules/Contacts/reducer';
 import friendApplicationStore from '../../modules/NewFriend/reducer/index'
@@ -24,6 +24,8 @@ export default combineReducers({
     chatDetailPageStore,
     //未读消息状态
     unReadMessageStore,
+    //mainTabBar显示状态
+    tabBarStore,
     //所有关系状态
     relationStore,
     //好友申请记录状态
