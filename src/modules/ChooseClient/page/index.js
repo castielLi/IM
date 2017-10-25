@@ -169,12 +169,9 @@ class ChooseClient extends ContainerComponent {
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
 		for(let item in chooseArr){
-			if((item*1 + 1) == chooseArr.length){
-				accounts += chooseArr[item];
-			}else{
-				accounts+= chooseArr[item]+",";
-			}
+			accounts+= chooseArr[item]+",";
 		}
+		accounts += currentObj.props.accountId;
 
 		this.showLoading()
 		this.fetchData("POST","Member/CreateGroup",function(result){
