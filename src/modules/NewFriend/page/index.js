@@ -50,11 +50,7 @@ class NewFriend extends ContainerComponent {
         // })
     }
 
-    componentWillReceiveProps(nextProps){
-        //let reduxData = nextProps.friendApplicationStore;
-        //this.applyData = sqlData.concat(reduxData)
-        this.applyData = nextProps.friendApplicationStore;
-    }
+
 
     agreeApply = (index,data)=>{
         alert('同意好友申请');
@@ -101,8 +97,8 @@ class NewFriend extends ContainerComponent {
                             <View style={styles.basicBox}>
                                 <Image style={styles.headPic} source={require('../resource/other.jpg')}/>
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>张彤</Text>
-                                    <Text style={styles.description}>我是张彤</Text>
+                                    <Text style={styles.name}>{rowData.data.Data.Nickname}</Text>
+                                    <Text style={styles.description}>{rowData.comment}</Text>
                                 </View>
                             </View>
                             <Text style={styles.arrow}>{'已添加'}</Text>
@@ -137,7 +133,7 @@ class NewFriend extends ContainerComponent {
                         </TextInput>
                     </View>
                     <ListView
-                        dataSource = {this.state.dataSource.cloneWithRows(this.applyData)}
+                        dataSource = {this.state.dataSource.cloneWithRows(this.props.friendApplicationStore.applicationRecord)}
                         renderRow = {this._renderRow}
                         enableEmptySections = {true}
                         removeClippedSubviews={false}

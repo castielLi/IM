@@ -20,6 +20,7 @@ export default function friendApplicationStore(state = initialState,action){
 
             return {
                 ...state,
+                applicationRecord:state.applicationRecord.concat([])
             };
 
         case 'DELETE_FRIEND_APPLICATION':
