@@ -13,12 +13,13 @@ import {
     TouchableWithoutFeedback,
     Switch
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
-
+let im = new IM();
 let currentObj = undefined;
 
 export default class Validate extends ContainerComponent {
@@ -54,6 +55,7 @@ export default class Validate extends ContainerComponent {
     }
 
     sendApplyMessage= ()=>{
+        let {Applicant,Respondent} = this.props;
         currentObj.showLoading()
         let addMessage = addApplyFriendMessage({comment:'我是台台台台',key:currentObj.props.validateID},Applicant,Respondent);
         im.addMessage(addMessage,function(){
@@ -81,7 +83,7 @@ export default class Validate extends ContainerComponent {
                                 onChangeText={(v)=>{this.setState({text:v})}}
                                 value={this.state.text}
                             />
-                            {this.state.text.length ? <Text style={styles.rowClose} onPress={()=>{this.setState({text:''})}}>X</Text> : null}
+                            {this.state.text.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:''})}} style={{marginRight:10}}/> : null}
                         </View>
                     </View>
                     <View style={styles.rowBox}>
@@ -108,9 +110,9 @@ const styles = StyleSheet.create({
         flex:1
     },
     validateView:{
+        backgroundColor:'#fff',
       flexDirection:'row',
         alignItems:'center',
-        borderBottomWidth:1
     },
     textInput:{
       flex:1,
@@ -118,21 +120,27 @@ const styles = StyleSheet.create({
         paddingBottom:0
     },
     rowBox:{
-        backgroundColor:'#fff',
-        marginBottom:10,
-        padding:10,
+        marginBottom:0,
+        paddingVertical:10
     },
     rowTitle:{
         fontSize:14,
         color:'#999',
+        marginLeft:10,
+        marginBottom:10
     },
     rowSetting:{
         flexDirection:'row',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        backgroundColor:'#fff',
+        paddingLeft:10,
     },
     rowText:{
         fontSize:16,
         color:'#000',
+        height:30,
+        textAlignVertical:'center',
+        textAlign:'center'
     },
     rowClose:{
         padding:10,
