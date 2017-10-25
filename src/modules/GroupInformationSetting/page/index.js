@@ -47,6 +47,7 @@ class GroupInformationSetting extends ContainerComponent {
         this.state = {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
+            isSave:false,
             members:[]
         }
         currentObj = this;
@@ -63,7 +64,27 @@ class GroupInformationSetting extends ContainerComponent {
     }
 
     addToContacts = ()=>{
-
+        let Save = !this.state.isSave;
+        if(Save){
+            this.fetchData('POST','Member/AddGroupToContact',function (result) {
+                if(result.success && result.data.Result){
+                    alert('添加通讯录成功')
+                    let relation = {RelationId:'e7ffb574-d324-4e5d-8704-d636d1c6da62',owner:'wg003662',Nick:'测试',type:'chatroom'}
+                    user.AddNewRelation(relation);
+                }
+            },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+        }
+        else{
+            this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
+                if(result.success && result.data.Result){
+                    alert('移除通讯录成功')
+                    user.deleteRelation('e7ffb574-d324-4e5d-8704-d636d1c6da62');
+                }
+            },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+        }
+        this.setState({
+            isSave:!this.state.isSave
+        })
     }
 
 
@@ -266,7 +287,7 @@ class GroupInformationSetting extends ContainerComponent {
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>添加到通讯录</Text>
                             <Switch
-                                value={this.state.notDisturb}
+                                value={this.state.isSave}
                                 onValueChange={this.addToContacts}
                             ></Switch>
                         </View>

@@ -129,7 +129,7 @@ class RecentChat extends ContainerComponent {
                 }
 
                 for( let j=0;j<this.props.relationStore.length;j++){
-					if(v.Client === this.props.relationStore[j].RelationId){
+					if(v.Client === this.props.relationStore[j].RelationId || v.Type === 'chatroom'){
                         needArr.push(v);
                         break;
 					}

@@ -242,7 +242,7 @@ class ChooseClient extends ContainerComponent {
                     relation.Nick = currentObj.props.accountName + "发起的群聊";
                     relation.type = 'chatroom';
 
-                    user.AddNewRelation(relation);
+                    // user.AddNewRelation(relation);
                     currentObj.props.addRelation(relation);
                     //todo 添加群聊到redux
 
