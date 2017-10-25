@@ -62,6 +62,10 @@ class GroupInformationSetting extends ContainerComponent {
         })
     }
 
+    addToContacts = ()=>{
+
+    }
+
 
     componentDidMount(){
         currentObj.showLoading()
@@ -245,6 +249,15 @@ class GroupInformationSetting extends ContainerComponent {
                             <Switch
                                 value={this.state.notDisturb}
                                 onValueChange={this.changeNotDisturb}
+                            ></Switch>
+                        </View>
+                    </View>
+                    <View>
+                        <View  style={styles.remarksBox}>
+                            <Text style={styles.remarks}>添加到通讯录</Text>
+                            <Switch
+                                value={this.state.notDisturb}
+                                onValueChange={this.addToContacts}
                             ></Switch>
                         </View>
                     </View>

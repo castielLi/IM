@@ -65,6 +65,21 @@ export function addNewRelation(Relation){
     USERFMDB.AddNewRelation(Relation)
 }
 
+//添加新的关系设置
+export function addNewRelationSetting(RelationSetting){
+    USERFMDB.AddNewRelationSetting(RelationSetting);
+}
+
+//修改关系设置
+export function updateRelationSetting(RelationSetting){
+    USERFMDB.UpdateRelationSetting(RelationSetting);
+}
+
+//获取关系设置
+export function getRelationSetting(RelationId,callback){
+    USERFMDB.GetRelationSetting(RelationId,callback);
+}
+
 export function closeAccountDb(){
     USERFMDB.closeAccountDb()
 }
@@ -321,6 +336,76 @@ USERFMDB.GetAllRelationAvatorAndName = function(callback){
         });
     }, (err)=>{errorDB('打开数据',err)});
 }
+
+//获取当前关系的关系设置
+USERFMDB.GetRelationSetting = function(RelationId,callback){
+    let sql = sqls.ExcuteIMSql.GetRelationSettingByRelationId;
+
+    sql = commonMethods.sqlFormat(sql,[RelationId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, (err)=>{errorDB('查找',err)});
+
+        });
+    }, (err)=>{errorDB('打开数据',err)});
+}
+
+
+//修改当前关系的关系设置
+USERFMDB.UpdateRelationSetting = function(RelationSetting){
+    let sql = sqls.ExcuteIMSql.UpdateRelationSetting;
+
+    // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
+    sql = commonMethods.sqlFormat(sql,[RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick,RelationSetting.RelationId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("修改成功")
+
+            }, (err)=>{errorDB('修改',err)});
+
+        });
+    }, (err)=>{errorDB('打开数据',err)});
+}
+
+//添加新的关系设置
+USERFMDB.AddNewRelationSetting = function(RelationSetting){
+    let sql = sqls.ExcuteIMSql.InsertRelationSetting;
+
+    // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
+    sql = commonMethods.sqlFormat(sql,[RelationSetting.RelationId,RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("添加成功")
+
+            }, (err)=>{errorDB('添加',err)});
+
+        });
+    }, (err)=>{errorDB('打开数据',err)});
+}
+
 
 USERFMDB.closeAccountDb = function(){
      var db = SQLite.openDatabase({
