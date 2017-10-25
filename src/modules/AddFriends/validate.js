@@ -74,7 +74,7 @@ export default class Validate extends ContainerComponent {
                     right={{func:this.sendApplyMessage,text:'发送'}}
                 />
                 <View style={styles.Box}>
-                    <View style={styles.rowBox}>
+                    <View>
                         <Text style={styles.rowTitle}>你需要发送验证申请，等对方通过</Text>
                         <View style={styles.validateView}>
                             <TextInput
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
         flex:1
     },
     validateView:{
+        height:50,
         backgroundColor:'#fff',
       flexDirection:'row',
         alignItems:'center',
@@ -117,34 +118,25 @@ const styles = StyleSheet.create({
     textInput:{
       flex:1,
         fontSize:16,
-        paddingBottom:0
-    },
-    rowBox:{
-        marginBottom:0,
-        paddingVertical:10
     },
     rowTitle:{
+        height:50,
         fontSize:14,
         color:'#999',
-        marginLeft:10,
-        marginBottom:10
+        paddingLeft:10,
+        textAlignVertical:'center'
     },
     rowSetting:{
         flexDirection:'row',
         justifyContent:'space-between',
         backgroundColor:'#fff',
-        paddingLeft:10,
+        height:50,
+        paddingHorizontal:10
     },
     rowText:{
         fontSize:16,
         color:'#000',
-        height:30,
+        height:50,
         textAlignVertical:'center',
-        textAlign:'center'
-    },
-    rowClose:{
-        padding:10,
-        backgroundColor:'yellow',
-        marginRight:10
     },
 });
