@@ -162,7 +162,11 @@ class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'位联系人'}</Text></View>
+        let amount = 0;
+		for(let i = 0; i< this.relationStore.length;i++){
+			amount+= this.relationStore[i].data.length;
+		}
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{amount+'位联系人'}</Text></View>
 	}
     goToAddFriends = ()=>{
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});

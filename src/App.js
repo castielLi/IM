@@ -40,7 +40,7 @@ export default function App() {
 
     //初始化路由表
     Route.initRouteMap(router);
-    Route.setAssignMainTabBarPage(store.dispatch(changeTabBar(0)));
+    Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
     //初始化IM
     let im = new IM();
     //改变消息状态 {state:这里变化,message:{}}
