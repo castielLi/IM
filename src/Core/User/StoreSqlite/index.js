@@ -351,7 +351,11 @@ USERFMDB.GetRelationSetting = function(RelationId,callback){
 
             tx.executeSql(sql, [], (tx, results) => {
 
-                callback(results.rows.raw());
+                if(results.rows.length>0) {
+                    callback(results.rows.raw()[0]);
+                }else{
+                    callback(null);
+                }
 
             }, (err)=>{errorDB('查找',err)});
 
@@ -365,7 +369,8 @@ USERFMDB.UpdateRelationSetting = function(RelationSetting){
     let sql = sqls.ExcuteIMSql.UpdateRelationSetting;
 
     // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
-    sql = commonMethods.sqlFormat(sql,[RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick,RelationSetting.RelationId])
+    sql = commonMethods.sqlFormat(sql,[RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick,
+        RelationSetting.displayZoom,RelationSetting.allowCheckZoom,RelationSetting.starMark,RelationSetting.RelationId])
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -388,7 +393,8 @@ USERFMDB.AddNewRelationSetting = function(RelationSetting){
     let sql = sqls.ExcuteIMSql.InsertRelationSetting;
 
     // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
-    sql = commonMethods.sqlFormat(sql,[RelationSetting.RelationId,RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick])
+    sql = commonMethods.sqlFormat(sql,[RelationSetting.RelationId,RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick,
+    RelationSetting.displayZoom,RelationSetting.allowCheckZoom,RelationSetting.starMark])
 
     var db = SQLite.openDatabase({
         ...databaseObj

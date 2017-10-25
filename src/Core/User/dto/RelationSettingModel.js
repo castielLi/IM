@@ -10,5 +10,8 @@ export default class RelationSettingModel{
         this.disturb = false;
         this.saveContact = false;
         this.showNick = false;
+        this.displayZoom = true;
+        this.allowCheckZoom = true;
+        this.starMark = false;
     }
 }

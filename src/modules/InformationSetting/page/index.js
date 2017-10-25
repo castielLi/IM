@@ -42,7 +42,8 @@ class InformationSetting extends ContainerComponent {
             notSeeHisZoom:false,
             notSeeMyZoom:false,
             joinBlackList:false,
-            currentRelation:{}
+            currentRelation:{},
+            relationSetting:{}
         }
         currentObj = this;
     }
@@ -66,7 +67,18 @@ class InformationSetting extends ContainerComponent {
     }
 
     componentWillMount(){
-        this.props.changeTabBar(0)
+        // this.props.changeTabBar(0)
+
+
+        //获取当前setting
+        user.GetRelationSetting(this.props.accountId,function(setting){
+            console.log(setting);
+            if(setting){
+                currentObj.setState({
+                    relationSetting:setting
+                })
+            }
+        })
 
         let setting = undefined;
         for(let item in this.props.relations){
