@@ -17,5 +17,6 @@ export default class SendMessageDto{
         this.way = "";
         //同上，代表message的状态
         this.status = "";
+        this.resourceTime="";
     }
 }
