@@ -26,6 +26,7 @@ var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let user = new User();
+let title = null;
 
 class ChooseClient extends ContainerComponent {
 
@@ -91,7 +92,17 @@ class ChooseClient extends ContainerComponent {
 		}
     }
 
+    componentWillMount(){
+		if(this.props.members){
+			this.hasGroup = true;
+			title = '选中联系人'
+		}
+		else{
+			title = '发起群聊'
+		}
+	}
     choose=(item)=>{
+		//改变选中颜色{RelationId:true,RelationId:false...}
 		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
 		let obj = {...this.state.chooseObj};
 		this.setState({
@@ -101,6 +112,7 @@ class ChooseClient extends ContainerComponent {
 		let arr = Object.keys(obj);
 		let needArr = [];
 		for(let i=0;i<arr.length;i++){
+			//已选中 选项
 			if(obj[arr[i]]) needArr.push(arr[i])
 		}
         this.setState({
@@ -167,6 +179,7 @@ class ChooseClient extends ContainerComponent {
 
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
+		//拼接选中用户id
 		for(let item in chooseArr){
 			if((item*1 + 1) == chooseArr.length){
 				accounts += chooseArr[item];
@@ -175,35 +188,54 @@ class ChooseClient extends ContainerComponent {
 			}
 		}
 
-		this.showLoading()
-		this.fetchData("POST","Member/CreateGroup",function(result){
-			currentObj.hideLoading();
+		//已有群 添加新成员
+		if(this.hasGroup) {
+            this.fetchData("POST", "Member/AddGroupMember", function (result) {
+                if (result.success) {
+                    if (result.data.Data == null) {
+                        alert("返回群数据出错")
+                        return;
+                    }
+                    alert('添加成员成功了')
+                } else {
+                    alert(result.errorMessage);
+                    return;
+                }
+            }, {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts});
+        }
+        //未有群 创建群
+        else{
+            //this.showLoading()
+            this.fetchData("POST","Member/CreateGroup",function(result){
+                //currentObj.hideLoading();
 
-			console.log(result);
+                console.log(result);
 
-			if(result.success){
+                if(result.success){
 
-				if(result.data.Data == null){
-					alert("返回群数据出错")
-					return;
-				}
-				let relation = new RelationModel();
-				relation.RelationId = result.data.Data;
-				relation.owner = currentObj.props.accountId;
-				relation.Nick = currentObj.props.accountName + "发起的群聊"
+                    if(result.data.Data == null){
+                        alert("返回群数据出错")
+                        return;
+                    }
+                    let relation = new RelationModel();
+                    relation.RelationId = result.data.Data;
+                    relation.owner = currentObj.props.accountId;
+                    relation.Nick = currentObj.props.accountName + "发起的群聊";
+                    relation.type = 'chatroom';
 
-				user.AddNewRelation(relation);
+                    user.AddNewRelation(relation);
 
-				//todo 添加群聊到redux
+                    //todo 添加群聊到redux
 
-                currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 
-			}else{
-				alert(result.errorMessage);
-				return;
-			}
+                }else{
+                    alert(result.errorMessage);
+                    return;
+                }
 
-		},{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
+            },{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
+		}
 
 	}
 
@@ -218,7 +250,7 @@ class ChooseClient extends ContainerComponent {
 			<View style={styles.container}>
 				<MyNavigationBar
 					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
-					heading={"选择联系人"}
+					heading={title}
 					right={{func:()=>{this._rightButton()},text:'完成',disabled:chooseArr.length>0?false:true}}
 				/>
 			    <SectionList

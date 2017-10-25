@@ -72,7 +72,9 @@ class GroupInformationSetting extends ContainerComponent {
                 alert(result.errorMessage)
                 return;
             }else{
-                
+                currentObj.setState({
+                    members:result.data.Data
+                })
             }
 
         },{"GroupId":this.props.groupId})
@@ -117,6 +119,14 @@ class GroupInformationSetting extends ContainerComponent {
 
     }
 
+
+    goToChooseClient = ()=>{
+        let members = this.state.members.map((item,index)=>{
+            return item.Account;
+        });
+        let groupId = this.props.groupId;
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId}})
+    }
     _renderItem = (item) => {
         //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
         if(item.index === 14){
@@ -133,10 +143,10 @@ class GroupInformationSetting extends ContainerComponent {
             return null;
         }
         else{
-            return   <TouchableWithoutFeedback onPress={()=>{alert('clientInformation')}}>
+            return   <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
                         <View style={styles.itemBox}>
-                            <Image style={styles.itemImage} source={{uri:item.item.avator}}></Image>
-                            <Text style={styles.itemText}>{item.item.nick}</Text>
+                            <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}></Image>
+                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
                         </View>
                     </TouchableWithoutFeedback>
 
@@ -184,7 +194,7 @@ class GroupInformationSetting extends ContainerComponent {
                             horizontal={false}
                             keyExtractor={(item,index)=>(index)}
                             style={{backgroundColor:'#fff'}}
-                            data={data}>
+                            data={this.state.members}>
                         </FlatList>
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
