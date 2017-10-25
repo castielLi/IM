@@ -19,6 +19,8 @@ import IM from './Core/IM'
 
 import * as ActionForChatRecordStore from './Core/IM/redux/action'
 import * as ActionForLoginStore from './modules/Login/reducer/action';
+import {changeTabBar} from './modules/MainTabbar/reducer/action';
+
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
 import route from './Core/route/router'
@@ -38,7 +40,7 @@ export default function App() {
 
     //初始化路由表
     Route.initRouteMap(router);
-
+    Route.setAssignMainTabBarPage(store.dispatch(changeTabBar(0)));
     //初始化IM
     let im = new IM();
     //改变消息状态 {state:这里变化,message:{}}

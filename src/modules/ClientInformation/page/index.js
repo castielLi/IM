@@ -159,7 +159,10 @@ class ClientInformation extends ContainerComponent {
         currentObj.showLoading()
         this.fetchData("POST","Member/ApplyFriend",function(result){
             currentObj.hideLoading()
-            console.log(result,'ssssssssssssss');
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
             //单方面添加好友
             if(result.success && result.data.Data===''){
                 currentObj.setState({

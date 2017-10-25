@@ -166,12 +166,12 @@ class GroupInformationSetting extends ContainerComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
                 <MyNavigationBar
                     heading={"群聊天设置"}
                     left={{func:()=>{this.route.pop(this.props)},text:'返回'}}
                 />
-                <View>
+                <ScrollView>
                     <View>
                         <FlatList
                             ListFooterComponent={this._footer}
@@ -276,10 +276,10 @@ class GroupInformationSetting extends ContainerComponent {
                         destructiveButtonIndex={1}
                         onPress={this.handlePress}
                     />
-                </View>
+                </ScrollView>
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
-            </ScrollView>
+            </View>
         )
 
     }
