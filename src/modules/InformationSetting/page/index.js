@@ -168,6 +168,10 @@ class InformationSetting extends ContainerComponent {
                       //删除该与client的所以聊天记录
                       im.deleteCurrentChatMessage(client,type);
                       //如果该client在最近聊天中有记录
+
+                      //删除account数据库
+                      user.deleteRelation(client);
+
                       currentObj.props.recentListStore.data.forEach((v,i)=>{
                           if(v.Client === client){
                               //清空recentListStore中对应记录
