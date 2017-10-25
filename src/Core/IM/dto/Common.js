@@ -42,7 +42,15 @@ export function sqliteMessageToMessage(sqliteMessage){
          file.type = ResourceTypeEnum.Image;
          file.LocalSource =  sqliteMessage.localPath.split(",")[0];
          message.Resource = [file];
-    }else{
+    }else if(sqliteMessage.type == MessageType.audio){
+        message.type = "audio"
+        let file = new uploadResourceDto()
+        file.type = ResourceTypeEnum.audio;
+        file.LocalSource =  sqliteMessage.localPath.split(",")[0];
+        message.resourceTime = sqliteMessage.resourceTime;
+        message.Resource = [file];
+    }
+    else{
         message.type = "text"
     }
     return message;

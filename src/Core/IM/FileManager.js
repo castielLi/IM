@@ -114,7 +114,7 @@ FileManager.uploadResource = function(obj){
             console.log('上传失败的内容是',values);
         })
     }else{
-        copyMessage.status = SendStatus.PrepareToSend;
+        copyMessage.status = SendStatus.PrepareToUpload;
         currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
     }
 }

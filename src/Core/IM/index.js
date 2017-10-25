@@ -261,7 +261,7 @@ export default class IM {
                     sendMessage.push(message);
                 }else{
 
-                    if(message.status == SendStatus.PrepareToUpload) {
+                    if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
 
                         FileManager.addResource(message,null);
 

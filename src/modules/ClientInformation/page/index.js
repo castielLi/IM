@@ -172,7 +172,7 @@ class ClientInformation extends ContainerComponent {
             }
             //双方互不为好友
             else if(result.success && result.data.Data){
-                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.Data}})
+                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.data.Data,Applicant,Respondent}})
             }
         },{Applicant,Respondent})
     }

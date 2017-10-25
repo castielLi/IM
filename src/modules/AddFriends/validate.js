@@ -13,12 +13,13 @@ import {
     TouchableWithoutFeedback,
     Switch
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
-
+let im = new IM();
 let currentObj = undefined;
 
 export default class Validate extends ContainerComponent {
@@ -54,8 +55,9 @@ export default class Validate extends ContainerComponent {
     }
 
     sendApplyMessage= ()=>{
+        let {Applicant,Respondent} = this.props;
         currentObj.showLoading()
-        let addMessage = addApplyFriendMessage({comment:'我是台台台台',key:currentObj.props.validateID},Applicant,Respondent);
+        let addMessage = addApplyFriendMessage({comment:this.state.text,key:currentObj.props.validateID},Applicant,Respondent);
         im.addMessage(addMessage,function(){
             currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒");
@@ -72,8 +74,10 @@ export default class Validate extends ContainerComponent {
                     right={{func:this.sendApplyMessage,text:'发送'}}
                 />
                 <View style={styles.Box}>
-                    <View style={styles.rowBox}>
-                        <Text style={styles.rowTitle}>你需要发送验证申请，等对方通过</Text>
+                    <View>
+                        <View style={styles.textBox}>
+                            <Text style={styles.rowTitle}>你需要发送验证申请，等对方通过</Text>
+                        </View>
                         <View style={styles.validateView}>
                             <TextInput
                                 style={styles.textInput}
@@ -81,13 +85,17 @@ export default class Validate extends ContainerComponent {
                                 onChangeText={(v)=>{this.setState({text:v})}}
                                 value={this.state.text}
                             />
-                            {this.state.text.length ? <Text style={styles.rowClose} onPress={()=>{this.setState({text:''})}}>X</Text> : null}
+                            {this.state.text.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:''})}} style={{marginRight:10}}/> : null}
                         </View>
                     </View>
                     <View style={styles.rowBox}>
-                        <Text style={styles.rowTitle}>朋友圈权限</Text>
+                        <View style={styles.textBox}>
+                            <Text style={styles.rowTitle}>朋友圈权限</Text>
+                        </View>
                         <View style={styles.rowSetting}>
-                            <Text style={styles.rowText}>不让他(她)看我的朋友圈</Text>
+                            <View style={styles.textBox}>
+                                <Text style={styles.rowText}>不让他(她)看我的朋友圈</Text>
+                            </View>
                             <Switch
                                 value={this.state.privilege}
                                 onValueChange={(value)=>{this.changePrivilege(value)}}
@@ -108,35 +116,35 @@ const styles = StyleSheet.create({
         flex:1
     },
     validateView:{
+        height:50,
+        backgroundColor:'#fff',
       flexDirection:'row',
         alignItems:'center',
-        borderBottomWidth:1
     },
     textInput:{
       flex:1,
         fontSize:16,
-        paddingBottom:0
+        paddingLeft:10
     },
-    rowBox:{
-        backgroundColor:'#fff',
-        marginBottom:10,
-        padding:10,
+    textBox:{
+        height:50,
+        justifyContent:'center'
     },
     rowTitle:{
         fontSize:14,
         color:'#999',
+
     },
     rowSetting:{
         flexDirection:'row',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        alignItems:'center',
+        backgroundColor:'#fff',
+        height:50,
+        paddingHorizontal:15
     },
     rowText:{
         fontSize:16,
         color:'#000',
-    },
-    rowClose:{
-        padding:10,
-        backgroundColor:'yellow',
-        marginRight:10
     },
 });
