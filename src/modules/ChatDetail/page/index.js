@@ -29,8 +29,6 @@ class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
 			this.state = {};
-			this._leftButton = this._leftButton.bind(this);
-			this._title = this._title.bind(this);
 		}
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
@@ -43,27 +41,6 @@ class ChatDetail extends ContainerComponent {
 
         }
     }
-		//定义上导航的左按钮
-	_rightButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={this.goToChatSeeting}>
-
-						<Icon name="user" size={22} color="#fff" style={styles.right}/>
-
-				</TouchableOpacity>
-		}
-    //定义上导航的右按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-			<Text style={styles.back}>{'< 返回'}</Text>
-		</TouchableOpacity>
-    }
-		//定义上导航的标题
-	_title() {
-		return {
-			title: "聊天",
-            tintColor:'#fff',
-		}
-	}
 
 	//控制子组件Chat中的消息滚动到底部
 	goBottom() {
@@ -111,7 +88,7 @@ class ChatDetail extends ContainerComponent {
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<MyNavigationBar
-					left={{func:()=>{this.route.pop(this.props)}}}
+					left={{func:()=>{this.route.toMain(this.props)}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={'聊天'} />
 				<Chat ref={e => this.chat = e} client={this.props.client}/>
