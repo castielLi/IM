@@ -75,7 +75,9 @@ export default class Validate extends ContainerComponent {
                 />
                 <View style={styles.Box}>
                     <View>
-                        <Text style={styles.rowTitle}>你需要发送验证申请，等对方通过</Text>
+                        <View style={styles.textBox}>
+                            <Text style={styles.rowTitle}>你需要发送验证申请，等对方通过</Text>
+                        </View>
                         <View style={styles.validateView}>
                             <TextInput
                                 style={styles.textInput}
@@ -87,9 +89,13 @@ export default class Validate extends ContainerComponent {
                         </View>
                     </View>
                     <View style={styles.rowBox}>
-                        <Text style={styles.rowTitle}>朋友圈权限</Text>
+                        <View style={styles.textBox}>
+                            <Text style={styles.rowTitle}>朋友圈权限</Text>
+                        </View>
                         <View style={styles.rowSetting}>
-                            <Text style={styles.rowText}>不让他(她)看我的朋友圈</Text>
+                            <View style={styles.textBox}>
+                                <Text style={styles.rowText}>不让他(她)看我的朋友圈</Text>
+                            </View>
                             <Switch
                                 value={this.state.privilege}
                                 onValueChange={(value)=>{this.changePrivilege(value)}}
@@ -118,25 +124,28 @@ const styles = StyleSheet.create({
     textInput:{
       flex:1,
         fontSize:16,
+        paddingLeft:10
+    },
+    textBox:{
+        height:50,
+        paddingLeft:10,
+        justifyContent:'center',
+        paddingLeft:10,
     },
     rowTitle:{
-        height:50,
         fontSize:14,
         color:'#999',
-        paddingLeft:10,
-        textAlignVertical:'center'
+
     },
     rowSetting:{
         flexDirection:'row',
         justifyContent:'space-between',
+        alignItems:'center',
         backgroundColor:'#fff',
         height:50,
-        paddingHorizontal:10
     },
     rowText:{
         fontSize:16,
         color:'#000',
-        height:50,
-        textAlignVertical:'center',
     },
 });
