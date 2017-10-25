@@ -71,14 +71,14 @@ class InformationSetting extends ContainerComponent {
 
 
         //获取当前setting
-        user.GetRelationSetting(this.props.accountId,function(setting){
-            console.log(setting);
-            if(setting){
-                currentObj.setState({
-                    relationSetting:setting
-                })
-            }
-        })
+        // user.GetRelationSetting(this.props.accountId,function(setting){
+        //     console.log(setting);
+        //     if(setting){
+        //         currentObj.setState({
+        //             relationSetting:setting
+        //         })
+        //     }
+        // })
 
         let setting = undefined;
         for(let item in this.props.relations){
