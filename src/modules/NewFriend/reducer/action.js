@@ -8,9 +8,9 @@ export function getApplicantInfo(message) {
     return (dispatch)=>{
         network.methodPOST('Member/SearchUser',{Keyword:message.Data.Data.Sender},function (result) {
             let status = 'wait';
-            let {comment,key} = message.Data.Data;
-            message = {...result,comment,key,status};
-            dispatch(addFriendApplication(message))
+            let {comment,key} = message.Data.Data.Data;
+            let messageObj = {...result,comment,key,status};
+            dispatch(addFriendApplication(messageObj))
         },false)
     }
 }
