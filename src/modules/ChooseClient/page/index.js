@@ -102,7 +102,8 @@ class ChooseClient extends ContainerComponent {
 			title = '发起群聊'
 		}
 	}
-    choose=(item)=>{
+    choose=(item,hasMember)=>{
+    	if(hasMember) return;
 		//改变选中颜色{RelationId:true,RelationId:false...}
 		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
 		let obj = {...this.state.chooseObj};
@@ -120,11 +121,31 @@ class ChooseClient extends ContainerComponent {
             chooseArr:needArr
         })
 	}
+
+    circleStyle = (info,hasMember)=>{
+    	if(!this.hasGroup){
+    		return (
+				<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}/>
+			)
+		}else{
+    		if(hasMember){
+    			return <View style={[styles.circle,{backgroundColor:'red'}]}/>
+			}else{
+    			return <View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}/>
+			}
+		}
+	}
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nick;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
+		let hasMember;
+        if(this.hasGroup){
+            hasMember = this.props.members.indexOf(info.item.RelationId);
+            hasMember !== -1 ? hasMember = true : hasMember = false;
+		}
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
 					<View  style={styles.itemBox} >
-						<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}></View>
+						{this.circleStyle(info,hasMember)}
+
 						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
@@ -222,8 +243,9 @@ class ChooseClient extends ContainerComponent {
                     relation.type = 'chatroom';
 
                     user.AddNewRelation(relation);
-
+                    currentObj.props.addRelation(relation);
                     //todo 添加群聊到redux
+
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 
