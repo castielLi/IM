@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     },
     textBox:{
         height:50,
-        paddingLeft:10,
         justifyContent:'center',
         paddingLeft:10,
     },
