@@ -128,8 +128,7 @@ const styles = StyleSheet.create({
     },
     textBox:{
         height:50,
-        justifyContent:'center',
-        paddingLeft:10,
+        justifyContent:'center'
     },
     rowTitle:{
         fontSize:14,
@@ -142,6 +141,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:'#fff',
         height:50,
+        paddingHorizontal:15
     },
     rowText:{
         fontSize:16,
