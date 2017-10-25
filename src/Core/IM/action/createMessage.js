@@ -1,4 +1,5 @@
 import ChatCommandEnum from '../dto/ChatCommandEnum';
+import AppCommandEnum from '../dto/AppCommandEnum'
 import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum';
 import MessageCommandEnum from '../dto/MessageCommandEnum';
 
@@ -52,17 +53,17 @@ import messageBodyChatDto from '../dto/messageBodyChatDto';
  };
  //申请好友请求
  export function addApplyFriendMessage(text,Sender,Receiver){
-     return createMessageObj('friend',text,'',null,Sender,Receiver,ChatCommandEnum.MSG_BODY_APP_APPLYFRIEND,MessageBodyTypeEnum.MSG_BODY_CHAT)
+     return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_APPLYFRIEND,MessageBodyTypeEnum.MSG_BODY_APP)
  }
  //添加好友请求
 export function addAddFriendMessage(text,Sender,Receiver){
-    return createMessageObj('friend',text,'',null,Sender,Receiver,ChatCommandEnum.MSG_BODY_APP_ADDFRIEND,MessageBodyTypeEnum.MSG_BODY_CHAT)
+    return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_ADDFRIEND,MessageBodyTypeEnum.MSG_BODY_APP)
 }
 //添加群成员请求
 export function addAddGroupMemberMessage(text,Sender,Receiver){
-    return createMessageObj('friend',text,'',null,Sender,Receiver,ChatCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_CHAT)
+    return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
 }
 //删除群成员请求
 export function addDeleteGroupMemberMessage(text,Sender,Receiver){
-    return createMessageObj('friend',text,'',null,Sender,Receiver,ChatCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_CHAT)
+    return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
 }
