@@ -35,11 +35,11 @@ class ChatDetail extends ContainerComponent {
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
 
-        if(type === 'pravite'){
+        if(type === 'private'){
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
 
-        }else{
-            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client}});
+        }else if(type === 'chatroom'){
+            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{client}});
 
         }
     }

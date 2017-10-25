@@ -33,12 +33,22 @@ import messageBodyChatDto from '../dto/messageBodyChatDto';
     return addMessage;
 }
 //发送文本
- export function addTextMessage(text,way,Sender,Receiver,messageDataCommand) {
-     return createMessageObj('text',text,way,null,Sender,Receiver,messageDataCommand,MessageBodyTypeEnum.MSG_BODY_CHAT)
+ export function addTextMessage(text,way,Sender,Receiver) {
+     if(way==='private'){
+         return createMessageObj('text',text,way,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
+     }else if(way === 'chatroom'){
+         return createMessageObj('text',text,way,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+
+     }
 };
  //发送资源
- export function addResourceMessage(type,way,Resource,Sender,Receiver,messageDataCommand){
-     return createMessageObj(type,'',way,Resource,Sender,Receiver,messageDataCommand,MessageBodyTypeEnum.MSG_BODY_CHAT)
+ export function addResourceMessage(type,way,Resource,Sender,Receiver){
+     if(way==='private'){
+         return createMessageObj(type,'',way,Resource,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
+     }else if(way === 'chatroom'){
+         return createMessageObj(type,'',way,Resource,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+
+     }
  };
  //申请好友请求
  export function addApplyFriendMessage(text,Sender,Receiver){

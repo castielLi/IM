@@ -13,7 +13,8 @@ import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 
 let rootNavigator;
-
+//指定mainTabBar显示页面
+let assignMainTabBarPage = undefined;
 class Route {
 
     /**
@@ -42,6 +43,10 @@ class Route {
 
     static setRootNavigator(navigator){
         rootNavigator = navigator;
+    }
+    //赋值外部接口
+    static setAssignMainTabBarPage(TabBarReduxAction){
+        assignMainTabBarPage = TabBarReduxAction;
     }
 
     static getRoutePage(route, navigator) { //这里route参数是一个对象{id:xx,routeId:xx,params:{xxx}}
@@ -106,9 +111,11 @@ class Route {
     static toMain(props) {
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
+        let route;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i][0] == this.mainPage["key"]) {
+            if (routes[i]["key"] == this.mainPage["key"]) {
                 contain = true;
+                route = routes[i];
                 break;
             }
         }
@@ -119,8 +126,9 @@ class Route {
             }
         }
         InteractionManager.runAfterInteractions(() => {
-            props.navigator.popToTop();
+            props.navigator.jumpTo(route);
         })
+        assignMainTabBarPage&&assignMainTabBarPage();
     }
 
     static pop(props) {
@@ -143,7 +151,7 @@ class Route {
 
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i][0] == this.loginRoute["key"]) {
+            if (routes[i]["key"] == this.loginRoute["key"]) {
                 contain = true;
                 break;
             }

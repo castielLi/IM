@@ -18,6 +18,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import * as recentListActions from '../../Contacts/reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
@@ -181,12 +182,9 @@ class ChooseClient extends ContainerComponent {
 		let accounts = "";
 		//拼接选中用户id
 		for(let item in chooseArr){
-			if((item*1 + 1) == chooseArr.length){
-				accounts += chooseArr[item];
-			}else{
-				accounts+= chooseArr[item]+",";
-			}
+			accounts+= chooseArr[item]+",";
 		}
+		accounts += currentObj.props.accountId;
 
 		//已有群 添加新成员
 		if(this.hasGroup) {
@@ -236,7 +234,6 @@ class ChooseClient extends ContainerComponent {
 
             },{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
 		}
-
 	}
 
 
@@ -390,7 +387,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-
+      ...bindActionCreators(recentListActions, dispatch),
 
   }};
 

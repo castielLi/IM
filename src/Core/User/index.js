@@ -71,4 +71,19 @@ export default class User {
     AddNewRelation(Relation){
         storeSqlite.addNewRelation(Relation)
     }
+
+    //获取关系设置
+    GetRelationSetting(RelationId,callback){
+        storeSqlite.getRelationSetting(RelationId,callback);
+    }
+
+    //修改关系设置
+    ChangeRelationSetting(RelationSetting){
+        storeSqlite.updateRelationSetting(RelationSetting);
+    }
+
+    //添加关系设置
+    AddNewRelationSetting(RelationSetting){
+        storeSqlite.addNewRelationSetting(RelationSetting);
+    }
 }
