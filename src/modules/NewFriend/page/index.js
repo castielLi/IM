@@ -22,6 +22,7 @@ import IM from '../../../Core/IM';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../reducer/action'
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
+import ApplyFriendEnum from '../../../Core/IM/dto/ApplyFriendEnum';
 
 let {height,width} = Dimensions.get('window');
 
@@ -85,7 +86,7 @@ class NewFriend extends ContainerComponent {
     };
 
     applyMsgStyle = (rowID,rowData)=>{
-        if(rowData.status == 'wait'){
+        if(rowData.status === ApplyFriendEnum.WAIT){
             return (
                 <TouchableHighlight
                     underlayColor="#1FB579"
@@ -97,7 +98,7 @@ class NewFriend extends ContainerComponent {
                 </TouchableHighlight>
             )
         }
-        else if (rowData.status == 'added'){
+        else if (rowData.status === ApplyFriendEnum.ADDED){
             return <Text style={styles.arrow}>{'已添加'}</Text>
         }
         else{
