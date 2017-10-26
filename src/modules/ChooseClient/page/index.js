@@ -337,8 +337,7 @@ const styles = StyleSheet.create({
 		marginLeft:10
 	},
 	itemText:{		
-		textAlignVertical: 'center', 
-		backgroundColor: "#ffffff", 
+		textAlignVertical: 'center',
 		color: '#5C5C5C', 
 		fontSize: 15
 	},

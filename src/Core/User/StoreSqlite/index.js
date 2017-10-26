@@ -201,7 +201,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 USERFMDB.AddNewRelation = function(Relation){
     let sql = sqls.ExcuteIMSql.InitRelations;
 
-    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.type,Relation.avator,Relation.Email,Relation.owner]);
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
