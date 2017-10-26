@@ -1,17 +1,20 @@
 /**
  * Created by Hsu. on 2017/10/23.
  */
-import netWorking from '../../../Core/Networking/Network'
+import IM from '../../../Core/IM/index'
+let im = new IM();
 
 export function getApplicantInfo(message) {
-    let network = new netWorking();
+
     return (dispatch)=>{
-        network.methodPOST('Member/SearchUser',{Keyword:message.Data.Data.Sender},function (result) {
             let status = 'wait';
             let {comment,key} = message.Data.Data.Data;
-            let messageObj = {...result,comment,key,status};
-            dispatch(addFriendApplication(messageObj))
-        },false)
+            let {Sender,Receiver} = message.Data.Data;
+            let time = Date.now();
+            let send = Sender;
+            let rec = Receiver;
+            let messageObj = {send,rec,time,comment,key,status};
+            dispatch(addFriendApplication(messageObj));
     }
 }
 

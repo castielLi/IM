@@ -224,7 +224,7 @@ IMFMDB.InsertFriendMessage = function(message){
     let status = 'wait';
     let time = new Date().getTime();
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,message.Data.Data.Data.comment,time])
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,message.Data.Data.Data.comment,time,message.Data.Data.Data.key,'',''])
 
     var db = SQLite.openDatabase({
         ...databaseObj

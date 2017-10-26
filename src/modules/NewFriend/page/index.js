@@ -42,11 +42,8 @@ class NewFriend extends ContainerComponent {
     }
 
     componentWillMount(){
-        // this.im.getAllApplyFriendMessage(function(result){
-        //
-        //     this.applyData = result;
-        //     this.sqlData = result;
-        //
+        // this.im.getAllApplyFriendMessage((result)=>{
+        //     this.props.initFriendApplication();
         // })
     }
 
@@ -57,10 +54,11 @@ class NewFriend extends ContainerComponent {
         let that = this;
         let {key} = data;
         this.fetchData('POST','Member/AcceptFriend',function (result) {
-            //if(result.Result && result.Data){
-                //that.im.updateApplyFriendMessage('added',key);
-                //that.props.acceptFriendApplication(index);
-            //}
+
+            // if(result.Result && result.Data){
+            //     that.im.updateApplyFriendMessage('added',key);
+            //     that.props.acceptFriendApplication(index);
+            // }
         },{
             key
         })
