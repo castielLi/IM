@@ -94,8 +94,9 @@ class Contacts extends ContainerComponent {
     }
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nick;
+		let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
-					<View  style={styles.itemBox} >
+					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
 						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
@@ -200,7 +201,7 @@ class Contacts extends ContainerComponent {
 			      renderSectionHeader={this._sectionComp}
 			      renderItem={this._renderItem}
 			      sections={this.relationStore}
-			      ItemSeparatorComponent={this._renderSeparator}
+			      // ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
 				  ListFooterComponent = {this._renderFooter}
 				  stickySectionHeadersEnabled={true}
