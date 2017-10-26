@@ -224,7 +224,7 @@ IMFMDB.InsertFriendMessage = function(message){
     let status = 'wait';
     let time = new Date().getTime();
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,message.Data.Data.Data,time])
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,message.Data.Data.Data.comment,time])
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -247,7 +247,8 @@ IMFMDB.GetFriendMessage = function(callback){
         db.transaction((tx) => {
             tx.executeSql(querySql, [], (tx, results) => {
 
-                callback(results.row.raw());
+                console.log(results)
+                callback(results.rows.raw());
 
             }, (err)=>{errorDB('获取好友申请消息',err)});
         });

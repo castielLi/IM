@@ -14,7 +14,7 @@ import {
     Switch
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import {connect} from 'react-redux';
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
@@ -22,7 +22,7 @@ import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
 let im = new IM();
 let currentObj = undefined;
 
-export default class Validate extends ContainerComponent {
+class Validate extends ContainerComponent {
     constructor(props){
         super(props)
         this.state={
@@ -57,7 +57,7 @@ export default class Validate extends ContainerComponent {
     sendApplyMessage= ()=>{
         let {Applicant,Respondent} = this.props;
         currentObj.showLoading()
-        let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID},Applicant,Respondent);
+        let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
         im.addMessage(addMessage,function(){
             currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒");
@@ -148,3 +148,11 @@ const styles = StyleSheet.create({
         color:'#000',
     },
 });
+
+const mapStateToProps = state => ({
+    accountId:state.loginStore.accountMessage.accountId,
+    accountName:state.loginStore.accountMessage.nick,
+    avator:state.loginStore.accountMessage.avator,
+});
+
+export default connect(mapStateToProps)(Validate);
