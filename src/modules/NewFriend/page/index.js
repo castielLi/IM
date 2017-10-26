@@ -51,6 +51,11 @@ class NewFriend extends ContainerComponent {
     }
 
 
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({
+    //         dataSource:this.state.dataSource.cloneWithRows(nextProps.friendApplicationStore.applicationRecord)
+    //     })
+    // }
 
     agreeApply = (index,data)=>{
         alert('同意好友申请');

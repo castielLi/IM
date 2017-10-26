@@ -3,17 +3,17 @@
  */
 import netWorking from '../../../Core/Networking/Network'
 
-export function getApplicantInfo(message) {
-    let network = new netWorking();
-    return (dispatch)=>{
-        network.methodPOST('Member/SearchUser',{Keyword:message.Data.Data.Sender},function (result) {
-            let status = 'wait';
-            let {comment,key} = message.Data.Data.Data;
-            let messageObj = {...result,comment,key,status};
-            dispatch(addFriendApplication(messageObj))
-        },false)
-    }
-}
+// export function getApplicantInfo(message) {
+//     let network = new netWorking();
+//     return (dispatch)=>{
+//         network.methodPOST('Member/SearchUser',{Keyword:message.Data.Data.Sender},function (result) {
+//             let status = 'wait';
+//             let {comment,key} = message.Data.Data.Data;
+//             let messageObj = {...result,comment,key,status};
+//             dispatch(addFriendApplication(messageObj))
+//         },false)
+//     }
+// }
 
 // export function getApplicantList(messageList) {
 //     return (dispatch)=>{
@@ -30,7 +30,9 @@ export function initFriendApplication(messageList){
     }
 }
 export function addFriendApplication(message){
-
+    let status = 'wait';
+    let {comment,key,nick,avator} = message.Data.Data.Data;
+    message = {comment,key,nick,avator,status};
     return{
         type:'ADD_FRIEND_APPLICATION',
         message
