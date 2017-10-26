@@ -11,6 +11,7 @@ import {clearRelation} from '../../Contacts/reducer/action';
 import {clearRecentList} from '../../RecentList/reducer/action';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {closeAccountDb} from '../../../Core/User/StoreSqlite';
+import {clearFriendApplication} from '../../NewFriend/reducer/action'
 import {clearAllTabberMessageNumber} from '../../MainTabbar/reducer/action';
 import Route from '../../../Core/route/router';
 import IM from '../../../Core/IM'
@@ -37,8 +38,10 @@ export function signOut(){
         dispatch({type: TYPES.LOGGED_OUT});
         dispatch(clearChatRecord());
         dispatch(clearRelation());
+        dispatch(clearFriendApplication())
         dispatch(clearRecentList());
         dispatch(clearAllTabberMessageNumber());
+
         closeImDb();
         closeAccountDb();
         im.logout();

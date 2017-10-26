@@ -57,3 +57,8 @@ export function updateFriendApplication(index){
         index
     }
 }
+export function clearFriendApplication(){
+    return{
+        type:'CLEAR_FRIEND_APPLICATION',
+    }
+}

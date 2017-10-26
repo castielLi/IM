@@ -40,6 +40,10 @@ export default function friendApplicationStore(state = initialState,action){
             return {
                 ...state,
             };
+        case 'CLEAR_FRIEND_APPLICATION':
+            return {
+                ...initialState,
+            };
         default:
             return state;
     }
