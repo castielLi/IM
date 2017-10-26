@@ -228,8 +228,9 @@ const styles = StyleSheet.create({
 		textAlignVertical: 'center', 
 		backgroundColor: '#eee', 
 		color: '#aaa', 
-		fontSize: 16,
-		paddingLeft:10
+		fontSize: 14,
+		paddingLeft:10,
+		paddingTop:8
 	},
 	itemBox:{
 		flex:1,
