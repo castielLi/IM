@@ -11,7 +11,8 @@ import {Text,
     TouchableHighlight,
     Dimensions,
     Switch,
-    ListView
+    ListView,
+    ScrollView
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
@@ -160,7 +161,7 @@ class NewFriend extends ContainerComponent {
                     heading={"新的朋友"}
                     right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
                 />
-                <View>
+                <ScrollView>
                     <View style={styles.listHeaderBox}>
                         <TextInput
                             style={styles.search}
@@ -176,7 +177,7 @@ class NewFriend extends ContainerComponent {
                     >
                     </ListView>
 
-                </View>
+                </ScrollView>
             </View>
             )
             
