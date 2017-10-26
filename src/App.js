@@ -29,6 +29,8 @@ let network = new netWorking();
 
 export default function App() {
 
+    //关闭yellowbox
+    console.disableYellowBox = true
 
     let store = Store;
 
