@@ -29,7 +29,7 @@ export function receiveMessage(message){
     let {type} = message;
     if(type == 'friend'){
 		return (dispatch) =>{
-			dispatch(friendApplicationActions.addFriendApplication(message))
+			dispatch(friendApplicationActions.getApplicantInfo(message))
 		}
     }
     else{
