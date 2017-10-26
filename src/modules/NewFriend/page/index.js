@@ -19,15 +19,18 @@ import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swipeout from 'react-native-swipeout';
 import IM from '../../../Core/IM';
+import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../reducer/action'
+import * as relationActions from '../../Contacts/reducer/action';
+
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
 
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let im = new IM();
-
+let user = new User();
 class NewFriend extends ContainerComponent {
     constructor(){
         super()
@@ -69,7 +72,12 @@ class NewFriend extends ContainerComponent {
             if(result.success){
                 let addMessage = addAddFriendMessage({comment:currentObj.props.accountName + "",key},currentObj.props.accountId,receiver);
                 im.addMessage(addMessage,function(){
-
+                //添加到relationStore
+                    let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
+                    let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false'}
+                    currentObj.props.addRelation(relationObj);
+                    //添加到数据库
+                    user.AddNewRelation(relationObj)
                 });
             }else{
                 alert(result.errorMessage);
@@ -260,6 +268,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(friendApplicationActions, dispatch),
+    ...bindActionCreators(relationActions, dispatch),
+
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(NewFriend);
