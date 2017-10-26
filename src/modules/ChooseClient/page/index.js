@@ -208,8 +208,9 @@ class ChooseClient extends ContainerComponent {
 		accounts += currentObj.props.accountId;
 
 		//已有群 添加新成员
-        currentObj.showLoading()
+
 		if(this.hasGroup) {
+            currentObj.showLoading()
             this.fetchData("POST", "Member/AddGroupMember", function (result) {
                 currentObj.hideLoading();
                 if (result.success) {
