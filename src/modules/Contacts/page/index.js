@@ -245,8 +245,7 @@ const styles = StyleSheet.create({
 		resizeMode:'stretch'
 	},
 	itemText:{		
-		textAlignVertical: 'center', 
-		backgroundColor: "#ffffff", 
+		textAlignVertical: 'center',
 		color: '#5C5C5C', 
 		fontSize: 15
 	},
