@@ -21,8 +21,12 @@ import Swipeout from 'react-native-swipeout';
 import IM from '../../../Core/IM';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../reducer/action'
+import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
 
 let {height,width} = Dimensions.get('window');
+
+let currentObj = undefined;
+let im = new IM();
 
 class NewFriend extends ContainerComponent {
     constructor(){
@@ -36,29 +40,41 @@ class NewFriend extends ContainerComponent {
             dataSource: ds,
         };
         this.applyData = [];
+        currentObj = this;
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
     }
 
     componentWillMount(){
-        // this.im.getAllApplyFriendMessage((result)=>{
-        //     this.props.initFriendApplication();
+        // this.im.getAllApplyFriendMessage(function(result){
+        //
+        //     this.applyData = result;
+        //     this.sqlData = result;
+        //
         // })
     }
 
-    
+
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({
+    //         dataSource:this.state.dataSource.cloneWithRows(nextProps.friendApplicationStore.applicationRecord)
+    //     })
+    // }
 
     agreeApply = (index,data)=>{
         alert('同意好友申请');
-        let that = this;
-        let {key} = data;
+        let {key,receiver} = data;
         this.fetchData('POST','Member/AcceptFriend',function (result) {
+            if(result.success){
+                let addMessage = addAddFriendMessage({comment:currentObj.props.accountName + "",key},currentObj.props.accountId,receiver);
+                im.addMessage(addMessage,function(){
 
-            // if(result.Result && result.Data){
-            //     that.im.updateApplyFriendMessage('added',key);
-            //     that.props.acceptFriendApplication(index);
-            // }
+                });
+            }else{
+                alert(result.errorMessage);
+                return;
+            }
         },{
             key
         })
@@ -226,6 +242,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     friendApplicationStore : state.friendApplicationStore,
+    accountName:state.loginStore.accountMessage.nick
 });
 
 const mapDispatchToProps = dispatch => ({

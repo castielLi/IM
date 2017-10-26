@@ -48,7 +48,8 @@ class GroupInformationSetting extends ContainerComponent {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
             isSave:false,
-            members:[]
+            members:[],
+            groupInformation:{}
         }
         currentObj = this;
     }
@@ -65,11 +66,12 @@ class GroupInformationSetting extends ContainerComponent {
 
     addToContacts = ()=>{
         let Save = !this.state.isSave;
+        let info = this.state.groupInformation;
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('添加通讯录成功')
-                    let relation = {RelationId:'e7ffb574-d324-4e5d-8704-d636d1c6da62',owner:'wg003662',Nick:'测试',type:'chatroom'}
+                    let relation = {RelationId:info.ID,owner:info.Owner,Nick:info.Name,OtherComment:info.Description,avator:info.ProfilePicture,type:'chatroom'}
                     user.AddNewRelation(relation);
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
@@ -78,7 +80,7 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('移除通讯录成功')
-                    user.deleteRelation('e7ffb574-d324-4e5d-8704-d636d1c6da62');
+                    user.deleteRelation(info.ID);
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }
@@ -90,15 +92,25 @@ class GroupInformationSetting extends ContainerComponent {
 
     componentDidMount(){
         currentObj.showLoading()
-        currentObj.fetchData("POST","Member/GetGroupMemberList",function(result){
+        currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
             currentObj.hideLoading();
 
             if(!result.success){
                 alert(result.errorMessage)
                 return;
             }else{
+                let Data = result.data.Data;
+                let groupInformation = {
+                    ID:Data.ID,
+                    LastUpdateTime:Data.LastUpdateTime,
+                    Name:Data.Name,
+                    Owner:Data.Owner,
+                    ProfilePicture:Data.ProfilePicture,
+                    Description:Data.Description
+                };
                 currentObj.setState({
-                    members:result.data.Data
+                    members:Data.MemberList,
+                    groupInformation
                 })
             }
 
