@@ -111,7 +111,7 @@ class NewFriend extends ContainerComponent {
                             <View style={styles.basicBox}>
                                 <Image style={styles.headPic} source={require('../resource/other.jpg')}/>
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{rowData.data.Data.Nickname}</Text>
+                                    <Text style={styles.name}>{rowData.nick}</Text>
                                     <Text style={styles.description}>{rowData.comment}</Text>
                                 </View>
                             </View>

@@ -17,9 +17,12 @@ import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import User from '../../../Core/User'
 import Relation from '../../../Core/User/dto/RelationModel'
+import * as relationActions from '../../Contacts/reducer/action';
+import {bindActionCreators} from 'redux';
 import netWorking from '../../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import IM from '../../../Core/IM'
+
 import {addApplyFriendMessage} from '../../../Core/IM/action/createMessage';
 
 import ChatCommandEnum from '../../../Core/IM/dto/ChatCommandEnum'
@@ -32,6 +35,7 @@ import messageBodyChatDto from '../../../Core/IM/dto/messageBodyChatDto'
 
 
 let im = new IM();
+let user = new User();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -51,7 +55,6 @@ class ClientInformation extends ContainerComponent {
 
     isUpdateFriendInfo = (UserInfo,propsRelation) =>{
         let isUpdate;
-        let user = new User();
         let _network = new netWorking();
         let {accountId} = this.props.loginStore;
         let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
@@ -164,14 +167,19 @@ class ClientInformation extends ContainerComponent {
                 return;
             }
             //单方面添加好友
-            if(result.success && result.data.Data===''){
+            if(result.success && result.data.Data instanceof Object){
                 currentObj.setState({
                     isRenderSendMessage:true
                 })
-
+            //relationStore里面添加该好友(或者重新初始化)
+                let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+                let IsInBlackList =result.data.Data.IsInBlackList
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList}
+                currentObj.props.addRelation(relationObj);
+                user.AddNewRelation(relationObj)
             }
             //双方互不为好友
-            else if(result.success && result.data.Data){
+            else if(result.success && typeof result.data.Data === 'string'){
                 currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.data.Data,Applicant,Respondent}})
             }
         },{Applicant,Respondent})
@@ -363,7 +371,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-
+    ...bindActionCreators(relationActions, dispatch),
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(ClientInformation);
