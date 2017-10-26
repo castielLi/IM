@@ -83,6 +83,27 @@ class NewFriend extends ContainerComponent {
         alert('删除好友申请')
         //this.props.deleteFriendApplication(index)
     };
+
+    applyMsgStyle = (rowID,rowData)=>{
+        if(rowData.status == 'wait'){
+            return (
+                <TouchableHighlight
+                    underlayColor="#1FB579"
+                    onPress={()=>{this.agreeApply(rowID,rowData)}}
+                    style={styles.btnBox}>
+                    <View style={styles.btnView}>
+                        <Text style={styles.btnText}>接受</Text>
+                    </View>
+                </TouchableHighlight>
+            )
+        }
+        else if (rowData.status == 'added'){
+            return <Text style={styles.arrow}>{'已添加'}</Text>
+        }
+        else{
+           return <Text style={styles.arrow}>{'已过期'}</Text>
+        }
+    }
     _renderRow = (rowData, sectionID, rowID)=>{
         return(
             <View>
@@ -115,15 +136,7 @@ class NewFriend extends ContainerComponent {
                                     <Text style={styles.description}>{rowData.comment}</Text>
                                 </View>
                             </View>
-                            <Text style={styles.arrow}>{'已添加'}</Text>
-                            <TouchableHighlight
-                                underlayColor="#1FB579"
-                                onPress={()=>{this.agreeApply(rowID,rowData)}}
-                                style={styles.btnBox}>
-                                <View style={styles.btnView}>
-                                    <Text style={styles.btnText}>接受</Text>
-                                </View>
-                            </TouchableHighlight>
+                            {this.applyMsgStyle(rowID,rowData)}
                         </View>
                     </TouchableHighlight>
                 </Swipeout>

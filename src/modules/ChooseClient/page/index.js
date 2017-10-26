@@ -208,8 +208,11 @@ class ChooseClient extends ContainerComponent {
 		accounts += currentObj.props.accountId;
 
 		//已有群 添加新成员
+
 		if(this.hasGroup) {
+            currentObj.showLoading()
             this.fetchData("POST", "Member/AddGroupMember", function (result) {
+                currentObj.hideLoading();
                 if (result.success) {
                     if (result.data.Data == null) {
                         alert("返回群数据出错")
@@ -224,9 +227,15 @@ class ChooseClient extends ContainerComponent {
         }
         //未有群 创建群
         else{
-            //this.showLoading()
+
+        	if(chooseArr.length == 1){
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0],type:'private'}});
+                return;
+			}
+
+            currentObj.showLoading()
             this.fetchData("POST","Member/CreateGroup",function(result){
-                //currentObj.hideLoading();
+                currentObj.hideLoading();
 
                 console.log(result);
 

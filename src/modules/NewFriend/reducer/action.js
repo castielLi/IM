@@ -8,12 +8,12 @@ export function getApplicantInfo(message) {
 
     return (dispatch)=>{
             let status = 'wait';
-            let {comment,key} = message.Data.Data.Data;
+            let {comment,key,avator,nick} = message.Data.Data.Data;
             let {Sender,Receiver} = message.Data.Data;
             let time = Date.now();
             let send = Sender;
             let rec = Receiver;
-            let messageObj = {send,rec,time,comment,key,status};
+            let messageObj = {send,rec,time,comment,key,status,avator,nick};
             dispatch(addFriendApplication(messageObj));
     }
 }
