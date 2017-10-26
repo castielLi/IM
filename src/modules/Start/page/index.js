@@ -77,20 +77,19 @@ class Start extends ContainerComponent {
 
                                 currentObj.props.initFriendApplication(result);
 
+                                user.getAllRelation((data)=>{
+                                    //初始化联系人store
+                                    currentObj.props.initRelation(data);
+
+                                    currentObj.props.signIn(account)
+                                    //切换至最近聊天列表
+                                    currentObj.route.push(currentObj.props,{
+                                        key:'MainTabbar',
+                                        routeId: 'MainTabbar'
+                                    });
+                                })
+
                             })
-                            user.getAllRelation((data)=>{
-                                //初始化联系人store
-                                currentObj.props.initRelation(data);
-
-                                currentObj.props.signIn(account)
-                                //切换至最近聊天列表
-                                currentObj.route.push(currentObj.props,{
-                                    key:'MainTabbar',
-                                    routeId: 'MainTabbar'
-                                });
-                            })
-
-
 
                         }else{
 

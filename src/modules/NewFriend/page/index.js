@@ -50,7 +50,7 @@ class NewFriend extends ContainerComponent {
         // })
     }
 
-
+    
 
     agreeApply = (index,data)=>{
         alert('同意好友申请');
