@@ -71,7 +71,7 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('添加通讯录成功')
-                    let relation = {RelationId:info.ID,owner:info.Owner,Nick:info.Name,OtherComment:info.Description,avator:info.ProfilePicture,type:'chatroom'}
+                    let relation = {RelationId:info.ID,owner:info.Owner,Nick:info.Name,OtherComment:info.Description,avator:info.ProfilePicture,type:'chatroom',show:true}
                     user.AddNewRelation(relation);
                     currentObj.props.addRelation(relation);
                 }
