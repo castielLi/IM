@@ -74,7 +74,7 @@ class NewFriend extends ContainerComponent {
                 im.addMessage(addMessage,function(){
                 //添加到relationStore
                     let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
-                    let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false'}
+                    let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
                     currentObj.props.addRelation(relationObj);
                     //添加到数据库
                     user.AddNewRelation(relationObj)
