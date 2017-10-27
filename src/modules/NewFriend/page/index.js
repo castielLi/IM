@@ -20,6 +20,7 @@ import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swipeout from 'react-native-swipeout';
 import IM from '../../../Core/IM';
+import ApplyFriendEnum from '../../../Core/IM/dto/ApplyFriendEnum'
 import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../reducer/action'
@@ -79,6 +80,8 @@ class NewFriend extends ContainerComponent {
                     currentObj.props.addRelation(relationObj);
                     //添加到数据库
                     user.AddNewRelation(relationObj)
+                    //修改friendMessage状态
+                    im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":data.key})
                 });
             }else{
                 alert(result.errorMessage);
@@ -264,7 +267,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     friendApplicationStore : state.friendApplicationStore,
-    accountName:state.loginStore.accountMessage.nick
+    accountName:state.loginStore.accountMessage.nick,
+    accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({
