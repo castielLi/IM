@@ -128,7 +128,7 @@ FileManager.downloadResource = function(message,callback){
         toFile;
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+    toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${way}-${sender}/${new Date().getTime()}${format}`;
 
     console.log('下载前=============================:  ',message,toFile)
 
