@@ -27,7 +27,6 @@ import * as friendApplicationActions from '../reducer/action'
 import * as relationActions from '../../Contacts/reducer/action';
 
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
-import ApplyFriendEnum from '../../../Core/IM/dto/ApplyFriendEnum';
 
 let {height,width} = Dimensions.get('window');
 
