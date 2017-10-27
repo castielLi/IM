@@ -148,11 +148,12 @@ class Route {
 
     static ToLogin() {
         let routes = rootNavigator.getCurrentRoutes();
-
+        let route;
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[i]["key"] == this.loginRoute["key"]) {
+            if (routes[i]["key"] == this.loginRoute["key"] && routes[i]["routeId"] == this.loginRoute["routeId"]) {
                 contain = true;
+                route = routes[i];
                 break;
             }
         }
@@ -162,7 +163,7 @@ class Route {
                 rootNavigator.jumpTo(loginRoute)
             });
         }else{
-            rootNavigator.jumpTo(this.loginRoute)
+            rootNavigator.jumpTo(route)
         }
     }
 }

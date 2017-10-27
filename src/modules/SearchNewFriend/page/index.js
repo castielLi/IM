@@ -59,7 +59,7 @@ class SearchNewFriend extends ContainerComponent {
                 let needRelation = null;
                 let hasRelation = false;
                 for(let item in relations){
-                     if(relations[item].RelationId == result.data.Data.Account){
+                     if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
                          hasRelation = !hasRelation;
                          needRelation = relations[item];
                          break;
