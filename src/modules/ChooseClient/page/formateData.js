@@ -2,7 +2,7 @@ import HanZi_PinYin from './getFirestLetter';
 export function initDataFormate(type='private',arr){
     let snapArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type){
+        if(v.Type === type&&v.show==='true'){
             snapArr.push(v)
         }
     })

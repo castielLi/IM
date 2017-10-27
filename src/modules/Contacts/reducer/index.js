@@ -23,7 +23,19 @@ export default function relationStore(state=initialState, action){
                 }
             }
             return state.concat([]);
+        case 'CHANGE_RELATION_OF_SHOW':
+            for(let i=0;i<state.length;i++){
+                if(state[i].RelationId === action.relationId){
+                    if(state[i].show === 'true'){
+                        state[i].show = 'false';
+                    }else if(state[i].show === 'false'){
+                        state[i].show = 'true';
 
+                    }
+                    break;
+                }
+            }
+            return state.concat([]);
         case 'DELETE_RELATION':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relationId){

@@ -22,6 +22,13 @@ export function changeRelation(relation){
     }
 }
 
+export function changeRelationOfShow(relationId){
+    return {
+        type: 'CHANGE_RELATION_OF_SHOW',
+        relationId
+    }
+}
+
 export function addRelation(relation){
     return {
         type: 'ADD_RELATION',

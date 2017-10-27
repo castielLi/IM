@@ -19,7 +19,9 @@ import IM from './Core/IM'
 import User from './Core/User'
 import * as ActionForChatRecordStore from './Core/IM/redux/action'
 import * as ActionForLoginStore from './modules/Login/reducer/action';
+
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
+import {changeRelationOfShow} from './modules/Contacts/reducer/action';
 
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
@@ -64,6 +66,8 @@ export default function App() {
     //收到同意添加好友申请回调
     let handleRecieveAddFriendMessage = function(relation){
         user.updateDisplayOfRelation(relation);
+        //修改relationStore
+        store.dispatch(changeRelationOfShow(relation))
     }
 
 
