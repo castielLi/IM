@@ -71,7 +71,7 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('添加通讯录成功')
-                    let relation = {RelationId:info.ID,owner:info.Owner,Nick:info.Name,OtherComment:info.Description,avator:info.ProfilePicture,type:'chatroom'}
+                    let relation = {RelationId:info.ID,owner:info.Owner,Nick:info.Name,OtherComment:info.Description,avator:info.ProfilePicture,type:'chatroom',show:true}
                     user.AddNewRelation(relation);
                     currentObj.props.addRelation(relation);
                 }
@@ -121,27 +121,27 @@ class GroupInformationSetting extends ContainerComponent {
 
 
     handlePress(i){
-        // let {group,type,accountId} = this.props;
-        // //删除好友
-        // if(1 == i){
-        //     currentObj.showLoading()
-        //     this.fetchData("POST","Member/ExitGroup",function(result){
-        //         currentObj.hideLoading()
-        //         if(!result.success){
-        //             alert(result.errorMessage);
-        //             return;
-        //         }
-        //
-        //         if(result.data.Data){
-        //
-        //
-        //         }else{
-        //             alert("http请求出错")
-        //         }
-        //
-        //
-        //     },{"Applicant":accountId,"Friend":client})
-        // }
+        let {groupId,accountId} = this.props;
+        //删除好友
+        if(1 == i){
+            currentObj.showLoading()
+            this.fetchData("POST","Member/ExitGroup",function(result){
+                currentObj.hideLoading()
+                if(!result.success){
+                    alert(result.errorMessage);
+                    return;
+                }
+
+                if(result.data.Data){
+
+                    currentObj.route.toMain(currentObj.props)
+                }else{
+                    alert("http请求出错")
+                }
+
+
+            },{"GroupId":groupId,"Account":accountId})
+        }
     }
 
     showActionSheet() {
@@ -193,25 +193,6 @@ class GroupInformationSetting extends ContainerComponent {
 
     }
     render() {
-        let data = [{nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-
-
-        ]
         let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
