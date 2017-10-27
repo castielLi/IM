@@ -19,6 +19,8 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
+import * as relationActions from '../Contacts/reducer/action';
+import {bindActionCreators} from 'redux';
 import User from '../../Core/User'
 import Relation from '../../Core/User/dto/RelationModel'
 import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
@@ -72,9 +74,11 @@ class Validate extends ContainerComponent {
             relation.RelationId = currentObj.props.relation.Account;
             relation.OtherComment = currentObj.props.relation.Gender;
             relation.avator = currentObj.props.relation.HeadImageUrl;
-            relation.type = ChatWayEnum.Private;
+            relation.Type = ChatWayEnum.Private;
             relation.show = false;
             user.AddNewRelation(relation);
+            currentObj.props.addRelation(relation);
+
         })
     }
     render() {
@@ -168,5 +172,7 @@ const mapStateToProps = state => ({
     accountName:state.loginStore.accountMessage.nick,
     avator:state.loginStore.accountMessage.avator,
 });
-
-export default connect(mapStateToProps)(Validate);
+const mapDispatchToProps = dispatch => ({
+    ...bindActionCreators(relationActions, dispatch),
+});
+export default connect(mapStateToProps,mapDispatchToProps)(Validate);
