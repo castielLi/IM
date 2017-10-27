@@ -65,19 +65,18 @@ AckManager.receiveMessageOpreator = function(message){
     for (let item in ackMessageQueue) {
         if (ackMessageQueue[item].message.MSGID == message) {
 
-            currentObj.popCurrentMessageSqlite(message)
-
-
-            updateMessage = ackMessageQueue[item].message;
-            ackMessageQueue.splice(item, 1);
-
-            console.log("ack队列pop出：" + message)
-
             //回调App上层发送成功
             if(ackMessageQueue[item].message.type != MessageType.friend) {
                 currentObj.MessageResultHandle(true, message);
             }
 
+            currentObj.popCurrentMessageSqlite(message)
+
+            updateMessage = ackMessageQueue[item].message;
+            ackMessageQueue.splice(item, 1);
+
+            console.log("ack队列pop出：" + message)
+            
             updateMessage.status = MessageStatus.SendSuccess;
             currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 
