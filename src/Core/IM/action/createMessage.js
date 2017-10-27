@@ -67,3 +67,12 @@ export function addAddGroupMemberMessage(text,Sender,Receiver){
 export function addDeleteGroupMemberMessage(text,Sender,Receiver){
     return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
 }
+
+//判断申请好友消息的类型
+export function isApplyFriendMessageType(message){
+    if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
+        return true;
+    }else{
+        return false;
+    }
+}

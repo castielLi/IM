@@ -72,7 +72,7 @@ class NewFriend extends ContainerComponent {
         let {key,rec} = data;
         this.fetchData('POST','Member/AcceptFriend',function (result) {
             if(result.success){
-                let addMessage = addAddFriendMessage({comment:currentObj.props.accountName + "",key},currentObj.props.accountId,rec);
+                let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,rec);
                 im.addMessage(addMessage,function(){
                 //添加到relationStore
                     let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;

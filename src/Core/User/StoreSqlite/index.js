@@ -60,6 +60,12 @@ export function getAllRelationAvatorAndName(callback){
     USERFMDB.GetAllRelationAvatorAndName(callback);
 }
 
+//更新relation显示状态
+export function updateRelationDisplayStatus(relationId){
+   USERFMDB.UpdateRelationDisplayStatus(relationId);
+}
+
+
 //添加新的关系
 export function addNewRelation(Relation){
     USERFMDB.AddNewRelation(Relation)
@@ -102,6 +108,30 @@ USERFMDB.initIMDataBase = function(){
         });
     }, (err)=>{errorDB('初始化数据库',err)});
 }
+
+//更新好友显示状态
+USERFMDB.UpdateRelationDisplayStatus = function(relationId){
+
+    let sql = sqls.ExcuteIMSql.UpdateRelationDisplayStatus;
+
+    sql = commonMethods.sqlFormat(sql,[relationId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("更新状态成功")
+
+            }, (err)=>{errorDB('更新好友',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
+
 
 //获取好友列表
 USERFMDB.GetRelationList = function(callback){

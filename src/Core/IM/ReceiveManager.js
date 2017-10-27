@@ -4,6 +4,7 @@
 import * as Helper from '../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from './dto/MessageType'
+import {isApplyFriendMessageType} from './action/createMessage'
 
 let ReceiveManager = {};
 let currentObj = undefined;
@@ -42,7 +43,16 @@ ReceiveManager.addReceiveMessage = function(message){
 ReceiveManager.receiveMessageOpreator = function(message){
     if(message.type == MessageType.text || message.type == MessageType.friend)
     {
-        currentObj.storeRecMessage(message)
+        if(message.type == MessageType.friend){
+            if(isApplyFriendMessageType(message)){
+                currentObj.storeRecMessage(message)
+            }else{
+                currentObj.updateRelation(message.Data.Data.Receiver)
+            }
+        }else{
+            currentObj.storeRecMessage(message)
+        }
+
         //回调App上层发送成功
         currentObj.ReceiveMessageHandle(message);
     }

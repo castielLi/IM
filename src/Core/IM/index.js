@@ -70,6 +70,8 @@ let AppReceiveMessageHandle = undefined;
 //踢出消息回调
 let AppKickOutHandle = undefined;
 
+let handleRecieveAddFriendMessage = undefined;
+
 
 let __instance = (function () {
     let instance;
@@ -113,11 +115,12 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
+        handleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
     startIM(){
@@ -310,7 +313,9 @@ export default class IM {
             //把消息存入消息sqlite中
             message.status = MessageStatus.WaitOpreator;
 
-            this.storeSendMessage(message);
+            if(message.type != MessageType.friend) {
+                this.storeSendMessage(message);
+            }
 
             //添加cache缓存
             // cacheMessage.push(message);
@@ -392,6 +397,11 @@ export default class IM {
     //存储接收消息
     storeRecMessage(message){
         storeSqlite.storeRecMessage(message);
+    }
+
+    //操作好友管理模块,申请好友通过，设置关系显示状态
+    updateRelation(relationId){
+        handleRecieveAddFriendMessage(relationId);
     }
 
 

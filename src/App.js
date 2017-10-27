@@ -16,7 +16,7 @@ import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
-
+import User from './Core/User'
 import * as ActionForChatRecordStore from './Core/IM/redux/action'
 import * as ActionForLoginStore from './modules/Login/reducer/action';
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
@@ -33,6 +33,8 @@ export default function App() {
     console.disableYellowBox = true
 
     let store = Store;
+
+    let user = new User();
 
     //初始化app的http组件
     configureNetwork({
@@ -59,6 +61,12 @@ export default function App() {
         store.dispatch(ActionForChatRecordStore.receiveMessage(message))
     }
 
+    //收到同意添加好友申请回调
+    let handleRecieveAddFriendMessage = function(relation){
+        user.updateDisplayOfRelation(relation);
+    }
+
+
     let handleKickOutMessage = function(){
         Alert.alert(
             '下线通知',
@@ -73,7 +81,7 @@ export default function App() {
             ]);
     }
 
-    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage)
+    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage)
 
 
     class InitApp extends DisplayComponent {

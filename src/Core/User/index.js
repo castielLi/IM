@@ -56,6 +56,12 @@ export default class User {
         storeSqlite.updateRelation(Relation)
     }
 
+    updateDisplayOfRelation(relationId){
+        storeSqlite.updateRelationDisplayStatus(relationId);
+    }
+
+
+
     //修改群备注
     updateGroupComment(RelationId,Comment){
 

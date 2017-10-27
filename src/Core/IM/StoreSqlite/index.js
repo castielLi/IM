@@ -12,11 +12,12 @@ import RNFS from 'react-native-fs';
 
 export function storeSendMessage(message){
 
-    if(message.type != "friend") {
+    // if(message.type != "friend") {
         IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
-    }else{
-        IMFMDB.InsertFriendMessage(message);
-    }
+    //申请好友消息不需要存数据库
+    // }else{
+    //     IMFMDB.InsertFriendMessage(message);
+    // }
 }
 
 export function storeRecMessage(message){
