@@ -134,6 +134,9 @@ FileManager.downloadResource = function(message,callback){
 
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
+        if(type === 'image'){
+            toFile = 'file://'+toFile;
+        }
         message.Resource[0].LocalSource = toFile;
         console.log('下载成功后=============================:  ',message)
         callback(message)
