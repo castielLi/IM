@@ -46,15 +46,16 @@ ReceiveManager.receiveMessageOpreator = function(message){
         if(message.type == MessageType.friend){
             if(isApplyFriendMessageType(message)){
                 currentObj.storeRecMessage(message)
+                //回调App上层发送成功
+                currentObj.ReceiveMessageHandle(message);
             }else{
-                currentObj.updateRelation(message.Data.Data.Receiver)
+                currentObj.updateRelation(message.Data.Data.Sender)
             }
         }else{
             currentObj.storeRecMessage(message)
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
         }
-
-        //回调App上层发送成功
-        currentObj.ReceiveMessageHandle(message);
     }
     else{
 

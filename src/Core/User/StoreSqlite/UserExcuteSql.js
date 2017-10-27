@@ -25,5 +25,5 @@ export const ExcuteIMSql = {
     "InsertRelationSetting":"insert into RelationSetting(RelationId,setTop,disturb,saveContact,showNick,displayZoom,allowCheckZoom,starMark) values(?,?,?,?,?,?,?,?)",
     "GetRelationSettingByRelationId":"select * from RelationSetting where RelationId=?",
     "UpdateRelationSetting":"update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=?,displayZoom=?,allowCheckZoom=?,starMark=? where RelationId=?",
-    "UpdateRelationDisplayStatus":'update Relation set show = true where RelationId = ?'
+    "UpdateRelationDisplayStatus":'update Relation set show = "true" where RelationId = ?'
 }
