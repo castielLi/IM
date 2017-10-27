@@ -33,7 +33,7 @@ AckManager.handAckQueue = function(){
 
                 //回调App上层发送失败
                 if(ackMessageQueue[item].message.type != MessageType.friend) {
-                    currentObj.MessageResultHandle(false, ackMessageQueue[item].message);
+                    currentObj.MessageResultHandle(false, ackMessageQueue[item].message.MSGID);
                 }
 
                 ackMessageQueue[item].message.status = MessageStatus.SendFailed;
