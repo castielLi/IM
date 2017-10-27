@@ -180,7 +180,7 @@ class ClientInformation extends ContainerComponent {
             }
             //双方互不为好友
             else if(result.success && typeof result.data.Data === 'string'){
-                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.data.Data,Applicant,Respondent}})
+                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.data.Data,"relation":currentObj.props.Relation,Applicant,Respondent}})
             }
         },{Applicant,Respondent})
     }

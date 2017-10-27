@@ -19,8 +19,12 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
+import User from '../../Core/User'
+import Relation from '../../Core/User/dto/RelationModel'
+import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
 let im = new IM();
 let currentObj = undefined;
+let user = new User();
 
 class Validate extends ContainerComponent {
     constructor(props){
@@ -61,6 +65,16 @@ class Validate extends ContainerComponent {
         im.addMessage(addMessage,function(){
             currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒");
+
+            //向数据库添加关系，并且标记这条关系显示为false;
+            let relation = new Relation();
+            relation.Nick = currentObj.props.relation.Nickname;
+            relation.RelationId = currentObj.props.relation.Account;
+            relation.OtherComment = currentObj.props.relation.Gender;
+            relation.avator = currentObj.props.relation.HeadImageUrl;
+            relation.type = ChatWayEnum.Private;
+            relation.show = false;
+            user.AddNewRelation(relation);
         })
     }
     render() {

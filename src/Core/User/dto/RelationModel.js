@@ -14,5 +14,6 @@ export default class Relation{
         this.LocalImage = "";
         this.type = "";
         this.owner = "";
+        this.show = true;
     }
 }

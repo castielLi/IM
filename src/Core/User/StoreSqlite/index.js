@@ -147,7 +147,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         if(exist){
             continue;
         }
-        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",false,"private",friend.HeadImageUrl,friend.Email]);
+        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",false,"private",friend.HeadImageUrl,friend.Email," ",true]);
         relationsSqls.push(sql);
     }
 
@@ -157,7 +157,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
         let friend = blackList[item];
 
-        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",true,"private",friend.HeadImageUrl,friend.Email]);
+        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",true,"private",friend.HeadImageUrl,friend.Email," ",true]);
         relationsSqls.push(sql);
     }
 
@@ -171,7 +171,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         group.Description = group.Description == null?" ":group.Description;
         group.ProfilePicture = group.ProfilePicture == null?" ":group.ProfilePicture;
 
-        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name," ",false,"chatroom",group.ProfilePicture," ",group.Owner]);
+        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name," ",false,"chatroom",group.ProfilePicture," ",group.Owner,true]);
         relationsSqls.push(sql);
     }
 
@@ -201,7 +201,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 USERFMDB.AddNewRelation = function(Relation){
     let sql = sqls.ExcuteIMSql.InitRelations;
 
-    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner]);
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -299,7 +299,7 @@ USERFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
 USERFMDB.updateRelation =function(Relation){
     let updateSql = sqls.ExcuteIMSql.UpdateRelation;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.avator,Relation.Email,Relation.LocalImage])
+    updateSql = commonMethods.sqlFormat(updateSql,[Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.avator,Relation.Email,Relation.LocalImage,Relation.owner,Relation.show])
 
     var db = SQLite.openDatabase({
         ...databaseObj
