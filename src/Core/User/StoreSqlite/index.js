@@ -229,6 +229,8 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
 //添加新关系
 USERFMDB.AddNewRelation = function(Relation){
+    //todo 如果是在validate界面添加新关系，检查数据表中是否已经存在，存在才添加
+
     let sql = sqls.ExcuteIMSql.InitRelations;
 
     sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show]);

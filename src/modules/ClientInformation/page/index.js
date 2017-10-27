@@ -174,7 +174,7 @@ class ClientInformation extends ContainerComponent {
             //relationStore里面添加该好友(或者重新初始化)
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
                 let IsInBlackList =result.data.Data.IsInBlackList
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:true}
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
                 currentObj.props.addRelation(relationObj);
                 user.AddNewRelation(relationObj)
             }

@@ -75,7 +75,7 @@ class Validate extends ContainerComponent {
             relation.OtherComment = currentObj.props.relation.Gender;
             relation.avator = currentObj.props.relation.HeadImageUrl;
             relation.Type = ChatWayEnum.Private;
-            relation.show = false;
+            relation.show = 'false';
             user.AddNewRelation(relation);
             currentObj.props.addRelation(relation);
 
