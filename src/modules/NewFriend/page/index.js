@@ -143,7 +143,7 @@ class NewFriend extends ContainerComponent {
                                 <Image style={styles.headPic} source={require('../resource/other.jpg')}/>
                                 <View style={styles.basicBoxRight}>
                                     <Text style={styles.name}>{rowData.nick}</Text>
-                                    <Text style={styles.description}>{rowData.comment}</Text>
+                                    <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
                                 </View>
                             </View>
                             {this.applyMsgStyle(rowID,rowData)}
@@ -239,7 +239,8 @@ const styles = StyleSheet.create({
     },
     description:{
         fontSize:12,
-        color:'#aaa'
+        color:'#aaa',
+        width:width-200,
     },
     arrow:{
         fontSize:15,
