@@ -11,7 +11,7 @@ import {
     TouchableOpacity,
     TextInput,
     TouchableWithoutFeedback,
-    Switch
+    Switch,Keyboard
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
@@ -63,6 +63,7 @@ class Validate extends ContainerComponent {
     sendApplyMessage= ()=>{
         let {Applicant,Respondent} = this.props;
         currentObj.showLoading()
+        Keyboard.dismiss();
         let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
         im.addMessage(addMessage,function(){
             currentObj.hideLoading()

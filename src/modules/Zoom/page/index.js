@@ -20,6 +20,7 @@ import {
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import Features from '../../Common/menu/features';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 var originData = [
 		{
@@ -113,18 +114,6 @@ export default class Zoom extends ContainerComponent {
 	changeShowFeature=(newState)=>{
 		this.setState({showFeatures:newState});
 	}
-	_rightButton = ()=>{
-		return (
-                <View style = {styles.RightLogo}>
-                    <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
-                        <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress = {()=>{this.setState({showFeatures:!this.state.showFeatures})}}>
-                        <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
-                    </TouchableOpacity>
-                </View>
-		)
-	}
 	_renderItem = (info)=>{
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
 					<View style={styles.itemBox}>
@@ -132,7 +121,8 @@ export default class Zoom extends ContainerComponent {
 							<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
 							<Text style={styles.itemText}>{info.item.name}</Text>
 						</View>
-						<Text style={styles.arrow}>{'>'}</Text>
+						{/*<Text style={styles.arrow}>{'>'}</Text>*/}
+						<Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 					</View>
 			   </TouchableHighlight>
 	}

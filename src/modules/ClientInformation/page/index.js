@@ -208,7 +208,8 @@ class ClientInformation extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置备注和标签</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight>
                     <View  style={styles.placeBox}>
@@ -227,13 +228,15 @@ class ClientInformation extends ContainerComponent {
 
                                 </View>
                             </View>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight> : null}
                     {hasRelation ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
                         <View  style={[styles.remarksBox,{marginTop:0}]}>
                             <Text style={styles.remarks}>更多</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight> : null}
                     {hasRelation||isRenderSendMessage ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>

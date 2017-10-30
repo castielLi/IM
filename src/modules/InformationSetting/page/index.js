@@ -217,7 +217,8 @@ class InformationSetting extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置备注和标签</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight>
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
@@ -250,7 +251,8 @@ class InformationSetting extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>投诉</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={styles.sendMessageBox}>
