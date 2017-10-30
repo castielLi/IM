@@ -17,12 +17,24 @@ export default function friendApplicationStore(state = initialState,action){
             };
 
         case 'ADD_FRIEND_APPLICATION':
+            for(let i = 0;i<state.applicationRecord.length;i++){
+                if(action.message.send === state.applicationRecord[i].send){
+                    state.applicationRecord[i] = action.message;
+                    return {
+                        ...state,
+                    }
+                }
+            }
             state.applicationRecord.push(action.message);
-
             return {
                 ...state,
-                applicationRecord:state.applicationRecord.concat([])
             };
+
+
+            // return {
+            //     ...state,
+            //     applicationRecord:state.applicationRecord.concat([])
+            // };
 
         case 'DELETE_FRIEND_APPLICATION':
             state.applicationRecord.splice(action.index,1);
@@ -31,9 +43,13 @@ export default function friendApplicationStore(state = initialState,action){
             };
 
         case 'ACCEPT_FRIEND_APPLICATION':
-            state.applicationRecord[action.index].status = ApplyFriendEnum.ADDED;
-            return {
-                ...state,
+            for(let i = 0;i<state.applicationRecord.length;i++){
+                if(action.key === state.applicationRecord[i].key){
+                    state.applicationRecord[i].status = ApplyFriendEnum.ADDED;
+                    return {
+                        ...state,
+                    }
+                }
             };
         case 'UPDATE_FRIEND_APPLICATION':
             state.applicationRecord[action.index].status = ApplyFriendEnum.EXPIRED;

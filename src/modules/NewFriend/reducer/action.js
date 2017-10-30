@@ -3,11 +3,12 @@
  */
 import IM from '../../../Core/IM/index'
 let im = new IM();
+import ApplyFriendEnum from '../../../Core/IM/dto/ApplyFriendEnum'
 
 export function getApplicantInfo(message) {
 
     return (dispatch)=>{
-            let status = 'wait';
+            let status = ApplyFriendEnum.WAIT;
             let {comment,key,avator,nick} = message.Data.Data.Data;
             let {Sender,Receiver} = message.Data.Data;
             let time = Date.now();
@@ -45,10 +46,10 @@ export function deleteFriendApplication(index){
         index
     }
 }
-export function acceptFriendApplication(index){
+export function acceptFriendApplication(key){
     return{
         type:'ACCEPT_FRIEND_APPLICATION',
-        index
+        key
     }
 }
 export function updateFriendApplication(index){

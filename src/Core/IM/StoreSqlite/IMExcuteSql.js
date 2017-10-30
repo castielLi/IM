@@ -37,7 +37,7 @@ export const ExcuteIMSql = {
     "QueryChatRecodeByClient":"select messageId from ? order by Id desc LIMIT ?,?",
     "QueryMessageResourceExist":"select * from ResourceRecode where messageId = ? and localResource = ?",
     "AddNewMessageToApplyFriend":"insert into ApplyFriend (send,rec,status,comment,time,key,nick,avator) values(?,?,?,?,?,?,?,?)",
-    "QueryApplyFriend":"select * from ApplyFriend",
+    "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?"
 }
 
