@@ -80,6 +80,8 @@ class NewFriend extends ContainerComponent {
                     user.AddNewRelation(relationObj)
                     //修改friendMessage状态
                     im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":data.key})
+                    currentObj.props.acceptFriendApplication(data.key);
+
                 });
             }else{
                 alert(result.errorMessage);
