@@ -112,7 +112,7 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:value
         })
 
-        this.props.changeRelationOfBlackList(this.props.client)
+        this.props.changeRelationOfBlackList(value,this.props.client)
 
         currentObj.showLoading()
         if(!value){

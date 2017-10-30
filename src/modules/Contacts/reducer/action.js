@@ -29,10 +29,11 @@ export function changeRelationOfShow(relationId){
     }
 }
 
-export function changeRelationOfBlackList(relationId){
+export function changeRelationOfBlackList(value,relationId){
     return {
         type: 'CHANGE_RELATION_OF_BLACKLIST',
-        relationId
+        relationId,
+        isBlackList:value
     }
 }
 

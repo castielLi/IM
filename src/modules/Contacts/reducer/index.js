@@ -39,12 +39,7 @@ export default function relationStore(state=initialState, action){
         case 'CHANGE_RELATION_OF_BLACKLIST':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relationId){
-                    if(state[i].BlackList === 'true'){
-                        state[i].BlackList = 'false';
-                    }else if(state[i].BlackList === 'false'){
-                        state[i].BlackList = 'true';
-
-                    }
+                    state[i].BlackList = action.isBlackList;
                     break;
                 }
             }
