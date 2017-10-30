@@ -29,6 +29,14 @@ export function changeRelationOfShow(relationId){
     }
 }
 
+export function changeRelationOfBlackList(value,relationId){
+    return {
+        type: 'CHANGE_RELATION_OF_BLACKLIST',
+        relationId,
+        isBlackList:value
+    }
+}
+
 export function addRelation(relation){
     return {
         type: 'ADD_RELATION',
