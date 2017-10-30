@@ -122,7 +122,7 @@ class GroupInformationSetting extends ContainerComponent {
 
     handlePress(i){
         let {groupId,accountId} = this.props;
-        //删除好友
+        //退出群组
         if(1 == i){
             currentObj.showLoading()
             this.fetchData("POST","Member/ExitGroup",function(result){
@@ -133,6 +133,7 @@ class GroupInformationSetting extends ContainerComponent {
                 }
 
                 if(result.data.Data){
+                    //todo:添加删除group的redux
 
                     currentObj.route.toMain(currentObj.props)
                 }else{
@@ -223,7 +224,7 @@ class GroupInformationSetting extends ContainerComponent {
                                 <Text style={styles.remarks}>群聊名称</Text>
                                 <View style={{flexDirection:'row',alignItems:'center'}}>
                                     <Text style={styles.arrowText}>{'IM群'}</Text>
-                                    <Icon name="angle-right" size={20} color="#aaa" />
+                                    <Icon name="angle-right" size={35} color="#aaa" />
                                 </View>
 
                             </View>
@@ -235,7 +236,7 @@ class GroupInformationSetting extends ContainerComponent {
                                 <Text style={styles.remarks}>群二维码</Text>
                                 <View style={{flexDirection:'row',alignItems:'center'}}>
                                     <Icon name="qrcode" size={20} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
-                                    <Icon name="angle-right" size={20} color="#aaa" />
+                                    <Icon name="angle-right" size={35} color="#aaa" />
                                 </View>
                             </View>
                         </TouchableHighlight>
@@ -248,7 +249,7 @@ class GroupInformationSetting extends ContainerComponent {
                                     <Text style={styles.remarksText} numberOfLines={3}>群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告</Text>
                                 </View>
 
-                                <Icon name="angle-right" size={20} color="#aaa" />
+                                <Icon name="angle-right" size={35} color="#aaa" />
                             </View>
                         </TouchableHighlight>
                     </View>
@@ -256,7 +257,7 @@ class GroupInformationSetting extends ContainerComponent {
                         <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginBottom:15}}>
                             <View  style={styles.remarksBox}>
                                 <Text style={styles.remarks}>群管理</Text>
-                                <Icon name="angle-right" size={20} color="#aaa" />
+                                <Icon name="angle-right" size={35} color="#aaa" />
                             </View>
                         </TouchableHighlight>
                     </View>
@@ -290,7 +291,7 @@ class GroupInformationSetting extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置当前聊天背景</Text>
-                            <Icon name="angle-right" size={20} color="#aaa" />
+                            <Icon name="angle-right" size={35} color="#aaa" />
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
@@ -301,7 +302,7 @@ class GroupInformationSetting extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>投诉</Text>
-                            <Icon name="angle-right" size={20} color="#aaa" />
+                            <Icon name="angle-right" size={35} color="#aaa" />
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={[styles.sendMessageBox,{marginBottom:20}]}>
