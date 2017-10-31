@@ -308,7 +308,7 @@ class Chat extends Component {
             )
         }
         else{
-            if(row.Command !== 5){
+            if(row.message.Command !== 5){
                 return(
                     <View key={rowid} style={styles.itemView}>
                         <View style={styles.timestampView}>
@@ -325,7 +325,7 @@ class Chat extends Component {
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>广发华福广发华福光会广发华福光会光会。的是广发华福光会发，聊天。</Text>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收</Text>
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                                 <Text>发送朋友验证</Text>
                             </TouchableOpacity>
