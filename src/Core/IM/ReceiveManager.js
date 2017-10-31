@@ -59,10 +59,10 @@ ReceiveManager.receiveMessageOpreator = function(message){
             currentObj.storeRecMessage(blackMessage);
 
             //收到新的消息界面响应
-            // currentObj.ReceiveMessageHandle(blackMessage);
+             currentObj.ReceiveMessageHandle(blackMessage);
 
             //标记发送消息发送结果为失败
-            // currentObj.MessageResultHandle(false, blackMessage);
+             currentObj.MessageResultHandle(false, blackMessage);
 
             let updateMessage = {};
 
