@@ -91,8 +91,7 @@ class Chat extends Component {
             this.reduxData = newData.concat().reverse()
             this.reduxData2 = newData;
         }
-
-        if(!this.firstLoad){
+        else if(!this.firstLoad){
             this.reduxData.push(newData[0]);
             this.reduxData2.shift(newData[0]);
         }
