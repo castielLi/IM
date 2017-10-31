@@ -19,10 +19,6 @@ FileManager.Ioc = function(im){
     currentObj = im;
 }
 
-FileManager.setAccountId = function(accountId){
-    ME = accountId;
-}
-
 FileManager.addResource = function(message,onprogress,callback){
 
     resourceQueue.push({onprogress:onprogress,message:message})

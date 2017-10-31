@@ -8,5 +8,6 @@ export default MessageType = {
     image : "image",
     audio:"audio",
     video:"video",
-    friend:"friend"
+    friend:"friend",
+    error:"error"
 }

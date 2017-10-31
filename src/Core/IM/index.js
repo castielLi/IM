@@ -102,7 +102,6 @@ export default class IM {
     setSocket(account,device,deviceId,imToken){
         _socket.startConnect(account,device,deviceId,imToken);
         ME = account;
-        FileManager.setAccountId(account);
     }
 
     //初始化IM的数据库
@@ -361,7 +360,7 @@ export default class IM {
 
 
             //心跳包不需要进行存储
-            if(message.Command != MessageCommandEnum.MSG_HEART) {
+            if(message.Command != MessageCommandEnum.MSG_HEART && message.Command != MessageCommandEnum.MSG_REV_ACK) {
                 console.log("添加" + copyMessage.MSGID + "进队列");
                 //初始加入ack队列，发送次数默认为1次
                 AckManager.addAckQueue(copyMessage, 1);
@@ -444,7 +443,7 @@ export default class IM {
     receiveMessageOpreator(message){
         if(message.Command == undefined) {
             AckManager.receiveMessageOpreator(message);
-        }else if(message.Command == MessageCommandEnum.MSG_BODY){
+        }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
             ReceiveManager.receiveMessageOpreator(message);
         }
     }
@@ -462,6 +461,7 @@ export default class IM {
         }else if(type == MessageCommandEnum.MSG_KICKOUT){
             console.log("设备被踢出消息")
             AppKickOutHandle();
+            return;
         }
 
         currentObj.receiveMessageOpreator(message)
@@ -472,6 +472,9 @@ export default class IM {
         FileManager.downloadResource(message,callback);
     }
 
+    popAckMessage(messageId){
+        AckManager.receiveMessageOpreator(messageId);
+    }
 
     ReceiveMessageHandle(message){
         AppReceiveMessageHandle(message);
@@ -486,6 +489,13 @@ export default class IM {
         AppMessageChangeStatusHandle(message)
     }
 
+
+    sendReceiveAckMessage(messageId){
+        UUIDGenerator.getRandomUUID().then((uuid) => {
+            let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
+            SendManager.addSendMessage(receiveAckMessage);
+        })
+    }
 
 
     //心跳包

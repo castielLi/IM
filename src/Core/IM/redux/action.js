@@ -27,6 +27,17 @@ export function addMessage(message){
 export function receiveMessage(message){
 	//let client = InterceptionClientFromId(message.MSGID);
     let {type} = message;
+
+    // if(message.Command == "5"){
+    //
+     //    dispatch({
+     //        type:'RECEIVE_MESSAGE',
+     //        client:message.Data.Data.Sender,
+     //        message
+     //    })
+    	// return;
+	// }
+
     if(type == 'friend'){
 		return (dispatch) =>{
 			dispatch(friendApplicationActions.getApplicantInfo(message))

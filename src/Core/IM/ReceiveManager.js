@@ -4,15 +4,22 @@
 import * as Helper from '../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from './dto/MessageType'
-import {isApplyFriendMessageType} from './action/createMessage'
+import {isApplyFriendMessageType,blackListMessage} from './action/createMessage'
+import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
+import MessageCommandEnum from './dto/MessageCommandEnum'
 
 let ReceiveManager = {};
 let currentObj = undefined;
+let currentAccount = undefined;
 
 let recieveMessageQueue = [];
 
 ReceiveManager.Ioc = function(im){
     currentObj = im;
+}
+
+ReceiveManager.GetCurrentAccount = function(account){
+    currentAccount = account;
 }
 
 ReceiveManager.checkQueueLength = function(){
@@ -41,6 +48,20 @@ ReceiveManager.addReceiveMessage = function(message){
 }
 
 ReceiveManager.receiveMessageOpreator = function(message){
+
+    if(message.Command == MessageCommandEnum.MSG_ERROR){
+        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
+            let sender = message.Data.SourceMSGID.split("_")[0];
+            let blackMessage = blackListMessage(sender,message.Data.SourceMSGID);
+            currentObj.storeRecMessage(blackMessage);
+            currentObj.ReceiveMessageHandle(blackMessage);
+            currentObj.popAckMessage(blackMessage.Data.SourceMSGID);
+            currentObj.sendReceiveAckMessage(message.MSGID)
+        }
+        return;
+    }
+
+
     if(message.type == MessageType.text || message.type == MessageType.friend)
     {
         if(message.type == MessageType.friend){
@@ -65,6 +86,8 @@ ReceiveManager.receiveMessageOpreator = function(message){
             currentObj.ReceiveMessageHandle(message);
         })
     }
+
+    currentObj.sendReceiveAckMessage(message.MSGID)
 }
 
 export default ReceiveManager;

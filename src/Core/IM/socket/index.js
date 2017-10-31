@@ -49,8 +49,8 @@ export default class Connect extends Component{
             }
             let message = JSON.parse(event.data);
             console.log("消息类型是："+message.Command,message,'-----------------------------------------------------------------------------');
-            if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
-                onRecieveMessage(message.Data,MessageCommandEnum.MSG_REV_ACK);
+            if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
+                onRecieveMessage(message.Data,MessageCommandEnum.MSG_SEND_ACK);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
                 heartBeatCode = message;
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
@@ -60,6 +60,8 @@ export default class Connect extends Component{
                 NeedToReConnect = false;
                 currentObj.webSocket.close();
                 onRecieveMessage(message,MessageCommandEnum.MSG_KICKOUT);
+            }else if(message.Command == MessageCommandEnum.MSG_ERROR){
+                onRecieveMessage(message,MessageCommandEnum.MSG_ERROR);
             }
         });
 
