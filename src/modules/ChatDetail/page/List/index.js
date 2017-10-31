@@ -61,33 +61,40 @@ class Chat extends Component {
         this.historyData2 = [];
         this.reduxData2 = [];
 
-        this.firstLoad = null;
+        this.firstLoad = true;
         this.timestamp = 0;
+        this.noMore = 0;
 
         this.state = {
             dataSource: ds,
             dataSourceO: ds,
             showInvertible:false,
-            isRefreshing:0,
+            isMore:0,
         };
 
     }
 
+    componentWillUnmount(){
+        alert(1)
+    }
     componentWillReceiveProps(newProps){
         let newData = newProps.chatRecordStore.concat();
-        if(!this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.firstLoad = ListConst.msgState.NOMORE;
-        }
-        else{
-            newData = newData.slice(0,-1);
-        }
-
-        if(this.reduxData2.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER && newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
-            this.reduxData = this.reduxData.push(newData[0]);
-            this.reduxData2 = this.reduxData2.shift(newData[0]);
-        }else{
+        if(this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.noMore = ListConst.msgState.NOMORE;
+            this.firstLoad = false;
             this.reduxData = newData.concat().reverse()
             this.reduxData2 = newData;
+        }
+        else if(this.firstLoad){
+            newData = newData.slice(0,-1);
+            this.firstLoad = false;
+            this.reduxData = newData.concat().reverse()
+            this.reduxData2 = newData;
+        }
+
+        if(!this.firstLoad){
+            this.reduxData.push(newData[0]);
+            this.reduxData2.shift(newData[0]);
         }
 
 
@@ -98,88 +105,43 @@ class Chat extends Component {
         this.shortData2 =  this.reduxData2.concat(this.historyData2);
         this.data2 = this.prepareMessages(this.shortData2);
 
-        if(this.firstLoad){
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-                isRefreshing:this.firstLoad,
-            },()=>{
-                this.firstLoad = null;
-            });
-        }
-        else{
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-            });
-        }
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+        });
     }
 
     componentWillMount() {
         this.im = new IM()
 
-
         let chatRecordStore = this.props.chatRecordStore.concat();
-        let {isRefreshing} = this.state;
-        // if(!chatRecordStore){
-        //     return;
-        // }
-        // else if(chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-        //     isRefreshing = ListConst.msgState.NOMORE;
-        //     alert(chatRecordStore.length+'变成了 没有更多'+ InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER)
-        // }
-        // else{
-        //     chatRecordStore.pop();
-        // }
-        //
-        // alert(chatRecordStore)
-        // this.reduxData = chatRecordStore.concat().reverse();
-        // this.shortData = this.reduxData;
-        // this.data = this.prepareMessages(this.shortData);
-        //
-        // this.reduxData2 = chatRecordStore;
-        // this.shortData2 = this.reduxData2;
-        // this.data2 = this.prepareMessages(this.shortData2);
-        //
-        // this.setState({
-        //     dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-        //     dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-        //     isRefreshing,
-        // });
 
         if(!chatRecordStore.length){
             return;
         }
-        else if(!this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.firstLoad = ListConst.msgState.NOMORE;
+        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.noMore = ListConst.msgState.NOMORE;
+            this.firstLoad = false;
         }
         else{
-            chatRecordStore = chatRecordStore.slice(0,-1);
+            chatRecordStore = chatRecordStore.slice(0,10);
+            this.firstLoad = false;
         }
 
         this.reduxData = chatRecordStore.concat().reverse()
+        this.reduxData2 = chatRecordStore;
+
+
         this.shortData = this.historyData.concat(this.reduxData);
         this.data = this.prepareMessages(this.shortData);
 
-        this.reduxData2 = chatRecordStore;
         this.shortData2 =  this.reduxData2.concat(this.historyData2);
         this.data2 = this.prepareMessages(this.shortData2);
 
-        if(this.firstLoad){
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-                isRefreshing:this.firstLoad,
-            },()=>{
-                this.firstLoad = null;
-            });
-        }
-        else{
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-                dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-            });
-        }
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+        });
 
         this._gestureHandlers = {
             onStartShouldSetResponder: () => true,  //对触摸进行响应
@@ -191,10 +153,10 @@ class Chat extends Component {
             //移动时作出的动作
             onResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && this.state.isRefreshing == msgState.END && !this.state.showInvertible)
+                if(e.nativeEvent.pageY>this.move && this.state.isMore == msgState.END && !this.state.showInvertible)
                 {
                     this.setState({
-                        isRefreshing : ListConst.msgState.LOADING,
+                        isMore : ListConst.msgState.LOADING,
                     })
                     let dataLength = this.shortData2.length;
                     let {client} = this.props;
@@ -203,7 +165,6 @@ class Chat extends Component {
                         this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
                             let msgLength = messages.length;
-                            let noMore = msgState.END;
 
                             if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                                 messages.pop();
@@ -223,16 +184,16 @@ class Chat extends Component {
                             that.data2 = that.prepareMessages(that.shortData2);
 
                             if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                                noMore  = msgState.NOMORE;
+                                that.noMore  = msgState.NOMORE;
                             }
                             else{
-                                noMore  = msgState.END;
+                                that.noMore  = msgState.END;
                             }
 
                             that.setState({
                                 dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
                                 dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
-                                isRefreshing:noMore,
+                                isMore:that.noMore,
                             })
                         })
                     },500)
@@ -386,15 +347,15 @@ class Chat extends Component {
     }
     oldMsg = () => {
         //console.log('oldMsg');
-        //alert(this.props.client+this.state.isRefreshing)
+        //alert(this.props.client+this.state.isMore)
         let {msgState} = ListConst;
         if(!firstOldMsg){
             return firstOldMsg = true;
         }
-        if(this.state.isRefreshing === msgState.END){
+        if(this.noMore === msgState.END){
 
             this.setState({
-                isRefreshing : msgState.LOADING
+                isMore : msgState.LOADING
             })
             let dataLength = this.shortData2.length;
             let {client} = this.props;
@@ -403,7 +364,6 @@ class Chat extends Component {
                 this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
                     let msgLength = messages.length;
-                    let noMore = msgState.END;
 
                     if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                         messages.pop();
@@ -417,15 +377,15 @@ class Chat extends Component {
                     that.data2 = that.prepareMessages(that.shortData2);
 
                     if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                        noMore  = msgState.NOMORE;
+                        that.noMore  = msgState.NOMORE;
                     }
                     else{
-                        noMore  = msgState.END;
+                        that.noMore  = msgState.END;
                     }
 
                     that.setState({
                         dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
-                        isRefreshing:noMore,
+                        isMore:that.noMore,
                     });
                 })
             },500)
@@ -435,7 +395,7 @@ class Chat extends Component {
 
     myRenderFooter(){
         //console.log('foot执行了')
-        const {isRefreshing,showInvertible}=this.state;
+        const {isMore,showInvertible}=this.state;
         let {msgState} = ListConst;
 
         if(!showInvertible) {
@@ -444,7 +404,7 @@ class Chat extends Component {
             />
         }
         else{
-            if(isRefreshing === msgState.LOADING){
+            if(isMore === msgState.LOADING){
                 return(
                     <ActivityIndicator
                         size="small"
@@ -511,9 +471,9 @@ class Chat extends Component {
     }
 
     myRenderHeader = () =>{
-        let {isRefreshing}=this.state;
+        let {isMore}=this.state;
         let {msgState} = ListConst;
-        if(isRefreshing === msgState.LOADING){
+        if(isMore === msgState.LOADING){
             return(
                 <ActivityIndicator
                     size="small"
