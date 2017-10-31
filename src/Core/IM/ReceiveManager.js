@@ -55,7 +55,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
             let blackMessage = blackListMessage(sender,message.Data.SourceMSGID);
             currentObj.storeRecMessage(blackMessage);
             currentObj.ReceiveMessageHandle(blackMessage);
-            currentObj.popAckMessage(blackMessage.Data.SourceMSGID);
+            currentObj.popAckMessage(blackMessage.Data.SourceMSGID,false);
             currentObj.sendReceiveAckMessage(message.MSGID)
         }
         return;

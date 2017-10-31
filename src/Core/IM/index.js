@@ -472,8 +472,8 @@ export default class IM {
         FileManager.downloadResource(message,callback);
     }
 
-    popAckMessage(messageId){
-        AckManager.receiveMessageOpreator(messageId);
+    popAckMessage(messageId,success){
+        AckManager.receiveMessageOpreator(messageId,success);
     }
 
     ReceiveMessageHandle(message){
