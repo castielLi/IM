@@ -348,7 +348,7 @@ class Chat extends Component {
             )
         }
         else{
-            if(row.Command !== 5){
+            if(row.message.Command !== 5){
                 return(
                     <View key={rowid} style={styles.itemView}>
                         <View style={styles.timestampView}>
