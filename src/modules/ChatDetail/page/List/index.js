@@ -336,17 +336,31 @@ class Chat extends Component {
             )
         }
         else{
-            return(
-                <View key={rowid} style={styles.itemView}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+            if(1){
+                return(
+                    <View key={rowid} style={styles.itemView}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        </View>
+                        <View style={styles.infoView}>
+                            <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                            <ChatMessage style={styles.bubbleView} rowData={row}/>
+                        </View>
                     </View>
-                    <View style={styles.infoView}>
-                        <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
-                        <ChatMessage style={styles.bubbleView} rowData={row}/>
+                )
+            }
+            else{
+                return(
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:20,justifyContent:'center'}]}>
+                        <View style={{backgroundColor:'yellow',flexDirection:'row',flexWrap:'wrap'}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'center'}]}>才能sd的是的是的的是的发，聊天。</Text>
+                            <TouchableOpacity>
+                                <Text>发送朋友验证</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
-            )
+                )
+            }
         }
     }
     scrollToEnd = () => {
@@ -504,7 +518,7 @@ class Chat extends Component {
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
-                    <View style={[styles.chatListView]}>
+                    <View style={styles.chatListView}>
                         <ListView
                             ref={(lv) => this.listView = lv}
                             dataSource={this.state.dataSource}
