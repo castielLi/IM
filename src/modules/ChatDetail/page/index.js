@@ -91,7 +91,12 @@ class ChatDetail extends ContainerComponent {
 					left={{func:()=>{this.route.toMain(this.props)}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={'聊天'} />
-				<Chat ref={e => this.chat = e} client={this.props.client}/>
+				<TouchableWithoutFeedback onPress={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
+					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
+						<Chat ref={e => this.chat = e} client={this.props.client}/>
+					</View>
+				</TouchableWithoutFeedback>
+				{/*<Chat ref={e => this.chat = e} client={this.props.client}/>*/}
 				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>
 
@@ -119,6 +124,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
   ChatRecord: state.chatRecordStore.ChatRecord,
+    thouchBarStore: state.thouchBarStore,
 	accountId:state.loginStore.accountMessage.accountId,
 
 });
