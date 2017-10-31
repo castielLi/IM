@@ -6,6 +6,7 @@ import MessageCommandEnum from '../dto/MessageCommandEnum';
 import SendMessageBodyDto from '../dto/SendMessageBodyDto';
 import SendMessageDto from '../dto/SendMessageDto';
 import messageBodyChatDto from '../dto/messageBodyChatDto';
+import MessageType from '../dto/MessageType'
 
  function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand){
     let addMessage = new SendMessageDto();
@@ -36,9 +37,9 @@ import messageBodyChatDto from '../dto/messageBodyChatDto';
 //发送文本
  export function addTextMessage(text,way,Sender,Receiver) {
      if(way==='private'){
-         return createMessageObj('text',text,way,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
+         return createMessageObj(MessageType.text,text,way,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
      }else if(way === 'chatroom'){
-         return createMessageObj('text',text,way,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+         return createMessageObj(MessageType.text,text,way,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
 
      }
 };
@@ -53,19 +54,19 @@ import messageBodyChatDto from '../dto/messageBodyChatDto';
  };
  //申请好友请求
  export function addApplyFriendMessage(text,Sender,Receiver){
-     return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_APPLYFRIEND,MessageBodyTypeEnum.MSG_BODY_APP)
+     return createMessageObj(MessageType.friend,text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_APPLYFRIEND,MessageBodyTypeEnum.MSG_BODY_APP)
  }
  //添加好友请求
 export function addAddFriendMessage(text,Sender,Receiver){
-    return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_ADDFRIEND,MessageBodyTypeEnum.MSG_BODY_APP)
+    return createMessageObj(MessageType.friend,text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_ADDFRIEND,MessageBodyTypeEnum.MSG_BODY_APP)
 }
 //添加群成员请求
 export function addAddGroupMemberMessage(text,Sender,Receiver){
-    return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
+    return createMessageObj(MessageType.friend,text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
 }
 //删除群成员请求
 export function addDeleteGroupMemberMessage(text,Sender,Receiver){
-    return createMessageObj('friend',text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
+    return createMessageObj(MessageType.friend,text,'',null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER,MessageBodyTypeEnum.MSG_BODY_APP)
 }
 
 //判断申请好友消息的类型
@@ -75,4 +76,12 @@ export function isApplyFriendMessageType(message){
     }else{
         return false;
     }
+}
+
+//返回黑名单消息结构
+export function blackListMessage(Sender,messageId){
+    let message = createMessageObj(MessageType.error,"","private",null,Sender,"ME",0,0)
+    message.MSGID = messageId;
+    message.Command = MessageCommandEnum.MSG_ERROR;
+    return message;
 }

@@ -5,6 +5,7 @@ import * as Helper from '../Helper'
 import * as configs from './IMconfig'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from './dto/MessageType'
+import MessageCommandEnum from './dto/MessageCommandEnum'
 
 //todo: 删除ack manager 和send manager合并成一个
 
@@ -59,15 +60,16 @@ AckManager.addAckQueue = function(message,times){
 }
 
 
-AckManager.receiveMessageOpreator = function(message){
+AckManager.receiveMessageOpreator = function(message,success=true){
 
     let updateMessage = {};
-    for (let item in ackMessageQueue) {
+
+    for(let item in ackMessageQueue) {
         if (ackMessageQueue[item].message.MSGID == message) {
 
             //回调App上层发送成功
             if(ackMessageQueue[item].message.type != MessageType.friend) {
-                currentObj.MessageResultHandle(true, message);
+                currentObj.MessageResultHandle(success, message);
             }
 
             currentObj.popCurrentMessageSqlite(message)
@@ -76,8 +78,12 @@ AckManager.receiveMessageOpreator = function(message){
             ackMessageQueue.splice(item, 1);
 
             console.log("ack队列pop出：" + message)
-            
-            updateMessage.status = MessageStatus.SendSuccess;
+
+            if(success) {
+                updateMessage.status = MessageStatus.SendSuccess;
+            }else{
+                updateMessage.status = MessageStatus.SendFailed;
+            }
             currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 
             console.log(ackMessageQueue.length);
