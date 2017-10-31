@@ -69,6 +69,7 @@ class Chat extends Component {
             dataSourceO: ds,
             showInvertible:false,
             isRefreshing:0,
+            isShowModal:false
         };
 
     }
@@ -317,9 +318,34 @@ class Chat extends Component {
             )
         }
     }
-
+    renderModal() {
+        return <Modal
+            animationType='fade'
+            transparent={true}
+            onRequestClose={()=>{}}
+            visible={this.state.isShowModal}
+        >
+            <View style={styles.validateModalBox}>
+                <View style={styles.validateModal}>
+                    <Text style={styles.modalTitle}>对方启用类好友验证</Text>
+                    <Text style={styles.modalSubTitle}>你需要发送验证申请，对方通过后你才能添加其为好友</Text>
+                    <TextInput style={styles.modalInput} underlineColorAndroid="transparent"></TextInput>
+                    <View style={styles.modalButtonBox}>
+                        <TouchableOpacity style={styles.modalButton}>
+                            <Text style={styles.modalButtonTxt}>取消</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.modalButton}>
+                            <Text style={styles.modalButtonTxt}>发送</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    }
     applyFriend = ()=>{
-
+        this.setState({
+            isShowModal:true
+        })
     }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
@@ -365,9 +391,9 @@ class Chat extends Component {
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收</Text>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收，</Text>
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
-                                <Text>发送朋友验证</Text>
+                                <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -547,6 +573,7 @@ class Chat extends Component {
                             {...this._gestureHandlers}
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                        {this.renderModal()}
                     </View>
             );
         }else{
@@ -569,6 +596,7 @@ class Chat extends Component {
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                        {this.renderModal()}
                     </View>
                 )
         }
@@ -651,6 +679,55 @@ const styles = StyleSheet.create({
     },
     contentText:{
         includeFontPadding:false,
+        fontSize:16
+    },
+    validateModalBox: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    validateModal: {
+        height: 200,
+        width: 400,
+        backgroundColor: '#eee',
+        padding:10,
+        borderRadius:10,
+        alignItems:'center'
+    },
+    modalTitle:{
+        color:'#000',
+        fontSize:16
+    },
+    modalSubTitle:{
+        color:'#000',
+        fontSize:12
+    },
+    modalInput:{
+        width:300,
+        height:40,
+        borderColor:'#000',
+        borderWidth:1,
+        padding:0,
+        paddingHorizontal:5,
+        marginTop:30
+    },
+    modalButtonBox:{
+        flex:1,
+        height:50,
+        flexDirection:'row',
+        marginTop:30,
+        borderWidth:1,
+        borderColor:'#000',
+    },
+    modalButton:{
+        flex:1,
+        height:48,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    modalButtonTxt:{
+        color:'#1d4eb2',
         fontSize:16
     }
 });
