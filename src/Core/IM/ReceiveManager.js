@@ -62,7 +62,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
              currentObj.ReceiveMessageHandle(blackMessage);
 
             //标记发送消息发送结果为失败
-             currentObj.MessageResultHandle(false, blackMessage);
+            currentObj.MessageResultHandle(false, message.Data.SourceMSGID);
 
             let updateMessage = {};
 
