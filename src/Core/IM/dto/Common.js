@@ -72,10 +72,13 @@ export function sqlMessageToMessage(sqliteMessage){
     messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
     messageBody.Data = messageData;
 
-    message.Command = MessageCommandEnum.MSG_BODY;
+
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
-
+    message.Command = MessageCommandEnum.MSG_BODY;
+    if(sqliteMessage.type === MessageType.error){
+        message.Command = MessageCommandEnum.MSG_ERROR;
+    }
     if(sqliteMessage.type != MessageType.text){
         let msgType = sqliteMessage.type;
         message.type = msgType;
