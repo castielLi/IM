@@ -55,7 +55,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
             let sender = message.Data.SourceMSGID.split("_")[0];
-            let blackMessage = blackListMessage(sender,message.Data.SourceMSGID);
+            let blackMessage = blackListMessage(sender,message.MSGID);
             currentObj.storeRecMessage(blackMessage);
 
             //收到新的消息界面响应
