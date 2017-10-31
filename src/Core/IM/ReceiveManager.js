@@ -8,6 +8,7 @@ import {isApplyFriendMessageType,blackListMessage} from './action/createMessage'
 import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 
+
 let ReceiveManager = {};
 let currentObj = undefined;
 let currentAccount = undefined;
@@ -49,14 +50,28 @@ ReceiveManager.addReceiveMessage = function(message){
 
 ReceiveManager.receiveMessageOpreator = function(message){
 
+    //todo:lizongjun  这里收到了消息之后，如果是错误消息，需要数据库查询之前发送消息的msgid 获取到isack属性，如果需要ack则进行发送
+
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
             let sender = message.Data.SourceMSGID.split("_")[0];
             let blackMessage = blackListMessage(sender,message.Data.SourceMSGID);
             currentObj.storeRecMessage(blackMessage);
-            currentObj.ReceiveMessageHandle(blackMessage);
-            currentObj.popAckMessage(blackMessage.Data.SourceMSGID,false);
-            currentObj.sendReceiveAckMessage(message.MSGID)
+
+            //收到新的消息界面响应
+            // currentObj.ReceiveMessageHandle(blackMessage);
+
+            //标记发送消息发送结果为失败
+            // currentObj.MessageResultHandle(false, blackMessage);
+
+            let updateMessage = {};
+
+            updateMessage.status = MessageStatus.SendFailed;
+            updateMessage.MSGID = message.Data.SourceMSGID
+
+            currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
+
+            currentObj.sendReceiveAckMessage(blackMessage.MSGID)
         }
         return;
     }
