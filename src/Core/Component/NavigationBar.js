@@ -7,12 +7,12 @@ import {Text,
     View,
     TextInput,
     TouchableOpacity,
+    Keyboard,
     KeyboardAvoidingView,
     Platform,
     Image,
     TouchableHighlight,
     Dimensions,
-    Switch
 } from 'react-native';
 
 import NavigationBar from 'react-native-navbar';
@@ -46,7 +46,7 @@ export default class MyNavigationBar extends Component {
             return(
 
                 <View style={styles.justifyCenter}>
-                    <TouchableOpacity style={styles.leftView} onPress={left.func} disabled={left.disabled?true:false}>
+                    <TouchableOpacity style={styles.leftView} onPress={()=>{Keyboard.dismiss();left.func();}} disabled={left.disabled?true:false}>
                         <Icon name="angle-left" size={35} color="#fff" style={styles.leftIcon}/>
                         {left.text ?
                                 <Text style={styles.leftText}>{left.text}</Text> : null
@@ -91,7 +91,7 @@ export default class MyNavigationBar extends Component {
         else if(right instanceof Object)
         {
             return(
-                <TouchableOpacity style={styles.justifyCenter} onPress={right.func} disabled={right.disabled?true:false}>
+                <TouchableOpacity style={styles.justifyCenter} onPress={()=>{Keyboard.dismiss();right.func();}} disabled={right.disabled?true:false}>
                     <View style={styles.rightBox}>
                         <Text style={{color:'#fff'}}>{right.text}</Text>
                     </View>

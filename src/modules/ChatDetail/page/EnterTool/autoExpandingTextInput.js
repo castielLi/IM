@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     paddingLeft:5,
     paddingRight:5,
     textAlignVertical: 'center',
-    fontSize:16
+    fontSize:16,
   },
 
 });  

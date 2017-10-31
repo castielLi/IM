@@ -85,6 +85,7 @@ render(){
       return(
         <View style={styles.ThouchBarBoxBottomBox}>
           <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false}>
+            <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocal}>
@@ -129,6 +130,8 @@ render(){
                 <Text style={styles.plusItemTit}>红包</Text>
               </View>
             </View>
+            </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
@@ -149,6 +152,7 @@ render(){
                 <Text style={styles.plusItemTit}>照片</Text>
               </View>
             </View>
+              </TouchableWithoutFeedback>
           </Swiper>
         </View>
         )

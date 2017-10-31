@@ -52,12 +52,12 @@ class Me extends ContainerComponent {
     render() {
         return (
             <View style={styles.container}>
-                <StatusBar
-                    translucent={false}
-                    animated={false}
-                    hidden={false}
-                    backgroundColor="blue"
-                    barStyle="light-content" />
+                {/*<StatusBar*/}
+                    {/*translucent={false}*/}
+                    {/*animated={false}*/}
+                    {/*hidden={false}*/}
+                    {/*backgroundColor="blue"*/}
+                    {/*barStyle="light-content" />*/}
                 <MyNavigationBar
                     left = {'云信'}
                     right={[

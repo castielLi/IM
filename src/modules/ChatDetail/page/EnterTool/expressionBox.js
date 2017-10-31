@@ -35,6 +35,7 @@ render(){
       return(
           <View style={styles.ThouchBarBoxBottomBox}>
           <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false} autoplay={false}>
+              <TouchableWithoutFeedback>
              <View style={styles.swiperSlide}>
               <TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,'[呲牙]')}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
@@ -61,16 +62,21 @@ render(){
                 <Image source={require('../../resource/weixiao.png')} style={styles.img}></Image>
               </TouchableWithoutFeedback>
             </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
               <TouchableWithoutFeedback onPress={()=>{alert('表情')}}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
               </TouchableWithoutFeedback>
             </View>
+              </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
              <TouchableWithoutFeedback onPress={()=>{alert('表情')}}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
               </TouchableWithoutFeedback>
             </View>
+          </TouchableWithoutFeedback>
           </Swiper>
           <View style={styles.sendBox}>
             <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
