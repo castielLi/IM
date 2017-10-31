@@ -82,11 +82,19 @@ class Chat extends Component {
             newData = newData.slice(0,-1);
         }
 
-        this.reduxData = newData.concat().reverse()
+        if(this.reduxData2.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER && newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
+            this.reduxData = this.reduxData.push(newData[0]);
+            this.reduxData2 = this.reduxData2.shift(newData[0]);
+        }else{
+            this.reduxData = newData.concat().reverse()
+            this.reduxData2 = newData;
+        }
+
+
         this.shortData = this.historyData.concat(this.reduxData);
         this.data = this.prepareMessages(this.shortData);
 
-        this.reduxData2 = newData;
+
         this.shortData2 =  this.reduxData2.concat(this.historyData2);
         this.data2 = this.prepareMessages(this.shortData2);
 
@@ -309,6 +317,10 @@ class Chat extends Component {
             )
         }
     }
+
+    applyFriend = ()=>{
+
+    }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
@@ -336,7 +348,7 @@ class Chat extends Component {
             )
         }
         else{
-            if(1){
+            if(row.Command !== 5){
                 return(
                     <View key={rowid} style={styles.itemView}>
                         <View style={styles.timestampView}>
@@ -351,10 +363,10 @@ class Chat extends Component {
             }
             else{
                 return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:20,justifyContent:'center'}]}>
-                        <View style={{backgroundColor:'yellow',flexDirection:'row',flexWrap:'wrap'}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'center'}]}>才能sd的是的是的的是的发，聊天。</Text>
-                            <TouchableOpacity>
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>广发华福广发华福光会广发华福光会光会。的是广发华福光会发，聊天。</Text>
+                            <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                                 <Text>发送朋友验证</Text>
                             </TouchableOpacity>
                         </View>
