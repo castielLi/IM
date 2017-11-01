@@ -28,7 +28,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
-			this.state = {};
+			this.state = {
+                isDisabled:true
+			};
+        this.isDisabled = false
 		}
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
@@ -84,6 +87,18 @@ class ChatDetail extends ContainerComponent {
         this.props.handleChatRecord(this.props.client)
 		this.props.changeChatDetailPageStatus(false,'','')
 	}
+	componentWillReceiveProps(newProps){
+        let {isRecordPage,isExpressionPage,isPlusPage,listScrollToEnd} = newProps.thouchBarStore;
+        if(isRecordPage||(!isExpressionPage&&!isPlusPage&&!listScrollToEnd)){
+            this.setState({
+                isDisabled:true
+			})
+        }else{
+            this.setState({
+                isDisabled:false
+            })
+		}
+	}
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
@@ -92,12 +107,12 @@ class ChatDetail extends ContainerComponent {
 					left={{func:()=>{this.route.toMain(this.props)}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={'聊天'} />
-				{/*<TouchableWithoutFeedback onPress={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>*/}
-					{/*<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>*/}
-						{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}
-					{/*</View>*/}
-				{/*</TouchableWithoutFeedback>*/}
-				<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>
+				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
+					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
+						<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>
+					</View>
+				</TouchableWithoutFeedback>
+				{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}
 				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
     		</MyView>
 
