@@ -146,7 +146,7 @@ class Chat extends Component {
             //移动时作出的动作
             onResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
+                if(e.nativeEvent.pageY>this.move && 0 && !this.state.showInvertible)
                 {
                     this.noMore = msgState.LOADING;
                     this.setState({
