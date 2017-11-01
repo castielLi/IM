@@ -339,7 +339,7 @@ class Chat extends Component {
             )
         }
         else{
-            if(row.message.Command === 6){
+            if(row.message.Command === 5){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
