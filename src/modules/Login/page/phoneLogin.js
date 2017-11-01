@@ -128,14 +128,14 @@ class PhoneLogin extends ContainerComponent {
                             RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
                                 //初始化im
                                 let im = new IM();
-                                im.setSocket(account.accountId);
+                                im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
 
                             })
                             //若是第一次登陆
                         }else{
                             //初始化im
                             let im = new IM();
-                            im.setSocket(account.accountId);
+                            im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             im.initIMDatabase(account.accountId);
                         }
 

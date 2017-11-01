@@ -62,7 +62,7 @@ class Chat extends Component {
         this.historyData2 = [];
         this.reduxData2 = [];
 
-        this.firstLoad = true;
+        this.firstLoad = null;
         this.timestamp = 0;
         this.noMore = 0;
 
@@ -71,6 +71,7 @@ class Chat extends Component {
             dataSourceO: ds,
             showInvertible:false,
             isMore:0,
+            isShowModal:false
         };
 
     }
@@ -106,14 +107,15 @@ class Chat extends Component {
     componentWillMount() {
         this.im = new IM()
 
+
         let chatRecordStore = this.props.chatRecordStore.concat();
+        let {isMore} = this.state;
 
         if(!chatRecordStore.length){
             return;
         }
-        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.noMore = ListConst.msgState.NOMORE;
-            this.firstLoad = false;
+        else if(!this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.firstLoad = ListConst.msgState.NOMORE;
         }
         else{
             chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
@@ -269,9 +271,40 @@ class Chat extends Component {
             )
         }
     }
+    renderModal() {
+        return <Modal
+            animationType='fade'
+            transparent={true}
+            onRequestClose={()=>{}}
+            visible={this.state.isShowModal}
+        >
+            <View style={styles.validateModalBox}>
+                <View style={styles.validateModal}>
+                    <Text style={styles.modalTitle}>对方启用类好友验证</Text>
+                    <Text style={styles.modalSubTitle}>你需要发送验证申请，对方通过后你才能添加其为好友</Text>
+                    <TextInput style={styles.modalInput} underlineColorAndroid="transparent"></TextInput>
+                    <View style={styles.modalButtonBox}>
+                        <TouchableOpacity  style={{flex:1}} onPress={()=>{this.setState({isShowModal:false})}}>
+                            <View style={styles.modalButton}>
+                                <Text style={styles.modalButtonTxt}>取消</Text>
 
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{flex:1}}>
+                            <View style={[styles.modalButton,{borderLeftWidth:1,borderColor:'#000'}]}>
+                                <Text style={styles.modalButtonTxt}>发送</Text>
+
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </View>
+        </Modal>
+    }
     applyFriend = ()=>{
-
+        this.setState({
+            isShowModal:true
+        })
     }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
@@ -294,7 +327,8 @@ class Chat extends Component {
                             </TouchableOpacity>
                         </View>
                         <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
-                        <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                        {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+
                     </View>
                 </View>
             )
@@ -307,7 +341,7 @@ class Chat extends Component {
                             {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                         </View>
                         <View style={styles.infoView}>
-                            <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                            {this.props.HeadImageUrl&&this.props.HeadImageUrl!==' '?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <ChatMessage style={styles.bubbleView} rowData={row}/>
                         </View>
                     </View>
@@ -317,9 +351,9 @@ class Chat extends Component {
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收</Text>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收，</Text>
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
-                                <Text>发送朋友验证</Text>
+                                <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -498,6 +532,7 @@ class Chat extends Component {
                             {...this._gestureHandlers}
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                        {this.renderModal()}
                     </View>
             );
         }else{
@@ -520,6 +555,7 @@ class Chat extends Component {
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                        {this.renderModal()}
                     </View>
                 )
         }
@@ -603,12 +639,62 @@ const styles = StyleSheet.create({
     contentText:{
         includeFontPadding:false,
         fontSize:16
+    },
+    validateModalBox: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.3)',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    validateModal: {
+        height: 200,
+        width: 400,
+        backgroundColor: '#eee',
+        borderRadius:10,
+        alignItems:'center',
+    },
+    modalTitle:{
+        color:'#000',
+        fontSize:16,
+        marginTop:10
+    },
+    modalSubTitle:{
+        color:'#000',
+        fontSize:12
+    },
+    modalInput:{
+        width:300,
+        height:40,
+        borderColor:'#000',
+        borderWidth:1,
+        padding:0,
+        paddingHorizontal:5,
+        marginTop:30
+    },
+    modalButtonBox:{
+        flex:1,
+        height:50,
+        flexDirection:'row',
+        marginTop:30,
+        borderTopWidth:1,
+        borderColor:'#000',
+    },
+    modalButton:{
+        flex:1,
+        height:50,
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    modalButtonTxt:{
+        color:'#1d4eb2',
+        fontSize:16
     }
 });
 
 const mapStateToProps = (state,props) => ({
     chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
     accountId:state.loginStore.accountMessage.accountId,
+    myAvator:state.loginStore.accountMessage.avator,
 });
 
 const mapDispatchToProps = dispatch => ({

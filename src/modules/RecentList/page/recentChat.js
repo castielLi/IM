@@ -166,6 +166,10 @@ class RecentChat extends ContainerComponent {
 	}
 	_renderAvator= (oneRealationObj)=>{
 			if(oneRealationObj){
+				if((!oneRealationObj.localImage||oneRealationObj.localImage === ' ')&&!oneRealationObj.avator){
+					return 	<Image style = {styles.avatar} source = {require('../resource/avator.jpg')}></Image>
+
+                }
                 return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!==' ')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
 
             }else{
@@ -227,18 +231,7 @@ class RecentChat extends ContainerComponent {
 			</View>
 		)
 	}
-	_rightButton = ()=>{
-		return (
-                <View style = {styles.RightLogo}>
-                    <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
-                        <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress = {()=>{this.setState({showFeatures:!this.state.showFeatures})}}>
-                        <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
-                    </TouchableOpacity>
-                </View>
-		)
-	}
+
 	render() {
 		this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
 		let PopContent = this.PopContent;
