@@ -98,6 +98,7 @@ class Contacts extends ContainerComponent {
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
 						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
+						{info.item.avator?<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -173,12 +174,6 @@ class Contacts extends ContainerComponent {
         this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
 
     }
-		//定义上导航的右按钮
-	_rightButton() {
-			return <TouchableOpacity onPress={this.goToAddFriends}>
-						<Text style={styles.moreUse}>+</Text>
-			       </TouchableOpacity>
-		}
 
 
     changeShowFeature=(newState)=>{

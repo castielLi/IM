@@ -154,7 +154,7 @@ class ClientInformation extends ContainerComponent {
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.Account,type:'private'}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.Account,type:'private',HeadImageUrl:this.state.HeadImageUrl}});
     }
 
     addFriend = (Respondent)=>{
@@ -200,6 +200,7 @@ class ClientInformation extends ContainerComponent {
                 <View>
                     <View style={styles.basicBox}>
                         <Image style={styles.headPic} source={{uri:HeadImageUrl}}/>
+                        {HeadImageUrl&&HeadImageUrl!==' '?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
                         <View style={styles.basicBoxRight}>
                             <Text style={styles.name}>{Nickname}</Text>
                             <Text style={styles.id}>{'微信号：'+Account}</Text>

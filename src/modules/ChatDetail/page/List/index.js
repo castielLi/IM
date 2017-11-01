@@ -374,7 +374,8 @@ class Chat extends Component {
                             </TouchableOpacity>
                         </View>
                         <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
-                        <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                        {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+
                     </View>
                 </View>
             )
@@ -387,7 +388,7 @@ class Chat extends Component {
                             {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                         </View>
                         <View style={styles.infoView}>
-                            <Image source={{uri:'https://ws1.sinaimg.cn/large/610dc034ly1fj78mpyvubj20u011idjg.jpg'}} style={styles.userImage}/>
+                            {this.props.HeadImageUrl&&this.props.HeadImageUrl!==' '?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <ChatMessage style={styles.bubbleView} rowData={row}/>
                         </View>
                     </View>
@@ -741,6 +742,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state,props) => ({
     chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
     accountId:state.loginStore.accountMessage.accountId,
+    myAvator:state.loginStore.accountMessage.avator,
 });
 
 const mapDispatchToProps = dispatch => ({
