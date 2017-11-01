@@ -6,19 +6,62 @@ import {
 } from 'react-native-deprecated-custom-components';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Confirm from './confirm';
+
+let currentObj = undefined;
+
 export default class Register extends ContainerComponent {
-	state = {
-		nickNameText:'',
-		phoneText:'',
-		passWordText:'',
-		codeText:'',
-		showConfirm:false,//是否显示确认电话号码组件 false:不显示 true:显示
+
+	constructor(){
+		super();
+
+        this.state = {
+            nickNameText:'',
+            phoneText:'',
+            passWordText:'',
+            codeText:'',
+            showConfirm:false,//是否显示确认电话号码组件 false:不显示 true:显示
+        }
+
+        currentObj = this;
 	}
-	changeShowConfirm=()=>{
-		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.phoneText && this.state.passWordText&&this.state.nickNameText){
-			this.setState({
-				showConfirm:true,
-			});
+
+
+
+	getValidateCode = () =>{
+        if(!this.state.phoneText){
+            this.alert("电话号码不能为空!")
+            return;
+        }
+
+        this.showLoading();
+        this.fetchData("POST","Member/GetMobileCaptchaForRegistion",function(result){
+            currentObj.hideLoading()
+        	if(!result.success) {
+                currentObj.alert(result.errorMessage,"错误");
+            }
+		},{"PhoneNumber":this.state.phoneText})
+	}
+
+	register=()=>{
+
+		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.passWordText&&this.state.nickNameText){
+			// this.setState({
+			// 	showConfirm:true,
+			// });
+
+            this.showLoading();
+            this.fetchData("POST","Member/RegistByMobilePhone",function(result){
+                currentObj.hideLoading()
+                if(!result.success) {
+                    currentObj.alert(result.errorMessage,"错误");
+                }else{
+                    currentObj.route.replaceTop(currentObj.props,{
+                        key:'Login',
+                        routeId: 'PhoneLogin'
+					})
+				}
+            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.nickNameText,"Captcha":this.state.codeText,"Password":this.state.phoneText})
+
 		}else{
 			alert('信息不能为空!');
 		}
@@ -29,6 +72,9 @@ export default class Register extends ContainerComponent {
 		})
 	}
 	render(){
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
+
 		return (
 			<View style={styles.container}>
 				<View style = {styles.Title}>
@@ -95,7 +141,7 @@ export default class Register extends ContainerComponent {
 						placeholder = '请输入验证码' 
 						onChangeText={(Text)=>{this.setState({codeText:Text})}}
 						underlineColorAndroid= {'transparent'}></TextInput>
-						<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.changeShowConfirm()}}>
+						<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.getValidateCode()}}>
 							<Text style= {styles.information}>获取验证码</Text>
 						</TouchableOpacity>
 					</View>
@@ -103,7 +149,7 @@ export default class Register extends ContainerComponent {
 					{
 						this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.nickNameText?
 						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.register} onPress = {()=>{Keyboard.dismiss();Alert.alert('网络有问题')}}>
+							<TouchableOpacity activeOpacity = {0.8} style={styles.register} onPress = {()=>this.register()}>
 								<Text style = {styles.registerText}>注册</Text>
 							</TouchableOpacity>)
 						:(
@@ -117,13 +163,15 @@ export default class Register extends ContainerComponent {
 						</Text>
 					</View>
 				</View>
-				{
-					this.state.showConfirm?
-					<Confirm 
-					phoneText = {this.state.phoneText}
-					cancelSend = {this.cancelSend}
-					></Confirm>:null
-				}
+				{/*{*/}
+					{/*this.state.showConfirm?*/}
+					{/*<Confirm */}
+					{/*phoneText = {this.state.phoneText}*/}
+					{/*cancelSend = {this.cancelSend}*/}
+					{/*></Confirm>:null*/}
+				{/*}*/}
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 			</View>
 		)
 	}

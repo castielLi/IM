@@ -69,8 +69,11 @@ class PhoneLogin extends ContainerComponent {
 
 
 	addUser = ()=>{
-		// if(checkReg(1,this.state.phoneText)){
 
+        if(!checkReg(1,this.state.phoneText)){
+        	this.alert("账号格式不正确")
+        	return;
+		}
 
 			//登录api
 
@@ -218,7 +221,6 @@ class PhoneLogin extends ContainerComponent {
 
 
 			});
-		// }
 	}
 
 	render(){
@@ -227,11 +229,7 @@ class PhoneLogin extends ContainerComponent {
 
 		return (
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
-					key:'Login',
-            		routeId: 'Login',
-            		sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-				});}}>
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props);}}>
 				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>
