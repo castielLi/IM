@@ -85,6 +85,13 @@ export function getChatRecord(Client,Type){
 	}
 }
 
+export function handleChatRecord(client){
+    return {
+        type:'HANDLE_CHATRECORD',
+        client
+    }
+}
+
 export function initChatRecord(client,messageList){
 	return {
 		type:'INIT_CHATRECORD',

@@ -43,6 +43,7 @@ let ListLayout = false;
 
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
+let firstData;
 
 
 class Chat extends Component {
@@ -74,33 +75,25 @@ class Chat extends Component {
 
     }
 
-    componentWillUnmount(){
-        alert(1)
-    }
     componentWillReceiveProps(newProps){
         let newData = newProps.chatRecordStore.concat();
         if(this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             this.noMore = ListConst.msgState.NOMORE;
             this.firstLoad = false;
-            this.reduxData = newData.concat().reverse()
-            this.reduxData2 = newData;
         }
-        else if(this.firstLoad){
-            newData = newData.slice(0,-1);
-            this.firstLoad = false;
-            this.reduxData = newData.concat().reverse()
-            this.reduxData2 = newData;
-        }
-        else if(!this.firstLoad){
-            this.reduxData.push(newData[0]);
-            this.reduxData2.shift(newData[0]);
+        if(newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
+            if(firstData && newData[0].message.MSGID !== firstData.message.MSGID){
+                this.historyData.push(firstData);
+                this.historyData2.unshift(firstData);
+            }
+            firstData = newData[newData.length-1];
         }
 
-
+        this.reduxData = newData.concat().reverse()
         this.shortData = this.historyData.concat(this.reduxData);
         this.data = this.prepareMessages(this.shortData);
 
-
+        this.reduxData2 = newData;
         this.shortData2 =  this.reduxData2.concat(this.historyData2);
         this.data2 = this.prepareMessages(this.shortData2);
 
@@ -123,17 +116,15 @@ class Chat extends Component {
             this.firstLoad = false;
         }
         else{
-            chatRecordStore = chatRecordStore.slice(0,10);
+            chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
             this.firstLoad = false;
         }
 
         this.reduxData = chatRecordStore.concat().reverse()
-        this.reduxData2 = chatRecordStore;
-
-
         this.shortData = this.historyData.concat(this.reduxData);
         this.data = this.prepareMessages(this.shortData);
 
+        this.reduxData2 = chatRecordStore;
         this.shortData2 =  this.reduxData2.concat(this.historyData2);
         this.data2 = this.prepareMessages(this.shortData2);
 
@@ -154,6 +145,7 @@ class Chat extends Component {
                 let {msgState} = ListConst;
                 if(e.nativeEvent.pageY>this.move && this.state.isMore == msgState.END && !this.state.showInvertible)
                 {
+                    this.noMore = msgState.LOADING;
                     this.setState({
                         isMore : ListConst.msgState.LOADING,
                     })
@@ -352,7 +344,7 @@ class Chat extends Component {
             return firstOldMsg = true;
         }
         if(this.noMore === msgState.END){
-
+            this.noMore = msgState.LOADING;
             this.setState({
                 isMore : msgState.LOADING
             })
