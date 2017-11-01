@@ -139,6 +139,16 @@ class Route {
         props.navigator.pop();
     }
 
+
+    static replaceTop(props,route){
+        let routes = props.navigator.getCurrentRoutes();
+        let length = routes.length;
+
+        props.navigator.replaceAtIndex(route,length - 1,function(){
+            props.navigator.jumpTo(route)
+        });
+    }
+
     static popToSpecialRoute(props,specialRoute){
 
         InteractionManager.runAfterInteractions(() => {

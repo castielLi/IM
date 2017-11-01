@@ -117,6 +117,16 @@ export default function chatRecordStore(state = initialState, action) {
                     ...state
                 };
 
+        case 'HANDLE_CHATRECORD':
+            let ChatRecord = state.ChatRecord[action.client];
+            let length = InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER;
+            if(ChatRecord.length > length){
+                state.ChatRecord[action.client] = state.ChatRecord[action.client].slice(0,length);
+                return {
+                    ...state
+                }
+            }
+            return state;
 
         //注销清空store
         case 'CLEAR_CHATRECORD':
