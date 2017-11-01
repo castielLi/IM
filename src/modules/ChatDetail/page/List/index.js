@@ -331,11 +331,17 @@ class Chat extends Component {
                     <Text style={styles.modalSubTitle}>你需要发送验证申请，对方通过后你才能添加其为好友</Text>
                     <TextInput style={styles.modalInput} underlineColorAndroid="transparent"></TextInput>
                     <View style={styles.modalButtonBox}>
-                        <TouchableOpacity style={styles.modalButton}>
-                            <Text style={styles.modalButtonTxt}>取消</Text>
+                        <TouchableOpacity  style={{flex:1}} onPress={()=>{this.setState({isShowModal:false})}}>
+                            <View style={styles.modalButton}>
+                                <Text style={styles.modalButtonTxt}>取消</Text>
+
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.modalButton}>
-                            <Text style={styles.modalButtonTxt}>发送</Text>
+                        <TouchableOpacity style={{flex:1}}>
+                            <View style={[styles.modalButton,{borderLeftWidth:1,borderColor:'#000'}]}>
+                                <Text style={styles.modalButtonTxt}>发送</Text>
+
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -691,13 +697,13 @@ const styles = StyleSheet.create({
         height: 200,
         width: 400,
         backgroundColor: '#eee',
-        padding:10,
         borderRadius:10,
-        alignItems:'center'
+        alignItems:'center',
     },
     modalTitle:{
         color:'#000',
-        fontSize:16
+        fontSize:16,
+        marginTop:10
     },
     modalSubTitle:{
         color:'#000',
@@ -717,12 +723,12 @@ const styles = StyleSheet.create({
         height:50,
         flexDirection:'row',
         marginTop:30,
-        borderWidth:1,
+        borderTopWidth:1,
         borderColor:'#000',
     },
     modalButton:{
         flex:1,
-        height:48,
+        height:50,
         alignItems:'center',
         justifyContent:'center'
     },
