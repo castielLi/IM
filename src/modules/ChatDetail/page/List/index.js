@@ -43,7 +43,7 @@ let ListLayout = false;
 
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
-let firstData;
+let recordData;
 
 
 class Chat extends Component {
@@ -64,6 +64,7 @@ class Chat extends Component {
 
         this.firstLoad = null;
         this.timestamp = 0;
+        this.isTime = false;
         this.noMore = 0;
 
         this.state = {
@@ -83,14 +84,14 @@ class Chat extends Component {
             this.firstLoad = false;
         }
         if(newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
-            if(firstData && newData[0].message.MSGID !== firstData.message.MSGID){
-                this.historyData.push(firstData);
-                this.historyData2.unshift(firstData);
+            if(recordData && newData[0].message.MSGID !== recordData.message.MSGID){
+                this.historyData.push(recordData);
+                this.historyData2.unshift(recordData);
             }
-            firstData = newData[newData.length-1];
+            recordData = newData[newData.length-1];
         }
 
-        this.reduxData = newData.concat().reverse()
+        this.reduxData = newData.concat().reverse();
         this.shortData = this.historyData.concat(this.reduxData);
         this.data = this.prepareMessages(this.shortData);
 
@@ -245,9 +246,13 @@ class Chat extends Component {
             return timer;
         }
         else{
-            if((LocalTime - this.timestamp) > 180000){
+            if(LocalTime - this.timestamp > 180000 || this.isTime){
                 timer = new Date(LocalTime);
                 this.timestamp = LocalTime;
+                this.isTime ? this.isTime = false : this.isTime = true;
+            }
+            else{
+                this.isTime = false;
             }
             return timer;
         }
@@ -377,8 +382,7 @@ class Chat extends Component {
         if(!firstOldMsg){
             return firstOldMsg = true;
         }
-        if(this.noMore === msgState.END){
-            this.noMore = msgState.LOADING;
+        if(this.state.isMore === msgState.END){
             this.setState({
                 isMore : msgState.LOADING
             })
