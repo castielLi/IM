@@ -146,7 +146,7 @@ class Chat extends Component {
             //移动时作出的动作
             onResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && this.state.isMore == msgState.END && !this.state.showInvertible)
+                if(e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     this.noMore = msgState.LOADING;
                     this.setState({
@@ -160,7 +160,7 @@ class Chat extends Component {
 
                             let msgLength = messages.length;
 
-                            if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                            if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                                 messages.pop();
                             }
 
@@ -391,7 +391,8 @@ class Chat extends Component {
         if(!firstOldMsg){
             return firstOldMsg = true;
         }
-        if(this.state.isMore === msgState.END){
+        if(this.noMore === msgState.END){
+            this.noMore = msgState.LOADING;
             this.setState({
                 isMore : msgState.LOADING
             })
@@ -403,7 +404,7 @@ class Chat extends Component {
 
                     let msgLength = messages.length;
 
-                    if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                    if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                         messages.pop();
                     }
                     let msg = messages.map((message)=>{
