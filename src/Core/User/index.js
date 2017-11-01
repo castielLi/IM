@@ -56,8 +56,8 @@ export default class User {
         storeSqlite.updateRelation(Relation)
     }
 
-    updateDisplayOfRelation(relationId){
-        storeSqlite.updateRelationDisplayStatus(relationId);
+    updateDisplayOfRelation(relationId,bool){
+        storeSqlite.updateRelationDisplayStatus(relationId,bool);
     }
 
 

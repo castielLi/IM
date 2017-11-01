@@ -14,19 +14,24 @@ import {
 	Dimensions,
     TouchableOpacity
 } from 'react-native';
+import uuidv1 from 'uuid/v1';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../Contacts/reducer/action';
+import * as Actions from '../../../Core/IM/redux/action';
 import User from '../../../Core/User';
+import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
 import RelationModel from '../../../Core/User/dto/RelationModel'
+import {startChatRoomMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let user = new User();
+let im = new IM();
 let title = null;
 
 class ChooseClient extends ContainerComponent {
@@ -249,12 +254,22 @@ class ChooseClient extends ContainerComponent {
                     relation.RelationId = result.data.Data;
                     relation.owner = currentObj.props.accountId;
                     relation.Nick = currentObj.props.accountName + "发起的群聊";
-                    relation.type = 'chatroom';
+                    relation.Type = 'chatroom';
+                    relation.show = 'false';
 
-                    // user.AddNewRelation(relation);
+                    //添加关系到数据库
+					user.AddNewRelation(relation);
+                    //todo 添加群聊关系到redux
                     currentObj.props.addRelation(relation);
-                    //todo 添加群聊到redux
-
+					//todo 模拟一条消息，xx邀请xx和xx加入群聊
+					let messageId = uuidv1();
+					//模拟收到一条消息
+					let text = currentObj.props.accountName+'邀请'
+					let message = startChatRoomMessage(result.data.Data,messageId);
+                    //消息存入数据库
+                    im.storeRecMessage(message);
+					//消息存入redux
+					currentObj.props.receiveMessage(message);
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 
@@ -418,6 +433,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
       ...bindActionCreators(recentListActions, dispatch),
+      ...bindActionCreators(Actions, dispatch),
 
   }};
 

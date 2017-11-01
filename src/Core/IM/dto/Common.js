@@ -79,6 +79,9 @@ export function sqlMessageToMessage(sqliteMessage){
     if(sqliteMessage.type === MessageType.error){
         message.Command = MessageCommandEnum.MSG_ERROR;
     }
+    if(sqliteMessage.type === MessageType.imitation){
+        message.Command = MessageCommandEnum.MSG_IMITATION;
+    }
     if(sqliteMessage.type != MessageType.text){
         let msgType = sqliteMessage.type;
         message.type = msgType;

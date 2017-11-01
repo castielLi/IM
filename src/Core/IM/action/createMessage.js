@@ -85,3 +85,11 @@ export function blackListMessage(Sender,messageId){
     message.Command = MessageCommandEnum.MSG_ERROR;
     return message;
 }
+
+//返回发起群聊成功提示消息结构
+export function startChatRoomMessage(Sender,messageId){
+    let message = createMessageObj(MessageType.imitation,"","chatroom",null,Sender,"ME",0,0)
+    message.MSGID = messageId;
+    message.Command = MessageCommandEnum.MSG_IMITATION;
+    return message;
+}

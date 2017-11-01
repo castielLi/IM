@@ -71,9 +71,8 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('添加通讯录成功')
-                    let relation = {RelationId:info.ID,owner:info.Owner,Nick:info.Name,OtherComment:info.Description,avator:info.ProfilePicture,type:'chatroom',show:true}
-                    user.AddNewRelation(relation);
-                    currentObj.props.addRelation(relation);
+                    user.updateDisplayOfRelation(info.ID,'true');
+                    currentObj.props.changeRelationOfShow(info.ID);
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }
@@ -81,8 +80,8 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('移除通讯录成功')
-                    user.deleteRelation(info.ID);
-                    currentObj.props.deleteRelation(info.ID);
+                    user.updateDisplayOfRelation(info.ID,'false');
+                    currentObj.props.changeRelationOfShow(info.ID);
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }

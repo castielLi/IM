@@ -65,7 +65,7 @@ export default function App() {
 
     //收到同意添加好友申请回调
     let handleRecieveAddFriendMessage = function(relation){
-        user.updateDisplayOfRelation(relation);
+        user.updateDisplayOfRelation(relation,'true');
         //修改relationStore
         store.dispatch(changeRelationOfShow(relation))
     }

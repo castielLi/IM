@@ -97,7 +97,6 @@ class Contacts extends ContainerComponent {
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
 						{info.item.avator?<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>

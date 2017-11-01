@@ -61,8 +61,8 @@ export function getAllRelationAvatorAndName(callback){
 }
 
 //更新relation显示状态
-export function updateRelationDisplayStatus(relationId){
-   USERFMDB.UpdateRelationDisplayStatus(relationId);
+export function updateRelationDisplayStatus(relationId,bool){
+   USERFMDB.UpdateRelationDisplayStatus(relationId,bool);
 }
 
 
@@ -110,11 +110,11 @@ USERFMDB.initIMDataBase = function(){
 }
 
 //更新好友显示状态
-USERFMDB.UpdateRelationDisplayStatus = function(relationId){
+USERFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
 
     let sql = sqls.ExcuteIMSql.UpdateRelationDisplayStatus;
 
-    sql = commonMethods.sqlFormat(sql,[relationId])
+    sql = commonMethods.sqlFormat(sql,[bool,relationId])
 
     var db = SQLite.openDatabase({
         ...databaseObj

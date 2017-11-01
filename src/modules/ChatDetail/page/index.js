@@ -93,7 +93,7 @@ class ChatDetail extends ContainerComponent {
 					heading={'聊天'} />
 				<TouchableWithoutFeedback onPress={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
-						<Chat ref={e => this.chat = e} client={this.props.client} HeadImageUrl={this.props.HeadImageUrl}/>
+						<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>
 					</View>
 				</TouchableWithoutFeedback>
 				{/*<Chat ref={e => this.chat = e} client={this.props.client}/>*/}

@@ -381,7 +381,27 @@ class Chat extends Component {
             )
         }
         else{
-            if(row.message.Command !== 5){
+            if(row.message.Command === 6){
+                return(
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收，</Text>
+                            <TouchableOpacity onPress={()=>{this.applyFriend()}}>
+                                <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )
+            }else if(row.message.Command === 7){
+                return(
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>发起群聊</Text>
+                        </View>
+                    </View>
+                )
+            }
+            else{
                 return(
                     <View key={rowid} style={styles.itemView}>
                         <View style={styles.timestampView}>
@@ -394,18 +414,7 @@ class Chat extends Component {
                     </View>
                 )
             }
-            else{
-                return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收，</Text>
-                            <TouchableOpacity onPress={()=>{this.applyFriend()}}>
-                                <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                )
-            }
+
         }
     }
     scrollToEnd = () => {
