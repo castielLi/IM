@@ -184,7 +184,7 @@ class GroupInformationSetting extends ContainerComponent {
         else{
             return   <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
                         <View style={styles.itemBox}>
-                            <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/>
+                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
                             <Text style={styles.itemText}>{item.item.Nickname}</Text>
                         </View>
                     </TouchableWithoutFeedback>

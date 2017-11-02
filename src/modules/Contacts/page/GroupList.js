@@ -48,11 +48,23 @@ class GroupList extends ContainerComponent {
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type}});
     }
 
+    _renderAvator= (Obj)=>{
+        if(Obj){
+            if((!Obj.LocalImage||Obj.LocalImage === ' ')&&!Obj.avator){
+                return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
+
+            }
+            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!==' ')?Obj.LocalImage:Obj.avator}}></Image>
+
+        }else{
+            return null
+        }
+    }
     _renderItem = (info) => {
         var txt = '  ' + info.item.Nick;
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
             <View  style={styles.itemBox} >
-                <Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
+                {this._renderAvator(info.item)}
                 <Text style={styles.itemText}>{txt}</Text>
             </View>
         </TouchableHighlight>
@@ -83,6 +95,7 @@ class GroupList extends ContainerComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
+                    heading={'群聊'}
                 />
                 <FlatList
                     keyExtractor={(item,index)=>("index"+index+item)}

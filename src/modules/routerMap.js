@@ -45,8 +45,8 @@ export const MainPage = {
 
 
 export const InitialRoute = {
-    key: 'Start',
-    routeId: 'Start'
+    key: 'MainTabbar',
+    routeId: 'MainTabbar'
 }
 
 export const LoginRoute = {
