@@ -199,7 +199,6 @@ class ClientInformation extends ContainerComponent {
                 />
                 <View>
                     <View style={styles.basicBox}>
-                        <Image style={styles.headPic} source={{uri:HeadImageUrl}}/>
                         {HeadImageUrl&&HeadImageUrl!==' '?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
                         <View style={styles.basicBoxRight}>
                             <Text style={styles.name}>{Nickname}</Text>
