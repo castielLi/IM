@@ -37,6 +37,7 @@ import Validate from './AddFriends/validate'
 import ChooseClient from './ChooseClient/page'
 import GroupInformationSetting from './GroupInformationSetting/page'
 import MoreGroupList from './MoreGroupList/page'
+import GroupAnnouncement from './GroupAnnouncement/page'
 
 export const MainPage = {
     key: 'MainTabbar',
@@ -218,6 +219,12 @@ export const RouteMap = {
     'MoreGroupList': {
         'MoreGroupList': {
             component: MoreGroupList,
+            params: {}
+        }
+    },
+    'GroupAnnouncement': {
+        'GroupAnnouncement': {
+            component: GroupAnnouncement,
             params: {}
         }
     },

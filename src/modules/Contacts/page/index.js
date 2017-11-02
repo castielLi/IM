@@ -127,7 +127,7 @@ class Contacts extends ContainerComponent {
 									autoFocus = {true}
 									defaultValue = {this.state.text}
 									onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}
-									onChangeText={(v)=>{if(v===''){this.setState({isShowSearchInput:false})};this.setState({text:v})}}
+									onChangeText={(v)=>{if(v===''){this.setState({isShowSearchInput:false,text:v})}}}
 								>
 								</TextInput>:
 								<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>

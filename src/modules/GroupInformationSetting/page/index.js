@@ -192,6 +192,15 @@ class GroupInformationSetting extends ContainerComponent {
         }
 
     }
+    gotoGroupAnnouncement = ()=>{
+        let {ID,LastUpdateTime,Name,Owner,ProfilePicture,Description} = this.state.groupInformation;
+        if(Owner!==this.props.accountId&&!Description){
+            alert('只有群主才能设置公告')
+        }else{
+            this.route.push(this.props,{key:'GroupAnnouncement',routeId:'GroupAnnouncement',params:{...this.state.groupInformation}});
+
+        }
+    }
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -242,7 +251,7 @@ class GroupInformationSetting extends ContainerComponent {
                         </TouchableHighlight>
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
-                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupAnnouncement}>
                             {Description?
                                 <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
                                     <View style={{maxWidth:width-100}}>
