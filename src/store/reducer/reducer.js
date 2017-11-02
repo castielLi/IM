@@ -9,6 +9,7 @@ import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../modules/Contacts/reducer';
 import friendApplicationStore from '../../modules/NewFriend/reducer/index'
+import FeaturesStore from '../../modules/Common/menu/reducer'
 export default combineReducers({
 	//登录状态
     loginStore,
@@ -29,6 +30,8 @@ export default combineReducers({
     //所有关系状态
     relationStore,
     //好友申请记录状态
-    friendApplicationStore
+    friendApplicationStore,
+    //控制features显示隐藏
+    FeaturesStore
 
 });

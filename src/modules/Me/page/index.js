@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import RNFS from 'react-native-fs'
 import * as loginStoreAction from '../../Login/reducer/action';
 import * as chatRecordStoreAction from '../../../Core/IM/redux/action';
+import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {closeAccountDb} from '../../../Core/User/StoreSqlite';
@@ -44,6 +45,7 @@ class Me extends ContainerComponent {
     }
     csFunc = (x)=>{
         alert('测试执行成功'+x)
+        this.props.showFeatures()
     }
 
     changeShowFeature=(newState)=>{
@@ -62,14 +64,12 @@ class Me extends ContainerComponent {
                     left = {'云信'}
                     right={[
                         {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
+                        {func:()=>{this.csFunc(1)},icon:'list-ul'}
                         ]}
                 />
                 <Text>{"你的账户："+this.props.accountId}</Text>
                 <Text onPress={this.loginOut}>退出登录</Text>
-                {
-                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
-                }
+                <Features navigator={this.props.navigator}/>
             </View>
             )
             
@@ -92,7 +92,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(loginStoreAction, dispatch),
     ...bindActionCreators(chatRecordStoreAction, dispatch),
-
+    ...bindActionCreators(featuresAction, dispatch)
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(Me);
