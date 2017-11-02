@@ -20,6 +20,7 @@ export default class ThouchBar extends Component {
     this.state = {
       emojiText:'',
       emojiId:'',
+        textInputData:'',//输入框数据
     }
     this.setEmoji = this.setEmoji.bind(this);
 
@@ -32,13 +33,19 @@ export default class ThouchBar extends Component {
     })
   }
 
-
-
+    setTextInputData=(data)=>{
+        this.setState({
+            textInputData:data
+        })
+    }
+    _onSubmitEditing=()=> {
+        this.bar.getWrappedInstance()._onSubmitEditing();
+    }
   render() {
     return (
       <View style={styles.thouchBarBox} >
-        <ThouchBarBoxTopBox ref={e => this.bar = e} emojiText={this.state.emojiText} emojiId={this.state.emojiId}  client={this.props.client}  type={this.props.type}></ThouchBarBoxTopBox>
-        <ThouchBarBoxBottomBox setEmoji={this.setEmoji}  client={this.props.client}  type={this.props.type}></ThouchBarBoxBottomBox>
+        <ThouchBarBoxTopBox ref={e => this.bar = e} emojiText={this.state.emojiText} emojiId={this.state.emojiId}  client={this.props.client}  type={this.props.type} setTextInputData={this.setTextInputData}></ThouchBarBoxTopBox>
+        <ThouchBarBoxBottomBox setEmoji={this.setEmoji}  client={this.props.client}  type={this.props.type} textInputData={this.state.textInputData} _onSubmitEditing={this._onSubmitEditing}></ThouchBarBoxBottomBox>
       </View>
     );
   }
