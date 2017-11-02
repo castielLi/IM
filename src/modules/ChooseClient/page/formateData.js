@@ -42,3 +42,13 @@ export function initSection(arr=[]){
     })
     return needArr;
 }
+
+export function initFlatListData(type,arr=[]){
+    let needArr = [];
+    arr.forEach((v,i)=>{
+        if(v.Type === type&&v.show === 'true'){
+            needArr.push(v)
+        }
+    })
+    return needArr;
+}

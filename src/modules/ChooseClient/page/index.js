@@ -24,7 +24,7 @@ import * as Actions from '../../../Core/IM/redux/action';
 import User from '../../../Core/User';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import {initSection,initDataFormate} from './formateData';
+import {initSection,initDataFormate,initFlatListData} from './formateData';
 import RelationModel from '../../../Core/User/dto/RelationModel'
 import {startChatRoomMessage,buildInvationGroupMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
@@ -118,9 +118,17 @@ class ChooseClient extends ContainerComponent {
 		//对象转为所需数组
 		let arr = Object.keys(obj);
 		let needArr = [];
+		let concatList = initFlatListData('private',this.props.relationStore);
 		for(let i=0;i<arr.length;i++){
 			//已选中 选项
-			if(obj[arr[i]]) needArr.push(arr[i])
+			if(obj[arr[i]]){
+				for(let j=0;j<concatList.length;j++){
+					if(concatList[j].RelationId === arr[i]){
+                        needArr.push(concatList[j]);
+                        break;
+					}
+				}
+			}
 		}
         this.setState({
             chooseArr:needArr
@@ -300,7 +308,6 @@ class ChooseClient extends ContainerComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
 		let chooseArr = this.state.chooseArr;
-		console.log(chooseArr)
 		this.relationStore = initDataFormate('private',this.props.relationStore);
 		return (
 			<View style={styles.container}>
