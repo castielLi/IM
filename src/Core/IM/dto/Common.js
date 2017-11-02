@@ -30,7 +30,7 @@ export function sqliteMessageToMessage(sqliteMessage){
     messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
     messageBody.Data = messageData;
 
-    message.Command = MessageCommandEnum.MSG_BODY;
+    message.Command = sqliteMessage.Command;
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
 
@@ -75,13 +75,8 @@ export function sqlMessageToMessage(sqliteMessage){
 
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
-    message.Command = MessageCommandEnum.MSG_BODY;
-    if(sqliteMessage.type === MessageType.error){
-        message.Command = MessageCommandEnum.MSG_ERROR;
-    }
-    if(sqliteMessage.type === MessageType.imitation){
-        message.Command = MessageCommandEnum.MSG_IMITATION;
-    }
+    message.Command = sqliteMessage.Command;
+
     if(sqliteMessage.type != MessageType.text){
         let msgType = sqliteMessage.type;
         message.type = msgType;

@@ -336,6 +336,7 @@ export default class IM {
                 case MessageType.friend:
                     SendManager.addSendMessage(message,callback);
                 default:
+                    SendManager.addSendMessage(message,callback);
                     break;
             }
 

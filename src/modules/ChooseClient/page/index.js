@@ -26,7 +26,7 @@ import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
 import RelationModel from '../../../Core/User/dto/RelationModel'
-import {startChatRoomMessage} from '../../../Core/IM/action/createMessage';
+import {startChatRoomMessage,buildInvationGroupMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -223,7 +223,12 @@ class ChooseClient extends ContainerComponent {
                         alert("返回群数据出错")
                         return;
                     }
-                    alert('添加成员成功了')
+
+                    //向添加的用户发送邀请消息
+                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
+                    im.addMessage(sendMessage);
+                    currentObj.props.addMessage(sendMessage);
+
                 } else {
                     alert(result.errorMessage);
                     return;
@@ -263,13 +268,21 @@ class ChooseClient extends ContainerComponent {
                     currentObj.props.addRelation(relation);
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
 					let messageId = uuidv1();
-					//模拟收到一条消息
+					//创建群组消息
 					let text = currentObj.props.accountName+'邀请'
-					let message = startChatRoomMessage(result.data.Data,messageId);
-                    //消息存入数据库
-                    im.storeRecMessage(message);
-					//消息存入redux
-					currentObj.props.receiveMessage(message);
+
+
+					// let message = startChatRoomMessage(result.data.Data,messageId);
+					// im.storeRecMessage(message);
+                    //消息存入redux
+                    // currentObj.props.receiveMessage(message);
+
+
+                    //向添加的用户发送邀请消息
+					let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
+					im.addMessage(sendMessage);
+					currentObj.props.addMessage(sendMessage);
+
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 

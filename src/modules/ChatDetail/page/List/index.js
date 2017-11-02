@@ -62,7 +62,7 @@ class Chat extends Component {
         this.historyData2 = [];
         this.reduxData2 = [];
 
-        this.firstLoad = null;
+        this.firstLoad = true;
         this.timestamp = 0;
         this.isTime = false;
         this.noMore = 0;
@@ -75,6 +75,7 @@ class Chat extends Component {
             isShowModal:false
         };
 
+        this.renderRow = this.renderRow.bind(this);
     }
 
     componentWillReceiveProps(newProps){
@@ -83,8 +84,12 @@ class Chat extends Component {
             this.noMore = ListConst.msgState.NOMORE;
             this.firstLoad = false;
         }
+        else if (this.firstLoad){
+            this.firstLoad = false;
+        }
+
         if(newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
-            if(recordData && newData[0].message.MSGID !== recordData.message.MSGID){
+            if(recordData && newData[newData.length-1].message.MSGID !== recordData.message.MSGID){
                 this.historyData.push(recordData);
                 this.historyData2.unshift(recordData);
             }
@@ -115,8 +120,9 @@ class Chat extends Component {
         if(!chatRecordStore.length){
             return;
         }
-        else if(!this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.firstLoad = ListConst.msgState.NOMORE;
+        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.noMore = ListConst.msgState.NOMORE;
+            this.firstLoad = false;
         }
         else{
             chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
@@ -146,21 +152,28 @@ class Chat extends Component {
             //移动时作出的动作
             onResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && this.state.isMore == msgState.END && !this.state.showInvertible)
+                if(e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     this.noMore = msgState.LOADING;
                     this.setState({
                         isMore : ListConst.msgState.LOADING,
                     })
-                    let dataLength = this.shortData2.length;
+                    let dataLength = this.shortData.length;
                     let {client} = this.props;
                     let that = this;
                     setTimeout(()=>{
                         this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
+                            if(!messages){
+                                that.noMore  = msgState.NOMORE;
+                                that.setState({
+                                    isMore:that.noMore,
+                                });
+                                return;
+                            }
                             let msgLength = messages.length;
 
-                            if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                            if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                                 messages.pop();
                             }
 
@@ -239,20 +252,18 @@ class Chat extends Component {
             let index = this.data2.blob[rowid].index;
             this.shortData2[index+1] ?
                 prevTime = parseInt(this.shortData2[index+1].message.Data.LocalTime) : prevTime = 0;
-            console.log(this.shortData2,rowid,this.shortData2[index])
             if((LocalTime - prevTime) > 180000){
                 timer = new Date(LocalTime);
             }
             return timer;
         }
         else{
-            if(LocalTime - this.timestamp > 180000 || this.isTime){
+            let prevTime;
+            let index = this.data.blob[rowid].index;
+            this.shortData[index-1] ?
+                prevTime = parseInt(this.shortData[index-1].message.Data.LocalTime) : prevTime = 0;
+            if((LocalTime - prevTime) > 180000){
                 timer = new Date(LocalTime);
-                this.timestamp = LocalTime;
-                this.isTime ? this.isTime = false : this.isTime = true;
-            }
-            else{
-                this.isTime = false;
             }
             return timer;
         }
@@ -318,28 +329,39 @@ class Chat extends Component {
 
         let timer = this.getTimestamp(LocalTime,rowid);
         if(Sender == this.props.accountId){
-            return(
-                <View key={rowid} style={styles.itemViewRight}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                    </View>
-                    <View style={styles.infoViewRight}>
-                        <View style={styles.msgStatus}>
-                            <TouchableOpacity>
-                                {
-                                    this.messagesStatus(row.status)
-                                }
-                            </TouchableOpacity>
-                        </View>
-                        <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
-                        {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
+         if(row.message.Command === "101" && this.props.type == "chatroom"){
+                return(
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>发起群聊</Text>
+                        </View>
                     </View>
-                </View>
-            )
+                )
+         }else{
+             return(
+                 <View key={rowid} style={styles.itemViewRight}>
+                     <View style={styles.timestampView}>
+                         {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                     </View>
+                     <View style={styles.infoViewRight}>
+                         <View style={styles.msgStatus}>
+                             <TouchableOpacity>
+                                 {
+                                     this.messagesStatus(row.status)
+                                 }
+                             </TouchableOpacity>
+                         </View>
+                         <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
+                         {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+
+                     </View>
+                 </View>
+             )
+         }
         }
         else{
-            if(row.message.Command === 5){
+            if(row.message.Command === "5"){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
@@ -347,14 +369,6 @@ class Chat extends Component {
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                                 <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
                             </TouchableOpacity>
-                        </View>
-                    </View>
-                )
-            }else if(row.message.Command === 7){
-                return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>发起群聊</Text>
                         </View>
                     </View>
                 )
@@ -391,7 +405,8 @@ class Chat extends Component {
         if(!firstOldMsg){
             return firstOldMsg = true;
         }
-        if(this.state.isMore === msgState.END){
+        if(this.noMore === msgState.END){
+            this.noMore = msgState.LOADING;
             this.setState({
                 isMore : msgState.LOADING
             })
@@ -401,9 +416,16 @@ class Chat extends Component {
             setTimeout(()=>{
                 this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
+                    if(!messages){
+                        that.noMore  = msgState.NOMORE;
+                        that.setState({
+                            isMore:that.noMore,
+                        });
+                        return;
+                    }
                     let msgLength = messages.length;
 
-                    if(msgLength == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                    if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                         messages.pop();
                     }
                     let msg = messages.map((message)=>{
