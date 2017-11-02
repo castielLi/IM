@@ -325,16 +325,18 @@ class Chat extends Component {
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
+        let {Data} = row.message.Data.Data;
         let LocalTime = parseInt(row.message.Data.LocalTime);
 
+        let nicks = JSON.parse(Data).nicks
         let timer = this.getTimestamp(LocalTime,rowid);
         if(Sender == this.props.accountId){
 
-         if(row.message.Command === "101" && this.props.type == "chatroom"){
+         if(row.message.Command * 1 == 101 && this.props.type == "chatroom"){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>发起群聊</Text>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ nicks +"进入群聊"}</Text>
                         </View>
                     </View>
                 )
@@ -361,7 +363,7 @@ class Chat extends Component {
          }
         }
         else{
-            if(row.message.Command === "5"){
+            if(row.message.Command * 1 == "5"){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
