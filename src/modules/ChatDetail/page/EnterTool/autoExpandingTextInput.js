@@ -50,8 +50,6 @@ class AutoExpandingTextInput extends Component {
         //更新chatRecordStore
         this.props.addMessage(message);
         this.input.clear();
-        //在表情栏提交后不会获得焦点
-        if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
         this.state.data = '';
         this.props.setTextInputData('');
       });
@@ -72,7 +70,7 @@ class AutoExpandingTextInput extends Component {
     } 
 
     //限制高度 
-    if(height>(30+26*3)) return;
+    //if(height>(30+26*3)) return;
     this.setState({
       inputHeight:height
     })
@@ -88,14 +86,14 @@ class AutoExpandingTextInput extends Component {
        onFocus = {this.props.focusInput}
        onChangeText = {this._onChangeText}
        onSubmitEditing = {this._onSubmitEditing}   //0.45.1 multiline为true，并且blurOnSubmit为false时，ios点击确定会换行而不触发onSubmitEditing；Android无论怎么样点击确定都会触发onSubmitEditing
-       blurOnSubmit = {true}// 提交失去焦点
+       blurOnSubmit = {false}// 提交失去焦点
        underlineColorAndroid = {'transparent'}  
        multiline={true}
        enablesReturnKeyAutomatically = {true} //ios专用  如果为true，键盘会在文本框内没有文字的时候禁用确认按钮
        returnKeyType='send'
        returnKeyLabel='发送'
        //onChange={this._onChange}
-       numberOfLines={6}
+       maxLength = {200}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
        style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:50}]}  
