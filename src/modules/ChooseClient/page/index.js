@@ -148,6 +148,19 @@ class ChooseClient extends ContainerComponent {
 			}
 		}
 	}
+
+    _renderAvator= (Obj)=>{
+        if(Obj){
+            if((!Obj.LocalImage||Obj.LocalImage === ' ')&&!Obj.avator){
+                return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
+
+            }
+            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!==' ')?Obj.LocalImage:Obj.avator}}></Image>
+
+        }else{
+            return null
+        }
+    }
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nick;
 		let hasMember;
@@ -158,8 +171,8 @@ class ChooseClient extends ContainerComponent {
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
 					<View  style={styles.itemBox} >
 						{this.circleStyle(info,hasMember)}
-
-						<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>
+                        {this._renderAvator(info.item)}
+						{/*<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>*/}
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>

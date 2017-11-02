@@ -43,10 +43,6 @@ class Me extends ContainerComponent {
     loginOut = ()=>{
         this.props.signOut();
     }
-    csFunc = (x)=>{
-        alert('测试执行成功'+x)
-        this.props.showFeatures()
-    }
 
     changeShowFeature=(newState)=>{
         this.setState({showFeatures:newState});
@@ -64,15 +60,15 @@ class Me extends ContainerComponent {
                     left = {'云信'}
                     right={[
                         {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.csFunc(1)},icon:'list-ul'}
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                         ]}
                 />
                 <Text>{"你的账户："+this.props.accountId}</Text>
                 <Text onPress={this.loginOut}>退出登录</Text>
-                <Features navigator={this.props.navigator}/>
+                <Features ref={e => this.features = e} navigator={this.props.navigator}/>
             </View>
             )
-            
+            //this.features.getWrappedInstance().changeFeatureState()
     }
 }
 

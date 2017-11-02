@@ -20,6 +20,7 @@ import Features from '../../Common/menu/features';
 import * as recentListActions from '../reducer/action';
 import * as chatRecordActions from '../../../Core/IM/redux/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
+import * as featuresAction from '../../Common/menu/reducer/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
@@ -107,7 +108,6 @@ class RecentChat extends ContainerComponent {
 			sectionID: '',
 			rowID: '',
 			dataSource: ds,
-			showFeatures:false,//显示功能块组件
 			
 		};
 		this.goToChatDetail = this.goToChatDetail.bind(this);
@@ -141,9 +141,7 @@ class RecentChat extends ContainerComponent {
             this.props.initUnReadMessageNumber(unReadMessageCount)
 	    })
 	}
-	changeShowFeature=(newState)=>{
-		this.setState({showFeatures:newState});
-	}
+
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
 	}
@@ -241,7 +239,7 @@ class RecentChat extends ContainerComponent {
 					left = {'云信'}
 					right = {[
 						{func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
 					]}
 				/>
 				<View style = {styles.content}>
@@ -255,9 +253,7 @@ class RecentChat extends ContainerComponent {
 					</ListView>
 				</View>
 				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
-				{
-					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
-				}
+				<Features navigator={this.props.navigator}/>
 				<PopContent ref={(p)=>{this.popup = p}}></PopContent>
 			</View>
 		)
@@ -275,6 +271,7 @@ const mapDispatchToProps = (dispatch) => {
     ...bindActionCreators(recentListActions, dispatch),
     ...bindActionCreators(chatRecordActions, dispatch),
 	  ...bindActionCreators(unReadMessageActions, dispatch),
+      ...bindActionCreators(featuresAction, dispatch)
 
 
   }};

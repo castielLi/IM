@@ -10,11 +10,19 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import tabBarPageEnum from './tabBarPageEnum';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
+import * as featuresAction from '../../Common/menu/reducer/action';
+
 class TabBarComponent extends DisplayComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
 
+    }
+
+    isShowFeature = (number)=>{
+        if(this.props.tabBarStore !== number && this.props.featuresStore){
+            this.props.hideFeatures();
+        }
     }
 
     render() {
@@ -35,7 +43,7 @@ class TabBarComponent extends DisplayComponent {
                                                       resizeMode={Image.resizeMode.contain}
                     />}
                     badgeText={this.props.unReadMessageStore}
-                    onPress={() => this.props.changeTabBar(0)}>
+                    onPress={() => {this.props.changeTabBar(0);this.isShowFeature(0)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
 
@@ -51,7 +59,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.props.changeTabBar(1)}>
+                    onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
 
@@ -67,7 +75,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.props.changeTabBar(2)}>
+                    onPress={() => {this.props.changeTabBar(2);this.isShowFeature(2)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabThree",this.props.navigator)}
                 </TabNavigator.Item>
 
@@ -83,7 +91,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    onPress={() => this.props.changeTabBar(3)}>
+                    onPress={() => {this.props.changeTabBar(3);this.isShowFeature(3)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabFour",this.props.navigator)}
                 </TabNavigator.Item>
             </TabNavigator>
@@ -101,11 +109,14 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     loginStore: state.loginStore,
     unReadMessageStore:state.unReadMessageStore.unReadMessageNumber,
-    tabBarStore:state.tabBarStore
+    tabBarStore:state.tabBarStore,
+    featuresStore:state.FeaturesStore.isShow
+
 });
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(unReadMessageActions, dispatch),
+    ...bindActionCreators(featuresAction, dispatch),
 });
 
 

@@ -25,12 +25,31 @@ class Features extends ContainerComponent {
         super(props);
         this.render = this.render.bind(this);
         this.state = {
-
+			isShow : false,
         }
     }
+
+    // componentWillReceiveProps(_props) {
+		// if(_props.FeaturesStore !== this.state.isShow){
+		// 	this.setState({
+    //             isShow:_props.FeaturesStore
+		// 	})
+		// }
+    // }
+    // shouldComponentUpdate(_props,_state){
+		// if(this.state.isShow){
+    //         this.setState({
+    //             isShow:_props.FeaturesStore
+    //         })
+		// }
+    // }
 	changeFeatureState = ()=>{
 		//let newState = !this.props.showFeatures;
 		//this.props.changeShowFeature(newState);
+		// let show = !this.state.isShow;
+		// this.setState({
+         //    isShow:show
+		// })
 
 		this.props.hideFeatures();
 	}
@@ -131,4 +150,4 @@ const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(featuresAction, dispatch),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Features);
+export default connect(mapStateToProps, mapDispatchToProps,null,{withRef : true})(Features);

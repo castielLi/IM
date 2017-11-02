@@ -47,7 +47,7 @@ export  function tabBarStore(state=initialTabBarState,action){
             return action.index
 
         default:
-            return initialTabBarState;
+            return state;
     }
 
 }
