@@ -23,6 +23,8 @@ import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
+
+
 var {height, width} = Dimensions.get('window');
 import Features from '../../Common/menu/features';
 
@@ -41,6 +43,8 @@ class Contacts extends ContainerComponent {
 			rightSectionItemModalIndex:'',
 
             showFeatures:false,//显示功能块组件
+			isShowSearchInput:false,
+			text:'',//textInput文字
 		}
         this.relationStore = []
 	}
@@ -114,11 +118,27 @@ class Contacts extends ContainerComponent {
 	_renderHeader = () => {
 		return  <View>
 					<View style={styles.listHeaderBox}>
-						<TextInput
-							style={styles.search}
-							underlineColorAndroid = 'transparent'
-						>
-						</TextInput>
+						<View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',alignItems:'center',borderRadius:5,}}>
+                            {this.state.isShowSearchInput ?
+								<TextInput
+									style={styles.search}
+									underlineColorAndroid='transparent'
+									placeholder = '搜索'
+									autoFocus = {true}
+									defaultValue = {this.state.text}
+									onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}
+									onChangeText={(v)=>{if(v===''){this.setState({isShowSearchInput:false})};this.setState({text:v})}}
+								>
+								</TextInput>:
+								<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>
+									<View style={styles.searchView}>
+										<Icon name="search" size={14} color="#aaa" /><Text style={{color:'#aaa',marginLeft:10,fontSize:14}}>搜索</Text>
+									</View>
+								</TouchableWithoutFeedback>
+                            }
+                            {this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:'',isShowSearchInput:false})}} style={{marginHorizontal:10}}/>}
+						</View>
+
 					</View>
 					<View style={styles.listOtherUseBox}>
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
@@ -179,7 +199,8 @@ class Contacts extends ContainerComponent {
         this.setState({showFeatures:newState});
     }
 	render() {
-		this.relationStore = initDataFormate('private',this.props.relationStore);
+
+		this.relationStore = initDataFormate('private',this.props.relationStore,this.state.text);
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
@@ -250,18 +271,27 @@ const styles = StyleSheet.create({
 		// backgroundColor: '#eee',
 	},
 	listHeaderBox:{
-		backgroundColor: '#ddd', 
-		alignItems: 'center',
+		backgroundColor: '#ddd',
 		height:50,
-		padding:10
+		padding:10,
 	},
 	search:{
 		flex:1,
-		width:width-20,
+        height:30,
 		backgroundColor:'#fff',
-		borderRadius:5,
-		color:'#000'
+		color:'#000',
+		paddingVertical:0,
+        borderRadius:5,
 	},
+    searchView:{
+        flex:1,
+		height:30,
+        backgroundColor:'#fff',
+		flexDirection:'row',
+		justifyContent:'center',
+		alignItems:'center',
+        borderRadius:5,
+    },
     moreUse:{
 		color:'#fff',
 		fontSize:30,
