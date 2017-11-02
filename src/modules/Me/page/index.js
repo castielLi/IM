@@ -44,8 +44,8 @@ class Me extends ContainerComponent {
         this.props.signOut();
     }
     csFunc = (x)=>{
-        // alert('测试执行成功'+x)
-        // this.props.showFeatures()
+        alert('测试执行成功'+x)
+        this.props.showFeatures()
     }
 
     changeShowFeature=(newState)=>{

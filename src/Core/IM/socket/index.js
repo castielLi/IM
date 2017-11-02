@@ -54,7 +54,7 @@ export default class Connect extends Component{
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
                 heartBeatCode = message;
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
-            }else if(message.Command == MessageCommandEnum.MSG_BODY){
+            }else if(message.Command == MessageCommandEnum.MSG_BODY ){
                 onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
             }else if(message.Command == MessageCommandEnum.MSG_KICKOUT){
                 NeedToReConnect = false;

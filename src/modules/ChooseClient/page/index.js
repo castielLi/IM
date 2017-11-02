@@ -26,7 +26,7 @@ import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate,initFlatListData} from './formateData';
 import RelationModel from '../../../Core/User/dto/RelationModel'
-import {startChatRoomMessage,buildInvationGroupMessage} from '../../../Core/IM/action/createMessage';
+import {startChatRoomMessage,buildInvationGroupMessage,buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -296,6 +296,8 @@ class ChooseClient extends ContainerComponent {
                     //向添加的用户发送邀请消息
 					let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
 					im.addMessage(sendMessage);
+
+                    sendMessage = buildInvationSendMessageToRudexMessage(sendMessage);
 					currentObj.props.addMessage(sendMessage);
 
 

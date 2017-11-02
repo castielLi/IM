@@ -91,6 +91,13 @@ ReceiveManager.receiveMessageOpreator = function(message){
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
         }
+    }else if(message.type == MessageType.information){
+
+        //修改Command 用于保存
+        message.Command = MessageCommandEnum.MSG_INFO;
+        currentObj.storeRecMessage(message)
+        //回调App上层发送成功
+        currentObj.ReceiveMessageHandle(message);
     }
     else{
 
