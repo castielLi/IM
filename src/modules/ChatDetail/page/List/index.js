@@ -75,6 +75,7 @@ class Chat extends Component {
             isShowModal:false
         };
 
+        this.renderRow = this.renderRow.bind(this);
     }
 
     componentWillReceiveProps(newProps){
@@ -328,28 +329,39 @@ class Chat extends Component {
 
         let timer = this.getTimestamp(LocalTime,rowid);
         if(Sender == this.props.accountId){
-            return(
-                <View key={rowid} style={styles.itemViewRight}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                    </View>
-                    <View style={styles.infoViewRight}>
-                        <View style={styles.msgStatus}>
-                            <TouchableOpacity>
-                                {
-                                    this.messagesStatus(row.status)
-                                }
-                            </TouchableOpacity>
-                        </View>
-                        <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
-                        {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
+         if(row.message.Command === "101" && this.props.type == "chatroom"){
+                return(
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>发起群聊</Text>
+                        </View>
                     </View>
-                </View>
-            )
+                )
+         }else{
+             return(
+                 <View key={rowid} style={styles.itemViewRight}>
+                     <View style={styles.timestampView}>
+                         {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                     </View>
+                     <View style={styles.infoViewRight}>
+                         <View style={styles.msgStatus}>
+                             <TouchableOpacity>
+                                 {
+                                     this.messagesStatus(row.status)
+                                 }
+                             </TouchableOpacity>
+                         </View>
+                         <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
+                         {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+
+                     </View>
+                 </View>
+             )
+         }
         }
         else{
-            if(row.message.Command === 5){
+            if(row.message.Command === "5"){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
@@ -357,14 +369,6 @@ class Chat extends Component {
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                                 <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
                             </TouchableOpacity>
-                        </View>
-                    </View>
-                )
-            }else if(row.message.Command === 7){
-                return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>发起群聊</Text>
                         </View>
                     </View>
                 )

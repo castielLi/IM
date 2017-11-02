@@ -638,7 +638,7 @@ function insertChat(message,tx){
     }
     let url = " ";
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
+    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
 

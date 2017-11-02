@@ -9,6 +9,5 @@ export default MessageType = {
     audio:"audio",
     video:"video",
     friend:"friend",
-    error:"error",
-    imitation:'imitation'//模拟消息  
+    information:"information"
 }

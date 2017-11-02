@@ -8,7 +8,7 @@ import SendMessageDto from '../dto/SendMessageDto';
 import messageBodyChatDto from '../dto/messageBodyChatDto';
 import MessageType from '../dto/MessageType'
 
- function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand){
+ function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand,MessageCommand=MessageCommandEnum.MSG_BODY,messageId=""){
     let addMessage = new SendMessageDto();
     let messageBody = new SendMessageBodyDto();
     let messageData = new messageBodyChatDto();
@@ -27,11 +27,12 @@ import MessageType from '../dto/MessageType'
      messageBody.Data = messageData;
 
 
-    addMessage.Command = MessageCommandEnum.MSG_BODY;
+    addMessage.Command = MessageCommand;
     addMessage.Data = messageBody;
     addMessage.type = type;
     addMessage.way = way;
     addMessage.Resource = Resource;
+    addMessage.MSGID = messageId;
     return addMessage;
 }
 //发送文本
@@ -80,16 +81,15 @@ export function isApplyFriendMessageType(message){
 
 //返回黑名单消息结构
 export function blackListMessage(Sender,messageId){
-    let message = createMessageObj(MessageType.error,"","private",null,Sender,"ME",0,0)
-    message.MSGID = messageId;
-    message.Command = MessageCommandEnum.MSG_ERROR;
-    return message;
+    return createMessageObj(MessageType.information,"","private",null,Sender,"empty",0,0,MessageCommandEnum.MSG_ERROR,messageId)
 }
 
 //返回发起群聊成功提示消息结构
 export function startChatRoomMessage(Sender,messageId){
-    let message = createMessageObj(MessageType.imitation,"","chatroom",null,Sender,"ME",0,0)
-    message.MSGID = messageId;
-    message.Command = MessageCommandEnum.MSG_IMITATION;
-    return message;
+    return createMessageObj(MessageType.information,"","chatroom",null,Sender,"empty",0,0,MessageCommandEnum.MSG_INFO,messageId)
+}
+
+//向邀请的群组人员发送邀请消息
+export function buildInvationGroupMessage(Sender,Receiver,text){
+   return createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT,MessageCommandEnum.MSG_INFO)
 }
