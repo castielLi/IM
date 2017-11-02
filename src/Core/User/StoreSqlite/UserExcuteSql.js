@@ -15,8 +15,8 @@ export const InitIMTable = {
 export const ExcuteIMSql = {
 
     "GetAllRelation":"select * from Relation",
-    "InitRelations":"insert into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,' ',?,?)",
-    "AddtRelations":"insert or replace into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,' ',?,?)",
+    "InitRelations":"insert into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
+    "AddtRelations":"insert or replace into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
 
     "SetBlackList":"update Relation set BlackList = ? where RelationId = ?",
     "DeleteRelation":"delete from Relation where RelationId = ?",
