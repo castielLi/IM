@@ -297,8 +297,10 @@ class ChooseClient extends ContainerComponent {
 					let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
 					im.addMessage(sendMessage);
 
-                    sendMessage = buildInvationSendMessageToRudexMessage(sendMessage);
-					currentObj.props.addMessage(sendMessage);
+					//更新redux message
+					let reduxMessage = Object.assign({},sendMessage);
+                    reduxMessage = buildInvationSendMessageToRudexMessage(reduxMessage);
+					currentObj.props.addMessage(reduxMessage);
 
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});

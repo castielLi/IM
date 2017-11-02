@@ -7,6 +7,7 @@ import MessageType from './dto/MessageType'
 import {isApplyFriendMessageType,blackListMessage} from './action/createMessage'
 import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
 import MessageCommandEnum from './dto/MessageCommandEnum'
+import ChatWayEnum from './dto/ChatWayEnum'
 
 
 let ReceiveManager = {};
@@ -52,6 +53,13 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
     //todo:lizongjun  这里收到了消息之后，如果是错误消息，需要数据库查询之前发送消息的msgid 获取到isack属性，如果需要ack则进行发送
 
+    //群消息需要把sender 和 receiver 交换,因为后台不会对message进行处理，而发送的时候sender是用户而不是群
+    if(message.way == ChatWayEnum.ChatRoom){
+        let sender = message.Data.Data.Sender
+        message.Data.Data.Sender = message.Data.Data.Receiver;
+        message.Data.Data.Receiver = sender;
+    }
+
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
             let sender = message.Data.SourceMSGID.split("_")[0];
@@ -95,6 +103,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
         //修改Command 用于保存
         message.Command = MessageCommandEnum.MSG_INFO;
+
         currentObj.storeRecMessage(message)
         //回调App上层发送成功
         currentObj.ReceiveMessageHandle(message);
