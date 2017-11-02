@@ -195,6 +195,7 @@ class GroupInformationSetting extends ContainerComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
+        let {ID,LastUpdateTime,Name,Owner,ProfilePicture,Description} = this.state.groupInformation;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -242,14 +243,26 @@ class GroupInformationSetting extends ContainerComponent {
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
-                            <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
-                                <View style={{maxWidth:width-100}}>
-                                    <Text style={styles.remarks}>群公告</Text>
-                                    <Text style={styles.remarksText} numberOfLines={3}>群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告群公告</Text>
-                                </View>
+                            {Description?
+                                <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
+                                    <View style={{maxWidth:width-100}}>
+                                        <Text style={styles.remarks}>群公告</Text>
+                                        <Text style={styles.remarksText} numberOfLines={3}>{Description}</Text>
+                                    </View>
 
-                                <Icon name="angle-right" size={35} color="#aaa" />
-                            </View>
+                                    <Icon name="angle-right" size={35} color="#aaa" />
+                                </View>:
+                                <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
+                                    <View style={{maxWidth:width-100}}>
+                                        <Text style={styles.remarks}>群公告</Text>
+                                    </View>
+                                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                                        <Text style={styles.arrowText}>{'未设置'}</Text>
+                                        <Icon name="angle-right" size={35} color="#aaa" />
+                                    </View>
+                                </View>
+                            }
+
                         </TouchableHighlight>
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
