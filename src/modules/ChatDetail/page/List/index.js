@@ -119,7 +119,7 @@ class Chat extends Component {
         if(!chatRecordStore.length){
             return;
         }
-        else if(!this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             this.noMore = ListConst.msgState.NOMORE;
             this.firstLoad = false;
         }
