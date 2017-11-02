@@ -16,8 +16,11 @@ import {
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as featuresAction from './reducer/action';
 
-export default class Features extends ContainerComponent {
+class Features extends ContainerComponent {
     constructor(props){
         super(props);
         this.render = this.render.bind(this);
@@ -26,8 +29,10 @@ export default class Features extends ContainerComponent {
         }
     }
 	changeFeatureState = ()=>{
-		let newState = !this.props.showFeatures;
-		this.props.changeShowFeature(newState);
+		//let newState = !this.props.showFeatures;
+		//this.props.changeShowFeature(newState);
+
+		this.props.hideFeatures();
 	}
     goToChooseClient = ()=>{
         this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{}});
@@ -38,42 +43,47 @@ export default class Features extends ContainerComponent {
 
     }
 	render(){
-		return (
-			<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} onPressIn = {()=>{this.changeFeatureState()}}>
-			<View style = {styles.container}>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToChooseClient();}}>
-					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('./resource/weChat.png')}/>
-						<Text style = {styles.Text}>发起群聊</Text>
+		if(this.props.FeaturesStore){
+            return (
+				<TouchableHighlight style = {{position:'absolute',width:Dimensions.get('window').width,height:Dimensions.get('window').height}} onPressIn = {()=>{this.changeFeatureState()}}>
+					<View style = {styles.container}>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToChooseClient();}}>
+							<View style = {styles.featureBox}>
+								<Image style={styles.logo} source = {require('./resource/weChat.png')}/>
+								<Text style = {styles.Text}>发起群聊</Text>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+							<View style = {styles.featureBox}>
+								<Image style={styles.logo} source = {require('./resource/pay.png')}/>
+								<Text style = {styles.Text}>收付款</Text>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToAddFriends();}}>
+							<View style = {styles.featureBox}>
+								<Image style={styles.logo} source = {require('./resource/addFriends.png')}/>
+								<Text style = {styles.Text}>添加朋友</Text>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+							<View style = {styles.featureBox}>
+								<Image style={styles.logo} source = {require('./resource/sweep.png')}/>
+								<Text style = {styles.Text}>扫一扫</Text>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+							<View style = {[styles.featureBox,{borderBottomWidth:0}]}>
+								<Image style={styles.logo} source = {require('./resource/help.png')}/>
+								<Text style = {styles.Text}>帮助与反馈</Text>
+							</View>
+						</TouchableOpacity>
 					</View>
-				</TouchableOpacity>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('./resource/pay.png')}/>
-						<Text style = {styles.Text}>收付款</Text>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToAddFriends();}}>
-					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('./resource/addFriends.png')}/>
-						<Text style = {styles.Text}>添加朋友</Text>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-					<View style = {styles.featureBox}>
-						<Image style={styles.logo} source = {require('./resource/sweep.png')}/>
-						<Text style = {styles.Text}>扫一扫</Text>
-					</View>
-				</TouchableOpacity>
-				<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-					<View style = {[styles.featureBox,{borderBottomWidth:0}]}>
-					<Image style={styles.logo} source = {require('./resource/help.png')}/>
-					<Text style = {styles.Text}>帮助与反馈</Text>
-				</View>	
-				</TouchableOpacity>
-			</View>
-			</TouchableHighlight>
-		)
+				</TouchableHighlight>
+            )
+		}
+		else{
+			return null;
+		}
 	}
 }
 
@@ -112,3 +122,13 @@ const styles = StyleSheet.create({
 	},
 
 })
+
+const mapStateToProps = state => ({
+    FeaturesStore : state.FeaturesStore.isShow,
+});
+
+const mapDispatchToProps = dispatch => ({
+    ...bindActionCreators(featuresAction, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Features);
