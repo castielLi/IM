@@ -122,6 +122,8 @@ function extractMessage(message){
         	return '[音频]';
         case 'video':
         	return '[视频]';
+		case 'information':
+			return '[通知]'
         default:
         	return '';
 	}

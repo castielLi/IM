@@ -9,6 +9,7 @@ import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
+import MessageType from '../dto/MessageType';
 
 export function storeSendMessage(message){
 
@@ -739,7 +740,11 @@ function getContentByMessage(message){
         }
 
     }else if(message.Resource == null){
-        content = message.Data.Data.Data
+        if(message.type == MessageType.information){
+            content = "[通知]"
+        }else {
+            content = message.Data.Data.Data
+        }
     }else{
         content = "[图片]";
     }

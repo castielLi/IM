@@ -214,9 +214,16 @@ class ChooseClient extends ContainerComponent {
 
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
+		let nicks = "";
 		//拼接选中用户id
 		for(let item in chooseArr){
-			accounts+= chooseArr[item]+",";
+			accounts+= chooseArr[item].RelationId+",";
+
+			if(item < chooseArr.length - 1){
+				nicks += chooseArr[item].Nick+",";
+			}else{
+				nicks += chooseArr[item].Nick;
+			}
 		}
 		accounts += currentObj.props.accountId;
 
@@ -277,7 +284,7 @@ class ChooseClient extends ContainerComponent {
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
 					let messageId = uuidv1();
 					//创建群组消息
-					let text = currentObj.props.accountName+'邀请'
+					let text = JSON.stringify({"nicks":nicks,"owner":currentObj.props.accountName});
 
 
 					// let message = startChatRoomMessage(result.data.Data,messageId);

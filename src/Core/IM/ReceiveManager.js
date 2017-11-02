@@ -76,7 +76,6 @@ ReceiveManager.receiveMessageOpreator = function(message){
         return;
     }
 
-
     if(message.type == MessageType.text || message.type == MessageType.friend)
     {
         if(message.type == MessageType.friend){
