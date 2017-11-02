@@ -26,11 +26,11 @@ class TabBarComponent extends DisplayComponent {
                     selected={selectedTab === '云信'}
                     title="云信"
                     selectedTitleStyle={{color:'#1aad19'}}
-                    renderIcon={() =>  <Image source={require('../resources/qixin_.png')}
+                    renderIcon={() =>  <Image source={require('../resources/qixin.png')}
                                               style={[styles.icon]}
                                               resizeMode={Image.resizeMode.contain}
                     />}
-                    renderSelectedIcon={() =>  <Image source={require('../resources/qixin.png')}
+                    renderSelectedIcon={() =>  <Image source={require('../resources/qixin_.png')}
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
