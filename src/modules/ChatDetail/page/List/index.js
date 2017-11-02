@@ -62,7 +62,7 @@ class Chat extends Component {
         this.historyData2 = [];
         this.reduxData2 = [];
 
-        this.firstLoad = null;
+        this.firstLoad = true;
         this.timestamp = 0;
         this.isTime = false;
         this.noMore = 0;
@@ -83,8 +83,12 @@ class Chat extends Component {
             this.noMore = ListConst.msgState.NOMORE;
             this.firstLoad = false;
         }
+        else if (this.firstLoad){
+            this.firstLoad = false;
+        }
+
         if(newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
-            if(recordData && newData[0].message.MSGID !== recordData.message.MSGID){
+            if(recordData && newData[newData.length-1].message.MSGID !== recordData.message.MSGID){
                 this.historyData.push(recordData);
                 this.historyData2.unshift(recordData);
             }
@@ -116,7 +120,8 @@ class Chat extends Component {
             return;
         }
         else if(!this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.firstLoad = ListConst.msgState.NOMORE;
+            this.noMore = ListConst.msgState.NOMORE;
+            this.firstLoad = false;
         }
         else{
             chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
@@ -146,18 +151,25 @@ class Chat extends Component {
             //移动时作出的动作
             onResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && 0 && !this.state.showInvertible)
+                if(e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     this.noMore = msgState.LOADING;
                     this.setState({
                         isMore : ListConst.msgState.LOADING,
                     })
-                    let dataLength = this.shortData2.length;
+                    let dataLength = this.shortData.length;
                     let {client} = this.props;
                     let that = this;
                     setTimeout(()=>{
                         this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
+                            if(!messages){
+                                that.noMore  = msgState.NOMORE;
+                                that.setState({
+                                    isMore:that.noMore,
+                                });
+                                return;
+                            }
                             let msgLength = messages.length;
 
                             if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
@@ -239,20 +251,18 @@ class Chat extends Component {
             let index = this.data2.blob[rowid].index;
             this.shortData2[index+1] ?
                 prevTime = parseInt(this.shortData2[index+1].message.Data.LocalTime) : prevTime = 0;
-            console.log(this.shortData2,rowid,this.shortData2[index])
             if((LocalTime - prevTime) > 180000){
                 timer = new Date(LocalTime);
             }
             return timer;
         }
         else{
-            if(LocalTime - this.timestamp > 180000 || this.isTime){
+            let prevTime;
+            let index = this.data.blob[rowid].index;
+            this.shortData[index-1] ?
+                prevTime = parseInt(this.shortData[index-1].message.Data.LocalTime) : prevTime = 0;
+            if((LocalTime - prevTime) > 180000){
                 timer = new Date(LocalTime);
-                this.timestamp = LocalTime;
-                this.isTime ? this.isTime = false : this.isTime = true;
-            }
-            else{
-                this.isTime = false;
             }
             return timer;
         }
@@ -402,6 +412,13 @@ class Chat extends Component {
             setTimeout(()=>{
                 this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
+                    if(!messages){
+                        that.noMore  = msgState.NOMORE;
+                        that.setState({
+                            isMore:that.noMore,
+                        });
+                        return;
+                    }
                     let msgLength = messages.length;
 
                     if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
