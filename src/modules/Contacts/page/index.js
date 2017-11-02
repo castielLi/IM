@@ -23,6 +23,7 @@ import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
+import * as featuresAction from '../../Common/menu/reducer/action';
 
 
 var {height, width} = Dimensions.get('window');
@@ -42,7 +43,6 @@ class Contacts extends ContainerComponent {
 			//右边title导航
 			rightSectionItemModalIndex:'',
 
-            showFeatures:false,//显示功能块组件
 			isShowSearchInput:false,
 			text:'',//textInput文字
 		}
@@ -207,7 +207,7 @@ class Contacts extends ContainerComponent {
 					left = {'云信'}
 					right={[
                         {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
 			    <SectionList
@@ -224,9 +224,7 @@ class Contacts extends ContainerComponent {
 				<View style={styles.rightSection}>
 					{this._getSections()}
 				</View>
-                {
-                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
-                }
+                <Features navigator={this.props.navigator}/>
 		    </View>
 	);
 }
@@ -349,6 +347,7 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(recentListActions, dispatch),
       ...bindActionCreators(contactsActions, dispatch),
+      ...bindActionCreators(featuresAction, dispatch)
 
   }};
 

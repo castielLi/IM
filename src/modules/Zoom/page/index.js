@@ -21,6 +21,9 @@ import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as featuresAction from '../../Common/menu/reducer/action';
 
 var originData = [
 		{
@@ -98,11 +101,10 @@ let styles = StyleSheet.create({
 });
 
 
-export default class Zoom extends ContainerComponent {
+class Zoom extends ContainerComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showFeatures:false,//显示功能块组件 
 			
 		};
 	}
@@ -140,7 +142,7 @@ export default class Zoom extends ContainerComponent {
 					left = {'云信'}
 					right = {[
                         {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.setState({showFeatures:!this.state.showFeatures})},icon:'list-ul'}
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
 				<SectionList
@@ -151,14 +153,22 @@ export default class Zoom extends ContainerComponent {
 			      ItemSeparatorComponent={this._renderSeparator}
 				  stickySectionHeadersEnabled={false} 
 				/>
-				{
-                    this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures} navigator={this.props.navigator}></Features>:null
-				}
+				<Features navigator={this.props.navigator}/>
+
 			</View>
 		)
 	}
 }
 
 
+const mapStateToProps = state => ({
+});
 
+const mapDispatchToProps = (dispatch) => {
+    return{
+        ...bindActionCreators(featuresAction, dispatch)
+
+    }};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Zoom);
 
