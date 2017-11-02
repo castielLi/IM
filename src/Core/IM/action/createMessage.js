@@ -91,5 +91,10 @@ export function startChatRoomMessage(Sender,messageId){
 
 //向邀请的群组人员发送邀请消息
 export function buildInvationGroupMessage(Sender,Receiver,text){
-   return createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT,MessageCommandEnum.MSG_INFO)
+   return createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+}
+
+export function buildInvationSendMessageToRudexMessage(message){
+    message.Command = MessageCommandEnum.MSG_INFO;
+    return message;
 }

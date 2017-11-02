@@ -8,7 +8,8 @@ import {
   Image,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  PixelRatio
+  PixelRatio,
+    Platform
 } from 'react-native';  
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swiper from 'react-native-swiper';
@@ -78,12 +79,17 @@ render(){
             </View>
           </TouchableWithoutFeedback>
           </Swiper>
-          <View style={styles.sendBox}>
-            <TouchableWithoutFeedback>
-              <View style={[styles.send,{backgroundColor:this.props.textInputData?'#3399ff':'#fff'}]}>
-                <Text style={[styles.sendText,{color:this.props.textInputData?'#fff':'#aaa'}]}>发送</Text>
-              </View>
-            </TouchableWithoutFeedback>
+                  <View style={styles.sendBox}>
+                      {Platform.OS === 'ios'?
+
+                          <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
+                          <View style={[styles.send,{backgroundColor:this.props.textInputData?'#3399ff':'#fff'}]}>
+                              <Text style={[styles.sendText,{color:this.props.textInputData?'#fff':'#aaa'}]}>发送</Text>
+                          </View>
+                      </TouchableWithoutFeedback>:
+                      null
+                      }
+
           </View>
         </View>
         )

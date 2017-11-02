@@ -26,7 +26,7 @@ import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate,initFlatListData} from './formateData';
 import RelationModel from '../../../Core/User/dto/RelationModel'
-import {startChatRoomMessage,buildInvationGroupMessage} from '../../../Core/IM/action/createMessage';
+import {startChatRoomMessage,buildInvationGroupMessage,buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -227,9 +227,16 @@ class ChooseClient extends ContainerComponent {
 
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
+		let nicks = "";
 		//拼接选中用户id
 		for(let item in chooseArr){
-			accounts+= chooseArr[item]+",";
+			accounts+= chooseArr[item].RelationId+",";
+
+			if(item < chooseArr.length - 1){
+				nicks += chooseArr[item].Nick+",";
+			}else{
+				nicks += chooseArr[item].Nick;
+			}
 		}
 		accounts += currentObj.props.accountId;
 
@@ -290,7 +297,7 @@ class ChooseClient extends ContainerComponent {
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
 					let messageId = uuidv1();
 					//创建群组消息
-					let text = currentObj.props.accountName+'邀请'
+					let text = JSON.stringify({"nicks":nicks,"owner":currentObj.props.accountName});
 
 
 					// let message = startChatRoomMessage(result.data.Data,messageId);
@@ -302,6 +309,8 @@ class ChooseClient extends ContainerComponent {
                     //向添加的用户发送邀请消息
 					let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
 					im.addMessage(sendMessage);
+
+                    sendMessage = buildInvationSendMessageToRudexMessage(sendMessage);
 					currentObj.props.addMessage(sendMessage);
 
 

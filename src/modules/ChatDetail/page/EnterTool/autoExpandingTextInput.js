@@ -5,7 +5,8 @@ import {
   TextInput,  
   View,
   Dimensions,
-  PixelRatio
+  PixelRatio,
+    Platform
 } from 'react-native';  
 import {bindActionCreators} from 'redux';
 import {
@@ -21,7 +22,7 @@ const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
 var {height, width} = Dimensions.get('window');
 const im = new IM();
-
+let isIos = (Platform.OS === 'ios') ? true : false;
 class AutoExpandingTextInput extends Component {  
   constructor(props) {  
     super(props); 
@@ -50,7 +51,13 @@ class AutoExpandingTextInput extends Component {
         //更新chatRecordStore
         this.props.addMessage(message);
         this.input.clear();
-        this.state.data = '';
+        if(isIos){
+            //发送表情不会获得焦点
+            if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
+        }
+
+
+          this.state.data = '';
         this.props.setTextInputData('');
       });
      
@@ -86,12 +93,11 @@ class AutoExpandingTextInput extends Component {
        onFocus = {this.props.focusInput}
        onChangeText = {this._onChangeText}
        onSubmitEditing = {this._onSubmitEditing}   //0.45.1 multiline为true，并且blurOnSubmit为false时，ios点击确定会换行而不触发onSubmitEditing；Android无论怎么样点击确定都会触发onSubmitEditing
-       blurOnSubmit = {false}// 提交失去焦点
+       blurOnSubmit = {isIos?true:false}// 提交失去焦点
        underlineColorAndroid = {'transparent'}  
        multiline={true}
        enablesReturnKeyAutomatically = {true} //ios专用  如果为true，键盘会在文本框内没有文字的时候禁用确认按钮
        returnKeyType='send'
-       returnKeyLabel='发送'
        //onChange={this._onChange}
        maxLength = {150}
        defaultValue={this.state.data}  

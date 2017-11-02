@@ -13,7 +13,8 @@ import {
   Platform,
   PixelRatio,
   Modal,
-  PanResponder
+  PanResponder,
+
 } from 'react-native';
 import {
   connect
@@ -349,6 +350,7 @@ class ThouchBarBoxTopBox extends Component {
         this.setState({
             textInputData:data
         })
+        this.props.setTextInputData(data);
     }
 
   render() {
@@ -362,7 +364,7 @@ class ThouchBarBoxTopBox extends Component {
             <TouchableHighlight style={[styles.button,styles.smileButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toExpression}>
               {this.rendersmileButton()}
             </TouchableHighlight>
-            {this.state.textInputData?
+            {this.state.textInputData&&Platform.OS === 'android'?
                 <TouchableHighlight style={[styles.sendButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._onSubmitEditing}>
                   <Text style={styles.sendButtonTxt}>发送</Text>
                 </TouchableHighlight>:
