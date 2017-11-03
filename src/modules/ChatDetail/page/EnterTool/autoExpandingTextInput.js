@@ -5,23 +5,24 @@ import {
   TextInput,  
   View,
   Dimensions,
-  PixelRatio
+  PixelRatio,
+    Platform
 } from 'react-native';  
 import {bindActionCreators} from 'redux';
 import {
     connect
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/IM/redux/action';
+import * as commonActions from '../../../../Core/IM/redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
 import IM from '../../../../Core/IM/index';
-
+import {addTextMessage} from '../../../../Core/IM/action/createMessage';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
 var {height, width} = Dimensions.get('window');
 const im = new IM();
-
+let isIos = (Platform.OS === 'ios') ? true : false;
 class AutoExpandingTextInput extends Component {  
   constructor(props) {  
     super(props); 
@@ -44,15 +45,19 @@ class AutoExpandingTextInput extends Component {
   _onSubmitEditing(){
     if(this.state.data){
       //初始化消息
-      let message = createTextMessageObj(this.state.data,'private',this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
+      let message = addTextMessage(this.state.data,this.props.type,this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
       im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
         this.props.addMessage(message);
         this.input.clear();
-        //在表情栏提交后不会获得焦点
-        if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
-        this.state.data = '';
+        if(isIos){
+            //发送表情不会获得焦点
+            if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
+        }
+
+
+          this.state.data = '';
         this.props.setTextInputData('');
       });
      
@@ -88,14 +93,13 @@ class AutoExpandingTextInput extends Component {
        onFocus = {this.props.focusInput}
        onChangeText = {this._onChangeText}
        onSubmitEditing = {this._onSubmitEditing}   //0.45.1 multiline为true，并且blurOnSubmit为false时，ios点击确定会换行而不触发onSubmitEditing；Android无论怎么样点击确定都会触发onSubmitEditing
-       blurOnSubmit = {true}// 提交失去焦点
+       blurOnSubmit = {isIos?true:false}// 提交失去焦点
        underlineColorAndroid = {'transparent'}  
        multiline={true}
        enablesReturnKeyAutomatically = {true} //ios专用  如果为true，键盘会在文本框内没有文字的时候禁用确认按钮
        returnKeyType='send'
-       returnKeyLabel='发送'
        //onChange={this._onChange}
-       numberOfLines={6}
+       maxLength = {150}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
        style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:50}]}  
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
     paddingLeft:5,
     paddingRight:5,
     textAlignVertical: 'center',
-    fontSize:16
+    fontSize:16,
   },
 
 });  

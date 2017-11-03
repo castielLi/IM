@@ -6,13 +6,15 @@ import * as Helper from '../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
 import * as methods from './Common'
+import netWorking from '../Networking/Network'
 
 
 let FileManager = {};
 let currentObj = undefined;
+let _network = new netWorking();
 
 let resourceQueue = [];
-
+let ME = "";
 FileManager.Ioc = function(im){
     currentObj = im;
 }
@@ -68,11 +70,11 @@ FileManager.uploadResource = function(obj){
 
             //整合audio下文件路径
             let resource;
-            if(message.type == MessageType.audio){
-                resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
-            }else{
+            // if(message.type == MessageType.audio){
+            //     resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
+            // }else{
                 resource = message.Resource[item].LocalSource;
-            }
+            // }
 
             uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
                 if(progressHandles != null) {
@@ -108,7 +110,7 @@ FileManager.uploadResource = function(obj){
             console.log('上传失败的内容是',values);
         })
     }else{
-        copyMessage.status = SendStatus.PrepareToSend;
+        copyMessage.status = SendStatus.PrepareToUpload;
         currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
     }
 }
@@ -122,11 +124,16 @@ FileManager.downloadResource = function(message,callback){
         toFile;
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${type}/${way}-${sender}/${new Date().getTime()}${format}`;
+    toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${way}-${sender}/${new Date().getTime()}${format}`;
+
+    console.log('下载前=============================:  ',message,toFile)
 
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
-        message.Resource[0].LocalSource = 'file://' + toFile;
+        if(type === 'image'){
+            toFile = 'file://'+toFile;
+        }
+        message.Resource[0].LocalSource = toFile;
         console.log('下载成功后=============================:  ',message)
         callback(message)
     }

@@ -3,13 +3,17 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Image,AsyncStorage} from 'react-native';
+import {StyleSheet, Image,AsyncStorage,Platform} from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
+import * as friendApplicationActions from '../../../Core/IM/redux/applyFriend/action'
+
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
+import * as relationActions from '../../Contacts/reducer/action';
+let currentObj = undefined;
 
 class Start extends ContainerComponent {
     constructor(){
@@ -19,31 +23,85 @@ class Start extends ContainerComponent {
             selectedTab: 'home',
             isLogged: false
         }
+        currentObj = this;
     }
 
 
     componentWillMount(){
-        AsyncStorage.getItem('accountId')
+
+
+        //改成 toekn
+
+        AsyncStorage.getItem('account')
             .then((value) => {
+                let account = JSON.parse(value);
                 //已经登录
-                if(value){
-                    alert('你的账户:'+value)
-                    let im = new IM();
-                    im.setSocket(value);
-                    im.initIMDatabase(value)
+                if(account){
+
+                    this.setFetchAuthorization(account.SessionToken)
+                    // this.setFetchAuthorization("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBY2NvdW50Ijoid2cwMDM2NjIiLCJEZXZpY2VUeXBlIjoiTW9iaWxlIiwiZXhwIjoxNTA4NDg0NzE1LCJpYXQiOjE1MDc4Nzk5MTV9.nfiBb1IDdrN_CxV9AER67JT9IeDF1ao6uC7WN-yr46M")
+                    this.fetchData("POST","/Member/LoginByToken",function(result){
+
+                        if(!result.success){
+
+                            //2003代码是token失效
+                            if(result.errorCode == 2003){
+                                currentObj.route.push(currentObj.props,{
+                                    key:'Login',
+                                    routeId: 'Login'
+                                });
+                                return;
+                            }
+
+                            alert(result.errorMessage)
+                            return;
+                        }
+
+                        if(result.data.Data != null){
+                            //缓存token
+                            AsyncStorage.setItem('account',JSON.stringify(
+                                { accountId:account.accountId,SessionToken:result.data.Data["SessionToken"],IMToken:account.IMToken
+                                    ,gender:account.gender,nick:account.nick,avator:account.avator,phone:account.phone
+                                    ,device:account.device,deviceId:account.deviceId}
+                            ));
+                            let im = new IM();
+                            im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+
+                            let user = new User();
+                            if(Platform.OS === 'ios'){
+                                im.initIMDatabase(account.accountId)
+                                user.initIMDatabase(account.accountId)
+                            }
+
+                            im.getAllApplyFriendMessage((result) => {
+
+                                currentObj.props.initFriendApplication(result);
+
+                                user.getAllRelation((data)=>{
+                                    //初始化联系人store
+                                    currentObj.props.initRelation(data);
+
+                                    currentObj.props.signIn(account)
+                                    //切换至最近聊天列表
+                                    currentObj.route.push(currentObj.props,{
+                                        key:'MainTabbar',
+                                        routeId: 'MainTabbar'
+                                    });
+                                })
+
+                            })
+
+                        }else{
+
+                            currentObj.route.push(currentObj.props,{
+                                key:'Login',
+                                routeId: 'Login'
+                            });
+                        }
 
 
-                    let user = new User()
-                    user.initIMDatabase(value);
-
-                    this.props.signIn({ accountId:value,avatar:''})
-                    //切换至最近聊天列表
-                    this.route.push(this.props,{
-                        key:'MainTabbar',
-                        routeId: 'MainTabbar'
                     });
 
-                    //未登录
                 }else{
                     //切换至登录页面
                     this.route.push(this.props,{
@@ -72,7 +130,7 @@ const styles = StyleSheet.create({
     flex:1,
     width:null,
     height:null,
-    resizeMode:'cover',
+    resizeMode:'stretch',
     }
 });
 
@@ -84,6 +142,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
-}};
+      ...bindActionCreators(relationActions, dispatch),
+      ...bindActionCreators(friendApplicationActions, dispatch),
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Start);

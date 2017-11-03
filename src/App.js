@@ -8,7 +8,7 @@ import React, {
 import {
     Provider
 } from 'react-redux';
-import { AppState , NetInfo,Platform} from 'react-native'
+import { AppState , NetInfo,Platform,Alert} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
@@ -16,25 +16,28 @@ import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
+import User from './Core/User'
+import * as ActionForChatRecordStore from './Core/IM/redux/chat/action'
+import * as ActionForLoginStore from './modules/Login/reducer/action';
 
-import ChatCommandEnum from './Core/IM/dto/ChatCommandEnum'
-import MessageBodyTypeEnum from './Core/IM/dto/MessageBodyTypeEnum'
-import MessageCommandEnum from './Core/IM/dto/MessageCommandEnum'
-
-import SendMessageBodyDto from './Core/IM/dto/SendMessageBodyDto'
-import SendMessageDto from './Core/IM/dto/SendMessageDto'
-import messageBodyChatDto from './Core/IM/dto/messageBodyChatDto'
-
-import * as ActionForChatRecordStore from './Core/IM/redux/action'
+import {changeTabBar} from './modules/MainTabbar/reducer/action';
+import {changeRelationOfShow} from './modules/Contacts/reducer/action';
 
 import netWorking from './Core/Networking/Network'
-
+import DisplayComponent from './Core/Component'
+import route from './Core/route/router'
+import * as Helper from './Core/Helper'
 let network = new netWorking();
+
 
 export default function App() {
 
+    //关闭yellowbox
+    console.disableYellowBox = true
 
     let store = Store;
+
+    let user = new User();
 
     //初始化app的http组件
     configureNetwork({
@@ -44,7 +47,7 @@ export default function App() {
 
     //初始化路由表
     Route.initRouteMap(router);
-
+    Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
     //初始化IM
     let im = new IM();
     //改变消息状态 {state:这里变化,message:{}}
@@ -61,56 +64,32 @@ export default function App() {
         store.dispatch(ActionForChatRecordStore.receiveMessage(message))
     }
 
-
-    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage)
-
-
-
-    // let sendMessage = setInterval(function(){
-    //     let addMessage = new SendMessageDto();
-    //     let messageBody = new SendMessageBodyDto();
-    //     let messageData = new messageBodyChatDto();
-    //
-    //     messageData.Data = "hello world";
-    //     messageData.Command = ChatCommandEnum.MSG_BODY_CHAT_C2C
-    //     messageData.Sender = "1";
-    //     messageData.Receiver = "2";
-    //
-    //     messageBody.LocalTime = new Date().getTime();
-    //     messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
-    //     messageBody.Data = messageData;
-    //
-    //
-    //     addMessage.Command = MessageCommandEnum.MSG_BODY;
-    //     addMessage.Data = messageBody;
-    //     addMessage.type = "text";
-    //     addMessage.way = "chatroom";
-    //
-    //     im.addMessage(addMessage);
-    //
-    //     // im.addRecMessage(addMessage);
-    // },2000)
-    //
-    // setInterval(function(){
-    //     clearInterval(sendMessage)
-    // },10000)
-    //
-    // im.getRecentChatRecode("2","chatroom",{start:2,limit:10},function (messages) {
-    //     console.log("消息记录为" + messages);
-    // })
+    //收到同意添加好友申请回调
+    let handleRecieveAddFriendMessage = function(relation){
+        user.updateDisplayOfRelation(relation,'true');
+        //修改relationStore
+        store.dispatch(changeRelationOfShow(relation))
+    }
 
 
+    let handleKickOutMessage = function(){
+        Alert.alert(
+            '下线通知',
+            "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
+            [
+                {text: '确定', onPress: () => {
+                    store.dispatch(ActionForLoginStore.signOut());
+                }},
+                {text: '不是本人操作',style:{color:"red"}, onPress: () => {
+                    store.dispatch(ActionForLoginStore.signOut());
+                }},
+            ]);
+    }
 
-    // //todo:使用chatwayenum枚举来控制类型
-    // im.deleteCurrentChatMessage("2","chatroom")
-    //
-    //
-    // let deleteMessage = new message();
-    // deleteMessage.id = 59;
-    // im.deleteMessage(deleteMessage,"chatroom","hello");
+    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage)
 
 
-    class InitApp extends BaseComponent {
+    class InitApp extends DisplayComponent {
         constructor() {
             super();
 

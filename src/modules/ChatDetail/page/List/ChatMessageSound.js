@@ -7,7 +7,8 @@ import {
     Text,
     View,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    Image,
 } from 'react-native';
 
 import Sound from 'react-native-sound';
@@ -80,7 +81,7 @@ export default class ChatMessageSound extends Component {
 
         return(
             <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.playSound(LocalSource || RemoteSource)}>
+                <TouchableOpacity onPress={()=>this.playSound(LocalSource)}>
                     <Text>{Time}"</Text>
                 </TouchableOpacity>
             </View>
@@ -92,9 +93,10 @@ export default class ChatMessageSound extends Component {
 
 const styles = StyleSheet.create({
     bubble:{
-        maxWidth:width-150,
-        padding:12,
+        maxWidth:width-100,
         justifyContent:'center',
-        borderRadius:5
+        borderRadius:5,
+        height:40,
+        paddingHorizontal:10,
     },
 });

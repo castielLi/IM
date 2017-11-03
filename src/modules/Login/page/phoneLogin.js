@@ -1,6 +1,6 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard}from 'react-native';
-import {checkDeviceHeight,checkDeviceWidth} from './check';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform}from 'react-native';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
@@ -14,17 +14,23 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
+import * as relationActions from '../../Contacts/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
+import RNFS from 'react-native-fs'
+import UUIDGenerator from 'react-native-uuid-generator';
+
+
+let currentObj = undefined;
 
 class PhoneLogin extends ContainerComponent {
 	componentWillUnmount() {
-		sqLite.close();
+		// sqLite.close();
 
 	}
 	constructor(props) {
 	  super(props);
-	
+
 	  this.state = {
 	  	phoneText:'',//账号框的内容
 		passWordText:'',//密码框的内容
@@ -32,6 +38,7 @@ class PhoneLogin extends ContainerComponent {
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
 	  this.addUser = this.addUser.bind(this)
+	  currentObj = this;
 	}
 	//当点击短信验证的时候检测手机号码的方法
 	changeShowConfirm=()=>{
@@ -51,7 +58,7 @@ class PhoneLogin extends ContainerComponent {
 		})
 	}
 	componentWillUpdate() {
-		console.log(this.props.loading)
+
 		if(!this.state.textMessage){
 			this._textInput.setNativeProps({maxLength:6})
 		}else if(this.state.textMessage){
@@ -62,57 +69,170 @@ class PhoneLogin extends ContainerComponent {
 
 
 	addUser = ()=>{
-		if(checkReg(1,this.state.phoneText)){
-			var userData = [];
-			var user = {};
-			user.userName = this.state.phoneText;
-			user.passWord = this.state.passWordText;
-			userData.push(user);
-			//登录中
-			this.props.signDoing();
-			//服务器验证
-			//...
-			//验证通过
-			let account = { accountId:'1',avatar:''};
-			//修改loginStore登录状态
-			this.props.signIn(account)
 
-
-			//初始化im
-            let im = new IM();
-            im.setSocket("1");
-            im.initIMDatabase("1")
-
-			//初始化用户系统
-			let user = new User();
-            user.initIMDatabase("1");
-
-			//存储登录状态
-            AsyncStorage.setItem('accountId',account.accountId);
-			//初始化IM
-			//..
-			Keyboard.dismiss();//关闭软键盘
-			//跳转到最近聊天列表
-			this.route.push(this.props,{
-				key:'MainTabbar',
-                routeId: 'MainTabbar'
-			});
-			
+        if(!checkReg(1,this.state.phoneText)){
+        	this.alert("账号格式不正确")
+        	return;
 		}
-	}
-	
-	render(){
-		return (
 
+			//登录api
+
+            UUIDGenerator.getRandomUUID().then((uuid) => {
+
+                currentObj.showLoading();
+                Keyboard.dismiss();//关闭软键盘
+                currentObj.fetchData("POST","/Member/Login",function(result){
+                    //todo: 存储用户信息
+
+
+					if(!result.success){
+                    	currentObj.hideLoading()
+
+						if(result.errorCode == 1003){
+                    		currentObj.alert("账号或者密码错误","错误");
+						}else{
+							alert(result.errorMessage);
+						}
+                    	return;
+					}
+
+
+                    currentObj.setFetchAuthorization(result.data.Data["SessionToken"])
+
+
+                    //登录中
+                    currentObj.props.signDoing();
+                    //服务器验证
+                    //...
+                    //验证通过
+                    let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
+                    ,gender:result.data.Data["Gender"],nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
+					,device:"Mobile",deviceId:"1"};
+
+                    //存储登录状态
+                    AsyncStorage.setItem('account',JSON.stringify(account));
+                    //修改loginStore登录状态
+                    currentObj.props.signIn(account);
+                    //如果是ios
+                    if(Platform.OS === 'ios'){
+                        //初始化im
+                        let im = new IM();
+                        im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                        im.initIMDatabase(account.accountId)
+                        //如果是android
+                    }else{
+
+
+                        let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
+                        //文件夹判断是否是第一次登录
+                        RNFS.exists(ImDbPath).then((bool)=>{if(bool){
+                            //若不是
+                            //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
+                            RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
+                                //初始化im
+                                let im = new IM();
+                                im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+
+                            })
+                            //若是第一次登陆
+                        }else{
+                            //初始化im
+                            let im = new IM();
+                            im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                            im.initIMDatabase(account.accountId);
+                        }
+
+                        })
+                    }
+                    //创建文件夹
+                    let avatorPath = RNFS.DocumentDirectoryPath + '/' +account.accountId+'/image/avator';
+                    RNFS.mkdir(avatorPath);
+                    //删除Account.db
+
+					let AccountPath = "";
+
+                    if(Platform.OS === 'android'){
+                        //删除Account.db
+                        AccountPath = '/data/data/com.im/databases/Account.db';
+                    }else{
+
+                        AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
+                    }
+
+                    RNFS.exists(AccountPath).then((exist)=>{
+                    	if(exist){
+
+                            RNFS.unlink(AccountPath).then(()=>{
+                                dealCommon();
+                            });
+						}else{
+                            dealCommon();
+                    	}
+                    })
+
+
+
+                   function dealCommon(){
+                       //初始化用户系统
+                       let user = new User();
+                       let im = new IM();
+                       user.initIMDatabase(account.accountId);
+
+                       currentObj.fetchData("POST","/Member/GetContactList",function(result){
+
+
+                       	   if(!result.success){
+                               alert("初始化account出错" + result.errorMessage);
+                               return;
+						   }
+
+                           im.getAllApplyFriendMessage((result) => {
+
+                               currentObj.props.initFriendApplication(result);
+
+                           })
+                           //添加名单
+                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],result.data.Data["GroupList"],function(){
+                               user.getAllRelation((data)=>{
+                                   //初始化联系人store
+                                   currentObj.props.initRelation(data);
+                                   currentObj.hideLoading();
+                                   currentObj.route.push(currentObj.props,{
+                                       key:'MainTabbar',
+                                       routeId: 'MainTabbar'
+                                   });
+                               })
+
+
+
+                           })
+                       },{"Account": currentObj.state.phoneText})
+				   }
+
+                },{
+                    "Account": currentObj.state.phoneText,
+                    "DeviceNumber": "1",
+                    "DeviceType": "1",
+                    "Key": currentObj.state.phoneText,
+                    "LoginIP": "192.168.0.103",
+                    "Password": currentObj.state.passWordText,
+                    "Session": uuid
+                })
+
+
+			});
+	}
+
+	render(){
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
+
+		return (
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
-					key:'Login',
-            		routeId: 'Login',
-            		sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-				});}}>
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props);}}>
 				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
-					<Text style= {styles.loginTitle}>使用手机号登录</Text>	
+					<Text style= {styles.loginTitle}>使用手机号登录</Text>
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
 						<View style = {styles.area}>
 							<Text style = {styles.areaTitle}>国家/地区</Text>
@@ -128,12 +248,12 @@ class PhoneLogin extends ContainerComponent {
 						<TextInput
 						style = {styles.textInput}
 						maxLength = {11}
-						placeholderTextColor = '#cecece' 
-						placeholder = '请输入手机号码' 
+						placeholderTextColor = '#cecece'
+						placeholder = '请输入手机号码'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						></TextInput>
-						
+
 					</View>
 					<View style = {styles.inputBox}>
 						<View style={styles.imageBox}>
@@ -142,14 +262,14 @@ class PhoneLogin extends ContainerComponent {
 									<Image style = {[styles.loginImage,{width:checkDeviceWidth(35)}]} source = {require('../resource/password.png')}></Image>
 								):(<Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/code.png')}></Image>)
 							}
-						</View>	
+						</View>
 						<TextInput
 						ref = {(c)=>{this._textInput = c}}
 						maxLength = {16}
-						style = {[styles.textInput,{marginLeft:-10,}]} 
-						placeholderTextColor = '#cecece' 
-						secureTextEntry = {true} 
-						placeholder = '请输入密码' 
+						style = {[styles.textInput,{marginLeft:-10,}]}
+						placeholderTextColor = '#cecece'
+						secureTextEntry = {true}
+						placeholder = '请输入密码'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
 						></TextInput>
@@ -165,16 +285,13 @@ class PhoneLogin extends ContainerComponent {
 							<Text style = {styles.changeLogin}>通过密码登录</Text>
 						}
 					</TouchableOpacity>
-					{
-						this.state.phoneText && this.state.passWordText?
-						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.addUser()}}>
+
+
+							<TouchableOpacity activeOpacity = {0.8} style={[styles.Login,{backgroundColor:this.state.phoneText && this.state.passWordText?'#1aad19':'#ccc'}]} onPress = {()=>{this.addUser()}} disabled={!(this.state.phoneText && this.state.passWordText)}>
 								<Text style = {styles.loginText}>登录</Text>
-							</TouchableOpacity>)
-						:(
-							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notLogin.png')}></Image>
-							)
-					}
+							</TouchableOpacity>
+
+
 				<View style= {styles.footer}>
 					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
 					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
@@ -182,17 +299,19 @@ class PhoneLogin extends ContainerComponent {
 				</View>
 				{
 					this.state.showConfirm?
-					<Confirm 
+					<Confirm
 					phoneText = {this.state.phoneText}
 					cancelSend = {this.cancelSend}
 					></Confirm>:null
 				}
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 			</View>
-			
+
 		)
 	}
 
-} 
+}
 
 function mapStateToProps(store) {
 	return {
@@ -304,7 +423,7 @@ const styles = StyleSheet.create({
 		marginBottom:checkDeviceHeight(60),
 	},
 	loginText:{
-		color:'white',
+		color:'#fff',
 		fontSize:checkDeviceHeight(36),
 	},
 	Login:{
@@ -327,12 +446,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    
+
 });
 
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
-}};
+      ...bindActionCreators(relationActions, dispatch),
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

@@ -19,10 +19,12 @@ import {
 import {
     connect
 } from 'react-redux';
-import BaseComponent from '../../Core/Component'
 import * as router from '../routerMap'
+import DisplayComponent from '../../Core/Component'
 
-class Root extends BaseComponent {
+let initRootNavigation = false;
+
+class Root extends DisplayComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
@@ -38,7 +40,11 @@ class Root extends BaseComponent {
         // 	Route.key = 'TestRefresh';
         // }
 
-
+        //初始化跟导航器
+        if(!initRootNavigation){
+            this.route.setRootNavigator(navigator);
+            initRootNavigation = !initRootNavigation;
+        }
 
         return this.route.getRoutePage(Route, navigator);
     }

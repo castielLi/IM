@@ -12,7 +12,9 @@ import {
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 
-
+let rootNavigator;
+//指定mainTabBar显示页面
+let assignMainTabBarPage = undefined;
 class Route {
 
     /**
@@ -30,13 +32,22 @@ class Route {
         let {
             RouteMap,
             MainPage,
-            InitialRoute
+            InitialRoute,
+            LoginRoute
         } = router;
         this.routerMap = Object.assign(this.routerMap, RouteMap);
         this.mainPage = MainPage;
         this.initialRoute = InitialRoute;
+        this.loginRoute = LoginRoute
     }
 
+    static setRootNavigator(navigator){
+        rootNavigator = navigator;
+    }
+    //赋值外部接口
+    static setAssignMainTabBarPage(TabBarReduxAction){
+        assignMainTabBarPage = TabBarReduxAction;
+    }
 
     static getRoutePage(route, navigator) { //这里route参数是一个对象{id:xx,routeId:xx,params:{xxx}}
         let id = route.key,
@@ -100,9 +111,11 @@ class Route {
     static toMain(props) {
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
+        let route;
         for (let i = 0; i < routes.length; i++) {
-            if (routes[0][0] == this.mainPage["key"]) {
+            if (routes[i]["key"] == this.mainPage["key"]) {
                 contain = true;
+                route = routes[i];
                 break;
             }
         }
@@ -113,8 +126,9 @@ class Route {
             }
         }
         InteractionManager.runAfterInteractions(() => {
-            props.navigator.popToTop();
+            props.navigator.jumpTo(route);
         })
+        assignMainTabBarPage&&assignMainTabBarPage();
     }
 
     static pop(props) {
@@ -125,8 +139,48 @@ class Route {
         props.navigator.pop();
     }
 
-    static toLogin() {
 
+    static replaceTop(props,route){
+        let routes = props.navigator.getCurrentRoutes();
+        let length = routes.length;
+
+        props.navigator.replaceAtIndex(route,length - 1,function(){
+            props.navigator.jumpTo(route)
+        });
+    }
+
+    static replaceAtIndex(props,route,index){
+        props.navigator.replaceAtIndex(route,index,function(){
+            props.navigator.jumpTo(route)
+        });
+    }
+
+    static popToSpecialRoute(props,specialRoute){
+
+        InteractionManager.runAfterInteractions(() => {
+            props.navigator.jumpTo(specialRoute)
+        })
+    }
+
+    static ToLogin() {
+        let routes = rootNavigator.getCurrentRoutes();
+        let route;
+        let contain = false;
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i]["key"] == this.loginRoute["key"] && routes[i]["routeId"] == this.loginRoute["routeId"]) {
+                contain = true;
+                route = routes[i];
+                break;
+            }
+        }
+        if (!contain) {
+            let loginRoute = this.loginRoute;
+            rootNavigator.replaceAtIndex(this.loginRoute,1,function(){
+                rootNavigator.jumpTo(loginRoute)
+            });
+        }else{
+            rootNavigator.jumpTo(route)
+        }
     }
 }
 

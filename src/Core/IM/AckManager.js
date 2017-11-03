@@ -4,7 +4,10 @@
 import * as Helper from '../Helper'
 import * as configs from './IMconfig'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
+import MessageType from './dto/MessageType'
+import MessageCommandEnum from './dto/MessageCommandEnum'
 
+//todo: 删除ack manager 和send manager合并成一个
 
 let AckManager = {};
 let currentObj = undefined;
@@ -30,7 +33,9 @@ AckManager.handAckQueue = function(){
             if(ackMessageQueue[item].hasSend > 3) {
 
                 //回调App上层发送失败
-                // AppMessageResultHandle(false,ackMessageQueue[item].message);
+                if(ackMessageQueue[item].message.type != MessageType.friend) {
+                    currentObj.MessageResultHandle(false, ackMessageQueue[item].message.MSGID);
+                }
 
                 ackMessageQueue[item].message.status = MessageStatus.SendFailed;
                 currentObj.addUpdateSqliteQueue(ackMessageQueue[item].message,UpdateMessageSqliteType.storeMessage)
@@ -57,51 +62,30 @@ AckManager.addAckQueue = function(message,times){
 
 AckManager.receiveMessageOpreator = function(message){
 
-    //判断如果是ack消息
-    if(message.Command == undefined) {
-        let updateMessage = {};
-        for (let item in ackMessageQueue) {
-            if (ackMessageQueue[item].message.MSGID == message) {
+    let updateMessage = {};
 
-                currentObj.popCurrentMessageSqlite(message)
+    for(let item in ackMessageQueue) {
+        if (ackMessageQueue[item].message.MSGID == message) {
 
-
-                updateMessage = ackMessageQueue[item].message;
-                ackMessageQueue.splice(item, 1);
-
-                console.log("ack队列pop出：" + message)
-                console.log(ackMessageQueue.length);
-                break;
-            }
-        }
-
-        //回调App上层发送成功
-        currentObj.MessageResultHandle(true, message);
-
-        updateMessage.status = MessageStatus.SendSuccess;
-        currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
-
-
-
-        //判断如果是他人发送的消息
-    }else if(message.Command == MessageCommandEnum.MSG_BODY){
-        //存入数据库
-
-        if(message.type == 'text')
-        {
-            storeSqlite.storeRecMessage(message)
             //回调App上层发送成功
-            currentObj.ReceiveMessageHandle(message);
+            if(ackMessageQueue[item].message.type != MessageType.friend) {
+                currentObj.MessageResultHandle(true, message);
+            }
+
+            currentObj.popCurrentMessageSqlite(message)
+
+            updateMessage = ackMessageQueue[item].message;
+            ackMessageQueue.splice(item, 1);
+
+            console.log("ack队列pop出：" + message)
+
+            updateMessage.status = MessageStatus.SendSuccess;
+
+            currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
+
+            console.log(ackMessageQueue.length);
+            break;
         }
-        else{
-
-            currentObj.addDownloadResource(message,function (message) {
-                currentObj.storeRecMessage(message)
-
-                currentObj.ReceiveMessageHandle(message);
-            })
-        }
-
     }
 }
 

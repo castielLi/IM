@@ -8,7 +8,8 @@ import {
   Image,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  PixelRatio
+  PixelRatio,
+    Platform
 } from 'react-native';  
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swiper from 'react-native-swiper';
@@ -35,6 +36,7 @@ render(){
       return(
           <View style={styles.ThouchBarBoxBottomBox}>
           <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false} autoplay={false}>
+              <TouchableWithoutFeedback>
              <View style={styles.swiperSlide}>
               <TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,'[呲牙]')}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
@@ -61,23 +63,33 @@ render(){
                 <Image source={require('../../resource/weixiao.png')} style={styles.img}></Image>
               </TouchableWithoutFeedback>
             </View>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
               <TouchableWithoutFeedback onPress={()=>{alert('表情')}}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
               </TouchableWithoutFeedback>
             </View>
+              </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
              <TouchableWithoutFeedback onPress={()=>{alert('表情')}}>
                 <Image source={require('../../resource/sm.png')} style={styles.img}></Image>
               </TouchableWithoutFeedback>
             </View>
+          </TouchableWithoutFeedback>
           </Swiper>
-          <View style={styles.sendBox}>
-            <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
-              <View style={[styles.send,{backgroundColor:this.props.textInputData?'#3399ff':'#fff'}]}>
-                <Text style={[styles.sendText,{color:this.props.textInputData?'#fff':'#aaa'}]}>发送</Text>
-              </View>
-            </TouchableWithoutFeedback>
+                  <View style={styles.sendBox}>
+                      {Platform.OS === 'ios'?
+
+                          <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
+                          <View style={[styles.send,{backgroundColor:this.props.textInputData?'#3399ff':'#fff'}]}>
+                              <Text style={[styles.sendText,{color:this.props.textInputData?'#fff':'#aaa'}]}>发送</Text>
+                          </View>
+                      </TouchableWithoutFeedback>:
+                      null
+                      }
+
           </View>
         </View>
         )

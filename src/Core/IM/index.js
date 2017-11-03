@@ -67,6 +67,12 @@ let AppMessageChangeStatusHandle = undefined;
 //返回收到消息回调
 let AppReceiveMessageHandle = undefined;
 
+//踢出消息回调
+let AppKickOutHandle = undefined;
+
+let handleRecieveAddFriendMessage = undefined;
+
+
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -93,15 +99,14 @@ export default class IM {
         FileManager.Ioc(this);
     }
 
-    setSocket(account){
-        _socket.startConnect(account);
+    setSocket(account,device,deviceId,imToken){
+        _socket.startConnect(account,device,deviceId,imToken);
         ME = account;
     }
 
     //初始化IM的数据库
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
-
             //获取之前没有发送出去的消息重新加入消息队列
             currentObj.addAllUnsendMessageToSendQueue();
         });
@@ -109,10 +114,12 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
+        AppKickOutHandle = kickOutMessage;
+        handleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
     startIM(){
@@ -127,6 +134,10 @@ export default class IM {
         this.beginRunLoop();
 
 
+    }
+
+    logout(){
+        this.socket.logout();
     }
 
     stopIM(){
@@ -252,7 +263,7 @@ export default class IM {
                     sendMessage.push(message);
                 }else{
 
-                    if(message.status == SendStatus.PrepareToUpload) {
+                    if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
 
                         FileManager.addResource(message,null);
 
@@ -271,6 +282,17 @@ export default class IM {
     }
 
 
+    //获取所有好友申请消息
+    getAllApplyFriendMessage(callback){
+        storeSqlite.getAllApplyFriendMessage(callback);
+    }
+
+    //修改好友申请消息
+    updateApplyFriendMessage(message){
+        storeSqlite.updateApplyFriendMessage(message);
+    }
+
+
     //外部接口，添加消息
     addMessage(message,callback=function(success,content){},onprogess="undefined") {
 
@@ -278,6 +300,7 @@ export default class IM {
         if (message.type == "undefined") {
             callback(false, "message type error");
         }
+
 
         //先生成唯一的messageID并且添加message进sqlite保存
         UUIDGenerator.getRandomUUID().then((uuid) => {
@@ -287,7 +310,17 @@ export default class IM {
             //把消息存入消息sqlite中
             message.status = MessageStatus.WaitOpreator;
 
-            this.storeSendMessage(message);
+            if(message.type != MessageType.friend) {
+
+                if(message.type == MessageType.information){
+                    //todo:lizongjun 把消息sqlite 全部改成先生成sql语句再执行的形势就可以避免所有参数传递的时候都需要创建新的拷贝
+                    let copyMessage = Object.assign({},message);
+                    copyMessage.Command = MessageCommandEnum.MSG_INFO;
+                    this.storeSendMessage(copyMessage);
+                }else{
+                    this.storeSendMessage(message);
+                }
+            }
 
             //添加cache缓存
             // cacheMessage.push(message);
@@ -306,7 +339,10 @@ export default class IM {
                 case MessageType.audio:
                     FileManager.addResource(message,onprogess,callback);
                     break;
+                case MessageType.friend:
+                    SendManager.addSendMessage(message,callback);
                 default:
+                    SendManager.addSendMessage(message,callback);
                     break;
             }
 
@@ -331,7 +367,7 @@ export default class IM {
 
 
             //心跳包不需要进行存储
-            if(message.Command != MessageCommandEnum.MSG_HEART) {
+            if(message.Command != MessageCommandEnum.MSG_HEART && message.Command != MessageCommandEnum.MSG_REV_ACK) {
                 console.log("添加" + copyMessage.MSGID + "进队列");
                 //初始加入ack队列，发送次数默认为1次
                 AckManager.addAckQueue(copyMessage, 1);
@@ -367,6 +403,11 @@ export default class IM {
     //存储接收消息
     storeRecMessage(message){
         storeSqlite.storeRecMessage(message);
+    }
+
+    //操作好友管理模块,申请好友通过，设置关系显示状态
+    updateRelation(relationId){
+        handleRecieveAddFriendMessage(relationId);
     }
 
 
@@ -407,7 +448,11 @@ export default class IM {
 
 
     receiveMessageOpreator(message){
-        AckManager.receiveMessageOpreator(message);
+        if(message.Command == undefined) {
+            AckManager.receiveMessageOpreator(message);
+        }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
+            ReceiveManager.receiveMessageOpreator(message);
+        }
     }
 
     recMessage(message,type=null) {
@@ -420,9 +465,13 @@ export default class IM {
             console.log("心跳包压入发送队列")
             SendManager.addSendMessage(message)
             return;
+        }else if(type == MessageCommandEnum.MSG_KICKOUT){
+            console.log("设备被踢出消息")
+            AppKickOutHandle();
+            return;
         }
 
-        ReceiveManager.addReceiveMessage(message)
+        currentObj.receiveMessageOpreator(message)
     }
 
 
@@ -430,6 +479,9 @@ export default class IM {
         FileManager.downloadResource(message,callback);
     }
 
+    popAckMessage(messageId,success){
+        AckManager.receiveMessageOpreator(messageId,success);
+    }
 
     ReceiveMessageHandle(message){
         AppReceiveMessageHandle(message);
@@ -444,6 +496,13 @@ export default class IM {
         AppMessageChangeStatusHandle(message)
     }
 
+
+    sendReceiveAckMessage(messageId){
+        UUIDGenerator.getRandomUUID().then((uuid) => {
+            let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
+            SendManager.addSendMessage(receiveAckMessage);
+        })
+    }
 
 
     //心跳包
@@ -461,7 +520,7 @@ export default class IM {
             if(sendMessageInterval == -1) {
                 sendMessageInterval = setInterval(function () {
 
-                        SendManager.handleSendMessageQueue();
+                    SendManager.handleSendMessageQueue();
 
                 }, sendMessageIntervalTime);
             }
@@ -469,7 +528,7 @@ export default class IM {
             if(recMessageInterval == -1) {
                 recMessageInterval = setInterval(function () {
 
-                        ReceiveManager.handleRecieveMessageQueue();
+                    ReceiveManager.handleRecieveMessageQueue();
 
                 }, recMessageIntervalTime)
             }

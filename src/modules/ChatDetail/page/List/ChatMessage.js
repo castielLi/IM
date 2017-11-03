@@ -56,6 +56,8 @@ export default class ChatMessage extends Component {
                     />
                 )
             }
+            default:
+                return null;
                 break;
         }
     };

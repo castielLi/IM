@@ -30,7 +30,7 @@ export function sqliteMessageToMessage(sqliteMessage){
     messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
     messageBody.Data = messageData;
 
-    message.Command = MessageCommandEnum.MSG_BODY;
+    message.Command = sqliteMessage.Command;
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
 
@@ -42,7 +42,15 @@ export function sqliteMessageToMessage(sqliteMessage){
          file.type = ResourceTypeEnum.Image;
          file.LocalSource =  sqliteMessage.localPath.split(",")[0];
          message.Resource = [file];
-    }else{
+    }else if(sqliteMessage.type == MessageType.audio){
+        message.type = "audio"
+        let file = new uploadResourceDto()
+        file.type = ResourceTypeEnum.audio;
+        file.LocalSource =  sqliteMessage.localPath.split(",")[0];
+        message.resourceTime = sqliteMessage.resourceTime;
+        message.Resource = [file];
+    }
+    else{
         message.type = "text"
     }
     return message;
@@ -60,13 +68,14 @@ export function sqlMessageToMessage(sqliteMessage){
     messageData.Sender = sqliteMessage.send;
     messageData.Receiver = sqliteMessage.rec;
 
-    messageBody.LocalTime = new Date().getTime();
+    messageBody.LocalTime = sqliteMessage.time;
     messageBody.Command = MessageBodyTypeEnum.MSG_BODY_CHAT;
     messageBody.Data = messageData;
 
-    message.Command = MessageCommandEnum.MSG_BODY;
+
     message.Data = messageBody;
     message.MSGID = sqliteMessage.messageId;
+    message.Command = sqliteMessage.Command;
 
     if(sqliteMessage.type != MessageType.text){
         let msgType = sqliteMessage.type;
@@ -75,6 +84,10 @@ export function sqlMessageToMessage(sqliteMessage){
         file.FileType = ResourceTypeEnum.msgType;
         file.LocalSource =  sqliteMessage.localPath.split(",")[0];
         file.RemoteSource =  sqliteMessage.url.split(",")[0];
+        if(sqliteMessage.type != MessageType.image){
+            file.Time = sqliteMessage.resourceTime;
+        }
+
         message.Resource = [file];
     }else{
         message.type = "text"

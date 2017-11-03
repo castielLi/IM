@@ -32,25 +32,23 @@ export default class ChatMessageText extends Component {
         let dataArr = stringToContentArray(Data)
         return(
             <View style={[style,styles.bubble]}>
-                <Text style={styles.contentText}>
                     {
                         dataArr.map((v,i)=>{
                             if (v["Content"] != null) {//文本
-                                return <Text key={i}>{v["Content"]}</Text>
+                                return <Text key={i} style = {styles.contentText}>{v["Content"]}</Text>
                             }
                             else if (v["Resources"] != null) {//emoji
                                 if(!EMOJI_ENUM[v["Resources"]]){
-                                    return <Text key={i}>{v["Resources"]}</Text>
+                                    return <Text key={i} style = {styles.contentText}>{v["Resources"]}</Text>
                                 }
                                 return <Image
                                             key = {i}
                                             style = {styles.emoji}
                                             source={EMOJI_ENUM[v["Resources"]]}
-                                          />
+                                />
                             }
                         })
                     }
-                </Text>
             </View>
         )
     }
@@ -60,19 +58,23 @@ export default class ChatMessageText extends Component {
 
 const styles = StyleSheet.create({
     bubble:{
-        maxWidth:width-150,
-        padding:12,
-        justifyContent:'center',
-        borderRadius:5
+        maxWidth:width-100,
+        borderRadius:5,
+        paddingHorizontal:10,
+        paddingVertical:10,
+        flexDirection:'row',
+        flexWrap:'wrap',
+        alignItems:'center'
     },
     contentText:{
         includeFontPadding:false,
-        fontSize:16
+        fontSize:16,
+        lineHeight:20,
     },
     emoji:{
-        width:25,
-        height:25,
-        resizeMode:'stretch'
+        width:20,
+        height:20,
+        resizeMode:'cover'
     }
 });
 

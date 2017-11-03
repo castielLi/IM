@@ -6,5 +6,7 @@
 export default ChatCommandEnum = {
     MSG_BODY_CHAT_C2C : 1,
     MSG_BODY_CHAT_C2G : 2,
-    MSG_BODY_CHAT__C2R : 3
+    MSG_BODY_CHAT__C2R : 3,
+    MSG_BODY_CHAT_C2B:4,
+    MSG_BODY_CHAT_B2C:5,
 }

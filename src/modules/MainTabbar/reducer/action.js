@@ -23,3 +23,18 @@ export function initUnReadMessageNumber(number){
 
 }
 
+export function clearAllTabberMessageNumber(){
+    return {
+        type: 'CLEAR_ALLTABBERMESSAGE_NUMBER',
+    };
+
+}
+
+//修改mainTabBar默认显示页面
+export function changeTabBar(index){
+    return {
+        type: 'CHANGE_TABBAR',
+        index
+    }
+}
+

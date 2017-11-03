@@ -2,7 +2,7 @@ import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions}from 'react-native';
 import Login from './phoneLogin';
 import Register from './register';
-import {checkDeviceHeight,checkDeviceWidth} from './check';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
@@ -40,8 +40,10 @@ const styles = StyleSheet.create({
 		flex:1,
 	},
 	banner:{
-		width:Dimensions.get('window').width,
-		flex:1,
+        flex:1,
+        width:null,
+        height:null,
+        resizeMode:'stretch',
 		alignItems:'center',
 		justifyContent:'flex-end',
 	},

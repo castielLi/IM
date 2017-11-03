@@ -4,20 +4,30 @@
 import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
-import * as commonMethods from './formatQuerySql'
+import * as commonMethods from '../../Helper/formatQuerySql'
 import ChatWayEnum from '../dto/ChatWayEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
+import MessageType from '../dto/MessageType';
 
 export function storeSendMessage(message){
 
-    IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Receiver)
+    // if(message.type != "friend") {
+        IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
+    //申请好友消息不需要存数据库
+    // }else{
+    //     IMFMDB.InsertFriendMessage(message);
+    // }
 }
 
 export function storeRecMessage(message){
 
-    IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
+    if(message.type != "friend") {
+        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
+    }else{
+        IMFMDB.InsertFriendMessage(message);
+    }
 }
 
 export function deleteClientRecode(name,chatType){
@@ -76,8 +86,16 @@ export function getChatList(callback){
     IMFMDB.getAllChatClientList(callback)
 }
 
+export function getAllApplyFriendMessage(callback){
+    IMFMDB.GetFriendMessage(callback);
+}
+
+export function updateApplyFriendMessage(message){
+    IMFMDB.UpdateFriendMessage(message)
+}
+
 var databaseObj = {
-    // name :"IM.db",
+    name :"IM.db",
 }
 if(Platform.OS === 'ios'){
     databaseObj.createFromLocation='1'
@@ -86,11 +104,11 @@ if(Platform.OS === 'ios'){
 
 
 export function initIMDatabase(AccountId,callback){
+    if(Platform.OS === 'ios'){
+        databaseObj.name =  AccountId + "/database/IM.db"
+    }
 
-    // databaseObj.name =  AccountId + "/IM.db";
-    databaseObj.name = 'IM.db'
-
-    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId,{
+    RNFS.mkdir(RNFS.DocumentDirectoryPath+"/"+AccountId+"/database",{
         NSURLIsExcludedFromBackupKey:true
     }).then((success) => {
         console.log('Create directory success!');
@@ -102,7 +120,9 @@ export function initIMDatabase(AccountId,callback){
     IMFMDB.initIMDataBase(AccountId,callback);
 }
 
-
+export function closeImDb(){
+    IMFMDB.closeImDb()
+}
 
 let IMFMDB = {};
 IMFMDB.initIMDataBase = function(AccountId,callback){
@@ -198,6 +218,65 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
         });
     }, (err)=>{errorDB('初始化数据库',err)});
 }
+
+//添加申请好友和收到好友申请的消息
+IMFMDB.InsertFriendMessage = function(message){
+    let insertSql = sqls.ExcuteIMSql.AddNewMessageToApplyFriend;
+
+    let status = 'wait';
+    let time = new Date().getTime();
+    let {comment , key, nick, avator} = message.Data.Data.Data;
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,comment,time,key,nick,avator])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(insertSql, [], (tx, results) => {
+               console.log("添加好友申请消息成功");
+            }, (err)=>{errorDB('添加好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
+//获取所有好友申请表中的数据
+IMFMDB.GetFriendMessage = function(callback){
+    let querySql = sqls.ExcuteIMSql.QueryApplyFriend;
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(querySql, [], (tx, results) => {
+
+                console.log(results)
+                callback(results.rows.raw());
+
+            }, (err)=>{errorDB('获取好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
+
+//更新好友申请表
+IMFMDB.UpdateFriendMessage = function(message){
+    let updateSql = sqls.ExcuteIMSql.UpdateApplyFriend;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.key])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("修改好友申请表成功")
+
+            }, (err)=>{errorDB('修改好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
 
 //删除当前用户的聊天记录
 IMFMDB.DeleteChatByClientId = function(name,chatType){
@@ -316,7 +395,6 @@ IMFMDB.getAllChatClientList = function(callback){
             tx.executeSql(sqls.ExcuteIMSql.GetChatList, [], (tx, results) => {
 
                 console.log(results);
-
                 callback(results.rows.raw());
 
             }, errorDB);
@@ -530,6 +608,17 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
 
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
+
+IMFMDB.closeImDb = function(){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.close();
+
+    });
+}
+
 //添加消息进总消息表
 function insertChat(message,tx){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
@@ -542,9 +631,15 @@ function insertChat(message,tx){
     }else{
         localPath = " ";
     }
+    let sourceTime = " ";
+    //音频视频才有时间
+    if(message.type === 'audio'||message.type === 'video'){
+        //默认一条消息只能有一条音频或者视频
+        sourceTime = message.Resource[0].Time;
+    }
     let url = " ";
 
-    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,url,message.status]);
+    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
 
@@ -645,7 +740,11 @@ function getContentByMessage(message){
         }
 
     }else if(message.Resource == null){
-        content = message.Data.Data.Data
+        if(message.type == MessageType.information){
+            content = "[通知]"
+        }else {
+            content = message.Data.Data.Data
+        }
     }else{
         content = "[图片]";
     }

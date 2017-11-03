@@ -16,10 +16,14 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
-} from './check';
+} from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
-import NavigationBar from 'react-native-navbar';
-import Features from './features';
+import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import Features from '../../Common/menu/features';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as featuresAction from '../../Common/menu/reducer/action';
 
 var originData = [
 		{
@@ -52,35 +56,75 @@ var originData = [
 			},			
 	]
 
-export default class Zoom extends ContainerComponent {
+
+let styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f2f2f2"
+    },
+    sction:{
+        height:30
+    },
+    itemBox:{
+        height:50,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff'
+    },
+    itemLeftBox:{
+        height:40,
+        flexDirection:'row',
+        alignItems:'center',
+
+    },
+    pic:{
+        width:30,
+        height:30,
+        resizeMode:'stretch',
+        marginRight:15
+    },
+    itemText:{
+        fontSize:20,
+        color:'#000',
+        textAlignVertical:'center'
+    },
+    ItemSeparator:{
+        height:1,
+        backgroundColor: '#eee',
+    },
+    arrow:{
+        fontSize:20,
+        color:'#aaa'
+    },
+});
+
+
+class Zoom extends ContainerComponent {
 	constructor(props) {
 		super(props);
 		this.state = {
-			showFeatures:false,//显示功能块组件 
 			
 		};
+	}
+
+	componentWillMount(){
+        styles = super.componentWillMount(styles)
 	}
 
 	changeShowFeature=(newState)=>{
 		this.setState({showFeatures:newState});
 	}
-	_rightButton = ()=>{
-		return (
-                <View style = {styles.RightLogo}>
-                    <TouchableOpacity style = {{marginRight:checkDeviceWidth(60)}}>
-                        <Image style = {styles.headerLogo} source = {require('../resource/search.png')}></Image>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress = {()=>{this.setState({showFeatures:!this.state.showFeatures})}}>
-                        <Image style = {[styles.headerLogo,{marginRight:0}]} source = {require('../resource/features.png')}></Image>
-                    </TouchableOpacity>
-                </View>
-		)
-	}
 	_renderItem = (info)=>{
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
-					<View  style={styles.itemBox} >
-						<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
-						<Text style={styles.itemText}>{info.item.name}</Text>
+					<View style={styles.itemBox}>
+						<View  style={styles.itemLeftBox} >
+							<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
+							<Text style={styles.itemText}>{info.item.name}</Text>
+						</View>
+						{/*<Text style={styles.arrow}>{'>'}</Text>*/}
+						<Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 					</View>
 			   </TouchableHighlight>
 	}
@@ -94,10 +138,12 @@ export default class Zoom extends ContainerComponent {
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
-				<NavigationBar
-					tintColor = '#38373d'
-					leftButton = {<Text style={styles.headerTitle}>云信</Text>}
-					rightButton= {this._rightButton()}
+				<MyNavigationBar
+					left = {'云信'}
+					right = {[
+                        {func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
+                    ]}
 				/>
 				<SectionList
 			      keyExtractor={(item,index)=>("index"+index+item)}
@@ -107,58 +153,22 @@ export default class Zoom extends ContainerComponent {
 			      ItemSeparatorComponent={this._renderSeparator}
 				  stickySectionHeadersEnabled={false} 
 				/>
-				{
-					this.state.showFeatures?<Features changeShowFeature = {this.changeShowFeature} showFeatures = {this.state.showFeatures}></Features>:null
-				}
+				<Features navigator={this.props.navigator}/>
+
 			</View>
 		)
 	}
 }
 
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#f2f2f2"
-	},
-	headerTitle: {
-		color: '#ffffff',
-		fontSize: checkDeviceHeight(36),
-		marginLeft: checkDeviceWidth(20),
-		textAlignVertical:'center',
-	},
-	RightLogo: {
-		marginRight:checkDeviceWidth(40),
-		flexDirection: 'row',
-		alignItems:'center',
-	},
-	headerLogo: {
-		height: checkDeviceWidth(40),
-		width: checkDeviceHeight(40),
-		resizeMode: 'stretch',
-	},
-	sction:{
-		height:30
-	},
-	itemBox:{
-		height:60,
-		flexDirection:'row',
-		alignItems:'center',
-		backgroundColor:'#fff'
-	},
-	pic:{
-		width:30,
-		height:30,
-		resizeMode:'stretch',
-		marginHorizontal:20,
-	},
-	itemText:{
-		fontSize:20,
-		color:'#000'
-	},
-	ItemSeparator:{
-		height:1,
-		backgroundColor: '#eee', 
-	},
+
+const mapStateToProps = state => ({
 });
 
+const mapDispatchToProps = (dispatch) => {
+    return{
+        ...bindActionCreators(featuresAction, dispatch)
+
+    }};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Zoom);
 

@@ -17,7 +17,7 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/IM/redux/action';
+import * as commonActions from '../../../../Core/IM/redux/chat/action';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
@@ -37,11 +37,11 @@ render(){
    let {isExpressionPage,isPlusPage} = this.props.thouchBarStore;
     if(isExpressionPage){
       return(
-          <ExpressionBox setEmoji={this.props.setEmoji} _onSubmitEditing={this.props._onSubmitEditing} textInputData={this.props.textInputData} client={this.props.client}></ExpressionBox>
+          <ExpressionBox setEmoji={this.props.setEmoji} client={this.props.client} textInputData={this.props.textInputData} _onSubmitEditing={this.props._onSubmitEditing}></ExpressionBox>
         )
     }else if(isPlusPage){
       return(
-        <MoreUseBox client={this.props.client}></MoreUseBox>
+        <MoreUseBox client={this.props.client} type={this.props.type}></MoreUseBox>
         )
     }else{
       return(

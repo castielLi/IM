@@ -18,10 +18,11 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/IM/redux/action';
+import * as commonActions from '../../../../Core/IM/redux/chat/action';
 import {createResourceMessageObj} from './createMessageObj';
 import IM from '../../../../Core/IM/index';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
+import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
@@ -63,7 +64,7 @@ imagePikerCallBack(response){
 
     //初始化消息
     let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
-    let message = createResourceMessageObj('image','private',[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
+    let message = addResourceMessage('image',this.props.type,[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
     im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
@@ -84,6 +85,7 @@ render(){
       return(
         <View style={styles.ThouchBarBoxBottomBox}>
           <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false}>
+            <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocal}>
@@ -128,6 +130,8 @@ render(){
                 <Text style={styles.plusItemTit}>红包</Text>
               </View>
             </View>
+            </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
@@ -148,6 +152,7 @@ render(){
                 <Text style={styles.plusItemTit}>照片</Text>
               </View>
             </View>
+              </TouchableWithoutFeedback>
           </Swiper>
         </View>
         )

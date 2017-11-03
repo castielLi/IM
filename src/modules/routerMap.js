@@ -24,16 +24,36 @@ import Start from './Start/page'
 import RecentList from './RecentList/page/recentChat'
 import Contacts from './Contacts/page'
 import Zoom from './Zoom/page'
+import AddFriends from './AddFriends'
+import ClientInformation from './ClientInformation/page'
+import InformationSetting from './InformationSetting/page'
+import NewFriend from './NewFriend/page'
+import SearchNewFriend from './SearchNewFriend/page'
+import ChatSetting from './ChatSetting/page'
+import Me from './Me/page'
+import GroupList from './Contacts/page/GroupList'
+
+import Validate from './AddFriends/validate'
+import ChooseClient from './ChooseClient/page'
+import GroupInformationSetting from './GroupInformationSetting/page'
+import MoreGroupList from './MoreGroupList/page'
+import GroupAnnouncement from './GroupInformationSetting/page/GroupAnnouncement'
+import GroupName from './GroupInformationSetting/page/GroupName'
 
 export const MainPage = {
-    key: 'ChatDetail',
-    routeId: 'ChatDetail'
+    key: 'MainTabbar',
+    routeId: 'MainTabbar'
 }
 
 
 export const InitialRoute = {
     key: 'Start',
     routeId: 'Start'
+}
+
+export const LoginRoute = {
+    key: 'Login',
+    routeId: 'Login'
 }
 
 export const RouteMap = {
@@ -67,7 +87,7 @@ export const RouteMap = {
             params: {}
         },
         'TabFour': {
-            component: RecentList,
+            component: Me,
             params: {}
         }
     },
@@ -108,28 +128,113 @@ export const RouteMap = {
             component: ChatDetail,
             params: {}
         }
-    },'Camera': {
+    },
+    'Camera': {
         'Camera': {
             component: Camera,
             params: {}
         }
-    },'RecentList': {
+    },
+    'RecentList': {
         'RecentList': {
             component: RecentList,
             params: {}
         }
-    },'Contacts': {
+    },
+    'Contacts': {
         'Contacts': {
             component: Contacts,
             params: {}
+        },
+        'GroupList':{
+            component:GroupList,
+            params:{}
         }
-    },'Zoom': {
+    },
+    'Zoom': {
         'Zoom': {
             component: Zoom,
             params: {}
         }
     },
-
+    'AddFriends':{
+        'AddFriends':{
+            component: AddFriends,
+            params: {}
+        }
+    },
+    'ClientInformation': {
+        'ClientInformation': {
+            component: ClientInformation,
+            params: {}
+        }
+    },
+    'InformationSetting': {
+        'InformationSetting': {
+            component: InformationSetting,
+            params: {}
+        }
+    },
+    'NewFriend': {
+        'NewFriend': {
+            component: NewFriend,
+            params: {}
+        }
+    },
+    'SearchNewFriend': {
+        'SearchNewFriend': {
+            component: SearchNewFriend,
+            params: {}
+        }
+    },
+    'ChatSetting': {
+        'ChatSetting': {
+            component: ChatSetting,
+            params: {}
+        }
+    },
+    'Me': {
+        'Me': {
+            component: Me,
+            params: {}
+        }
+    },
+    'Validate': {
+        'Validate': {
+            component: Validate,
+            params: {}
+        }
+    },
+    'ChooseClient': {
+        'ChooseClient': {
+            component: ChooseClient,
+            params: {}
+        }
+    },
+    'GroupInformationSetting': {
+        'GroupInformationSetting': {
+            component: GroupInformationSetting,
+            params: {}
+        }
+    },
+    'MoreGroupList': {
+        'MoreGroupList': {
+            component: MoreGroupList,
+            params: {}
+        }
+    },
+    'GroupAnnouncement': {
+        'GroupAnnouncement': {
+            component: GroupAnnouncement,
+            params: {}
+        }
+    },
+    'GroupName': {
+        'GroupName': {
+            component: GroupName,
+            params: {}
+        }
+    },
 };
 
 

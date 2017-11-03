@@ -18,91 +18,17 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../RecentList/reducer/action';
-import NavigationBar from 'react-native-navbar';
+import * as recentListActions from '../../../Core/User/redux/action';
+import * as contactsActions from '../reducer/action';
+import User from '../../../Core/User';
+import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import {initSection,initDataFormate} from './formateData';
+import * as featuresAction from '../../Common/menu/reducer/action';
+
+
 var {height, width} = Dimensions.get('window');
-var originData = [
-		{
-			'title':'A',
-			'client': [{
-					'name': "1",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "阿玛尼",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "爱多多",
-					'type':"private",
-					'pic':''
-				}]
-			},
-			{
-			'title':'B',
-			'client': [{
-					'name': "2",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				}]
-			},
-			{
-			'title':'C',
-			'client': [{
-					'name': "草料",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				},{
-					'name': "保持",
-					'type':"private",
-					'pic':''
-				}, {
-					'name': "保时捷",
-					'type':"private",
-					'pic':''
-				}]
-			}
-	]
+import Features from '../../Common/menu/features';
+
 class Contacts extends ContainerComponent {
 
 	constructor(props) {
@@ -115,28 +41,14 @@ class Contacts extends ContainerComponent {
 			sections:[],
 			totalItemLength:0,
 			//右边title导航
-			rightSectionItemModalIndex:''
-		}
+			rightSectionItemModalIndex:'',
 
+			isShowSearchInput:false,
+			text:'',//textInput文字
+		}
+        this.relationStore = []
 	}
-	formateData =(originData)=>{
-		var clientInfos = [];
-		var clientSections = [];
-		let totalItemLength = 0;
-		originData.forEach((v,i)=>{
-			let obj = {};
-			obj.key = v.title;
-			obj.data = v.client;
-			totalItemLength+=v.client.length;
-			clientInfos.push(obj);
-			clientSections.push(v.title); 
-		})
-		this.setState({
-			data:clientInfos,
-			totalItemLength,
-			sections:clientSections
-		})
-	}
+
 	onPressRightSectionItemIn = (index) =>{
 		this.refs.mySectionList.scrollToLocation({
 		animated : true,
@@ -155,37 +67,41 @@ class Contacts extends ContainerComponent {
 		})
 	}
 	_getSections = ()=>{
-        let array = new Array();
-        for (let i = 0; i < this.state.sections.length; i++) {
-            array.push(
-                <View key={i}>
-                	<TouchableWithoutFeedback
-	                	 onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
-	                	 onPressOut={this.onPressRightSectionItemOut}
-	                	 //pointerEvents="none"
-		                 
-		                 ref={'sectionItem' + i}>
-	                    <View style={styles.rightSectionView}>
-		                    <Text style={styles.rightSectionItem}>{this.state.sections[i]}</Text>                 
-	                    </View>
-	                </TouchableWithoutFeedback>
-	                {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{this.state.sections[i]}</Text>:null}                
-                </View>)
-        }
-        return array;
+		if(this.relationStore.length === 0){
+			return null
+		}else{
+            let sections = initSection(this.relationStore)
+            let array = new Array();
+            for (let i = 0; i < sections.length; i++) {
+                array.push(
+					<View key={i}>
+						<TouchableWithoutFeedback
+							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
+							onPressOut={this.onPressRightSectionItemOut}
+							//pointerEvents="none"
+							ref={'sectionItem' + i}>
+							<View style={styles.rightSectionView}>
+								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
+							</View>
+						</TouchableWithoutFeedback>
+                        {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
+					</View>)
+            }
+            return array;
+		}
     }
 
-	componentWillMount(){
-		this.formateData(originData);
-	}
 	goToChat = (item)=>{
-		this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-	}
+		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
+
+    }
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.name;
+		var txt = '  ' + info.item.Nick;
+		let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
-					<View  style={styles.itemBox} >
-						<Image source={require('../resource/other.jpg')} style={styles.pic} ></Image>
+					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
+						{info.item.avator?<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -195,50 +111,75 @@ class Contacts extends ContainerComponent {
 		var txt = info.section.key;
 		return <Text style={styles.sectionHeader}>{txt}</Text>
 	}
+    goToNewFriend = () =>{
+        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
+
+    }
 	_renderHeader = () => {
 		return  <View>
 					<View style={styles.listHeaderBox}>
-						<TextInput
-							style={styles.search}
-							underlineColorAndroid = 'transparent'
-						>
-						</TextInput>
+						<View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',alignItems:'center',borderRadius:5,}}>
+                            {this.state.isShowSearchInput ?
+								<TextInput
+									style={styles.search}
+									underlineColorAndroid='transparent'
+									placeholder = '搜索'
+									autoFocus = {true}
+									defaultValue = {this.state.text}
+									onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}
+									onChangeText={(v)=>{
+										if(v===''){
+											this.setState({isShowSearchInput:false})
+										}
+                                        this.setState({text:v})
+									}
+									}
+								>
+								</TextInput>:
+								<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>
+									<View style={styles.searchView}>
+										<Icon name="search" size={14} color="#aaa" /><Text style={{color:'#aaa',marginLeft:10,fontSize:14}}>搜索</Text>
+									</View>
+								</TouchableWithoutFeedback>
+                            }
+                            {this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:'',isShowSearchInput:false})}} style={{marginHorizontal:10}}/>}
+						</View>
+
 					</View>
 					<View style={styles.listOtherUseBox}>
-						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
+							<View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
 									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
 								</View>
-								<View style={styles.ItemSeparator}><Text></Text></View>
 							</View>
 					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
+
+                           this.route.push(this.props,{key:'Contacts',routeId:'GroupList',params:{}});
+					   }}>
+						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
 							</View>
-							<View style={styles.ItemSeparator}><Text></Text></View>
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
 							</View>
-							<View style={styles.ItemSeparator}><Text></Text></View>
 							</View>
 					   </TouchableHighlight>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-							<View>
+						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
 								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
-							</View>
-							<View style={styles.ItemSeparator}><Text></Text></View>
+								</View>
 							</View>
 					   </TouchableHighlight>
 					</View>
@@ -248,35 +189,40 @@ class Contacts extends ContainerComponent {
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 	_renderFooter = () =>{
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.state.totalItemLength+'位联系人'}</Text></View>
-	}
-		//定义上导航的左按钮
-	_rightButton() {
-			return <TouchableOpacity onPress={()=>alert('开发中')}>
-						<Text style={styles.moreUse}>+</Text>
-			       </TouchableOpacity>
+        let amount = 0;
+		for(let i = 0; i< this.relationStore.length;i++){
+			amount+= this.relationStore[i].data.length;
 		}
-		//定义上导航的标题
-	_title() {
-		return {
-			title: "通讯录",
-			tintColor:'#fff',
-		}
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{amount+'位联系人'}</Text></View>
 	}
+    goToAddFriends = ()=>{
+        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
+
+    }
+
+
+    changeShowFeature=(newState)=>{
+        this.setState({showFeatures:newState});
+    }
 	render() {
+
+		this.relationStore = initDataFormate('private',this.props.relationStore,this.state.text);
 		return (
 			<View style={styles.container}>
-				<NavigationBar
-					tintColor="#38373d"
-					rightButton={this._rightButton()}
-					title={this._title()} />
+				<MyNavigationBar
+					left = {'云信'}
+					right={[
+                        {func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
+                    ]}
+				/>
 			    <SectionList
 			      ref={'mySectionList'}
 			      keyExtractor={(item,index)=>("index"+index+item)}
 			      renderSectionHeader={this._sectionComp}
 			      renderItem={this._renderItem}
-			      sections={this.state.data}
-			      ItemSeparatorComponent={this._renderSeparator}
+			      sections={this.relationStore}
+			      // ItemSeparatorComponent={this._renderSeparator}
 			      ListHeaderComponent={this._renderHeader}
 				  ListFooterComponent = {this._renderFooter}
 				  stickySectionHeadersEnabled={true}
@@ -284,6 +230,7 @@ class Contacts extends ContainerComponent {
 				<View style={styles.rightSection}>
 					{this._getSections()}
 				</View>
+                <Features navigator={this.props.navigator}/>
 		    </View>
 	);
 }
@@ -300,10 +247,12 @@ const styles = StyleSheet.create({
 		textAlignVertical: 'center', 
 		backgroundColor: '#eee', 
 		color: '#aaa', 
-		fontSize: 16,
-		paddingLeft:10
+		fontSize: 14,
+		paddingLeft:10,
+		paddingTop:8
 	},
 	itemBox:{
+		flex:1,
 		height: 60, 
 		flexDirection:'row',
 		alignItems:'center',
@@ -315,28 +264,38 @@ const styles = StyleSheet.create({
 		resizeMode:'stretch'
 	},
 	itemText:{		
-		textAlignVertical: 'center', 
-		backgroundColor: "#ffffff", 
+		textAlignVertical: 'center',
 		color: '#5C5C5C', 
 		fontSize: 15
 	},
 	ItemSeparator:{
-		height:1,
-		backgroundColor: '#eee', 
+		// height:1,
+		borderBottomColor : '#eee',
+		borderBottomWidth:1
+		// backgroundColor: '#eee',
 	},
 	listHeaderBox:{
-		backgroundColor: '#ddd', 
-		alignItems: 'center', 
+		backgroundColor: '#ddd',
 		height:50,
-		padding:10
+		padding:10,
 	},
 	search:{
 		flex:1,
-		width:width-20,
+        height:30,
 		backgroundColor:'#fff',
-		borderRadius:5,
-		color:'#000'
+		color:'#000',
+		paddingVertical:0,
+        borderRadius:5,
 	},
+    searchView:{
+        flex:1,
+		height:30,
+        backgroundColor:'#fff',
+		flexDirection:'row',
+		justifyContent:'center',
+		alignItems:'center',
+        borderRadius:5,
+    },
     moreUse:{
 		color:'#fff',
 		fontSize:30,
@@ -346,14 +305,14 @@ const styles = StyleSheet.create({
 	listFooterBox:{
 		borderTopWidth:1,
 		borderColor:'#eee',
-		backgroundColor: "#ffffff", 
-		alignItems: 'center', 
+		backgroundColor: "#ffffff",
+		alignItems: 'center',
 		height: 50
 	},
 	listFooter:{
 		height: 50,
 		textAlignVertical: 'center',
-		fontSize: 18, 
+		fontSize: 15,
 		color: '#aaa'
 	},
 	rightSection:{
@@ -387,12 +346,15 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    //accountId:state.loginStore.accountMessage.accountId
+    relationStore: state.relationStore
 });
 
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(recentListActions, dispatch),
-}};
+      ...bindActionCreators(contactsActions, dispatch),
+      ...bindActionCreators(featuresAction, dispatch)
+
+  }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Contacts);

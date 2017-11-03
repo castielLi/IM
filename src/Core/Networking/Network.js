@@ -22,6 +22,13 @@ var UsingFramework = ""
 var NeedAuth = false;
 
 
+let resultData = {};
+resultData.success = false;
+resultData.errorMessage = "";
+resultData.data = {};
+resultData.errorCode = -1;
+
+
 export default class netWorking {
   constructor() {
     if (__instance()) return __instance();
@@ -41,6 +48,10 @@ export default class netWorking {
       UsingFramework = frameworkName;
   }
 
+  static setAuthorization(authorization){
+      AuthToken = authorization;
+  }
+
   methodGET(requestURL,callback,encryption){
 
     setAuthToken()
@@ -49,21 +60,43 @@ export default class netWorking {
           gettingFrameworkMethod().httpRequestGET(requestURL,netWorkingConfig,function(result,error){
 
             if(result!= null && result.status == 200){
-              if(NeedAuth){
-                AuthToken = result.response.headers["Auth_Token"];
-              }
+              // if(NeedAuth){
+              //   AuthToken = result.response.headers["Auth_Token"];
+              // }
               res(result);
             }else {
-              rej(result);
+                if(error!=null){
+
+                    rej(error);
+                }else{
+
+                    rej({"errorMessage":result.status + "错误"})
+                }
             }
           })
 
       }).then(
         (result)=>{
-            callback(result.data);
+
+            if(result.Data !=null){
+
+                resultData.success = true;
+                resultData.data = result;
+                resultData.errorMessage = "";
+            }else{
+                resultData.success = false;
+                resultData.data = {};
+                resultData.errorMessage = "错误代码:" + result.Result;
+                resultData.errorCode = result.Result;
+            }
+            callback(resultData);
         },
-        (result)=>{
-            console.log(result)
+        (error)=>{
+            resultData.success = false;
+            resultData.errorMessage = error.errorMessage;
+            resultData.data = {};
+            resultData.errorCode = -1;
+            callback(resultData);
         }
       )
     }
@@ -80,22 +113,42 @@ export default class netWorking {
            gettingFrameworkMethod().httpRequestPOST(requestURL,params,networkConfig,function(result,error){
 
             if(result!= null && result.status == 200){
-             if(NeedAuth){
-               AuthToken = result.response.headers["Auth_Token"];
-             }
+
              res(result.json());
            }else {
-             rej(result);
+                if(error!=null){
+
+                    rej(error);
+                }else{
+
+                    rej({"errorMessage":result.status + "错误"})
+                }
+
            }
          })
 
        }).then(
-         (result)=>{
-           callback(result);
-         },
-         (result)=>{
-           console.log(result)
-         }
+           (result)=>{
+               if(result.Data != null){
+
+                   resultData.success = true;
+                   resultData.data = result;
+                   resultData.errorMessage = "";
+               }else{
+                   resultData.success = false;
+                   resultData.data = {};
+                   resultData.errorCode = result.Result;
+                   resultData.errorMessage = "错误代码:" + result.Result;
+               }
+               callback(resultData);
+           },
+           (error)=>{
+               resultData.success = false;
+               resultData.errorMessage = error.errorMessage;
+               resultData.data = {};
+               resultData.errorCode = -1;
+               callback(resultData);
+           }
        )
      }
   }
@@ -114,7 +167,7 @@ export default class netWorking {
 
 function setAuthToken(){
   if(NeedAuth) {
-    Object.assign(netWorkingConfig, {'Auth-Token': AuthToken})
+    Object.assign(netWorkingConfig, { "Authorization"  : AuthToken})
   }
 }
 

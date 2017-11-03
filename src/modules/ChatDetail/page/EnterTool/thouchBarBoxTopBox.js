@@ -13,7 +13,8 @@ import {
   Platform,
   PixelRatio,
   Modal,
-  PanResponder
+  PanResponder,
+
 } from 'react-native';
 import {
   connect
@@ -27,10 +28,9 @@ import {
 import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
-import * as commonActions from '../../../../Core/IM/redux/action';
-import {
-  createResourceMessageObj
-} from './createMessageObj';
+import * as commonActions from '../../../../Core/IM/redux/chat/action';
+import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
+
 import IM from '../../../../Core/IM/index';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
@@ -58,7 +58,9 @@ class ThouchBarBoxTopBox extends Component {
       thouchBarTopBoxHeight: 0,
       isShowModal: false,
       recordingModalStatus: 0, //0:录音中 1:时间太短 2：取消发送,
-      isOnPressSpeakBox:false //按下录音按钮
+      isOnPressSpeakBox:false, //按下录音按钮
+        textInputData:'',//输入框数据
+
     };
     this.shouldPressSpeakBox = true;
     this.changeThouchBarTopBoxHeight = this.changeThouchBarTopBoxHeight.bind(this);
@@ -148,7 +150,7 @@ class ThouchBarBoxTopBox extends Component {
     this.state.fileName = fileName;
     startTime = Date.now();
     recordTimer = setTimeout(() => {
-      audio = new Audio(this.props.client,this.props.type, fileName);
+      audio = new Audio(this.props.accountId,this.props.client,this.props.type, fileName);
       audio._record();
     }, 200)
     this.setState({
@@ -190,12 +192,12 @@ class ThouchBarBoxTopBox extends Component {
               isShowModal: false,
             })
             //初始化消息
-          let message = createResourceMessageObj('audio', 'private', [{
+          let message = addResourceMessage('audio',this.props.type, [{
             FileType: ResourceTypeEnum.audio,
             LocalSource: this.audioPath + '/' + this.state.fileName + '.aac',
             RemoteSource: '',
               Time:currentTime?currentTime:1
-          }], this.props.accountId, this.props.client);//(资源类型，way，资源，发送者，接收者)
+          }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             //发送消息到IM
           im.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
@@ -245,7 +247,7 @@ class ThouchBarBoxTopBox extends Component {
   blur() {
     this.input.getWrappedInstance().input.blur();
   }
-  _onSubmitEditing() {
+  _onSubmitEditing=()=> {
     this.input.getWrappedInstance()._onSubmitEditing();
   }
   renderEnterBox() {
@@ -254,7 +256,7 @@ class ThouchBarBoxTopBox extends Component {
         <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?50:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
-        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.props.setTextInputData} client={this.props.client}></AutoExpandingTextInput>
+        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type}></AutoExpandingTextInput>
       </View>
     )
   }
@@ -275,7 +277,7 @@ class ThouchBarBoxTopBox extends Component {
             isOnPressSpeakBox:true
           })
           this._onPressIn();
-        }, 
+        },
         //移动时作出的动作
         onResponderMove: (e)=>{
           if(e.nativeEvent.pageY<this.speakBoxOffsetY){
@@ -287,7 +289,7 @@ class ThouchBarBoxTopBox extends Component {
               recordingModalStatus: 0,
             })
           }
-        },  
+        },
         //动作释放后做的动作
         onResponderRelease: ()=>{
           this.setState({
@@ -297,13 +299,13 @@ class ThouchBarBoxTopBox extends Component {
             this._onPressOut();
           }else if(this.state.recordingModalStatus === 2){
             this._onPressCancel();
-          }      
-        }, 
+          }
+        },
 }
 
     //创建文件夹
-    let audioPath = RNFS.DocumentDirectoryPath + '/audio/' + this.props.type +'-'+this.props.client;
-    let imagePath = RNFS.DocumentDirectoryPath + '/image/' + this.props.type +'-'+this.props.client;
+    let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + this.props.type +'-'+this.props.client;
+    let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + this.props.type +'-'+this.props.client;
     this.audioPath = audioPath;
     this.imagePath = imagePath;
   }
@@ -343,6 +345,14 @@ class ThouchBarBoxTopBox extends Component {
              </View>
     }
   }
+
+    setTextInputData=(data)=>{
+        this.setState({
+            textInputData:data
+        })
+        this.props.setTextInputData(data);
+    }
+
   render() {
     return (
       <View>
@@ -354,9 +364,16 @@ class ThouchBarBoxTopBox extends Component {
             <TouchableHighlight style={[styles.button,styles.smileButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toExpression}>
               {this.rendersmileButton()}
             </TouchableHighlight>
-            <TouchableHighlight style={[styles.button,styles.plusButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toPlus}>
-              {this.renderPlusButton()}
-            </TouchableHighlight>
+            {this.state.textInputData&&Platform.OS === 'android'?
+                <TouchableHighlight style={[styles.sendButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._onSubmitEditing}>
+                  <Text style={styles.sendButtonTxt}>发送</Text>
+                </TouchableHighlight>:
+                <TouchableHighlight style={[styles.button,styles.plusButton]} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toPlus}>
+                    {this.renderPlusButton()}
+                </TouchableHighlight>
+            }
+
+
         </View>
         {this.renderModal()}     
       </View>
@@ -365,7 +382,7 @@ class ThouchBarBoxTopBox extends Component {
   }
   shouldComponentUpdate(nextProps, nextState) {
     //console.log(nextProps.emojiId,this.props.emojiId)
-    if (nextProps.thouchBarStore.isRecordPage !== this.props.thouchBarStore.isRecordPage || nextProps.thouchBarStore.isExpressionPage !== this.props.thouchBarStore.isExpressionPage || nextProps.thouchBarStore.isPlusPage !== this.props.thouchBarStore.isPlusPage || nextProps.emojiText !== this.props.emojiText || nextProps.emojiId !== this.props.emojiId || nextState.thouchBarTopBoxHeight !== this.state.thouchBarTopBoxHeight || nextState.speakTxt !== this.state.speakTxt || nextState.isShowModal !== this.state.isShowModal || nextState.recordingModalStatus !== this.state.recordingModalStatus) {
+    if (nextProps.thouchBarStore.isRecordPage !== this.props.thouchBarStore.isRecordPage || nextProps.thouchBarStore.isExpressionPage !== this.props.thouchBarStore.isExpressionPage || nextProps.thouchBarStore.isPlusPage !== this.props.thouchBarStore.isPlusPage || nextProps.emojiText !== this.props.emojiText || nextProps.emojiId !== this.props.emojiId || nextState.thouchBarTopBoxHeight !== this.state.thouchBarTopBoxHeight || nextState.speakTxt !== this.state.speakTxt || nextState.isShowModal !== this.state.isShowModal || nextState.recordingModalStatus !== this.state.recordingModalStatus||nextState.textInputData!==this.state.textInputData) {
       return true
     }
     return false;
@@ -399,12 +416,25 @@ const styles = StyleSheet.create({
   },
   smileButton: {
     bottom: pxToPt(10),
-    right: 45
+    right: 50
   },
   plusButton: {
     bottom: pxToPt(10),
     right: 5
   },
+    sendButton:{
+        position: 'absolute',
+        height: pxToPt(30),
+        width: pxToPt(35),
+        backgroundColor:'#3399ff',
+        justifyContent: 'center',
+        alignItems: 'center',
+        bottom: pxToPt(10),
+        right: 5
+    },
+    sendButtonTxt:{
+      color:'#fff'
+    },
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),

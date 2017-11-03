@@ -17,9 +17,13 @@ let __instance = (function () {
 
 let onRecieveMessage = "undefined";
 let _token = undefined;
+let _deviceId = undefined;
+let _device = undefined;
+let _imToken = undefined;
 let netWorkStatus = undefined;
 let currentObj = undefined;
 let heartBeatCode = undefined;
+let NeedToReConnect = true;
 
 export default class Connect extends Component{
 
@@ -45,13 +49,19 @@ export default class Connect extends Component{
             }
             let message = JSON.parse(event.data);
             console.log("消息类型是："+message.Command,message,'-----------------------------------------------------------------------------');
-            if(message.Command == MessageCommandEnum.MSG_REV_ACK) {
-                onRecieveMessage(message.MSGID,MessageCommandEnum.MSG_REV_ACK);
+            if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
+                onRecieveMessage(message.Data,MessageCommandEnum.MSG_SEND_ACK);
             }else if(message.Command == MessageCommandEnum.MSG_HEART){
                 heartBeatCode = message;
                 onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
-            }else if(message.Command == MessageCommandEnum.MSG_BODY){
+            }else if(message.Command == MessageCommandEnum.MSG_BODY ){
                 onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
+            }else if(message.Command == MessageCommandEnum.MSG_KICKOUT){
+                NeedToReConnect = false;
+                currentObj.webSocket.close();
+                onRecieveMessage(message,MessageCommandEnum.MSG_KICKOUT);
+            }else if(message.Command == MessageCommandEnum.MSG_ERROR){
+                onRecieveMessage(message,MessageCommandEnum.MSG_ERROR);
             }
         });
 
@@ -73,8 +83,12 @@ export default class Connect extends Component{
 
             if(netWorkStatus == "none"){
                 console.log('GoodBye Server!');
+                currentObj.webSocket.close();
             }else{
-                currentObj.reConnectNet();
+                if(NeedToReConnect) {
+                    currentObj.reConnectNet();
+                }
+                NeedToReConnect = !NeedToReConnect;
             }
         });
     }
@@ -94,21 +108,33 @@ export default class Connect extends Component{
     }
 
 
+    logout(){
+        NeedToReConnect = false;
+        this.webSocket.close();
+    }
 
 
     onRecieveCallback(callback){
         onRecieveMessage = callback;
     }
 
-    startConnect(token){
+    startConnect(token,Device,DeviceId,IMToken){
         _token = token;
-        this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
+        _deviceId = DeviceId;
+        _device = Device;
+        _imToken = IMToken;
+
+        // AppId = 1
+        // Device = DeviceType
+        // DeviceNumber = DeviceId
+
+        this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+Device+"&Token="+ IMToken + "&DeviceId="+DeviceId);
         this.addEventListenner();
     }
 
     reConnectNet(){
         // + "/socket.io/?EIO=4&transport=websocket"
-       this.webSocket = new WebSocket(configs.serverUrl + "/?account=" + _token );
+       this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+_device+"&Token="+ _imToken + "&DeviceId="+_deviceId);
        this.addEventListenner();
     }
 
