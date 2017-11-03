@@ -201,6 +201,11 @@ class GroupInformationSetting extends ContainerComponent {
 
         }
     }
+    gotoGroupName = ()=>{
+
+            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation}});
+
+    }
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -228,11 +233,11 @@ class GroupInformationSetting extends ContainerComponent {
                         </FlatList>
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
-                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupName} style={{marginTop:15}}>
                             <View  style={styles.remarksBox}>
                                 <Text style={styles.remarks}>群聊名称</Text>
                                 <View style={{flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={styles.arrowText}>{'IM群'}</Text>
+                                    <Text style={styles.arrowText}>{Name}</Text>
                                     <Icon name="angle-right" size={35} color="#aaa" />
                                 </View>
 
