@@ -12,6 +12,7 @@ import {
 	TouchableWithoutFeedback,
 	TextInput,
 	Dimensions,
+    FlatList,
     TouchableOpacity
 } from 'react-native';
 import uuidv1 from 'uuid/v1';
@@ -50,6 +51,8 @@ class ChooseClient extends ContainerComponent {
 
 			chooseArr:[],//选择的好友的id
             chooseObj:[],//选择的好友的id
+			text:'',//输入框文字,
+            isShowFlatList:false
 		}
         this.relationStore = []
 		this._rightButton = this._rightButton.bind(this);
@@ -118,7 +121,7 @@ class ChooseClient extends ContainerComponent {
 		//对象转为所需数组
 		let arr = Object.keys(obj);
 		let needArr = [];
-		let concatList = initFlatListData('private',this.props.relationStore);
+		let concatList = initFlatListData('private',this.props.relationStore,'');
 		for(let i=0;i<arr.length;i++){
 			//已选中 选项
 			if(obj[arr[i]]){
@@ -131,7 +134,9 @@ class ChooseClient extends ContainerComponent {
 			}
 		}
         this.setState({
-            chooseArr:needArr
+            chooseArr:needArr,
+			isShowFlatList:false,
+			text:''
         })
 	}
 
@@ -169,7 +174,7 @@ class ChooseClient extends ContainerComponent {
             hasMember !== -1 ? hasMember = true : hasMember = false;
 		}
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
-					<View  style={styles.itemBox} >
+					<View  style={[styles.itemBox,this.state.isShowFlatList?{borderBottomWidth:1,borderColor:'#bbb'}:{}]} >
 						{this.circleStyle(info,hasMember)}
                         {this._renderAvator(info.item)}
 						{/*<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>*/}
@@ -187,14 +192,8 @@ class ChooseClient extends ContainerComponent {
 
     }
 	_renderHeader = () => {
+    	if(this.hasGroup) return null;
 		return  <View>
-					<View style={styles.listHeaderBox}>
-						<TextInput
-							style={styles.search}
-							underlineColorAndroid = 'transparent'
-						>
-						</TextInput>
-					</View>
 					<View style={styles.listOtherUseBox}>
 
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
@@ -333,6 +332,7 @@ class ChooseClient extends ContainerComponent {
         let Loading = this.Loading;
 		let chooseArr = this.state.chooseArr;
 		this.relationStore = initDataFormate('private',this.props.relationStore);
+        this.relationFlatListStore = initFlatListData('private',this.props.relationStore,this.state.text);
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
@@ -340,19 +340,45 @@ class ChooseClient extends ContainerComponent {
 					heading={title}
 					right={{func:()=>{this._rightButton()},text:'完成',disabled:chooseArr.length>0?false:true}}
 				/>
-			    <SectionList
-			      ref={'mySectionList'}
-			      keyExtractor={(item,index)=>("index"+index+item)}
-			      renderSectionHeader={this._sectionComp}
-			      renderItem={this._renderItem}
-			      sections={this.relationStore}
-			      ItemSeparatorComponent={this._renderSeparator}
-			      ListHeaderComponent={this._renderHeader}
-				  stickySectionHeadersEnabled={true}
-				/>
-				<View style={styles.rightSection}>
-					{this._getSections()}
+				<View style={styles.listHeaderBox}>
+					<TextInput
+						style={styles.search}
+						underlineColorAndroid = 'transparent'
+						placeholder = '搜索'
+						autoFocus = {false}
+						defaultValue = {this.state.text}
+						onChangeText={(v)=>{
+                            this.setState({text:v,isShowFlatList:v?true:false})
+                        }
+						}
+					>
+					</TextInput>
 				</View>
+				{this.state.isShowFlatList?
+					<FlatList
+						ref={(flatList)=>this._flatList = flatList}
+						renderItem={this._renderItem}
+						data={this.relationFlatListStore}>
+					</FlatList>:
+					<SectionList
+						ref={'mySectionList'}
+						keyExtractor={(item,index)=>("index"+index+item)}
+						renderSectionHeader={this._sectionComp}
+						renderItem={this._renderItem}
+						sections={this.relationStore}
+						ItemSeparatorComponent={this._renderSeparator}
+						ListHeaderComponent={this._renderHeader}
+						stickySectionHeadersEnabled={true}
+					/>
+				}
+                {this.state.isShowFlatList?
+					null:
+					<View style={styles.rightSection}>
+                        {this._getSections()}
+					</View>
+                }
+
+
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
 		    </View>
@@ -417,7 +443,9 @@ const styles = StyleSheet.create({
 		width:width-20,
 		backgroundColor:'#fff',
 		borderRadius:5,
-		color:'#000'
+		color:'#000',
+        padding:0,
+        paddingHorizontal:10
 	},
     moreUse:{
 		color:'#fff',

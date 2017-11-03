@@ -43,10 +43,10 @@ export function initSection(arr=[]){
     return needArr;
 }
 
-export function initFlatListData(type,arr=[]){
+export function initFlatListData(type,arr=[],filterStr){
     let needArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&v.show === 'true'){
+        if(v.Type === type&&v.show === 'true'&&v.Nick.indexOf(filterStr) >= 0){
             needArr.push(v)
         }
     })

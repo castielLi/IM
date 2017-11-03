@@ -49,6 +49,7 @@ class GroupInformationSetting extends ContainerComponent {
             notDisturb:false,//消息免打扰
             isSave:false,
             members:[],
+            realMemberList:[],
             groupInformation:{}
         }
         currentObj = this;
@@ -107,10 +108,17 @@ class GroupInformationSetting extends ContainerComponent {
                     Name:Data.Name,
                     Owner:Data.Owner,
                     ProfilePicture:Data.ProfilePicture,
-                    Description:Data.Description
+                    Description:Data.Description,
                 };
+                let members;
+                if(Data.MemberList.length>13){
+                    members = Data.MemberList.slice(0,13);
+                }else{
+                    members = Data.MemberList.concat()
+                }
                 currentObj.setState({
-                    members:Data.MemberList,
+                    members:members.concat([{},{}]),
+                    realMemberList:Data.MemberList,
                     groupInformation
                 })
             }
@@ -166,30 +174,48 @@ class GroupInformationSetting extends ContainerComponent {
         let groupId = this.props.groupId;
         this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId}})
     }
+    goToDeleteClient = ()=>{
+        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{ID:this.state.groupInformation.ID,realMemberList:this.state.realMemberList}})
+    }
     _renderItem = (item) => {
         //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
-        if(item.index === 14){
-            return  <TouchableWithoutFeedback onPress={()=>{alert('clientInformation')}}>
-                        <View style={styles.itemBox}>
-                            <View style={styles.lastItemBox}>
-                                <Text style={styles.lastItemText}>+</Text>
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
+        if(item.index == this.state.members.length-2){
 
-        }
-        else if(item.index>14) {
-            return null;
+                return  <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
+                            <View style={styles.itemBox}>
+                                <View style={styles.lastItemBox}>
+                                    <Text style={styles.lastItemText}>+</Text>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+
+
+        }else if(item.index == this.state.members.length-1){
+            if(this.state.groupInformation.Owner === this.props.accountId){
+                return  <TouchableWithoutFeedback onPress={()=>{this.goToDeleteClient()}}>
+                    <View style={styles.itemBox}>
+                        <View style={styles.lastItemBox}>
+                            <Text style={styles.lastItemText}>-</Text>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            }else{
+                return null;
+            }
+
         }
         else{
-            return   <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
-                        <View style={styles.itemBox}>
-                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
-                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+
+                return <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
+                            <View style={styles.itemBox}>
+                                {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
+                                <Text style={styles.itemText}>{item.item.Nickname}</Text>
+                            </View>
+                        </TouchableWithoutFeedback>
 
         }
+
+
 
     }
     gotoGroupAnnouncement = ()=>{
