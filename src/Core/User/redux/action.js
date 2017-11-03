@@ -1,6 +1,6 @@
 
-import {addUnReadMessageNumber,cutUnReadMessageNumber} from '../../MainTabbar/reducer/action';
-import IM from '../../../Core/IM';
+import {addUnReadMessageNumber,cutUnReadMessageNumber} from '../../../modules/MainTabbar/reducer/action';
+import IM from '../../IM/index';
 
 let im = new IM();
 //登陆成功过后，初始化RecentListStore数据 

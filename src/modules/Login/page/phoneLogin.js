@@ -249,8 +249,7 @@ class PhoneLogin extends ContainerComponent {
 						style = {styles.textInput}
 						maxLength = {11}
 						placeholderTextColor = '#cecece'
-						// placeholder = '请输入手机号码'
-						placeholder = 'wg003723'
+						placeholder = '请输入手机号码'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						></TextInput>
@@ -270,8 +269,7 @@ class PhoneLogin extends ContainerComponent {
 						style = {[styles.textInput,{marginLeft:-10,}]}
 						placeholderTextColor = '#cecece'
 						secureTextEntry = {true}
-						// placeholder = '请输入密码'
-						placeholder = 'b123456789'
+						placeholder = '请输入密码'
 						underlineColorAndroid= {'transparent'}
 						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
 						></TextInput>

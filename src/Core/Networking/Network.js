@@ -65,7 +65,13 @@ export default class netWorking {
               // }
               res(result);
             }else {
-              rej(result);
+                if(error!=null){
+
+                    rej(error);
+                }else{
+
+                    rej({"errorMessage":result.status + "错误"})
+                }
             }
           })
 
@@ -110,7 +116,14 @@ export default class netWorking {
 
              res(result.json());
            }else {
-             rej(error);
+                if(error!=null){
+
+                    rej(error);
+                }else{
+
+                    rej({"errorMessage":result.status + "错误"})
+                }
+
            }
          })
 

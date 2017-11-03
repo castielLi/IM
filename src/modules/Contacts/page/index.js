@@ -18,7 +18,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../RecentList/reducer/action';
+import * as recentListActions from '../../../Core/User/redux/action';
 import * as contactsActions from '../reducer/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
@@ -127,7 +127,13 @@ class Contacts extends ContainerComponent {
 									autoFocus = {true}
 									defaultValue = {this.state.text}
 									onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}
-									onChangeText={(v)=>{if(v===''){this.setState({isShowSearchInput:false})};this.setState({text:v})}}
+									onChangeText={(v)=>{
+										if(v===''){
+											this.setState({isShowSearchInput:false})
+										}
+                                        this.setState({text:v})
+									}
+									}
 								>
 								</TextInput>:
 								<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>

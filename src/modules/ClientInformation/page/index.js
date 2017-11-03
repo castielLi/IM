@@ -199,7 +199,7 @@ class ClientInformation extends ContainerComponent {
                 />
                 <View>
                     <View style={styles.basicBox}>
-                        {HeadImageUrl&&HeadImageUrl!==' '?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
+                        {HeadImageUrl!=''?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
                         <View style={styles.basicBoxRight}>
                             <Text style={styles.name}>{Nickname}</Text>
                             <Text style={styles.id}>{'微信号：'+Account}</Text>
