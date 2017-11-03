@@ -149,6 +149,12 @@ class Route {
         });
     }
 
+    static replaceAtIndex(props,route,index){
+        props.navigator.replaceAtIndex(route,index,function(){
+            props.navigator.jumpTo(route)
+        });
+    }
+
     static popToSpecialRoute(props,specialRoute){
 
         InteractionManager.runAfterInteractions(() => {
