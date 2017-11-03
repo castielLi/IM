@@ -17,7 +17,7 @@ import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
 import User from './Core/User'
-import * as ActionForChatRecordStore from './Core/IM/redux/action'
+import * as ActionForChatRecordStore from './Core/IM/redux/chat/action'
 import * as ActionForLoginStore from './modules/Login/reducer/action';
 
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
@@ -26,6 +26,7 @@ import {changeRelationOfShow} from './modules/Contacts/reducer/action';
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
 import route from './Core/route/router'
+import * as Helper from './Core/Helper'
 let network = new netWorking();
 
 

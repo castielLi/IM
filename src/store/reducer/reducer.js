@@ -3,12 +3,12 @@
  */
 import { combineReducers } from 'redux';
 import loginStore from '../../modules/Login/reducer';
-import chatRecordStore from '../../Core/IM/redux/index';
-import recentListStore from '../../modules/RecentList/reducer';
+import chatRecordStore from '../../Core/IM/redux/chat/index';
+import recentListStore from '../../Core/User/redux/index';
 import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../modules/Contacts/reducer';
-import friendApplicationStore from '../../modules/NewFriend/reducer/index'
+import friendApplicationStore from '../../Core/IM/redux/applyFriend/index'
 import FeaturesStore from '../../modules/Common/menu/reducer'
 export default combineReducers({
 	//登录状态

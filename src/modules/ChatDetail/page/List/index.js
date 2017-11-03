@@ -21,12 +21,12 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/IM/redux/action';
+import * as commonActions from '../../../../Core/IM/redux/chat/action';
 import ChatMessage from './ChatMessage';
 
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-import InitChatRecordConfig from '../../../../Core/IM/redux/InitChatRecordConfig';
+import InitChatRecordConfig from '../../../../Core/IM/redux/chat/InitChatRecordConfig';
 import Ces from './ces';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
@@ -332,11 +332,10 @@ class Chat extends Component {
         if(Sender == this.props.accountId){
 
          if(row.message.Command * 1 == 101 && this.props.type == "chatroom"){
-             let nicks = JSON.parse(Data).nicks
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ nicks +"进入群聊"}</Text>
+                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ Data +"进入群聊"}</Text>
                         </View>
                     </View>
                 )

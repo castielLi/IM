@@ -6,7 +6,7 @@ const initialState = {
 
     ]
 };
-import ApplyFriendEnum from '../../../Core/IM/dto/ApplyFriendEnum';
+import ApplyFriendEnum from '../../dto/ApplyFriendEnum';
 //wait:等待 added:已添加 expired:过期
 export default function friendApplicationStore(state = initialState,action){
     switch (action.type) {

@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import RNFS from 'react-native-fs'
 import * as loginStoreAction from '../../Login/reducer/action';
-import * as chatRecordStoreAction from '../../../Core/IM/redux/action';
+import * as chatRecordStoreAction from '../../../Core/IM/redux/chat/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
