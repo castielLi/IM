@@ -1,9 +1,9 @@
 /**
  * Created by Hsu. on 2017/10/23.
  */
-import IM from '../../../Core/IM/index'
+import IM from '../../index'
 let im = new IM();
-import ApplyFriendEnum from '../../../Core/IM/dto/ApplyFriendEnum'
+import ApplyFriendEnum from '../../dto/ApplyFriendEnum'
 
 export function getApplicantInfo(message) {
 

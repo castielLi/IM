@@ -21,7 +21,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../Contacts/reducer/action';
-import * as Actions from '../../../Core/IM/redux/action';
+import * as Actions from '../../../Core/IM/redux/chat/action';
 import User from '../../../Core/User';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
@@ -296,7 +296,7 @@ class ChooseClient extends ContainerComponent {
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
 					let messageId = uuidv1();
 					//创建群组消息
-					let text = JSON.stringify({"nicks":nicks,"owner":currentObj.props.accountName});
+					let text = nicks;
 
 
 					// let message = startChatRoomMessage(result.data.Data,messageId);

@@ -302,8 +302,6 @@ export default class IM {
         }
 
 
-
-
         //先生成唯一的messageID并且添加message进sqlite保存
         UUIDGenerator.getRandomUUID().then((uuid) => {
             messageId = message.Data.Data.Receiver + "_" +uuid;
@@ -313,7 +311,15 @@ export default class IM {
             message.status = MessageStatus.WaitOpreator;
 
             if(message.type != MessageType.friend) {
-                this.storeSendMessage(message);
+
+                if(message.type == MessageType.information){
+                    //todo:lizongjun 把消息sqlite 全部改成先生成sql语句再执行的形势就可以避免所有参数传递的时候都需要创建新的拷贝
+                    let copyMessage = Object.assign({},message);
+                    copyMessage.Command = MessageCommandEnum.MSG_INFO;
+                    this.storeSendMessage(copyMessage);
+                }else{
+                    this.storeSendMessage(message);
+                }
             }
 
             //添加cache缓存

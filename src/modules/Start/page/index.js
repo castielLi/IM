@@ -8,7 +8,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
-import * as friendApplicationActions from '../../NewFriend/reducer/action'
+import * as friendApplicationActions from '../../../Core/IM/redux/applyFriend/action'
 
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'

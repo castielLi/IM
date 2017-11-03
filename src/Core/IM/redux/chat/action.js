@@ -1,9 +1,9 @@
-import IM from '../index';
-import * as DtoMethods from '../dto/Common';
+import IM from '../../index';
+import * as DtoMethods from '../../dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
-import * as recentListAction from '../../../modules/RecentList/reducer/action';
+import * as recentListAction from '../../../User/redux/action';
 let im = new IM();
-import * as friendApplicationActions from '../../../modules/NewFriend/reducer/action'
+import * as friendApplicationActions from '../applyFriend/action'
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
 	return{
