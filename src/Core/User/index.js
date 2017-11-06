@@ -6,7 +6,7 @@ import * as storeSqlite from './StoreSqlite/User/index'
 import * as groupStoreSqlite from './StoreSqlite/Group'
 
 import dataRquest from './dataRequest'
-
+import RelationModel from '../../Core/User/dto/RelationModel'
 
 let __instance = (function () {
     let instance;
@@ -42,21 +42,49 @@ export default class User {
     //新方法：
 
     //通过id和类型获取群或者好友的信息
-    getInformationByIdandType(Id,type){
+    getInformationByIdandType(Id,type,callback){
         console.log(cache);
         if(cache[type].length == 0 || cache[type][Id] == undefined){
 
 
             //todo:黄昊东  这里getrelaiton方法 需要判断type 是group 还是是 user 如果是user 去account 数据库找，是group 去group数据库找
-            // storeSqlite.getRelation(Id,type,function(relations){
+            if(type == 'user'){
+                    storeSqlite.getRelation(Id,'private',function(relations){
+                        if(relation.length == 0){
+                            this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                                callback(results)
+                            })
+                        }else{
+                            callback(relations[0])
+                        }
+                    })
+
+            }else if(type == 'group'){
+                groupStoreSqlite.getRelation(Id,'chatroom',function(relations){
+                    if(relations.length == 0){
+                        this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                            let relation = new RelationModel();
+                            // relation.RelationId = result.data.Data;
+                            // relation.owner = currentObj.props.accountId;
+                            // relation.Nick = currentObj.props.accountName + "发起的群聊";
+                            // relation.Type = 'chatroom';
+                            // relation.show = 'false';
+                            // callback(relation)
+                        })
+                    }else{
+                        callback(relations[0])
+                    }
+                })
+            }
+
             //
             //     //数据库里面依旧没有这条消息
             //     if(relations.length == 0){
 
-                    this.request.getAccountByAccountIdAndType(Id,type,function(results){
-
-                    })
+            //         this.request.getAccountByAccountIdAndType(Id,type,function(results){
             //
+            //         })
+            // //
             //     }else{
             //         cache[type][Id] =  relations[0];
             //         return cache[type][Id];
@@ -65,23 +93,9 @@ export default class User {
             // });
 
         }else{
-            return cache[type][Id];
+            callback(cache[type][Id])
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     //初始化数据库
@@ -127,12 +141,12 @@ export default class User {
 
     //更改好友黑名单设置
     changeRelationBlackList(isBlackList,RelationId){
-       storeSqlite.changeRelationBliackList(isBlackList,RelationId);
+        storeSqlite.changeRelationBliackList(isBlackList,RelationId);
     }
 
     //删除好友或者退出群组
     deleteRelation(RelationId){
-       storeSqlite.deleteRelation(RelationId)
+        storeSqlite.deleteRelation(RelationId)
     }
 
     //更新关系头像
@@ -157,7 +171,7 @@ export default class User {
 
     //获取所有关系的名字和头像
     getAllRelationNameAndAvator(callback){
-       storeSqlite.getAllRelationAvatorAndName(callback);
+        storeSqlite.getAllRelationAvatorAndName(callback);
     }
 
     //添加新关系
@@ -179,4 +193,5 @@ export default class User {
     AddNewRelationSetting(RelationSetting){
         storeSqlite.addNewRelationSetting(RelationSetting);
     }
+
 }
