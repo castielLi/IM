@@ -61,9 +61,11 @@ export default function App() {
 
         if(message.Command == MessageCommandEnum.MSG_INFO){
              user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
+                 //添加进relation redux
                 store.dispatch(addRelation(relation))
                 if(message.way == "group"){
-                    groupStoreSqlite.AddNewRelation(relation)
+                    //添加进group数据库
+                    groupStoreSqlite.addNewRelation(relation)
                 }
             });
 

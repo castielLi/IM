@@ -49,9 +49,9 @@ export default class User {
 
             //todo:黄昊东  这里getrelaiton方法 需要判断type 是group 还是是 user 如果是user 去account 数据库找，是group 去group数据库找
             if(type == 'user'){
-                    storeSqlite.getRelation(Id,'private',function(relations){
+                    storeSqlite.getRelation(Id,'private',(relations)=>{
                         if(relation.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                            this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                                 callback(results)
                             })
                         }else{
@@ -60,16 +60,16 @@ export default class User {
                     })
 
             }else if(type == 'group'){
-                groupStoreSqlite.getRelation(Id,'chatroom',function(relations){
+                groupStoreSqlite.getRelation(Id,'chatroom',(relations)=>{
                     if(relations.length == 0){
-                        this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                        this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                             let relation = new RelationModel();
-                            // relation.RelationId = result.data.Data;
-                            // relation.owner = currentObj.props.accountId;
-                            // relation.Nick = currentObj.props.accountName + "发起的群聊";
-                            // relation.Type = 'chatroom';
-                            // relation.show = 'false';
-                            // callback(relation)
+                            relation.RelationId = results.ID;
+                            relation.owner = results.Owner;
+                            relation.Nick = results.Name;
+                            relation.Type = 'chatroom';
+                            relation.show = 'false';
+                            callback(relation)
                         })
                     }else{
                         callback(relations[0])
