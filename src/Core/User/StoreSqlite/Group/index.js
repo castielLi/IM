@@ -9,7 +9,7 @@ import * as commonMethods from '../../../Helper/formatQuerySql';
 
 
 export function GetRelationList(callback){
-    USERFMDB.GetRelationList(callback);
+    GROUPFMDB.GetRelationList(callback);
 }
 
 var databaseObj = {
@@ -26,81 +26,81 @@ export function initIMDatabase(AccountId,callback){
         databaseObj.name =  AccountId + "/database/Group.db"
     }
 
-    USERFMDB.initIMDataBase(AccountId,callback);
+    GROUPFMDB.initIMDataBase(AccountId,callback);
 }
 
 export function getRelation(Id,type,callback){
-    USERFMDB.GetRelationByIdAndType(Id,type,callback);
+    GROUPFMDB.GetRelationByIdAndType(Id,type,callback);
 }
 
 //初始化好友列表
 export function initRelations(GroupList,callback){
-    USERFMDB.InitRelations(GroupList,callback)
+    GROUPFMDB.InitRelations(GroupList,callback)
 }
 
 //更改好友黑名单设置
 export function changeRelationBliackList(isBlackList,RelationId){
-    USERFMDB.UpdateBlackListByRelation(isBlackList,RelationId)
+    GROUPFMDB.UpdateBlackListByRelation(isBlackList,RelationId)
 }
 
 
 //删除关系
 export function deleteRelation(RelationId){
-    USERFMDB.DeleteRelation(RelationId)
+    GROUPFMDB.DeleteRelation(RelationId)
 }
 
 //更新关系头像
 export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
-    USERFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
+    GROUPFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
 }
 
 //修改关系
 export function updateRelation(Relation) {
-    USERFMDB.updateRelation(Relation);
+    GROUPFMDB.updateRelation(Relation);
 }
 
 //获取所有关系的头像和名字
 export function getAllRelationAvatorAndName(callback){
-    USERFMDB.GetAllRelationAvatorAndName(callback);
+    GROUPFMDB.GetAllRelationAvatorAndName(callback);
 }
 
 //更新relation显示状态
 export function updateRelationDisplayStatus(relationId,bool){
-   USERFMDB.UpdateRelationDisplayStatus(relationId,bool);
+    GROUPFMDB.UpdateRelationDisplayStatus(relationId,bool);
 }
 
 //更新群名
 export function UpdateGroupName(relationId,name){
-    USERFMDB.UpdateGroupName(relationId,name);
+    GROUPFMDB.UpdateGroupName(relationId,name);
 }
 //添加新的关系
 export function addNewRelation(Relation){
-    USERFMDB.AddNewRelation(Relation)
+    GROUPFMDB.AddNewRelation(Relation)
 }
 
 //添加新的关系设置
 export function addNewRelationSetting(RelationSetting){
-    USERFMDB.AddNewRelationSetting(RelationSetting);
+    GROUPFMDB.AddNewRelationSetting(RelationSetting);
 }
 
 //修改关系设置
 export function updateRelationSetting(RelationSetting){
-    USERFMDB.UpdateRelationSetting(RelationSetting);
+    GROUPFMDB.UpdateRelationSetting(RelationSetting);
 }
 
 //获取关系设置
 export function getRelationSetting(RelationId,callback){
-    USERFMDB.GetRelationSetting(RelationId,callback);
+    GROUPFMDB.GetRelationSetting(RelationId,callback);
 }
 
 export function closeAccountDb(){
-    USERFMDB.closeAccountDb()
+    GROUPFMDB.closeAccountDb()
 }
 
 
-let USERFMDB = {};
+let GROUPFMDB = {};
 
-USERFMDB.initIMDataBase = function(){
+GROUPFMDB.initIMDataBase = function(){
     var db = SQLite.openDatabase({
         ...databaseObj
 
@@ -117,7 +117,7 @@ USERFMDB.initIMDataBase = function(){
 }
 
 //更新好友显示状态
-USERFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
+GROUPFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
 
     let sql = sqls.ExcuteIMSql.UpdateRelationDisplayStatus;
 
@@ -140,7 +140,7 @@ USERFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
 }
 
 //更新群名称
-USERFMDB.UpdateGroupName = function(relationId,name){
+GROUPFMDB.UpdateGroupName = function(relationId,name){
 
     let sql = sqls.ExcuteIMSql.UpdateGroupName;
 
@@ -163,7 +163,7 @@ USERFMDB.UpdateGroupName = function(relationId,name){
 }
 
 //获取好友列表
-USERFMDB.GetRelationList = function(callback){
+GROUPFMDB.GetRelationList = function(callback){
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -182,7 +182,7 @@ USERFMDB.GetRelationList = function(callback){
 }
 
 //初始化好友列表
-USERFMDB.InitRelations = function(GroupList,callback){
+GROUPFMDB.InitRelations = function(GroupList,callback){
 
     let relationsSqls = [];
 
@@ -227,7 +227,7 @@ USERFMDB.InitRelations = function(GroupList,callback){
 }
 
 //添加新关系
-USERFMDB.AddNewRelation = function(Relation){
+GROUPFMDB.AddNewRelation = function(Relation){
     //todo 检查数据表中是否已经存在，存在才添加
 
     let sql = sqls.ExcuteIMSql.AddtRelations;
@@ -256,7 +256,7 @@ USERFMDB.AddNewRelation = function(Relation){
 
 
 //拉入或移除黑名单
-USERFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
+GROUPFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
     let updateSql = sqls.ExcuteIMSql.SetBlackList;
 
     updateSql = commonMethods.sqlFormat(updateSql,[isBlackList,RelationId]);
@@ -281,7 +281,7 @@ USERFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
 }
 
 //删除关系
-USERFMDB.DeleteRelation = function(RelationId){
+GROUPFMDB.DeleteRelation = function(RelationId){
     let deleteSql = sqls.ExcuteIMSql.DeleteRelation;
 
     deleteSql = commonMethods.sqlFormat(deleteSql,[RelationId]);
@@ -303,7 +303,7 @@ USERFMDB.DeleteRelation = function(RelationId){
 }
 
 //更新关系头像
-USERFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
+GROUPFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
 
     let updateSql = sqls.ExcuteIMSql.UpdateRelationAvator;
 
@@ -327,7 +327,7 @@ USERFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
 
 
 //修改关系
-USERFMDB.updateRelation =function(Relation){
+GROUPFMDB.updateRelation =function(Relation){
     let updateSql = sqls.ExcuteIMSql.UpdateRelation;
 
     updateSql = commonMethods.sqlFormat(updateSql,[Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.avator,Relation.Email,Relation.LocalImage,Relation.owner,Relation.show])
@@ -349,7 +349,7 @@ USERFMDB.updateRelation =function(Relation){
 }
 
 //获取所有关系的头像和名字
-USERFMDB.GetAllRelationAvatorAndName = function(callback){
+GROUPFMDB.GetAllRelationAvatorAndName = function(callback){
    let sql = sqls.ExcuteIMSql.GetAllRelationAvatorAndName;
 
     var db = SQLite.openDatabase({
@@ -369,7 +369,7 @@ USERFMDB.GetAllRelationAvatorAndName = function(callback){
 }
 
 //获取当前关系的关系设置
-USERFMDB.GetRelationSetting = function(RelationId,callback){
+GROUPFMDB.GetRelationSetting = function(RelationId,callback){
     let sql = sqls.ExcuteIMSql.GetRelationSettingByRelationId;
 
     sql = commonMethods.sqlFormat(sql,[RelationId])
@@ -396,7 +396,7 @@ USERFMDB.GetRelationSetting = function(RelationId,callback){
 
 
 //修改当前关系的关系设置
-USERFMDB.UpdateRelationSetting = function(RelationSetting){
+GROUPFMDB.UpdateRelationSetting = function(RelationSetting){
     let sql = sqls.ExcuteIMSql.UpdateRelationSetting;
 
     // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
@@ -420,7 +420,7 @@ USERFMDB.UpdateRelationSetting = function(RelationSetting){
 }
 
 //添加新的关系设置
-USERFMDB.AddNewRelationSetting = function(RelationSetting){
+GROUPFMDB.AddNewRelationSetting = function(RelationSetting){
     let sql = sqls.ExcuteIMSql.InsertRelationSetting;
 
     // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
@@ -444,7 +444,7 @@ USERFMDB.AddNewRelationSetting = function(RelationSetting){
 }
 
 
-USERFMDB.closeAccountDb = function(){
+GROUPFMDB.closeAccountDb = function(){
      var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
