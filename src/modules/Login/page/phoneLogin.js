@@ -182,6 +182,7 @@ class PhoneLogin extends ContainerComponent {
 
 
                        	   if(!result.success){
+                               currentObj.hideLoading();
                                alert("初始化account出错" + result.errorMessage);
                                return;
 						   }
