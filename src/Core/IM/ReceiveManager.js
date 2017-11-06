@@ -94,16 +94,16 @@ ReceiveManager.receiveMessageOpreator = function(message){
         message.Command = MessageCommandEnum.MSG_INFO;
         message.type = MessageType.information;
 
-        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){//6
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
             message.way = "group"
-        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
+        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){//1
             message.type = MessageType.friend
             currentObj.updateRelation(message.Data.Data.Sender)
             message.way = "user"
-        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
+        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){//2
             message.type = MessageType.friend
             message.way = "user"
         }

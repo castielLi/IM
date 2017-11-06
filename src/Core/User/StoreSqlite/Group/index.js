@@ -29,6 +29,10 @@ export function initIMDatabase(AccountId,callback){
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
+export function getRelation(Id,type,callback){
+    USERFMDB.GetRelationByIdAndType(Id,type,callback);
+}
+
 //初始化好友列表
 export function initRelations(GroupList,callback){
     USERFMDB.InitRelations(GroupList,callback)
