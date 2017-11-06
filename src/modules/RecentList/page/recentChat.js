@@ -48,10 +48,10 @@ let styles = StyleSheet.create({
         justifyContent: 'center',
     },
     avatar: {
-        height: checkDeviceHeight(105),
-        width: checkDeviceHeight(105),
+        height: checkDeviceHeight(100),
+        width: checkDeviceHeight(100),
         borderRadius: checkDeviceHeight(50),
-        resizeMode: 'stretch',
+        resizeMode: 'cover',
     },
     ChatContent: {
         flex: 1,
@@ -66,8 +66,14 @@ let styles = StyleSheet.create({
     NickName: {
         fontSize: checkDeviceHeight(34),
         color: '#373737',
-        lineHeight: checkDeviceHeight(34),
-        marginBottom: checkDeviceHeight(20),
+        marginBottom: checkDeviceHeight(10),
+        ...Platform.select({
+            ios: {
+                lineHeight:checkDeviceHeight(34),
+            },
+            android: {
+            },
+        }),
     },
     ChatMessage: {
         fontSize: checkDeviceHeight(30),

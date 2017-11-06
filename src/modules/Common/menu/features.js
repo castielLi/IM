@@ -29,13 +29,11 @@ class Features extends ContainerComponent {
         }
     }
 
-    // componentWillReceiveProps(_props) {
-		// if(_props.FeaturesStore !== this.state.isShow){
-		// 	this.setState({
-    //             isShow:_props.FeaturesStore
-		// 	})
-		// }
-    // }
+    componentWillReceiveProps(_props) {
+		if(_props.FeaturesStore !== this.state.isShow){
+
+		}
+    }
     // shouldComponentUpdate(_props,_state){
 		// if(this.state.isShow){
     //         this.setState({
