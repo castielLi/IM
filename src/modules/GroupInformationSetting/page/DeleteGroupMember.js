@@ -20,6 +20,7 @@ import uuidv1 from 'uuid/v1';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import * as recentListActions from '../../../Core/User/redux/action';
 import User from '../../../Core/User';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
@@ -90,7 +91,7 @@ class DeleteGroupMember extends ContainerComponent {
         this.state.needData.forEach((value,index)=>{
             needStr+=value+','
         })
-        if(needStr[needStr.length-1] == ','){
+        if(needStr[needStr.length-1] == ','){//如果最后一个字符为','
             needStr = needStr.substring(0,needStr.length-1);
         }
 
@@ -104,7 +105,7 @@ class DeleteGroupMember extends ContainerComponent {
         }
         this.setState({
             data:this.state.data.concat(),
-
+            text:''
         })
 
     }
@@ -112,13 +113,15 @@ class DeleteGroupMember extends ContainerComponent {
     _renderItem = (info) => {
         var txt = '  ' + info.item.Nickname;
         if(info.item.Account === this.props.accountId) return null;
-        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
-            <View  style={styles.itemBox} >
-                {this.circleStyle(info.item.isChoose)}
-                {this._renderAvator(info.item.HeadImageUrl)}
-                <Text style={styles.itemText}>{txt}</Text>
-            </View>
-        </TouchableHighlight>
+        if(txt.indexOf(this.state.text) >= 0){
+            return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
+                        <View  style={styles.itemBox} >
+                            {this.circleStyle(info.item.isChoose)}
+                            {this._renderAvator(info.item.HeadImageUrl)}
+                            <Text style={styles.itemText}>{txt}</Text>
+                        </View>
+                    </TouchableHighlight>
+        }
     }
 
 
@@ -133,6 +136,14 @@ class DeleteGroupMember extends ContainerComponent {
                 return;
             }
             if(result.data.Data){
+                //如果删得只剩一个人，销毁群
+                if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
+                    //删除最近聊天redux对应id
+                    currentObj.props.deleteRecentItemFromId(ID);
+                    currentObj.route.toMain(currentObj.props);
+                    alert('群解散了')
+                    return;
+                }
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -176,11 +187,7 @@ class DeleteGroupMember extends ContainerComponent {
                         autoFocus = {false}
                         defaultValue = {this.state.text}
                         onChangeText={(t)=>{
-                            let data = [];
-                            data = this.props.realMemberList.filter((v,i)=>{
-                                return v.Nickname.indexOf(t) >= 0;
-                            })
-                            this.setState({text:t,data})
+                            this.setState({text:t,data:this.state.data.concat()})
                         }
                         }
                     >
@@ -317,7 +324,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
     return{
-
+        ...bindActionCreators(recentListActions,dispatch),
     }};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteGroupMember);

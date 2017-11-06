@@ -22,7 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IM from '../../../Core/IM';
 import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
-
+import * as relationListActions from '../../Contacts/reducer/action';
 
 let {height,width} = Dimensions.get('window');
 
@@ -75,6 +75,9 @@ class GroupName extends ContainerComponent {
                 return;
             }
             if(result.data.Data){
+                currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
+                user.updateGroupName(ID,currentObj.state.text);
+                //路由跳转
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -179,7 +182,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-
+    ...bindActionCreators(relationListActions,dispatch),
 
 });
 

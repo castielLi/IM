@@ -26,8 +26,10 @@ import {
 	checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
+import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 let im = new IM();
+let user = new User();
 
 let styles = StyleSheet.create({
     container: {
@@ -108,7 +110,7 @@ class RecentChat extends ContainerComponent {
 			sectionID: '',
 			rowID: '',
 			dataSource: ds,
-			
+            groupData:[],
 		};
 		this.goToChatDetail = this.goToChatDetail.bind(this);
 		this.deleteSomeRow = this.deleteSomeRow.bind(this);
@@ -140,6 +142,12 @@ class RecentChat extends ContainerComponent {
 
             this.props.initUnReadMessageNumber(unReadMessageCount)
 	    })
+
+		user.getAllGroupFromGroup((data)=>{
+            this.setState({
+				groupData:data
+			})
+		})
 	}
 
 	goToChatDetail(rowData){
@@ -182,6 +190,8 @@ class RecentChat extends ContainerComponent {
 		return obj
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
+		let needData = this.formateRelationData;
+		if(rowData.Type == 'chatroom'&&!this.formateRelationData[rowData.Client]) needData = this.formateGroupData;
 		return (
 			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
 				<Swipeout
@@ -211,11 +221,11 @@ class RecentChat extends ContainerComponent {
 				<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 					<View style = {styles.ListContainer}>
 						<View style = {styles.userLogo}>
-							{this._renderAvator(this.formateRelationData[rowData.Client])}
+							{this._renderAvator(needData[rowData.Client])}
 						</View>
 						<View style = {styles.ChatContent}>
 							<View style = {styles.Message}>
-								<Text style = {styles.NickName}>{this.formateRelationData[rowData.Client]?this.formateRelationData[rowData.Client].Nick:''}</Text>
+								<Text style = {styles.NickName}>{needData[rowData.Client]?needData[rowData.Client].Nick:''}</Text>
 								<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 							</View>
 							<View style = {styles.userTime}>
@@ -232,6 +242,7 @@ class RecentChat extends ContainerComponent {
 
 	render() {
 		this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
+		this.formateGroupData = this.formateRelationDataMethod(this.state.groupData);
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>

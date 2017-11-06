@@ -19,6 +19,18 @@ export default function recentListStore(state=initialState, action){
             return {
                 ...state
             };
+        case 'DELETE_RECENTITEM_FROM_ID':
+            state.data.every((v,i,arr)=>{
+                if(v.Client === action.id){
+                    arr.splice(i,1);
+                    //终止循环
+                    return false;
+                }
+                return true;
+            })
+            return {
+                ...state
+            };
         case 'CLEAR_RECENTLIST':
             return {
                 ...initialState
