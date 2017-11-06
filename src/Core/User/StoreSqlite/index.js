@@ -29,6 +29,10 @@ export function initIMDatabase(AccountId,callback){
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
+export function getRelation(Id,type,callback){
+    USERFMDB.GetRelationByIdAndType(Id,type,callback);
+}
+
 //初始化好友列表
 export function initRelations(friendList,blackList,GroupList,callback){
     USERFMDB.InitRelations(friendList,blackList,GroupList,callback)
@@ -131,6 +135,30 @@ USERFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
         }, errorDB);
     }, errorDB);
 }
+
+//通过type和ID获取relation
+USERFMDB.GetRelationByIdAndType = function(Id,type,callback){
+
+    let selectSql = sqls.ExcuteIMSql.SelectRelationByIdAndType;
+
+    selectSql = commonMethods.sqlFormat(selectSql,[Id,type])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(selectSql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, (err)=>{errorDB('获取特定关系',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
+
 
 
 //获取好友列表

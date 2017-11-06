@@ -61,6 +61,9 @@ export default function App() {
 
 
     let handleRecieveMessage = function(message){
+
+        // let relation = user.getInformationByIdandType();
+
         store.dispatch(ActionForChatRecordStore.receiveMessage(message))
     }
 
