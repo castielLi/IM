@@ -8,6 +8,8 @@ import {isApplyFriendMessageType,blackListMessage} from './action/createMessage'
 import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 import ChatWayEnum from './dto/ChatWayEnum'
+import MessageBodyTypeEnum from './dto/MessageBodyTypeEnum'
+import AppCommandEnum from './dto/AppCommandEnum'
 
 
 let ReceiveManager = {};
@@ -53,13 +55,10 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
     //todo:lizongjun  这里收到了消息之后，如果是错误消息，需要数据库查询之前发送消息的msgid 获取到isack属性，如果需要ack则进行发送
 
-    //群消息需要把sender 和 receiver 交换,因为后台不会对message进行处理，而发送的时候sender是用户而不是群
-    if(message.way == ChatWayEnum.ChatRoom){
-        let sender = message.Data.Data.Sender
-        message.Data.Data.Sender = message.Data.Data.Receiver;
-        message.Data.Data.Receiver = sender;
-    }
 
+    //part 1:
+
+    //错误消息
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
             let sender = message.Data.SourceMSGID.split("_")[0];
@@ -84,26 +83,50 @@ ReceiveManager.receiveMessageOpreator = function(message){
         return;
     }
 
-    if(message.type == MessageType.text || message.type == MessageType.friend)
-    {
-        if(message.type == MessageType.friend){
-            if(isApplyFriendMessageType(message)){
-                currentObj.storeRecMessage(message)
-                //回调App上层发送成功
-                currentObj.ReceiveMessageHandle(message);
-            }else{
-                currentObj.updateRelation(message.Data.Data.Sender)
-            }
-        }else{
-            currentObj.storeRecMessage(message)
-            //回调App上层发送成功
-            currentObj.ReceiveMessageHandle(message);
-        }
-    }else if(message.type == MessageType.information){
 
-        //修改Command 用于保存
+
+
+    //part 2:
+
+    //接收到通知消息
+    if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
+
         message.Command = MessageCommandEnum.MSG_INFO;
+        message.type = MessageType.information;
 
+        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+            let sender = message.Data.Data.Sender
+            message.Data.Data.Sender = message.Data.Data.Receiver;
+            message.Data.Data.Receiver = sender;
+        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
+            message.type = MessageType.friend
+            currentObj.updateRelation(message.Data.Data.Sender)
+        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
+            message.type = MessageType.friend
+        }
+
+        currentObj.storeRecMessage(message)
+        //回调App上层发送成功
+        currentObj.ReceiveMessageHandle(message);
+        currentObj.sendReceiveAckMessage(message.MSGID)
+        return;
+    }
+
+
+
+
+    //part 3:
+
+    //正常的收发消息
+    //群消息需要把sender 和 receiver 交换,因为后台不会对message进行处理，而发送的时候sender是用户而不是群
+    if(message.way == ChatWayEnum.ChatRoom){
+        let sender = message.Data.Data.Sender
+        message.Data.Data.Sender = message.Data.Data.Receiver;
+        message.Data.Data.Receiver = sender;
+    }
+
+    if(message.type == MessageType.text)
+    {
         currentObj.storeRecMessage(message)
         //回调App上层发送成功
         currentObj.ReceiveMessageHandle(message);
