@@ -28,7 +28,13 @@ export function changeRelationOfShow(relationId){
         relationId
     }
 }
-
+export function changeRelationOfNick(relationId,Nick){
+    return {
+        type: 'CHANGE_RELATION_OF_NICK',
+        relationId,
+        Nick
+    }
+}
 export function changeRelationOfBlackList(value,relationId){
     return {
         type: 'CHANGE_RELATION_OF_BLACKLIST',

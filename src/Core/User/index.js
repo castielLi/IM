@@ -2,7 +2,11 @@
  * Created by apple on 2017/9/29.
  */
 import * as storeSqlite from './StoreSqlite'
+
+import * as groupStoreSqlite from './StoreSqlite/Group'
+
 import dataRquest from './dataRequest'
+
 
 let __instance = (function () {
     let instance;
@@ -39,23 +43,26 @@ export default class User {
 
     //通过id和类型获取群或者好友的信息
     getInformationByIdandType(Id,type){
+        console.log(cache);
         if(cache[type].length == 0 || cache[type][Id] == undefined){
 
-            let relations = storeSqlite.getRelation(Id,type,function(relations){
-                return relations;
-            });
 
-            //数据库里面依旧没有这条消息
-            if(relations.length == 0){
+            //todo:黄昊东  这里getrelaiton方法 需要判断type 是group 还是是 user 如果是user 去account 数据库找，是group 去group数据库找
+            // storeSqlite.getRelation(Id,type,function(relations){
+            //
+            //     //数据库里面依旧没有这条消息
+            //     if(relations.length == 0){
 
-                this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                    this.request.getAccountByAccountIdAndType(Id,type,function(results){
 
-                })
-
-            }else{
-                cache[type][Id] =  relations[0];
-                return cache[type][Id];
-            }
+                    })
+            //
+            //     }else{
+            //         cache[type][Id] =  relations[0];
+            //         return cache[type][Id];
+            //     }
+            //
+            // });
 
         }else{
             return cache[type][Id];
@@ -82,10 +89,30 @@ export default class User {
         storeSqlite.initIMDatabase(AccountId,function(){
 
         });
+        groupStoreSqlite.initIMDatabase(AccountId,function(){
+
+        })
     }
 
     getAllRelation(callback){
         return storeSqlite.GetRelationList(callback)
+    }
+
+
+    getAllGroupFromGroup(callback){
+        return groupStoreSqlite.GetRelationList(callback)
+    }
+
+    //添加群进Group
+    AddNewGroupToGroup(Relation){
+        groupStoreSqlite.addNewRelation(Relation)
+    }
+    initGroup(GroupList,callback){
+        groupStoreSqlite.initRelations(GroupList,callback);
+    }
+    //更新群名
+    updateGroupName(relationId,name){
+        groupStoreSqlite.UpdateGroupName(relationId,name);
     }
 
     getRelation(Id,type,callback){
@@ -121,8 +148,6 @@ export default class User {
     updateDisplayOfRelation(relationId,bool){
         storeSqlite.updateRelationDisplayStatus(relationId,bool);
     }
-
-
 
     //修改群备注
     updateGroupComment(RelationId,Comment){

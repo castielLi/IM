@@ -52,9 +52,9 @@ class ChooseClient extends ContainerComponent {
 			chooseArr:[],//选择的好友的id
             chooseObj:[],//选择的好友的id
 			text:'',//输入框文字,
-            isShowFlatList:false
+            isShowFlatList:false,
+            relationStore:initDataFormate('private',props.relationStore),
 		}
-        this.relationStore = []
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
 	}
@@ -77,10 +77,10 @@ class ChooseClient extends ContainerComponent {
 		})
 	}
 	_getSections = ()=>{
-		if(this.relationStore.length === 0){
+		if(this.state.relationStore.length === 0){
 			return null
 		}else{
-            let sections = initSection(this.relationStore)
+            let sections = initSection(this.state.relationStore)
             let array = new Array();
             for (let i = 0; i < sections.length; i++) {
                 array.push(
@@ -136,7 +136,8 @@ class ChooseClient extends ContainerComponent {
         this.setState({
             chooseArr:needArr,
 			isShowFlatList:false,
-			text:''
+			text:'',
+            relationStore:this.state.relationStore.concat()
         })
 	}
 
@@ -291,6 +292,7 @@ class ChooseClient extends ContainerComponent {
 
                     //添加关系到数据库
 					user.AddNewRelation(relation);
+                    user.AddNewGroupToGroup(relation);
                     //todo 添加群聊关系到redux
                     currentObj.props.addRelation(relation);
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
@@ -298,13 +300,19 @@ class ChooseClient extends ContainerComponent {
 					//创建群组消息
 					let text = nicks;
 
-					//todo：lizongjun 现在不需要自己发送消息，后台统一发送
+
+					// let message = startChatRoomMessage(result.data.Data,messageId);
+					// im.storeRecMessage(message);
+                    //消息存入redux
+                    // currentObj.props.receiveMessage(message);
+
+
                     //向添加的用户发送邀请消息
-                    // let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
-                    // im.addMessage(sendMessage);
+					let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
+					im.addMessage(sendMessage);
 
 					//更新redux message
-					let reduxMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
+					let reduxMessage = Object.assign({},sendMessage);
                     reduxMessage = buildInvationSendMessageToRudexMessage(reduxMessage);
 					currentObj.props.addMessage(reduxMessage);
 
@@ -325,8 +333,9 @@ class ChooseClient extends ContainerComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
 		let chooseArr = this.state.chooseArr;
-		this.relationStore = initDataFormate('private',this.props.relationStore);
         this.relationFlatListStore = initFlatListData('private',this.props.relationStore,this.state.text);
+
+
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
@@ -359,7 +368,7 @@ class ChooseClient extends ContainerComponent {
 						keyExtractor={(item,index)=>("index"+index+item)}
 						renderSectionHeader={this._sectionComp}
 						renderItem={this._renderItem}
-						sections={this.relationStore}
+						sections={this.state.relationStore}
 						ItemSeparatorComponent={this._renderSeparator}
 						ListHeaderComponent={this._renderHeader}
 						stickySectionHeadersEnabled={true}

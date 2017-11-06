@@ -9,8 +9,7 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   PixelRatio,
-  Platform,
-    CameraRoll
+  Platform
 } from 'react-native';  
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swiper from 'react-native-swiper';
@@ -37,14 +36,6 @@ var options = {
     skipBackup: true,
     path: 'images'//存放位置
   }
-}
-let videoOptions = {
-    mediaType: 'video',
-    videoQuality: 'medium',
-    storageOptions: {
-        skipBackup: true,
-        path: 'video'//存放位置
-    }
 }
 
 class MoreUseBox extends Component {  
@@ -84,7 +75,6 @@ imagePikerCallBack(response){
 
   }
 }
-
 
 useCamera(){
     ImagePicker.launchCamera( options,this.imagePikerCallBack);
@@ -148,30 +138,31 @@ render(){
           <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false}>
             <TouchableWithoutFeedback>
             <View style={styles.swiperSlide}>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocal}>
-                  <Icon name="picture-o" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>照片</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocalVideo}>
-                  <Icon name="picture-o" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>视频</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCamera}>
-                  <Icon name="camera" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>拍照</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCameraVideo}>
-                  <Icon name="camera" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>录像</Text>
-              </View>
+                <View style={styles.plusItemBox}>
+                    <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocal}>
+                        <Icon name="picture-o" size={30} color="#aaa" />
+                    </TouchableHighlight>
+                    <Text style={styles.plusItemTit}>照片</Text>
+                </View>
+                <View style={styles.plusItemBox}>
+                    <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocalVideo}>
+                        <Icon name="picture-o" size={30} color="#aaa" />
+                    </TouchableHighlight>
+                    <Text style={styles.plusItemTit}>视频</Text>
+                </View>
+
+                <View style={styles.plusItemBox}>
+                    <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCamera}>
+                        <Icon name="camera" size={30} color="#aaa" />
+                    </TouchableHighlight>
+                    <Text style={styles.plusItemTit}>拍照</Text>
+                </View>
+                <View style={styles.plusItemBox}>
+                    <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCameraVideo}>
+                        <Icon name="camera" size={30} color="#aaa" />
+                    </TouchableHighlight>
+                    <Text style={styles.plusItemTit}>录像</Text>
+                </View>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
                   <Icon name="video-camera" size={30} color="#aaa" />
@@ -183,6 +174,12 @@ render(){
                   <Icon name="map-marker" size={30} color="#aaa" />
                 </TouchableHighlight>
                 <Text style={styles.plusItemTit}>位置</Text>
+              </View>
+              <View style={styles.plusItemBox}>
+                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
+                  <Icon name="envelope" size={30} color="#aaa" />
+                </TouchableHighlight>
+                <Text style={styles.plusItemTit}>红包</Text>
               </View>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
