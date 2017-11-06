@@ -9,7 +9,8 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   PixelRatio,
-  Platform
+  Platform,
+    CameraRoll
 } from 'react-native';  
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swiper from 'react-native-swiper';
@@ -36,6 +37,14 @@ var options = {
     skipBackup: true,
     path: 'images'//存放位置
   }
+}
+let videoOptions = {
+    mediaType: 'video',
+    videoQuality: 'medium',
+    storageOptions: {
+        skipBackup: true,
+        path: 'video'//存放位置
+    }
 }
 
 class MoreUseBox extends Component {  
@@ -74,12 +83,44 @@ imagePikerCallBack(response){
   }
 }
 
+
 useCamera(){
     ImagePicker.launchCamera( options,this.imagePikerCallBack);
   }
 useLocal(){
-  ImagePicker.launchImageLibrary({},this.imagePikerCallBack);
-}  
+  ImagePicker.launchImageLibrary({mediaType: 'photo'},this.imagePikerCallBack);
+}
+
+useCameraVideo(){
+    ImagePicker.launchCamera( videoOptions,(response) => {
+        console.log('Response = ', response);
+
+        if (response.didCancel) {
+            console.log('User cancelled video picker');
+        }
+        else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+        }
+        else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+        }
+    });
+}
+useLocalVideo(){
+    ImagePicker.launchImageLibrary({mediaType: 'video'},(response) => {
+        console.log('Response = ', response);
+
+        if (response.didCancel) {
+            console.log('User cancelled video picker');
+        }
+        else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+        }
+        else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+        }
+    });
+}
 
 render(){
       return(
@@ -94,10 +135,22 @@ render(){
                 <Text style={styles.plusItemTit}>照片</Text>
               </View>
               <View style={styles.plusItemBox}>
+                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocalVideo}>
+                  <Icon name="picture-o" size={30} color="#aaa" />
+                </TouchableHighlight>
+                <Text style={styles.plusItemTit}>视频</Text>
+              </View>
+              <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCamera}>
                   <Icon name="camera" size={30} color="#aaa" />
                 </TouchableHighlight>
-                <Text style={styles.plusItemTit}>拍摄</Text>
+                <Text style={styles.plusItemTit}>拍照</Text>
+              </View>
+              <View style={styles.plusItemBox}>
+                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCameraVideo}>
+                  <Icon name="camera" size={30} color="#aaa" />
+                </TouchableHighlight>
+                <Text style={styles.plusItemTit}>录像</Text>
               </View>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
@@ -110,12 +163,6 @@ render(){
                   <Icon name="map-marker" size={30} color="#aaa" />
                 </TouchableHighlight>
                 <Text style={styles.plusItemTit}>位置</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="envelope" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>红包</Text>
               </View>
               <View style={styles.plusItemBox}>
                 <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
