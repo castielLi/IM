@@ -34,6 +34,7 @@ class ChatMessageVideo extends Component {
 
 
     render() {
+        let {data, style} = this.props;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         return(
             <View style={[styles.bubble]}>
