@@ -56,6 +56,16 @@ export default class ChatMessage extends Component {
                     />
                 )
             }
+                break;
+            case 'video': {
+                return (
+                    <ChatMessageVideo
+                        data={data}
+                        style={style}
+                    />
+                )
+            }
+                break;
             default:
                 return null;
                 break;
