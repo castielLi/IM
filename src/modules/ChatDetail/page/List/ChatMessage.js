@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
+import ChatMessageVideo from './ChatMessageVideo';
 
 let {width, height} = Dimensions.get('window');
 

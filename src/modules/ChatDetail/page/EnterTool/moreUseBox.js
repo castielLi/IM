@@ -53,6 +53,8 @@ class MoreUseBox extends Component {
     super(props); 
     this.useCamera = this.useCamera.bind(this);
     this.useLocal = this.useLocal.bind(this);
+    this.useCameraVideo = this.useCameraVideo.bind(this);
+      this.useLocalVideo = this.useLocalVideo.bind(this);
     this.imagePikerCallBack = this.imagePikerCallBack.bind(this);
   }
   

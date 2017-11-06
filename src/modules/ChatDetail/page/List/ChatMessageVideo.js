@@ -13,7 +13,7 @@ import {
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as Actions from '../../reducer/action'
+import * as Actions from '../../reducer/action';
 
 let {width, height} = Dimensions.get('window');
 
@@ -32,10 +32,14 @@ class ChatMessageVideo extends Component {
     };
 
 
+
     render() {
+        let {LocalSource,RemoteSource} = data.message.Resource[0];
         return(
-            <View style={[style,styles.bubble]}>
-                <Text>{this.props.data}</Text>
+            <View style={[styles.bubble]}>
+                <TouchableOpacity onPress={()=>{this.props.showMediaPlayer(LocalSource)}}>
+                    <Text>播放视频</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -50,11 +54,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-
+    mediaPlayerStore: state.mediaPlayerStore
 });
 
 const mapDispatchToProps = dispatch => ({
-
+    ...bindActionCreators(Actions,dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatMessageVideo);

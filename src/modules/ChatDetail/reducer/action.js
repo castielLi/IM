@@ -43,6 +43,17 @@ export function hideImageModal(){
 		type:'HIDE_MODAL'
 	}
 }
+export function showMediaPlayer(url){
+    return{
+        type:'SHOW_MODAL',
+        urls:url
+    }
+}
+export function hideMediaPlayer(){
+    return{
+        type:'HIDE_MODAL'
+    }
+}
 
 
 

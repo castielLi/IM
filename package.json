@@ -29,6 +29,7 @@
     "react-native-tab-navigator": "^0.3.4",
     "react-native-uuid-generator": "^3.0.1",
     "react-native-vector-icons": "^4.4.0",
+    "react-native-video": "^2.0.0",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-persist": "^4.9.1",
