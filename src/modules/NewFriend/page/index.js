@@ -70,8 +70,8 @@ class NewFriend extends ContainerComponent {
         let {key,send} = data;
         this.fetchData('POST','Member/AcceptFriend',function (result) {
             if(result.success){
-                let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,send);
-                im.addMessage(addMessage,function(){
+                // let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,send);
+                // im.addMessage(addMessage,function(){
                 //添加到relationStore
                     let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
                     let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
@@ -82,7 +82,7 @@ class NewFriend extends ContainerComponent {
                     im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":data.key})
                     currentObj.props.acceptFriendApplication(data.key);
 
-                });
+                // });
             }else{
                 alert(result.errorMessage);
                 return;
