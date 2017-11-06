@@ -10,7 +10,7 @@ import {clearChatRecord} from '../../../Core/IM/redux/chat/action';
 import {clearRelation} from '../../Contacts/reducer/action';
 import {clearRecentList} from '../../../Core/User/redux/action';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
-import {closeAccountDb} from '../../../Core/User/StoreSqlite';
+import {closeAccountDb} from '../../../Core/User/StoreSqlite/User/index';
 import {clearFriendApplication} from '../../../Core/IM/redux/applyFriend/action'
 import {clearAllTabberMessageNumber} from '../../MainTabbar/reducer/action';
 import Route from '../../../Core/route/router';
