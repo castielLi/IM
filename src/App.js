@@ -12,7 +12,6 @@ import { AppState , NetInfo,Platform,Alert} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
-import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
@@ -25,9 +24,7 @@ import {changeRelationOfShow} from './modules/Contacts/reducer/action';
 
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
-import route from './Core/route/router'
-import * as Helper from './Core/Helper'
-let network = new netWorking();
+import MessageCommandEnum from './Core/IM/dto/MessageCommandEnum'
 
 
 export default function App() {
@@ -62,9 +59,18 @@ export default function App() {
 
     let handleRecieveMessage = function(message){
 
-        // let relation = user.getInformationByIdandType();
+        if(message.Command == MessageCommandEnum.MSG_INFO){
+            let relation = user.getInformationByIdandType(message.Data.Data.Sender,message.way);
 
-        store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+            if(message.way == "chatroom"){
+
+            }
+
+            //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
+            // store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+        }else{
+            store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+        }
     }
 
     //收到同意添加好友申请回调
