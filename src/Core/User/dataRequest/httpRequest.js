@@ -9,7 +9,7 @@ let _network = new netWorking()
 export function getAccountByAccountId(accountId,type,callback){
     let url = ""
     let param = {};
-    if(type == "private"){
+    if(type == "user"){
         url = "Member/SearchUser";
         param = {"Keyword":accountId};
     }else{

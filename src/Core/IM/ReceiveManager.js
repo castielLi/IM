@@ -98,11 +98,14 @@ ReceiveManager.receiveMessageOpreator = function(message){
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
+            message.way = "group"
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
             message.type = MessageType.friend
             currentObj.updateRelation(message.Data.Data.Sender)
+            message.way = "user"
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
             message.type = MessageType.friend
+            message.way = "user"
         }
 
         currentObj.storeRecMessage(message)
