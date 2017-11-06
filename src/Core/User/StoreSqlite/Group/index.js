@@ -3,7 +3,7 @@
  */
 
 let SQLite = require('react-native-sqlite-storage')
-import * as sqls from './UserExcuteSql'
+import * as sqls from './GroupExcuteSql'
 import { Platform, StyleSheet } from 'react-native';
 import * as commonMethods from '../../../Helper/formatQuerySql';
 
@@ -161,6 +161,32 @@ GROUPFMDB.UpdateGroupName = function(relationId,name){
         }, errorDB);
     }, errorDB);
 }
+
+
+//通过type和ID获取relation
+GROUPFMDB.GetRelationByIdAndType = function(Id,type,callback){
+
+    let selectSql = sqls.ExcuteIMSql.SelectRelationByIdAndType;
+
+    selectSql = commonMethods.sqlFormat(selectSql,[Id,type])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(selectSql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, (err)=>{errorDB('获取特定关系',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
+
+
 
 //获取好友列表
 GROUPFMDB.GetRelationList = function(callback){

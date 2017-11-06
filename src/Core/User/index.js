@@ -61,7 +61,7 @@ export default class User {
 
             }else if(type == 'group'){
                 groupStoreSqlite.getRelation(Id,'chatroom',function(relations){
-                    if(relation.length == 0){
+                    if(relations.length == 0){
                         this.request.getAccountByAccountIdAndType(Id,type,function(results){
                             let relation = new RelationModel();
                             // relation.RelationId = result.data.Data;

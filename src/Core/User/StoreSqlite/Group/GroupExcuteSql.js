@@ -31,5 +31,6 @@ export const ExcuteIMSql = {
     "UpdateRelationSetting":"update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=?,displayZoom=?,allowCheckZoom=?,starMark=? where RelationId=?",
     "UpdateRelationDisplayStatus":'update GroupList set show = ? where RelationId = ?',
     "UpdateGroupName":'update GroupList set Nick = ? where RelationId = ?',
+    "SelectRelationByIdAndType":"select * from GroupList where RelationId = ? and Type = 'chatroom' "
 
 }
