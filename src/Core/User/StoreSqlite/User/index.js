@@ -5,8 +5,8 @@
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './UserExcuteSql'
 import { Platform, StyleSheet } from 'react-native';
-import * as commonMethods from '../../Helper/formatQuerySql'
-import ChatWayEnum from '../dto/ChatWayEnum'
+import * as commonMethods from '../../../Helper/formatQuerySql'
+import ChatWayEnum from '../../dto/ChatWayEnum'
 
 export function GetRelationList(callback){
     USERFMDB.GetRelationList(callback);

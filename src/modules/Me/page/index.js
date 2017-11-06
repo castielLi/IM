@@ -21,7 +21,7 @@ import * as chatRecordStoreAction from '../../../Core/IM/redux/chat/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
-import {closeAccountDb} from '../../../Core/User/StoreSqlite';
+import {closeAccountDb} from '../../../Core/User/StoreSqlite/User/index';
 import Features from '../../Common/menu/features';
 
 import MyNavigationBar from '../../../Core/Component/NavigationBar'

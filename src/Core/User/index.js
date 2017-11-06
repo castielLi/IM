@@ -1,7 +1,7 @@
 /**
  * Created by apple on 2017/9/29.
  */
-import * as storeSqlite from './StoreSqlite'
+import * as storeSqlite from './StoreSqlite/User/index'
 
 import * as groupStoreSqlite from './StoreSqlite/Group'
 
