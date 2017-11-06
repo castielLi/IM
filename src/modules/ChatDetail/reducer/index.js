@@ -84,12 +84,12 @@ const initialPlayerState = {
 };
 export function mediaPlayerStore(state = initialPlayerState,action){
     switch (action.type) {
-        case 'SHOW_MODAL':
+        case 'SHOW_MEDIA_PLAYER':
             return {
                 url:action.url,
                 isShow:true,
             };
-        case 'HIDE_MODAL':
+        case 'HIDE_MEDIA_PLAYER':
             return {
                 ...state,
                 isShow:false,

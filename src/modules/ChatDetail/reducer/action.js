@@ -45,13 +45,13 @@ export function hideImageModal(){
 }
 export function showMediaPlayer(url){
     return{
-        type:'SHOW_MODAL',
+        type:'SHOW_MEDIA_PLAYER',
         urls:url
     }
 }
 export function hideMediaPlayer(){
     return{
-        type:'HIDE_MODAL'
+        type:'HIDE_MEDIA_PLAYER'
     }
 }
 

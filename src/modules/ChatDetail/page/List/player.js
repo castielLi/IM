@@ -62,7 +62,7 @@ class Player extends Component {
                         //是否暂停
                         paused={false}
                         // 当app转到后台运行的时候，播放是否暂停
-                        playInBackground={true}
+                        playInBackground={false}
                         // onLoadStart={this.loadStart} // 当视频开始加载时的回调函数
                         // onLoad={this.setDuration}    // 当视频加载完毕时的回调函数
                         // onEnd={this.onEnd}           // 当视频播放完毕后的回调函数
