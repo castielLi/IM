@@ -30,6 +30,7 @@ import InitChatRecordConfig from '../../../../Core/IM/redux/chat/InitChatRecordC
 import Ces from './ces';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
+import Player from './player'
 
 
 let _listHeight = 0; //list显示高度
@@ -577,6 +578,7 @@ class Chat extends Component {
                             {...this._gestureHandlers}
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                        <Player />
                         {this.renderModal()}
                     </View>
             );
@@ -600,6 +602,7 @@ class Chat extends Component {
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
                         <Ces uri={this.state.imageUri} isShow={this.state.imageShow}/>
+                        <Player/>
                         {this.renderModal()}
                     </View>
                 )

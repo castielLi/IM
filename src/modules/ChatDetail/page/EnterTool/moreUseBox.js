@@ -52,6 +52,8 @@ class MoreUseBox extends Component {
     super(props); 
     this.useCamera = this.useCamera.bind(this);
     this.useLocal = this.useLocal.bind(this);
+    this.useCameraVideo = this.useCameraVideo.bind(this);
+      this.useLocalVideo = this.useLocalVideo.bind(this);
     this.imagePikerCallBack = this.imagePikerCallBack.bind(this);
   }
   
@@ -104,6 +106,15 @@ useCameraVideo(){
         else if (response.customButton) {
             console.log('User tapped custom button: ', response.customButton);
         }
+        else{
+            let responsePath = 'file://'+response.path;
+            let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
+            im.addMessage(message,(status,messageId)=>{
+                message.MSGID = messageId;
+                //更新chatRecordStore
+                this.props.addMessage(message)
+            },[(tips)=>{console.log(tips)}]);
+        }
     });
 }
 useLocalVideo(){
@@ -118,6 +129,15 @@ useLocalVideo(){
         }
         else if (response.customButton) {
             console.log('User tapped custom button: ', response.customButton);
+        }
+        else{
+            let responsePath = 'file://'+response.path;
+            let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
+            im.addMessage(message,(status,messageId)=>{
+                message.MSGID = messageId;
+                //更新chatRecordStore
+                this.props.addMessage(message)
+            },[(tips)=>{console.log(tips)}]);
         }
     });
 }

@@ -6,7 +6,7 @@ import loginStore from '../../modules/Login/reducer';
 import chatRecordStore from '../../Core/IM/redux/chat/index';
 import recentListStore from '../../Core/User/redux/index';
 import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
-import {thouchBarStore,imageModalStore,chatDetailPageStore} from '../../modules/ChatDetail/reducer/index';
+import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../modules/Contacts/reducer';
 import friendApplicationStore from '../../Core/IM/redux/applyFriend/index'
 import FeaturesStore from '../../modules/Common/menu/reducer'
@@ -32,6 +32,8 @@ export default combineReducers({
     //好友申请记录状态
     friendApplicationStore,
     //控制features显示隐藏
-    FeaturesStore
+    FeaturesStore,
+    //播放器状态
+    mediaPlayerStore
 
 });

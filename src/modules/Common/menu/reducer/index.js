@@ -14,7 +14,7 @@ export default function FeaturesStore(state=initialState, action){
                 ...state,
             };
         case 'HIDE_FEATURES':
-            state.isShow = true;
+            state.isShow = false;
             return {
                 ...state,
             };

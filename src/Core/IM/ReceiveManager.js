@@ -94,23 +94,27 @@ ReceiveManager.receiveMessageOpreator = function(message){
         message.Command = MessageCommandEnum.MSG_INFO;
         message.type = MessageType.information;
 
-        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){//6
+        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
             message.way = "group"
-        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){//1
+            currentObj.storeRecMessage(message)
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
+        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
             message.type = MessageType.friend
+            message.way = "user"
+            currentObj.storeRecMessage(message)
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
+        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
+            message.type = MessageType.friend
+            message.way = "user"
+            currentObj.storeRecMessage(message)
             currentObj.updateRelation(message.Data.Data.Sender)
-            message.way = "user"
-        }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){//2
-            message.type = MessageType.friend
-            message.way = "user"
         }
 
-        currentObj.storeRecMessage(message)
-        //回调App上层发送成功
-        currentObj.ReceiveMessageHandle(message);
         currentObj.sendReceiveAckMessage(message.MSGID)
         return;
     }

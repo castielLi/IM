@@ -3,7 +3,7 @@ package com.im;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
+import com.brentvatne.react.ReactVideoPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactlibrary.RNUUIDGeneratorPackage;
@@ -34,6 +34,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactVideoPackage(),
             new PickerPackage(),
             new VectorIconsPackage(),
             new RNUUIDGeneratorPackage(),
