@@ -24,7 +24,6 @@ import {createResourceMessageObj} from './createMessageObj';
 import IM from '../../../../Core/IM/index';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
-import ImageCropPicker from 'react-native-image-crop-picker';
 
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
@@ -90,13 +89,6 @@ useCamera(){
   }
 useLocal(){
   ImagePicker.launchImageLibrary({mediaType: 'photo'},this.imagePikerCallBack);
-  //   console.log(ImageCropPicker)
-  //   ImageCropPicker.openPicker({
-  //       cropping: false,
-  //       mediaType:'video'
-  //   }).then(image => {
-  //       console.log(image);
-  //   });
 }
 
 useCameraVideo(){
