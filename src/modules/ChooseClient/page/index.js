@@ -299,19 +299,13 @@ class ChooseClient extends ContainerComponent {
 					//创建群组消息
 					let text = nicks;
 
-
-					// let message = startChatRoomMessage(result.data.Data,messageId);
-					// im.storeRecMessage(message);
-                    //消息存入redux
-                    // currentObj.props.receiveMessage(message);
-
-
+					//todo：lizongjun 现在不需要自己发送消息，后台统一发送
                     //向添加的用户发送邀请消息
-					let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
-					im.addMessage(sendMessage);
+                    // let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
+                    // im.addMessage(sendMessage);
 
 					//更新redux message
-					let reduxMessage = Object.assign({},sendMessage);
+					let reduxMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
                     reduxMessage = buildInvationSendMessageToRudexMessage(reduxMessage);
 					currentObj.props.addMessage(reduxMessage);
 

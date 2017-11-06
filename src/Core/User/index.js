@@ -2,6 +2,7 @@
  * Created by apple on 2017/9/29.
  */
 import * as storeSqlite from './StoreSqlite'
+import dataRquest from './dataRequest'
 
 let __instance = (function () {
     let instance;
@@ -11,13 +12,70 @@ let __instance = (function () {
     }
 }());
 
+
+let _request = new dataRquest();
+
+//缓存数据
+let cache = {"user":[],"group":[]};
+
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
     constructor() {
         if (__instance()) return __instance();
 
         __instance(this);
+
+        this.request = _request;
     }
+
+    //设置request的方式webapi，还是socket
+    // setRequest(request){
+    //     _request = request;
+    // }
+
+
+    //todo:lizongjun 用户管理模块里面包含了所有数据，1 从缓存找 2从数据库找 3请求获取，暴露给外界接口
+    //新方法：
+
+    //通过id和类型获取群或者好友的信息
+    getInformationByIdandType(Id,type){
+        if(cache[type].length == 0 || cache[type][Id] == undefined){
+
+            let relations = storeSqlite.getRelation(Id,type,function(relations){
+                return relations;
+            });
+
+            //数据库里面依旧没有这条消息
+            if(relations.length == 0){
+
+                this.request.getAccountByAccountIdAndType(Id,type,function(results){
+
+                })
+
+            }else{
+                cache[type][Id] =  relations[0];
+                return cache[type][Id];
+            }
+
+        }else{
+            return cache[type][Id];
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //初始化数据库
     initIMDatabase(AccountId){
@@ -28,6 +86,10 @@ export default class User {
 
     getAllRelation(callback){
         return storeSqlite.GetRelationList(callback)
+    }
+
+    getRelation(Id,type,callback){
+
     }
 
 

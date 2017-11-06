@@ -62,11 +62,11 @@ class Validate extends ContainerComponent {
 
     sendApplyMessage= ()=>{
         let {Applicant,Respondent} = this.props;
-        currentObj.showLoading()
+        // currentObj.showLoading()
         Keyboard.dismiss();
-        let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
-        im.addMessage(addMessage,function(){
-            currentObj.hideLoading()
+        // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
+        // im.addMessage(addMessage,function(){
+        //     currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒");
 
             //向数据库添加关系，并且标记这条关系显示为false;
@@ -80,7 +80,7 @@ class Validate extends ContainerComponent {
             user.AddNewRelation(relation);
             currentObj.props.addRelation(relation);
 
-        })
+        // })
     }
     render() {
         let Popup = this.PopContent;
