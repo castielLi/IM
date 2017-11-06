@@ -2,7 +2,11 @@
  * Created by apple on 2017/9/29.
  */
 import * as storeSqlite from './StoreSqlite'
+
+import * as groupStoreSqlite from './StoreSqlite/Group'
+
 import dataRquest from './dataRequest'
+
 
 let __instance = (function () {
     let instance;
@@ -85,10 +89,30 @@ export default class User {
         storeSqlite.initIMDatabase(AccountId,function(){
 
         });
+        groupStoreSqlite.initIMDatabase(AccountId,function(){
+
+        })
     }
 
     getAllRelation(callback){
         return storeSqlite.GetRelationList(callback)
+    }
+
+
+    getAllGroupFromGroup(callback){
+        return groupStoreSqlite.GetRelationList(callback)
+    }
+
+    //添加群进Group
+    AddNewGroupToGroup(Relation){
+        groupStoreSqlite.addNewRelation(Relation)
+    }
+    initGroup(GroupList,callback){
+        groupStoreSqlite.initRelations(GroupList,callback);
+    }
+    //更新群名
+    updateGroupName(relationId,name){
+        groupStoreSqlite.UpdateGroupName(relationId,name);
     }
 
     getRelation(Id,type,callback){
@@ -124,8 +148,6 @@ export default class User {
     updateDisplayOfRelation(relationId,bool){
         storeSqlite.updateRelationDisplayStatus(relationId,bool);
     }
-
-
 
     //修改群备注
     updateGroupComment(RelationId,Comment){

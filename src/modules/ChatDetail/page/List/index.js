@@ -374,10 +374,26 @@ class Chat extends Component {
                     </View>
                 )
             }else if(row.message.Command * 1 == 101){
+                let nicks = JSON.parse(Data).nicks;
 
+                //筛选出自己的名字
+                let accounts = nicks.split(",");
+                nicks = "";
+                for(let i = 0; i< accounts.length; i++){
+                    if(accounts[i] == this.props.accountName){
+                        continue;
+                    }else{
+                        if(i < accounts.length - 1){
+                            nicks+= accounts[i] + ",";
+                        }else{
+                            nicks += accounts[i];
+                        }
+                    }
+                }
+                let owner = JSON.parse(Data).owner;
                 return(<View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
+                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{owner +"邀请你,"+ nicks +"进入群聊"}</Text>
                     </View>
                 </View>)
 

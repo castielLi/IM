@@ -36,6 +36,14 @@ export default function relationStore(state=initialState, action){
                 }
             }
             return state.concat([]);
+        case 'CHANGE_RELATION_OF_NICK':
+            for(let i=0;i<state.length;i++){
+                if(state[i].RelationId === action.relationId){
+                    state[i].Nick = action.Nick;
+                    break;
+                }
+            }
+            return state.concat([]);
         case 'CHANGE_RELATION_OF_BLACKLIST':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relationId){

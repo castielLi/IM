@@ -5,15 +5,15 @@
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './UserExcuteSql'
 import { Platform, StyleSheet } from 'react-native';
-import * as commonMethods from '../../Helper/formatQuerySql'
-import ChatWayEnum from '../dto/ChatWayEnum'
+import * as commonMethods from '../../../Helper/formatQuerySql';
+
 
 export function GetRelationList(callback){
     USERFMDB.GetRelationList(callback);
 }
 
 var databaseObj = {
-    name: "Account.db",//数据库文件
+    name: "Group.db",//数据库文件
 
 }
 if (Platform.OS === 'ios') {
@@ -23,15 +23,15 @@ if (Platform.OS === 'ios') {
 
 export function initIMDatabase(AccountId,callback){
     if(Platform.OS === 'ios'){
-        databaseObj.name =  AccountId + "/database/Account.db"
+        databaseObj.name =  AccountId + "/database/Group.db"
     }
 
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
 //初始化好友列表
-export function initRelations(friendList,blackList,GroupList,callback){
-    USERFMDB.InitRelations(friendList,blackList,GroupList,callback)
+export function initRelations(GroupList,callback){
+    USERFMDB.InitRelations(GroupList,callback)
 }
 
 //更改好友黑名单设置
@@ -65,7 +65,10 @@ export function updateRelationDisplayStatus(relationId,bool){
    USERFMDB.UpdateRelationDisplayStatus(relationId,bool);
 }
 
-
+//更新群名
+export function UpdateGroupName(relationId,name){
+    USERFMDB.UpdateGroupName(relationId,name);
+}
 //添加新的关系
 export function addNewRelation(Relation){
     USERFMDB.AddNewRelation(Relation)
@@ -132,6 +135,28 @@ USERFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
     }, errorDB);
 }
 
+//更新群名称
+USERFMDB.UpdateGroupName = function(relationId,name){
+
+    let sql = sqls.ExcuteIMSql.UpdateGroupName;
+
+    sql = commonMethods.sqlFormat(sql,[name,relationId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("更新状态成功")
+
+            }, (err)=>{errorDB('更新好友',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
 
 //获取好友列表
 USERFMDB.GetRelationList = function(callback){
@@ -153,47 +178,17 @@ USERFMDB.GetRelationList = function(callback){
 }
 
 //初始化好友列表
-USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
+USERFMDB.InitRelations = function(GroupList,callback){
 
     let relationsSqls = [];
 
     // (RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email)
 
-    for(let item in friendList){
 
-        let sql = sqls.ExcuteIMSql.InitRelations;
-
-        let friend = friendList[item];
-
-        //判断是否当前好友同样在黑名单中
-        let exist = false;
-        for(let i in blackList) {
-            if(blackList[i].Account == friend.Account){
-                exist = true;
-                break;
-            }
-        }
-
-        if(exist){
-            continue;
-        }
-        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",false,"private",friend.HeadImageUrl,friend.Email," ",true]);
-        relationsSqls.push(sql);
-    }
-
-    for(let item in blackList){
-
-        let sql = sqls.ExcuteIMSql.InitRelations;
-
-        let friend = blackList[item];
-
-        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",true,"private",friend.HeadImageUrl,friend.Email," ",true]);
-        relationsSqls.push(sql);
-    }
 
     for(let item in GroupList){
 
-        let sql = sqls.ExcuteIMSql.InitRelations;
+        let sql = sqls.ExcuteIMSql.AddtRelations;
 
         let group = GroupList[item];
 
@@ -221,7 +216,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
                 }, (err)=>{errorDB('初始化关系表内容',err)});
             }
 
-            callback();
+            callback&&callback();
 
         }, errorDB);
     }, errorDB);
