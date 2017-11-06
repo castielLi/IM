@@ -9,6 +9,7 @@ import {
     Image,
     Dimensions,
     TouchableOpacity,
+    Modal
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -23,7 +24,7 @@ class Player extends Component {
         super(props)
         this.state = {
             isShow : false,
-            uri: ''
+            url: ''
         }
     }
 
@@ -34,23 +35,24 @@ class Player extends Component {
 
     };
     componentWillReceiveProps(newProps){
+        let {url,isShow} = newProps.mediaPlayerStore;
         this.setState({
-            uri : newProps.uri,
-            isShow : newProps.isShow,
+            url,
+            isShow,
         });
     }
 
     render() {
         if(this.state.isShow){
             return(
-                <View style={styles.container}>
+                <Modal style={styles.container} animationType={'fade'}>
                     <TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>{this.props.hideMediaPlayer()}}/>
                     <Video
                         ref={(ref) => {
                             this.video = ref
                         }}
                         //来自本地的MP4视频
-                        source={{uri:this.state.uri}}
+                        source={{uri:this.state.url}}
                         //1.0表示默认速率
                         rate={1.0}
                         //图片等比例缩放
@@ -70,7 +72,7 @@ class Player extends Component {
                         // onProgress={this.setTime}    //  进度控制，每250ms调用一次，以获取视频播放的进度
                         style={styles.player}
                     />
-                </View>
+                </Modal>
             )
         }else{
             return null;
@@ -85,11 +87,8 @@ const styles = StyleSheet.create({
       flex:1
     },
     player:{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
+        width:width,
+        height:height
     }
 });
 

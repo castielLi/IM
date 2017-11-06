@@ -46,7 +46,7 @@ export function hideImageModal(){
 export function showMediaPlayer(url){
     return{
         type:'SHOW_MEDIA_PLAYER',
-        urls:url
+        url:url
     }
 }
 export function hideMediaPlayer(){
