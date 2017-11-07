@@ -14,7 +14,6 @@ let currentObj = undefined;
 let _network = new netWorking();
 
 let resourceQueue = [];
-let ME = "";
 FileManager.Ioc = function(im){
     currentObj = im;
 }
@@ -124,7 +123,7 @@ FileManager.downloadResource = function(message,callback){
         toFile;
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${way}-${sender}/${new Date().getTime()}${format}`;
+    toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/${new Date().getTime()}${format}`;
 
     console.log('下载前=============================:  ',message,toFile)
 

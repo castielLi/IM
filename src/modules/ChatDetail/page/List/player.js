@@ -71,6 +71,41 @@ class Player extends Component {
     //         </View>
     //     );
     // }
+
+    defaultControlsBox = ()=>{
+        let playButton = (<TouchableOpacity onPress={()=>this.pause()}><Icon size={20} name="play" color='#fff' /></TouchableOpacity>);
+        let pauseButton = (<TouchableOpacity onPress={()=>this.pause()}><Icon size={20} name="pause" color='#fff' /></TouchableOpacity>);
+        let playOrPause = this.state.paused ? playButton : pauseButton;
+        return(
+            <View style={{width,height,position:'absolute'}}>
+                <View style={{backgroundColor:'rgba(0,0,0,.5)',width}}>
+                    <TouchableOpacity style={{width:30,height:30,marginLeft:20,marginTop:20}} onPress={()=>{this.props.hideMediaPlayer();this.setState({paused:false})}}>
+                        <Icon size={30} name="close" color='#fff' />
+                    </TouchableOpacity>
+                </View>
+                <View style={{flexDirection:'row',position:'absolute',bottom:20,width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,.5)',paddingVertical:10}}>
+                     <View hidden={true} style={styles.playButtonBox}>
+                         {playOrPause}
+                     </View>
+                </View>
+            </View>
+        )
+    }
+
+
+    pause = ()=>{
+        this.setState({
+            paused:!this.state.paused,
+        })
+    }
+    onEnd = ()=>{
+        this.setState({
+            paused:true,
+        })
+    }
+    onProgress = (e)=>{
+        console.log(e)
+    }
     render() {
         if(this.state.isShow){
             return(
@@ -95,15 +130,15 @@ class Player extends Component {
                         playInBackground={false}
                         // onLoadStart={this.loadStart} // 当视频开始加载时的回调函数
                         // onLoad={this.setDuration}    // 当视频加载完毕时的回调函数
-                        // onEnd={this.onEnd}           // 当视频播放完毕后的回调函数
+                        onEnd={()=>this.onEnd()}           // 当视频播放完毕后的回调函数
                         // onError={this.videoError}    // 当视频不能加载，或出错后的回调函数
-                        // onProgress={this.setTime}    //  进度控制，每250ms调用一次，以获取视频播放的进度
+                        onProgress={(e)=>this.onProgress(e)}    //  进度控制，每250ms调用一次，以获取视频播放的进度
+                        // onBuffer={this.onBuffer}     // 远程视频缓冲时回调
                         style={styles.player}
                     />
-                    <TouchableOpacity style={{width:40,height:40,backgroundColor:'red',position:'absolute',top:0,left:0}} onPress={()=>{this.props.hideMediaPlayer()}}/>
                     {/*{this.defaultControlsView()}*/}
-                    <TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow',position:'absolute',top:0,right:0}} onPress={()=>{this.setState({paused:!this.state.paused})}}/>
-
+                    {/*<TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow',position:'absolute',top:0,right:0}} onPress={()=>{this.pause()}}/>*/}
+                    {this.defaultControlsBox()}
                 </Modal>
             )
         }else{
@@ -116,11 +151,11 @@ class Player extends Component {
 
 const styles = StyleSheet.create({
     container:{
-      flex:1
+      flex:1,
     },
     player:{
         width:width,
-        height:height
+        height:height,
     },
 
 
@@ -143,10 +178,10 @@ const styles = StyleSheet.create({
     //     height:20,
     //     backgroundColor:'rgba(0,0,0,1)'
     // },
-    // playButtonBox:{
-    //     width:20,
-    //     height:20
-    // },
+    playButtonBox:{
+        width:20,
+        height:20
+    },
     // bottomBox:{
     //     width:playerDefaultWidth,
     //     height:20,

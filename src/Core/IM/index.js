@@ -102,6 +102,8 @@ export default class IM {
     setSocket(account,device,deviceId,imToken){
         _socket.startConnect(account,device,deviceId,imToken);
         ME = account;
+
+        window.ME = account;
     }
 
     //初始化IM的数据库
