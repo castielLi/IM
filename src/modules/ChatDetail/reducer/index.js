@@ -78,6 +78,27 @@ export function imageModalStore(state = initialModalState,action){
     }
 }
 
+const initialPlayerState = {
+    isShow: false,
+    url:'',
+};
+export function mediaPlayerStore(state = initialPlayerState,action){
+    switch (action.type) {
+        case 'SHOW_MEDIA_PLAYER':
+            return {
+                url:action.url,
+                isShow:true,
+            };
+        case 'HIDE_MEDIA_PLAYER':
+            return {
+                ...state,
+                isShow:false,
+            };
+        default:
+            return state;
+    }
+}
+
 //聊天页面状态 
 
 initialChatDetailPageState = {

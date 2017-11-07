@@ -9,14 +9,14 @@ export default function FeaturesStore(state=initialState, action){
 
     switch(action.type){
         case 'SHOW_FEATURES':
+            state.isShow = true;
             return {
                 ...state,
-                isShow : true
             };
         case 'HIDE_FEATURES':
+            state.isShow = false;
             return {
                 ...state,
-                isShow : false
             };
         default:
             return state;

@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
         includeFontPadding:false,
         fontSize:16,
         lineHeight:20,
+        color:'#000'
     },
     emoji:{
         width:20,

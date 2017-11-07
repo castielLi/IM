@@ -39,6 +39,7 @@ import GroupInformationSetting from './GroupInformationSetting/page'
 import MoreGroupList from './MoreGroupList/page'
 import GroupAnnouncement from './GroupInformationSetting/page/GroupAnnouncement'
 import GroupName from './GroupInformationSetting/page/GroupName'
+import DeleteGroupMember from './GroupInformationSetting/page/DeleteGroupMember'
 
 export const MainPage = {
     key: 'MainTabbar',
@@ -232,6 +233,12 @@ export const RouteMap = {
     'GroupName': {
         'GroupName': {
             component: GroupName,
+            params: {}
+        }
+    },
+    'DeleteGroupMember': {
+        'DeleteGroupMember': {
+            component: DeleteGroupMember,
             params: {}
         }
     },

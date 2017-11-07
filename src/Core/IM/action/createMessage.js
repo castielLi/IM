@@ -7,6 +7,7 @@ import SendMessageBodyDto from '../dto/SendMessageBodyDto';
 import SendMessageDto from '../dto/SendMessageDto';
 import messageBodyChatDto from '../dto/messageBodyChatDto';
 import MessageType from '../dto/MessageType'
+import MessageStatus from '../dto/MessageStatus'
 
  function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand,MessageCommand=MessageCommandEnum.MSG_BODY,messageId=""){
     let addMessage = new SendMessageDto();
@@ -89,9 +90,13 @@ export function startChatRoomMessage(Sender,messageId){
     return createMessageObj(MessageType.information,"","chatroom",null,Sender,"empty",0,0,MessageCommandEnum.MSG_INFO,messageId)
 }
 
-//向邀请的群组人员发送邀请消息
-export function buildInvationGroupMessage(Sender,Receiver,text){
-   return createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+//本地存储群组邀请通知
+export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
+    let message = createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+    message.status = MessageStatus.SendSuccess
+    message.Command = MessageCommandEnum.MSG_INFO;
+    message.MSGID = messageId;
+    return message;
 }
 
 export function buildInvationSendMessageToRudexMessage(message){

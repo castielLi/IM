@@ -98,16 +98,23 @@ ReceiveManager.receiveMessageOpreator = function(message){
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
+            message.way = "chatroom"
+            currentObj.storeRecMessage(message)
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
             message.type = MessageType.friend
-            currentObj.updateRelation(message.Data.Data.Sender)
+            message.way = "private"
+            currentObj.storeRecMessage(message)
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
             message.type = MessageType.friend
+            message.way = "private"
+            currentObj.storeRecMessage(message)
+            currentObj.updateRelation(message.Data.Data.Sender)
         }
 
-        currentObj.storeRecMessage(message)
-        //回调App上层发送成功
-        currentObj.ReceiveMessageHandle(message);
         currentObj.sendReceiveAckMessage(message.MSGID)
         return;
     }

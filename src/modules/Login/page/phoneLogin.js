@@ -198,15 +198,19 @@ class PhoneLogin extends ContainerComponent {
                                    //初始化联系人store
                                    currentObj.props.initRelation(data);
                                    currentObj.hideLoading();
-                                   currentObj.route.push(currentObj.props,{
-                                       key:'MainTabbar',
-                                       routeId: 'MainTabbar'
-                                   });
+                                   user.initGroup(result.data.Data["GroupList"],function(){
+                                       currentObj.route.push(currentObj.props,{
+                                           key:'MainTabbar',
+                                           routeId: 'MainTabbar'
+                                       });
+								   })
+
                                })
 
 
 
                            })
+
                        },{"Account": currentObj.state.phoneText})
 				   }
 

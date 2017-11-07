@@ -14,14 +14,10 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import RNFS from 'react-native-fs'
 import * as loginStoreAction from '../../Login/reducer/action';
 import * as chatRecordStoreAction from '../../../Core/IM/redux/chat/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
-import {closeImDb} from '../../../Core/IM/StoreSqlite';
-import {closeAccountDb} from '../../../Core/User/StoreSqlite';
 import Features from '../../Common/menu/features';
 
 import MyNavigationBar from '../../../Core/Component/NavigationBar'

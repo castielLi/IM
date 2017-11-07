@@ -12,7 +12,6 @@ import { AppState , NetInfo,Platform,Alert} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
-import BaseComponent from './Core/Component'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
@@ -21,14 +20,12 @@ import * as ActionForChatRecordStore from './Core/IM/redux/chat/action'
 import * as ActionForLoginStore from './modules/Login/reducer/action';
 
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
-import {changeRelationOfShow} from './modules/Contacts/reducer/action';
+import {changeRelationOfShow,addRelation} from './modules/Contacts/reducer/action';
 
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
-import route from './Core/route/router'
-import * as Helper from './Core/Helper'
-let network = new netWorking();
-
+import MessageCommandEnum from './Core/IM/dto/MessageCommandEnum'
+import * as groupStoreSqlite from './Core/User/StoreSqlite/Group'
 
 export default function App() {
 
@@ -61,10 +58,35 @@ export default function App() {
 
 
     let handleRecieveMessage = function(message){
+        //如果是通知消息
+        if(message.Command == MessageCommandEnum.MSG_INFO){
+            user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
+                //添加进relation redux
+                store.dispatch(addRelation(relation));
 
-        // let relation = user.getInformationByIdandType();
+                if(message.way == "chatroom"){
+                    //添加进group数据库
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                    user.AddNewGroupToGroup(relation)
+                }else{
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                }
+            });
+            //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
 
-        store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+        }else{
+
+            if(message.way == "chatroom"){
+
+                //这里要获取群组里面发送消息的成员的信息
+                user.getInformationByIdandType(message.Data.Data.Receiver,"private",function(relation){
+
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                });
+            }else{
+                store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+            }
+        }
     }
 
     //收到同意添加好友申请回调

@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
+import ChatMessageVideo from './ChatMessageVideo';
 
 let {width, height} = Dimensions.get('window');
 
@@ -56,6 +57,16 @@ export default class ChatMessage extends Component {
                     />
                 )
             }
+                break;
+            case 'video': {
+                return (
+                    <ChatMessageVideo
+                        data={data}
+                        style={style}
+                    />
+                )
+            }
+                break;
             default:
                 return null;
                 break;
