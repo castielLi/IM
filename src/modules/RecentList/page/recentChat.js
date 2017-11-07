@@ -197,7 +197,7 @@ class RecentChat extends ContainerComponent {
 	}
 	_renderRow = (rowData, sectionID, rowID) => {
 		let needData = this.formateRelationData;
-		if(rowData.Type == 'chatroom'&&!this.formateRelationData[rowData.Client]) needData = this.formateGroupData;
+		if((rowData.Type == 'chatroom')&&!this.formateRelationData[rowData.Client]) needData = this.formateGroupData;
 		return (
 			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
 				<Swipeout

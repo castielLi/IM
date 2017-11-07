@@ -57,11 +57,12 @@ export default function App() {
 
 
     let handleRecieveMessage = function(message){
-
+        //如果是通知消息
         if(message.Command == MessageCommandEnum.MSG_INFO){
              user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
                  //添加进relation redux
-                store.dispatch(addRelation(relation))
+                store.dispatch(addRelation(relation));
+                 store.dispatch(ActionForChatRecordStore.receiveMessage({...message,way:'chatroom'}))
                 if(message.way == "group"){
                     //添加进group数据库
                     user.AddNewGroupRelation(relation)
