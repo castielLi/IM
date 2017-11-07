@@ -6,7 +6,7 @@ export const InitIMTable = {
 
     "createGroupTable":"CREATE TABLE IF NOT EXISTS GroupList (RelationId varchar(255) PRIMARY KEY, OtherComment varchar(255),Nick varchar(255),Remark varchar(255) , BlackList Boolean,Type varchar(20),avator varchar(255),Email varchar(255), localImage varchar(255) , owner varchar(255),show Boolean)",
     "CreateRelationTableIndex":"CREATE INDEX index_id ON GroupList(RelationId)",
-    "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId)"
+
 }
 
 export const ExcuteIMSql = {
@@ -26,6 +26,9 @@ export const ExcuteIMSql = {
     "UpdateRelationSetting":"update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=?,displayZoom=?,allowCheckZoom=?,starMark=? where RelationId=?",
     "UpdateRelationDisplayStatus":'update GroupList set show = ? where RelationId = ?',
     "UpdateGroupName":'update GroupList set Nick = ? where RelationId = ?',
-    "SelectRelationByIdAndType":"select * from GroupList where RelationId = ? and Type = 'chatroom' "
+    "SelectRelationByIdAndType":"select * from GroupList where RelationId = ? and Type = 'chatroom' ",
+    "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId varchar(255),Nick varchar(255),avator varchar(255),localImage varchar(255))",
+    "InsertGroupMember":"insert or replace into ? (RelationId,Nick,avator,localImage) values(?,?,?,?)",
+    "GetGroupMembersByGroupId":"select * from ?",
 
 }
