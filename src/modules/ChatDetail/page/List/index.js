@@ -392,7 +392,10 @@ class Chat extends Component {
                         </View>
                         <View style={styles.infoView}>
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==' '?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
-                            <ChatMessage style={styles.bubbleView} rowData={row}/>
+                            <View>
+                                {this.props.type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Sender}</Text> : null}
+                                <ChatMessage style={styles.bubbleView} rowData={row}/>
+                            </View>
                         </View>
                     </View>
                 )

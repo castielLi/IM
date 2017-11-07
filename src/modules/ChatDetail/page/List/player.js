@@ -25,7 +25,10 @@ class Player extends Component {
         super(props)
         this.state = {
             isShow : false,
-            url: ''
+            url: '',
+
+            paused:false,
+
         }
     }
 
@@ -72,7 +75,6 @@ class Player extends Component {
         if(this.state.isShow){
             return(
                 <Modal style={styles.container} animationType={'fade'}>
-                    <TouchableOpacity style={{width:40,height:40,backgroundColor:'red',position:'absolute',top:0,left:0}} onPress={()=>{this.props.hideMediaPlayer()}}/>
                     <Video
                         ref={(ref) => {
                             this.video = ref
@@ -88,7 +90,7 @@ class Player extends Component {
                         //默认音量
                         volume={1.0}
                         //是否暂停
-                        paused={false}
+                        paused={this.state.paused}
                         // 当app转到后台运行的时候，播放是否暂停
                         playInBackground={false}
                         // onLoadStart={this.loadStart} // 当视频开始加载时的回调函数
@@ -98,7 +100,10 @@ class Player extends Component {
                         // onProgress={this.setTime}    //  进度控制，每250ms调用一次，以获取视频播放的进度
                         style={styles.player}
                     />
+                    <TouchableOpacity style={{width:40,height:40,backgroundColor:'red',position:'absolute',top:0,left:0}} onPress={()=>{this.props.hideMediaPlayer()}}/>
                     {/*{this.defaultControlsView()}*/}
+                    <TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow',position:'absolute',top:0,right:0}} onPress={()=>{this.setState({paused:!this.state.paused})}}/>
+
                 </Modal>
             )
         }else{
