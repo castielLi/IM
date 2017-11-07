@@ -83,6 +83,8 @@ export default function App() {
 
                     store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                 });
+            }else{
+                store.dispatch(ActionForChatRecordStore.receiveMessage(message))
             }
         }
     }
