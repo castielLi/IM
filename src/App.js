@@ -63,10 +63,12 @@ export default function App() {
              user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
                  //添加进relation redux
                 store.dispatch(addRelation(relation));
-                 store.dispatch(ActionForChatRecordStore.receiveMessage({...message,way:'chatroom'}))
+                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                 if(message.way == "chatroom"){
                     //添加进group数据库
                     user.AddNewGroupToGroup(relation)
+                }else{
+
                 }
             });
 
