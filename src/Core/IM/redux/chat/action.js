@@ -3,6 +3,8 @@ import * as DtoMethods from '../../dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
 import * as recentListAction from '../../../User/redux/action';
 let im = new IM();
+import RNFS from 'react-native-fs';
+
 import * as friendApplicationActions from '../applyFriend/action'
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
@@ -43,8 +45,20 @@ export function receiveMessage(message){
 			dispatch(friendApplicationActions.getApplicantInfo(message))
 		}
     }
+
     else{
+
         return (dispatch,getState)=>{
+            let myId = getState().loginStore.accountMessage.accountId;
+            let client = message.Data.Data.Sender;
+            let type = message.type;
+            let record = getState().chatRecordStore.ChatRecord[client];
+            if(record === undefined){
+                let audioPath = RNFS.DocumentDirectoryPath + '/' +myId+'/audio/chat/' + type + '-' +client;
+                let imagePath = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + type + '-' +client;
+                RNFS.mkdir(audioPath)
+                RNFS.mkdir(imagePath)
+			}
             dispatch({
                 type:'RECEIVE_MESSAGE',
                 client:message.Data.Data.Sender,

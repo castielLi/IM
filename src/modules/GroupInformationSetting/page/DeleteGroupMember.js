@@ -144,6 +144,7 @@ class DeleteGroupMember extends ContainerComponent {
                     alert('群解散了')
                     return;
                 }
+                alert('踢人成功')
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {

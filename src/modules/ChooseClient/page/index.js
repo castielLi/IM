@@ -22,6 +22,8 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../Contacts/reducer/action';
 import * as Actions from '../../../Core/IM/redux/chat/action';
+import RNFS from 'react-native-fs';
+
 import User from '../../../Core/User';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
@@ -261,6 +263,22 @@ class ChooseClient extends ContainerComponent {
                     let copyMessage = Object.assign({},sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
                     currentObj.props.addMessage(reduxMessage);
+                    //路由跳转
+                    let routes = currentObj.props.navigator.getCurrentRoutes();
+                    let index;
+                    for (let i = 0; i < routes.length; i++) {
+                        if (routes[i]["key"] == "GroupInformationSetting") {
+                            index = i;
+                            break;
+                        }
+                    }
+                    alert('添加成功');
+                    //跳转到群设置
+                    currentObj.route.replaceAtIndex(currentObj.props,{
+                        key:'GroupInformationSetting',
+                        routeId: 'GroupInformationSetting',
+                        params:{"groupId":currentObj.props.groupId}
+                    },index)
 
                 } else {
                     alert(result.errorMessage);
@@ -314,8 +332,11 @@ class ChooseClient extends ContainerComponent {
 					let copyMessage = Object.assign({},sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
 					currentObj.props.addMessage(reduxMessage);
-
-
+					//创建文件夹
+                    let audioPath = RNFS.DocumentDirectoryPath + '/' +currentObj.props.accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
+                    let imagePath = RNFS.DocumentDirectoryPath + '/' +currentObj.props.accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
+                    RNFS.mkdir(audioPath)
+                    RNFS.mkdir(imagePath)
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 
                 }else{

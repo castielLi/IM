@@ -37,7 +37,8 @@
 //     }
 // }
 import InitChatRecordConfig from './InitChatRecordConfig';
-import MessageStatus from '../../dto/MessageStatus'
+import MessageStatus from '../../dto/MessageStatus';
+
 const initialState = {
     ChatRecord: {}
 }
@@ -58,7 +59,8 @@ export default function chatRecordStore(state = initialState, action) {
         case 'ADD_MESSAGE':
                 //若超过50条，删除最旧的一条消息
                 if(state.ChatRecord[action.client]===undefined){
-                    state.ChatRecord[action.client] = []
+                    state.ChatRecord[action.client] = [];
+
                 }
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
@@ -74,8 +76,9 @@ export default function chatRecordStore(state = initialState, action) {
         case 'RECEIVE_MESSAGE':
             //若超过50条，删除最旧的一条消息
             if(state.ChatRecord[action.client]===undefined){
-                state.ChatRecord[action.client] = []
+                state.ChatRecord[action.client] = [];
             }
+
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
                 }
