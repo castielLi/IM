@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.brentvatne.react.ReactVideoPackage;
-import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactlibrary.RNUUIDGeneratorPackage;
 import com.zmxv.RNSound.RNSoundPackage;
@@ -35,7 +34,6 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new ReactVideoPackage(),
-            new PickerPackage(),
             new VectorIconsPackage(),
             new RNUUIDGeneratorPackage(),
             new RNSoundPackage(),
