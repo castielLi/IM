@@ -9,12 +9,12 @@ export function getApplicantInfo(message) {
 
     return (dispatch)=>{
             let status = ApplyFriendEnum.WAIT;
-            let {comment,key,avator,nick} = message.Data.Data.Data;
+            let key = message.Data.Data.Data;
             let {Sender,Receiver} = message.Data.Data;
             let time = Date.now();
             let send = Sender;
             let rec = Receiver;
-            let messageObj = {send,rec,time,comment,key,status,avator,nick};
+            let messageObj = {send,rec,time,key,status};
             dispatch(addFriendApplication(messageObj));
     }
 }
