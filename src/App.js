@@ -25,7 +25,6 @@ import {changeRelationOfShow,addRelation} from './modules/Contacts/reducer/actio
 import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
 import MessageCommandEnum from './Core/IM/dto/MessageCommandEnum'
-import * as groupStoreSqlite from './Core/User/StoreSqlite/Group'
 
 export default function App() {
 
@@ -65,7 +64,7 @@ export default function App() {
                 store.dispatch(addRelation(relation))
                 if(message.way == "group"){
                     //添加进group数据库
-                    groupStoreSqlite.addNewRelation(relation)
+                    user.AddNewGroupRelation(relation)
                 }
             });
 

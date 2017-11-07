@@ -179,6 +179,12 @@ export default class User {
         storeSqlite.addNewRelation(Relation)
     }
 
+    //group添加新关系
+    AddNewGroupRelation(Relation){
+        groupStoreSqlite.addNewRelation(Relation);
+    }
+
+
     //获取关系设置
     GetRelationSetting(RelationId,callback){
         storeSqlite.getRelationSetting(RelationId,callback);
@@ -192,6 +198,11 @@ export default class User {
     //添加关系设置
     AddNewRelationSetting(RelationSetting){
         storeSqlite.addNewRelationSetting(RelationSetting);
+    }
+
+    closeDB(){
+        storeSqlite.closeAccountDb();
+        groupStoreSqlite.closeAccountDb();
     }
 
 }
