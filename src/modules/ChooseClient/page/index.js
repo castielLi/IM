@@ -325,7 +325,7 @@ class ChooseClient extends ContainerComponent {
 
 					//todo：lizongjun 现在不需要自己发送消息，后台统一发送
                     //向添加的用户发送邀请消息
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text,messageId);
+                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,'',messageId);
                     im.storeSendMessage(sendMessage);
 
 					//更新redux message
