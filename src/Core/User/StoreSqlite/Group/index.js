@@ -41,6 +41,15 @@ export function initRelations(GroupList,callback){
     GROUPFMDB.InitRelations(GroupList,callback)
 }
 
+//接收一个新群的时候，获取这个群的成员列表并保存到groupMember中
+export function initGroupMemberByGroupId(GroupId,members){
+    GROUPFMDB.InitGroupMemberByGroupId(GroupId,members);
+}
+
+//通过groupId获取Members
+export function GetMembersByGroupId(groupId,callback){
+    GROUPFMDB.GetMembersByGroupId(groupId,callback);
+}
 
 
 //删除关系
@@ -94,6 +103,71 @@ GROUPFMDB.initIMDataBase = function(){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
+//接收一个新群的时候，获取这个群的成员列表并保存到groupMember中
+GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
+
+    let createTablesql = sqls.ExcuteIMSql.CreateGroupMemberTable;
+
+    createTablesql = commonMethods.sqlFormat(createTablesql,[GroupId])
+
+    let insertSqls = [];
+
+    for(let i = 0;i<members.length;i++){
+        let insertSql = sqls.ExcuteIMSql.InsertGroupMember;
+
+        let member = members[i];
+
+        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.RelationId,member.Nick,member.avator,member.LocalImage]);
+
+        insertSqls.push(insertSql);
+    }
+
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(createTablesql, [], (tx, results) => {
+
+                console.log("创建" + GroupId + ":Group Member表成功");
+
+                for(let i = 0; i< insertSqls.length;i++){
+
+                    tx.executeSql(insertSqls[i], [], (tx, results) => {
+
+                        console.log("添加" + members[i] + ":Member到 "+ GroupId +"表成功");
+                    }, (err)=>{errorDB('添加Member',err)});
+                }
+
+            }, (err)=>{errorDB('创建GroupMember表',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
+
+//通过GroupI获取members
+GROUPFMDB.GetMembersByGroupId = function(groupId,callback){
+    let selectSql = sql.ExcuteIMSql.GetGroupMembersByGroupId;
+
+    selectSql = commonMethods.sqlFormat(selectSql,[groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(selectSql, [], (tx, results) => {
+
+                callback(results.row.raw())
+
+            }, (err)=>{errorDB('通过groupId获取成员',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
 
 //更新群名称
 GROUPFMDB.UpdateGroupName = function(relationId,name){
@@ -285,8 +359,6 @@ GROUPFMDB.updateRelation =function(Relation){
         }, errorDB);
     }, errorDB);
 }
-
-
 
 
 

@@ -60,7 +60,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
     //错误消息
     if(message.Command == MessageCommandEnum.MSG_ERROR){
-        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
+        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted || message.Data.ErrorCode == CommandErrorCodeEnum.NotFriend){
             let sender = message.Data.SourceMSGID.split("_")[0];
             let blackMessage = blackListMessage(sender,message.MSGID);
             currentObj.storeRecMessage(blackMessage);
@@ -94,7 +94,10 @@ ReceiveManager.receiveMessageOpreator = function(message){
         message.Command = MessageCommandEnum.MSG_INFO;
         message.type = MessageType.information;
 
-        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP ||
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER
+            || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER ||
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;

@@ -9,6 +9,7 @@ import {
     Dimensions,
     TouchableOpacity,
     Image,
+    Alert
 } from 'react-native';
 
 import Sound from 'react-native-sound';
