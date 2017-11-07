@@ -31,6 +31,7 @@ import Ces from './ces';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
 import Player from './player'
+import User from '../../../../Core/User'
 
 
 let _listHeight = 0; //list显示高度
@@ -45,6 +46,8 @@ let ListLayout = false;
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
 let recordData;
+
+let user = new User();
 
 
 class Chat extends Component {
@@ -326,12 +329,14 @@ class Chat extends Component {
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
+        let {Receiver} = row.message.Data.Data;
         let {Data} = row.message.Data.Data;
         let LocalTime = parseInt(row.message.Data.LocalTime);
 
         let timer = this.getTimestamp(LocalTime,rowid);
         if(Sender == this.props.accountId){
 
+         //显示邀请群组人员消息
          if(row.message.Command * 1 == 101 && this.props.type == "chatroom"){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
@@ -393,7 +398,7 @@ class Chat extends Component {
                         <View style={styles.infoView}>
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==' '?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
-                                {this.props.type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Sender}</Text> : null}
+                                {this.props.type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Receiver}</Text> : null}
                                 <ChatMessage style={styles.bubbleView} rowData={row}/>
                             </View>
                         </View>
