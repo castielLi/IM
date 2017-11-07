@@ -112,27 +112,9 @@ export default class User {
         return storeSqlite.GetRelationList(callback)
     }
 
-
-    getAllGroupFromGroup(callback){
-        return groupStoreSqlite.GetRelationList(callback)
-    }
-
-    //添加群进Group
-    AddNewGroupToGroup(Relation){
-        groupStoreSqlite.addNewRelation(Relation)
-    }
-    initGroup(GroupList,callback){
-        groupStoreSqlite.initRelations(GroupList,callback);
-    }
-    //更新群名
-    updateGroupName(relationId,name){
-        groupStoreSqlite.UpdateGroupName(relationId,name);
-    }
-
     getRelation(Id,type,callback){
 
     }
-
 
     //初始化好友列表
     initRelations(friendList,blackList,GroupList,callback){
@@ -198,6 +180,27 @@ export default class User {
     closeDB(){
         storeSqlite.closeAccountDb();
         groupStoreSqlite.closeAccountDb();
+    }
+
+
+
+    //Group.db
+
+    
+    getAllGroupFromGroup(callback){
+        return groupStoreSqlite.GetRelationList(callback)
+    }
+
+    //添加群进Group
+    AddNewGroupToGroup(Relation){
+        groupStoreSqlite.addNewRelation(Relation)
+    }
+    initGroup(GroupList,callback){
+        groupStoreSqlite.initRelations(GroupList,callback);
+    }
+    //更新群名
+    updateGroupName(relationId,name){
+        groupStoreSqlite.UpdateGroupName(relationId,name);
     }
 
 }
