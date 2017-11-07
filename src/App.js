@@ -70,7 +70,7 @@ export default function App() {
 
                     if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
 
-                        message.Data.Data.Data = content;
+                        // message.Data.Data.Data = content;
 
                         user.AddNewGroupToGroup(relation)
                     }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
