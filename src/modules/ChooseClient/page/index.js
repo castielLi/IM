@@ -253,9 +253,14 @@ class ChooseClient extends ContainerComponent {
                     }
 
                     //向添加的用户发送邀请消息
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
-                    im.addMessage(sendMessage);
-                    currentObj.props.addMessage(sendMessage);
+					let messageId = uuidv1();
+                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text,messageId);
+                    im.storeSendMessage(sendMessage);
+
+                    //更新redux message
+                    let copyMessage = Object.assign({},sendMessage);
+                    let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
+                    currentObj.props.addMessage(reduxMessage);
 
                 } else {
                     alert(result.errorMessage);
@@ -302,12 +307,12 @@ class ChooseClient extends ContainerComponent {
 
 					//todo：lizongjun 现在不需要自己发送消息，后台统一发送
                     //向添加的用户发送邀请消息
-                    // let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
-                    // im.addMessage(sendMessage);
+                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text,messageId);
+                    im.storeSendMessage(sendMessage);
 
 					//更新redux message
-					let reduxMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text);
-                    reduxMessage = buildInvationSendMessageToRudexMessage(reduxMessage);
+					let copyMessage = Object.assign({},sendMessage);
+                    let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
 					currentObj.props.addMessage(reduxMessage);
 
 
