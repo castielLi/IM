@@ -20,7 +20,7 @@ let __instance = (function () {
 let _request = new dataRquest();
 
 //缓存数据
-let cache = {"user":[],"group":[]};
+let cache = {"private":[],"chatroom":[]};
 
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
@@ -48,10 +48,10 @@ export default class User {
 
 
             //todo:黄昊东  这里getrelaiton方法 需要判断type 是group 还是是 user 如果是user 去account 数据库找，是group 去group数据库找
-            if(type == 'user'){
-                    storeSqlite.getRelation(Id,'private',function(relations){
+            if(type == 'private'){
+                    storeSqlite.getRelation(Id,type,(relations)=>{
                         if(relation.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                            this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                                 callback(results)
                             })
                         }else{
@@ -59,17 +59,17 @@ export default class User {
                         }
                     })
 
-            }else if(type == 'group'){
-                groupStoreSqlite.getRelation(Id,'chatroom',function(relations){
+            }else if(type == 'chatroom'){
+                groupStoreSqlite.getRelation(Id,type,(relations)=>{
                     if(relations.length == 0){
-                        this.request.getAccountByAccountIdAndType(Id,type,function(results){
+                        this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                             let relation = new RelationModel();
-                            // relation.RelationId = result.data.Data;
-                            // relation.owner = currentObj.props.accountId;
-                            // relation.Nick = currentObj.props.accountName + "发起的群聊";
-                            // relation.Type = 'chatroom';
-                            // relation.show = 'false';
-                            // callback(relation)
+                            relation.RelationId = results.ID;
+                            relation.owner = results.Owner;
+                            relation.Nick = results.Name;
+                            relation.Type = 'chatroom';
+                            relation.show = 'false';
+                            callback(relation)
                         })
                     }else{
                         callback(relations[0])
@@ -179,6 +179,7 @@ export default class User {
         storeSqlite.addNewRelation(Relation)
     }
 
+
     //获取关系设置
     GetRelationSetting(RelationId,callback){
         storeSqlite.getRelationSetting(RelationId,callback);
@@ -192,6 +193,11 @@ export default class User {
     //添加关系设置
     AddNewRelationSetting(RelationSetting){
         storeSqlite.addNewRelationSetting(RelationSetting);
+    }
+
+    closeDB(){
+        storeSqlite.closeAccountDb();
+        groupStoreSqlite.closeAccountDb();
     }
 
 }

@@ -18,6 +18,6 @@ export function getAccountByAccountId(accountId,type,callback){
     }
 
     _network.methodPOST(url,param,function(result){
-        callback&&callback(result)
+        callback&&callback(result.data.Data)
     })
 }

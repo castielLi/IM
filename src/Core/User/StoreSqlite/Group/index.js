@@ -28,12 +28,12 @@ export function initIMDatabase(AccountId,callback){
 
     GROUPFMDB.initIMDataBase(AccountId,callback);
 }
-
+//获取所有群
 export function getRelation(Id,type,callback){
     GROUPFMDB.GetRelationByIdAndType(Id,type,callback);
 }
 
-//初始化好友列表
+//初始化群列表（登录时，插入服务器返回的群列表，没有则插入，有则更新）
 export function initRelations(GroupList,callback){
     GROUPFMDB.InitRelations(GroupList,callback)
 }
