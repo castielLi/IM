@@ -78,6 +78,7 @@ export default class User {
                                 relation.Type = 'chatroom';
                                 relation.show = 'false';
                                 relation.avator = results.ProfilePicture == null?"":results.ProfilePicture;
+                                relation.MemberList = results.MemberList;
                                 callback(relation)
 
 

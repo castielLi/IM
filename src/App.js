@@ -26,6 +26,7 @@ import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
 import MessageCommandEnum from './Core/IM/dto/MessageCommandEnum'
 import * as groupStoreSqlite from './Core/User/StoreSqlite/Group'
+import AppCommandEnum from './Core/IM/dto/AppCommandEnum'
 
 export default function App() {
 
@@ -66,8 +67,22 @@ export default function App() {
 
                 if(message.way == "chatroom"){
                     //添加进group数据库
+
+                    if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+
+                        message.Data.Data.Data = content;
+
+                        user.AddNewGroupToGroup(relation)
+                    }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+
+                    }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
+
+                    }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
+
+                    }
+
                     store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-                    user.AddNewGroupToGroup(relation)
+
                 }else{
                     store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                 }

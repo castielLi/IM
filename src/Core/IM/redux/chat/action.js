@@ -52,10 +52,11 @@ export function receiveMessage(message){
             let myId = getState().loginStore.accountMessage.accountId;
             let client = message.Data.Data.Sender;
             let type = message.type;
+            let way = message.way;
             let record = getState().chatRecordStore.ChatRecord[client];
             if(record === undefined){
-                let audioPath = RNFS.DocumentDirectoryPath + '/' +myId+'/audio/chat/' + type + '-' +client;
-                let imagePath = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + type + '-' +client;
+                let audioPath = RNFS.DocumentDirectoryPath + '/' +myId+'/audio/chat/' + way + '-' +client;
+                let imagePath = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + way + '-' +client;
                 RNFS.mkdir(audioPath)
                 RNFS.mkdir(imagePath)
 			}

@@ -67,13 +67,27 @@ class GroupInformationSetting extends ContainerComponent {
 
     addToContacts = ()=>{
         let Save = !this.state.isSave;
+        alert(Save)
         let info = this.state.groupInformation;
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('添加通讯录成功')
-                    user.updateDisplayOfRelation(info.ID,'true');
-                    currentObj.props.changeRelationOfShow(info.ID);
+                    let obj = {
+                        RelationId:info.ID,
+                        OtherComment:info.Description,
+                        Nick:info.Name,
+                        BlackList:false,
+                        Type:'chatroom',
+                        avator:info.ProfilePicture,
+                        owner:info.Owner,
+                        show:true}
+                    user.AddNewRelation(obj);
+                    currentObj.props.addRelation(obj);
+
+                    currentObj.setState({
+                        isSave:Save
+                    })
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }
@@ -81,14 +95,15 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
                 if(result.success && result.data.Result){
                     alert('移除通讯录成功')
-                    user.updateDisplayOfRelation(info.ID,'false');
-                    currentObj.props.changeRelationOfShow(info.ID);
+                    user.deleteRelation(info.ID);
+                    currentObj.props.deleteRelation(info.ID);
+
+                    currentObj.setState({
+                        isSave:Save
+                    })
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }
-        this.setState({
-            isSave:!this.state.isSave
-        })
     }
 
 
@@ -116,10 +131,18 @@ class GroupInformationSetting extends ContainerComponent {
                 }else{
                     members = Data.MemberList.concat()
                 }
+                let save;
+                let relations = currentObj.props.relations;
+                for(let i=0;i<relations.length;i++){
+                    if(relations[i].RelationId === groupInformation.ID){
+                        save = true;
+                    }
+                }
                 currentObj.setState({
                     members:members.concat([{},{}]),
                     realMemberList:Data.MemberList,
-                    groupInformation
+                    groupInformation,
+                    isSave:save
                 })
             }
 
@@ -154,6 +177,7 @@ class GroupInformationSetting extends ContainerComponent {
                     user.deleteRelation(client);
                     user.deleteFromGrroup(groupId);
                     currentObj.route.toMain(currentObj.props);
+
 
                 }else{
                     alert("http请求出错")
