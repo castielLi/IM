@@ -64,7 +64,7 @@ export default function App() {
                  //添加进relation redux
                 store.dispatch(addRelation(relation));
                  store.dispatch(ActionForChatRecordStore.receiveMessage({...message,way:'chatroom'}))
-                if(message.way == "group"){
+                if(message.way == "chatroom"){
                     //添加进group数据库
                     user.AddNewGroupToGroup(relation)
                 }
