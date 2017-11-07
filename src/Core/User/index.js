@@ -20,7 +20,7 @@ let __instance = (function () {
 let _request = new dataRquest();
 
 //缓存数据
-let cache = {"private":[],"chatroom":[]};
+let cache = {"private":{},"chatroom":{}};
 
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
@@ -77,6 +77,7 @@ export default class User {
                             cache[type][Id] = relations[0];
                         })
                     }else{
+                        cache[type][Id]
                         callback(relations[0])
                         cache[type][Id] = relations[0];
                     }
@@ -192,6 +193,10 @@ export default class User {
     //更新群名
     updateGroupName(relationId,name){
         groupStoreSqlite.UpdateGroupName(relationId,name);
+    }
+    //退群
+    deleteFromGrroup(RelationId){
+        groupStoreSqlite.deleteRelation(RelationId)
     }
 
 }
