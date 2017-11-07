@@ -186,7 +186,7 @@ export default class User {
 
     //Group.db
 
-    
+
     getAllGroupFromGroup(callback){
         return groupStoreSqlite.GetRelationList(callback)
     }
