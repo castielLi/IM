@@ -66,7 +66,7 @@ export default function App() {
                  store.dispatch(ActionForChatRecordStore.receiveMessage({...message,way:'chatroom'}))
                 if(message.way == "group"){
                     //添加进group数据库
-                    groupStoreSqlite.addNewRelation({...relation,Type:'chatroom'})
+                    groupStoreSqlite.addNewRelation(relation)
                 }
             });
 
