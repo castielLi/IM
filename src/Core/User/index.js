@@ -54,7 +54,7 @@ export default class User {
                         if(relations.length == 0){
                             this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                                 callback(results)
-                                cache[type][Id] = relations[0];
+                                cache[type][Id] = results;
                             })
                         }else{
                             callback(relations[0])
@@ -74,7 +74,7 @@ export default class User {
                             relation.Type = 'chatroom';
                             relation.show = 'false';
                             callback(relation)
-                            cache[type][Id] = relations[0];
+                            cache[type][Id] = relation;
                         })
                     }else{
                         cache[type][Id]
