@@ -18,9 +18,10 @@ let __instance = (function () {
 
 
 let _request = new dataRquest();
+let currentObj = undefined;
 
 //缓存数据
-let cache = {"private":{},"chatroom":{}};
+let cache = {"private":{},"chatroom":{},"groupMember":{}};
 
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
@@ -30,6 +31,8 @@ export default class User {
         __instance(this);
 
         this.request = _request;
+
+        currentObj = this;
     }
 
     //设置request的方式webapi，还是socket
@@ -46,15 +49,15 @@ export default class User {
         console.log(cache);
         if(cache[type].length == 0 || cache[type][Id] == undefined){
 
-
-            //todo:黄昊东  这里getrelaiton方法 需要判断type 是group 还是是 user 如果是user 去account 数据库找，是group 去group数据库找
             if(type == 'private'){
                     storeSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
-                                callback(results)
-                                cache[type][Id] = relations[0];
+                            this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                                if(success) {
+                                    callback(results)
+                                    cache[type][Id] = relations[0];
+                                }
                             })
                         }else{
                             callback(relations[0])
@@ -66,15 +69,24 @@ export default class User {
                 groupStoreSqlite.getRelation(Id,type,(relations)=>{
                     //如果数据库也没有这条消息
                     if(relations.length == 0){
-                        this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
-                            let relation = new RelationModel();
-                            relation.RelationId = results.ID;
-                            relation.owner = results.Owner;
-                            relation.Nick = results.Name;
-                            relation.Type = 'chatroom';
-                            relation.show = 'false';
-                            callback(relation)
-                            cache[type][Id] = relations[0];
+                        this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                            if(success) {
+                                let relation = new RelationModel();
+                                relation.RelationId = results.ID;
+                                relation.owner = results.Owner;
+                                relation.Nick = results.Name;
+                                relation.Type = 'chatroom';
+                                relation.show = 'false';
+                                relation.avator = results.ProfilePicture == null?"":results.ProfilePicture;
+                                callback(relation)
+
+
+                                //数据库也没有这条group的记录，那么就需要添加进groupList中
+
+                                currentObj.AddGroupAndMember(relation,results.MemberList);
+
+                                cache[type][Id] = relations[0];
+                            }
                         })
                     }else{
                         cache[type][Id]
@@ -107,6 +119,24 @@ export default class User {
     getRelation(Id,type,callback){
 
     }
+
+    //添加Group到GourpList中去
+    AddGroupAndMember(Group,members){
+
+        //添加群到grouplist中
+        groupStoreSqlite.addNewRelation(Group);
+
+        //为group添加groupMember
+        // groupStoreSqlite.initGroupMemberByGroupId("",[])
+
+    }
+
+
+    //通过GroupId获取当前群的member信息
+    GetMembersByGroupId(groupId,callback){
+        groupStoreSqlite.GetMembersByGroupId(groupId,callback);
+    }
+
 
     //初始化好友列表
     initRelations(friendList,blackList,GroupList,callback){

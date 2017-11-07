@@ -60,7 +60,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
     //错误消息
     if(message.Command == MessageCommandEnum.MSG_ERROR){
-        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted){
+        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted || message.Data.ErrorCode == CommandErrorCodeEnum.NotFriend){
             let sender = message.Data.SourceMSGID.split("_")[0];
             let blackMessage = blackListMessage(sender,message.MSGID);
             currentObj.storeRecMessage(blackMessage);
