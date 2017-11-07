@@ -174,7 +174,7 @@ class GroupInformationSetting extends ContainerComponent {
                     //如果该client在最近聊天中有记录
                     currentObj.props.deleteRecentItemFromId(groupId)
                     //删除account数据库中数据
-                    user.deleteRelation(client);
+                    user.deleteRelation(groupId);
                     user.deleteFromGrroup(groupId);
                     currentObj.route.toMain(currentObj.props);
 
