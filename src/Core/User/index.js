@@ -174,6 +174,11 @@ export default class User {
         storeSqlite.getAllRelationAvatorAndName(callback);
     }
 
+    //添加新关系
+    AddNewRelation(Relation){
+        storeSqlite.addNewRelation(Relation)
+    }
+
 
     //获取关系设置
     GetRelationSetting(RelationId,callback){
