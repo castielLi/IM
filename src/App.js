@@ -60,21 +60,32 @@ export default function App() {
     let handleRecieveMessage = function(message){
         //如果是通知消息
         if(message.Command == MessageCommandEnum.MSG_INFO){
-             user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
-                 //添加进relation redux
+            user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
+                //添加进relation redux
                 store.dispatch(addRelation(relation));
-                 store.dispatch(ActionForChatRecordStore.receiveMessage({...message,way:'chatroom'}))
-                if(message.way == "group"){
+
+                if(message.way == "chatroom"){
                     //添加进group数据库
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                     user.AddNewGroupToGroup(relation)
+                }else{
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                 }
             });
-
-
             //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
 
         }else{
-            store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+
+            if(message.way == "chatroom"){
+
+                //这里要获取群组里面发送消息的成员的信息
+                user.getInformationByIdandType(message.Data.Data.Receiver,"private",function(relation){
+
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                });
+            }else{
+                store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+            }
         }
     }
 

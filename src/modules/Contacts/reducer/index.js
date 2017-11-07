@@ -13,8 +13,20 @@ export default function relationStore(state=initialState, action){
         case 'CLEAR_RELATION':
             return initialState;
         case 'ADD_RELATION':
-            state.push(action.relation);
-            return state.concat([]);
+            let hasSameRelation = false;
+            for(let i=0;i<state.length;i++){
+                if(state[i].RelationId === action.relation.relationId){
+                    hasSameRelation = true;
+                    break;
+                }
+            }
+            if(!hasSameRelation){
+                state.push(action.relation);
+                return state.concat([]);
+            }else{
+                return state;
+            }
+
         case 'CHANGE_RELATION':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relation.relationId){

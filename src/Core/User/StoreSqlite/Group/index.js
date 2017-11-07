@@ -8,9 +8,7 @@ import { Platform, StyleSheet } from 'react-native';
 import * as commonMethods from '../../../Helper/formatQuerySql';
 
 
-export function GetRelationList(callback){
-    GROUPFMDB.GetRelationList(callback);
-}
+
 
 var databaseObj = {
     name: "Group.db",//数据库文件
@@ -28,7 +26,12 @@ export function initIMDatabase(AccountId,callback){
 
     GROUPFMDB.initIMDataBase(AccountId,callback);
 }
+
 //获取所有群
+export function GetRelationList(callback){
+    GROUPFMDB.GetRelationList(callback);
+}
+//获取指定群
 export function getRelation(Id,type,callback){
     GROUPFMDB.GetRelationByIdAndType(Id,type,callback);
 }
@@ -38,10 +41,6 @@ export function initRelations(GroupList,callback){
     GROUPFMDB.InitRelations(GroupList,callback)
 }
 
-//更改好友黑名单设置
-export function changeRelationBliackList(isBlackList,RelationId){
-    GROUPFMDB.UpdateBlackListByRelation(isBlackList,RelationId)
-}
 
 
 //删除关系
@@ -49,20 +48,13 @@ export function deleteRelation(RelationId){
     GROUPFMDB.DeleteRelation(RelationId)
 }
 
-//更新关系头像
-export function updateRelationAvator(RelationId,LocalImage,AvatorUrl){
-    GROUPFMDB.updateRelationAvator(RelationId,LocalImage,AvatorUrl);
-}
+
 
 //修改关系
 export function updateRelation(Relation) {
     GROUPFMDB.updateRelation(Relation);
 }
 
-//获取所有关系的头像和名字
-export function getAllRelationAvatorAndName(callback){
-    GROUPFMDB.GetAllRelationAvatorAndName(callback);
-}
 
 //更新relation显示状态
 export function updateRelationDisplayStatus(relationId,bool){
@@ -78,20 +70,6 @@ export function addNewRelation(Relation){
     GROUPFMDB.AddNewRelation(Relation)
 }
 
-//添加新的关系设置
-export function addNewRelationSetting(RelationSetting){
-    GROUPFMDB.AddNewRelationSetting(RelationSetting);
-}
-
-//修改关系设置
-export function updateRelationSetting(RelationSetting){
-    GROUPFMDB.UpdateRelationSetting(RelationSetting);
-}
-
-//获取关系设置
-export function getRelationSetting(RelationId,callback){
-    GROUPFMDB.GetRelationSetting(RelationId,callback);
-}
 
 export function closeAccountDb(){
     GROUPFMDB.closeAccountDb()
@@ -116,28 +94,6 @@ GROUPFMDB.initIMDataBase = function(){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
-//更新好友显示状态
-GROUPFMDB.UpdateRelationDisplayStatus = function(relationId,bool){
-
-    let sql = sqls.ExcuteIMSql.UpdateRelationDisplayStatus;
-
-    sql = commonMethods.sqlFormat(sql,[bool,relationId])
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(sql, [], (tx, results) => {
-
-                console.log("更新状态成功")
-
-            }, (err)=>{errorDB('更新好友',err)});
-
-        }, errorDB);
-    }, errorDB);
-}
 
 //更新群名称
 GROUPFMDB.UpdateGroupName = function(relationId,name){
@@ -281,30 +237,7 @@ GROUPFMDB.AddNewRelation = function(Relation){
 }
 
 
-//拉入或移除黑名单
-GROUPFMDB.UpdateBlackListByRelation = function(isBlackList,RelationId){
-    let updateSql = sqls.ExcuteIMSql.SetBlackList;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[isBlackList,RelationId]);
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(updateSql, [], (tx, results) => {
-
-                console.log("修改黑名单关系成功")
-
-            }, errorDB);
-
-
-
-        }, errorDB);
-    }, errorDB);
-
-}
 
 //删除关系
 GROUPFMDB.DeleteRelation = function(RelationId){
@@ -328,28 +261,7 @@ GROUPFMDB.DeleteRelation = function(RelationId){
     }, errorDB);
 }
 
-//更新关系头像
-GROUPFMDB.updateRelationAvator = function(RelationId,LocalImage,AvatorUrl){
 
-    let updateSql = sqls.ExcuteIMSql.UpdateRelationAvator;
-
-    updateSql = commonMethods.sqlFormat(updateSql,[AvatorUrl,LocalImage,RelationId])
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(updateSql, [], (tx, results) => {
-
-                console.log("更新头像成功")
-
-            }, errorDB);
-
-        }, errorDB);
-    }, errorDB);
-}
 
 
 //修改关系
@@ -374,100 +286,10 @@ GROUPFMDB.updateRelation =function(Relation){
     }, errorDB);
 }
 
-//获取所有关系的头像和名字
-GROUPFMDB.GetAllRelationAvatorAndName = function(callback){
-   let sql = sqls.ExcuteIMSql.GetAllRelationAvatorAndName;
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(sql, [], (tx, results) => {
-
-                callback(results.rows.raw());
-
-            }, (err)=>{errorDB('查找',err)});
-
-        });
-    }, (err)=>{errorDB('打开数据',err)});
-}
-
-//获取当前关系的关系设置
-GROUPFMDB.GetRelationSetting = function(RelationId,callback){
-    let sql = sqls.ExcuteIMSql.GetRelationSettingByRelationId;
-
-    sql = commonMethods.sqlFormat(sql,[RelationId])
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(sql, [], (tx, results) => {
-
-                if(results.rows.length>0) {
-                    callback(results.rows.raw()[0]);
-                }else{
-                    callback(null);
-                }
-
-            }, (err)=>{errorDB('查找',err)});
-
-        });
-    }, (err)=>{errorDB('打开数据',err)});
-}
 
 
-//修改当前关系的关系设置
-GROUPFMDB.UpdateRelationSetting = function(RelationSetting){
-    let sql = sqls.ExcuteIMSql.UpdateRelationSetting;
 
-    // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
-    sql = commonMethods.sqlFormat(sql,[RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick,
-        RelationSetting.displayZoom,RelationSetting.allowCheckZoom,RelationSetting.starMark,RelationSetting.RelationId])
 
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(sql, [], (tx, results) => {
-
-                console.log("修改成功")
-
-            }, (err)=>{errorDB('修改',err)});
-
-        });
-    }, (err)=>{errorDB('打开数据',err)});
-}
-
-//添加新的关系设置
-GROUPFMDB.AddNewRelationSetting = function(RelationSetting){
-    let sql = sqls.ExcuteIMSql.InsertRelationSetting;
-
-    // update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=? where RelationId=?
-    sql = commonMethods.sqlFormat(sql,[RelationSetting.RelationId,RelationSetting.setTop,RelationSetting.disturb,RelationSetting.saveContact,RelationSetting.showNick,
-    RelationSetting.displayZoom,RelationSetting.allowCheckZoom,RelationSetting.starMark])
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-
-            tx.executeSql(sql, [], (tx, results) => {
-
-                console.log("添加成功")
-
-            }, (err)=>{errorDB('添加',err)});
-
-        });
-    }, (err)=>{errorDB('打开数据',err)});
-}
 
 
 GROUPFMDB.closeAccountDb = function(){

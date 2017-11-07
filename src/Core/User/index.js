@@ -20,7 +20,7 @@ let __instance = (function () {
 let _request = new dataRquest();
 
 //缓存数据
-let cache = {"private":[],"chatroom":[]};
+let cache = {"private":{},"chatroom":{}};
 
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
@@ -50,17 +50,21 @@ export default class User {
             //todo:黄昊东  这里getrelaiton方法 需要判断type 是group 还是是 user 如果是user 去account 数据库找，是group 去group数据库找
             if(type == 'private'){
                     storeSqlite.getRelation(Id,type,(relations)=>{
-                        if(relation.length == 0){
+                        //如果数据库也没有这条消息
+                        if(relations.length == 0){
                             this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                                 callback(results)
+                                cache[type][Id] = relations[0];
                             })
                         }else{
                             callback(relations[0])
+                            cache[type][Id] = relations[0];
                         }
                     })
 
             }else if(type == 'chatroom'){
                 groupStoreSqlite.getRelation(Id,type,(relations)=>{
+                    //如果数据库也没有这条消息
                     if(relations.length == 0){
                         this.request.getAccountByAccountIdAndType(Id,type,(results)=>{
                             let relation = new RelationModel();
@@ -70,27 +74,15 @@ export default class User {
                             relation.Type = 'chatroom';
                             relation.show = 'false';
                             callback(relation)
+                            cache[type][Id] = relations[0];
                         })
                     }else{
+                        cache[type][Id]
                         callback(relations[0])
+                        cache[type][Id] = relations[0];
                     }
                 })
             }
-
-            //
-            //     //数据库里面依旧没有这条消息
-            //     if(relations.length == 0){
-
-            //         this.request.getAccountByAccountIdAndType(Id,type,function(results){
-            //
-            //         })
-            // //
-            //     }else{
-            //         cache[type][Id] =  relations[0];
-            //         return cache[type][Id];
-            //     }
-            //
-            // });
 
         }else{
             callback(cache[type][Id])
@@ -112,27 +104,9 @@ export default class User {
         return storeSqlite.GetRelationList(callback)
     }
 
-
-    getAllGroupFromGroup(callback){
-        return groupStoreSqlite.GetRelationList(callback)
-    }
-
-    //添加群进Group
-    AddNewGroupToGroup(Relation){
-        groupStoreSqlite.addNewRelation(Relation)
-    }
-    initGroup(GroupList,callback){
-        groupStoreSqlite.initRelations(GroupList,callback);
-    }
-    //更新群名
-    updateGroupName(relationId,name){
-        groupStoreSqlite.UpdateGroupName(relationId,name);
-    }
-
     getRelation(Id,type,callback){
 
     }
-
 
     //初始化好友列表
     initRelations(friendList,blackList,GroupList,callback){
@@ -198,6 +172,31 @@ export default class User {
     closeDB(){
         storeSqlite.closeAccountDb();
         groupStoreSqlite.closeAccountDb();
+    }
+
+
+
+    //Group.db
+
+
+    getAllGroupFromGroup(callback){
+        return groupStoreSqlite.GetRelationList(callback)
+    }
+
+    //添加群进Group
+    AddNewGroupToGroup(Relation){
+        groupStoreSqlite.addNewRelation(Relation)
+    }
+    initGroup(GroupList,callback){
+        groupStoreSqlite.initRelations(GroupList,callback);
+    }
+    //更新群名
+    updateGroupName(relationId,name){
+        groupStoreSqlite.UpdateGroupName(relationId,name);
+    }
+    //退群
+    deleteFromGrroup(RelationId){
+        groupStoreSqlite.deleteRelation(RelationId)
     }
 
 }
