@@ -28,8 +28,8 @@ export function initIMDatabase(AccountId,callback){
 }
 
 //获取所有群
-export function GetRelationList(callback){
-    GROUPFMDB.GetRelationList(callback);
+export function GetRelationList(callback,show){
+    GROUPFMDB.GetRelationList(callback,show);
 }
 //获取指定群
 export function getRelation(Id,type,callback){
@@ -117,7 +117,7 @@ GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
 
         let member = members[i];
 
-        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.Account,member.Nickname,member.HeadImageUrl,'']);
+        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.Account]);
 
         insertSqls.push(insertSql);
     }
@@ -219,7 +219,7 @@ GROUPFMDB.GetRelationByIdAndType = function(Id,type,callback){
 
 
 //获取好友列表
-GROUPFMDB.GetRelationList = function(callback){
+GROUPFMDB.GetRelationList = function(callback,show){
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -227,7 +227,9 @@ GROUPFMDB.GetRelationList = function(callback){
 
         db.transaction((tx) => {
 
-            tx.executeSql(sqls.ExcuteIMSql.GetAllRelation, [], (tx, results) => {
+            let sql = show == undefined? sqls.ExcuteIMSql.GetAllRelation:sqls.ExcuteIMSql.GetAllShowRelation;
+
+            tx.executeSql(sql, [], (tx, results) => {
 
                 callback(results.rows.raw());
 
@@ -253,10 +255,10 @@ GROUPFMDB.InitRelations = function(GroupList,callback){
         let group = GroupList[item];
 
         group.Name = group.Name == null?"未命名":group.Name;
-        group.Description = group.Description == null?" ":group.Description;
-        group.ProfilePicture = group.ProfilePicture == null?" ":group.ProfilePicture;
+        group.Description = group.Description == null?"":group.Description;
+        group.ProfilePicture = group.ProfilePicture == null?"":group.ProfilePicture;
 
-        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name," ",false,"chatroom",group.ProfilePicture," ",group.Owner,true]);
+        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name,"",false,"chatroom",group.ProfilePicture,"",group.Owner,true]);
         relationsSqls.push(sql);
     }
 

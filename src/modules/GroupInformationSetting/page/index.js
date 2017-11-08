@@ -71,7 +71,7 @@ class GroupInformationSetting extends ContainerComponent {
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
-                    alert('添加通讯录成功')
+                    // alert('添加通讯录成功')
                     let obj = {
                         RelationId:info.ID,
                         OtherComment:info.Description,
@@ -81,7 +81,7 @@ class GroupInformationSetting extends ContainerComponent {
                         avator:info.ProfilePicture,
                         owner:info.Owner,
                         show:true}
-                    user.AddNewRelation(obj);
+                    user.AddNewGroup(obj);
                     currentObj.props.addRelation(obj);
 
                     currentObj.setState({
@@ -93,8 +93,8 @@ class GroupInformationSetting extends ContainerComponent {
         else{
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
                 if(result.success && result.data.Result){
-                    alert('移除通讯录成功')
-                    user.deleteRelation(info.ID);
+                    // alert('移除通讯录成功')
+                    user.deleteFromGrroup(info.ID);
                     currentObj.props.deleteRelation(info.ID);
 
                     currentObj.setState({

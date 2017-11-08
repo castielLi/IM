@@ -12,9 +12,9 @@ export const InitIMTable = {
 export const ExcuteIMSql = {
 
     "GetAllRelation":"select * from GroupList",
+    "GetAllShowRelation":"select * from GroupList where show='true'",
     "InitRelations":"insert into GroupList(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
     "AddtRelations":"insert or replace into GroupList(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
-
     "SetBlackList":"update GroupList set BlackList = ? where RelationId = ?",
     "DeleteRelation":"delete from GroupList where RelationId = ?",
     "UpdateRelationAvator":"update GroupList set localImage = ? where RelationId = ?",
@@ -27,8 +27,8 @@ export const ExcuteIMSql = {
     "UpdateRelationDisplayStatus":'update GroupList set show = ? where RelationId = ?',
     "UpdateGroupName":'update GroupList set Nick = ? where RelationId = ?',
     "SelectRelationByIdAndType":"select * from GroupList where RelationId = ? and Type = 'chatroom' ",
-    "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId varchar(255),Nick varchar(255),avator varchar(255),localImage varchar(255))",
-    "InsertGroupMember":"insert or replace into ? (RelationId,Nick,avator,localImage) values(?,?,?,?)",
+    "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId varchar(255))",
+    "InsertGroupMember":"insert or replace into ? (RelationId) values(?)",
     "GetGroupMembersByGroupId":"select * from ?",
 
 }

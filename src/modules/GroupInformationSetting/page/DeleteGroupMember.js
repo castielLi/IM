@@ -61,7 +61,7 @@ class DeleteGroupMember extends ContainerComponent {
     }
 
     _renderAvator= (HeadImageUrl)=>{
-        if(!HeadImageUrl||HeadImageUrl === ' '){
+        if(!HeadImageUrl||HeadImageUrl === ''){
             return <Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
         }else{
             return <Image style = {styles.pic} source = {{uri:HeadImageUrl}}></Image>

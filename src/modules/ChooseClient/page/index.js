@@ -159,11 +159,11 @@ class ChooseClient extends ContainerComponent {
 
     _renderAvator= (Obj)=>{
         if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === ' ')&&!Obj.avator){
+            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
                 return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
 
             }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!==' ')?Obj.LocalImage:Obj.avator}}></Image>
+            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
 
         }else{
             return null

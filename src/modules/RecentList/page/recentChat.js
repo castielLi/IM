@@ -178,11 +178,11 @@ class RecentChat extends ContainerComponent {
 	}
 	_renderAvator= (oneRealationObj)=>{
 			if(oneRealationObj){
-				if((!oneRealationObj.localImage||oneRealationObj.localImage === ' ')&&!oneRealationObj.avator){
+				if((!oneRealationObj.localImage||oneRealationObj.localImage === '')&&!oneRealationObj.avator){
 					return 	<Image style = {styles.avatar} source = {require('../resource/avator.jpg')}></Image>
 
                 }
-                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!==' ')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
+                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!=='')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
 
             }else{
 				return null
