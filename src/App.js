@@ -70,7 +70,11 @@ export default function App() {
 
                     if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
 
-                        // message.Data.Data.Data = content;
+                        // let accounts = message.Data.Data.Data.split(',');
+                        //
+                        // for(let i = 0; i<accounts.length - 1;i++){
+                        //
+                        // }
 
                         user.AddNewGroupToGroup(relation)
                     }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){

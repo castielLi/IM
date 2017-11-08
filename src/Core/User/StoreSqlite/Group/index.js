@@ -117,7 +117,7 @@ GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
 
         let member = members[i];
 
-        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.RelationId,member.Nick,member.avator,member.LocalImage]);
+        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.Account,member.Nickname,member.HeadImageUrl,'']);
 
         insertSqls.push(insertSql);
     }
