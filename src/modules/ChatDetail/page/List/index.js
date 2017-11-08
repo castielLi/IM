@@ -76,7 +76,8 @@ class Chat extends Component {
             dataSourceO: ds,
             showInvertible:false,
             isMore:0,
-            isShowModal:false
+            isShowModal:false,
+            groupMembers:[],
         };
 
         this.renderRow = this.renderRow.bind(this);
@@ -116,11 +117,17 @@ class Chat extends Component {
 
     componentWillMount() {
         this.im = new IM()
-
+        let currentObj = this;
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         if(this.props.type == "chatroom"){
             user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
-                
+                currentObj.data = {...currentObj.data};
+                currentObj.data2 = {...currentObj.data2};
+                currentObj.setState({
+                    groupMembers,
+                    dataSource: currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
+                    dataSourceO: currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys),
+                })
             });
         }
 
@@ -333,6 +340,18 @@ class Chat extends Component {
             isShowModal:true
         })
     }
+
+    getGroupMembersInfo = (MemberID)=>{
+        let Members = this.state.groupMembers;
+        let MembersLength = Members.length;
+        for(let i=0;i<MembersLength;i++){
+            if(Members[i].RelationId == MemberID)
+            {
+                return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{11}</Text>
+            }
+        }
+        return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
+    }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
@@ -405,7 +424,7 @@ class Chat extends Component {
                         <View style={styles.infoView}>
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
-                                {this.props.type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Receiver}</Text> : null}
+                                {this.props.type === 'chatroom' ? this.getGroupMembersInfo(Receiver) : null}
                                 <ChatMessage style={styles.bubbleView} rowData={row}/>
                             </View>
                         </View>
@@ -573,6 +592,7 @@ class Chat extends Component {
     }
     render() {
         //、console.log('render执行了')
+        console.log(this.state.groupMembers)
         const {showInvertible}=this.state
         if(!showInvertible){
             return (
