@@ -315,7 +315,6 @@ class ChooseClient extends ContainerComponent {
                     relation.show = 'false';
 
                     //添加关系到数据库
-					user.AddNewRelation(relation);
                     user.AddNewGroupToGroup(relation);
                     //todo 添加群聊关系到redux
                     currentObj.props.addRelation(relation);
