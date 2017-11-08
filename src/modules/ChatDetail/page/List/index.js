@@ -360,7 +360,7 @@ class Chat extends Component {
                              </TouchableOpacity>
                          </View>
                          <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
-                         {this.props.myAvator&&this.props.myAvator!==' '?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+                         {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                      </View>
                  </View>
@@ -396,7 +396,7 @@ class Chat extends Component {
                             {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                         </View>
                         <View style={styles.infoView}>
-                            {this.props.HeadImageUrl&&this.props.HeadImageUrl!==' '?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+                            {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
                                 {this.props.type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Receiver}</Text> : null}
                                 <ChatMessage style={styles.bubbleView} rowData={row}/>
