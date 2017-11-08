@@ -230,6 +230,7 @@ class ChooseClient extends ContainerComponent {
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
 		let nicks = "";
+		let members = [];
 		//拼接选中用户id
 		for(let item in chooseArr){
 			accounts+= chooseArr[item].RelationId+",";
@@ -239,6 +240,8 @@ class ChooseClient extends ContainerComponent {
 			}else{
 				nicks += chooseArr[item].Nick;
 			}
+
+			members.push({"Account":chooseArr[item].RelationId})
 		}
 		accounts += currentObj.props.accountId;
 
@@ -315,7 +318,7 @@ class ChooseClient extends ContainerComponent {
                     relation.show = 'false';
 
                     //添加关系到数据库
-                    user.AddNewGroupToGroup(relation);
+                    user.AddNewGroupToGroup(relation,members);
                     //todo 添加群聊关系到redux
                     currentObj.props.addRelation(relation);
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
