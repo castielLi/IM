@@ -159,11 +159,11 @@ class ChooseClient extends ContainerComponent {
 
     _renderAvator= (Obj)=>{
         if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === ' ')&&!Obj.avator){
+            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
                 return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
 
             }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!==' ')?Obj.LocalImage:Obj.avator}}></Image>
+            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
 
         }else{
             return null
@@ -315,7 +315,6 @@ class ChooseClient extends ContainerComponent {
                     relation.show = 'false';
 
                     //添加关系到数据库
-					user.AddNewRelation(relation);
                     user.AddNewGroupToGroup(relation);
                     //todo 添加群聊关系到redux
                     currentObj.props.addRelation(relation);

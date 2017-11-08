@@ -96,9 +96,10 @@ export default class User {
                                 }
 
                                 //数据库也没有这条group的记录，那么就需要添加进groupList中
-
+                                //并且添加groupMember表，存储group和user关系
+                                //存储新的群user到account表中
                                 currentObj.AddGroupAndMember(relation,results.MemberList);
-
+                                currentObj.AddGroupMember(results.MemberList)
                                 cache[type][Id] = relations[0];
                             }
                         })
@@ -126,6 +127,11 @@ export default class User {
         })
     }
 
+
+
+    //User part:
+
+
     getAllRelation(callback){
         return storeSqlite.GetRelationList(callback)
     }
@@ -134,27 +140,18 @@ export default class User {
 
     }
 
-    //添加Group到GourpList中去
-    AddGroupAndMember(Group,members){
 
-        //添加群到grouplist中
-        groupStoreSqlite.addNewRelation(Group);
-
-        //为group添加groupMember
-        groupStoreSqlite.initGroupMemberByGroupId(Group.RelationId,members)
-
+    //添加group成员到account表中，便于group聊天时显示
+    AddGroupMember(members){
+        storeSqlite.addGroupMember(members)
     }
 
 
-    //通过GroupId获取当前群的member信息
-    GetMembersByGroupId(groupId,callback){
-        groupStoreSqlite.GetMembersByGroupId(groupId,callback);
-    }
 
 
     //初始化好友列表
-    initRelations(friendList,blackList,GroupList,callback){
-        storeSqlite.initRelations(friendList,blackList,GroupList,callback);
+    initRelations(friendList,blackList,callback){
+        storeSqlite.initRelations(friendList,blackList,callback);
     }
 
     //更改好友黑名单设置
@@ -197,7 +194,6 @@ export default class User {
         storeSqlite.addNewRelation(Relation)
     }
 
-
     //获取关系设置
     GetRelationSetting(RelationId,callback){
         storeSqlite.getRelationSetting(RelationId,callback);
@@ -213,19 +209,45 @@ export default class User {
         storeSqlite.addNewRelationSetting(RelationSetting);
     }
 
-    closeDB(){
-        storeSqlite.closeAccountDb();
-        groupStoreSqlite.closeAccountDb();
+
+
+
+
+
+
+
+
+
+
+    //Group part:
+    //添加一个新的group
+    AddNewGroup(Relation){
+        groupStoreSqlite.addNewRelation(Relation)
+    }
+
+    //添加Group到GourpList中去,添加group与user关系表GroupMember
+    AddGroupAndMember(Group,members){
+
+        //添加群到grouplist中
+        groupStoreSqlite.addNewRelation(Group);
+
+        //为group添加groupMember
+        groupStoreSqlite.initGroupMemberByGroupId(Group.RelationId,members)
+
     }
 
 
-
-    //Group.db
-
-
-    getAllGroupFromGroup(callback){
-        return groupStoreSqlite.GetRelationList(callback)
+    //通过GroupId获取当前群的member信息
+    GetMembersByGroupId(groupId,callback){
+        groupStoreSqlite.GetMembersByGroupId(groupId,callback);
     }
+
+
+    //获取所有的group
+    getAllGroupFromGroup(callback,show=undefined){
+        return groupStoreSqlite.GetRelationList(callback,show)
+    }
+
 
     //添加群进Group
     AddNewGroupToGroup(Relation){
@@ -242,5 +264,23 @@ export default class User {
     deleteFromGrroup(RelationId){
         groupStoreSqlite.deleteRelation(RelationId)
     }
+
+    //将群移除通讯录
+    RemoveGroupFromContact(groupId){
+        groupStoreSqlite.RemoveGroupFromContact(groupId);
+    }
+
+
+    closeDB(){
+        storeSqlite.closeAccountDb();
+        groupStoreSqlite.closeAccountDb();
+    }
+
+
+
+    //Group.db
+
+
+
 
 }

@@ -12,10 +12,10 @@ export const InitIMTable = {
 
 export const ExcuteIMSql = {
 
-    "GetAllRelation":"select * from Relation",
+    "GetAllRelation":"select * from Relation where show='true'",
     "InitRelations":"insert or replace into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
     "AddtRelations":"insert or replace into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
-
+    "AddMembers":"insert or ignore into Relation(RelationId,OtherComment,Nick,Remark,BlackList,Type,avator,Email,localImage,owner,show) values(?,?,?,?,?,?,?,?,'',?,?)",
     "SetBlackList":"update Relation set BlackList = ? where RelationId = ?",
     "DeleteRelation":"delete from Relation where RelationId = ?",
     "UpdateRelationAvator":"update Relation set localImage = ? where RelationId = ?",
