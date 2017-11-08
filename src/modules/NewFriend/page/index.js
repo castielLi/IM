@@ -116,7 +116,16 @@ class NewFriend extends ContainerComponent {
            return <Text style={styles.arrow}>{'已过期'}</Text>
         }
     }
+
+    _renderAvator= (path)=>{
+        if(path && path !== ' '){
+            return 	<Image style = {styles.headPic} source = {{uri:path}}/>
+        }else{
+            return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
+        }
+    }
     _renderRow = (rowData, sectionID, rowID)=>{
+        alert(JSON.stringify(rowData))
         return(
             <View>
                 <Swipeout
@@ -142,9 +151,9 @@ class NewFriend extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
-                                <Image style={styles.headPic} source={require('../resource/other.jpg')}/>
+                                {this._renderAvator(rowData.avator)}
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{rowData.nick}</Text>
+                                    <Text style={styles.name}>{rowData.send}</Text>
                                     <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
                                 </View>
                             </View>
