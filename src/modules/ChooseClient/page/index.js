@@ -257,7 +257,7 @@ class ChooseClient extends ContainerComponent {
                     //向添加的用户发送邀请消息
 					let messageId = uuidv1();
                     let text = nicks;
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text,messageId);
+                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
                     im.storeSendMessage(sendMessage);
 
                     //更新redux message
@@ -291,7 +291,7 @@ class ChooseClient extends ContainerComponent {
         else{
 
         	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0],type:'private'}});
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private'}});
                 return;
 			}
 

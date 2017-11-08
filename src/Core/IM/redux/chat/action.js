@@ -2,6 +2,7 @@ import IM from '../../index';
 import * as DtoMethods from '../../dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
 import * as recentListAction from '../../../User/redux/action';
+
 let im = new IM();
 import RNFS from 'react-native-fs';
 
@@ -51,14 +52,16 @@ export function receiveMessage(message){
         return (dispatch,getState)=>{
             let myId = getState().loginStore.accountMessage.accountId;
             let client = message.Data.Data.Sender;
-            let type = message.type;
             let way = message.way;
             let record = getState().chatRecordStore.ChatRecord[client];
             if(record === undefined){
+            	//创建文件夹
                 let audioPath = RNFS.DocumentDirectoryPath + '/' +myId+'/audio/chat/' + way + '-' +client;
                 let imagePath = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + way + '-' +client;
                 RNFS.mkdir(audioPath)
                 RNFS.mkdir(imagePath)
+				//初始化chatRecordStore
+                dispatch(getChatRecord(client,way));
 			}
             dispatch({
                 type:'RECEIVE_MESSAGE',

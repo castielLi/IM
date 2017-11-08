@@ -21,7 +21,7 @@ let _request = new dataRquest();
 let currentObj = undefined;
 
 //缓存数据
-let cache = {"private":{},"chatroom":{},"groupMember":{}};
+let cache = {"private":{},"chatroom":{}};
 
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
@@ -41,6 +41,9 @@ export default class User {
     // }
 
 
+    //todo:lizongjun 把所有的用户，包括没有添加为好友的用户全部放到user表中，user表中group和user 分开，单独管理,groupMemberList用来管理群成员
+
+
     //todo:lizongjun 用户管理模块里面包含了所有数据，1 从缓存找 2从数据库找 3请求获取，暴露给外界接口
     //新方法：
 
@@ -56,6 +59,7 @@ export default class User {
                             this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                                 if(success) {
                                     callback(results)
+                                    let model = new RelationModel();
                                     cache[type][Id] = relations[0];
                                 }
                             })
@@ -81,6 +85,15 @@ export default class User {
                                 relation.MemberList = results.MemberList;
                                 callback(relation)
 
+                                for(let i = 0;i<results.MemberList.length;i++){
+                                    let accountId = results.MemberList[i].Account;
+                                    if(cache["private"][accountId] == undefined){
+                                        let model = new RelationModel();
+                                        model.avator = results.MemberList[i].HeadImageUrl;
+                                        model.Nick = results.MemberList[i].Nickname;
+                                        cache["private"][accountId] = model;
+                                    }
+                                }
 
                                 //数据库也没有这条group的记录，那么就需要添加进groupList中
 
@@ -128,7 +141,7 @@ export default class User {
         groupStoreSqlite.addNewRelation(Group);
 
         //为group添加groupMember
-        // groupStoreSqlite.initGroupMemberByGroupId("",[])
+        groupStoreSqlite.initGroupMemberByGroupId(Group.RelationId,members)
 
     }
 
