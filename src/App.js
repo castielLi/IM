@@ -18,7 +18,7 @@ import IM from './Core/IM'
 import User from './Core/User'
 import DisplayComponent from './Core/Component'
 import * as IMHandle from './Core/IM/action/receiveHandleMessage'
-
+import {changeTabBar} from './modules/MainTabbar/reducer/action';
 
 export default function App() {
 
