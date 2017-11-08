@@ -69,6 +69,11 @@ export function updateRelationDisplayStatus(relationId,bool){
    USERFMDB.UpdateRelationDisplayStatus(relationId,bool);
 }
 
+//通过ids获取relations
+export function GetRelationsByRelationIds(relationIds,callback){
+    USERFMDB.GetRelationsByRelationIds(relationIds,callback);
+}
+
 
 //添加新的关系
 export function addNewRelation(Relation){
@@ -165,6 +170,26 @@ USERFMDB.GetRelationByIdAndType = function(Id,type,callback){
         }, errorDB);
     }, errorDB);
 }
+
+//通过ids获取relations
+USERFMDB.GetRelationsByRelationIds = function(relationIds,callback){
+    let sql = sqls.ExcuteIMSql.GetRelationsByIds;
+
+    sql = commonMethods.sqlQueueFormat(sql,relationIds);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+                tx.executeSql(sql, [], (tx, results) => {
+                    callback(results.rows.raw())
+
+                }, errorDB);
+        }, errorDB);
+    }, errorDB);
+}
+
 
 //添加group成员
 USERFMDB.AddGroupMember = function(memebers){

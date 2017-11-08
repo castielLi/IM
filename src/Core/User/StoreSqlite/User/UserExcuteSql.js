@@ -26,5 +26,6 @@ export const ExcuteIMSql = {
     "GetRelationSettingByRelationId":"select * from RelationSetting where RelationId=?",
     "UpdateRelationSetting":"update RelationSetting set setTop=?,disturb=?,saveContact=?,showNick=?,displayZoom=?,allowCheckZoom=?,starMark=? where RelationId=?",
     "UpdateRelationDisplayStatus":'update Relation set show = ? where RelationId = ?',
-    "SelectRelationByIdAndType":"select * from Relation where RelationId = ? and Type = 'private' "
+    "SelectRelationByIdAndType":"select * from Relation where RelationId = ? and Type = 'private' ",
+    "GetRelationsByIds":"select * from Relation where RelationId in (?)"
 }

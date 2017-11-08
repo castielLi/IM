@@ -46,15 +46,16 @@ export function initGroupMemberByGroupId(GroupId,members){
     GROUPFMDB.InitGroupMemberByGroupId(GroupId,members);
 }
 
-//通过groupId获取Members
-export function GetMembersByGroupId(groupId,callback){
-    GROUPFMDB.GetMembersByGroupId(groupId,callback);
-}
-
 //将群聊从通讯录中移除
 export function RemoveGroupFromContact(groupId){
   GROUPFMDB.RemoveContact(groupId)
 }
+
+//根据groupId获取群组的成员列表
+export function GetMembersByGroupId(groupId,callback){
+    GROUPFMDB.GetMembersByGroupId(groupId,callback)
+}
+
 
 //删除关系
 export function deleteRelation(RelationId){
@@ -153,7 +154,7 @@ GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
 
 //通过GroupI获取members
 GROUPFMDB.GetMembersByGroupId = function(groupId,callback){
-    let selectSql = sql.ExcuteIMSql.GetGroupMembersByGroupId;
+    let selectSql = sqls.ExcuteIMSql.GetGroupMembersByGroupId;
 
     selectSql = commonMethods.sqlFormat(selectSql,[groupId]);
 
@@ -165,7 +166,9 @@ GROUPFMDB.GetMembersByGroupId = function(groupId,callback){
 
             tx.executeSql(selectSql, [], (tx, results) => {
 
-                callback(results.row.raw())
+                // console.log(results);
+
+                callback(results.rows.raw())
 
             }, (err)=>{errorDB('通过groupId获取成员',err)});
 
@@ -219,7 +222,6 @@ GROUPFMDB.GetRelationByIdAndType = function(Id,type,callback){
         }, errorDB);
     }, errorDB);
 }
-
 
 
 //获取好友列表
