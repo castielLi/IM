@@ -83,7 +83,6 @@ class GroupInformationSetting extends ContainerComponent {
                         show:true}
                     user.AddNewRelation(obj);
                     currentObj.props.addRelation(obj);
-
                     currentObj.setState({
                         isSave:Save
                     })
