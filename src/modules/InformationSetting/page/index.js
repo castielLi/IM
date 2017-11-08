@@ -185,8 +185,6 @@ class InformationSetting extends ContainerComponent {
                       let target = pages[pages.length - 3];
 
                       currentObj.route.popToSpecialRoute(currentObj.props,target);
-
-                      currentObj.route.popToRoute();
                   }else{
                       alert("http请求出错")
                   }
