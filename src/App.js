@@ -16,17 +16,9 @@ import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
 import User from './Core/User'
-import * as ActionForChatRecordStore from './Core/IM/redux/chat/action'
-import * as ActionForLoginStore from './modules/Login/reducer/action';
-
-import {changeTabBar} from './modules/MainTabbar/reducer/action';
-import {changeRelationOfShow,addRelation} from './modules/Contacts/reducer/action';
-
-import netWorking from './Core/Networking/Network'
 import DisplayComponent from './Core/Component'
-import MessageCommandEnum from './Core/IM/dto/MessageCommandEnum'
-import * as groupStoreSqlite from './Core/User/StoreSqlite/Group'
-import AppCommandEnum from './Core/IM/dto/AppCommandEnum'
+import * as IMHandle from './Core/IM/action/receiveHandleMessage'
+import {changeTabBar} from './modules/MainTabbar/reducer/action';
 
 export default function App() {
 
@@ -50,84 +42,26 @@ export default function App() {
     let im = new IM();
     //改变消息状态 {state:这里变化,message:{}}
     let handleMessageResult = function(status,MSGID){
-       store.dispatch(ActionForChatRecordStore.updateMessageStatus(status,MSGID))
+        IMHandle.handleMessageResult(status,MSGID);
     }
     //改变消息数据 {state: ,message:{这里变化}}
     let handleMessageChange = function(message){
-       store.dispatch(ActionForChatRecordStore.updateMessage(message))
+       IMHandle.handleMessageChange(message);
     }
 
 
     let handleRecieveMessage = function(message){
-        //如果是通知消息
-        if(message.Command == MessageCommandEnum.MSG_INFO){
-            user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
-                //添加进relation redux
-                store.dispatch(addRelation(relation));
-
-                if(message.way == "chatroom"){
-                    //添加进group数据库
-
-                    if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
-
-                        // let accounts = message.Data.Data.Data.split(',');
-                        //
-                        // for(let i = 0; i<accounts.length - 1;i++){
-                        //
-                        // }
-
-                        user.AddNewGroupToGroup(relation)
-                    }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
-
-                    }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
-
-                    }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
-
-                    }
-
-                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-
-                }else{
-                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-                }
-            });
-            //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
-
-        }else{
-
-            if(message.way == "chatroom"){
-
-                //这里要获取群组里面发送消息的成员的信息
-                user.getInformationByIdandType(message.Data.Data.Receiver,"private",function(relation){
-
-                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-                });
-            }else{
-                store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-            }
-        }
+       IMHandle.handleRecieveMessage(message);
     }
 
     //收到同意添加好友申请回调
     let handleRecieveAddFriendMessage = function(relation){
-        user.updateDisplayOfRelation(relation,'true');
-        //修改relationStore
-        store.dispatch(changeRelationOfShow(relation))
+      IMHandle.handleRecieveAddFriendMessage(relation);
     }
 
 
     let handleKickOutMessage = function(){
-        Alert.alert(
-            '下线通知',
-            "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
-            [
-                {text: '确定', onPress: () => {
-                    store.dispatch(ActionForLoginStore.signOut());
-                }},
-                {text: '不是本人操作',style:{color:"red"}, onPress: () => {
-                    store.dispatch(ActionForLoginStore.signOut());
-                }},
-            ]);
+        IMHandle.handleKickOutMessage()
     }
 
     im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage)
