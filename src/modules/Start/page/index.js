@@ -87,7 +87,7 @@ class Start extends ContainerComponent {
                                             key:'MainTabbar',
                                             routeId: 'MainTabbar'
                                         });
-                                    },true)
+                                    })
                                 })
 
                             })
