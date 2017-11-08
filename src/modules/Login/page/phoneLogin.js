@@ -190,6 +190,15 @@ class PhoneLogin extends ContainerComponent {
 
                                        user.getAllGroupFromGroup(function(results){
                                            currentObj.hideLoading();
+
+                                           // let showGroup = [];
+                                           //
+                                           // for(let i = 0;i<results.length;i++){
+                                           	//   if(results[i].show){
+                                           	//   	showGroup.push(results[i]);
+											//   }
+										   // }
+
                                            data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
                                            currentObj.props.initRelation(data);
 
@@ -197,7 +206,7 @@ class PhoneLogin extends ContainerComponent {
                                                key:'MainTabbar',
                                                routeId: 'MainTabbar'
                                            });
-                                       },true)
+                                       })
 								   })
                                })
                            })
