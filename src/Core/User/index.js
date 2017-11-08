@@ -58,14 +58,15 @@ export default class User {
                         if(relations.length == 0){
                             this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                                 if(success) {
-                                    callback(results)
                                     let model = new RelationModel();
                                     cache[type][Id] = relations[0];
+                                    callback(results)
                                 }
                             })
                         }else{
-                            callback(relations[0])
+
                             cache[type][Id] = relations[0];
+                            callback(relations[0])
                         }
                     })
 
@@ -83,7 +84,7 @@ export default class User {
                                 relation.show = 'false';
                                 relation.avator = results.ProfilePicture == null?"":results.ProfilePicture;
                                 relation.MemberList = results.MemberList;
-                                callback(relation)
+
 
                                 for(let i = 0;i<results.MemberList.length;i++){
                                     let accountId = results.MemberList[i].Account;
@@ -95,6 +96,8 @@ export default class User {
                                     }
                                 }
 
+                                callback(relation)
+
                                 //数据库也没有这条group的记录，那么就需要添加进groupList中
                                 //并且添加groupMember表，存储group和user关系
                                 //存储新的群user到account表中
@@ -104,9 +107,10 @@ export default class User {
                             }
                         })
                     }else{
-                        cache[type][Id]
-                        callback(relations[0])
+
                         cache[type][Id] = relations[0];
+                        callback(relations[0])
+
                     }
                 })
             }
@@ -255,8 +259,10 @@ export default class User {
 
 
     //添加群进Group
-    AddNewGroupToGroup(Relation){
+    AddNewGroupToGroup(Relation,members){
         groupStoreSqlite.addNewRelation(Relation)
+
+        groupStoreSqlite.initGroupMemberByGroupId(Relation.RelationId,members)
     }
     initGroup(GroupList,callback){
         groupStoreSqlite.initRelations(GroupList,callback);

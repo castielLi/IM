@@ -142,6 +142,7 @@ function extractMessage(message){
         	return '[视频]';
 		case 'information':
 			return '[通知]'
+            // return message.Data.Data.Data
         default:
         	return '';
 	}
