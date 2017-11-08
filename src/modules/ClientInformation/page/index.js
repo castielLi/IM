@@ -144,7 +144,7 @@ class ClientInformation extends ContainerComponent {
         }
     }
     goToInformationSetting= ()=>{
-        this.route.push(this.props,{key:'InformationSetting',routeId:'InformationSetting',params:{client:this.props.Relation.RelationId,type:this.props.Relation.Type}});
+        this.route.push(this.props,{key:'InformationSetting',routeId:'InformationSetting',params:{client:this.state.Account,type:'pravite'}});
     }
 
     _rightButton() {
