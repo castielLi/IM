@@ -115,7 +115,7 @@ class GroupAnnouncement extends ContainerComponent {
                                 this.setState({rightButtonDisabled:true})
                             }
                         }else if (this.state.rightButtonText ==='完成'){
-                            this.toChangeDiscription();
+                            this.confirm('是否立即发布？','','确定',this.toChangeDiscription,'取消')
                         }
                     },text:this.state.rightButtonText,disabled:this.state.rightButtonDisabled}}
                 />

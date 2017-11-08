@@ -141,10 +141,10 @@ class DeleteGroupMember extends ContainerComponent {
                     //删除最近聊天redux对应id
                     currentObj.props.deleteRecentItemFromId(ID);
                     currentObj.route.toMain(currentObj.props);
-                    alert('群解散了')
+                    currentObj.alert('群解散了');
                     return;
                 }
-                alert('踢人成功')
+
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -178,7 +178,7 @@ class DeleteGroupMember extends ContainerComponent {
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
                     heading={title}
-                    right={{func:()=>{this._rightButton()},text:'完成',disabled:needData.length>0?false:true}}
+                    right={{func:()=>{this.confirm('确定要删除成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
                 />
                 <View style={styles.listHeaderBox}>
                     <TextInput
