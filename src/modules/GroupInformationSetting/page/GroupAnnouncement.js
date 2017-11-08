@@ -85,7 +85,7 @@ class GroupAnnouncement extends ContainerComponent {
                         break;
                     }
                 }
-                alert('发布成功');
+                // alert('发布成功');
                 //跳转到群设置
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',

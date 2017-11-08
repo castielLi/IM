@@ -71,17 +71,17 @@ class GroupInformationSetting extends ContainerComponent {
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
                 if(result.success && result.data.Result){
-                    alert('添加通讯录成功')
+                    // alert('添加通讯录成功')
                     let obj = {
                         RelationId:info.ID,
                         OtherComment:info.Description,
                         Nick:info.Name,
                         BlackList:false,
                         Type:'chatroom',
-                        avator:info.ProfilePicture,
+                        avator:info.ProfilePicture==null?"":info.ProfilePicture,
                         owner:info.Owner,
                         show:true}
-                    user.AddNewRelation(obj);
+                    user.AddNewGroup(obj);
                     currentObj.props.addRelation(obj);
                     currentObj.setState({
                         isSave:Save
@@ -92,8 +92,9 @@ class GroupInformationSetting extends ContainerComponent {
         else{
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
                 if(result.success && result.data.Result){
-                    alert('移除通讯录成功')
-                    user.deleteRelation(info.ID);
+                    // alert('移除通讯录成功')
+                    info.show = false;
+                    user.RemoveGroupFromContact(info.ID);
                     currentObj.props.deleteRelation(info.ID);
 
                     currentObj.setState({
@@ -172,7 +173,6 @@ class GroupInformationSetting extends ContainerComponent {
                     //如果该client在最近聊天中有记录
                     currentObj.props.deleteRecentItemFromId(groupId)
                     //删除account数据库中数据
-                    user.deleteRelation(groupId);
                     user.deleteFromGrroup(groupId);
                     currentObj.route.toMain(currentObj.props);
 
