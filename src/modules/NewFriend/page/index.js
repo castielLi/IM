@@ -99,6 +99,7 @@ class NewFriend extends ContainerComponent {
     };
 
     applyMsgStyle = (rowID,rowData)=>{
+
         if(rowData.status === ApplyFriendEnum.WAIT){
             return (
                 <TouchableHighlight
