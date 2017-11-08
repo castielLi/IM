@@ -166,7 +166,7 @@ class Chat extends Component {
                     let {client} = this.props;
                     let that = this;
                     setTimeout(()=>{
-                        this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+                        this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
                             if(!messages){
                                 that.noMore  = msgState.NOMORE;
@@ -433,7 +433,7 @@ class Chat extends Component {
             let {client} = this.props;
             let that = this;
             setTimeout(()=>{
-                this.im.getRecentChatRecode(client,"private",{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+                this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
                     if(!messages){
                         that.noMore  = msgState.NOMORE;
