@@ -51,6 +51,10 @@ export function GetMembersByGroupId(groupId,callback){
     GROUPFMDB.GetMembersByGroupId(groupId,callback);
 }
 
+//将群聊从通讯录中移除
+export function RemoveGroupFromContact(groupId){
+  GROUPFMDB.RemoveContact(groupId)
+}
 
 //删除关系
 export function deleteRelation(RelationId){
@@ -290,7 +294,7 @@ GROUPFMDB.AddNewRelation = function(Relation){
 
     let sql = sqls.ExcuteIMSql.AddtRelations;
 
-    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show,Relation.RelationId]);
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -312,7 +316,31 @@ GROUPFMDB.AddNewRelation = function(Relation){
     }, errorDB);
 }
 
+//将群聊从通讯录中移除
+GROUPFMDB.RemoveContact = function(groupId){
+    let sql = sqls.ExcuteIMSql.RemoveGroupFromContact;
 
+    sql = commonMethods.sqlFormat(sql,[groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("移除群聊成功")
+
+            }, errorDB);
+
+
+            // callback();
+
+        }, errorDB);
+    }, errorDB);
+}
 
 
 //删除关系

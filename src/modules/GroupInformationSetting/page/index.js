@@ -78,7 +78,7 @@ class GroupInformationSetting extends ContainerComponent {
                         Nick:info.Name,
                         BlackList:false,
                         Type:'chatroom',
-                        avator:info.ProfilePicture,
+                        avator:info.ProfilePicture==null?"":info.ProfilePicture,
                         owner:info.Owner,
                         show:true}
                     user.AddNewGroup(obj);
@@ -94,7 +94,8 @@ class GroupInformationSetting extends ContainerComponent {
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
                 if(result.success && result.data.Result){
                     // alert('移除通讯录成功')
-                    user.deleteFromGrroup(info.ID);
+                    info.show = false;
+                    user.RemoveGroupFromContact(info.ID);
                     currentObj.props.deleteRelation(info.ID);
 
                     currentObj.setState({

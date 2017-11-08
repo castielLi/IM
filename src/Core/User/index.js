@@ -265,6 +265,11 @@ export default class User {
         groupStoreSqlite.deleteRelation(RelationId)
     }
 
+    //将群移除通讯录
+    RemoveGroupFromContact(groupId){
+        groupStoreSqlite.RemoveGroupFromContact(groupId);
+    }
+
 
     closeDB(){
         storeSqlite.closeAccountDb();
