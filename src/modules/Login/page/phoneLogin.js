@@ -19,7 +19,7 @@ import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
-
+import * as ApplyFriendAction from '../../../Core/IM/redux/applyFriend/action'
 
 let currentObj = undefined;
 
@@ -158,21 +158,10 @@ class PhoneLogin extends ContainerComponent {
 
                         AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
                     }
-
-                    RNFS.exists(AccountPath).then((exist)=>{
-                    	if(exist){
-
-                            RNFS.unlink(AccountPath).then(()=>{
-                                dealCommon();
-                            });
-						}else{
-                            dealCommon();
-                    	}
-                    })
+					dealCommon();
 
 
-
-                   function dealCommon(){
+                    function dealCommon(){
                        //初始化用户系统
                        let user = new User();
                        let im = new IM();
@@ -187,28 +176,30 @@ class PhoneLogin extends ContainerComponent {
                                return;
 						   }
 
-                           im.getAllApplyFriendMessage((result) => {
+                           im.getAllApplyFriendMessage(function(result){
 
                                currentObj.props.initFriendApplication(result);
 
                            })
+
                            //添加名单
-                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],result.data.Data["GroupList"],function(){
+                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
                                user.getAllRelation((data)=>{
-                                   //初始化联系人store
-                                   currentObj.props.initRelation(data);
-                                   currentObj.hideLoading();
                                    user.initGroup(result.data.Data["GroupList"],function(){
-                                       currentObj.route.push(currentObj.props,{
-                                           key:'MainTabbar',
-                                           routeId: 'MainTabbar'
-                                       });
+
+
+                                       user.getAllGroupFromGroup(function(results){
+                                           currentObj.hideLoading();
+                                           data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
+                                           currentObj.props.initRelation(data);
+
+                                           currentObj.route.push(currentObj.props,{
+                                               key:'MainTabbar',
+                                               routeId: 'MainTabbar'
+                                           });
+                                       },true)
 								   })
-
                                })
-
-
-
                            })
 
                        },{"Account": currentObj.state.phoneText})
@@ -458,6 +449,7 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
+	  ...bindActionCreators(ApplyFriendAction,dispatch)
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);
