@@ -67,7 +67,6 @@ class GroupInformationSetting extends ContainerComponent {
 
     addToContacts = ()=>{
         let Save = !this.state.isSave;
-        alert(Save)
         let info = this.state.groupInformation;
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
@@ -131,10 +130,10 @@ class GroupInformationSetting extends ContainerComponent {
                 }else{
                     members = Data.MemberList.concat()
                 }
-                let save;
+                let save = false;
                 let relations = currentObj.props.relations;
                 for(let i=0;i<relations.length;i++){
-                    if(relations[i].RelationId === groupInformation.ID){
+                    if(relations[i].RelationId === groupInformation.ID && relations[i].show === 'true' ){
                         save = true;
                     }
                 }
