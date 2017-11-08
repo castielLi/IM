@@ -73,6 +73,7 @@ export default class User {
             }else if(type == 'chatroom'){
                 groupStoreSqlite.getRelation(Id,type,(relations)=>{
                     //如果数据库也没有这条消息
+                    let groupMembers = [];
                     if(relations.length == 0){
                         this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                             if(success) {
@@ -93,6 +94,7 @@ export default class User {
                                         model.avator = results.MemberList[i].HeadImageUrl;
                                         model.Nick = results.MemberList[i].Nickname;
                                         cache["private"][accountId] = model;
+                                        groupMembers.push(model);
                                     }
                                 }
 
@@ -116,9 +118,10 @@ export default class User {
                             for(let i = 0;i<results.length;i++){
                                 //因为数据库的结构就是relationModel的结构
                                 cache["private"][results[i].RelationId] = results[i];
+                                groupMembers.push(results[i])
                             }
 
-                            callback(relations[0])
+                            callback(relations[0],groupMembers)
                         });
                     }
                 })
