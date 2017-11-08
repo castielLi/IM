@@ -30,6 +30,6 @@ export const ExcuteIMSql = {
     "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId varchar(255))",
     "InsertGroupMember":"insert or replace into ? (RelationId) values(?)",
     "GetGroupMembersByGroupId":"select * from ?",
-    "RemoveGroupFromContact":"update GroupList set show='false' where RelationId=?"
+    "RemoveGroupFromContact":"update GroupList set show='false' where RelationId=?",
 
 }

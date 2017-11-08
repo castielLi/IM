@@ -109,8 +109,17 @@ export default class User {
                     }else{
 
                         cache[type][Id] = relations[0];
-                        callback(relations[0])
 
+                        //从数据库中获取成员列表，添加进cache中
+                        currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
+
+                            for(let i = 0;i<results.length;i++){
+                                //因为数据库的结构就是relationModel的结构
+                                cache["private"][results[i].RelationId] = results[i];
+                            }
+
+                            callback(relations[0])
+                        });
                     }
                 })
             }
@@ -279,6 +288,25 @@ export default class User {
     //将群移除通讯录
     RemoveGroupFromContact(groupId){
         groupStoreSqlite.RemoveGroupFromContact(groupId);
+    }
+
+    GetGroupMemberIdsByGroupId(groupId,callback){
+       groupStoreSqlite.GetMembersByGroupId(groupId,function(results){
+           if(results.length > 0){
+
+               let ids = [];
+
+               for(let i = 0;i<results.length;i++){
+                   ids.push(results[i].RelationId);
+               }
+
+               storeSqlite.GetRelationsByRelationIds(ids,function(results){
+                    callback(results);
+               })
+           }else{
+               callback(results);
+           }
+       })
     }
 
 
