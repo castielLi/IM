@@ -39,7 +39,6 @@ export function handleRecieveMessage(message){
                     let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
                     message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
 
-                    user.AddNewGroupToGroup(relation)
                 }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
                     let accounts = message.Data.Data.Data.split(',');

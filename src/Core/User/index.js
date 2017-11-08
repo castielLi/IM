@@ -259,8 +259,10 @@ export default class User {
 
 
     //添加群进Group
-    AddNewGroupToGroup(Relation){
+    AddNewGroupToGroup(Relation,members){
         groupStoreSqlite.addNewRelation(Relation)
+
+        groupStoreSqlite.initGroupMemberByGroupId(Relation.RelationId,members)
     }
     initGroup(GroupList,callback){
         groupStoreSqlite.initRelations(GroupList,callback);
