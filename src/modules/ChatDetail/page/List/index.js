@@ -117,6 +117,11 @@ class Chat extends Component {
     componentWillMount() {
         this.im = new IM()
 
+        //当是群组消息的时候，向cache里面初始化所有的成员信息
+        if(this.props.type == "chatroom"){
+            user.getInformationByIdandType(this.props.client,"chatroom",function(){});
+        }
+
 
         let chatRecordStore = this.props.chatRecordStore.concat();
         let {isMore} = this.state;
