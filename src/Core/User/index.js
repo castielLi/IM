@@ -116,6 +116,11 @@ export default class User {
         }
     }
 
+    //从cache里面取出数据
+    getUserInfoById(accountId){
+       return cache["private"][accountId];
+    }
+
 
     //初始化数据库
     initIMDatabase(AccountId){
