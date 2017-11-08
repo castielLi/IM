@@ -68,7 +68,9 @@ class NewFriend extends ContainerComponent {
 
     agreeApply = (index,data)=>{
         let {key,send} = data;
+        this.showLoading();
         this.fetchData('POST','Member/AcceptFriend',function (result) {
+            currentObj.hideLoading();
             if(result.success){
                 // let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,send);
                 // im.addMessage(addMessage,function(){
@@ -125,7 +127,6 @@ class NewFriend extends ContainerComponent {
         }
     }
     _renderRow = (rowData, sectionID, rowID)=>{
-        alert(JSON.stringify(rowData))
         return(
             <View>
                 <Swipeout
@@ -165,6 +166,7 @@ class NewFriend extends ContainerComponent {
         )
     }
     render() {
+        let Loading = this.Loading;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -189,6 +191,7 @@ class NewFriend extends ContainerComponent {
                     </ListView>
 
                 </ScrollView>
+                <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
             
