@@ -125,7 +125,6 @@ class NewFriend extends ContainerComponent {
         }
     }
     _renderRow = (rowData, sectionID, rowID)=>{
-        alert(JSON.stringify(rowData))
         return(
             <View>
                 <Swipeout
