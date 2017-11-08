@@ -112,9 +112,9 @@ ReceiveManager.receiveMessageOpreator = function(message){
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
-            message.type = MessageType.friend
-            message.way = "private"
-            currentObj.storeRecMessage(message)
+            // message.type = MessageType.friend
+            // message.way = "private"
+            // currentObj.storeRecMessage(message)
             currentObj.updateRelation(message.Data.Data.Sender)
         }
 
