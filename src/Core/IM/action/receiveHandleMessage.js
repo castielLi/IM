@@ -28,15 +28,15 @@ export function handleRecieveMessage(message){
                     let accounts = message.Data.Data.Data.split(',');
 
                     let nicks = "";
-                    for(let i = 0; i<accounts.length - 1;i++){
-                        if(i!=0){
-                            nicks += user.getUserInfoById(accounts[i]).Nick;
+                    for(let i = 0; i<accounts.length;i++){
+                        if(i != accounts.length - 1){
+                            nicks += user.getUserInfoById(accounts[i]).Nick + ",";
                         }else{
-                            nicks += ","+user.getUserInfoById(accounts[i]).Nick;
+                            nicks += user.getUserInfoById(accounts[i]).Nick;
                         }
                     }
 
-                    let inviter = user.getUserInfoById(accounts[accounts.length - 1]);
+                    let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
                     message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
 
                     user.AddNewGroupToGroup(relation)
