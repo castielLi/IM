@@ -10,6 +10,7 @@ import {changeRelationOfShow,addRelation} from '../../../modules/Contacts/reduce
 import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
 import User from '../../User'
 import {Alert} from 'react-native'
+import MessageType from '../../IM/dto/MessageType'
 
 let user = new User();
 let store = Store;
@@ -90,6 +91,12 @@ export function handleRecieveMessage(message){
                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))
             });
         }else{
+
+            if(message.type == MessageType.friend){
+
+                user.getInformationByIdandType(message.Data.Data.Sender,"private",function(){
+                });
+            }
             store.dispatch(ActionForChatRecordStore.receiveMessage(message))
         }
     }

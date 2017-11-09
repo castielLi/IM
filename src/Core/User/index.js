@@ -60,6 +60,8 @@ export default class User {
                                 if(success) {
                                     let model = new RelationModel();
                                     cache[type][Id] = relations[0];
+
+                                    //把这个user添加到数据库里面，将show设置为false 代表这个用户不是好友
                                     callback(results)
                                 }
                             })
