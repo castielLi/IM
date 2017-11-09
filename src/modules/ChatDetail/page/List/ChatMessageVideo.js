@@ -39,7 +39,7 @@ class ChatMessageVideo extends Component {
         return(
             <View style={[styles.bubble]}>
                 <TouchableOpacity onPress={()=>{this.props.showMediaPlayer(LocalSource)}}>
-                    <Text>播放视频</Text>
+                    <Image source={require('../../resource/play.jpg')} style={{width:40,height:40}}/>
                 </TouchableOpacity>
             </View>
         )
