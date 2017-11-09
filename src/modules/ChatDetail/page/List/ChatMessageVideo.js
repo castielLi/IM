@@ -36,49 +36,34 @@ class ChatMessageVideo extends Component {
     };
 
     playVideo = (Local,Remote,data)=>{
-        let hasFile;
         let network = new netWorking();
         RNFS.exists(Local).then((success) => {
-            hasFile = success;
+            if(!success){
+                //todo:先下载视频，获取路径
+                let ME = this.props.loginStore;
+                let type = data.message.type;
+                let chatType = this.props.type;
+                let {Receiver,Sender} = data.message.Data.Data;
+                let otherID = Receiver == ME ? Sender : Receiver;
+                let format = Remote.slice(Remote.lastIndexOf('.'));
+                let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
+                network.methodDownloadWithProgress(Remote,filePath,function () {
+                    this.setState({
+                        download:false,
+                    })
+                },function (percent) {
+                    this.setState({
+                        progress:percent,
+                        download:true,
+                    });
+                })
+            }
+            else{
+                this.props.showMediaPlayer(Local)
+            }
         }).catch((err) => {
             console.log(err.message);
         });
-        if(!hasFile){
-            //todo:先下载视频，获取路径
-            // let ME = this.props.loginStore;
-            // let type = data.message.type;
-            // let {Receiver,Sender} = data.message.Data.Data;
-            // let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-            // let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${'类型'}-${'对方id'}/${new Date().getTime()}${format}`
-            network.methodDownloadWithProgress(Remote,filePath,function () {
-                this.setState({
-                    download:false,
-                })
-            },function (percent) {
-                this.setState({
-                    progress:percent,
-                    download:true,
-                });
-            })
-        }
-        else{
-            this.props.showMediaPlayer(Local)
-        }
-
-        // let progress = 0;
-        // let timer = setInterval(()=>{
-        //     progress++;
-        //     this.setState({
-        //         progress,
-        //         download:true,
-        //     });
-        //     if(progress >= 100){
-        //         clearInterval(timer)
-        //         this.setState({
-        //             download:false,
-        //         })
-        //     }
-        // },100)
     }
 
     downloadProgress = (progress)=>{

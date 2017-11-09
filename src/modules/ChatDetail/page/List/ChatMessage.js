@@ -30,12 +30,14 @@ export default class ChatMessage extends Component {
 
     typeOption = (data,style)=> {
         let {type} = data.message;
+        let chatType =  this.props.type;
         switch (type) {
             case 'text': {
                 return (
                     <ChatMessageText
                         data={data}
                         style={style}
+                        type={chatType}
                     />
                 )
             }
@@ -45,6 +47,7 @@ export default class ChatMessage extends Component {
                     <ChatMessageImage
                         data={data}
                         style={style}
+                        type={chatType}
                     />
                 )
             }
@@ -54,6 +57,7 @@ export default class ChatMessage extends Component {
                     <ChatMessageSound
                         data={data}
                         style={style}
+                        type={chatType}
                     />
                 )
             }
@@ -63,6 +67,7 @@ export default class ChatMessage extends Component {
                     <ChatMessageVideo
                         data={data}
                         style={style}
+                        type={chatType}
                     />
                 )
             }

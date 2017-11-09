@@ -382,7 +382,7 @@ class Chat extends Component {
                                  }
                              </TouchableOpacity>
                          </View>
-                         <ChatMessage style={styles.bubbleViewRight} rowData={row}/>
+                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type}/>
                          {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                      </View>
@@ -422,7 +422,7 @@ class Chat extends Component {
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
                                 {this.props.type === 'chatroom' ? this.getGroupMembersInfo(Receiver) : null}
-                                <ChatMessage style={styles.bubbleView} rowData={row}/>
+                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type}/>
                             </View>
                         </View>
                     </View>
