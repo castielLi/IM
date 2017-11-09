@@ -76,8 +76,8 @@ export function GetRelationsByRelationIds(relationIds,callback){
 
 
 //添加新的关系
-export function addNewRelation(Relation){
-    USERFMDB.AddNewRelation(Relation)
+export function addNewRelation(Relation,callback){
+    USERFMDB.AddNewRelation(Relation,callback)
 }
 
 //添加新的关系设置
@@ -301,7 +301,7 @@ USERFMDB.InitRelations = function(friendList,blackList,callback){
 }
 
 //添加新关系
-USERFMDB.AddNewRelation = function(Relation){
+USERFMDB.AddNewRelation = function(Relation,callback){
     //todo 检查数据表中是否已经存在，存在才添加
 
     let sql = sqls.ExcuteIMSql.AddtRelations;
@@ -316,7 +316,7 @@ USERFMDB.AddNewRelation = function(Relation){
 
 
                 tx.executeSql(sql, [], (tx, results) => {
-
+                    callback&&callback();
                     console.log("添加关系成功")
 
                 }, errorDB);
