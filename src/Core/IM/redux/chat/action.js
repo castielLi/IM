@@ -84,6 +84,15 @@ export function updateMessageStatus(status,MSGID){
 		status
 	}
 }
+//修改某条消息的状态 {status:'修改该状态',message:{...}}
+export function updateMessagePath(path,MSGID){
+    return{
+        type:'UPDATE_MESSAGES_PATH',
+        client:InterceptionClientFromId(MSGID),
+        MSGID,
+        path
+    }
+}
 //修改某条消息的网络路径
 export function updateMessage(message){
 	return{
