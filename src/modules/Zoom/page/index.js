@@ -131,7 +131,7 @@ class Zoom extends ContainerComponent {
         }else if(name == '购物'){
             return	<Image source={require('../resource/shop.png')} style={styles.pic} ></Image>
         }else if(name == '游戏'){
-            return	<Image source={require('../resource/sao.png')} style={styles.pic} ></Image>
+            return	<Image source={require('../resource/game.png')} style={styles.pic} ></Image>
         }
 	}
 	_renderItem = (info)=>{
