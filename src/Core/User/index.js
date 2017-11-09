@@ -98,7 +98,7 @@ export default class User {
                                     }
                                 }
 
-                                callback(relation)
+                                callback(relation,groupMembers)
 
                                 //数据库也没有这条group的记录，那么就需要添加进groupList中
                                 //并且添加groupMember表，存储group和user关系

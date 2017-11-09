@@ -115,26 +115,15 @@ class Chat extends Component {
         });
     }
 
-    shouldComponentUpdate(props,state){
-        if(state.groupMembers.length>0){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     componentWillMount() {
         this.im = new IM()
         let currentObj = this;
         //当是群组消息的时候，向cache里面初始化所有的成员信息
+        console.log(this.state.groupMembers)
         if(this.props.type == "chatroom"){
             user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
-                currentObj.data = {...currentObj.data};
-                currentObj.data2 = {...currentObj.data2};
                 currentObj.setState({
                     groupMembers,
-                    dataSource: currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
-                    dataSourceO: currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys),
                 })
             });
         }
@@ -355,7 +344,7 @@ class Chat extends Component {
         for(let i=0;i<MembersLength;i++){
             if(Members[i].RelationId == MemberID)
             {
-                return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{11}</Text>
+                return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Members[i].Nick}</Text>
             }
         }
         return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
