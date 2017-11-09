@@ -6,6 +6,8 @@
 import  * as methodsFetch from './NetworkFetch'
 import  * as commons from '../Helper/index'
 import RNFS from 'react-native-fs';
+import RNFetchBlob from 'react-native-fetch-blob'
+const { fs, fetch, wrap } = RNFetchBlob
 
 
 let __instance = (function () {
@@ -158,6 +160,7 @@ export default class netWorking {
       var request = new XMLHttpRequest();
       request.open("POST", requestURL, true);
       //监听进度事件
+      // request.setRequestHeader({'Content-Type' : 'application/octet-stream'})
       request.addEventListener("progress", function (evt) {
           if (evt.lengthComputable) {
               var percentComplete = evt.loaded / evt.total;
@@ -165,16 +168,14 @@ export default class netWorking {
           }
       }, false);
 
+      // request.responseType = "arraybuffer";
       request.responseType = "blob";
       request.onreadystatechange = function () {
           if (request.readyState === 4 && request.status === 200) {
-              // console.log(request._response)
 
-              filePath = "/Users/apple/Library/Developer/CoreSimulator/Devices/32F0A1AA-7EE1-4F17-B596-16F9C739CB9C/data/Containers/Data/Application/C8DB22A5-6CCE-42FB-B710-50C984813564/xxx.png";
+              filePath = "/Users/apple/Library/Developer/CoreSimulator/Devices/32F0A1AA-7EE1-4F17-B596-16F9C739CB9C/data/Containers/Data/Application/77C3A9D5-A63A-4033-A819-DAD7A25F299C/Documents/xxx.mp4";
 
-              // var file = new File([request._response], "hello.jpg", { type: 'application/force-download' });
-
-              // RNFS.writeFile(filePath,request,"base64")
+              RNFS.writeFile(filePath,request._response,"base64");
           }
       };
       request.send();
