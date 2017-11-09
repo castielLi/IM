@@ -33,8 +33,8 @@ let currentObj = undefined;
 let im = new IM();
 let user = new User();
 class NewFriend extends ContainerComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
@@ -42,6 +42,8 @@ class NewFriend extends ContainerComponent {
         this.im = new IM();
         this.state = {
             dataSource: ds,
+            dataObj:{},
+            idS:this.getIdSfromApplyStore(props.friendApplicationStore.applicationRecord)
         };
         this.applyData = [];
         currentObj = this;
@@ -128,6 +130,7 @@ class NewFriend extends ContainerComponent {
         }
     }
     _renderRow = (rowData, sectionID, rowID)=>{
+        let {dataObj} = this.state;
         return(
             <View>
                 {/*<Swipeout*/}
@@ -153,9 +156,9 @@ class NewFriend extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
-                                {this._renderAvator(rowData.avator)}
+                                {this._renderAvator(dataObj[rowData.send]?dataObj[rowData.send].avator:'')}
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{rowData.send}</Text>
+                                    <Text style={styles.name}>{dataObj[rowData.send]?dataObj[rowData.send].Nick:''}</Text>
                                     <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
                                 </View>
                             </View>
@@ -165,6 +168,39 @@ class NewFriend extends ContainerComponent {
                 {/*</Swipeout>*/}
             </View>
         )
+    }
+    getIdSfromApplyStore = (applyList)=>{
+        let needArr = applyList.map((v,i)=>{
+            return v.send;
+        })
+        return needArr;
+    }
+    formateArrToObj = (arr)=>{
+        let needObj = {};
+        arr.forEach((v,i)=>{
+            needObj[v.RelationId] = v;
+        })
+        return needObj;
+    }
+
+    componentDidMount(){
+
+        user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+            let needObj = this.formateArrToObj(realations);
+            this.setState({
+                dataObj:needObj
+            })
+        })
+    }
+    componentWillReceiveProps(newProps){
+            this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
+            user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+                let needObj = this.formateArrToObj(realations);
+                this.setState({
+                    dataObj:needObj
+                })
+            })
+
     }
     render() {
         let Loading = this.Loading;

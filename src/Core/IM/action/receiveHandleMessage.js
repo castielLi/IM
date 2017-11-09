@@ -9,12 +9,13 @@ import * as ActionForChatRecordStore from '../redux/chat/action'
 import {changeRelationOfShow,addRelation} from '../../../modules/Contacts/reducer/action';
 import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
 import User from '../../User'
+import IM from '../../IM'
 import {Alert} from 'react-native'
 import MessageType from '../../IM/dto/MessageType'
 
 let user = new User();
 let store = Store;
-
+let im = new IM();
 export function handleRecieveMessage(message){
     //如果是通知消息
     if(message.Command == MessageCommandEnum.MSG_INFO){
@@ -71,7 +72,15 @@ export function handleRecieveMessage(message){
                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))
 
             }else{
-                store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                if(message.type == MessageType.friend){
+                    user.getInformationByIdandType(message.Data.Data.Sender,"private",function(){
+
+                        store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                    });
+                }else{
+                    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
+                }
+
             }
         });
         //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库

@@ -58,11 +58,20 @@ export default class User {
                         if(relations.length == 0){
                             this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                                 if(success) {
-                                    let model = new RelationModel();
-                                    cache[type][Id] = relations[0];
+                                    let relation = new RelationModel();
+                                    relation.RelationId = results.Account;
+                                    relation.Nick = results.Nickname;
+                                    relation.Type = 'private';
+                                    relation.show = 'false';
+                                    relation.avator = results.HeadImageUrl == null?"":results.HeadImageUrl;
+                                    cache[type][Id] = relation;
 
                                     //把这个user添加到数据库里面，将show设置为false 代表这个用户不是好友
-                                    callback(results)
+
+                                    currentObj.AddNewRelation(relation,function(){
+                                        callback(relation);
+                                    });
+
                                 }
                             })
                         }else{
@@ -190,7 +199,12 @@ export default class User {
        return cache["private"][accountId];
     }
 
-
+    //通过id组成的数组从数据库批量查询user信息,返回数组
+    GetRelationsByRelationIds(ids,callback){
+        storeSqlite.GetRelationsByRelationIds(ids,function(results){
+            callback(results);
+        })
+    }
     //初始化数据库
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
@@ -264,8 +278,8 @@ export default class User {
     }
 
     //添加新关系
-    AddNewRelation(Relation){
-        storeSqlite.addNewRelation(Relation)
+    AddNewRelation(Relation,callback){
+        storeSqlite.addNewRelation(Relation,callback)
     }
 
     //获取关系设置
