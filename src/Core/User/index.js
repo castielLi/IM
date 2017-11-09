@@ -21,7 +21,7 @@ let _request = new dataRquest();
 let currentObj = undefined;
 
 //缓存数据
-let cache = {"private":{},"chatroom":{}};
+let cache = {"private":{},"chatroom":{},"groupMember":{}};
 
 //在登录账号之后，返回账号id，通过id找到对应的文件夹来进行sqlite的选择
 export default class User {
@@ -87,6 +87,7 @@ export default class User {
                                 relation.MemberList = results.MemberList;
 
 
+                                let cacheGroupMembers = [];
                                 for(let i = 0;i<results.MemberList.length;i++){
                                     let accountId = results.MemberList[i].Account;
                                     if(cache["private"][accountId] == undefined){
@@ -95,6 +96,7 @@ export default class User {
                                         model.Nick = results.MemberList[i].Nickname;
                                         cache["private"][accountId] = model;
                                         groupMembers.push(model);
+                                        cacheGroupMembers.push(accountId)
                                     }
                                 }
 
@@ -106,6 +108,7 @@ export default class User {
                                 currentObj.AddGroupAndMember(relation,results.MemberList);
                                 currentObj.AddGroupMember(results.MemberList)
                                 cache[type][Id] = relations[0];
+                                cache["groupMember"][Id] = cacheGroupMembers;
                             }
                         })
                     }else{
@@ -115,20 +118,66 @@ export default class User {
                         //从数据库中获取成员列表，添加进cache中
                         currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
 
-                            for(let i = 0;i<results.length;i++){
-                                //因为数据库的结构就是relationModel的结构
-                                cache["private"][results[i].RelationId] = results[i];
-                                groupMembers.push(results[i])
-                            }
+                            //代表数据库里面并没有groupMembers的对应关系，需要进行下载
+                            if(results.length == 0){
 
-                            callback(relations[0],groupMembers)
+                                this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                                    if(success) {
+
+                                        let cacheGroupMembers = [];
+                                        for(let i = 0;i<results.MemberList.length;i++){
+                                            let accountId = results.MemberList[i].Account;
+                                            if(cache["private"][accountId] == undefined){
+                                                let model = new RelationModel();
+                                                model.avator = results.MemberList[i].HeadImageUrl;
+                                                model.Nick = results.MemberList[i].Nickname;
+                                                cache["private"][accountId] = model;
+                                                groupMembers.push(model);
+                                                cacheGroupMembers.push(accountId)
+                                            }
+                                        }
+
+                                        callback(relations[0],cacheGroupMembers)
+
+                                        //数据库也没有这条group的记录，那么就需要添加进groupList中
+                                        //并且添加groupMember表，存储group和user关系
+                                        //存储新的群user到account表中
+                                        currentObj.AddGroupAndMember(relations[0],results.MemberList);
+                                        currentObj.AddGroupMember(results.MemberList)
+                                        cache["groupMember"][Id] = cacheGroupMembers;
+                                    }
+                                })
+
+                            }else{
+
+                                for(let i = 0;i<results.length;i++){
+                                    //因为数据库的结构就是relationModel的结构
+                                    cache["private"][results[i].RelationId] = results[i];
+                                    groupMembers.push(results[i])
+                                }
+
+                                callback(relations[0],groupMembers)
+                            }
                         });
                     }
                 })
             }
 
         }else{
-            callback(cache[type][Id])
+            //从cache中取出group和groupMember
+            if(type == "chatroom"){
+
+                let groupMembers= [];
+                let list = cache["groupMember"][Id]
+                for(let i = 0;i<list.length;i++){
+                    let target = list[i];
+                    groupMembers.push(cache["private"][target])
+                }
+
+                callback(cache[type][Id],groupMembers);
+            }else{
+                callback(cache[type][Id])
+            }
         }
     }
 
