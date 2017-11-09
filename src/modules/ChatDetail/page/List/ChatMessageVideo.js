@@ -37,6 +37,7 @@ class ChatMessageVideo extends Component {
 
     playVideo = (Local,Remote,data)=>{
         let network = new netWorking();
+        let currentObj = this;
         RNFS.exists(Local).then((success) => {
             if(!success){
                 //todo:先下载视频，获取路径
@@ -48,11 +49,11 @@ class ChatMessageVideo extends Component {
                 let format = Remote.slice(Remote.lastIndexOf('.'));
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
                 network.methodDownloadWithProgress(Remote,filePath,function () {
-                    this.setState({
+                    currentObj.setState({
                         download:false,
                     })
                 },function (percent) {
-                    this.setState({
+                    currentObj.setState({
                         progress:percent,
                         download:true,
                     });
