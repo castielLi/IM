@@ -14,6 +14,8 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
+import netWorking from '../../../../Core/Networking/Network';
+import RNFS from 'react-native-fs';
 
 let {width, height} = Dimensions.get('window');
 
@@ -34,27 +36,40 @@ class ChatMessageVideo extends Component {
     };
 
     playVideo = (Local,Remote)=>{
-        // if(!Local && Local === ' '){
-        //     //todo:先下载视频，获取路径
-        // }
-        // else{
-        //     this.props.showMediaPlayer(Local)
-        // }
-
-        let progress = 0;
-        let timer = setInterval(()=>{
-            progress++;
-            this.setState({
-                progress,
-                download:true,
-            });
-            if(progress >= 100){
-                clearInterval(timer)
+        let network = new netWorking();
+        let ME = this.props.loginStore;
+        let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${'video'}/chat/${'类型'}-${'对方id'}/${new Date().getTime()}${'格式'}`
+        if(!Local && Local === ' '){
+            //todo:先下载视频，获取路径
+                network.methodDownloadWithProgress(Remote,filePath,function () {
                 this.setState({
                     download:false,
                 })
-            }
-        },100)
+            },function (percent) {
+                this.setState({
+                    progress:percent,
+                    download:true,
+                });
+            })
+        }
+        else{
+            this.props.showMediaPlayer(Local)
+        }
+
+        // let progress = 0;
+        // let timer = setInterval(()=>{
+        //     progress++;
+        //     this.setState({
+        //         progress,
+        //         download:true,
+        //     });
+        //     if(progress >= 100){
+        //         clearInterval(timer)
+        //         this.setState({
+        //             download:false,
+        //         })
+        //     }
+        // },100)
     }
 
     downloadProgress = (progress)=>{
@@ -99,7 +114,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    mediaPlayerStore: state.mediaPlayerStore
+    mediaPlayerStore: state.mediaPlayerStore,
+    loginStore:state.loginStore.accountMessage.accountId,
 });
 
 const mapDispatchToProps = dispatch => ({

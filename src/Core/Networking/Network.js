@@ -6,8 +6,8 @@
 import  * as methodsFetch from './NetworkFetch'
 import  * as commons from '../Helper/index'
 import RNFS from 'react-native-fs';
-import RNFetchBlob from 'react-native-fetch-blob'
-const { fs, fetch, wrap } = RNFetchBlob
+// import RNFetchBlob from 'react-native-fetch-blob'
+//const { fs, fetch, wrap } = RNFetchBlob
 
 
 let __instance = (function () {
