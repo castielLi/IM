@@ -32,8 +32,9 @@ export default function recentListStore(state=initialState, action){
                 ...state
             };
         case 'CLEAR_RECENTLIST':
+
             return {
-                ...initialState
+                data:[]
             };
         case 'UPDATE_RECENTITEM_LASTMESSAGE':
             let existItem = false;//recentListStore是否存在这个client对应的item
