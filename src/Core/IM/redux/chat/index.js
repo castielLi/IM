@@ -126,7 +126,7 @@ export default function chatRecordStore(state = initialState, action) {
             }
             state.ChatRecord[action.client].forEach(function(itemArr,index,arr) {
                 if(itemArr.message.MSGID === action.MSGID){
-                    itemArr.data.message.Resource[0] = action.path;
+                    itemArr.data.message.Resource[0].LocalSource = action.path;
                 }
             });
             //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用

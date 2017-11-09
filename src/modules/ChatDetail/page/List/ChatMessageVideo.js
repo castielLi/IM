@@ -16,7 +16,8 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
-import IM from '../../../../Core/IM'
+import IM from '../../../../Core/IM';
+import * as commonActions from '../../../../Core/IM/redux/chat/action';
 
 let im = new IM();
 
@@ -50,10 +51,12 @@ class ChatMessageVideo extends Component {
                 let {Receiver,Sender} = data.message.Data.Data;
                 let otherID = Receiver == ME ? Sender : Receiver;
                 let format = Remote.slice(Remote.lastIndexOf('.'));
+                let msgID = data.message.MSGID;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
                 network.methodDownloadWithProgress(Remote,filePath,function () {
 
-                    // im.updateMessageRemoteUrl(messageId,url)
+                    currentObj.props.updateMessagePath(msgID,filePath)
+                    im.updateMessageRemoteUrl(msgID,filePath)
 
                     currentObj.setState({
                         download:false,
@@ -120,7 +123,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(Actions,dispatch)
+    ...bindActionCreators(Actions,dispatch),
+    ...bindActionCreators(commonActions,dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatMessageVideo);
