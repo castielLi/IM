@@ -7,6 +7,7 @@ import MessageCommandEnum from '../dto/MessageCommandEnum'
 import AppCommandEnum from '../dto/AppCommandEnum'
 import * as ActionForChatRecordStore from '../redux/chat/action'
 import {changeRelationOfShow,addRelation} from '../../../modules/Contacts/reducer/action';
+import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
 import User from '../../User'
 import {Alert} from 'react-native'
 
@@ -79,12 +80,12 @@ export function handleRecieveMessage(message){
         if(message.way == "chatroom"){
 
             //这里要获取群组里面发送消息的成员的信息
-            user.getInformationByIdandType(message.Data.Data.Receiver,"private",function(relation){
+            user.getInformationByIdandType(message.Data.Data.Sender,"chatroom",function(relation){
 
                 //这里因为群消息发送者是群,而receiver则是真正的发送人员
-                let senderNick = relation.Nick;
 
-                // message.Data.Data.Receiver =  senderNick;
+                //添加进relation redux
+                store.dispatch(addRelation(relation));
 
                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))
             });
