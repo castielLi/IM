@@ -10,7 +10,8 @@ import {Text,
     TouchableHighlight,
     Dimensions,
     AsyncStorage,
-    StatusBar
+    StatusBar,
+    SectionList
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
@@ -19,12 +20,107 @@ import * as chatRecordStoreAction from '../../../Core/IM/redux/chat/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import IM from '../../../Core/IM'
 let {height,width} = Dimensions.get('window');
 let im = new IM();
+var originData = [
+    {
+        'key':'1',
+        'data': [{
+            'name': "钱包",
+        }]
+    },
+    {
+        'key':'2',
+        'data': [{
+            'name': "卡包",
+        }, {
+            'name': "收藏",
+        }, {
+            'name': "相册",
+        }, {
+            'name': "表情",
+        }]
+    },
+    {
+        'key':'3',
+        'data': [{
+            'name': "退出登录",
+        }]
+    },
 
+]
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f2f2f2"
+    },
+    topBox:{
+        height:100,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff'
+    },
+    topLeftBox:{
+        height:90,
+        flexDirection:'row',
+        alignItems:'center',
+
+    },
+    topPic:{
+        width:80,
+        height:80,
+        resizeMode:'stretch',
+        marginRight:15
+    },
+    itemSmallText:{
+        fontSize:16,
+        color:'#000',
+        textAlignVertical:'center'
+    },
+    sction:{
+        height:30
+    },
+    itemBox:{
+        height:50,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff'
+    },
+    itemLeftBox:{
+        height:40,
+        flexDirection:'row',
+        alignItems:'center',
+
+    },
+    pic:{
+        width:30,
+        height:30,
+        resizeMode:'stretch',
+        marginRight:15
+    },
+    itemText:{
+        fontSize:20,
+        color:'#000',
+
+    },
+    ItemSeparator:{
+        height:1,
+        backgroundColor: '#eee',
+    },
+    arrow:{
+        fontSize:20,
+        color:'#aaa'
+    },
+});
 class Me extends ContainerComponent {
     constructor(props){
         super(props);
@@ -43,6 +139,51 @@ class Me extends ContainerComponent {
     changeShowFeature=(newState)=>{
         this.setState({showFeatures:newState});
     }
+
+    toDoSome = (name)=>{
+        if(name == '退出登录'){
+            this.loginOut();
+        }
+    }
+
+    chooseImage = (name)=>{
+        if(name == '钱包'){
+            return	<Image source={require('../resource/package.png')} style={styles.pic} ></Image>
+        }else if(name == '卡包'){
+            return	<Image source={require('../resource/pack.png')} style={styles.pic} ></Image>
+        }else if(name == '收藏'){
+            return	<Image source={require('../resource/souc.png')} style={styles.pic} ></Image>
+        }else if(name == '相册'){
+            return	<Image source={require('../resource/photo.png')} style={styles.pic} ></Image>
+        }else if(name == '表情'){
+            return	<Image source={require('../resource/smile.png')} style={styles.pic} ></Image>
+        }else if(name == '退出登录'){
+            return	<Image source={require('../resource/set.png')} style={styles.pic} ></Image>
+        }
+    }
+
+    _renderItem = (info)=>{
+        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toDoSome.bind(this,info.item.name)}>
+            <View style={styles.itemBox}>
+                <View  style={styles.itemLeftBox} >
+                    {this.chooseImage(info.item.name)}
+                    <Text style={styles.itemText}>{info.item.name}</Text>
+                </View>
+                {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                <View>
+                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                </View>
+
+            </View>
+        </TouchableHighlight>
+    }
+    _renderSection = ()=>{
+        return <View style={styles.sction}></View>
+    }
+    _renderSeparator = () =>{
+        return <View style={styles.ItemSeparator}></View>
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -59,8 +200,34 @@ class Me extends ContainerComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                         ]}
                 />
-                <Text>{"你的账户："+this.props.accountId}</Text>
-                <Text onPress={this.loginOut}>退出登录</Text>
+                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
+                    <View style={styles.topBox}>
+                        <View  style={styles.topLeftBox} >
+                            {this.props.avator&&this.props.avator!==''?
+                                <Image source={{uri:this.props.avator}} style={styles.topPic} ></Image>:
+                                <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
+                            }
+                            <View style={{height:60,justifyContent:'space-between'}}>
+                                <Text style={styles.itemText}>{this.props.nick}</Text>
+                                <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
+                            </View>
+                        </View>
+                        {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                        <View style={{flexDirection:'row',alignItems:'center'}}>
+                            <Icon name="qrcode" size={35} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+
+                        </View>
+                    </View>
+                </TouchableHighlight>
+                <SectionList
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    renderSectionHeader={this._renderSection}
+                    renderItem={this._renderItem}
+                    sections={originData}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    stickySectionHeadersEnabled={false}
+                />
                 <Features ref={e => this.features = e} navigator={this.props.navigator}/>
             </View>
             )
@@ -68,17 +235,14 @@ class Me extends ContainerComponent {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#eee',
 
-    }
-});
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId
+    accountId:state.loginStore.accountMessage.accountId,
+    avator:state.loginStore.accountMessage.avator,
+    nick:state.loginStore.accountMessage.nick,
+
 });
 
 const mapDispatchToProps = dispatch => ({

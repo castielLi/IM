@@ -355,7 +355,7 @@ class Chat extends Component {
         for(let i=0;i<MembersLength;i++){
             if(Members[i].RelationId == MemberID)
             {
-                return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{11}</Text>
+                return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Members[i].Nick}</Text>
             }
         }
         return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
