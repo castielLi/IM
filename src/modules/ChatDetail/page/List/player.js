@@ -109,7 +109,7 @@ class Player extends Component {
     render() {
         if(this.state.isShow){
             return(
-                <Modal style={styles.container} animationType={'fade'}>
+                <Modal style={styles.container} animationType={'fade'} onRequestClose={()=>{}}>
                     <Video
                         ref={(ref) => {
                             this.video = ref
