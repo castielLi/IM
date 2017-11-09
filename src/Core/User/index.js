@@ -74,6 +74,7 @@ export default class User {
                 groupStoreSqlite.getRelation(Id,type,(relations)=>{
                     //如果数据库也没有这条消息
                     let groupMembers = [];
+                    let groupMembersInfo = [];
                     if(relations.length == 0){
                         this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                             if(success) {
@@ -153,10 +154,11 @@ export default class User {
                                 for(let i = 0;i<results.length;i++){
                                     //因为数据库的结构就是relationModel的结构
                                     cache["private"][results[i].RelationId] = results[i];
-                                    groupMembers.push(results[i])
+                                    groupMembers.push(results[i].RelationId)
+                                    groupMembersInfo.push(results[i])
                                 }
-
-                                callback(relations[0],groupMembers)
+                                cache["groupMember"][Id] = groupMembers;
+                                callback(relations[0],groupMembersInfo)
                             }
                         });
                     }
