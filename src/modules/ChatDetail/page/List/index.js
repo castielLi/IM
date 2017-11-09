@@ -115,14 +115,6 @@ class Chat extends Component {
         });
     }
 
-    shouldComponentUpdate(props,state){
-        if(state.groupMembers.length>0){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     componentWillMount() {
         this.im = new IM()
         let currentObj = this;
