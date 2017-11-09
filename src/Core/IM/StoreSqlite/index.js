@@ -623,20 +623,25 @@ function insertChat(message,tx){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
 
     let localPath = "";
+    let url = "";
     if(message.Resource!= null && message.Resource.length > 0) {
         for (let item in message.Resource) {
-            localPath += message.Resource[item].LocalSource + ",";
+            localPath += message.Resource[item].LocalSource;
+                // + ",";
+            url += message.Resource[item].RemoteSource;
         }
     }else{
-        localPath = " ";
+        localPath = "";
+        url = "";
     }
-    let sourceTime = " ";
+    let sourceTime = "";
     //音频视频才有时间
     if(message.type === 'audio'||message.type === 'video'){
         //默认一条消息只能有一条音频或者视频
         sourceTime = message.Resource[0].Time;
     }
-    let url = " ";
+
+    if(message.Resource)
 
     insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
