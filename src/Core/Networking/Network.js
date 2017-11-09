@@ -165,6 +165,7 @@ export default class netWorking {
           if (evt.lengthComputable) {
               var percentComplete = evt.loaded / evt.total;
               console.log(percentComplete);
+              onprogress&&onprogress(percentComplete);
           }
       }, false);
 
@@ -172,10 +173,13 @@ export default class netWorking {
       request.responseType = "blob";
       request.onreadystatechange = function () {
           if (request.readyState === 4 && request.status === 200) {
-
-              filePath = "/Users/apple/Library/Developer/CoreSimulator/Devices/32F0A1AA-7EE1-4F17-B596-16F9C739CB9C/data/Containers/Data/Application/77C3A9D5-A63A-4033-A819-DAD7A25F299C/Documents/xxx.mp4";
-
-              RNFS.writeFile(filePath,request._response,"base64");
+              RNFS.writeFile(filePath,request._response,"base64")
+                  .then((success) => {
+                      callback&&callback()
+                  })
+                  .catch((err) => {
+                      console.log(err.message);
+                  });
           }
       };
       request.send();
