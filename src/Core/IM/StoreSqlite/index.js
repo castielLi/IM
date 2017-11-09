@@ -69,7 +69,7 @@ export function getAllCurrentSendMessage(callback){
 }
 
 export function updateMessageRemoteUrl(messageId,url){
-  IMFMD.updateMessageRemoteUrl(messageId,url);
+    IMFMDB.updateMessageRemoteUrl(messageId,url);
 }
 
 //修改发送队列中的消息状态
