@@ -55,7 +55,7 @@ class ChatMessageVideo extends Component {
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
                 network.methodDownloadWithProgress(Remote,filePath,function () {
 
-                    currentObj.props.updateMessagePath(msgID,filePath)
+                    currentObj.props.updateMessagePath(msgID,filePath,ME)
                     im.updateMessageRemoteUrl(msgID,filePath)
 
                     currentObj.setState({

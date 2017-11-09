@@ -85,10 +85,10 @@ export function updateMessageStatus(status,MSGID){
 	}
 }
 //修改下载完成视频消息的path
-export function updateMessagePath(MSGID,path){
+export function updateMessagePath(MSGID,path,sender){
     return{
         type:'UPDATE_MESSAGES_PATH',
-        client:InterceptionClientFromId(MSGID),
+        sender,
         MSGID,
         path
     }
