@@ -19,6 +19,8 @@ import User from './Core/User'
 import DisplayComponent from './Core/Component'
 import * as IMHandle from './Core/IM/action/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
+import Network from './Core/Networking/Network'
+let network = new Network();
 
 export default function App() {
 
@@ -33,6 +35,12 @@ export default function App() {
     configureNetwork({
         "Content-Type": "application/json"
     }, 'fetch', false)
+
+
+    let url = "http://otf8y2r54.bkt.clouddn.com/24766D9C-B2FB-4346-A1D4-52C23116B9DC.jpg";
+    network.methodDownloadWithProgress(url,"",function(){},function(){})
+
+
 
 
     //初始化路由表
