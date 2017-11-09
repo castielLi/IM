@@ -16,6 +16,9 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
+import IM from '../../../../Core/IM'
+
+let im = new IM();
 
 let {width, height} = Dimensions.get('window');
 
@@ -49,6 +52,9 @@ class ChatMessageVideo extends Component {
                 let format = Remote.slice(Remote.lastIndexOf('.'));
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
                 network.methodDownloadWithProgress(Remote,filePath,function () {
+
+                    // im.updateMessageRemoteUrl(messageId,url)
+
                     currentObj.setState({
                         download:false,
                     })
