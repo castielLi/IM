@@ -343,8 +343,10 @@ export default class IM {
                     break;
                 case MessageType.friend:
                     SendManager.addSendMessage(message,callback);
+                    break;
                 case MessageType.video:
                     FileManager.addResource(message,onprogess,callback)
+                    break;
                 default:
                     SendManager.addSendMessage(message,callback);
                     break;

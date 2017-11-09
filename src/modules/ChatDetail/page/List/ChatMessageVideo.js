@@ -35,13 +35,22 @@ class ChatMessageVideo extends Component {
     static propTypes = {
     };
 
-    playVideo = (Local,Remote)=>{
+    playVideo = (Local,Remote,data)=>{
+        let hasFile;
         let network = new netWorking();
-        let ME = this.props.loginStore;
-        let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${'video'}/chat/${'类型'}-${'对方id'}/${new Date().getTime()}${'格式'}`
-        if(!Local && Local === ' '){
+        RNFS.exists(Local).then((success) => {
+            hasFile = success;
+        }).catch((err) => {
+            console.log(err.message);
+        });
+        if(!hasFile){
             //todo:先下载视频，获取路径
-                network.methodDownloadWithProgress(Remote,filePath,function () {
+            // let ME = this.props.loginStore;
+            // let type = data.message.type;
+            // let {Receiver,Sender} = data.message.Data.Data;
+            // let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
+            // let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${'类型'}-${'对方id'}/${new Date().getTime()}${format}`
+            network.methodDownloadWithProgress(Remote,filePath,function () {
                 this.setState({
                     download:false,
                 })
@@ -80,7 +89,7 @@ class ChatMessageVideo extends Component {
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         return(
             <View style={[styles.bubble]}>
-                <TouchableOpacity onPress={()=>{this.playVideo(LocalSource,RemoteSource)}} disabled={this.state.download}>
+                <TouchableOpacity onPress={()=>{this.playVideo(LocalSource,RemoteSource,data)}} disabled={this.state.download}>
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
