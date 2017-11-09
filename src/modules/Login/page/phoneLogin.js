@@ -124,16 +124,21 @@ class PhoneLogin extends ContainerComponent {
 
 
                         let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
+                        let AccountDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Account.db';
+                        let GroupDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Group.db';
                         //文件夹判断是否是第一次登录
                         RNFS.exists(ImDbPath).then((bool)=>{if(bool){
                             //若不是
                             //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
                             RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                                //初始化im
-                                let im = new IM();
-                                im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-
-                            })
+                                RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
+                                    RNFS.copyFile(GroupDbPath,'/data/data/com.im/databases/Group.db').then(()=>{
+                                        //初始化im
+                                        let im = new IM();
+                                        im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+									})
+								})
+							});
                             //若是第一次登陆
                         }else{
                             //初始化im
@@ -152,7 +157,7 @@ class PhoneLogin extends ContainerComponent {
 					let AccountPath = "";
 
                     if(Platform.OS === 'android'){
-                        //删除Account.db
+
                         AccountPath = '/data/data/com.im/databases/Account.db';
                     }else{
 
