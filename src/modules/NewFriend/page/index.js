@@ -130,25 +130,25 @@ class NewFriend extends ContainerComponent {
     _renderRow = (rowData, sectionID, rowID)=>{
         return(
             <View>
-                <Swipeout
-                    right = {
-                        [{
-                            text:'删除',
-                            type:'delete',
-                            onPress:()=>{this.deleteApply(rowID)}
-                        }]
-                    }
-                    rowID = {rowID}
-                    sectionID = {sectionID}
-                    close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}
-                    onOpen={(sectionID, rowID) => {
-                        this.setState({
-                            sectionID:sectionID,
-                            rowID:rowID,
-                        })
-                    }}
-                    autoClose={true}
-                >
+                {/*<Swipeout*/}
+                    {/*right = {*/}
+                        {/*[{*/}
+                            {/*text:'删除',*/}
+                            {/*type:'delete',*/}
+                            {/*onPress:()=>{this.deleteApply(rowID)}*/}
+                        {/*}]*/}
+                    {/*}*/}
+                    {/*rowID = {rowID}*/}
+                    {/*sectionID = {sectionID}*/}
+                    {/*close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}*/}
+                    {/*onOpen={(sectionID, rowID) => {*/}
+                        {/*this.setState({*/}
+                            {/*sectionID:sectionID,*/}
+                            {/*rowID:rowID,*/}
+                        {/*})*/}
+                    {/*}}*/}
+                    {/*autoClose={true}*/}
+                {/*>*/}
 
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
@@ -162,7 +162,7 @@ class NewFriend extends ContainerComponent {
                             {this.applyMsgStyle(rowID,rowData)}
                         </View>
                     </TouchableHighlight>
-                </Swipeout>
+                {/*</Swipeout>*/}
             </View>
         )
     }
