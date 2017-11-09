@@ -436,6 +436,12 @@ export default class IM {
 
     }
 
+    //更改video消息下载完成时的资源路径
+    updateMessageRemoteUrl(messageId,url){
+       storeSqlite.updateMessageRemoteUrl(messageId,url);
+    }
+
+
     //删除数据库中发送队列的message
     popCurrentMessageSqlite(messageId){
         storeSqlite.popMessageInSendSqlite(messageId);
