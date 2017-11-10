@@ -60,7 +60,7 @@ export default class Register extends ContainerComponent {
                         routeId: 'PhoneLogin'
 					})
 				}
-            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.nickNameText,"Captcha":this.state.codeText,"Password":this.state.phoneText})
+            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.nickNameText,"Captcha":this.state.codeText,"Password":this.state.passWordText})
 
 		}else{
 			alert('信息不能为空!');

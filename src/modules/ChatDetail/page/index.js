@@ -52,7 +52,7 @@ class ChatDetail extends ContainerComponent {
 	componentWillMount(){
 		let {client,type} = this.props;
 		//如果chatRecordStore里没记录
-		if(!this.props.ChatRecord[client]){
+		if(!this.props.ChatRecord[client]||this.props.ChatRecord[client].length ===0){
 			//
 			this.props.addClient(client);
             //初始化chatRecordStore
