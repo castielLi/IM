@@ -136,6 +136,7 @@ class PhoneLogin extends ContainerComponent {
                                         //初始化im
                                         let im = new IM();
                                         im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                                        dealCommon();
 									})
 								})
 							});
@@ -145,6 +146,7 @@ class PhoneLogin extends ContainerComponent {
                             let im = new IM();
                             im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             im.initIMDatabase(account.accountId);
+                            dealCommon();
                         }
 
                         })
@@ -163,7 +165,7 @@ class PhoneLogin extends ContainerComponent {
 
                         AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
                     }
-					dealCommon();
+
 
 
                     function dealCommon(){
