@@ -664,8 +664,6 @@ function insertChat(message,tx){
         sourceTime = message.Resource[0].Time;
     }
 
-    if(message.Resource)
-
     insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
