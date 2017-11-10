@@ -67,7 +67,10 @@ class Validate extends ContainerComponent {
         // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
         // im.addMessage(addMessage,function(){
         //     currentObj.hideLoading()
-            currentObj.alert("申请消息已经发送,等待对方验证","提醒");
+            currentObj.alert("申请消息已经发送,等待对方验证","提醒",
+                function(){
+                    currentObj.route.pop(currentObj.props);
+                });
 
             //向数据库添加关系，并且标记这条关系显示为false;
             let relation = new Relation();
