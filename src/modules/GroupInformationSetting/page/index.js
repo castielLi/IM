@@ -82,7 +82,8 @@ class GroupInformationSetting extends ContainerComponent {
                         owner:info.Owner,
                         show:true}
                     user.AddNewGroup(obj);
-                    currentObj.props.addRelation(obj);
+                    // currentObj.props.addRelation(obj);
+                    currentObj.props.changeRelationOfShow(info.ID);
                     currentObj.setState({
                         isSave:Save
                     })
@@ -95,7 +96,8 @@ class GroupInformationSetting extends ContainerComponent {
                     // alert('移除通讯录成功')
                     info.show = false;
                     user.RemoveGroupFromContact(info.ID);
-                    currentObj.props.deleteRelation(info.ID);
+                    //currentObj.props.deleteRelation(info.ID);
+                    currentObj.props.changeRelationOfShow(info.ID);
 
                     currentObj.setState({
                         isSave:Save
