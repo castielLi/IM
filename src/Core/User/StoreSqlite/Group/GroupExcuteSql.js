@@ -31,5 +31,6 @@ export const ExcuteIMSql = {
     "InsertGroupMember":"insert or replace into ? (RelationId) values(?)",
     "GetGroupMembersByGroupId":"select * from ?",
     "RemoveGroupFromContact":"update GroupList set show='false' where RelationId=?",
+    "FindGroupTable":"select count(*)  from sqlite_master wheretype='table' and name=?"
 
 }

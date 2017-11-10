@@ -24,6 +24,7 @@ import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import * as groupStoreSqlite from '../../../Core/User/StoreSqlite/Group'
 
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
@@ -84,6 +85,11 @@ class ChatDetail extends ContainerComponent {
                 });
 		}
 
+		// if(type == 'chatroom'){
+         //    groupStoreSqlite.FindGroupTable(client,function (results) {
+		// 		console.log(results)
+         //    })
+		// }
 		//修改chatDetailPageStore
 		this.props.changeChatDetailPageStatus(true,client,type)
 		//清空未读消息计数红点

@@ -56,6 +56,11 @@ export function GetMembersByGroupId(groupId,callback){
     GROUPFMDB.GetMembersByGroupId(groupId,callback)
 }
 
+//通过GroupID查看是否存在该表
+export function FindGroupTable(groupId,callback){
+    GROUPFMDB.FindGroupTable(groupId,callback)
+}
+
 
 //删除关系
 export function deleteRelation(RelationId){
@@ -171,6 +176,30 @@ GROUPFMDB.GetMembersByGroupId = function(groupId,callback){
                 callback(results.rows.raw())
 
             }, (err)=>{errorDB('通过groupId获取成员',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
+
+//通过GroupID查看是否存在该表
+GROUPFMDB.FindGroupTable = function(groupId,callback){
+    let selectSql = sqls.ExcuteIMSql.FindGroupTable;
+
+    selectSql = commonMethods.sqlFormat(selectSql,[groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(selectSql, [], (tx, results) => {
+
+                console.log(results);
+
+                callback(results.rows.raw())
+
+            }, (err)=>{errorDB('通过GroupID查看是否存在该表',err)});
 
         }, errorDB);
     }, errorDB);
