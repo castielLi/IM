@@ -36,13 +36,6 @@ export default function App() {
         "Content-Type": "application/json"
     }, 'fetch', false)
 
-
-    let url = "http://otf8y2r54.bkt.clouddn.com/24766D9C-B2FB-4346-A1D4-52C23116B9DC.jpg";
-    network.methodDownloadWithProgress(url,"",function(){},function(){})
-
-
-
-
     //初始化路由表
     Route.initRouteMap(router);
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
