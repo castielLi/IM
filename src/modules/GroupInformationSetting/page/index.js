@@ -68,8 +68,10 @@ class GroupInformationSetting extends ContainerComponent {
     addToContacts = ()=>{
         let Save = !this.state.isSave;
         let info = this.state.groupInformation;
+        currentObj.showLoading();
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
+                currentObj.hideLoading();
                 if(result.success && result.data.Result){
                     // alert('添加通讯录成功')
                     let obj = {
@@ -91,6 +93,7 @@ class GroupInformationSetting extends ContainerComponent {
         }
         else{
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
+                currentObj.hideLoading();
                 if(result.success && result.data.Result){
                     // alert('移除通讯录成功')
                     info.show = false;
