@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     top:pxToPt(5), 
     fontSize:20, 
     lineHeight:20, 
-    width:width-140,  
+    width:width - (Platform.OS === 'android'?200:140),
     height:40,
     borderColor:'#ccc',
     borderWidth:pxToPt(1),   
