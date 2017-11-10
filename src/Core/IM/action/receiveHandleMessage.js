@@ -28,45 +28,45 @@ export function handleRecieveMessage(message){
 
                 if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
 
-                    // let accounts = message.Data.Data.Data.split(',');
-                    //
-                    // let nicks = "";
-                    // for(let i = 0; i<accounts.length;i++){
-                    //     if(i != accounts.length - 1){
-                    //         nicks += user.getUserInfoById(accounts[i]).Nick + ",";
-                    //     }else{
-                    //         nicks += user.getUserInfoById(accounts[i]).Nick;
-                    //     }
-                    // }
-                    //
-                    // let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
-                    // message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
+                    let accounts = message.Data.Data.Data.split(',');
+
+                    let nicks = "";
+                    for(let i = 0; i<accounts.length;i++){
+                        if(i != accounts.length - 1){
+                            nicks += user.getUserInfoById(accounts[i]).Nick + ",";
+                        }else{
+                            nicks += user.getUserInfoById(accounts[i]).Nick;
+                        }
+                    }
+
+                    let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                    message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
 
                 }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
-                    // let accounts = message.Data.Data.Data.split(',');
-                    //
-                    // let nick = user.getUserInfoById(accounts[0]).Nick
-                    //
-                    // let inviter = user.getUserInfoById(accounts[1]).Nick;
-                    //
-                    // message.Data.Data.Data = inviter + "邀请" + nick + "加入群聊";
+                    let accounts = message.Data.Data.Data.split(',');
+
+                    let nick = user.getUserInfoById(accounts[0]).Nick
+
+                    let inviter = user.getUserInfoById(accounts[1]).Nick;
+
+                    message.Data.Data.Data = inviter + "邀请" + nick + "加入群聊";
 
                 }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
 
-                    // let nick = user.getUserInfoById(message.Data.Data.Data).Nick
-                    //
-                    // let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
-                    //
-                    // message.Data.Data.Data =  nick + "被踢"+ inviter+"出了群聊";
+                    let nick = user.getUserInfoById(message.Data.Data.Data).Nick
+
+                    let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
+
+                    message.Data.Data.Data =  nick + "被踢"+ inviter+"出了群聊";
 
                 }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
 
-                    // let accounts = message.Data.Data.Data.split(',');
-                    //
-                    // let nick = user.getUserInfoById(accounts[0]).Nick
-                    //
-                    // message.Data.Data.Data =  nick + "退出了群聊";
+                    let accounts = message.Data.Data.Data.split(',');
+
+                    let nick = user.getUserInfoById(accounts[0]).Nick
+
+                    message.Data.Data.Data =  nick + "退出了群聊";
                 }
 
                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))

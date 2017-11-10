@@ -62,8 +62,7 @@ export function receiveMessage(message){
                 RNFS.mkdir(audioPath)
                 RNFS.mkdir(imagePath)
                 RNFS.mkdir(videoPath)
-				//初始化chatRecordStore
-                dispatch(getChatRecord(client,way));
+
 			}
             dispatch({
                 type:'RECEIVE_MESSAGE',
