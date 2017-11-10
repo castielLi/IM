@@ -157,6 +157,7 @@ export default class IM {
         clearInterval(sendMessageInterval)
         clearInterval(ackMessageInterval)
         clearInterval(recMessageInterval)
+        this.logout()
     }
 
     setNetEnvironment(connecttionInfo){
