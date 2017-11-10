@@ -22,11 +22,11 @@ export function storeSendMessage(message){
     // }
 }
 
-export function storeRecMessage(message){
+export function storeRecMessage(message,callback){
 
     if(message.type != "friend") {
         message.status = MessageStatus.SendSuccess;
-        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
+        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
     }else{
         IMFMDB.InsertFriendMessage(message);
     }
@@ -151,7 +151,7 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
 }
 
 //todo：想办法进行批量操作
-IMFMDB.InsertMessageWithCondition = function(message,client){
+IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
@@ -179,7 +179,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
                     updateChat(conetnt,time,client,tx);
 
-                    insertChat(message,tx);
+                    insertChat(message,tx,callback);
 
                     insertChatToSpecialRecode(message,tableName,tx);
 
@@ -211,7 +211,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
 
 
-                        insertChat(message,tx);
+                        insertChat(message,tx,callback);
 
                         insertChatToSpecialRecode(message,tableName,tx);
 
@@ -644,7 +644,7 @@ IMFMDB.closeImDb = function(){
 }
 
 //添加消息进总消息表
-function insertChat(message,tx){
+function insertChat(message,tx,callback){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
 
     let localPath = "";
@@ -669,7 +669,7 @@ function insertChat(message,tx){
     insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
-
+        callback&&callback();
         console.log("insert meesage success");
 
     }, (err)=>{errorDB('向聊天对象插入详细聊天',err)});

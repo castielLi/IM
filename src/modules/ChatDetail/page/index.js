@@ -52,30 +52,26 @@ class ChatDetail extends ContainerComponent {
 	}
 	componentWillMount(){
 		let {client,type} = this.props;
-		//如果chatRecordStore里没记录
-		if(!this.props.ChatRecord[client]||this.props.ChatRecord[client].length ===0){
-			//
-			this.props.addClient(client);
-            //初始化chatRecordStore
-            this.props.getChatRecord(client,type)
-			//新建文件夹
-			let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
-			let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
-			let videoPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/video/chat/' + type + '-' +client;
-			RNFS.mkdir(audioPath)
-		      .then((success) => {
-		        console.log('create new dir success!');
-		      })
-		      .catch((err) => {
-		        console.log(err.message);
-		      });
-		    RNFS.mkdir(imagePath)
-		      .then((success) => {
-		        console.log('create new dir success!');
-		      })
-		      .catch((err) => {
-		        console.log(err.message);
-		      });
+        if(!this.props.ChatRecord[client]){
+        	this.props.addClient(client);
+            //新建文件夹
+            let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
+            let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
+            let videoPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/video/chat/' + type + '-' +client;
+            RNFS.mkdir(audioPath)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+            RNFS.mkdir(imagePath)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
             RNFS.mkdir(videoPath)
                 .then((success) => {
                     console.log('create new dir success!');
@@ -83,7 +79,14 @@ class ChatDetail extends ContainerComponent {
                 .catch((err) => {
                     console.log(err.message);
                 });
+        }
+		let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
+		if(chatRecordLength<10){
+            //初始化chatRecordStore
+            this.props.getChatRecord(client,type,chatRecordLength)
 		}
+
+
 
 		// if(type == 'chatroom'){
          //    groupStoreSqlite.FindGroupTable(client,function (results) {

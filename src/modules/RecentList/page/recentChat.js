@@ -38,24 +38,24 @@ let styles = StyleSheet.create({
     },
     ListContainer: {
         flexDirection: 'row',
-        height: checkDeviceHeight(100),
+        height: checkDeviceHeight(130),
         backgroundColor: '#ffffff',
         paddingLeft:checkDeviceWidth(20),
     },
     userLogo: {
-        height: checkDeviceHeight(100),
+        height: checkDeviceHeight(130),
         width: checkDeviceWidth(125),
         justifyContent: 'center',
     },
     avatar: {
-        height: checkDeviceHeight(80),
-        width: checkDeviceHeight(80),
+        height: checkDeviceHeight(100),
+        width: checkDeviceHeight(100),
         borderRadius: checkDeviceHeight(50),
         resizeMode: 'cover',
     },
     ChatContent: {
         flex: 1,
-        height: checkDeviceHeight(100),
+        height: checkDeviceHeight(130),
         justifyContent: 'space-between',
         flexDirection: 'row',
     },
@@ -64,7 +64,7 @@ let styles = StyleSheet.create({
         justifyContent: 'center',
     },
     NickName: {
-        fontSize: checkDeviceHeight(24),
+        fontSize: checkDeviceHeight(30),
         color: '#373737',
         marginBottom: checkDeviceHeight(10),
         ...Platform.select({
@@ -76,7 +76,7 @@ let styles = StyleSheet.create({
         }),
     },
     ChatMessage: {
-        fontSize: checkDeviceHeight(20),
+        fontSize: checkDeviceHeight(30),
         lineHeight: checkDeviceHeight(35),
         color: '#999999',
     },
@@ -88,7 +88,7 @@ let styles = StyleSheet.create({
         marginRight: checkDeviceWidth(20),
     },
     LastMessageTime: {
-        fontSize: checkDeviceHeight(20),
+        fontSize: checkDeviceHeight(24),
         color: '#999999',
         marginBottom: checkDeviceHeight(20),
     },
@@ -99,7 +99,7 @@ let styles = StyleSheet.create({
         borderRadius: 10,
         color: '#ffffff',
         textAlign: 'center',
-        fontSize: checkDeviceHeight(20),
+        fontSize: checkDeviceHeight(24),
         backgroundColor: '#e64545'
     },
 });

@@ -83,8 +83,8 @@ let styles = StyleSheet.create({
 
     },
     pic:{
-        width:30,
-        height:30,
+        width:25,
+        height:25,
         resizeMode:'stretch',
         marginRight:15
     },

@@ -183,7 +183,28 @@ class Me extends ContainerComponent {
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}></View>
     }
+    _renderHeader =()=>{
+        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
+            <View style={styles.topBox}>
+                <View  style={styles.topLeftBox} >
+                    {this.props.avator&&this.props.avator!==''?
+                        <Image source={{uri:this.props.avator}} style={styles.topPic} ></Image>:
+                        <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
+                    }
+                    <View style={{height:60,justifyContent:'space-between'}}>
+                        <Text style={styles.itemText}>{this.props.nick}</Text>
+                        <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
+                    </View>
+                </View>
+                {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <Icon name="qrcode" size={35} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
+                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 
+                </View>
+            </View>
+        </TouchableHighlight>
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -200,28 +221,10 @@ class Me extends ContainerComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                         ]}
                 />
-                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
-                    <View style={styles.topBox}>
-                        <View  style={styles.topLeftBox} >
-                            {this.props.avator&&this.props.avator!==''?
-                                <Image source={{uri:this.props.avator}} style={styles.topPic} ></Image>:
-                                <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                            }
-                            <View style={{height:60,justifyContent:'space-between'}}>
-                                <Text style={styles.itemText}>{this.props.nick}</Text>
-                                <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
-                            </View>
-                        </View>
-                        {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <Icon name="qrcode" size={35} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 
-                        </View>
-                    </View>
-                </TouchableHighlight>
                 <SectionList
                     keyExtractor={(item,index)=>("index"+index+item)}
+                    ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
                     sections={originData}
