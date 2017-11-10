@@ -49,7 +49,13 @@ class ChatMessageVideo extends Component {
                 let type = data.message.type;
                 let chatType = this.props.type;
                 let {Receiver,Sender} = data.message.Data.Data;
-                let otherID = Receiver == ME ? Sender : Receiver;
+                let otherID ="";
+                if(chatType == "chatroom"){
+                    otherID = Sender;
+                }else{
+                    otherID = Receiver == ME ? Sender : Receiver;
+                }
+
                 let format = Remote.slice(Remote.lastIndexOf('.'));
                 let msgID = data.message.MSGID;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
