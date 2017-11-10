@@ -10,6 +10,7 @@ import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
 import MessageType from '../dto/MessageType';
+import MessageStatus from '../dto/MessageStatus'
 
 export function storeSendMessage(message){
 
@@ -24,6 +25,7 @@ export function storeSendMessage(message){
 export function storeRecMessage(message){
 
     if(message.type != "friend") {
+        message.status = MessageStatus.SendSuccess;
         IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
     }else{
         IMFMDB.InsertFriendMessage(message);
