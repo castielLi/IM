@@ -34,7 +34,7 @@ export default class ContainerComponent extends Component {
     }
 
 
-    alert(content,title="") {
+    alert(content,title="",clickCallback=undefined) {
         if(title == ""){
 
             this.popup.alert(content);
@@ -47,9 +47,9 @@ export default class ContainerComponent extends Component {
                     // style: {
                     //     color: 'red'
                     // },
-                    // callback: () => {
-                    //     this.popup.alert('over!');
-                    // },
+                    callback: () => {
+                        clickCallback&&clickCallback();
+                    },
                 },
             });
         }
