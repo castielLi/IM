@@ -416,16 +416,16 @@ const styles = StyleSheet.create({
   },
   smileButton: {
     bottom: pxToPt(10),
-    right: 50
+    right: Platform.OS === 'android'?100:50
   },
   plusButton: {
     bottom: pxToPt(10),
-    right: 5
+    right: Platform.OS === 'android'?30:5
   },
     sendButton:{
         position: 'absolute',
         height: pxToPt(30),
-        width: pxToPt(35),
+        width: pxToPt(70),
         backgroundColor:'#3399ff',
         justifyContent: 'center',
         alignItems: 'center',
@@ -438,7 +438,7 @@ const styles = StyleSheet.create({
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 140,
+    width: width - (Platform.OS === 'android'?200:140),
     left: 50,
     top: 5,
     borderRadius: 5,
