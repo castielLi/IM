@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f2f2f2"
     },
     topBox:{
-        height:100,
+        height:80,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
@@ -68,27 +68,27 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     topLeftBox:{
-        height:90,
+        height:70,
         flexDirection:'row',
         alignItems:'center',
 
     },
     topPic:{
-        width:80,
-        height:80,
+        width:60,
+        height:60,
         resizeMode:'stretch',
         marginRight:15
     },
     itemSmallText:{
-        fontSize:16,
+        fontSize:12,
         color:'#000',
         textAlignVertical:'center'
     },
     sction:{
-        height:30
+        height:20
     },
     itemBox:{
-        height:50,
+        height:40,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
@@ -96,19 +96,19 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     itemLeftBox:{
-        height:40,
+        height:30,
         flexDirection:'row',
         alignItems:'center',
 
     },
     pic:{
-        width:30,
-        height:30,
+        width:25,
+        height:25,
         resizeMode:'stretch',
         marginRight:15
     },
     itemText:{
-        fontSize:20,
+        fontSize:15,
         color:'#000',
 
     },

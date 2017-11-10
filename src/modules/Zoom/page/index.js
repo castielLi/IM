@@ -66,10 +66,10 @@ let styles = StyleSheet.create({
         backgroundColor: "#f2f2f2"
     },
     sction:{
-        height:30
+        height:20
     },
     itemBox:{
-        height:50,
+        height:40,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
@@ -77,7 +77,7 @@ let styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     itemLeftBox:{
-        height:40,
+        height:30,
         flexDirection:'row',
         alignItems:'center',
 
@@ -89,7 +89,7 @@ let styles = StyleSheet.create({
         marginRight:15
     },
     itemText:{
-        fontSize:20,
+        fontSize:15,
         color:'#000',
         textAlignVertical:'center'
     },
@@ -98,7 +98,7 @@ let styles = StyleSheet.create({
         backgroundColor: '#eee',
     },
     arrow:{
-        fontSize:20,
+        fontSize:15,
         color:'#aaa'
     },
 });
