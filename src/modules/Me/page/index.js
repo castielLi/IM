@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#f2f2f2"
     },
     topBox:{
-        height:100,
+        height:80,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
@@ -68,27 +68,27 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     topLeftBox:{
-        height:90,
+        height:70,
         flexDirection:'row',
         alignItems:'center',
 
     },
     topPic:{
-        width:80,
-        height:80,
+        width:60,
+        height:60,
         resizeMode:'stretch',
         marginRight:15
     },
     itemSmallText:{
-        fontSize:16,
+        fontSize:12,
         color:'#000',
         textAlignVertical:'center'
     },
     sction:{
-        height:30
+        height:20
     },
     itemBox:{
-        height:50,
+        height:40,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
@@ -96,19 +96,19 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     itemLeftBox:{
-        height:40,
+        height:30,
         flexDirection:'row',
         alignItems:'center',
 
     },
     pic:{
-        width:30,
-        height:30,
+        width:25,
+        height:25,
         resizeMode:'stretch',
         marginRight:15
     },
     itemText:{
-        fontSize:20,
+        fontSize:15,
         color:'#000',
 
     },
@@ -183,7 +183,28 @@ class Me extends ContainerComponent {
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}></View>
     }
+    _renderHeader =()=>{
+        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
+            <View style={styles.topBox}>
+                <View  style={styles.topLeftBox} >
+                    {this.props.avator&&this.props.avator!==''?
+                        <Image source={{uri:this.props.avator}} style={styles.topPic} ></Image>:
+                        <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
+                    }
+                    <View style={{height:60,justifyContent:'space-between'}}>
+                        <Text style={styles.itemText}>{this.props.nick}</Text>
+                        <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
+                    </View>
+                </View>
+                {/*<Text style={styles.arrow}>{'>'}</Text>*/}
+                <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <Icon name="qrcode" size={35} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
+                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 
+                </View>
+            </View>
+        </TouchableHighlight>
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -200,28 +221,10 @@ class Me extends ContainerComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                         ]}
                 />
-                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
-                    <View style={styles.topBox}>
-                        <View  style={styles.topLeftBox} >
-                            {this.props.avator&&this.props.avator!==''?
-                                <Image source={{uri:this.props.avator}} style={styles.topPic} ></Image>:
-                                <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                            }
-                            <View style={{height:60,justifyContent:'space-between'}}>
-                                <Text style={styles.itemText}>{this.props.nick}</Text>
-                                <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
-                            </View>
-                        </View>
-                        {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <Icon name="qrcode" size={35} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 
-                        </View>
-                    </View>
-                </TouchableHighlight>
                 <SectionList
                     keyExtractor={(item,index)=>("index"+index+item)}
+                    ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
                     sections={originData}
