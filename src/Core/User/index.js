@@ -119,8 +119,8 @@ export default class User {
                                 //存储新的群user到account表中
                                 currentObj.AddGroupAndMember(relation,results.MemberList);
                                 currentObj.AddGroupMember(results.MemberList)
-                                cache[type][Id] = relations[0];
                                 cache["groupMember"][Id] = cacheGroupMembers;
+                                cache[type][Id] = relations[0];
                             }
                         })
                     }else{
@@ -182,6 +182,9 @@ export default class User {
 
                 let groupMembers= [];
                 let list = cache["groupMember"][Id]
+                if(list == undefined || list == 'undefined'){
+                    callback(cache[type][Id],groupMembers);
+                }
                 for(let i = 0;i<list.length;i++){
                     let target = list[i];
                     groupMembers.push(cache["private"][target])
