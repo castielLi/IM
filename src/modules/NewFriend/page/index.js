@@ -79,7 +79,8 @@ class NewFriend extends ContainerComponent {
                 //添加到relationStore
                     let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
                     let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                    currentObj.props.addRelation(relationObj);
+                    //currentObj.props.addRelation(relationObj);
+                    currentObj.props.changeRelationOfShow(Account);
                     //添加到数据库
                     user.AddNewRelation(relationObj)
                     //修改friendMessage状态
