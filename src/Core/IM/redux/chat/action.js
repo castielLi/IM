@@ -63,15 +63,25 @@ export function receiveMessage(message){
                 RNFS.mkdir(imagePath)
                 RNFS.mkdir(videoPath)
 				//初始化chatRecordStore
-                dispatch(getChatRecord(client,way));
-			}
-            dispatch({
-                type:'RECEIVE_MESSAGE',
-                client:message.Data.Data.Sender,
-                message
-            })
-            //同时更新recentListStore
-            dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+                dispatch(getChatRecord(client,way,()=>{
+                    dispatch({
+                        type:'RECEIVE_MESSAGE',
+                        client:message.Data.Data.Sender,
+                        message
+                    })
+                    dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+
+                }));
+			}else{
+                dispatch({
+                    type:'RECEIVE_MESSAGE',
+                    client:message.Data.Data.Sender,
+                    message
+                })
+                //同时更新recentListStore
+                dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+            }
+
         }
     }
 }
@@ -103,13 +113,14 @@ export function updateMessage(message){
 	}
 }
 //打开聊天窗口的时候，给client对应的chatRecordStore.ChatRecord数据添加10条初始数据
-export function getChatRecord(Client,Type){
+export function getChatRecord(Client,Type,callback){
 	return (dispatch)=>{
         im.getRecentChatRecode(Client,Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
         	let messageList = messages.map((message)=>{
 								return DtoMethods.sqlMessageToMessage(message);
 							})
             dispatch(initChatRecord(Client,messageList));
+        	callback&&callback();
 		})
 	}
 }
