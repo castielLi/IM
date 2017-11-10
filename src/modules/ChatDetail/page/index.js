@@ -88,6 +88,13 @@ class ChatDetail extends ContainerComponent {
 		// if(type == 'chatroom'){
          //    groupStoreSqlite.FindGroupTable(client,function (results) {
 		// 		console.log(results)
+		// 		if(results.length == 0){
+        //
+        //
+        //
+         //            groupStoreSqlite.initGroupMemberByGroupId(client)
+		// 			callback()
+		// 		}
          //    })
 		// }
 		//修改chatDetailPageStore
