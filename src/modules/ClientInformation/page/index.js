@@ -195,7 +195,7 @@ class ClientInformation extends ContainerComponent {
                 <MyNavigationBar
                     heading={"详细资料"}
                     left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
-                    right={[{func:()=>{this.goToInformationSetting()},icon:'ellipsis-h'}]}
+                    right={[{func:()=>{this.goToInformationSetting()},icon:hasRelation ||isRenderSendMessage?'ellipsis-h':''}]}
                 />
                 <View>
                     <View style={styles.basicBox}>

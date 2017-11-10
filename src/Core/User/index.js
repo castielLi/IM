@@ -56,7 +56,7 @@ export default class User {
                     storeSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                            currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                                 if(success) {
                                     let relation = new RelationModel();
                                     relation.RelationId = results.Account;
@@ -119,8 +119,8 @@ export default class User {
                                 //存储新的群user到account表中
                                 currentObj.AddGroupAndMember(relation,results.MemberList);
                                 currentObj.AddGroupMember(results.MemberList)
-                                cache[type][Id] = relations[0];
                                 cache["groupMember"][Id] = cacheGroupMembers;
+                                cache[type][Id] = relations[0];
                             }
                         })
                     }else{
@@ -133,7 +133,7 @@ export default class User {
                             //代表数据库里面并没有groupMembers的对应关系，需要进行下载
                             if(results.length == 0){
 
-                                this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                                currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                                     if(success) {
 
                                         let cacheGroupMembers = [];
@@ -182,6 +182,9 @@ export default class User {
 
                 let groupMembers= [];
                 let list = cache["groupMember"][Id]
+                if(list == undefined || list == 'undefined'){
+                    callback(cache[type][Id],groupMembers);
+                }
                 for(let i = 0;i<list.length;i++){
                     let target = list[i];
                     groupMembers.push(cache["private"][target])

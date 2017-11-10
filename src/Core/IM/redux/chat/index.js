@@ -45,7 +45,11 @@ const initialState = {
 export default function chatRecordStore(state = initialState, action) {
     switch (action.type) {
         case 'INIT_CHATRECORD':
-            state.ChatRecord[action.client] = action.messageList;
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = [];
+
+            }
+            state.ChatRecord[action.client] = state.ChatRecord[action.client].concat(action.messageList);
             return{
                 ...state,
             }

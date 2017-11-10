@@ -294,7 +294,7 @@ GROUPFMDB.InitRelations = function(GroupList,callback){
         group.ProfilePicture = group.ProfilePicture == null?"":group.ProfilePicture;
 
         sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name,"",false,"chatroom",group.ProfilePicture,"",group.Owner,true]);
-        relationsSqls.push(sql);
+        relationsSqls.push({"sql":sql,"Id":group.GroupId});
     }
 
 
@@ -305,10 +305,30 @@ GROUPFMDB.InitRelations = function(GroupList,callback){
         db.transaction((tx) => {
 
             for(let item in relationsSqls){
-                let executeSql = relationsSqls[item];
+                let executeSql = relationsSqls[item].sql;
                 tx.executeSql(executeSql, [], (tx, results) => {
 
                    console.log("添加关系成功")
+
+                    let querySql = sqls.ExcuteIMSql.FindGroupTable;
+
+                    querySql = commonMethods.sqlFormat(querySql,[relationsSqls[item].Id])
+
+                    tx.executeSql(executeSql, [], (tx, results) => {
+
+                        if(results.rows.length == 0){
+                            let insertSql = sqls.ExcuteIMSql.CreateGroupMemberTable;
+
+                            insertSql = commonMethods.sqlFormat(insertSql,[relationsSqls[item].Id])
+
+                            tx.executeSql(insertSql, [], (tx, results) => {
+
+                                console.log("add group member table success")
+
+                            }, (err)=>{errorDB('add group member table',err)});
+                        }
+
+                    }, (err)=>{errorDB('query if group member table is not exist',err)});
 
                 }, (err)=>{errorDB('初始化关系表内容',err)});
             }

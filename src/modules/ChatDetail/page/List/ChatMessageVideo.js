@@ -70,7 +70,7 @@ class ChatMessageVideo extends Component {
                     currentObj.props.showMediaPlayer(filePath)
                 },function (percent) {
                     currentObj.setState({
-                        progress:percent * 100,
+                        progress:Math.ceil(percent * 100),
                         download:true,
                     });
                 })

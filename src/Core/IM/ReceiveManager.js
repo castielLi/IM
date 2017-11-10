@@ -137,9 +137,11 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
     if(message.type == MessageType.text || message.type == MessageType.video)
     {
-        currentObj.storeRecMessage(message)
-        //回调App上层发送成功
-        currentObj.ReceiveMessageHandle(message);
+        currentObj.storeRecMessage(message,()=>{
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
+        })
+
     }
     else{
 

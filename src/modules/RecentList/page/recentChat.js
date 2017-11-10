@@ -64,7 +64,7 @@ let styles = StyleSheet.create({
         justifyContent: 'center',
     },
     NickName: {
-        fontSize: checkDeviceHeight(34),
+        fontSize: checkDeviceHeight(30),
         color: '#373737',
         marginBottom: checkDeviceHeight(10),
         ...Platform.select({

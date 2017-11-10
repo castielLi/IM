@@ -408,8 +408,8 @@ export default class IM {
     }
 
     //存储接收消息
-    storeRecMessage(message){
-        storeSqlite.storeRecMessage(message);
+    storeRecMessage(message,callback){
+        storeSqlite.storeRecMessage(message,callback);
     }
 
     //操作好友管理模块,申请好友通过，设置关系显示状态
