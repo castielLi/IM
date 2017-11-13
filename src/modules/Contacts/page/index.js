@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../../Core/User/redux/action';
-import * as contactsActions from '../reducer/action';
+import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/User';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate} from './formateData';
