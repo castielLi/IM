@@ -121,6 +121,7 @@ class PhoneLogin extends ContainerComponent {
                         let im = new IM();
                         im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                         im.initIMDatabase(account.accountId)
+                        dealCommon();
                         //如果是android
                     }else{
 
