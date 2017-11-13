@@ -135,6 +135,10 @@ export default class IM {
         this.beginHeartBeat();
         this.beginRunLoop();
 
+        //从后台进前台的时候，如果当前网络为none，程序是已经在执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
+        if(networkStatus != networkStatuesType.none){
+            this.socket.reConnectNet();
+        }
 
     }
 
@@ -157,7 +161,12 @@ export default class IM {
         clearInterval(sendMessageInterval)
         clearInterval(ackMessageInterval)
         clearInterval(recMessageInterval)
-        this.logout()
+
+        sendMessageInterval = -1;
+        recMessageInterval = -1;
+        ackMessageInterval = -1;
+
+        // currentObj.logout()
     }
 
     setNetEnvironment(connecttionInfo){
@@ -207,7 +216,7 @@ export default class IM {
             let sendQueueLength = SendManager.checkQueueLength();
             let recQueueLength = ReceiveManager.checkQueueLength();
 
-            if(sendQueueLength == 0 && recQueueLength.length == 0){
+            if(sendQueueLength == 0 && recQueueLength == 0){
 
                 emptyCallBack && emptyCallBack();
             }else{

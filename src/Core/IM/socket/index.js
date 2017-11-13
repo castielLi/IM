@@ -81,15 +81,16 @@ export default class Connect extends Component{
 
         this.webSocket.addEventListener('close', function (event) {
 
-            if(netWorkStatus == "none"){
-                console.log('GoodBye Server!');
-                currentObj.webSocket.close();
-            }else{
-                if(NeedToReConnect) {
-                    currentObj.reConnectNet();
-                }
-                NeedToReConnect = !NeedToReConnect;
-            }
+            console.log("socket close")
+            // if(netWorkStatus == "none"){
+            console.log('GoodBye Server!');
+            // currentObj.webSocket.close();
+            // }else{
+            //     if(NeedToReConnect) {
+            //         currentObj.reConnectNet();
+            //     }
+            //     NeedToReConnect = !NeedToReConnect;
+            // }
         });
     }
 
@@ -109,7 +110,7 @@ export default class Connect extends Component{
 
 
     logout(){
-        NeedToReConnect = false;
+        // NeedToReConnect = false;
         this.webSocket.close();
     }
 
@@ -134,6 +135,11 @@ export default class Connect extends Component{
 
     reConnectNet(){
         // + "/socket.io/?EIO=4&transport=websocket"
+
+       if(this.webSocket == undefined ||  this.webSocket.readyState == this.webSocket.OPEN){
+           return;
+       }
+
        this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+_device+"&Token="+ _imToken + "&DeviceId="+_deviceId);
        this.addEventListenner();
     }
