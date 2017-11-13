@@ -107,8 +107,8 @@ class MoreGroupList extends ContainerComponent {
                     >
                     </TextInput>
                 </View>
-                <View>
-                    <View>
+                <View  style={{flex:1,backgroundColor:'#fff'}}>
+                    <View  style={{flex:1,backgroundColor:'#fff'}}>
                         <FlatList
                             renderItem={this._renderItem}
                             //每行有3列。每列对应一个item

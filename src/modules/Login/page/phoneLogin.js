@@ -17,6 +17,7 @@ import * as Actions from '../reducer/action';
 import * as relationActions from '../../Contacts/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
+import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
 import * as ApplyFriendAction from '../../../Core/IM/redux/applyFriend/action'
@@ -111,6 +112,7 @@ class PhoneLogin extends ContainerComponent {
 
                     //存储登录状态
                     AsyncStorage.setItem('account',JSON.stringify(account));
+                    setMyAccoundId(account.accountId);
                     //修改loginStore登录状态
                     currentObj.props.signIn(account);
                     //如果是ios

@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import * as friendApplicationActions from '../../../Core/IM/redux/applyFriend/action'
-
+import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import * as relationActions from '../../Contacts/reducer/action';
@@ -64,10 +64,12 @@ class Start extends ContainerComponent {
                                     ,gender:account.gender,nick:account.nick,avator:account.avator,phone:account.phone
                                     ,device:account.device,deviceId:account.deviceId}
                             ));
+                            setMyAccoundId(account.accountId);
                             let im = new IM();
                             im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
 
                             let user = new User();
+
                             if(Platform.OS === 'ios'){
                                 im.initIMDatabase(account.accountId)
                                 user.initIMDatabase(account.accountId)
