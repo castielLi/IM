@@ -140,8 +140,9 @@ class DeleteGroupMember extends ContainerComponent {
                 if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
                     //删除最近聊天redux对应id
                     currentObj.props.deleteRecentItemFromId(ID);
-                    currentObj.route.toMain(currentObj.props);
                     currentObj.alert('群解散了');
+                    currentObj.route.toMain(currentObj.props);
+
                     return;
                 }
 
