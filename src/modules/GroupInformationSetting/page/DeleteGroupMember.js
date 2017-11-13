@@ -144,7 +144,7 @@ class DeleteGroupMember extends ContainerComponent {
                     //删除最近聊天redux对应id
                     currentObj.props.deleteRelation(ID);
                     //清空chatRecordStore中对应记录
-                    currentObj.props.initChatRecord(ID,[])
+                    currentObj.props.clearChatRecordFromId(ID)
                     //删除ChatRecode表中记录
                     im.deleteChatRecode(ID);
                     //删除该与client的所以聊天记录
