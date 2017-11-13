@@ -14,13 +14,13 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
-import * as relationActions from '../../Contacts/reducer/action';
+import * as relationActions from '../../../Core/Redux/contact/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
-import * as ApplyFriendAction from '../../../Core/IM/redux/applyFriend/action'
+import * as ApplyFriendAction from '../../../Core/Redux/applyFriend/action'
 
 let currentObj = undefined;
 
@@ -121,6 +121,7 @@ class PhoneLogin extends ContainerComponent {
                         let im = new IM();
                         im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                         im.initIMDatabase(account.accountId)
+                        dealCommon();
                         //如果是android
                     }else{
 

@@ -16,7 +16,7 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import * as loginStoreAction from '../../Login/reducer/action';
-import * as chatRecordStoreAction from '../../../Core/IM/redux/chat/action';
+import * as chatRecordStoreAction from '../../../Core/Redux/chat/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
         marginRight:15
     },
     itemSmallText:{
-        fontSize:12,
+        fontSize:14,
         color:'#000',
         textAlignVertical:'center'
     },
@@ -109,6 +109,11 @@ const styles = StyleSheet.create({
     },
     itemText:{
         fontSize:15,
+        color:'#000',
+
+    },
+    headerText:{
+        fontSize:24,
         color:'#000',
 
     },
@@ -192,7 +197,7 @@ class Me extends ContainerComponent {
                         <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
                     }
                     <View style={{height:60,justifyContent:'space-between'}}>
-                        <Text style={styles.itemText}>{this.props.nick}</Text>
+                        <Text style={styles.headerText}>{this.props.nick}</Text>
                         <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
                     </View>
                 </View>

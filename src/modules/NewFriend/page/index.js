@@ -22,8 +22,8 @@ import Swipeout from 'react-native-swipeout';
 import IM from '../../../Core/IM';
 import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
-import * as friendApplicationActions from '../../../Core/IM/redux/applyFriend/action'
-import * as relationActions from '../../Contacts/reducer/action';
+import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
+import * as relationActions from '../../../Core/Redux/contact/action';
 
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
 

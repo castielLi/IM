@@ -28,7 +28,7 @@ import {
 import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
-import * as commonActions from '../../../../Core/IM/redux/chat/action';
+import * as commonActions from '../../../../Core/Redux/chat/action';
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 
 import IM from '../../../../Core/IM/index';

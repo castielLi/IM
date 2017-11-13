@@ -23,9 +23,9 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
-import * as relationActions from '../../Contacts/reducer/action';
+import * as relationActions from '../../../Core/Redux/contact/action';
 import * as recentListActions from '../../../Core/User/redux/action';
-import * as chatRecordActions from '../../../Core/IM/redux/chat/action';
+import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import IM from '../../../Core/IM';

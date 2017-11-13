@@ -17,7 +17,7 @@ import * as Actions from '../../reducer/action';
 import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
 import IM from '../../../../Core/IM';
-import * as commonActions from '../../../../Core/IM/redux/chat/action';
+import * as commonActions from '../../../../Core/Redux/chat/action';
 
 let im = new IM();
 
