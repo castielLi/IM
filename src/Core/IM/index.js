@@ -135,6 +135,13 @@ export default class IM {
         this.beginHeartBeat();
         this.beginRunLoop();
 
+        //从后台进前台的时候，如果当前网络为none，执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
+        if(networkStatus == networkStatuesType.none){
+           this.checkEnvironment(networkStatus);
+        }else {
+            this.socket.reConnectNet();
+        }
+
 
     }
 
@@ -157,7 +164,7 @@ export default class IM {
         clearInterval(sendMessageInterval)
         clearInterval(ackMessageInterval)
         clearInterval(recMessageInterval)
-        this.logout()
+        // currentObj.logout()
     }
 
     setNetEnvironment(connecttionInfo){
@@ -177,26 +184,31 @@ export default class IM {
 
             _socket.setNetWorkStatus(networkStatuesType.none);
 
-            checkNetEnvironmentInterval = setInterval(function () {
-
-                if(netState.type != 'NONE' && netState.type != 'none'){
-                    clearInterval(checkNetEnvironmentInterval);
-
-                    //todo:恢复网络了后要重新发送消息
-
-                    _socket.setNetWorkStatus(networkStatuesType.normal);
-                    _socket.reConnectNet();
-
-                    //获取之前没有发送出去的消息重新加入消息队列
-                    currentObj.addAllUnsendMessageToSendQueue();
-
-                }
-            },200);
+            this.checkEnvironment(netState.type);
         }else{
             networkStatus = networkStatuesType.normal;
 
             window.networkStatus = networkStatus;
         }
+    }
+
+
+    checkEnvironment(type){
+        checkNetEnvironmentInterval = setInterval(function () {
+
+            if(type != 'NONE' && type != 'none'){
+                clearInterval(checkNetEnvironmentInterval);
+
+                //todo:恢复网络了后要重新发送消息
+
+                _socket.setNetWorkStatus(networkStatuesType.normal);
+                _socket.reConnectNet();
+
+                //获取之前没有发送出去的消息重新加入消息队列
+                currentObj.addAllUnsendMessageToSendQueue();
+
+            }
+        },200);
     }
 
 
@@ -207,7 +219,7 @@ export default class IM {
             let sendQueueLength = SendManager.checkQueueLength();
             let recQueueLength = ReceiveManager.checkQueueLength();
 
-            if(sendQueueLength == 0 && recQueueLength.length == 0){
+            if(sendQueueLength == 0 && recQueueLength == 0){
 
                 emptyCallBack && emptyCallBack();
             }else{
