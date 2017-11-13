@@ -39,6 +39,8 @@ export default class Connect extends Component{
 
         this.addEventListenner = this.addEventListenner.bind(this);
 
+        this.startConnect = this.startConnect.bind(this);
+
     }
 
     addEventListenner(){
@@ -128,6 +130,12 @@ export default class Connect extends Component{
         // AppId = 1
         // Device = DeviceType
         // DeviceNumber = DeviceId
+
+        if(this.webSocket != undefined){
+            if( this.webSocket.readyState == this.webSocket.OPEN){
+                return;
+            }
+        }
 
         this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+Device+"&Token="+ IMToken + "&DeviceId="+DeviceId);
         this.addEventListenner();
