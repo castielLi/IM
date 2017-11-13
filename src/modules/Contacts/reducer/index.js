@@ -15,7 +15,7 @@ export default function relationStore(state=initialState, action){
         case 'ADD_RELATION':
             let hasSameRelation = false;
             for(let i=0;i<state.length;i++){
-                if(state[i].RelationId === action.relation.relationId){
+                if(state[i].RelationId === action.relation.RelationId){
                     hasSameRelation = true;
                     break;
                 }
@@ -29,7 +29,7 @@ export default function relationStore(state=initialState, action){
 
         case 'CHANGE_RELATION':
             for(let i=0;i<state.length;i++){
-                if(state[i].RelationId === action.relation.relationId){
+                if(state[i].RelationId === action.relation.RelationId){
                    state[i] = action.relation;
                     break;
                 }

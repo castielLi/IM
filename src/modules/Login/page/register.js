@@ -38,7 +38,9 @@ export default class Register extends ContainerComponent {
             currentObj.hideLoading()
         	if(!result.success) {
                 currentObj.alert(result.errorMessage,"错误");
-            }
+            }else{
+            	currentObj.alert("验证码已经发送")
+			}
 		},{"PhoneNumber":this.state.phoneText})
 	}
 
@@ -55,12 +57,15 @@ export default class Register extends ContainerComponent {
                 if(!result.success) {
                     currentObj.alert(result.errorMessage,"错误");
                 }else{
-                    currentObj.route.replaceTop(currentObj.props,{
-                        key:'Login',
-                        routeId: 'PhoneLogin'
+
+                	currentObj.alert("您已经成功注册账号","提示",function(){
+                        currentObj.route.replaceTop(currentObj.props,{
+                            key:'Login',
+                            routeId: 'PhoneLogin'
+                        })
 					})
 				}
-            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.nickNameText,"Captcha":this.state.codeText,"Password":this.state.phoneText})
+            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.nickNameText,"Captcha":this.state.codeText,"Password":this.state.passWordText})
 
 		}else{
 			alert('信息不能为空!');

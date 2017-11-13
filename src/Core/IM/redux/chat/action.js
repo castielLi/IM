@@ -2,7 +2,10 @@ import IM from '../../index';
 import * as DtoMethods from '../../dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
 import * as recentListAction from '../../../User/redux/action';
+
 let im = new IM();
+import RNFS from 'react-native-fs';
+
 import * as friendApplicationActions from '../applyFriend/action'
 //向chatRecordStore增加新的聊天对象
 export function addClient(client){
@@ -43,15 +46,33 @@ export function receiveMessage(message){
 			dispatch(friendApplicationActions.getApplicantInfo(message))
 		}
     }
+
     else{
+
         return (dispatch,getState)=>{
-            dispatch({
-                type:'RECEIVE_MESSAGE',
-                client:message.Data.Data.Sender,
-                message
-            })
-            //同时更新recentListStore
-            dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+            let myId = getState().loginStore.accountMessage.accountId;
+            let client = message.Data.Data.Sender;
+            let way = message.way;
+            let record = getState().chatRecordStore.ChatRecord[client];
+            if(record === undefined){
+            	//创建文件夹
+                let audioPath = RNFS.DocumentDirectoryPath + '/' +myId+'/audio/chat/' + way + '-' +client;
+                let imagePath = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + way + '-' +client;
+                let videoPath = RNFS.DocumentDirectoryPath + '/' +myId+'/video/chat/' + way + '-' +client;
+                RNFS.mkdir(audioPath)
+                RNFS.mkdir(imagePath)
+                RNFS.mkdir(videoPath)
+
+			}
+                dispatch({
+                    type:'RECEIVE_MESSAGE',
+                    client:message.Data.Data.Sender,
+                    message
+                })
+                //同时更新recentListStore
+                dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+
+
         }
     }
 }
@@ -64,6 +85,15 @@ export function updateMessageStatus(status,MSGID){
 		status
 	}
 }
+//修改下载完成视频消息的path
+export function updateMessagePath(MSGID,path,sender){
+    return{
+        type:'UPDATE_MESSAGES_PATH',
+        sender,
+        MSGID,
+        path
+    }
+}
 //修改某条消息的网络路径
 export function updateMessage(message){
 	return{
@@ -74,13 +104,14 @@ export function updateMessage(message){
 	}
 }
 //打开聊天窗口的时候，给client对应的chatRecordStore.ChatRecord数据添加10条初始数据
-export function getChatRecord(Client,Type){
+export function getChatRecord(Client,Type,start,callback){
 	return (dispatch)=>{
-        im.getRecentChatRecode(Client,Type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+        im.getRecentChatRecode(Client,Type,{start:start,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
         	let messageList = messages.map((message)=>{
 								return DtoMethods.sqlMessageToMessage(message);
 							})
             dispatch(initChatRecord(Client,messageList));
+        	callback&&callback();
 		})
 	}
 }
@@ -105,6 +136,12 @@ function InterceptionClientFromId(str){
     client = str.slice(0,str.indexOf('_'));
     return client;
 }
+export function clearChatRecordFromId(client){
+    return {
+        type:'CLEAR_CHATRECORD_FROM_ID',
+        client,
+    }
+}
 //注销清空store
 export function clearChatRecord(){
     return{
@@ -124,6 +161,7 @@ function extractMessage(message){
         	return '[视频]';
 		case 'information':
 			return '[通知]'
+            // return message.Data.Data.Data
         default:
         	return '';
 	}

@@ -64,7 +64,7 @@ let styles = StyleSheet.create({
         justifyContent: 'center',
     },
     NickName: {
-        fontSize: checkDeviceHeight(34),
+        fontSize: checkDeviceHeight(30),
         color: '#373737',
         marginBottom: checkDeviceHeight(10),
         ...Platform.select({
@@ -166,7 +166,7 @@ class RecentChat extends ContainerComponent {
 			//如果该row上有未读消息，减少unReadMessageStore记录
             rowData.unReadMessageCount&&this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
 			//清空chatRecordStore中对应记录
-			this.props.initChatRecord(rowData.Client,[])
+			this.props.clearChatRecordFromId(rowData.Client)
 			//删除ChatRecode表中记录
 			im.deleteChatRecode(rowData.Client);
 			//删除该与client的所以聊天记录
@@ -178,11 +178,11 @@ class RecentChat extends ContainerComponent {
 	}
 	_renderAvator= (oneRealationObj)=>{
 			if(oneRealationObj){
-				if((!oneRealationObj.localImage||oneRealationObj.localImage === ' ')&&!oneRealationObj.avator){
+				if((!oneRealationObj.localImage||oneRealationObj.localImage === '')&&!oneRealationObj.avator){
 					return 	<Image style = {styles.avatar} source = {require('../resource/avator.jpg')}></Image>
 
                 }
-                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!==' ')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
+                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!=='')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
 
             }else{
 				return null

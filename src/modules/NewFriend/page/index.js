@@ -33,8 +33,8 @@ let currentObj = undefined;
 let im = new IM();
 let user = new User();
 class NewFriend extends ContainerComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
@@ -42,6 +42,8 @@ class NewFriend extends ContainerComponent {
         this.im = new IM();
         this.state = {
             dataSource: ds,
+            dataObj:{},
+            idS:this.getIdSfromApplyStore(props.friendApplicationStore.applicationRecord)
         };
         this.applyData = [];
         currentObj = this;
@@ -68,14 +70,17 @@ class NewFriend extends ContainerComponent {
 
     agreeApply = (index,data)=>{
         let {key,send} = data;
+        this.showLoading();
         this.fetchData('POST','Member/AcceptFriend',function (result) {
+            currentObj.hideLoading();
             if(result.success){
                 // let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,send);
                 // im.addMessage(addMessage,function(){
                 //添加到relationStore
                     let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
                     let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                    currentObj.props.addRelation(relationObj);
+                    //currentObj.props.addRelation(relationObj);
+                    currentObj.props.changeRelationOfShow(Account);
                     //添加到数据库
                     user.AddNewRelation(relationObj)
                     //修改friendMessage状态
@@ -97,6 +102,7 @@ class NewFriend extends ContainerComponent {
     };
 
     applyMsgStyle = (rowID,rowData)=>{
+
         if(rowData.status === ApplyFriendEnum.WAIT){
             return (
                 <TouchableHighlight
@@ -116,46 +122,89 @@ class NewFriend extends ContainerComponent {
            return <Text style={styles.arrow}>{'已过期'}</Text>
         }
     }
+
+    _renderAvator= (path)=>{
+        if(path && path !== ' '){
+            return 	<Image style = {styles.headPic} source = {{uri:path}}/>
+        }else{
+            return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
+        }
+    }
     _renderRow = (rowData, sectionID, rowID)=>{
+        let {dataObj} = this.state;
         return(
             <View>
-                <Swipeout
-                    right = {
-                        [{
-                            text:'删除',
-                            type:'delete',
-                            onPress:()=>{this.deleteApply(rowID)}
-                        }]
-                    }
-                    rowID = {rowID}
-                    sectionID = {sectionID}
-                    close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}
-                    onOpen={(sectionID, rowID) => {
-                        this.setState({
-                            sectionID:sectionID,
-                            rowID:rowID,
-                        })
-                    }}
-                    autoClose={true}
-                >
+                {/*<Swipeout*/}
+                    {/*right = {*/}
+                        {/*[{*/}
+                            {/*text:'删除',*/}
+                            {/*type:'delete',*/}
+                            {/*onPress:()=>{this.deleteApply(rowID)}*/}
+                        {/*}]*/}
+                    {/*}*/}
+                    {/*rowID = {rowID}*/}
+                    {/*sectionID = {sectionID}*/}
+                    {/*close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}*/}
+                    {/*onOpen={(sectionID, rowID) => {*/}
+                        {/*this.setState({*/}
+                            {/*sectionID:sectionID,*/}
+                            {/*rowID:rowID,*/}
+                        {/*})*/}
+                    {/*}}*/}
+                    {/*autoClose={true}*/}
+                {/*>*/}
 
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
-                                <Image style={styles.headPic} source={require('../resource/other.jpg')}/>
+                                {this._renderAvator(dataObj[rowData.send]?dataObj[rowData.send].avator:'')}
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{rowData.nick}</Text>
+                                    <Text style={styles.name}>{dataObj[rowData.send]?dataObj[rowData.send].Nick:''}</Text>
                                     <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
                                 </View>
                             </View>
                             {this.applyMsgStyle(rowID,rowData)}
                         </View>
                     </TouchableHighlight>
-                </Swipeout>
+                {/*</Swipeout>*/}
             </View>
         )
     }
+    getIdSfromApplyStore = (applyList)=>{
+        let needArr = applyList.map((v,i)=>{
+            return v.send;
+        })
+        return needArr;
+    }
+    formateArrToObj = (arr)=>{
+        let needObj = {};
+        arr.forEach((v,i)=>{
+            needObj[v.RelationId] = v;
+        })
+        return needObj;
+    }
+
+    componentDidMount(){
+
+        user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+            let needObj = this.formateArrToObj(realations);
+            this.setState({
+                dataObj:needObj
+            })
+        })
+    }
+    componentWillReceiveProps(newProps){
+            this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
+            user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+                let needObj = this.formateArrToObj(realations);
+                this.setState({
+                    dataObj:needObj
+                })
+            })
+
+    }
     render() {
+        let Loading = this.Loading;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -180,6 +229,7 @@ class NewFriend extends ContainerComponent {
                     </ListView>
 
                 </ScrollView>
+                <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
             

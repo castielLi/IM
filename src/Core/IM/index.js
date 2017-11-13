@@ -135,6 +135,10 @@ export default class IM {
         this.beginHeartBeat();
         this.beginRunLoop();
 
+        //从后台进前台的时候，如果当前网络为none，程序是已经在执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
+        if(networkStatus != networkStatuesType.none){
+            this.socket.reConnectNet();
+        }
 
     }
 
@@ -157,6 +161,12 @@ export default class IM {
         clearInterval(sendMessageInterval)
         clearInterval(ackMessageInterval)
         clearInterval(recMessageInterval)
+
+        sendMessageInterval = -1;
+        recMessageInterval = -1;
+        ackMessageInterval = -1;
+
+        // currentObj.logout()
     }
 
     setNetEnvironment(connecttionInfo){
@@ -206,7 +216,7 @@ export default class IM {
             let sendQueueLength = SendManager.checkQueueLength();
             let recQueueLength = ReceiveManager.checkQueueLength();
 
-            if(sendQueueLength == 0 && recQueueLength.length == 0){
+            if(sendQueueLength == 0 && recQueueLength == 0){
 
                 emptyCallBack && emptyCallBack();
             }else{
@@ -343,6 +353,10 @@ export default class IM {
                     break;
                 case MessageType.friend:
                     SendManager.addSendMessage(message,callback);
+                    break;
+                case MessageType.video:
+                    FileManager.addResource(message,onprogess,callback)
+                    break;
                 default:
                     SendManager.addSendMessage(message,callback);
                     break;
@@ -403,8 +417,8 @@ export default class IM {
     }
 
     //存储接收消息
-    storeRecMessage(message){
-        storeSqlite.storeRecMessage(message);
+    storeRecMessage(message,callback){
+        storeSqlite.storeRecMessage(message,callback);
     }
 
     //操作好友管理模块,申请好友通过，设置关系显示状态
@@ -431,6 +445,12 @@ export default class IM {
         }
 
     }
+
+    //更改video消息下载完成时的资源路径
+    updateMessageRemoteUrl(messageId,url){
+       storeSqlite.updateMessageRemoteUrl(messageId,url);
+    }
+
 
     //删除数据库中发送队列的message
     popCurrentMessageSqlite(messageId){

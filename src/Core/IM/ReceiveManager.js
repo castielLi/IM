@@ -94,7 +94,10 @@ ReceiveManager.receiveMessageOpreator = function(message){
         message.Command = MessageCommandEnum.MSG_INFO;
         message.type = MessageType.information;
 
-        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+        if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP ||
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER
+            || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER ||
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
@@ -109,9 +112,9 @@ ReceiveManager.receiveMessageOpreator = function(message){
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
-            message.type = MessageType.friend
-            message.way = "private"
-            currentObj.storeRecMessage(message)
+            // message.type = MessageType.friend
+            // message.way = "private"
+            // currentObj.storeRecMessage(message)
             currentObj.updateRelation(message.Data.Data.Sender)
         }
 
@@ -132,11 +135,13 @@ ReceiveManager.receiveMessageOpreator = function(message){
         message.Data.Data.Receiver = sender;
     }
 
-    if(message.type == MessageType.text)
+    if(message.type == MessageType.text || message.type == MessageType.video)
     {
-        currentObj.storeRecMessage(message)
-        //回调App上层发送成功
-        currentObj.ReceiveMessageHandle(message);
+        currentObj.storeRecMessage(message,()=>{
+            //回调App上层发送成功
+            currentObj.ReceiveMessageHandle(message);
+        })
+
     }
     else{
 

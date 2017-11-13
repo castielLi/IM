@@ -10,6 +10,7 @@ import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import ChatCommandEnum from '../dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
 import MessageType from '../dto/MessageType';
+import MessageStatus from '../dto/MessageStatus'
 
 export function storeSendMessage(message){
 
@@ -21,10 +22,11 @@ export function storeSendMessage(message){
     // }
 }
 
-export function storeRecMessage(message){
+export function storeRecMessage(message,callback){
 
     if(message.type != "friend") {
-        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
+        message.status = MessageStatus.SendSuccess;
+        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
     }else{
         IMFMDB.InsertFriendMessage(message);
     }
@@ -66,6 +68,10 @@ export function popMessageInSendSqlite(messageId){
 //获取所有消息列表中的消息记录
 export function getAllCurrentSendMessage(callback){
     return IMFMDB.getAllCurrentSendMessages(callback)
+}
+
+export function updateMessageRemoteUrl(messageId,url){
+    IMFMDB.updateMessageRemoteUrl(messageId,url);
 }
 
 //修改发送队列中的消息状态
@@ -145,7 +151,7 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
 }
 
 //todo：想办法进行批量操作
-IMFMDB.InsertMessageWithCondition = function(message,client){
+IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
@@ -173,7 +179,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
                     updateChat(conetnt,time,client,tx);
 
-                    insertChat(message,tx);
+                    insertChat(message,tx,callback);
 
                     insertChatToSpecialRecode(message,tableName,tx);
 
@@ -205,7 +211,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client){
 
 
 
-                        insertChat(message,tx);
+                        insertChat(message,tx,callback);
 
                         insertChatToSpecialRecode(message,tableName,tx);
 
@@ -608,6 +614,25 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
 
+IMFMDB.updateMessageRemoteUrl = function(messageId,url){
+    let sql = sqls.ExcuteIMSql.UpdateMessageRemoteUrl
+
+    sql = commonMethods.sqlFormat(sql,[url,messageId]);
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("修改video消息url路径成功");
+
+            }, (err)=>{errorDB('修改video消息url',err)});
+        });
+
+    }, (err)=>{errorDB('修改video消息url失败',err)});
+}
+
 IMFMDB.closeImDb = function(){
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -619,29 +644,32 @@ IMFMDB.closeImDb = function(){
 }
 
 //添加消息进总消息表
-function insertChat(message,tx){
+function insertChat(message,tx,callback){
     let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
 
     let localPath = "";
+    let url = "";
     if(message.Resource!= null && message.Resource.length > 0) {
         for (let item in message.Resource) {
-            localPath += message.Resource[item].LocalSource + ",";
+            localPath += message.Resource[item].LocalSource;
+                // + ",";
+            url += message.Resource[item].RemoteSource;
         }
     }else{
-        localPath = " ";
+        localPath = "";
+        url = "";
     }
-    let sourceTime = " ";
+    let sourceTime = "";
     //音频视频才有时间
     if(message.type === 'audio'||message.type === 'video'){
         //默认一条消息只能有一条音频或者视频
         sourceTime = message.Resource[0].Time;
     }
-    let url = " ";
 
     insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
-
+        callback&&callback();
         console.log("insert meesage success");
 
     }, (err)=>{errorDB('向聊天对象插入详细聊天',err)});

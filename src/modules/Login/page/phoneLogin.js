@@ -17,9 +17,10 @@ import * as Actions from '../reducer/action';
 import * as relationActions from '../../Contacts/reducer/action';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
+import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
-
+import * as ApplyFriendAction from '../../../Core/IM/redux/applyFriend/action'
 
 let currentObj = undefined;
 
@@ -111,6 +112,7 @@ class PhoneLogin extends ContainerComponent {
 
                     //存储登录状态
                     AsyncStorage.setItem('account',JSON.stringify(account));
+                    setMyAccoundId(account.accountId);
                     //修改loginStore登录状态
                     currentObj.props.signIn(account);
                     //如果是ios
@@ -119,27 +121,35 @@ class PhoneLogin extends ContainerComponent {
                         let im = new IM();
                         im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                         im.initIMDatabase(account.accountId)
+                        dealCommon();
                         //如果是android
                     }else{
 
 
                         let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
+                        let AccountDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Account.db';
+                        let GroupDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Group.db';
                         //文件夹判断是否是第一次登录
                         RNFS.exists(ImDbPath).then((bool)=>{if(bool){
                             //若不是
                             //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
                             RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                                //初始化im
-                                let im = new IM();
-                                im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-
-                            })
+                                RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
+                                    RNFS.copyFile(GroupDbPath,'/data/data/com.im/databases/Group.db').then(()=>{
+                                        //初始化im
+                                        let im = new IM();
+                                        im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                                        dealCommon();
+									})
+								})
+							});
                             //若是第一次登陆
                         }else{
                             //初始化im
                             let im = new IM();
                             im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             im.initIMDatabase(account.accountId);
+                            dealCommon();
                         }
 
                         })
@@ -152,27 +162,16 @@ class PhoneLogin extends ContainerComponent {
 					let AccountPath = "";
 
                     if(Platform.OS === 'android'){
-                        //删除Account.db
+
                         AccountPath = '/data/data/com.im/databases/Account.db';
                     }else{
 
                         AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
                     }
 
-                    RNFS.exists(AccountPath).then((exist)=>{
-                    	if(exist){
-
-                            RNFS.unlink(AccountPath).then(()=>{
-                                dealCommon();
-                            });
-						}else{
-                            dealCommon();
-                    	}
-                    })
 
 
-
-                   function dealCommon(){
+                    function dealCommon(){
                        //初始化用户系统
                        let user = new User();
                        let im = new IM();
@@ -187,28 +186,39 @@ class PhoneLogin extends ContainerComponent {
                                return;
 						   }
 
-                           im.getAllApplyFriendMessage((result) => {
+                           im.getAllApplyFriendMessage(function(result){
 
                                currentObj.props.initFriendApplication(result);
 
                            })
+
                            //添加名单
-                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],result.data.Data["GroupList"],function(){
+                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
                                user.getAllRelation((data)=>{
-                                   //初始化联系人store
-                                   currentObj.props.initRelation(data);
-                                   currentObj.hideLoading();
                                    user.initGroup(result.data.Data["GroupList"],function(){
-                                       currentObj.route.push(currentObj.props,{
-                                           key:'MainTabbar',
-                                           routeId: 'MainTabbar'
-                                       });
+
+
+                                       user.getAllGroupFromGroup(function(results){
+                                           currentObj.hideLoading();
+
+                                           // let showGroup = [];
+                                           //
+                                           // for(let i = 0;i<results.length;i++){
+                                           	//   if(results[i].show){
+                                           	//   	showGroup.push(results[i]);
+											//   }
+										   // }
+
+                                           data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
+                                           currentObj.props.initRelation(data);
+
+                                           currentObj.route.push(currentObj.props,{
+                                               key:'MainTabbar',
+                                               routeId: 'MainTabbar'
+                                           });
+                                       })
 								   })
-
                                })
-
-
-
                            })
 
                        },{"Account": currentObj.state.phoneText})
@@ -458,6 +468,7 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
+	  ...bindActionCreators(ApplyFriendAction,dispatch)
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

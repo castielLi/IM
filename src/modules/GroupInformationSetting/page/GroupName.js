@@ -86,7 +86,7 @@ class GroupName extends ContainerComponent {
                         break;
                     }
                 }
-                alert('修改成功');
+                currentObj.alert('修改成功');
                 //跳转到群设置
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',

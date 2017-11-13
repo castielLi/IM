@@ -6,6 +6,9 @@
 import  * as methodsFetch from './NetworkFetch'
 import  * as commons from '../Helper/index'
 import RNFS from 'react-native-fs';
+// import RNFetchBlob from 'react-native-fetch-blob'
+//const { fs, fetch, wrap } = RNFetchBlob
+
 
 let __instance = (function () {
   let instance;
@@ -151,6 +154,35 @@ export default class netWorking {
            }
        )
      }
+  }
+
+  methodDownloadWithProgress(requestURL,filePath,callback,onprogress){
+      var request = new XMLHttpRequest();
+      request.open("POST", requestURL, true);
+      //监听进度事件
+      // request.setRequestHeader({'Content-Type' : 'application/octet-stream'})
+      request.addEventListener("progress", function (evt) {
+          if (evt.lengthComputable) {
+              var percentComplete = evt.loaded / evt.total;
+              console.log(percentComplete);
+              onprogress&&onprogress(percentComplete);
+          }
+      }, false);
+
+      // request.responseType = "arraybuffer";
+      request.responseType = "blob";
+      request.onreadystatechange = function () {
+          if (request.readyState === 4 && request.status === 200) {
+              RNFS.writeFile(filePath,request._response,"base64")
+                  .then((success) => {
+                      callback&&callback()
+                  })
+                  .catch((err) => {
+                      console.log(err.message);
+                  });
+          }
+      };
+      request.send();
   }
 
   methodDownload(requestURL,filePath,callback){

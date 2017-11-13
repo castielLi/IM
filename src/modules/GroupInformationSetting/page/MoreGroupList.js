@@ -31,42 +31,67 @@ let currentObj;
 
 class MoreGroupList extends ContainerComponent {
     constructor(){
-        super()
+        super();
+        this.state = {
+
+            searchResult:true,
+
+        }
         this.render = this.render.bind(this);
 
         currentObj = this;
     }
 
+    searchUser = (keyword)=>{
+
+        currentObj.showLoading()
+        this.fetchData("POST","Member/SearchUser",function(result){
+            currentObj.hideLoading()
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
+
+
+            if(result.data.Data){
+
+
+                let relations = currentObj.props.relations;
+                let needRelation = null;
+                let hasRelation = false;
+                for(let item in relations){
+                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+                        hasRelation = !hasRelation;
+                        needRelation = relations[item];
+                        break;
+                    }
+                }
+                if(hasRelation===false){
+                    needRelation = result.data.Data;
+                }
+                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+
+
+            }else{
+                that.setState({
+                    searchResult:false
+                })
+            }
+        },{"Keyword":keyword})
+    }
+
     _renderItem = (item) => {
 
-            return   <TouchableWithoutFeedback onPress={()=>{alert('clientInformation')}}>
+            return   <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
                         <View style={styles.itemBox}>
-                            <Image style={styles.itemImage} source={{uri:item.item.avator}}></Image>
-                            <Text style={styles.itemText}>{item.item.nick}</Text>
+                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
+                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
                         </View>
                     </TouchableWithoutFeedback>
 
     }
     render() {
-        let data = [{nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-            {nick:"111",avator:"https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=3630050586,4001820935&fm=58"},
-
-
-        ]
+        
         let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
@@ -82,8 +107,8 @@ class MoreGroupList extends ContainerComponent {
                     >
                     </TextInput>
                 </View>
-                <View>
-                    <View>
+                <View  style={{flex:1,backgroundColor:'#fff'}}>
+                    <View  style={{flex:1,backgroundColor:'#fff'}}>
                         <FlatList
                             renderItem={this._renderItem}
                             //每行有3列。每列对应一个item
@@ -94,7 +119,7 @@ class MoreGroupList extends ContainerComponent {
                             horizontal={false}
                             keyExtractor={(item,index)=>(index)}
                             style={{backgroundColor:'#fff'}}
-                            data={data}>
+                            data={this.props.memberList}>
                         </FlatList>
                     </View>
                 </View>

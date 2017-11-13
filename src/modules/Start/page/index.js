@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import * as friendApplicationActions from '../../../Core/IM/redux/applyFriend/action'
-
+import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import * as relationActions from '../../Contacts/reducer/action';
@@ -64,10 +64,12 @@ class Start extends ContainerComponent {
                                     ,gender:account.gender,nick:account.nick,avator:account.avator,phone:account.phone
                                     ,device:account.device,deviceId:account.deviceId}
                             ));
+                            setMyAccoundId(account.accountId);
                             let im = new IM();
                             im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
 
                             let user = new User();
+
                             if(Platform.OS === 'ios'){
                                 im.initIMDatabase(account.accountId)
                                 user.initIMDatabase(account.accountId)
@@ -78,15 +80,16 @@ class Start extends ContainerComponent {
                                 currentObj.props.initFriendApplication(result);
 
                                 user.getAllRelation((data)=>{
-                                    //初始化联系人store
-                                    currentObj.props.initRelation(data);
+                                    user.getAllGroupFromGroup(function(results){
+                                        data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
+                                        currentObj.props.initRelation(data);
 
-                                    currentObj.props.signIn(account)
-                                    //切换至最近聊天列表
-                                    currentObj.route.push(currentObj.props,{
-                                        key:'MainTabbar',
-                                        routeId: 'MainTabbar'
-                                    });
+                                        currentObj.props.signIn(account)
+                                        currentObj.route.push(currentObj.props,{
+                                            key:'MainTabbar',
+                                            routeId: 'MainTabbar'
+                                        });
+                                    })
                                 })
 
                             })

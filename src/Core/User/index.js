@@ -41,6 +41,9 @@ export default class User {
     // }
 
 
+    //todo:lizongjun 把所有的用户，包括没有添加为好友的用户全部放到user表中，user表中group和user 分开，单独管理,groupMemberList用来管理群成员
+
+
     //todo:lizongjun 用户管理模块里面包含了所有数据，1 从缓存找 2从数据库找 3请求获取，暴露给外界接口
     //新方法：
 
@@ -53,21 +56,36 @@ export default class User {
                     storeSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                            currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                                 if(success) {
-                                    callback(results)
-                                    cache[type][Id] = relations[0];
+                                    let relation = new RelationModel();
+                                    relation.RelationId = results.Account;
+                                    relation.Nick = results.Nickname;
+                                    relation.Type = 'private';
+                                    relation.show = 'false';
+                                    relation.avator = results.HeadImageUrl == null?"":results.HeadImageUrl;
+                                    cache[type][Id] = relation;
+
+                                    //把这个user添加到数据库里面，将show设置为false 代表这个用户不是好友
+
+                                    currentObj.AddNewRelation(relation,function(){
+                                        callback(relation);
+                                    });
+
                                 }
                             })
                         }else{
-                            callback(relations[0])
+
                             cache[type][Id] = relations[0];
+                            callback(relations[0])
                         }
                     })
 
             }else if(type == 'chatroom'){
                 groupStoreSqlite.getRelation(Id,type,(relations)=>{
                     //如果数据库也没有这条消息
+                    let groupMembers = [];
+                    let groupMembersInfo = [];
                     if(relations.length == 0){
                         this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
                             if(success) {
@@ -78,30 +96,118 @@ export default class User {
                                 relation.Type = 'chatroom';
                                 relation.show = 'false';
                                 relation.avator = results.ProfilePicture == null?"":results.ProfilePicture;
-                                callback(relation)
+                                relation.MemberList = results.MemberList;
 
+
+                                let cacheGroupMembers = [];
+                                for(let i = 0;i<results.MemberList.length;i++){
+                                    let accountId = results.MemberList[i].Account;
+                                    if(cache["private"][accountId] == undefined){
+                                        let model = new RelationModel();
+                                        model.avator = results.MemberList[i].HeadImageUrl;
+                                        model.Nick = results.MemberList[i].Nickname;
+                                        cache["private"][accountId] = model;
+                                        groupMembers.push(model);
+                                        cacheGroupMembers.push(accountId)
+                                    }
+                                }
+
+                                callback(relation,groupMembers)
 
                                 //数据库也没有这条group的记录，那么就需要添加进groupList中
-
+                                //并且添加groupMember表，存储group和user关系
+                                //存储新的群user到account表中
                                 currentObj.AddGroupAndMember(relation,results.MemberList);
-
+                                currentObj.AddGroupMember(results.MemberList)
+                                cache["groupMember"][Id] = cacheGroupMembers;
                                 cache[type][Id] = relations[0];
                             }
                         })
                     }else{
-                        cache[type][Id]
-                        callback(relations[0])
+
                         cache[type][Id] = relations[0];
+
+                        //从数据库中获取成员列表，添加进cache中
+                        currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
+
+                            //代表数据库里面并没有groupMembers的对应关系，需要进行下载
+                            if(results.length == 0){
+
+                                currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                                    if(success) {
+
+                                        let cacheGroupMembers = [];
+                                        for(let i = 0;i<results.MemberList.length;i++){
+                                            let accountId = results.MemberList[i].Account;
+                                            if(cache["private"][accountId] == undefined){
+                                                let model = new RelationModel();
+                                                model.avator = results.MemberList[i].HeadImageUrl;
+                                                model.Nick = results.MemberList[i].Nickname;
+                                                cache["private"][accountId] = model;
+                                                groupMembers.push(model);
+                                                cacheGroupMembers.push(accountId)
+                                            }
+                                        }
+
+                                        callback(relations[0],cacheGroupMembers)
+
+                                        //数据库也没有这条group的记录，那么就需要添加进groupList中
+                                        //并且添加groupMember表，存储group和user关系
+                                        //存储新的群user到account表中
+                                        currentObj.AddGroupAndMember(relations[0],results.MemberList);
+                                        currentObj.AddGroupMember(results.MemberList)
+                                        cache["groupMember"][Id] = cacheGroupMembers;
+                                    }
+                                })
+
+                            }else{
+
+                                for(let i = 0;i<results.length;i++){
+                                    //因为数据库的结构就是relationModel的结构
+                                    cache["private"][results[i].RelationId] = results[i];
+                                    groupMembers.push(results[i].RelationId)
+                                    groupMembersInfo.push(results[i])
+                                }
+                                cache["groupMember"][Id] = groupMembers;
+                                callback(relations[0],groupMembersInfo)
+                            }
+                        });
                     }
                 })
             }
 
         }else{
-            callback(cache[type][Id])
+            //从cache中取出group和groupMember
+            if(type == "chatroom"){
+
+                let groupMembers= [];
+                let list = cache["groupMember"][Id]
+                if(list == undefined || list == 'undefined'){
+                    callback(cache[type][Id],groupMembers);
+                }
+                for(let i = 0;i<list.length;i++){
+                    let target = list[i];
+                    groupMembers.push(cache["private"][target])
+                }
+
+                callback(cache[type][Id],groupMembers);
+            }else{
+                callback(cache[type][Id])
+            }
         }
     }
 
+    //从cache里面取出数据
+    getUserInfoById(accountId){
+       return cache["private"][accountId];
+    }
 
+    //通过id组成的数组从数据库批量查询user信息,返回数组
+    GetRelationsByRelationIds(ids,callback){
+        storeSqlite.GetRelationsByRelationIds(ids,function(results){
+            callback(results);
+        })
+    }
     //初始化数据库
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
@@ -112,6 +218,11 @@ export default class User {
         })
     }
 
+
+
+    //User part:
+
+
     getAllRelation(callback){
         return storeSqlite.GetRelationList(callback)
     }
@@ -120,27 +231,18 @@ export default class User {
 
     }
 
-    //添加Group到GourpList中去
-    AddGroupAndMember(Group,members){
 
-        //添加群到grouplist中
-        groupStoreSqlite.addNewRelation(Group);
-
-        //为group添加groupMember
-        // groupStoreSqlite.initGroupMemberByGroupId("",[])
-
+    //添加group成员到account表中，便于group聊天时显示
+    AddGroupMember(members){
+        storeSqlite.addGroupMember(members)
     }
 
 
-    //通过GroupId获取当前群的member信息
-    GetMembersByGroupId(groupId,callback){
-        groupStoreSqlite.GetMembersByGroupId(groupId,callback);
-    }
 
 
     //初始化好友列表
-    initRelations(friendList,blackList,GroupList,callback){
-        storeSqlite.initRelations(friendList,blackList,GroupList,callback);
+    initRelations(friendList,blackList,callback){
+        storeSqlite.initRelations(friendList,blackList,callback);
     }
 
     //更改好友黑名单设置
@@ -179,10 +281,9 @@ export default class User {
     }
 
     //添加新关系
-    AddNewRelation(Relation){
-        storeSqlite.addNewRelation(Relation)
+    AddNewRelation(Relation,callback){
+        storeSqlite.addNewRelation(Relation,callback)
     }
-
 
     //获取关系设置
     GetRelationSetting(RelationId,callback){
@@ -199,23 +300,51 @@ export default class User {
         storeSqlite.addNewRelationSetting(RelationSetting);
     }
 
-    closeDB(){
-        storeSqlite.closeAccountDb();
-        groupStoreSqlite.closeAccountDb();
+
+
+
+
+
+
+
+
+
+
+    //Group part:
+    //添加一个新的group
+    AddNewGroup(Relation){
+        groupStoreSqlite.addNewRelation(Relation)
+    }
+
+    //添加Group到GourpList中去,添加group与user关系表GroupMember
+    AddGroupAndMember(Group,members){
+
+        //添加群到grouplist中
+        groupStoreSqlite.addNewRelation(Group);
+
+        //为group添加groupMember
+        groupStoreSqlite.initGroupMemberByGroupId(Group.RelationId,members)
+
     }
 
 
-
-    //Group.db
-
-
-    getAllGroupFromGroup(callback){
-        return groupStoreSqlite.GetRelationList(callback)
+    //通过GroupId获取当前群的member信息
+    GetMembersByGroupId(groupId,callback){
+        groupStoreSqlite.GetMembersByGroupId(groupId,callback);
     }
+
+
+    //获取所有的group
+    getAllGroupFromGroup(callback,show=undefined){
+        return groupStoreSqlite.GetRelationList(callback,show)
+    }
+
 
     //添加群进Group
-    AddNewGroupToGroup(Relation){
+    AddNewGroupToGroup(Relation,members){
         groupStoreSqlite.addNewRelation(Relation)
+
+        groupStoreSqlite.initGroupMemberByGroupId(Relation.RelationId,members)
     }
     initGroup(GroupList,callback){
         groupStoreSqlite.initRelations(GroupList,callback);
@@ -228,5 +357,42 @@ export default class User {
     deleteFromGrroup(RelationId){
         groupStoreSqlite.deleteRelation(RelationId)
     }
+
+    //将群移除通讯录
+    RemoveGroupFromContact(groupId){
+        groupStoreSqlite.RemoveGroupFromContact(groupId);
+    }
+
+    GetGroupMemberIdsByGroupId(groupId,callback){
+       groupStoreSqlite.GetMembersByGroupId(groupId,function(results){
+           if(results.length > 0){
+
+               let ids = [];
+
+               for(let i = 0;i<results.length;i++){
+                   ids.push(results[i].RelationId);
+               }
+
+               storeSqlite.GetRelationsByRelationIds(ids,function(results){
+                    callback(results);
+               })
+           }else{
+               callback(results);
+           }
+       })
+    }
+
+
+    closeDB(){
+        storeSqlite.closeAccountDb();
+        groupStoreSqlite.closeAccountDb();
+    }
+
+
+
+    //Group.db
+
+
+
 
 }

@@ -37,14 +37,19 @@
 //     }
 // }
 import InitChatRecordConfig from './InitChatRecordConfig';
-import MessageStatus from '../../dto/MessageStatus'
+import MessageStatus from '../../dto/MessageStatus';
+
 const initialState = {
     ChatRecord: {}
 }
 export default function chatRecordStore(state = initialState, action) {
     switch (action.type) {
         case 'INIT_CHATRECORD':
-            state.ChatRecord[action.client] = action.messageList;
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = [];
+
+            }
+            state.ChatRecord[action.client] = state.ChatRecord[action.client].concat(action.messageList);
             return{
                 ...state,
             }
@@ -58,7 +63,8 @@ export default function chatRecordStore(state = initialState, action) {
         case 'ADD_MESSAGE':
                 //若超过50条，删除最旧的一条消息
                 if(state.ChatRecord[action.client]===undefined){
-                    state.ChatRecord[action.client] = []
+                    state.ChatRecord[action.client] = [];
+
                 }
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
@@ -74,8 +80,9 @@ export default function chatRecordStore(state = initialState, action) {
         case 'RECEIVE_MESSAGE':
             //若超过50条，删除最旧的一条消息
             if(state.ChatRecord[action.client]===undefined){
-                state.ChatRecord[action.client] = []
+                state.ChatRecord[action.client] = [];
             }
+
                 if(state.ChatRecord[action.client].length>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                     state.ChatRecord[action.client].pop();
                 }
@@ -117,6 +124,21 @@ export default function chatRecordStore(state = initialState, action) {
                     ...state
                 };
 
+        case 'UPDATE_MESSAGES_PATH':
+            if(state.ChatRecord[action.sender]===undefined){
+                state.ChatRecord[action.sender] = []
+            }
+            state.ChatRecord[action.sender].forEach(function(itemArr,index,arr) {
+                if(itemArr.message.MSGID === action.MSGID){
+                    itemArr.message.Resource[0].LocalSource = action.path;
+                }
+            });
+            //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
+            state.ChatRecord[action.sender] = state.ChatRecord[action.sender].concat([]);
+            return {
+                ...state
+            };
+
         case 'HANDLE_CHATRECORD':
             let ChatRecord = state.ChatRecord[action.client];
             let length = InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER;
@@ -127,7 +149,15 @@ export default function chatRecordStore(state = initialState, action) {
                 }
             }
             return state;
+        case 'CLEAR_CHATRECORD_FROM_ID':
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = [];
 
+            }
+            state.ChatRecord[action.client] = [];
+            return{
+                ...state,
+            }
         //注销清空store
         case 'CLEAR_CHATRECORD':
             return {

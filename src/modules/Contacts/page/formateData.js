@@ -46,7 +46,7 @@ export function initSection(arr=[]){
 export function initFlatListData(type,arr=[]){
     let needArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&v.show === 'true'){
+        if(v.Type === type&&(v.show === true || v.show === 'true')){
             needArr.push(v)
         }
     })

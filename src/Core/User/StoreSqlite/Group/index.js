@@ -28,8 +28,8 @@ export function initIMDatabase(AccountId,callback){
 }
 
 //获取所有群
-export function GetRelationList(callback){
-    GROUPFMDB.GetRelationList(callback);
+export function GetRelationList(callback,show){
+    GROUPFMDB.GetRelationList(callback,show);
 }
 //获取指定群
 export function getRelation(Id,type,callback){
@@ -46,9 +46,19 @@ export function initGroupMemberByGroupId(GroupId,members){
     GROUPFMDB.InitGroupMemberByGroupId(GroupId,members);
 }
 
-//通过groupId获取Members
+//将群聊从通讯录中移除
+export function RemoveGroupFromContact(groupId){
+  GROUPFMDB.RemoveContact(groupId)
+}
+
+//根据groupId获取群组的成员列表
 export function GetMembersByGroupId(groupId,callback){
-    GROUPFMDB.GetMembersByGroupId(groupId,callback);
+    GROUPFMDB.GetMembersByGroupId(groupId,callback)
+}
+
+//通过GroupID查看是否存在该表
+export function FindGroupTable(groupId,callback){
+    GROUPFMDB.FindGroupTable(groupId,callback)
 }
 
 
@@ -117,7 +127,7 @@ GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
 
         let member = members[i];
 
-        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.RelationId,member.Nick,member.avator,member.LocalImage]);
+        insertSql = commonMethods.sqlFormat(insertSql,[GroupId,member.Account]);
 
         insertSqls.push(insertSql);
     }
@@ -149,7 +159,7 @@ GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
 
 //通过GroupI获取members
 GROUPFMDB.GetMembersByGroupId = function(groupId,callback){
-    let selectSql = sql.ExcuteIMSql.GetGroupMembersByGroupId;
+    let selectSql = sqls.ExcuteIMSql.GetGroupMembersByGroupId;
 
     selectSql = commonMethods.sqlFormat(selectSql,[groupId]);
 
@@ -161,9 +171,35 @@ GROUPFMDB.GetMembersByGroupId = function(groupId,callback){
 
             tx.executeSql(selectSql, [], (tx, results) => {
 
-                callback(results.row.raw())
+                // console.log(results);
+
+                callback(results.rows.raw())
 
             }, (err)=>{errorDB('通过groupId获取成员',err)});
+
+        }, errorDB);
+    }, errorDB);
+}
+
+//通过GroupID查看是否存在该表
+GROUPFMDB.FindGroupTable = function(groupId,callback){
+    let selectSql = sqls.ExcuteIMSql.FindGroupTable;
+
+    selectSql = commonMethods.sqlFormat(selectSql,[groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(selectSql, [], (tx, results) => {
+
+                console.log(results);
+
+                callback(results.rows.raw())
+
+            }, (err)=>{errorDB('通过GroupID查看是否存在该表',err)});
 
         }, errorDB);
     }, errorDB);
@@ -217,9 +253,8 @@ GROUPFMDB.GetRelationByIdAndType = function(Id,type,callback){
 }
 
 
-
 //获取好友列表
-GROUPFMDB.GetRelationList = function(callback){
+GROUPFMDB.GetRelationList = function(callback,show){
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -227,7 +262,9 @@ GROUPFMDB.GetRelationList = function(callback){
 
         db.transaction((tx) => {
 
-            tx.executeSql(sqls.ExcuteIMSql.GetAllRelation, [], (tx, results) => {
+            let sql = show == undefined? sqls.ExcuteIMSql.GetAllRelation:sqls.ExcuteIMSql.GetAllShowRelation;
+
+            tx.executeSql(sql, [], (tx, results) => {
 
                 callback(results.rows.raw());
 
@@ -253,11 +290,11 @@ GROUPFMDB.InitRelations = function(GroupList,callback){
         let group = GroupList[item];
 
         group.Name = group.Name == null?"未命名":group.Name;
-        group.Description = group.Description == null?" ":group.Description;
-        group.ProfilePicture = group.ProfilePicture == null?" ":group.ProfilePicture;
+        group.Description = group.Description == null?"":group.Description;
+        group.ProfilePicture = group.ProfilePicture == null?"":group.ProfilePicture;
 
-        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name," ",false,"chatroom",group.ProfilePicture," ",group.Owner,true]);
-        relationsSqls.push(sql);
+        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name,"",false,"chatroom",group.ProfilePicture,"",group.Owner,true]);
+        relationsSqls.push({"sql":sql,"Id":group.GroupId});
     }
 
 
@@ -268,10 +305,30 @@ GROUPFMDB.InitRelations = function(GroupList,callback){
         db.transaction((tx) => {
 
             for(let item in relationsSqls){
-                let executeSql = relationsSqls[item];
+                let executeSql = relationsSqls[item].sql;
                 tx.executeSql(executeSql, [], (tx, results) => {
 
                    console.log("添加关系成功")
+
+                    let querySql = sqls.ExcuteIMSql.FindGroupTable;
+
+                    querySql = commonMethods.sqlFormat(querySql,[relationsSqls[item].Id])
+
+                    tx.executeSql(executeSql, [], (tx, results) => {
+
+                        if(results.rows.length == 0){
+                            let insertSql = sqls.ExcuteIMSql.CreateGroupMemberTable;
+
+                            insertSql = commonMethods.sqlFormat(insertSql,[relationsSqls[item].Id])
+
+                            tx.executeSql(insertSql, [], (tx, results) => {
+
+                                console.log("add group member table success")
+
+                            }, (err)=>{errorDB('add group member table',err)});
+                        }
+
+                    }, (err)=>{errorDB('query if group member table is not exist',err)});
 
                 }, (err)=>{errorDB('初始化关系表内容',err)});
             }
@@ -288,7 +345,7 @@ GROUPFMDB.AddNewRelation = function(Relation){
 
     let sql = sqls.ExcuteIMSql.AddtRelations;
 
-    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show,Relation.RelationId]);
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -310,7 +367,31 @@ GROUPFMDB.AddNewRelation = function(Relation){
     }, errorDB);
 }
 
+//将群聊从通讯录中移除
+GROUPFMDB.RemoveContact = function(groupId){
+    let sql = sqls.ExcuteIMSql.RemoveGroupFromContact;
 
+    sql = commonMethods.sqlFormat(sql,[groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("移除群聊成功")
+
+            }, errorDB);
+
+
+            // callback();
+
+        }, errorDB);
+    }, errorDB);
+}
 
 
 //删除关系

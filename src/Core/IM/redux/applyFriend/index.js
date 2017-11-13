@@ -27,7 +27,7 @@ export default function friendApplicationStore(state = initialState,action){
             }
             state.applicationRecord.push(action.message);
             return {
-                ...state,
+                applicationRecord:state.applicationRecord.concat([])
             };
 
 

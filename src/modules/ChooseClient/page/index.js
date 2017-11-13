@@ -22,6 +22,8 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../Contacts/reducer/action';
 import * as Actions from '../../../Core/IM/redux/chat/action';
+import RNFS from 'react-native-fs';
+
 import User from '../../../Core/User';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
@@ -157,11 +159,11 @@ class ChooseClient extends ContainerComponent {
 
     _renderAvator= (Obj)=>{
         if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === ' ')&&!Obj.avator){
+            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
                 return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
 
             }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!==' ')?Obj.LocalImage:Obj.avator}}></Image>
+            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
 
         }else{
             return null
@@ -228,6 +230,7 @@ class ChooseClient extends ContainerComponent {
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
 		let nicks = "";
+		let members = [];
 		//拼接选中用户id
 		for(let item in chooseArr){
 			accounts+= chooseArr[item].RelationId+",";
@@ -237,6 +240,8 @@ class ChooseClient extends ContainerComponent {
 			}else{
 				nicks += chooseArr[item].Nick;
 			}
+
+			members.push({"Account":chooseArr[item].RelationId})
 		}
 		accounts += currentObj.props.accountId;
 
@@ -254,13 +259,30 @@ class ChooseClient extends ContainerComponent {
 
                     //向添加的用户发送邀请消息
 					let messageId = uuidv1();
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text,messageId);
+                    let text = nicks;
+                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
                     im.storeSendMessage(sendMessage);
 
                     //更新redux message
                     let copyMessage = Object.assign({},sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
                     currentObj.props.addMessage(reduxMessage);
+                    //路由跳转
+                    let routes = currentObj.props.navigator.getCurrentRoutes();
+                    let index;
+                    for (let i = 0; i < routes.length; i++) {
+                        if (routes[i]["key"] == "GroupInformationSetting") {
+                            index = i;
+                            break;
+                        }
+                    }
+                    alert('添加成功');
+                    //跳转到群设置
+                    currentObj.route.replaceAtIndex(currentObj.props,{
+                        key:'GroupInformationSetting',
+                        routeId: 'GroupInformationSetting',
+                        params:{"groupId":currentObj.props.groupId}
+                    },index)
 
                 } else {
                     alert(result.errorMessage);
@@ -272,7 +294,7 @@ class ChooseClient extends ContainerComponent {
         else{
 
         	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0],type:'private'}});
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private'}});
                 return;
 			}
 
@@ -296,8 +318,7 @@ class ChooseClient extends ContainerComponent {
                     relation.show = 'false';
 
                     //添加关系到数据库
-					user.AddNewRelation(relation);
-                    user.AddNewGroupToGroup(relation);
+                    user.AddNewGroupToGroup(relation,members);
                     //todo 添加群聊关系到redux
                     currentObj.props.addRelation(relation);
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
@@ -314,8 +335,11 @@ class ChooseClient extends ContainerComponent {
 					let copyMessage = Object.assign({},sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
 					currentObj.props.addMessage(reduxMessage);
-
-
+					//创建文件夹
+                    let audioPath = RNFS.DocumentDirectoryPath + '/' +currentObj.props.accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
+                    let imagePath = RNFS.DocumentDirectoryPath + '/' +currentObj.props.accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
+                    RNFS.mkdir(audioPath)
+                    RNFS.mkdir(imagePath)
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
 
                 }else{

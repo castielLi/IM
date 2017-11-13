@@ -331,7 +331,7 @@ class ThouchBarBoxTopBox extends Component {
     if (this.state.recordingModalStatus === 0) {
       return <View style={styles.recordingModalItem}>
                 <Icon name="microphone" size={80} color="#eee" />
-                <Text style={styles.recordingModalText}>手指上滑，取消发送</Text>
+                <Text style={styles.recordingModalText} onPress={()=>{alert('程序没有卡')}}>手指上滑，取消发送</Text>
              </View>
     } else if (this.state.recordingModalStatus === 1) {
       return <View style={styles.recordingModalItem}>

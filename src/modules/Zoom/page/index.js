@@ -30,14 +30,17 @@ var originData = [
 			'key':'1',
 			'data': [{
 					'name': "圈子",
+					'icon':'zoom'
 				}]
 			},
 			{
 			'key':'2',
 			'data': [{
 					'name': "扫一扫",
+                	'icon':'sao'
 				}, {
 					'name': "摇一摇",
+                	'icon':'yao'
 				}]
 			},
 			{
@@ -63,10 +66,10 @@ let styles = StyleSheet.create({
         backgroundColor: "#f2f2f2"
     },
     sction:{
-        height:30
+        height:20
     },
     itemBox:{
-        height:50,
+        height:40,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
@@ -74,19 +77,19 @@ let styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     itemLeftBox:{
-        height:40,
+        height:30,
         flexDirection:'row',
         alignItems:'center',
 
     },
     pic:{
-        width:30,
-        height:30,
+        width:25,
+        height:25,
         resizeMode:'stretch',
         marginRight:15
     },
     itemText:{
-        fontSize:20,
+        fontSize:15,
         color:'#000',
         textAlignVertical:'center'
     },
@@ -95,7 +98,7 @@ let styles = StyleSheet.create({
         backgroundColor: '#eee',
     },
     arrow:{
-        fontSize:20,
+        fontSize:15,
         color:'#aaa'
     },
 });
@@ -116,11 +119,26 @@ class Zoom extends ContainerComponent {
 	changeShowFeature=(newState)=>{
 		this.setState({showFeatures:newState});
 	}
+    chooseImage = (name)=>{
+		if(name == '圈子'){
+			return	<Image source={require('../resource/zoom.png')} style={styles.pic} ></Image>
+        }else if(name == '扫一扫'){
+            return	<Image source={require('../resource/sao.png')} style={styles.pic} ></Image>
+        }else if(name == '摇一摇'){
+            return	<Image source={require('../resource/yao.png')} style={styles.pic} ></Image>
+        }else if(name == '附近的人'){
+            return	<Image source={require('../resource/place.png')} style={styles.pic} ></Image>
+        }else if(name == '购物'){
+            return	<Image source={require('../resource/shop.png')} style={styles.pic} ></Image>
+        }else if(name == '游戏'){
+            return	<Image source={require('../resource/game.png')} style={styles.pic} ></Image>
+        }
+	}
 	_renderItem = (info)=>{
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
 					<View style={styles.itemBox}>
 						<View  style={styles.itemLeftBox} >
-							<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
+							{this.chooseImage(info.item.name)}
 							<Text style={styles.itemText}>{info.item.name}</Text>
 						</View>
 						{/*<Text style={styles.arrow}>{'>'}</Text>*/}

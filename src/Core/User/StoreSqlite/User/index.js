@@ -34,8 +34,8 @@ export function getRelation(Id,type,callback){
 }
 
 //初始化好友列表
-export function initRelations(friendList,blackList,GroupList,callback){
-    USERFMDB.InitRelations(friendList,blackList,GroupList,callback)
+export function initRelations(friendList,blackList,callback){
+    USERFMDB.InitRelations(friendList,blackList,callback)
 }
 
 //更改好友黑名单设置
@@ -69,10 +69,15 @@ export function updateRelationDisplayStatus(relationId,bool){
    USERFMDB.UpdateRelationDisplayStatus(relationId,bool);
 }
 
+//通过ids获取relations
+export function GetRelationsByRelationIds(relationIds,callback){
+    USERFMDB.GetRelationsByRelationIds(relationIds,callback);
+}
+
 
 //添加新的关系
-export function addNewRelation(Relation){
-    USERFMDB.AddNewRelation(Relation)
+export function addNewRelation(Relation,callback){
+    USERFMDB.AddNewRelation(Relation,callback)
 }
 
 //添加新的关系设置
@@ -89,6 +94,13 @@ export function updateRelationSetting(RelationSetting){
 export function getRelationSetting(RelationId,callback){
     USERFMDB.GetRelationSetting(RelationId,callback);
 }
+
+
+//添加group成员
+export function addGroupMember(members){
+    USERFMDB.AddGroupMember(members);
+}
+
 
 export function closeAccountDb(){
     USERFMDB.closeAccountDb()
@@ -159,7 +171,54 @@ USERFMDB.GetRelationByIdAndType = function(Id,type,callback){
     }, errorDB);
 }
 
+//通过ids获取relations
+USERFMDB.GetRelationsByRelationIds = function(relationIds,callback){
+    let sql = sqls.ExcuteIMSql.GetRelationsByIds;
 
+    sql = commonMethods.sqlQueueFormat(sql,relationIds);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+                tx.executeSql(sql, [], (tx, results) => {
+                    callback(results.rows.raw())
+
+                }, errorDB);
+        }, errorDB);
+    }, errorDB);
+}
+
+
+//添加group成员
+USERFMDB.AddGroupMember = function(memebers){
+
+    let insertSqls = [];
+    for(let i = 0; i<memebers.length;i++){
+        let insertSql = sqls.ExcuteIMSql.AddMembers;
+
+        let member = memebers[i];
+        insertSql = commonMethods.sqlFormat(insertSql,[member.Account,'',member.Nickname,'',false,'private',member.HeadImageUrl,'','',false])
+        insertSqls.push(insertSql);
+    }
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            for(let i = 0;i<insertSqls.length;i++) {
+                tx.executeSql(insertSqls[i], [], (tx, results) => {
+
+                    console.log("添加关系成功")
+
+                }, errorDB);
+            }
+        }, errorDB);
+    }, errorDB);
+}
 
 //获取好友列表
 USERFMDB.GetRelationList = function(callback){
@@ -181,7 +240,7 @@ USERFMDB.GetRelationList = function(callback){
 }
 
 //初始化好友列表
-USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
+USERFMDB.InitRelations = function(friendList,blackList,callback){
 
     let relationsSqls = [];
 
@@ -205,7 +264,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
         if(exist){
             continue;
         }
-        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",false,"private",friend.HeadImageUrl,friend.Email," ",true]);
+        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname,"",false,"private",friend.HeadImageUrl,friend.Email,"",true]);
         relationsSqls.push(sql);
     }
 
@@ -215,21 +274,7 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 
         let friend = blackList[item];
 
-        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname," ",true,"private",friend.HeadImageUrl,friend.Email," ",true]);
-        relationsSqls.push(sql);
-    }
-
-    for(let item in GroupList){
-
-        let sql = sqls.ExcuteIMSql.InitRelations;
-
-        let group = GroupList[item];
-
-        group.Name = group.Name == null?"未命名":group.Name;
-        group.Description = group.Description == null?" ":group.Description;
-        group.ProfilePicture = group.ProfilePicture == null?" ":group.ProfilePicture;
-
-        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name," ",false,"chatroom",group.ProfilePicture," ",group.Owner,true]);
+        sql = commonMethods.sqlFormat(sql,[friend.Account,friend.Gender,friend.Nickname,"",true,"private",friend.HeadImageUrl,friend.Email,"",true]);
         relationsSqls.push(sql);
     }
 
@@ -256,12 +301,12 @@ USERFMDB.InitRelations = function(friendList,blackList,GroupList,callback){
 }
 
 //添加新关系
-USERFMDB.AddNewRelation = function(Relation){
+USERFMDB.AddNewRelation = function(Relation,callback){
     //todo 检查数据表中是否已经存在，存在才添加
 
     let sql = sqls.ExcuteIMSql.AddtRelations;
 
-    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show,Relation.RelationId]);
+    sql = commonMethods.sqlFormat(sql,[Relation.RelationId,Relation.OtherComment,Relation.Nick,Relation.Remark,Relation.BlackList,Relation.Type,Relation.avator,Relation.Email,Relation.owner,Relation.show]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -271,7 +316,7 @@ USERFMDB.AddNewRelation = function(Relation){
 
 
                 tx.executeSql(sql, [], (tx, results) => {
-
+                    callback&&callback();
                     console.log("添加关系成功")
 
                 }, errorDB);

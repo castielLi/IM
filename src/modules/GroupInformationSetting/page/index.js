@@ -48,6 +48,7 @@ class GroupInformationSetting extends ContainerComponent {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
             isSave:false,
+            searchResult:true,
             members:[],
             realMemberList:[],
             groupInformation:{}
@@ -68,27 +69,46 @@ class GroupInformationSetting extends ContainerComponent {
     addToContacts = ()=>{
         let Save = !this.state.isSave;
         let info = this.state.groupInformation;
+        currentObj.showLoading();
         if(Save){
             this.fetchData('POST','Member/AddGroupToContact',function (result) {
+                currentObj.hideLoading();
                 if(result.success && result.data.Result){
-                    alert('添加通讯录成功')
-                    user.updateDisplayOfRelation(info.ID,'true');
+                    // alert('添加通讯录成功')
+                    let obj = {
+                        RelationId:info.ID,
+                        OtherComment:info.Description,
+                        Nick:info.Name,
+                        BlackList:false,
+                        Type:'chatroom',
+                        avator:info.ProfilePicture==null?"":info.ProfilePicture,
+                        owner:info.Owner,
+                        show:true}
+                    user.AddNewGroup(obj);
+                    // currentObj.props.addRelation(obj);
                     currentObj.props.changeRelationOfShow(info.ID);
+                    currentObj.setState({
+                        isSave:Save
+                    })
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }
         else{
             this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
+                currentObj.hideLoading();
                 if(result.success && result.data.Result){
-                    alert('移除通讯录成功')
-                    user.updateDisplayOfRelation(info.ID,'false');
+                    // alert('移除通讯录成功')
+                    info.show = false;
+                    user.RemoveGroupFromContact(info.ID);
+                    //currentObj.props.deleteRelation(info.ID);
                     currentObj.props.changeRelationOfShow(info.ID);
+
+                    currentObj.setState({
+                        isSave:Save
+                    })
                 }
             },{"Account":this.props.accountId,"GroupId":this.props.groupId})
         }
-        this.setState({
-            isSave:!this.state.isSave
-        })
     }
 
 
@@ -116,10 +136,18 @@ class GroupInformationSetting extends ContainerComponent {
                 }else{
                     members = Data.MemberList.concat()
                 }
+                let save = false;
+                let relations = currentObj.props.relations;
+                for(let i=0;i<relations.length;i++){
+                    if(relations[i].RelationId === groupInformation.ID && relations[i].show === 'true' ){
+                        save = true;
+                    }
+                }
                 currentObj.setState({
                     members:members.concat([{},{}]),
                     realMemberList:Data.MemberList,
-                    groupInformation
+                    groupInformation,
+                    isSave:save
                 })
             }
 
@@ -143,17 +171,23 @@ class GroupInformationSetting extends ContainerComponent {
                     //todo:添加删除group的redux
                     currentObj.props.deleteRelation(groupId);
                     //清空chatRecordStore中对应记录
-                    currentObj.props.initChatRecord(groupId,[])
+                    currentObj.props.clearChatRecordFromId(groupId)
                     //删除ChatRecode表中记录
                     im.deleteChatRecode(groupId);
                     //删除该与client的所以聊天记录
                     im.deleteCurrentChatMessage(groupId,'chatroom');
-                    //如果该client在最近聊天中有记录
-                    currentObj.props.deleteRecentItemFromId(groupId)
                     //删除account数据库中数据
-                    user.deleteRelation(client);
                     user.deleteFromGrroup(groupId);
+                    currentObj.props.recentListStore.data.forEach((v,i)=>{
+                        if(v.Client === groupId){
+                            //清空recentListStore中对应记录
+                            currentObj.props.deleteRecentItem(i);
+                            //如果该row上有未读消息，减少unReadMessageStore记录
+                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+                        }
+                    })
                     currentObj.route.toMain(currentObj.props);
+
 
                 }else{
                     alert("http请求出错")
@@ -169,7 +203,7 @@ class GroupInformationSetting extends ContainerComponent {
     }
 
     _footer = () => {
-        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{}})}}>
+        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{memberList:this.state.realMemberList}})}}>
                     <View style={styles.listFooter}>
                         <Text style={styles.listFooterText}>查看更多群成员</Text>
                         <Icon name="angle-right" size={20} color="#aaa" />
@@ -178,6 +212,44 @@ class GroupInformationSetting extends ContainerComponent {
 
     }
 
+
+    searchUser = (keyword)=>{
+
+        currentObj.showLoading()
+        this.fetchData("POST","Member/SearchUser",function(result){
+            currentObj.hideLoading()
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
+
+
+            if(result.data.Data){
+
+
+                let relations = currentObj.props.relations;
+                let needRelation = null;
+                let hasRelation = false;
+                for(let item in relations){
+                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+                        hasRelation = !hasRelation;
+                        needRelation = relations[item];
+                        break;
+                    }
+                }
+                if(hasRelation===false){
+                    needRelation = result.data.Data;
+                }
+                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+
+
+            }else{
+                that.setState({
+                    searchResult:false
+                })
+            }
+        },{"Keyword":keyword})
+    }
 
     goToChooseClient = ()=>{
         let members = this.state.members.map((item,index)=>{
@@ -218,7 +290,7 @@ class GroupInformationSetting extends ContainerComponent {
         }
         else{
 
-                return <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
+                return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
                             <View style={styles.itemBox}>
                                 {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
                                 <Text style={styles.itemText}>{item.item.Nickname}</Text>
