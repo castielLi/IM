@@ -149,7 +149,15 @@ export default function chatRecordStore(state = initialState, action) {
                 }
             }
             return state;
+        case 'CLEAR_CHATRECORD_FROM_ID':
+            if(state.ChatRecord[action.client]===undefined){
+                state.ChatRecord[action.client] = [];
 
+            }
+            state.ChatRecord[action.client] = [];
+            return{
+                ...state,
+            }
         //注销清空store
         case 'CLEAR_CHATRECORD':
             return {
