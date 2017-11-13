@@ -171,15 +171,21 @@ class GroupInformationSetting extends ContainerComponent {
                     //todo:添加删除group的redux
                     currentObj.props.deleteRelation(groupId);
                     //清空chatRecordStore中对应记录
-                    currentObj.props.initChatRecord(groupId,[])
+                    currentObj.props.clearChatRecordFromId(groupId)
                     //删除ChatRecode表中记录
                     im.deleteChatRecode(groupId);
                     //删除该与client的所以聊天记录
                     im.deleteCurrentChatMessage(groupId,'chatroom');
-                    //如果该client在最近聊天中有记录
-                    currentObj.props.deleteRecentItemFromId(groupId)
                     //删除account数据库中数据
                     user.deleteFromGrroup(groupId);
+                    currentObj.props.recentListStore.data.forEach((v,i)=>{
+                        if(v.Client === groupId){
+                            //清空recentListStore中对应记录
+                            currentObj.props.deleteRecentItem(i);
+                            //如果该row上有未读消息，减少unReadMessageStore记录
+                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+                        }
+                    })
                     currentObj.route.toMain(currentObj.props);
 
 

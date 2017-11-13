@@ -21,6 +21,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../../Core/User/redux/action';
+import * as relationActions from '../../Contacts/reducer/action';
+import * as chatRecordActions from '../../../Core/IM/redux/chat/action';
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import User from '../../../Core/User';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
@@ -139,9 +142,26 @@ class DeleteGroupMember extends ContainerComponent {
                 //如果删得只剩一个人，销毁群
                 if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
                     //删除最近聊天redux对应id
-                    currentObj.props.deleteRecentItemFromId(ID);
-                    currentObj.route.toMain(currentObj.props);
+                    currentObj.props.deleteRelation(ID);
+                    //清空chatRecordStore中对应记录
+                    currentObj.props.clearChatRecordFromId(ID)
+                    //删除ChatRecode表中记录
+                    im.deleteChatRecode(ID);
+                    //删除该与client的所以聊天记录
+                    im.deleteCurrentChatMessage(ID,'chatroom');
+                    //删除account数据库中数据
+                    user.deleteFromGrroup(ID);
+                    currentObj.props.recentListStore.data.forEach((v,i)=>{
+                        if(v.Client === ID){
+                            //清空recentListStore中对应记录
+                            currentObj.props.deleteRecentItem(i);
+                            //如果该row上有未读消息，减少unReadMessageStore记录
+                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+                        }
+                    })
                     currentObj.alert('群解散了');
+                    currentObj.route.toMain(currentObj.props);
+
                     return;
                 }
 
@@ -178,7 +198,7 @@ class DeleteGroupMember extends ContainerComponent {
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
                     heading={title}
-                    right={{func:()=>{this.confirm('确定要删除成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
+                    right={{func:()=>{this.confirm(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1?'确定要解散该群吗？':'确定要删除指定成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
                 />
                 <View style={styles.listHeaderBox}>
                     <TextInput
@@ -318,6 +338,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
+    recentListStore:state.recentListStore,
     relationStore: state.relationStore,
     accountName:state.loginStore.accountMessage.nick,
     accountId:state.loginStore.accountMessage.accountId,
@@ -326,6 +347,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
     return{
         ...bindActionCreators(recentListActions,dispatch),
+        ...bindActionCreators(relationActions, dispatch),
+        ...bindActionCreators(chatRecordActions, dispatch),
+        ...bindActionCreators(unReadMessageActions, dispatch),
     }};
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeleteGroupMember);

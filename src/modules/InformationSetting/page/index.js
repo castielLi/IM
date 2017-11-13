@@ -160,13 +160,11 @@ class InformationSetting extends ContainerComponent {
                       //todo： 添加更改rudex 好友列表和消息列表
                       currentObj.props.deleteRelation(client);
                       //清空chatRecordStore中对应记录
-                      currentObj.props.initChatRecord(client,[])
+                      currentObj.props.clearChatRecordFromId(client)
                       //删除ChatRecode表中记录
                       im.deleteChatRecode(client);
                       //删除该与client的所以聊天记录
                       im.deleteCurrentChatMessage(client,'private');
-                      //如果该client在最近聊天中有记录
-                      currentObj.props.deleteRecentItemFromId(client);
                       //删除account数据库
                       user.deleteRelation(client);
 

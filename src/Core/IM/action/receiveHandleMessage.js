@@ -15,7 +15,12 @@ import MessageType from '../../IM/dto/MessageType'
 
 let user = new User();
 let store = Store;
+let myAccountId = '';
 let im = new IM();
+
+export function setMyAccoundId(id){
+    myAccountId = id;
+}
 export function handleRecieveMessage(message){
     //如果是通知消息
     if(message.Command == MessageCommandEnum.MSG_INFO){
@@ -54,9 +59,13 @@ export function handleRecieveMessage(message){
 
                 }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
 
-                    let nick = user.getUserInfoById(message.Data.Data.Data).Nick
-
-                    let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                    let nick = user.getUserInfoById(message.Data.Data.Data).Nick;
+                    let inviter = '';
+                    if(message.Data.Data.Receiver == myAccountId){
+                        inviter = myAccountId;
+                    }else{
+                        inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;;
+                    }
 
                     message.Data.Data.Data =  nick + "被踢"+ inviter+"出了群聊";
 
