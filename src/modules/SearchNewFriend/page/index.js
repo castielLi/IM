@@ -37,9 +37,7 @@ class SearchNewFriend extends ContainerComponent {
 
     }
 
-    viewUserInfo = (Relation,isFriend)=>{
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{Relation,isFriend}});
-    }
+
 
     searchUser = (keyword)=>{
 
