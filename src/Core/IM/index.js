@@ -161,6 +161,11 @@ export default class IM {
         clearInterval(sendMessageInterval)
         clearInterval(ackMessageInterval)
         clearInterval(recMessageInterval)
+
+        sendMessageInterval = -1;
+        recMessageInterval = -1;
+        ackMessageInterval = -1;
+
         // currentObj.logout()
     }
 
