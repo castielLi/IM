@@ -165,8 +165,6 @@ class InformationSetting extends ContainerComponent {
                       im.deleteChatRecode(client);
                       //删除该与client的所以聊天记录
                       im.deleteCurrentChatMessage(client,'private');
-                      //如果该client在最近聊天中有记录
-                      currentObj.props.deleteRecentItemFromId(client);
                       //删除account数据库
                       user.deleteRelation(client);
 
