@@ -15,7 +15,7 @@ import {
   connect
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as commonActions from '../../../Core/IM/redux/chat/action';
+import * as commonActions from '../../../Core/Redux/chat/action';
 import * as recentListActions from '../../../Core/User/redux/action';
 import * as chatDetailActions from '../reducer/action';
 import RNFS from 'react-native-fs';
