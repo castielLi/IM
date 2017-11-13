@@ -45,7 +45,7 @@ export function signOut(){
         dispatch(clearFriendApplication())
         dispatch(clearRecentList());
         dispatch(clearAllTabberMessageNumber());
-
+        dispatch(changeTabBar(0));
         closeImDb();
         user.closeDB();
         im.logout();

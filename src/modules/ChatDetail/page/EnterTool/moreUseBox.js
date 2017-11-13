@@ -24,7 +24,7 @@ import {createResourceMessageObj} from './createMessageObj';
 import IM from '../../../../Core/IM/index';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
-
+import CameraConfig from './cameraConfig';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 const im = new IM();
@@ -32,10 +32,13 @@ var ImagePicker = require('react-native-image-picker');
 var {height, width} = Dimensions.get('window');
   
 var options = {
-  allowsEditing:true,//允许编辑image
-  storageOptions: {
-    skipBackup: true,
-    path: 'images'//存放位置
+    allowsEditing:true,//允许编辑image
+    quality:CameraConfig.PHOTO_QUALITY,
+    maxWidth:CameraConfig.PHOTO_MAX_WIDTH,
+    maxHeight:CameraConfig.PHOTO_MAX_HEIGHT,
+    storageOptions: {
+        skipBackup: true,
+        path: 'images'//存放位置
   }
 }
 let videoOptions = {
