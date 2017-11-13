@@ -48,6 +48,7 @@ class GroupInformationSetting extends ContainerComponent {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
             isSave:false,
+            searchResult:true,
             members:[],
             realMemberList:[],
             groupInformation:{}
@@ -196,7 +197,7 @@ class GroupInformationSetting extends ContainerComponent {
     }
 
     _footer = () => {
-        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{}})}}>
+        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{memberList:this.state.realMemberList}})}}>
                     <View style={styles.listFooter}>
                         <Text style={styles.listFooterText}>查看更多群成员</Text>
                         <Icon name="angle-right" size={20} color="#aaa" />
@@ -205,6 +206,44 @@ class GroupInformationSetting extends ContainerComponent {
 
     }
 
+
+    searchUser = (keyword)=>{
+
+        currentObj.showLoading()
+        this.fetchData("POST","Member/SearchUser",function(result){
+            currentObj.hideLoading()
+            if(!result.success){
+                alert(result.errorMessage);
+                return;
+            }
+
+
+            if(result.data.Data){
+
+
+                let relations = currentObj.props.relations;
+                let needRelation = null;
+                let hasRelation = false;
+                for(let item in relations){
+                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+                        hasRelation = !hasRelation;
+                        needRelation = relations[item];
+                        break;
+                    }
+                }
+                if(hasRelation===false){
+                    needRelation = result.data.Data;
+                }
+                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+
+
+            }else{
+                that.setState({
+                    searchResult:false
+                })
+            }
+        },{"Keyword":keyword})
+    }
 
     goToChooseClient = ()=>{
         let members = this.state.members.map((item,index)=>{
@@ -245,7 +284,7 @@ class GroupInformationSetting extends ContainerComponent {
         }
         else{
 
-                return <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
+                return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
                             <View style={styles.itemBox}>
                                 {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
                                 <Text style={styles.itemText}>{item.item.Nickname}</Text>
