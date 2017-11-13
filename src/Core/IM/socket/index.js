@@ -136,7 +136,7 @@ export default class Connect extends Component{
     reConnectNet(){
         // + "/socket.io/?EIO=4&transport=websocket"
 
-       if(this.webSocket.readyState == this.webSocket.OPEN){
+       if(this.webSocket == undefined ||  this.webSocket.readyState == this.webSocket.OPEN){
            return;
        }
 

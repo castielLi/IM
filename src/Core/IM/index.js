@@ -135,13 +135,10 @@ export default class IM {
         this.beginHeartBeat();
         this.beginRunLoop();
 
-        //从后台进前台的时候，如果当前网络为none，执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
-        if(networkStatus == networkStatuesType.none){
-           this.checkEnvironment(networkStatus);
-        }else {
+        //从后台进前台的时候，如果当前网络为none，程序是已经在执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
+        if(networkStatus != networkStatuesType.none){
             this.socket.reConnectNet();
         }
-
 
     }
 
@@ -184,31 +181,26 @@ export default class IM {
 
             _socket.setNetWorkStatus(networkStatuesType.none);
 
-            this.checkEnvironment(netState.type);
+            checkNetEnvironmentInterval = setInterval(function () {
+
+                if(netState.type != 'NONE' && netState.type != 'none'){
+                    clearInterval(checkNetEnvironmentInterval);
+
+                    //todo:恢复网络了后要重新发送消息
+
+                    _socket.setNetWorkStatus(networkStatuesType.normal);
+                    _socket.reConnectNet();
+
+                    //获取之前没有发送出去的消息重新加入消息队列
+                    currentObj.addAllUnsendMessageToSendQueue();
+
+                }
+            },200);
         }else{
             networkStatus = networkStatuesType.normal;
 
             window.networkStatus = networkStatus;
         }
-    }
-
-
-    checkEnvironment(type){
-        checkNetEnvironmentInterval = setInterval(function () {
-
-            if(type != 'NONE' && type != 'none'){
-                clearInterval(checkNetEnvironmentInterval);
-
-                //todo:恢复网络了后要重新发送消息
-
-                _socket.setNetWorkStatus(networkStatuesType.normal);
-                _socket.reConnectNet();
-
-                //获取之前没有发送出去的消息重新加入消息队列
-                currentObj.addAllUnsendMessageToSendQueue();
-
-            }
-        },200);
     }
 
 
