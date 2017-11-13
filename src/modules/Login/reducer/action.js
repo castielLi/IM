@@ -6,11 +6,11 @@ import {
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import * as TYPES from './actionTypes';
-import {clearChatRecord} from '../../../Core/IM/redux/chat/action';
-import {clearRelation} from '../../Contacts/reducer/action';
+import {clearChatRecord} from '../../../Core/Redux/chat/action';
+import {clearRelation} from '../../../Core/Redux/contact/action';
 import {clearRecentList} from '../../../Core/User/redux/action';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
-import {clearFriendApplication} from '../../../Core/IM/redux/applyFriend/action'
+import {clearFriendApplication} from '../../../Core/Redux/applyFriend/action'
 import {clearAllTabberMessageNumber} from '../../MainTabbar/reducer/action';
 import Route from '../../../Core/route/router';
 import User from '../../../Core/User'
@@ -45,7 +45,7 @@ export function signOut(){
         dispatch(clearFriendApplication())
         dispatch(clearRecentList());
         dispatch(clearAllTabberMessageNumber());
-
+        dispatch(changeTabBar(0));
         closeImDb();
         user.closeDB();
         im.logout();

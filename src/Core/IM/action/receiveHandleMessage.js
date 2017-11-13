@@ -5,8 +5,8 @@
 import Store from '../../../store'
 import MessageCommandEnum from '../dto/MessageCommandEnum'
 import AppCommandEnum from '../dto/AppCommandEnum'
-import * as ActionForChatRecordStore from '../redux/chat/action'
-import {changeRelationOfShow,addRelation} from '../../../modules/Contacts/reducer/action';
+import * as ActionForChatRecordStore from '../../Redux/chat/action'
+import {changeRelationOfShow,addRelation} from '../../Redux/contact/action';
 import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
 import User from '../../User'
 import IM from '../../IM'

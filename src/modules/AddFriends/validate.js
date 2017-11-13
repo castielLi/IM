@@ -19,7 +19,7 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
 import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
-import * as relationActions from '../Contacts/reducer/action';
+import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 import User from '../../Core/User'
 import Relation from '../../Core/User/dto/RelationModel'

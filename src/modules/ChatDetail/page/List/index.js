@@ -21,12 +21,12 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/IM/redux/chat/action';
+import * as commonActions from '../../../../Core/Redux/chat/action';
 import ChatMessage from './ChatMessage';
 
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-import InitChatRecordConfig from '../../../../Core/IM/redux/chat/InitChatRecordConfig';
+import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
 import Ces from './ces';
 import ImageModal from './ImageModal';
 import IM from '../../../../Core/IM';
