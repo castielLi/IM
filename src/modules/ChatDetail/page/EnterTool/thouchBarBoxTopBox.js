@@ -399,6 +399,7 @@ const styles = StyleSheet.create({
   },
   thouchBarBoxTop: {
     height: pxToPt(52), //62
+
   },
   button: {
     position: 'absolute',
@@ -416,7 +417,7 @@ const styles = StyleSheet.create({
   },
   smileButton: {
     bottom: pxToPt(10),
-    right: 50
+    right: 60
   },
   plusButton: {
     bottom: pxToPt(10),
@@ -424,12 +425,12 @@ const styles = StyleSheet.create({
   },
     sendButton:{
         position: 'absolute',
-        height: pxToPt(30),
-        width: pxToPt(35),
+        height: pxToPt(40),
+        width: pxToPt(45),
         backgroundColor:'#3399ff',
         justifyContent: 'center',
         alignItems: 'center',
-        bottom: pxToPt(10),
+        bottom: pxToPt(5),
         right: 5
     },
     sendButtonTxt:{
@@ -438,7 +439,7 @@ const styles = StyleSheet.create({
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 140,
+    width: width - 150,
     left: 50,
     top: 5,
     borderRadius: 5,

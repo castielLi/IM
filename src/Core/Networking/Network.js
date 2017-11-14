@@ -60,22 +60,29 @@ export default class netWorking {
     setAuthToken()
     if(!encryption){
       let promise = new Promise(function(res,rej){
+          let thatTime = Date.now();
           gettingFrameworkMethod().httpRequestGET(requestURL,netWorkingConfig,function(result,error){
+              let thisTime = Date.now();
+              //请求超时
+              if(thisTime-thatTime>10000){
+                  rej({"errorMessage":"请求超时"})
+              }else{
+                  if(result!= null && result.status == 200){
+                      // if(NeedAuth){
+                      //   AuthToken = result.response.headers["Auth_Token"];
+                      // }
+                      res(result);
+                  }else {
+                      if(error!=null){
 
-            if(result!= null && result.status == 200){
-              // if(NeedAuth){
-              //   AuthToken = result.response.headers["Auth_Token"];
-              // }
-              res(result);
-            }else {
-                if(error!=null){
+                          rej({"errorMessage":"无网络连接或网络信号差"})
+                      }else{
 
-                    rej(error);
-                }else{
+                          rej({"errorMessage":result.status + "错误"})
+                      }
+                  }
+              }
 
-                    rej({"errorMessage":result.status + "错误"})
-                }
-            }
           })
 
       }).then(
@@ -113,21 +120,28 @@ export default class netWorking {
       if(!encryption){
 
        let promise = new Promise(function(res,rej){
+           let thatTime = Date.now();
            gettingFrameworkMethod().httpRequestPOST(requestURL,params,networkConfig,function(result,error){
+               let thisTime = Date.now();
+               //请求超时
+               if(thisTime-thatTime>10000){
+                   rej({"errorMessage":"请求超时"})
+               }else{
+                   if(result!= null && result.status == 200){
 
-            if(result!= null && result.status == 200){
+                       res(result.json());
+                   }else {
+                       if(error!=null){
+                           rej({"errorMessage":"无网络连接或网络信号差"})
+                       }else{
 
-             res(result.json());
-           }else {
-                if(error!=null){
+                           rej({"errorMessage":result.status + "错误"})
+                       }
 
-                    rej(error);
-                }else{
+                   }
+               }
 
-                    rej({"errorMessage":result.status + "错误"})
-                }
 
-           }
          })
 
        }).then(
