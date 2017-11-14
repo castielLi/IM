@@ -256,13 +256,13 @@ GROUPFMDB.GetRelationByIdAndType = function(Id,type,callback){
 //获取好友列表
 GROUPFMDB.GetRelationList = function(callback,show){
 
+    let sql = show == undefined? sqls.ExcuteIMSql.GetAllRelation:sqls.ExcuteIMSql.GetAllShowRelation;
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
 
         db.transaction((tx) => {
-
-            let sql = show == undefined? sqls.ExcuteIMSql.GetAllRelation:sqls.ExcuteIMSql.GetAllShowRelation;
 
             tx.executeSql(sql, [], (tx, results) => {
 
