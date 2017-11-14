@@ -20,8 +20,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../Contacts/reducer/action';
-import * as Actions from '../../../Core/IM/redux/chat/action';
+import * as recentListActions from '../../../Core/Redux/contact/action';
+import * as Actions from '../../../Core/Redux/chat/action';
 import RNFS from 'react-native-fs';
 
 import User from '../../../Core/User';
