@@ -36,7 +36,7 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
             //获取chatDetail状态
             let chatDetail = getState().chatDetailPageStore;
 
-            if(!chatDetail.isChatDetailPageOpen || (chatDetail.isChatDetailPageOpen&&chatDetail.client!==client&&chatDetail.type!==type)){
+            if(!chatDetail.isChatDetailPageOpen || (chatDetail.isChatDetailPageOpen&&chatDetail.client!==client)){
                 isAddUnReadMessage = true;//添加未读消息
                 //更改unReadMessageStore状态
                 let chatList = getState().recentListStore;

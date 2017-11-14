@@ -11,7 +11,7 @@ import {clearRelation} from '../../../Core/Redux/contact/action';
 import {clearRecentList} from '../../../Core/User/redux/action';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {clearFriendApplication} from '../../../Core/Redux/applyFriend/action'
-import {clearAllTabberMessageNumber} from '../../MainTabbar/reducer/action';
+import {clearAllTabberMessageNumber,changeTabBar} from '../../MainTabbar/reducer/action';
 import Route from '../../../Core/route/router';
 import User from '../../../Core/User'
 import IM from '../../../Core/IM'

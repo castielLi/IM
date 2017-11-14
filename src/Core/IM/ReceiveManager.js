@@ -97,7 +97,9 @@ ReceiveManager.receiveMessageOpreator = function(message){
         if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP ||
             message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER
             || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER ||
-            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP ||
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP ||
+            message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
             let sender = message.Data.Data.Sender
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
