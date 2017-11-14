@@ -64,7 +64,7 @@ export default class netWorking {
           gettingFrameworkMethod().httpRequestGET(requestURL,netWorkingConfig,function(result,error){
               let thisTime = Date.now();
               //请求超时
-              if(thisTime-thatTime>10000){
+              if(thisTime-thatTime>300000){
                   rej({"errorMessage":"请求超时"})
               }else{
                   if(result!= null && result.status == 200){
@@ -74,8 +74,7 @@ export default class netWorking {
                       res(result);
                   }else {
                       if(error!=null){
-
-                          rej({"errorMessage":"无网络连接或网络信号差"})
+                          rej({"errorMessage":"无网络连接或信号差"});
                       }else{
 
                           rej({"errorMessage":result.status + "错误"})
@@ -124,7 +123,7 @@ export default class netWorking {
            gettingFrameworkMethod().httpRequestPOST(requestURL,params,networkConfig,function(result,error){
                let thisTime = Date.now();
                //请求超时
-               if(thisTime-thatTime>10000){
+               if(thisTime-thatTime>300000){
                    rej({"errorMessage":"请求超时"})
                }else{
                    if(result!= null && result.status == 200){
@@ -132,7 +131,8 @@ export default class netWorking {
                        res(result.json());
                    }else {
                        if(error!=null){
-                           rej({"errorMessage":"无网络连接或网络信号差"})
+
+                           rej({"errorMessage":"无网络连接或信号差"});
                        }else{
 
                            rej({"errorMessage":result.status + "错误"})
