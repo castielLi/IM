@@ -42,7 +42,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    badgeText={this.props.unReadMessageStore}
+                    badgeText={this.props.unReadMessageStore.unReadMessageNumber}
                     onPress={() => {this.props.changeTabBar(0);this.isShowFeature(0)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
@@ -59,6 +59,7 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
+                    badgeText={this.props.unReadMessageStore.unDealRequestNumber}
                     onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     loginStore: state.loginStore,
-    unReadMessageStore:state.unReadMessageStore.unReadMessageNumber,
+    unReadMessageStore:state.unReadMessageStore,
     tabBarStore:state.tabBarStore,
     featuresStore:state.FeaturesStore.isShow
 

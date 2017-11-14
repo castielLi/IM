@@ -24,7 +24,7 @@ import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import * as relationActions from '../../../Core/Redux/contact/action';
-
+import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
 
 let {height,width} = Dimensions.get('window');
@@ -86,7 +86,7 @@ class NewFriend extends ContainerComponent {
                     //修改friendMessage状态
                     im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":data.key})
                     currentObj.props.acceptFriendApplication(data.key);
-
+                    currentObj.props.cutUnDealRequestNumber(1);
                 // });
             }else{
                 alert(result.errorMessage);
@@ -325,6 +325,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(friendApplicationActions, dispatch),
     ...bindActionCreators(relationActions, dispatch),
+    ...bindActionCreators(unReadMessageActions, dispatch),
 
 });
 

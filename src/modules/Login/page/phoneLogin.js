@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform,KeyboardAvoidingView}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
@@ -15,13 +15,14 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
+
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
 import * as ApplyFriendAction from '../../../Core/Redux/applyFriend/action'
-
+import * as unReadMessageAction from '../../MainTabbar/reducer/action'
 let currentObj = undefined;
 
 class PhoneLogin extends ContainerComponent {
@@ -189,7 +190,13 @@ class PhoneLogin extends ContainerComponent {
                            im.getAllApplyFriendMessage(function(result){
 
                                currentObj.props.initFriendApplication(result);
-
+								let unUnDealRequestCount = 0;
+                               result.forEach((v,i)=>{
+                               		if(v.status == "wait"){
+                                        unUnDealRequestCount++
+									}
+							   })
+                               currentObj.props.initUnDealRequestNumber(unUnDealRequestCount);
                            })
 
                            //添加名单
@@ -243,10 +250,10 @@ class PhoneLogin extends ContainerComponent {
         let Loading = this.Loading;
 
 		return (
-			<View style= {styles.container}>
+			<KeyboardAvoidingView behavior="position" style={styles.container}   keyboardVerticalOffset={-150}>
 				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props);}}>
 				<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
-				<View style = {styles.content}>
+				<View  style  = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
 						<View style = {styles.area}>
@@ -321,7 +328,7 @@ class PhoneLogin extends ContainerComponent {
 				}
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
-			</View>
+			</KeyboardAvoidingView>
 
 		)
 	}
@@ -358,11 +365,11 @@ const styles = StyleSheet.create({
 	},
 	content:{
 		alignItems:'center',
-		width:Dimensions.get('window').width - checkDeviceHeight(80),
 		flex:1,
+		paddingHorizontal:checkDeviceWidth(40)
 	},
 	area:{
-		width:Dimensions.get('window').width - checkDeviceHeight(80),
+        width:Dimensions.get('window').width - checkDeviceWidth(80),
 		flexDirection:'row',
 		marginBottom:checkDeviceWidth(30),
 		alignItems:'center',
@@ -468,7 +475,9 @@ const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
-	  ...bindActionCreators(ApplyFriendAction,dispatch)
+	  ...bindActionCreators(ApplyFriendAction,dispatch),
+      ...bindActionCreators(unReadMessageAction,dispatch)
+
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);

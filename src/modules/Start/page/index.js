@@ -13,6 +13,7 @@ import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import IM from '../../../Core/IM'
 import User from '../../../Core/User'
 import * as relationActions from '../../../Core/Redux/contact/action';
+import * as unReadMessageAction from '../../MainTabbar/reducer/action'
 let currentObj = undefined;
 
 class Start extends ContainerComponent {
@@ -78,6 +79,13 @@ class Start extends ContainerComponent {
                             im.getAllApplyFriendMessage((result) => {
 
                                 currentObj.props.initFriendApplication(result);
+                                let unUnDealRequestCount = 0;
+                                result.forEach((v,i)=>{
+                                    if(v.status == "wait"){
+                                        unUnDealRequestCount++
+                                    }
+                                })
+                                currentObj.props.initUnDealRequestNumber(unUnDealRequestCount);
 
                                 user.getAllRelation((data)=>{
                                     user.getAllGroupFromGroup(function(results){
@@ -147,6 +155,7 @@ const mapDispatchToProps = (dispatch) => {
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
       ...bindActionCreators(friendApplicationActions, dispatch),
+      ...bindActionCreators(unReadMessageAction,dispatch)
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Start);
