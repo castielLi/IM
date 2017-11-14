@@ -91,7 +91,7 @@ export function handleRecieveMessage(message){
                 }
 
             }
-        });
+        },message.Command,message.Data.Data.Command);
         //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
 
     }else{
