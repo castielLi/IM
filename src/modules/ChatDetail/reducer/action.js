@@ -32,10 +32,10 @@ export function listLoadMore(){
 
 
 
-export function showImageModal(urls){
+export function showImageModal(url){
 	return{
 		type:'SHOW_MODAL',
-		urls:urls
+		url:url
 	}
 }
 export function hideImageModal(){
