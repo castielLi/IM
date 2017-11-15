@@ -142,7 +142,9 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressIn() {
-    if(!this.shouldPressSpeakBox) return;
+    if(!this.shouldPressSpeakBox){
+        return;
+    }
     clearInterval(checkMaxRecordTimeInterval);
     clearTimeout(recordTimer);
     //开始录音
@@ -168,6 +170,7 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressOut() {
+    this.shouldPressSpeakBox = false;
     clearInterval(checkMaxRecordTimeInterval)
     //针对点了立即放的情况
     if (Date.now() - startTime < 200) {
@@ -186,11 +189,13 @@ class ThouchBarBoxTopBox extends Component {
       }, 1000)
       return;
     }
+
+      this.setState({
+          isShowModal: false,
+      })
     let stop = () => {
         audio&&audio._stop((currentTime) => {
-          this.setState({
-              isShowModal: false,
-            })
+
             //初始化消息
           let message = addResourceMessage('audio',this.props.type, [{
             FileType: ResourceTypeEnum.audio,
@@ -273,6 +278,9 @@ class ThouchBarBoxTopBox extends Component {
         onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
+            if(!this.shouldPressSpeakBox){
+                return;
+            }
           this.setState({
             isOnPressSpeakBox:true
           })
@@ -280,6 +288,9 @@ class ThouchBarBoxTopBox extends Component {
         },
         //移动时作出的动作
         onResponderMove: (e)=>{
+            if(!this.shouldPressSpeakBox){
+                return;
+            }
           if(e.nativeEvent.pageY<this.speakBoxOffsetY){
               this.setState({
               recordingModalStatus: 2,
@@ -292,6 +303,9 @@ class ThouchBarBoxTopBox extends Component {
         },
         //动作释放后做的动作
         onResponderRelease: ()=>{
+            if(!this.shouldPressSpeakBox){
+                return;
+            }
           this.setState({
             isOnPressSpeakBox:false
           })
