@@ -195,6 +195,9 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
     let insertChatToSpecialRecodeSqlSql = sqls.ExcuteIMSql.InsertMessageToTalk;
     insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.MSGID]);
 
+    let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
+    createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
+
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -214,7 +217,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 
                 }else{
                     //如果当前聊天是新的聊天对象
-                    createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
+
 
                     tx.executeSql(createTableSql, [], (tx, results) => {
 

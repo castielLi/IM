@@ -27,10 +27,26 @@ export  function unReadMessageStore(state=initialState, action){
                 ...state,
                 unReadMessageNumber:action.number
             };
+        case 'ADD_UNDEALREQUEST_NUMBER':
+            return {
+                ...state,
+                unDealRequestNumber:state.unDealRequestNumber+1
+            };
+        case 'CUT_UNDEALREQUEST_NUMBER':
+            return {
+                ...state,
+                unDealRequestNumber:state.unDealRequestNumber-action.cutNumber
+            };
+        case 'INIT_UNDEALREQUEST_NUMBER':
+            return {
+                ...state,
+                unDealRequestNumber:action.number
+            };
         case 'CLEAR_ALLTABBERMESSAGE_NUMBER':
             return {
                 ...initialState
             };
+
         default:
             return state;
     }

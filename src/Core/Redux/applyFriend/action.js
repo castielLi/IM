@@ -4,7 +4,7 @@
 import IM from '../../IM/index'
 let im = new IM();
 import ApplyFriendEnum from '../../IM/dto/ApplyFriendEnum'
-
+import {addUnDealRequestNumber} from '../../../modules/MainTabbar/reducer/action';
 export function getApplicantInfo(message) {
 
     return (dispatch)=>{
@@ -34,10 +34,21 @@ export function initFriendApplication(messageList){
     }
 }
 export function addFriendApplication(message){
-
-    return{
-        type:'ADD_FRIEND_APPLICATION',
-        message
+    return (dispatch,getState)=>{
+        let isAddUnDealRequest = true;
+        let applyArr = getState().friendApplicationStore.applicationRecord;
+        for(let i=0;i<applyArr.length;i++){
+            if(applyArr[i].send == message.send&&applyArr[i].status == 'wait'){
+                isAddUnDealRequest = false;
+            }
+        }
+        if(isAddUnDealRequest){
+            dispatch(addUnDealRequestNumber())
+        }
+        dispatch({
+            type:'ADD_FRIEND_APPLICATION',
+            message
+        })
     }
 }
 export function deleteFriendApplication(index){

@@ -22,7 +22,7 @@ export function getAccountByAccountId(accountId,type,callback){
         if(result.success){
             callback&&callback(true,result.data.Data)
         }else {
-            callback&&callback(false,{})
+            callback&&callback(false,{},result.errorMessage)
         }
     })
 }
