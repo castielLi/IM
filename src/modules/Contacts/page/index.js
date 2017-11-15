@@ -152,6 +152,13 @@ class Contacts extends ContainerComponent {
 								<View  style={styles.itemBox} >
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
 									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
+									{this.props.unDealRequestNumber?
+										<View style={styles.circle}>
+											<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>
+										</View>:
+										null
+									}
+
 								</View>
 							</View>
 					   </TouchableHighlight>
@@ -342,11 +349,21 @@ const styles = StyleSheet.create({
 		fontSize:20,
 		textAlign: 'center', 
 		textAlignVertical: 'center', 
+	},
+    circle:{
+		width:14,
+		height:14,
+		backgroundColor:'red',
+		borderRadius:7,
+		justifyContent:'center',
+		alignItems:'center',
+		marginLeft:50
 	}
 })
 
 const mapStateToProps = state => ({
-    relationStore: state.relationStore
+    relationStore: state.relationStore,
+    unDealRequestNumber:state.unReadMessageStore.unDealRequestNumber,
 });
 
 const mapDispatchToProps = (dispatch) => {
