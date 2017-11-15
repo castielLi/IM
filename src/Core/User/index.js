@@ -58,7 +58,7 @@ export default class User {
                     storeSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
-                            currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                            currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
                                 if(success) {
                                     let relation = new RelationModel();
                                     relation.RelationId = results.Account;
@@ -74,6 +74,8 @@ export default class User {
                                         callback(relation);
                                     });
 
+                                }else{
+                                    alert("获取群消息失败，原因："+errMsg)
                                 }
                             })
                         }else{
@@ -92,7 +94,7 @@ export default class User {
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                            this.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
                                 if(success) {
                                     let relation = new RelationModel();
                                     relation.RelationId = results.ID;
@@ -126,6 +128,8 @@ export default class User {
                                     currentObj.AddGroupMember(results.MemberList)
                                     cache["groupMember"][Id] = cacheGroupMembers;
                                     cache[type][Id] = relation;
+                                }else{
+                                    alert("获取群消息失败，原因："+errMsg)
                                 }
                             })
                         }else{
@@ -138,7 +142,7 @@ export default class User {
                                 //代表数据库里面并没有groupMembers的对应关系，需要进行下载
                                 if(results.length == 0){
 
-                                    currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                                    currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
                                         if(success) {
 
                                             let cacheGroupMembers = [];
@@ -162,6 +166,8 @@ export default class User {
                                             currentObj.AddGroupAndMember(relations[0],results.MemberList);
                                             currentObj.AddGroupMember(results.MemberList)
                                             cache["groupMember"][Id] = cacheGroupMembers;
+                                        }else{
+                                            alert("获取群消息失败，原因："+errMsg)
                                         }
                                     })
 
@@ -191,7 +197,7 @@ export default class User {
                 let groupMembersInfo = [];
                 //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
                 if(messageCommand == MessageCommandEnum.MSG_INFO && contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
-                    this.request.getAccountByAccountIdAndType(Id,type,(success,results)=>{
+                    this.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
                         if(success) {
                             let relation = new RelationModel();
                             relation.RelationId = results.ID;
@@ -223,6 +229,8 @@ export default class User {
                             currentObj.AddGroupMember(results.MemberList)
                             cache["groupMember"][Id] = groupMembersInfo;
                             cache[type][Id] = relation;
+                        }else{
+                            alert("获取群消息失败，原因："+errMsg)
                         }
                     })
                 }else{
