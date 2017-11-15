@@ -21,7 +21,7 @@ SendManager.checkQueueLength = function(){
     return sendMessageQueue.length;
 }
 
-SendManager.addSendMessage = function(messageId,callback=undefined,needACK=false){
+SendManager.addSendMessage = function(messageId,callback=undefined,needACK=true){
 
     let message = createSendMessageObj(messageId,needACK);
     sendMessageQueue.push(message);

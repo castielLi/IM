@@ -276,7 +276,8 @@ export default class IM {
 
                     if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
 
-                        FileManager.addResource(message,null);
+                        cacheMessage.push(message);
+                        FileManager.addResource(message.MSGID,null);
 
                         console.log("加入资源队列" + message.MSGID);
                     }else{
@@ -287,7 +288,8 @@ export default class IM {
 
             // sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
             for(let item in sendMessage){
-                SendManager.addSendMessage(sendMessage[item]);
+                cacheMessage.push(sendMessage[item]);
+                SendManager.addSendMessage(sendMessage[item].MSGID);
             }
         });
     }
@@ -383,7 +385,7 @@ export default class IM {
 
     //IM logic添加message 到 SendManager发送队列中
     addSendMessageQueue(message){
-        SendManager.addSendMessage(message)
+        SendManager.addSendMessage(message.MSGID)
     }
 
     //发送消息
@@ -491,25 +493,24 @@ export default class IM {
 
     }
 
-    ackBackMessageHandle(message){
+    ackBackMessageHandle(messageId){
 
         for(let item in cacheMessage) {
-            if (cacheMessage[item].message.MSGID == message) {
+            if (cacheMessage[item].MSGID == messageId) {
 
-                //回调App上层发送成功
-                if(cacheMessage[item].message.type != MessageType.friend) {
-                    currentObj.MessageResultHandle(true, message);
-                }
 
-                currentObj.popCurrentMessageSqlite(message)
+                currentObj.MessageResultHandle(true, messageId);
 
-                let updateMessage = cacheMessage[item].message;
 
-                SendManager.receieveAckHandle(message.MSGID);
+                currentObj.popCurrentMessageSqlite(messageId)
 
-                this.popMessageFromCache(message.MSGID);
+                let updateMessage = cacheMessage[item];
 
-                console.log("ack队列pop出：" + message)
+                SendManager.receieveAckHandle(messageId);
+
+                this.popMessageFromCache(messageId);
+
+                console.log("ack队列pop出：" + messageId)
 
                 updateMessage.status = MessageStatus.SendSuccess;
 
@@ -621,4 +622,3 @@ let loopStateType = {
     noNet : "noNet",
     wait : "wait"
 };
-
