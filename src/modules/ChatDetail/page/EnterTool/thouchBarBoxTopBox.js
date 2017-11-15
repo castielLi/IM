@@ -258,7 +258,7 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?50:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?(Platform.OS === 'android'?65:50):-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
         <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type}></AutoExpandingTextInput>
@@ -417,8 +417,8 @@ const styles = StyleSheet.create({
   },
   button: {
     position: 'absolute',
-    height: pxToPt(30),
-    width: pxToPt(30),
+    height: Platform.OS === 'android'?pxToPt(40):pxToPt(30),
+    width: Platform.OS === 'android'?pxToPt(40):pxToPt(30),
     borderWidth: pxToPt(1),
     borderColor: '#aaa',
     borderRadius: pxToPt(20),
@@ -426,26 +426,27 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   voiceButton: {
-    bottom: pxToPt(10),
-    left: 5
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    left: Platform.OS === 'android'?15:5,
   },
   smileButton: {
-    bottom: pxToPt(10),
-    right: 60
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    right: Platform.OS === 'android'?70:50,
   },
   plusButton: {
-    bottom: pxToPt(10),
-    right: 5
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    right: Platform.OS === 'android'?15:5,
   },
     sendButton:{
         position: 'absolute',
         height: pxToPt(40),
-        width: pxToPt(45),
+        width: pxToPt(55),
         backgroundColor:'#3399ff',
         justifyContent: 'center',
         alignItems: 'center',
-        bottom: pxToPt(5),
-        right: 5
+        bottom: pxToPt(6),
+        right: 5,
+        borderRadius:4
     },
     sendButtonTxt:{
       color:'#fff'
@@ -453,8 +454,8 @@ const styles = StyleSheet.create({
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 150,
-    left: 50,
+    width: Platform.OS === 'android'?width-185:width-140,
+    left: Platform.OS === 'android'?90:50,
     top: 5,
     borderRadius: 5,
     borderColor: '#ccc',
