@@ -35,6 +35,7 @@ SendManager.changeSendInfoByMSGID = function(messageId){
         if(sendMessageQueue[item].MSGID == messageId){
             let obj = sendMessageQueue[item];
             if(obj.info == undefined){
+                obj.info = {};
                 obj.info.sendTime = new Date().getTime();
                 obj.info.times = 1;
             }else{
@@ -69,7 +70,10 @@ SendManager.handleSendMessageQueue = function(){
                     currentObj.sendOverMaxTimesHandle(sendMessageQueue[item].MSGID)
                     sendMessageQueue.splice(item,1);
                 }else{
-                    currentObj.sendMessage(sendMessageQueue[item].MSGID);
+                    let now = new Date().getTime();
+                    if(sendMessageQueue[item].info.sendTime - now > configs.timeOutResend) {
+                        currentObj.sendMessage(sendMessageQueue[item].MSGID);
+                    }
                 }
             }
 

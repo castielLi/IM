@@ -406,6 +406,7 @@ export default class IM {
             if(message.Command != MessageCommandEnum.MSG_HEART && message.Command != MessageCommandEnum.MSG_REV_ACK) {
                 console.log("添加" + message.MSGID + "进队列");
                 message.status = SendStatus.WaitAck;
+                SendManager.changeSendInfoByMSGID(messageId);
                 this.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
             }
         }else{
@@ -516,7 +517,7 @@ export default class IM {
 
                 SendManager.receieveAckHandle(messageId);
 
-                // this.popMessageFromCache(messageId);
+                this.popMessageFromCache(messageId);
 
 
                 break;
