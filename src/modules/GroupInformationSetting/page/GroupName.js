@@ -22,7 +22,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import IM from '../../../Core/IM';
 import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
-import * as relationListActions from '../../Contacts/reducer/action';
+import * as relationListActions from '../../../Core/Redux/contact/action';
 
 let {height,width} = Dimensions.get('window');
 

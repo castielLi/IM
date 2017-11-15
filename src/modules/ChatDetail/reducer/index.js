@@ -59,13 +59,13 @@ export function thouchBarStore(state = initialState,action){
 
 const initialModalState = {
     isShow: false,
-    urls:[],
+    url:'',
 };
 export function imageModalStore(state = initialModalState,action){
      switch (action.type) {
         case 'SHOW_MODAL':
             return {
-                urls:[{url:action.urls}],
+                url:action.url,
                 isShow:true,
             };
         case 'HIDE_MODAL':

@@ -23,6 +23,29 @@ export function initUnReadMessageNumber(number){
 
 }
 
+export function addUnDealRequestNumber(){
+    return {
+        type: 'ADD_UNDEALREQUEST_NUMBER'
+    };
+
+}
+
+export function cutUnDealRequestNumber(cutNumber){
+    return {
+        type: 'CUT_UNDEALREQUEST_NUMBER',
+        cutNumber
+    };
+
+}
+
+export function initUnDealRequestNumber(number){
+    return {
+        type: 'INIT_UNDEALREQUEST_NUMBER',
+        number
+    };
+
+}
+
 export function clearAllTabberMessageNumber(){
     return {
         type: 'CLEAR_ALLTABBERMESSAGE_NUMBER',

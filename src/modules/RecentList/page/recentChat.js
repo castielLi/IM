@@ -18,7 +18,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import * as recentListActions from '../../../Core/User/redux/action';
-import * as chatRecordActions from '../../../Core/IM/redux/chat/action';
+import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {

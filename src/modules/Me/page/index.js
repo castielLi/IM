@@ -16,7 +16,7 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import * as loginStoreAction from '../../Login/reducer/action';
-import * as chatRecordStoreAction from '../../../Core/IM/redux/chat/action';
+import * as chatRecordStoreAction from '../../../Core/Redux/chat/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';

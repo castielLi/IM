@@ -13,7 +13,7 @@ import {
     connect
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/IM/redux/chat/action';
+import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
 import IM from '../../../../Core/IM/index';
 import {addTextMessage} from '../../../../Core/IM/action/createMessage';
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     top:pxToPt(5), 
     fontSize:20, 
     lineHeight:20, 
-    width:width-140,
+    width:width-150,
     height:40,
     borderColor:'#ccc',
     borderWidth:pxToPt(1),   

@@ -155,7 +155,49 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
-    let way;
+    let way = message.way;
+
+
+    let tableName;
+    if(message.way != "") {
+        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
+    }else{
+        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
+    }
+
+    let conetnt = getContentByMessage(message);
+    let time = message.Data.LocalTime;
+
+    let localPath = "";
+    let url = "";
+    if(message.Resource!= null && message.Resource.length > 0) {
+        for (let item in message.Resource) {
+            localPath += message.Resource[item].LocalSource;
+            // + ",";
+            url += message.Resource[item].RemoteSource;
+        }
+    }else{
+        localPath = "";
+        url = "";
+    }
+    let sourceTime = "";
+    //音频视频才有时间
+    if(message.type === 'audio'||message.type === 'video'){
+        //默认一条消息只能有一条音频或者视频
+        sourceTime = message.Resource[0].Time;
+    }
+
+    //insertChat(insertChatSql,tx,callback) 方法sql
+    let insertChatSql = sqls.ExcuteIMSql.InsertMessageToRecode;
+    insertChatSql = commonMethods.sqlFormat(insertChatSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
+
+    //insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx); 方法sql
+    let insertChatToSpecialRecodeSqlSql = sqls.ExcuteIMSql.InsertMessageToTalk;
+    insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.MSGID]);
+
+    let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
+    createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
+
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -167,53 +209,27 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
                     //如果当前聊天对象在数据库中存在有数据
                     //添加数据进数据库
 
-                    let tableName;
-                    if(message.way != "") {
-                        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
-                    }else{
-                        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
-                    }
-
-                    let conetnt = getContentByMessage(message);
-                    let time = message.Data.LocalTime;
-
                     updateChat(conetnt,time,client,tx);
 
-                    insertChat(message,tx,callback);
+                    insertChat(insertChatSql,tx,callback);
 
-                    insertChatToSpecialRecode(message,tableName,tx);
+                    insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
                 }else{
                     //如果当前聊天是新的聊天对象
-                    let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
 
-                    let tableName;
-                    if(message.way != "") {
-                        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
-                    }else{
-                        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
-                    }
-
-
-                    createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
 
                     tx.executeSql(createTableSql, [], (tx, results) => {
 
                         console.log("create chat table success");
 
-                        //添加数据进数据库
+                        insertClientRecode(client,way,tx);
 
-                        let conetnt = getContentByMessage(message);
-                        let time = message.Data.LocalTime;
-
-                        insertClientRecode(client,message.way,tx);
                         updateChat(conetnt,time,client,tx);
 
+                        insertChat(insertChatSql,tx,callback);
 
-
-                        insertChat(message,tx,callback);
-
-                        insertChatToSpecialRecode(message,tableName,tx);
+                        insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
                         // insertIndexForTable(tableName,tx);
 
@@ -304,16 +320,13 @@ IMFMDB.DeleteChatByClientId = function(name,chatType){
 //更新发送消息队列消息的状态
 IMFMDB.UpdateSendMessageStatues = function(message){
 
+    let updateSql = sqls.ExcuteIMSql.UpdateSendMessageStatusByMessageId;
+    updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.MSGID]);
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-            let updateSql = "";
-
-
-            updateSql = sqls.ExcuteIMSql.UpdateSendMessageStatusByMessageId;
-            updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.MSGID]);
-
 
             tx.executeSql(updateSql, [], (tx, results) => {
                 console.log("update sendmessage sqlite " + message.MSGID + "is send statues:" + message.status);
@@ -326,17 +339,20 @@ IMFMDB.UpdateSendMessageStatues = function(message){
 //更新消息状态
 IMFMDB.UpdateMessageStatues = function(message){
 
+    let MSGID = message.MSGID;
+    let status = message.status;
+
+    let updateSql = sqls.ExcuteIMSql.UpdateMessageStatusByMessageId;
+    updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.MSGID]);
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-            let updateSql = "";
 
-            updateSql = sqls.ExcuteIMSql.UpdateMessageStatusByMessageId;
-            updateSql = commonMethods.sqlFormat(updateSql,[message.status,message.MSGID]);
 
             tx.executeSql(updateSql, [], (tx, results) => {
-                console.log("update message sqlite " + message.MSGID + "is send statues:" + message.status);
+                console.log("update message sqlite " + MSGID + "is send statues:" + status);
             }, (err)=>{errorDB('更新消息状态',err)});
 
         });
@@ -351,13 +367,13 @@ IMFMDB.DeleteChatByChatRoomId = function(chatRoom){
     }, () => {
         db.transaction((tx) => {
 
-            tx.executeSql(sqls.ExcuteIMSql.QueryChatTypeFromChatList, [client], (tx, results) => {
+            tx.executeSql(sqls.ExcuteIMSql.QueryChatTypeFromChatList, [chatRoom], (tx, results) => {
 
                 console.log(results);
                 // chatList = results;
                 if(results.rows.length) {
 
-                    deleteClientRecode(chatRoom);
+                    deleteClientRecodeByName(chatRoom);
                     deleteClientChatList("ChatRoom_" + chatRoom);
                 }
             }, errorDB);
@@ -411,15 +427,14 @@ IMFMDB.getAllChatClientList = function(callback){
 //添加发送失败的消息进数据库
 IMFMDB.addSendMessage = function(message){
 
+    let addSql = sqls.ExcuteIMSql.AddSendMessage;
+
+    addSql = commonMethods.sqlFormat(addSql,[message.MSGID]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-
-            let addSql = sqls.ExcuteIMSql.AddSendMessage;
-
-            addSql = commonMethods.sqlFormat(addSql,[message.MSGID]);
 
             tx.executeSql(addSql, [], (tx, results) => {
 
@@ -434,14 +449,15 @@ IMFMDB.addSendMessage = function(message){
 }
 
 IMFMDB.popMessageInSendMessageSqlite = function(messageId){
+
+    let deleteSql = sqls.ExcuteIMSql.DeleteSendMessageByMessageId;
+
+    deleteSql = commonMethods.sqlFormat(deleteSql,[messageId]);
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-
-            let deleteSql = sqls.ExcuteIMSql.DeleteSendMessageByMessageId;
-
-            deleteSql = commonMethods.sqlFormat(deleteSql,[messageId]);
 
             tx.executeSql(deleteSql, [], (tx, results) => {
 
@@ -492,16 +508,16 @@ IMFMDB.getAllCurrentSendMessages = function(callback){
 
 IMFMDB.getRangeMessages = function(account,way,range,callback){
 
+    let tabName = way  == ChatWayEnum.Private?"Private_" + account:"ChatRoom_" + account;
+
+    let querySql = sqls.ExcuteIMSql.QueryChatRecodeByClient;
+
+    querySql = commonMethods.sqlFormat(querySql,[tabName,range.start,range.limit]);
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-
-            let tabName = way  == ChatWayEnum.Private?"Private_" + account:"ChatRoom_" + account;
-
-            let querySql = sqls.ExcuteIMSql.QueryChatRecodeByClient;
-
-            querySql = commonMethods.sqlFormat(querySql,[tabName,range.start,range.limit]);
 
             tx.executeSql(querySql, [], (tx, results) => {
 
@@ -533,14 +549,14 @@ IMFMDB.getRangeMessages = function(account,way,range,callback){
 
 IMFMDB.InsertResource = function(messageId,localPath){
 
+    let querySql = sqls.ExcuteIMSql.QueryMessageResourceExist;
+
+    querySql = commonMethods.sqlFormat(querySql,[messageId,localPath]);
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
         db.transaction((tx) => {
-
-            let querySql = sqls.ExcuteIMSql.QueryMessageResourceExist;
-
-            querySql = commonMethods.sqlFormat(querySql,[messageId,localPath]);
 
             tx.executeSql(querySql, [], (tx, results) => {
 
@@ -566,17 +582,15 @@ IMFMDB.InsertResource = function(messageId,localPath){
 
 IMFMDB.DeleteResource = function(messageId,localPath){
 
+    let deleteSql = sqls.ExcuteIMSql.DeleteUploadFileRecode;
+
+    deleteSql = commonMethods.sqlFormat(deleteSql,[messageId,localPath]);
+
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
 
         db.transaction((tx) => {
-
-            let deleteSql = sqls.ExcuteIMSql.DeleteUploadFileRecode;
-
-            deleteSql = commonMethods.sqlFormat(deleteSql,[messageId,localPath]);
-
-
             tx.executeSql(deleteSql, [], (tx, results) => {
 
                 console.log("delete resource success")
@@ -644,29 +658,7 @@ IMFMDB.closeImDb = function(){
 }
 
 //添加消息进总消息表
-function insertChat(message,tx,callback){
-    let insertSql = sqls.ExcuteIMSql.InsertMessageToRecode;
-
-    let localPath = "";
-    let url = "";
-    if(message.Resource!= null && message.Resource.length > 0) {
-        for (let item in message.Resource) {
-            localPath += message.Resource[item].LocalSource;
-                // + ",";
-            url += message.Resource[item].RemoteSource;
-        }
-    }else{
-        localPath = "";
-        url = "";
-    }
-    let sourceTime = "";
-    //音频视频才有时间
-    if(message.type === 'audio'||message.type === 'video'){
-        //默认一条消息只能有一条音频或者视频
-        sourceTime = message.Resource[0].Time;
-    }
-
-    insertSql = commonMethods.sqlFormat(insertSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
+function insertChat(insertSql,tx,callback){
 
     tx.executeSql(insertSql, [], (tx, results) => {
         callback&&callback();
@@ -676,10 +668,8 @@ function insertChat(message,tx,callback){
 }
 
 //添加messageId到个人消息表
-function insertChatToSpecialRecode(message,tableName,tx){
-    let insertSql = sqls.ExcuteIMSql.InsertMessageToTalk;
+function insertChatToSpecialRecode(insertSql,tx){
 
-    insertSql = commonMethods.sqlFormat(insertSql,[tableName,message.MSGID]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
 
