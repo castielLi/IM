@@ -90,18 +90,18 @@ class Player extends Component {
         let playOrPause = this.state.paused ? playButton : pauseButton;
         return(
             <View style={{width,height,position:'absolute'}}>
-                <View style={{backgroundColor:'rgba(0,0,0,.5)',width}}>
+                <View style={{width}}>
                     <TouchableOpacity style={{width:30,height:30,marginLeft:20,marginTop:20}} onPress={()=>{this.props.hideMediaPlayer();this.setState({paused:false})}}>
                         <Icon size={30} name="close" color='#fff' />
                     </TouchableOpacity>
                 </View>
-                <View style={{flexDirection:'row',position:'absolute',bottom:20,width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,.5)',paddingVertical:10}}>
+                <View style={{flexDirection:'row',position:'absolute',bottom:30,width,alignItems:'center',justifyContent:'center',paddingVertical:10}}>
                     <View hidden={true} style={styles.playButtonBox}>
                          {playOrPause}
                     </View>
                     <Text style={styles.time}>{this.state.video.time}</Text>
                     <Slider
-                        style={{width:200}}
+                        style={styles.sliderStyle}
                         value={this.state.progress}
                         maximumTrackTintColor={'#666'}
                         minimumTrackTintColor={'#fff'}
@@ -115,6 +115,7 @@ class Player extends Component {
                         onSlidingComplete={()=>this.slidingComplete()}
                     />
                     <Text style={styles.time}>{this.state.video.duration}</Text>
+                    <View hidden={true} style={styles.playButtonBox}/>
                 </View>
             </View>
         )
@@ -252,8 +253,10 @@ const styles = StyleSheet.create({
     //     backgroundColor:'rgba(0,0,0,1)'
     // },
     playButtonBox:{
-        width:20,
-        height:20
+        width:50,
+        height:20,
+        justifyContent:'center',
+        alignItems:'center'
     },
     // bottomBox:{
     //     width:playerDefaultWidth,
@@ -265,11 +268,10 @@ const styles = StyleSheet.create({
     //     justifyContent: 'flex-start',
     //     flexDirection: 'row',
     // },
-    // sliderStyle:{
-    //     height:20,
-    //     width:playerDefaultWidth-120,
-    //     backgroundColor:'rgba(0,0,0,0.5)'
-    // },
+    sliderStyle:{
+        height:20,
+        width:width-200,
+    },
     // trackStyle:{
     //     width:playerDefaultWidth-120,
     //     height:2
@@ -281,12 +283,11 @@ const styles = StyleSheet.create({
     // },
     time:{
         color:'#fff',
-        width:40,
+        width:50,
         textAlign: 'center',
         justifyContent: 'center',
         height:20,
-        paddingTop:5,
-        fontSize:8,
+        fontSize:14,
     },
     // button:{
     //     backgroundColor:'rgba(0,0,0,1)'
