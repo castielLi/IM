@@ -109,7 +109,7 @@ export default class IM {
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
             //获取之前没有发送出去的消息重新加入消息队列
-            currentObj.addAllUnsendMessageToSendQueue();
+            // currentObj.addAllUnsendMessageToSendQueue();
         });
     }
 
@@ -183,6 +183,8 @@ export default class IM {
 
             window.networkStatus = networkStatus;
 
+            this.stopIMRunCycle()
+
             _socket.setNetWorkStatus(networkStatuesType.none);
 
             checkNetEnvironmentInterval = setInterval(function () {
@@ -193,7 +195,8 @@ export default class IM {
                     //todo:恢复网络了后要重新发送消息
 
                     _socket.setNetWorkStatus(networkStatuesType.normal);
-                    _socket.reConnectNet();
+
+                    currentObj.startIM();
 
                     //获取之前没有发送出去的消息重新加入消息队列
                     currentObj.addAllUnsendMessageToSendQueue();
@@ -501,20 +504,20 @@ export default class IM {
 
                 currentObj.MessageResultHandle(true, messageId);
 
-
                 currentObj.popCurrentMessageSqlite(messageId)
 
                 let updateMessage = cacheMessage[item];
-
-                SendManager.receieveAckHandle(messageId);
-
-                this.popMessageFromCache(messageId);
 
                 console.log("ack队列pop出：" + messageId)
 
                 updateMessage.status = MessageStatus.SendSuccess;
 
                 currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
+
+                SendManager.receieveAckHandle(messageId);
+
+                // this.popMessageFromCache(messageId);
+
 
                 break;
             }
