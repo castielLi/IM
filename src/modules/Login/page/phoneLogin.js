@@ -271,6 +271,7 @@ class PhoneLogin extends ContainerComponent {
 						<Text style = {styles.NumberBefore}>+86</Text>
 						<TextInput
 						style = {styles.textInput}
+						keyboardType = {'numeric'}
 						maxLength = {11}
 						placeholderTextColor = '#cecece'
 						placeholder = '请输入手机号码'

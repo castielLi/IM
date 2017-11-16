@@ -57,6 +57,7 @@ class ChooseClient extends ContainerComponent {
             isShowFlatList:false,
             relationStore:initDataFormate('private',props.relationStore),
 		}
+        this.splNeedArr = [];
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
 	}
@@ -231,10 +232,11 @@ class ChooseClient extends ContainerComponent {
 		let accounts = "";
 		let nicks = "";
 		let members = [];
+		let splNeedArr = [];
 		//拼接选中用户id
 		for(let item in chooseArr){
 			accounts+= chooseArr[item].RelationId+",";
-
+            splNeedArr.push({Account:chooseArr[item].RelationId});
 			if(item < chooseArr.length - 1){
 				nicks += chooseArr[item].Nick+",";
 			}else{
@@ -243,6 +245,7 @@ class ChooseClient extends ContainerComponent {
 
 			members.push({"Account":chooseArr[item].RelationId})
 		}
+		this.splNeedArr = splNeedArr;
 		accounts += currentObj.props.accountId;
 
 		//已有群 添加新成员
@@ -257,7 +260,7 @@ class ChooseClient extends ContainerComponent {
                         return;
                     }
 
-                    //向添加的用户发送邀请消息
+
 					let messageId = uuidv1();
                     let text = nicks;
                     let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
@@ -267,6 +270,12 @@ class ChooseClient extends ContainerComponent {
                     let copyMessage = Object.assign({},sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
                     currentObj.props.addMessage(reduxMessage);
+                    //添加新人到缓存和数据库
+					user.AddGroupAndMember(currentObj.props.groupId,currentObj.splNeedArr);
+                    currentObj.state.chooseArr.forEach((val,it)=>{
+                        user.groupAddMemberChangeCash(currentObj.props.groupId,val.RelationId);
+                        user.privateAddMemberChangeCash(val.RelationId,val)
+					})
                     //路由跳转
                     let routes = currentObj.props.navigator.getCurrentRoutes();
                     let index;
