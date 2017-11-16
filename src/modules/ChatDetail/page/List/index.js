@@ -28,7 +28,6 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
 import Ces from './ces';
-import ImageModal from './ImageModal';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
 import Player from './player'
@@ -611,7 +610,6 @@ class Chat extends Component {
                             {...this._gestureHandlers}
                         />
                         <Ces/>
-                        {/*<ImageModal/>*/}
                         <Player/>
                         {this.renderModal()}
                     </View>
@@ -636,7 +634,6 @@ class Chat extends Component {
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
                         <Ces/>
-                        {/*<ImageModal/>*/}
                         <Player/>
                         {this.renderModal()}
                     </View>
