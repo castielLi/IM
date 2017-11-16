@@ -26,6 +26,12 @@ export default class ContainerComponent extends Component {
         this.viewModel = {};
         this.style = style;
         this.Localization = Localization;
+        this._handleBack = this._handleBack.bind(this);
+    }
+
+
+    componentDidMount(){
+        BackAndroid.addEventListener('hardwareBackPress', this.handleBack)
     }
 
     componentWillMount(newStyles){
@@ -54,6 +60,17 @@ export default class ContainerComponent extends Component {
             });
         }
 
+    }
+
+    //android的返回按钮点击
+    _handleBack () {
+        let navigator = this.props.navigator;
+        //
+        if(navigator!=undefined){
+            return this.route.androidBack(this.props)
+        }else{
+            return false;
+        }
     }
 
     showLoading(){
