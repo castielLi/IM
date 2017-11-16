@@ -216,6 +216,8 @@ class PhoneLogin extends ContainerComponent {
 											//   }
 										   // }
 
+                                           im.addAllUnsendMessageToSendQueue();
+
                                            data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
                                            currentObj.props.initRelation(data);
 

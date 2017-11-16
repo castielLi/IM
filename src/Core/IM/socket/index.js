@@ -43,7 +43,8 @@ export default class Connect extends Component{
 
     }
 
-    addEventListenner(){
+    addEventListenner(callback=undefined){
+
         this.webSocket.addEventListener('message', function (event) {
             console.log("Socket Core:收到了一条新消息:" + event.data)
             if(event.data.length  <= 0){
@@ -69,6 +70,8 @@ export default class Connect extends Component{
 
         this.webSocket.addEventListener('open', function (event) {
             console.log('Hello Server!');
+
+            callback&&callback();
 
             if(heartBeatCode != undefined){
                 currentObj.sendMessage(heartBeatCode);
@@ -141,7 +144,7 @@ export default class Connect extends Component{
         this.addEventListenner();
     }
 
-    reConnectNet(){
+    reConnectNet(callback=undefined){
         // + "/socket.io/?EIO=4&transport=websocket"
 
        if(this.webSocket == undefined ||  this.webSocket.readyState == this.webSocket.OPEN){
@@ -149,7 +152,7 @@ export default class Connect extends Component{
        }
 
        this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+_device+"&Token="+ _imToken + "&DeviceId="+_deviceId);
-       this.addEventListenner();
+       this.addEventListenner(callback);
     }
 
     setNetWorkStatus(status){
