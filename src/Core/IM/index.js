@@ -123,7 +123,7 @@ export default class IM {
         handleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
-    startIM(){
+    startIM(callback=undefined){
         loopState = loopStateType.wait;
         //初始化timer间隔
         sendMessageIntervalTime = configs.SendMessageIntervalTime;
@@ -136,7 +136,7 @@ export default class IM {
 
         //从后台进前台的时候，如果当前网络为none，程序是已经在执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
         if(networkStatus != networkStatuesType.none){
-            this.socket.reConnectNet();
+            this.socket.reConnectNet(callback);
         }
 
     }
@@ -196,10 +196,9 @@ export default class IM {
 
                     _socket.setNetWorkStatus(networkStatuesType.normal);
 
-                    currentObj.startIM();
 
-                    //获取之前没有发送出去的消息重新加入消息队列
-                    currentObj.addAllUnsendMessageToSendQueue();
+                    //回调获取之前没有发送出去的消息重新加入消息队列
+                    currentObj.startIM(currentObj.addAllUnsendMessageToSendQueue());
 
                 }
             },200);
@@ -387,8 +386,8 @@ export default class IM {
     }
 
     //IM logic添加message 到 SendManager发送队列中
-    addSendMessageQueue(message){
-        SendManager.addSendMessage(message.MSGID)
+    addSendMessageQueue(messageId){
+        SendManager.addSendMessage(messageId)
     }
 
     //发送消息
@@ -408,6 +407,9 @@ export default class IM {
                 message.status = SendStatus.WaitAck;
                 SendManager.changeSendInfoByMSGID(messageId);
                 this.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
+            }else{
+                //心跳包发送消息之后直接从cache里面删除
+                this.popMessageFromCache(messageId);
             }
         }else{
             message.status = SendStatus.PrepareToSend;

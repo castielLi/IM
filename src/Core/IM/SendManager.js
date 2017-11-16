@@ -71,7 +71,7 @@ SendManager.handleSendMessageQueue = function(){
                     sendMessageQueue.splice(item,1);
                 }else{
                     let now = new Date().getTime();
-                    if(sendMessageQueue[item].info.sendTime - now > configs.timeOutResend) {
+                    if(now - sendMessageQueue[item].info.sendTime > configs.timeOutResend) {
                         currentObj.sendMessage(sendMessageQueue[item].MSGID);
                     }
                 }

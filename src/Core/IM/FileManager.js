@@ -91,7 +91,7 @@ FileManager.uploadResource = function(obj){
             currentObj.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
 
             //返回IM logic 添加message到发送队列中
-            currentObj.addSendMessageQueue(message);
+            currentObj.addSendMessageQueue(message.MSGID);
 
             //App上层修改message细节
             currentObj.MessageChangeStatusHandle(message);
