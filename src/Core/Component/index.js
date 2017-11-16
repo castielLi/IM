@@ -3,7 +3,7 @@
  */
 
 import React, { Component } from 'react';
-import ReactNative from 'react-native';
+import ReactNative,{BackHandler} from 'react-native';
 import StyleSheetHelper from '../StyleSheet/index'
 import Style from '../StyleSheet/style'
 import Route from '.././route/router'
@@ -22,7 +22,7 @@ export default class DisplayComponent extends Component {
     }
 
     componentDidMount(){
-        BackAndroid.addEventListener('hardwareBackPress', this.handleBack)
+        BackHandler.addEventListener('hardwareBackPress', this._handleBack)
         console.log( this.constructor.name + "已经加入展示界面" )
     }
 
