@@ -78,6 +78,8 @@ class Ces extends React.Component {
                            cropHeight={height}
                            imageWidth={width}
                            imageHeight={height}
+                           leaveStayTime={150}
+                           leaveDistance={20}
                            onClick={()=>this.modalClose()}
                 >
                     <Image style={{width,height,resizeMode: 'contain'}}

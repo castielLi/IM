@@ -190,9 +190,13 @@ class ThouchBarBoxTopBox extends Component {
       return;
     }
 
+
+      // setTimeout(()=>{this.setState({
+      //     isShowModal: false,
+      // })},1000)
       this.setState({
-          isShowModal: false,
-      })
+              isShowModal: false,
+          })
     let stop = () => {
         audio&&audio._stop((currentTime) => {
 
@@ -224,10 +228,12 @@ class ThouchBarBoxTopBox extends Component {
     })
   }
   _onPressCancel() {
+      this.shouldPressSpeakBox = false;
     clearInterval(checkMaxRecordTimeInterval)
     //结束录音 
     let stop = ()=>{
       audio._stop((currentTime)=>{
+        this.shouldPressSpeakBox = true;
       //删除该录音文件
       RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
       });
@@ -273,14 +279,18 @@ class ThouchBarBoxTopBox extends Component {
   }
   componentWillMount() {
     this._gestureHandlers = {
-        onStartShouldSetResponder: () => true,  //对触摸进行响应
-        onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        onStartShouldSetResponder: () => {if(!this.shouldPressSpeakBox){
+            return false;
+        }else{return true}},  //对触摸进行响应
+        onMoveShouldSetResponder: ()=> {if(!this.shouldPressSpeakBox){
+            return false;
+        }else{return true}},  //对滑动进行响应
         onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
-            if(!this.shouldPressSpeakBox){
-                return;
-            }
+            // if(!this.shouldPressSpeakBox){
+            //     return;
+            // }
           this.setState({
             isOnPressSpeakBox:true
           })
@@ -288,9 +298,9 @@ class ThouchBarBoxTopBox extends Component {
         },
         //移动时作出的动作
         onResponderMove: (e)=>{
-            if(!this.shouldPressSpeakBox){
-                return;
-            }
+            // if(!this.shouldPressSpeakBox){
+            //     return;
+            // }
           if(e.nativeEvent.pageY<this.speakBoxOffsetY){
               this.setState({
               recordingModalStatus: 2,
@@ -303,9 +313,9 @@ class ThouchBarBoxTopBox extends Component {
         },
         //动作释放后做的动作
         onResponderRelease: ()=>{
-            if(!this.shouldPressSpeakBox){
-                return;
-            }
+            // if(!this.shouldPressSpeakBox){
+            //     return;
+            // }
           this.setState({
             isOnPressSpeakBox:false
           })
