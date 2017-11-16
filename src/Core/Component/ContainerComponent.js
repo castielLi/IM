@@ -4,6 +4,7 @@
 
 
 import React, { Component } from 'react';
+import {BackHandler} from 'react-native';
 import netWorking from '../Networking/Network'
 import BaseComponent from './index'
 import Popup from 'react-native-popup';
@@ -31,7 +32,7 @@ export default class ContainerComponent extends Component {
 
 
     componentDidMount(){
-        BackAndroid.addEventListener('hardwareBackPress', this.handleBack)
+        BackHandler.addEventListener('hardwareBackPress', this._handleBack)
     }
 
     componentWillMount(newStyles){

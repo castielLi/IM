@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   textInputStyle:{ 
     position:'absolute',
     left:Platform.OS === 'android'?90:50,
-    top:pxToPt(5), 
+      bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
     fontSize:20, 
     lineHeight:20, 
     width:Platform.OS === 'android'?width-185:width-140,

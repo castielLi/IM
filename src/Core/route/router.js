@@ -152,7 +152,8 @@ class Route {
         }
 
         if(contain){
-            if(routes.length - 1 > i){
+            if(routes.length - 1 > containIndex){
+                props.navigator.pop();
                 return true;
             }else{
                 return false;
@@ -160,6 +161,7 @@ class Route {
 
         }else{
             if(routes.length > 2){
+                props.navigator.pop();
                 return true;
             }else{
                 return false

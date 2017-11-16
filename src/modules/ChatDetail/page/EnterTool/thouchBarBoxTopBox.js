@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     height: pxToPt(40),
     width: Platform.OS === 'android'?width-185:width-140,
     left: Platform.OS === 'android'?90:50,
-    top: 5,
+      bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
     borderRadius: 5,
     borderColor: '#ccc',
     borderWidth: pxToPt(1),
