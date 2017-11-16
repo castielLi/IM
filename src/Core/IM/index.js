@@ -13,7 +13,7 @@ import * as DtoMethods from './dto/Common'
 import MessageType from './dto/MessageType'
 import netWorking from '../Networking/Network'
 import SendManager from './SendManager'
-import AckManager from './AckManager'
+// import AckManager from './AckManager'
 import FileManager from './FileManager'
 import ReceiveManager from './ReceiveManager'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
@@ -95,7 +95,6 @@ export default class IM {
         //依赖注入
         SendManager.Ioc(this);
         ReceiveManager.Ioc(this);
-        AckManager.Ioc(this);
         FileManager.Ioc(this);
     }
 
@@ -110,7 +109,7 @@ export default class IM {
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
             //获取之前没有发送出去的消息重新加入消息队列
-            currentObj.addAllUnsendMessageToSendQueue();
+            // currentObj.addAllUnsendMessageToSendQueue();
         });
     }
 
@@ -124,7 +123,7 @@ export default class IM {
         handleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
-    startIM(){
+    startIM(callback=undefined){
         loopState = loopStateType.wait;
         //初始化timer间隔
         sendMessageIntervalTime = configs.SendMessageIntervalTime;
@@ -137,7 +136,7 @@ export default class IM {
 
         //从后台进前台的时候，如果当前网络为none，程序是已经在执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
         if(networkStatus != networkStatuesType.none){
-            this.socket.reConnectNet();
+            this.socket.reConnectNet(callback);
         }
 
     }
@@ -184,6 +183,8 @@ export default class IM {
 
             window.networkStatus = networkStatus;
 
+            this.stopIMRunCycle()
+
             _socket.setNetWorkStatus(networkStatuesType.none);
 
             checkNetEnvironmentInterval = setInterval(function () {
@@ -194,10 +195,10 @@ export default class IM {
                     //todo:恢复网络了后要重新发送消息
 
                     _socket.setNetWorkStatus(networkStatuesType.normal);
-                    _socket.reConnectNet();
 
-                    //获取之前没有发送出去的消息重新加入消息队列
-                    currentObj.addAllUnsendMessageToSendQueue();
+
+                    //回调获取之前没有发送出去的消息重新加入消息队列
+                    currentObj.startIM(currentObj.addAllUnsendMessageToSendQueue());
 
                 }
             },200);
@@ -277,7 +278,8 @@ export default class IM {
 
                     if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
 
-                        FileManager.addResource(message,null);
+                        cacheMessage.push(message);
+                        FileManager.addResource(message.MSGID,null);
 
                         console.log("加入资源队列" + message.MSGID);
                     }else{
@@ -288,7 +290,8 @@ export default class IM {
 
             // sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
             for(let item in sendMessage){
-                SendManager.addSendMessage(sendMessage[item]);
+                cacheMessage.push(sendMessage[item]);
+                SendManager.addSendMessage(sendMessage[item].MSGID);
             }
         });
     }
@@ -305,6 +308,25 @@ export default class IM {
     }
 
 
+    //通过MSGID来获取cache中的message数据
+    getCacheFromCacheByMSGID(messageId){
+        for(let i = 0;i<cacheMessage.length;i++){
+            if(messageId == cacheMessage[i].MSGID){
+                return cacheMessage[i];
+            }
+        }
+        return null;
+    }
+
+    //用cache中删除数据
+    popMessageFromCache(messageId){
+        for(let i = 0;i<cacheMessage.length;i++){
+            if(messageId == cacheMessage[i].MSGID){
+                cacheMessage.splice(i,1);
+            }
+        }
+    }
+
     //外部接口，添加消息
     addMessage(message,callback=function(success,content){},onprogess="undefined") {
 
@@ -319,6 +341,9 @@ export default class IM {
             messageId = message.Data.Data.Receiver + "_" +uuid;
             message.MSGID = messageId;
 
+            cacheMessage.push(message);
+
+
             //把消息存入消息sqlite中
             message.status = MessageStatus.WaitOpreator;
 
@@ -326,39 +351,34 @@ export default class IM {
 
                 if(message.type == MessageType.information){
                     //todo:lizongjun 把消息sqlite 全部改成先生成sql语句再执行的形势就可以避免所有参数传递的时候都需要创建新的拷贝
-                    let copyMessage = Object.assign({},message);
-                    copyMessage.Command = MessageCommandEnum.MSG_INFO;
-                    this.storeSendMessage(copyMessage);
+
+                    message.Command = MessageCommandEnum.MSG_INFO;
+                    this.storeSendMessage(message);
                 }else{
                     this.storeSendMessage(message);
                 }
             }
 
-            //添加cache缓存
-            // cacheMessage.push(message);
-
-
-
             storeSqlite.addMessageToSendSqlite(message);
 
             switch (message.type) {
                 case MessageType.text:
-                    SendManager.addSendMessage(message,callback);
+                    SendManager.addSendMessage(message.MSGID,callback);
                     break;
                 case MessageType.image:
-                    FileManager.addResource(message,onprogess,callback);
+                    FileManager.addResource(message.MSGID,onprogess,callback);
                     break;
                 case MessageType.audio:
-                    FileManager.addResource(message,onprogess,callback);
+                    FileManager.addResource(message.MSGID,onprogess,callback);
                     break;
                 case MessageType.friend:
-                    SendManager.addSendMessage(message,callback);
+                    SendManager.addSendMessage(message.MSGID,callback);
                     break;
                 case MessageType.video:
-                    FileManager.addResource(message,onprogess,callback)
+                    FileManager.addResource(message.MSGID,onprogess,callback)
                     break;
                 default:
-                    SendManager.addSendMessage(message,callback);
+                    SendManager.addSendMessage(message.MSGID,callback);
                     break;
             }
 
@@ -366,49 +386,36 @@ export default class IM {
     }
 
     //IM logic添加message 到 SendManager发送队列中
-    addSendMessageQueue(message){
-        SendManager.addSendMessage(message)
+    addSendMessageQueue(messageId){
+        SendManager.addSendMessage(messageId)
     }
 
     //发送消息
-    sendMessage(message){
+    sendMessage(messageId){
         //发送websocket
         console.log("开始发送消息了")
 
-
-        let copyMessage = Object.assign({}, message);
-
-        if(networkStatus == networkStatuesType.normal) {
-            let success = this.socket.sendMessage(copyMessage);
-
-
-            //心跳包不需要进行存储
-            if(message.Command != MessageCommandEnum.MSG_HEART && message.Command != MessageCommandEnum.MSG_REV_ACK) {
-                console.log("添加" + copyMessage.MSGID + "进队列");
-                //初始加入ack队列，发送次数默认为1次
-                AckManager.addAckQueue(copyMessage, 1);
-
-                copyMessage.status = SendStatus.WaitAck;
-                this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
-            }
-        }else{
-            copyMessage.status = SendStatus.PrepareToSend;
-            this.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
-        }
-    }
-
-    reSendMessage(message){
-        console.log("开始发送消息了")
+        let message = this.getCacheFromCacheByMSGID(messageId);
 
         if(networkStatus == networkStatuesType.normal) {
+
             let success = this.socket.sendMessage(message);
 
+            //心跳包和收到消息ack不需要进行存储
+            if(message.Command != MessageCommandEnum.MSG_HEART && message.Command != MessageCommandEnum.MSG_REV_ACK) {
+                console.log("添加" + message.MSGID + "进队列");
+                message.status = SendStatus.WaitAck;
+                SendManager.changeSendInfoByMSGID(messageId);
+                this.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
+            }else{
+                //心跳包发送消息之后直接从cache里面删除
+                this.popMessageFromCache(messageId);
+            }
         }else{
             message.status = SendStatus.PrepareToSend;
             this.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
         }
     }
-
 
 
     //存储发送消息
@@ -471,11 +478,57 @@ export default class IM {
 
     receiveMessageOpreator(message){
         if(message.Command == undefined) {
-            AckManager.receiveMessageOpreator(message);
+            this.ackBackMessageHandle(message);
         }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
             ReceiveManager.receiveMessageOpreator(message);
         }
     }
+
+
+    sendOverMaxTimesHandle(messageId){
+        let message = this.getCacheFromCacheByMSGID(messageId);
+
+        //回调App上层发送失败
+        currentObj.MessageResultHandle(false, messageId);
+
+        message.status = MessageStatus.SendFailed;
+        currentObj.addUpdateSqliteQueue(message,UpdateMessageSqliteType.storeMessage)
+
+        currentObj.popCurrentMessageSqlite(message.MSGID)
+
+
+    }
+
+    ackBackMessageHandle(messageId){
+
+        for(let item in cacheMessage) {
+            if (cacheMessage[item].MSGID == messageId) {
+
+
+                currentObj.MessageResultHandle(true, messageId);
+
+                currentObj.popCurrentMessageSqlite(messageId)
+
+                let updateMessage = cacheMessage[item];
+
+                console.log("ack队列pop出：" + messageId)
+
+                updateMessage.status = MessageStatus.SendSuccess;
+
+                currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
+
+                SendManager.receieveAckHandle(messageId);
+
+                this.popMessageFromCache(messageId);
+
+
+                break;
+            }
+        }
+    }
+
+
+
 
     recMessage(message,type=null) {
 
@@ -485,7 +538,9 @@ export default class IM {
         if(type == MessageCommandEnum.MSG_HEART){
             // message.Command = MessageCommandEnum.MSG_HEART;
             console.log("心跳包压入发送队列")
-            SendManager.addSendMessage(message)
+            //将心跳包消息存入cache，便于send消息
+            cacheMessage.push(message);
+            SendManager.addSendMessage(message.MSGID,undefined,false)
             return;
         }else if(type == MessageCommandEnum.MSG_KICKOUT){
             console.log("设备被踢出消息")
@@ -501,9 +556,6 @@ export default class IM {
         FileManager.downloadResource(message,callback);
     }
 
-    popAckMessage(messageId,success){
-        AckManager.receiveMessageOpreator(messageId,success);
-    }
 
     ReceiveMessageHandle(message){
         AppReceiveMessageHandle(message);
@@ -522,7 +574,9 @@ export default class IM {
     sendReceiveAckMessage(messageId){
         UUIDGenerator.getRandomUUID().then((uuid) => {
             let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
-            SendManager.addSendMessage(receiveAckMessage);
+            SendManager.addSendMessage(receiveAckMessage.MSGID,undefined,false);
+            //把收到消息ack回执添加到cache中，便于send时获取
+            cacheMessage.push(receiveAckMessage);
         })
     }
 
@@ -555,18 +609,17 @@ export default class IM {
                 }, recMessageIntervalTime)
             }
 
-            if(ackMessageInterval == -1) {
-                ackMessageInterval = setInterval(function () {
-                    AckManager.handAckQueue();
-                }, ackMessageIntervalTime)
-            }
+            // if(ackMessageInterval == -1) {
+            //     ackMessageInterval = setInterval(function () {
+            //         // AckManager.handAckQueue();
+            //     }, ackMessageIntervalTime)
+            // }
 
 
             FileManager.handleResourceQueue();
 
         }, configs.RunloopIntervalTime);
     }
-
 
 }
 
@@ -575,4 +628,3 @@ let loopStateType = {
     noNet : "noNet",
     wait : "wait"
 };
-
