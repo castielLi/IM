@@ -40,6 +40,8 @@ import MoreGroupList from './GroupInformationSetting/page/MoreGroupList'
 import GroupAnnouncement from './GroupInformationSetting/page/GroupAnnouncement'
 import GroupName from './GroupInformationSetting/page/GroupName'
 import DeleteGroupMember from './GroupInformationSetting/page/DeleteGroupMember'
+import Player from './ChatDetail/page/List/player'
+import Gallery from './ChatDetail/page/List/gallery'
 
 export const MainPage = {
     key: 'MainTabbar',
@@ -239,6 +241,18 @@ export const RouteMap = {
     'DeleteGroupMember': {
         'DeleteGroupMember': {
             component: DeleteGroupMember,
+            params: {}
+        }
+    },
+    'Player' : {
+        'Player' : {
+            component: Player,
+            params: {}
+        }
+    },
+    'Gallery' : {
+        'Gallery' : {
+        component: Gallery,
             params: {}
         }
     },

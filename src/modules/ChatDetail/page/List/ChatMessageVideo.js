@@ -18,12 +18,16 @@ import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
 import IM from '../../../../Core/IM';
 import * as commonActions from '../../../../Core/Redux/chat/action';
+import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import {
+    Navigator,
+} from 'react-native-deprecated-custom-components';
 
 let im = new IM();
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageVideo extends Component {
+class ChatMessageVideo extends ContainerComponent {
     constructor(props){
         super(props)
         this.state = {
@@ -67,7 +71,8 @@ class ChatMessageVideo extends Component {
                     currentObj.setState({
                         download:false,
                     })
-                    currentObj.props.showMediaPlayer(filePath)
+                    //currentObj.props.showMediaPlayer(filePath)
+                    currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
                 },function (percent) {
                     currentObj.setState({
                         progress:Math.ceil(percent * 100),
@@ -76,7 +81,8 @@ class ChatMessageVideo extends Component {
                 })
             }
             else{
-                this.props.showMediaPlayer(Local)
+                //this.props.showMediaPlayer(Local)
+                this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
             }
         }).catch((err) => {
             console.log(err.message);

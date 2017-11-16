@@ -18,15 +18,16 @@ import * as Actions from '../../reducer/action';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from "react-native-slider";
+import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 
 let {width, height} = Dimensions.get('window');
 
-class Player extends Component {
+class Player extends ContainerComponent {
     constructor(props){
         super(props)
         this.state = {
-            isShow : false,
-            url: '',
+            // isShow : false,
+            // url: '',
 
             paused:false,
             video:{time:'00:00',duration:'00:00'},
@@ -41,13 +42,13 @@ class Player extends Component {
     static propTypes = {
 
     };
-    componentWillReceiveProps(newProps){
-        let {url,isShow} = newProps.mediaPlayerStore;
-        this.setState({
-            url,
-            isShow,
-        });
-    }
+    // componentWillReceiveProps(newProps){
+    //     let {url,isShow} = newProps.mediaPlayerStore;
+    //     this.setState({
+    //         url,
+    //         isShow,
+    //     });
+    // }
 
     // pause(){
     //     this.setState({
@@ -91,7 +92,7 @@ class Player extends Component {
         return(
             <View style={{width,height,position:'absolute'}}>
                 <View style={{width}}>
-                    <TouchableOpacity style={{width:30,height:30,marginLeft:20,marginTop:20}} onPress={()=>{this.props.hideMediaPlayer();this.setState({paused:false})}}>
+                    <TouchableOpacity style={{width:30,height:30,marginLeft:20,marginTop:20}} onPress={()=>{this.route.pop(this.props);this.setState({paused:false})}}>
                         <Icon size={30} name="close" color='#fff' />
                     </TouchableOpacity>
                 </View>
@@ -144,11 +145,11 @@ class Player extends Component {
     onEnd = ()=>{
         let duration = this.state.video.duration;
         this.setState({
-            paused:true,
             video:{time:'00:00',duration},
             progress:0,
-
+            paused:true,
         })
+        this.video.seek(0);
     };
     onProgress = (e)=>{
         //alert(JSON.stringify(e))
@@ -175,45 +176,39 @@ class Player extends Component {
         this.setState({video:{time:this.formatTime(currentTime),duration}});
     }
     render() {
-        if(this.state.isShow){
             return(
-                <Modal style={styles.container} animationType={'fade'} onRequestClose={()=>{}}>
-                    <View style={styles.videoView}>
-                        <Video
-                            ref={(ref) => {
-                                this.video = ref
-                            }}
-                            //来自本地的MP4视频
-                            source={{uri:this.state.url}}
-                            //1.0表示默认速率
-                            rate={1.0}
-                            //图片等比例缩放
-                            resizeMode='contain'
-                            //是否重复播放
-                            repeat={false}
-                            //默认音量
-                            volume={1.0}
-                            //是否暂停
-                            paused={this.state.paused}
-                            // 当app转到后台运行的时候，播放是否暂停
-                            playInBackground={false}
-                            // onLoadStart={this.loadStart} // 当视频开始加载时的回调函数
-                            onLoad={(e)=>this.setDuration(e)}    // 当视频加载完毕时的回调函数
-                            onEnd={()=>this.onEnd()}           // 当视频播放完毕后的回调函数
-                            // onError={this.videoError}    // 当视频不能加载，或出错后的回调函数
-                            onProgress={(e)=>this.onProgress(e)}    //  进度控制，每250ms调用一次，以获取视频播放的进度
-                            // onBuffer={this.onBuffer}     // 远程视频缓冲时回调
-                            style={styles.player}
-                        />
-                        {/*{this.defaultControlsView()}*/}
-                        {/*<TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow',position:'absolute',top:0,right:0}} onPress={()=>{this.pause()}}/>*/}
-                        {this.defaultControlsBox()}
-                    </View>
-                </Modal>
+                <View style={styles.container} >
+                    <Video
+                        ref={(ref) => {
+                            this.video = ref
+                        }}
+                        //来自本地的MP4视频
+                        source={{uri:this.props.path}}
+                        //1.0表示默认速率
+                        rate={1.0}
+                        //图片等比例缩放
+                        resizeMode='contain'
+                        //是否重复播放
+                        repeat={false}
+                        //默认音量
+                        volume={1.0}
+                        //是否暂停
+                        paused={this.state.paused}
+                        // 当app转到后台运行的时候，播放是否暂停
+                        playInBackground={false}
+                        // onLoadStart={this.loadStart} // 当视频开始加载时的回调函数
+                        onLoad={(e)=>this.setDuration(e)}    // 当视频加载完毕时的回调函数
+                        onEnd={()=>this.onEnd()}           // 当视频播放完毕后的回调函数
+                        // onError={this.videoError}    // 当视频不能加载，或出错后的回调函数
+                        onProgress={(e)=>this.onProgress(e)}    //  进度控制，每250ms调用一次，以获取视频播放的进度
+                        // onBuffer={this.onBuffer}     // 远程视频缓冲时回调
+                        style={styles.player}
+                    />
+                    {/*{this.defaultControlsView()}*/}
+                    {/*<TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow',position:'absolute',top:0,right:0}} onPress={()=>{this.pause()}}/>*/}
+                    {this.defaultControlsBox()}
+                </View>
             )
-        }else{
-            return null;
-        }
     }
 }
 
@@ -222,9 +217,6 @@ class Player extends Component {
 const styles = StyleSheet.create({
     container:{
       flex:1,
-    },
-    videoView:{
-        flex:1,
         backgroundColor:'#000'
     },
     player:{
