@@ -36,7 +36,7 @@ export const ExcuteIMSql = {
     "DeleteUploadFileRecode":"Delete from ResourceRecode where messageId = ? and localResource = ?",
     "QueryChatRecodeByClient":"select messageId from ? order by Id desc LIMIT ?,?",
     "QueryMessageResourceExist":"select * from ResourceRecode where messageId = ? and localResource = ?",
-    "AddNewMessageToApplyFriend":"insert into ApplyFriend (send,rec,status,comment,time,key,nick,avator) values(?,?,?,?,?,?,?,?)",
+    "AddNewMessageToApplyFriend":"insert or ignore into ApplyFriend (send,rec,status,comment,time,key,nick,avator) values(?,?,?,?,?,?,?,?)",
     "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?",
     "UpdateMessageRemoteUrl":"update MessageRecode set localPath=? where messageId=?"
