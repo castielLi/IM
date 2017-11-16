@@ -27,10 +27,8 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
-import Ces from './ces';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
-import Player from './player'
 import User from '../../../../Core/User'
 
 
@@ -382,7 +380,7 @@ class Chat extends Component {
                                  }
                              </TouchableOpacity>
                          </View>
-                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type}/>
+                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
                          {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                      </View>
@@ -422,7 +420,7 @@ class Chat extends Component {
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
                                 {this.props.type === 'chatroom' ? this.getGroupMembersInfo(Receiver) : null}
-                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type}/>
+                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
                             </View>
                         </View>
                     </View>
@@ -609,8 +607,6 @@ class Chat extends Component {
                             //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
                             {...this._gestureHandlers}
                         />
-                        <Ces/>
-                        <Player/>
                         {this.renderModal()}
                     </View>
             );
@@ -633,8 +629,6 @@ class Chat extends Component {
 
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
-                        <Ces/>
-                        <Player/>
                         {this.renderModal()}
                     </View>
                 )

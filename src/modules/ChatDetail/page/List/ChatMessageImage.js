@@ -14,10 +14,14 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
+import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import {
+    Navigator,
+} from 'react-native-deprecated-custom-components';
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageImage extends Component {
+class ChatMessageImage extends ContainerComponent {
     constructor(props){
         super(props)
 
@@ -55,6 +59,9 @@ class ChatMessageImage extends Component {
         return {uri:Source}
     }
 
+    goToCes = (url)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"url":url},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    }
     render() {
         let {data, style} = this.props;
         let {Sender,Receiver} = data.message.Data.Data;
@@ -70,7 +77,7 @@ class ChatMessageImage extends Component {
 
         return(
             <View style={[style,styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.props.showImageModal(LocalSource || RemoteSource)}>
+                <TouchableOpacity onPress={()=>this.goToCes(LocalSource || RemoteSource)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
                         source={this.localSourceObj(LocalSource || RemoteSource)}
