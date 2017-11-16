@@ -21,10 +21,14 @@ SendManager.checkQueueLength = function(){
     return sendMessageQueue.length;
 }
 
-SendManager.addSendMessage = function(messageId,callback=undefined,needACK=true){
+SendManager.addSendMessage = function(messageId,needACK=true){
 
     let message = createSendMessageObj(messageId,needACK);
     sendMessageQueue.push(message);
+
+    let cache = currentObj.getCacheFromCacheByMSGID(messageId);
+    let callback = cache["callback"];
+
     console.log("message 加入发送队列",message)
     callback && callback(true,message.MSGID);
 
