@@ -447,7 +447,14 @@ export default class User {
 
     //Group.db
 
-
-
+    //添加缓存
+    //群拉人，添加到cache["groupMember"]缓存
+    groupAddMemberChangeCash(groupId,memberId){
+        cache["groupMember"][groupId].push(memberId);
+    }
+    //添加到cache["private"]
+    privateAddMemberChangeCash(memberId,memberObj){
+        cache["private"][memberId] = memberObj;
+    }
 
 }

@@ -46,6 +46,13 @@ export function initUnDealRequestNumber(number){
 
 }
 
+export function clearUnDealRequestNumber(){
+    return {
+        type: 'CLEAR_UNDEALREQUEST_NUMBER',
+    };
+
+}
+
 export function clearAllTabberMessageNumber(){
     return {
         type: 'CLEAR_ALLTABBERMESSAGE_NUMBER',

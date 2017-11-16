@@ -27,7 +27,7 @@ export const ExcuteIMSql = {
     "UpdateRelationDisplayStatus":'update GroupList set show = ? where RelationId = ?',
     "UpdateGroupName":'update GroupList set Nick = ? where RelationId = ?',
     "SelectRelationByIdAndType":"select * from GroupList where RelationId = ? and Type = 'chatroom' ",
-    "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId varchar(255))",
+    "CreateGroupMemberTable":"CREATE TABLE IF NOT EXISTS ? (RelationId varchar(255) PRIMARY KEY)",
     "InsertGroupMember":"insert or replace into ? (RelationId) values(?)",
     "GetGroupMembersByGroupId":"select * from ?",
     "RemoveGroupFromContact":"update GroupList set show='false' where RelationId=?",
