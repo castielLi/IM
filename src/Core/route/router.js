@@ -139,6 +139,34 @@ class Route {
         props.navigator.pop();
     }
 
+    static androidBack(props){
+        let routes = props.navigator.getCurrentRoutes();
+        let contain = false;
+        let containIndex = 0;
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i]["key"] == this.mainPage["key"] && routes[i]["routeId"] == this.mainPage["routeId"]) {
+                contain = true;
+                containIndex = i;
+                break;
+            }
+        }
+
+        if(contain){
+            if(routes.length - 1 > i){
+                return true;
+            }else{
+                return false;
+            }
+
+        }else{
+            if(routes.length > 2){
+                return true;
+            }else{
+                return false
+            }
+        }
+    }
+
 
     static replaceTop(props,route){
         let routes = props.navigator.getCurrentRoutes();

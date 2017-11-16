@@ -17,15 +17,29 @@ export default class DisplayComponent extends Component {
         //关联路由组件
         this.route = Route;
         this.Localization = Localization;
+
+        this._handleBack = this._handleBack.bind(this);
     }
 
     componentDidMount(){
+        BackAndroid.addEventListener('hardwareBackPress', this.handleBack)
         console.log( this.constructor.name + "已经加入展示界面" )
     }
 
     componentWillMount(newStyles){
         const styles = StyleSheetHelper.mergeStyleSheets(Style,newStyles);
         return styles;
+    }
+
+    //android的返回按钮点击
+    _handleBack () {
+        let navigator = this.props.navigator;
+        //
+        if(navigator!=undefined){
+            return this.route.androidBack(this.props)
+        }else{
+            return false;
+        }
     }
 
     render(){
