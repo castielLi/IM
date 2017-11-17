@@ -66,7 +66,7 @@ class ChatMessageVideo extends ContainerComponent {
                 network.methodDownloadWithProgress(Remote,filePath,function () {
 
                     currentObj.props.updateMessagePath(msgID,filePath,Sender)
-                    im.updateMessageRemoteUrl(msgID,filePath)
+                    im.updateMessageLocalSource(msgID,filePath)
 
                     currentObj.setState({
                         download:false,

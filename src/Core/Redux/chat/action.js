@@ -94,6 +94,15 @@ export function updateMessagePath(MSGID,path,sender){
         path
     }
 }
+//修改资源文件的远程地址
+export function updateMessageUrl(MSGID,url){
+    return{
+        type:'UPDATE_MESSAGES_URL',
+        client:InterceptionClientFromId(MSGID),
+        MSGID,
+        url
+    }
+}
 //修改某条消息的网络路径
 export function updateMessage(message){
 	return{

@@ -457,9 +457,13 @@ export default class IM {
 
     }
 
-    //更改video消息下载完成时的资源路径
-    updateMessageRemoteUrl(messageId,url){
-       storeSqlite.updateMessageRemoteUrl(messageId,url);
+    //更改消息本地资源路径
+    updateMessageLocalSource(messageId,url){
+       storeSqlite.updateMessageLocalSource(messageId,url);
+    }
+    //更改消息远程资源路径
+    updateMessageRemoteSource(messageId,url){
+        storeSqlite.updateMessageRemoteSource(messageId,url);
     }
 
 
