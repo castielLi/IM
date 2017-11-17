@@ -116,22 +116,22 @@ FileManager.downloadResource = function(message,callback){
         way = message.way,
         toFile;
 
-    let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/${new Date().getTime()}${format}`;
+    let format = fromUrl.slice(fromUrl.lastIndexOf('/'));
+    toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}${format}`;
 
     console.log('下载前=============================:  ',message,toFile)
-
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
         if(type === 'image'){
             toFile = 'file://'+toFile;
+            message.Resource[0].RemoteSource = fromUrl + '#imageView2/0/w/200/h/200';
         }
         message.Resource[0].LocalSource = toFile;
         console.log('下载成功后=============================:  ',message)
         callback(message)
     }
-
-    _network.methodDownload(fromUrl,toFile,updateMessage)
+    let url = type === 'image' ? fromUrl + '?imageView2/0/w/200/h/200' : fromUrl;
+    _network.methodDownload(url,toFile,updateMessage)
 
     console.log('receiveMessageOpreator:  ',message)
 }

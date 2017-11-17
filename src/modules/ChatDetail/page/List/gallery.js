@@ -72,17 +72,22 @@ class Gallery extends ContainerComponent {
 
     }
 
-    downOriginalImage = (path,Remote,MSGID)=>{
+    downOriginalImage = (path,Remote,MSGID,Sender)=>{
         let network = new netWorking();
         let im = new IM();
         let currentObj = this;
-        network.methodDownloadWithProgress(Remote,path,function () {
+        let url = Remote.match(/([\s\S]*)#imageView2/)[1];
+        network.methodDownloadWithProgress(url,path,function () {
 
             //todo:修改数据库和修改redux的Source保存原图地址
-            currentObj.props.updateMessageUrl(MSGID,Remote);
-            im.updateMessageRemoteSource(MSGID,Remote);
+
+
+            //todo:图片下载成功后会覆盖之前的缩略图，但是不会刷新需要重新开启APP
+            currentObj.props.updateMessageUrl(MSGID,url,Sender);
+            im.updateMessageRemoteSource(MSGID,url);
 
             currentObj.setState({
+                path,
                 download:false,
             })
         },function (percent) {
@@ -93,8 +98,9 @@ class Gallery extends ContainerComponent {
         })
     }
     render() {
-        let {path,Remote,MSGID} = this.props;
-        let thumbnail = Remote.indexOf('?imageView2') !== -1 ? true : false;
+        let {path,Remote,MSGID,Sender} = this.props;
+        let thumbnail = Remote.indexOf('#imageView2') !== -1 ? true : false;
+        //alert(thumbnail)
         return (
             <View style={styles.container}>
                 {/*<ImageViewer*/}
@@ -116,11 +122,13 @@ class Gallery extends ContainerComponent {
                     <Image style={{width,height,resizeMode: 'contain'}}
                            source={{uri:this.state.path}}/>
                 </ImageZoom>
-                {thumbnail ?
-                    <TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(path,Remote,MSGID)}>
-                        <Text style={styles.downloadText}>下载原图</Text>
-                    </TouchableOpacity> : null
-                }
+                {/*{thumbnail ?*/}
+                    {/*<TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(path,Remote,MSGID,Sender)}>*/}
+                        {/*{this.state.download ?*/}
+                            {/*<Text style={styles.downloadText}>{this.state.progress}</Text> :*/}
+                            {/*<Text style={styles.downloadText}>下载原图</Text>}*/}
+                    {/*</TouchableOpacity> : null*/}
+                {/*}*/}
             </View>
         );
     }

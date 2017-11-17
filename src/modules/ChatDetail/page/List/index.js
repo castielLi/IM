@@ -52,7 +52,7 @@ class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
+            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status || r1.message.Resource[0].RemoteSource !== r2.message.Resource[0].RemoteSource;
         }});
 
         this.data = [];
@@ -351,6 +351,21 @@ class Chat extends Component {
         }
         return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
     }
+    getNikesFromIds = (idString) =>{
+        let Members = this.state.groupMembers;
+        let MembersLength = Members.length;
+        let ids = idString.split(',');
+        let needStr = '';
+        for(let i=0;i<MembersLength;i++){
+            for(let j=0;j<ids.length;j++){
+                if(Members[i].RelationId == ids[j]){
+                    needStr+= Members[i].Nick+',';
+                    break;
+                }
+            }
+        }
+        return needStr;
+    }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
@@ -413,7 +428,16 @@ class Chat extends Component {
                         </View>
                     </View>
                 )
-            }else if(row.message.Command * 1 == 101||row.message.Command * 1 == 102){
+            }else if(row.message.Command * 1 == 101){
+
+                return(<View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{this.getNikesFromIds(Data)}</Text>
+                    </View>
+                </View>)
+
+
+            }else if(row.message.Command * 1 == 102){
 
                 return(<View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>

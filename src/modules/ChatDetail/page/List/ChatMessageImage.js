@@ -59,8 +59,8 @@ class ChatMessageImage extends ContainerComponent {
         return {uri:Source}
     }
 
-    goToCes = (path,Remote,MSGID)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"Remote":Remote,"MSGID":MSGID},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    goToCes = (path,Remote,MSGID,Sender)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;
@@ -78,7 +78,7 @@ class ChatMessageImage extends ContainerComponent {
 
         return(
             <View style={[style,styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID)}>
+                <TouchableOpacity onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
                         source={this.localSourceObj(LocalSource)}
