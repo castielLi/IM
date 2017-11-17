@@ -157,7 +157,7 @@ class RecentChat extends ContainerComponent {
 	}
 
 	goToChatDetail(rowData){
-		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type}});
+		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type,nick:this.formateRelationData[rowData.Client].Nick}});
 	}
 	deleteSomeRow(rowID,rowData){
 		let oKCallback = ()=>{
