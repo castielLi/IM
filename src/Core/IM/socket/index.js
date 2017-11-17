@@ -124,7 +124,7 @@ export default class Connect extends Component{
         onRecieveMessage = callback;
     }
 
-    startConnect(token,Device,DeviceId,IMToken){
+    startConnect(token,Device,DeviceId,IMToken,callback=undefined){
         _token = token;
         _deviceId = DeviceId;
         _device = Device;
@@ -141,7 +141,7 @@ export default class Connect extends Component{
         }
 
         this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+Device+"&Token="+ IMToken + "&DeviceId="+DeviceId);
-        this.addEventListenner();
+        this.addEventListenner(callback);
     }
 
     reConnectNet(callback=undefined){
@@ -152,7 +152,7 @@ export default class Connect extends Component{
        }
 
        this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+_device+"&Token="+ _imToken + "&DeviceId="+_deviceId);
-       this.addEventListenner(callback);
+       this.addEventListenner();
     }
 
     setNetWorkStatus(status){

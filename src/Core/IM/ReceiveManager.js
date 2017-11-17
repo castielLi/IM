@@ -79,6 +79,11 @@ ReceiveManager.receiveMessageOpreator = function(message){
             currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 
             currentObj.sendReceiveAckMessage(blackMessage.MSGID)
+        }else{
+            let sender = message.Data.SourceMSGID.split("_")[0];
+            let blackMessage = blackListMessage(sender,message.MSGID);
+
+            currentObj.sendReceiveAckMessage(blackMessage.MSGID)
         }
         return;
     }
