@@ -11,7 +11,7 @@ import {
     Easing,
     Dimensions,
     Image,
-    TouchableWithoutFeedback
+    TouchableOpacity
 } from 'react-native';
 
 
@@ -22,7 +22,10 @@ let {width, height} = Dimensions.get('window');
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
+import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import netWorking from '../../../../Core/Networking/Network';
+import IM from '../../../../Core/IM';
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'
@@ -40,6 +43,9 @@ class Gallery extends ContainerComponent {
         this.state = {
             // uri : props.uri,
             // isShow : props.isShow,
+            progress:0,
+            download:false,
+            path:this.props.path,
         }
     }
     // componentWillReceiveProps(newProps){
@@ -62,7 +68,33 @@ class Gallery extends ContainerComponent {
     //     // })
     //     this.props.hideImageModal();
     // }
+    componentWillMount(){
+
+    }
+
+    downOriginalImage = (path,Remote,MSGID)=>{
+        let network = new netWorking();
+        let im = new IM();
+        let currentObj = this;
+        network.methodDownloadWithProgress(Remote,path,function () {
+
+            //todo:修改数据库和修改redux的Source保存原图地址
+            currentObj.props.updateMessageUrl(MSGID,Remote);
+            im.updateMessageRemoteSource(MSGID,Remote);
+
+            currentObj.setState({
+                download:false,
+            })
+        },function (percent) {
+            currentObj.setState({
+                progress:Math.ceil(percent * 100),
+                download:true,
+            });
+        })
+    }
     render() {
+        let {path,Remote,MSGID} = this.props;
+        let thumbnail = Remote.indexOf('?imageView2') !== -1 ? true : false;
         return (
             <View style={styles.container}>
                 {/*<ImageViewer*/}
@@ -82,8 +114,13 @@ class Gallery extends ContainerComponent {
                            onClick={()=>this.route.pop(this.props)}
                 >
                     <Image style={{width,height,resizeMode: 'contain'}}
-                           source={{uri:this.props.url}}/>
+                           source={{uri:this.state.path}}/>
                 </ImageZoom>
+                {thumbnail ?
+                    <TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(path,Remote,MSGID)}>
+                        <Text style={styles.downloadText}>下载原图</Text>
+                    </TouchableOpacity> : null
+                }
             </View>
         );
     }
@@ -94,13 +131,29 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#000'
     },
+    download:{
+        height:30,
+        width:100,
+        borderWidth:1,
+        borderColor:'#fff',
+        position:'absolute',
+        bottom:50,
+        left:(width-100)/2,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    downloadText:{
+        color:'#fff',
+        fontSize:14,
+    },
 })
 const mapStateToProps = state => ({
     imageModalStore: state.imageModalStore
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(Actions,dispatch)
+    ...bindActionCreators(Actions,dispatch),
+    ...bindActionCreators(commonActions,dispatch)
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gallery);
