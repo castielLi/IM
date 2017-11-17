@@ -76,14 +76,16 @@ export function handleRecieveMessage(message){
                     let nick = user.getUserInfoById(accounts[0]).Nick
 
                     message.Data.Data.Data =  nick + "退出了群聊";
-                }
+                }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
 
+
+                    message.Data.Data.Data =  "群主修改了群昵称";
+                }
                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))
 
             }else{
                 if(message.type == MessageType.friend){
                     user.getInformationByIdandType(message.Data.Data.Sender,"private",function(){
-
                         store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                     });
                 }else{
