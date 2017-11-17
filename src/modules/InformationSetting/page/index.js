@@ -89,7 +89,7 @@ class InformationSetting extends ContainerComponent {
         }
 
         if(setting != undefined){
-            let value = setting.BlackList == "false"?false:true;
+            let value = setting.BlackList == "false"||setting.BlackList == false?false:true;
             this.setState({
                 joinBlackList:value,
                 currentRelation:setting

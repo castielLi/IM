@@ -14,15 +14,18 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
+import uuidv1 from 'uuid/v1';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 
 import IM from '../../../Core/IM';
 import User from '../../../Core/User';
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
+import * as Actions from '../../../Core/Redux/chat/action';
 
 let {height,width} = Dimensions.get('window');
 
@@ -77,6 +80,16 @@ class GroupName extends ContainerComponent {
             if(result.data.Data){
                 currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
                 user.updateGroupName(ID,currentObj.state.text);
+                //本地模拟消息
+                let messageId = uuidv1();
+                let sendMessage = buildChangeGroupNickMessage(accountId,ID,"你修改了群昵称",messageId);
+                im.storeSendMessage(sendMessage);
+
+                //更新redux message
+                let copyMessage = Object.assign({},sendMessage);
+                let reduxMessage = buildChangeGroupNickSendMessageToRudexMessage(copyMessage);
+                currentObj.props.addMessage(reduxMessage);
+
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
                 let index;
@@ -183,6 +196,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(relationListActions,dispatch),
+    ...bindActionCreators(Actions, dispatch),
 
 });
 

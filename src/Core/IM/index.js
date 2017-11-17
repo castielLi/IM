@@ -90,7 +90,7 @@ export default class IM {
         this.socket = _socket;
         this.socket.onRecieveCallback(this.recMessage)
 
-        this.startIM(this.addAllUnsendMessageToSendQueue);
+        this.startIM();
         currentObj = this;
 
         //依赖注入
@@ -100,7 +100,7 @@ export default class IM {
     }
 
     setSocket(account,device,deviceId,imToken){
-        _socket.startConnect(account,device,deviceId,imToken);
+        _socket.startConnect(account,device,deviceId,imToken,this.addAllUnsendMessageToSendQueue);
         ME = account;
 
         window.ME = account;
@@ -110,7 +110,6 @@ export default class IM {
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
             //获取之前没有发送出去的消息重新加入消息队列
-            // currentObj.addAllUnsendMessageToSendQueue();
         });
     }
 
@@ -124,7 +123,7 @@ export default class IM {
         handleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
-    startIM(callback=undefined){
+    startIM(){
         loopState = loopStateType.wait;
         //初始化timer间隔
         sendMessageIntervalTime = configs.SendMessageIntervalTime;
@@ -137,7 +136,7 @@ export default class IM {
 
         //从后台进前台的时候，如果当前网络为none，程序是已经在执行checkEnvironment，否则直接丢给reconnectNet以防止断网的重连
         if(networkStatus != networkStatuesType.none){
-            this.socket.reConnectNet(callback);
+            this.socket.reConnectNet();
         }
 
     }

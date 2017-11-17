@@ -92,15 +92,18 @@ let styles = StyleSheet.create({
         color: '#999999',
         marginBottom: checkDeviceHeight(20),
     },
+    MessageNumberBox:{
+        height: checkDeviceHeight(25),
+        width: checkDeviceWidth(35),
+        borderRadius: 12,
+        backgroundColor: '#e64545',
+		justifyContent:'center',
+		alignItems:'center'
+	},
     MessageNumber: {
-        lineHeight: checkDeviceHeight(30),
-        height: checkDeviceHeight(30),
-        width: checkDeviceWidth(40),
-        borderRadius: 10,
         color: '#ffffff',
         textAlign: 'center',
-        fontSize: checkDeviceHeight(24),
-        backgroundColor: '#e64545'
+        fontSize: checkDeviceHeight(20),
     },
 });
 
@@ -236,7 +239,7 @@ class RecentChat extends ContainerComponent {
 							</View>
 							<View style = {styles.userTime}>
 								<Text style ={styles.LastMessageTime}>{dateFtt('hh:mm:ss',new Date(parseInt(rowData.Time)))}</Text>
-								{rowData.unReadMessageCount?<Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text>:null}
+								{rowData.unReadMessageCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text></View>:null}
 							</View>
 						</View>
 					</View>

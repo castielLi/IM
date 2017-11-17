@@ -36,6 +36,7 @@ var options = {
     quality:CameraConfig.PHOTO_QUALITY,
     maxWidth:CameraConfig.PHOTO_MAX_WIDTH,
     maxHeight:CameraConfig.PHOTO_MAX_HEIGHT,
+    mediaType: 'photo',
     storageOptions: {
         skipBackup: true,
         path: 'images'//存放位置
@@ -93,7 +94,7 @@ useCamera(){
     ImagePicker.launchCamera( options,this.imagePikerCallBack);
   }
 useLocal(){
-  ImagePicker.launchImageLibrary({mediaType: 'photo'},this.imagePikerCallBack);
+  ImagePicker.launchImageLibrary(options,this.imagePikerCallBack);
 }
 
 useCameraVideo(){
