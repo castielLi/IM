@@ -52,7 +52,7 @@ class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
+            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status || r1.message.Resource[0].RemoteSource !== r2.message.Resource[0].RemoteSource;
         }});
 
         this.data = [];
