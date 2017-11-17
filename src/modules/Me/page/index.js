@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     pic:{
         width:25,
         height:25,
-        resizeMode:'stretch',
+        resizeMode:'contain',
         marginRight:15
     },
     itemText:{
