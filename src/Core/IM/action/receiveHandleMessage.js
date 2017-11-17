@@ -81,13 +81,11 @@ export function handleRecieveMessage(message){
 
                     message.Data.Data.Data =  "群主修改了群昵称";
                 }
-
                 store.dispatch(ActionForChatRecordStore.receiveMessage(message))
 
             }else{
                 if(message.type == MessageType.friend){
                     user.getInformationByIdandType(message.Data.Data.Sender,"private",function(){
-
                         store.dispatch(ActionForChatRecordStore.receiveMessage(message))
                     });
                 }else{
