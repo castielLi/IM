@@ -109,7 +109,6 @@ class ChatDetail extends ContainerComponent {
 	}
 	componentWillUnmount(){
 		//修改chatDetailPageStore
-        this.props.handleChatRecord(this.props.client)
 		//this.props.changeChatDetailPageStatus(false,'','')
 	}
 	componentWillReceiveProps(newProps){

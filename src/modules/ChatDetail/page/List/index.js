@@ -128,32 +128,8 @@ class Chat extends Component {
 
 
         let chatRecordStore = this.props.chatRecordStore.concat();
+
         let {isMore} = this.state;
-
-        if(!chatRecordStore.length){
-            return;
-        }
-        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.noMore = ListConst.msgState.NOMORE;
-            this.firstLoad = false;
-        }
-        else{
-            chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
-            this.firstLoad = false;
-        }
-
-        this.reduxData = chatRecordStore.concat().reverse()
-        this.shortData = this.historyData.concat(this.reduxData);
-        this.data = this.prepareMessages(this.shortData);
-
-        this.reduxData2 = chatRecordStore;
-        this.shortData2 =  this.reduxData2.concat(this.historyData2);
-        this.data2 = this.prepareMessages(this.shortData2);
-
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-        });
 
         this._gestureHandlers = {
             onStartShouldSetResponder: () => true,  //对触摸进行响应
@@ -165,7 +141,7 @@ class Chat extends Component {
             //移动时作出的动作
             onResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
+                if(this.reduxData.length && e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     this.noMore = msgState.LOADING;
                     this.setState({
@@ -186,9 +162,9 @@ class Chat extends Component {
                             }
                             let msgLength = messages.length;
 
-                            if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                                messages.pop();
-                            }
+                            // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                            //     messages.pop();
+                            // }
 
                             let msg = messages.map((message)=>{
                                 return DtoMethods.sqlMessageToMessage(message);
@@ -220,8 +196,36 @@ class Chat extends Component {
                 }
             },
         }
+
+        if(!chatRecordStore.length){
+            return;
+        }
+        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+            this.noMore = ListConst.msgState.NOMORE;
+            this.firstLoad = false;
+        }
+        else{
+            chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
+            this.firstLoad = false;
+        }
+
+        this.reduxData = chatRecordStore.concat().reverse()
+        this.shortData = this.historyData.concat(this.reduxData);
+        this.data = this.prepareMessages(this.shortData);
+
+        this.reduxData2 = chatRecordStore;
+        this.shortData2 =  this.reduxData2.concat(this.historyData2);
+        this.data2 = this.prepareMessages(this.shortData2);
+
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
+        });
     }
 
+    componentWillUnmount(){
+        this.props.handleChatRecord(this.props.client);
+    }
     prepareMessages(messages) {
         //console.log(messages)
         return {
@@ -442,9 +446,9 @@ class Chat extends Component {
         //console.log('oldMsg');
         //alert(this.props.client+this.state.isMore)
         let {msgState} = ListConst;
-        if(!firstOldMsg){
-            return firstOldMsg = true;
-        }
+        // if(!firstOldMsg){
+        //     return firstOldMsg = true;
+        // }
         if(this.noMore === msgState.END){
             this.noMore = msgState.LOADING;
             this.setState({
@@ -465,9 +469,10 @@ class Chat extends Component {
                     }
                     let msgLength = messages.length;
 
-                    if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                        messages.pop();
-                    }
+
+                    // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                    //     messages.pop();
+                    // }
                     let msg = messages.map((message)=>{
                         return DtoMethods.sqlMessageToMessage(message);
                     });
