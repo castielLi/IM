@@ -370,7 +370,16 @@ class Chat extends Component {
                         </View>
                     </View>
                 )
-         }else{
+         }else if(row.message.Command * 1 == 102 && this.props.type == "chatroom"){
+             return(
+                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                         <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
+                     </View>
+                 </View>
+             )
+         }
+         else{
              return(
                  <View key={rowid} style={styles.itemViewRight}>
                      <View style={styles.timestampView}>

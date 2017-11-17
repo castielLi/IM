@@ -103,3 +103,17 @@ export function buildInvationSendMessageToRudexMessage(message){
     message.Command = MessageCommandEnum.MSG_INFO;
     return message;
 }
+
+//本地存储群组昵称修改通知
+export function buildChangeGroupNickMessage(Sender,Receiver,text,messageId){
+    let message = createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+    message.status = MessageStatus.SendSuccess
+    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_NICK;
+    message.MSGID = messageId;
+    return message;
+}
+
+export function buildChangeGroupNickSendMessageToRudexMessage(message){
+    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_NICK;
+    return message;
+}
