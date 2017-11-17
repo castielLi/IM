@@ -23,6 +23,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as groupStoreSqlite from '../../../Core/User/StoreSqlite/Group'
 
@@ -81,7 +82,7 @@ class ChatDetail extends ContainerComponent {
                 });
         }
 		let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
-		if(chatRecordLength<10){
+		if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             //初始化chatRecordStore
             this.props.getChatRecord(client,type,chatRecordLength)
 		}
@@ -129,7 +130,7 @@ class ChatDetail extends ContainerComponent {
     			<MyNavigationBar
 					left={{func:()=>{this.route.toMain(this.props);this.props.changeChatDetailPageStatus(false,'','')}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
-					heading={'聊天'} />
+					heading={this.props.nick} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
 						<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>

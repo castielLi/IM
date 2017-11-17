@@ -303,7 +303,7 @@ class ChooseClient extends ContainerComponent {
         else{
 
         	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private'}});
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',nick:chooseArr[0].Nick}});
                 return;
 			}
 
