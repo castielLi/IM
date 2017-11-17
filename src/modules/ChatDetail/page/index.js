@@ -23,6 +23,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import * as groupStoreSqlite from '../../../Core/User/StoreSqlite/Group'
 
@@ -81,7 +82,7 @@ class ChatDetail extends ContainerComponent {
                 });
         }
 		let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
-		if(chatRecordLength<10){
+		if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             //初始化chatRecordStore
             this.props.getChatRecord(client,type,chatRecordLength)
 		}
@@ -108,7 +109,6 @@ class ChatDetail extends ContainerComponent {
 	}
 	componentWillUnmount(){
 		//修改chatDetailPageStore
-        this.props.handleChatRecord(this.props.client)
 		//this.props.changeChatDetailPageStatus(false,'','')
 	}
 	componentWillReceiveProps(newProps){

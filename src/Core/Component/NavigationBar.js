@@ -63,10 +63,16 @@ export default class MyNavigationBar extends Component {
         if(!heading){
             return null;
         }
-        return {
-            title: heading,
-            tintColor:'#fff',
-        }
+        // return {
+        //     title: heading,
+        //     tintColor:'#fff',
+        //     numberOfLines:1
+        // }
+
+        return (
+                <Text numberOfLines = {1} style={styles.title}>{heading}</Text>
+
+        )
     };
 
     _rightButton = ()=>{
@@ -160,5 +166,12 @@ const styles = StyleSheet.create({
         alignItems:'center',
         flex:1,
         paddingHorizontal:15
+    },
+    title:{
+        fontSize:17,
+        textAlignVertical:'center',
+        color:'#fff',
+        fontWeight:'600',
+        maxWidth:200,
     }
 });
