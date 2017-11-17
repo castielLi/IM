@@ -579,9 +579,9 @@ export default class IM {
     sendReceiveAckMessage(messageId){
         UUIDGenerator.getRandomUUID().then((uuid) => {
             let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
-            SendManager.addSendMessage(receiveAckMessage.MSGID,false);
             //把收到消息ack回执添加到cache中，便于send时获取
             cacheMessage.push(cacheMethods.createCacheMessage(receiveAckMessage));
+            SendManager.addSendMessage(receiveAckMessage.MSGID,false);
         })
     }
 
