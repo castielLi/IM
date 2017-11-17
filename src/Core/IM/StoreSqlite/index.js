@@ -69,9 +69,13 @@ export function popMessageInSendSqlite(messageId){
 export function getAllCurrentSendMessage(callback){
     return IMFMDB.getAllCurrentSendMessages(callback)
 }
-
-export function updateMessageRemoteUrl(messageId,url){
-    IMFMDB.updateMessageRemoteUrl(messageId,url);
+//更改资源文件的本地路径
+export function updateMessageLocalSource(messageId,url){
+    IMFMDB.updateMessageLocalSource(messageId,url);
+}
+//更改资源文件的远程路径
+export function updateMessageRemoteSource(messageId,url){
+    IMFMDB.updateMessageRemoteSource(messageId,url);
 }
 
 //修改发送队列中的消息状态
@@ -628,8 +632,8 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
 
-IMFMDB.updateMessageRemoteUrl = function(messageId,url){
-    let sql = sqls.ExcuteIMSql.UpdateMessageRemoteUrl
+IMFMDB.updateMessageLocalSource = function(messageId,url){
+    let sql = sqls.ExcuteIMSql.UpdateMessageLocalSource
 
     sql = commonMethods.sqlFormat(sql,[url,messageId]);
     var db = SQLite.openDatabase({
@@ -639,12 +643,31 @@ IMFMDB.updateMessageRemoteUrl = function(messageId,url){
         db.transaction((tx) => {
             tx.executeSql(sql, [], (tx, results) => {
 
-                console.log("修改video消息url路径成功");
+                console.log("修改消息path路径成功");
 
-            }, (err)=>{errorDB('修改video消息url',err)});
+            }, (err)=>{errorDB('修改消息path',err)});
         });
 
-    }, (err)=>{errorDB('修改video消息url失败',err)});
+    }, (err)=>{errorDB('修改消息path失败',err)});
+}
+
+IMFMDB.updateMessageRemoteSource = function(messageId,url){
+    let sql = sqls.ExcuteIMSql.UpdateMessageRemoteSource
+
+    sql = commonMethods.sqlFormat(sql,[url,messageId]);
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("修改消息url路径成功");
+
+            }, (err)=>{errorDB('修改消息url',err)});
+        });
+
+    }, (err)=>{errorDB('修改消息url失败',err)});
 }
 
 IMFMDB.closeImDb = function(){

@@ -39,7 +39,8 @@ export const ExcuteIMSql = {
     "AddNewMessageToApplyFriend":"insert into ApplyFriend (send,rec,status,comment,time,key,nick,avator) values(?,?,?,?,?,?,?,?)",
     "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?",
-    "UpdateMessageRemoteUrl":"update MessageRecode set localPath=? where messageId=?"
+    "UpdateMessageLocalSource":"update MessageRecode set localPath=? where messageId=?",
+    "UpdateMessageRemoteSource":"update MessageRecode set url=? where messageId=?"
 }
 
 
