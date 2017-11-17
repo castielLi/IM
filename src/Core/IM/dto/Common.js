@@ -22,7 +22,13 @@ export function sqliteMessageToMessage(sqliteMessage){
     let messageData = new messageBodyChatDto();
 
     messageData.Data = sqliteMessage.content;
-    messageData.Command = ChatCommandEnum.MSG_BODY_CHAT_C2C
+
+    if(sqliteMessage.rec.split('-').length > 0){
+        messageData.Command = ChatCommandEnum.MSG_BODY_CHAT_C2G
+    }else{
+        messageData.Command = ChatCommandEnum.MSG_BODY_CHAT_C2C
+    }
+
     messageData.Sender = sqliteMessage.send;
     messageData.Receiver = sqliteMessage.rec;
 

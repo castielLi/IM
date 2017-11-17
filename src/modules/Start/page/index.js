@@ -90,8 +90,6 @@ class Start extends ContainerComponent {
                                 user.getAllRelation((data)=>{
                                     user.getAllGroupFromGroup(function(results){
 
-                                        im.addAllUnsendMessageToSendQueue();
-
                                         data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
                                         currentObj.props.initRelation(data);
 

@@ -26,7 +26,7 @@ FileManager.addResource = function(messageId){
     let message = cache["message"];
 
     resourceQueue.push({onprogress:onprogress,message:message,callback:callback})
-    callback(true,messageId);
+    callback&&callback(true,messageId);
 }
 
 //执行resource队列
@@ -51,7 +51,6 @@ FileManager.uploadResource = function(obj){
     let message = obj["message"];
 
     let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
-    let callback = obj["callback"];
 
     if(window.networkStatus == networkStatuesType.normal) {
 
