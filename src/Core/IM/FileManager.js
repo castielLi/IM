@@ -18,9 +18,14 @@ FileManager.Ioc = function(im){
     currentObj = im;
 }
 
-FileManager.addResource = function(messageId,onprogress,callback){
+FileManager.addResource = function(messageId){
 
-    resourceQueue.push({onprogress:onprogress,messageId:messageId,callback:callback})
+    let cache = currentObj.getCacheFromCacheByMSGID(messageId);
+    let callback = cache["callback"];
+    let onprogress = cache["onprogress"];
+    let message = cache["message"];
+
+    resourceQueue.push({onprogress:onprogress,message:message,callback:callback})
     callback(true,messageId);
 }
 
@@ -43,8 +48,7 @@ FileManager.uploadResource = function(obj){
 
     let messageId = obj["messageId"];
 
-    let message = currentObj.getCacheFromCacheByMSGID(messageId);
-
+    let message = obj["message"];
 
     let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
     let callback = obj["callback"];

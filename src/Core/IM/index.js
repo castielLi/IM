@@ -18,6 +18,7 @@ import FileManager from './FileManager'
 import ReceiveManager from './ReceiveManager'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
+import * as cacheMethods from './action/createCacheMessage'
 
 
 
@@ -89,7 +90,7 @@ export default class IM {
         this.socket = _socket;
         this.socket.onRecieveCallback(this.recMessage)
 
-        this.startIM();
+        this.startIM(this.addAllUnsendMessageToSendQueue);
         currentObj = this;
 
         //依赖注入
@@ -198,7 +199,7 @@ export default class IM {
 
 
                     //回调获取之前没有发送出去的消息重新加入消息队列
-                    currentObj.startIM(currentObj.addAllUnsendMessageToSendQueue());
+                    currentObj.startIM();
 
                 }
             },200);
@@ -278,8 +279,8 @@ export default class IM {
 
                     if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
 
-                        cacheMessage.push(message);
-                        FileManager.addResource(message.MSGID,null);
+                        cacheMessage.push(cacheMethods.createCacheMessage(message));
+                        FileManager.addResource(message.MSGID);
 
                         console.log("加入资源队列" + message.MSGID);
                     }else{
@@ -290,7 +291,7 @@ export default class IM {
 
             // sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
             for(let item in sendMessage){
-                cacheMessage.push(sendMessage[item]);
+                cacheMessage.push(cacheMethods.createCacheMessage(sendMessage[item]));
                 SendManager.addSendMessage(sendMessage[item].MSGID);
             }
         });
@@ -341,7 +342,7 @@ export default class IM {
             messageId = message.Data.Data.Receiver + "_" +uuid;
             message.MSGID = messageId;
 
-            cacheMessage.push(message);
+            cacheMessage.push(cacheMethods.createCacheMessage(message,callback,onprogess));
 
 
             //把消息存入消息sqlite中
@@ -350,8 +351,6 @@ export default class IM {
             if(message.type != MessageType.friend) {
 
                 if(message.type == MessageType.information){
-                    //todo:lizongjun 把消息sqlite 全部改成先生成sql语句再执行的形势就可以避免所有参数传递的时候都需要创建新的拷贝
-
                     message.Command = MessageCommandEnum.MSG_INFO;
                     this.storeSendMessage(message);
                 }else{
@@ -363,22 +362,22 @@ export default class IM {
 
             switch (message.type) {
                 case MessageType.text:
-                    SendManager.addSendMessage(message.MSGID,callback);
+                    SendManager.addSendMessage(message.MSGID);
                     break;
                 case MessageType.image:
-                    FileManager.addResource(message.MSGID,onprogess,callback);
+                    FileManager.addResource(message.MSGID);
                     break;
                 case MessageType.audio:
-                    FileManager.addResource(message.MSGID,onprogess,callback);
+                    FileManager.addResource(message.MSGID);
                     break;
                 case MessageType.friend:
-                    SendManager.addSendMessage(message.MSGID,callback);
+                    SendManager.addSendMessage(message.MSGID);
                     break;
                 case MessageType.video:
-                    FileManager.addResource(message.MSGID,onprogess,callback)
+                    FileManager.addResource(message.MSGID)
                     break;
                 default:
-                    SendManager.addSendMessage(message.MSGID,callback);
+                    SendManager.addSendMessage(message.MSGID);
                     break;
             }
 
@@ -395,7 +394,12 @@ export default class IM {
         //发送websocket
         console.log("开始发送消息了")
 
-        let message = this.getCacheFromCacheByMSGID(messageId);
+
+        console.log(messageId)
+
+        let cache = this.getCacheFromCacheByMSGID(messageId);
+        let message = cache.message;
+
 
         if(networkStatus == networkStatuesType.normal) {
 
@@ -490,7 +494,8 @@ export default class IM {
 
 
     sendOverMaxTimesHandle(messageId){
-        let message = this.getCacheFromCacheByMSGID(messageId);
+        let cache = this.getCacheFromCacheByMSGID(messageId);
+        let message = cache["message"];
 
         //回调App上层发送失败
         currentObj.MessageResultHandle(false, messageId);
@@ -513,7 +518,7 @@ export default class IM {
 
                 currentObj.popCurrentMessageSqlite(messageId)
 
-                let updateMessage = cacheMessage[item];
+                let updateMessage = cacheMessage[item].message;
 
                 console.log("ack队列pop出：" + messageId)
 
@@ -543,8 +548,8 @@ export default class IM {
             // message.Command = MessageCommandEnum.MSG_HEART;
             console.log("心跳包压入发送队列")
             //将心跳包消息存入cache，便于send消息
-            cacheMessage.push(message);
-            SendManager.addSendMessage(message.MSGID,undefined,false)
+            cacheMessage.push(cacheMethods.createCacheMessage(message));
+            SendManager.addSendMessage(message.MSGID,false)
             return;
         }else if(type == MessageCommandEnum.MSG_KICKOUT){
             console.log("设备被踢出消息")
@@ -578,9 +583,9 @@ export default class IM {
     sendReceiveAckMessage(messageId){
         UUIDGenerator.getRandomUUID().then((uuid) => {
             let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
-            SendManager.addSendMessage(receiveAckMessage.MSGID,undefined,false);
             //把收到消息ack回执添加到cache中，便于send时获取
-            cacheMessage.push(receiveAckMessage);
+            cacheMessage.push(cacheMethods.createCacheMessage(receiveAckMessage));
+            SendManager.addSendMessage(receiveAckMessage.MSGID,false);
         })
     }
 

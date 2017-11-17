@@ -203,6 +203,9 @@ class NewFriend extends ContainerComponent {
             })
 
     }
+    componentWillUnMount(){
+        this.props.clearUnDealRequestNumber();
+    }
     render() {
         let Loading = this.Loading;
         return (

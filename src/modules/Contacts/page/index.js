@@ -158,7 +158,6 @@ class Contacts extends ContainerComponent {
 										</View>:
 										null
 									}
-
 								</View>
 							</View>
 					   </TouchableHighlight>
@@ -357,7 +356,9 @@ const styles = StyleSheet.create({
 		borderRadius:7,
 		justifyContent:'center',
 		alignItems:'center',
-		marginLeft:50
+		position:'absolute',
+		right:50,
+		bottom:23
 	}
 })
 
