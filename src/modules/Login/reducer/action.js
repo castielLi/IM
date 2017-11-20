@@ -8,7 +8,7 @@ import RNFS from 'react-native-fs';
 import * as TYPES from './actionTypes';
 import {clearChatRecord} from '../../../Core/Redux/chat/action';
 import {clearRelation} from '../../../Core/Redux/contact/action';
-import {clearRecentList} from '../../../Core/UserGroup/redux/action';
+import {clearRecentList} from '../../../Core/Redux/RecentList/action';
 import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {clearFriendApplication} from '../../../Core/Redux/applyFriend/action'
 import {clearAllTabberMessageNumber,changeTabBar} from '../../MainTabbar/reducer/action';

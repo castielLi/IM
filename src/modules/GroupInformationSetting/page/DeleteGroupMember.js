@@ -20,7 +20,7 @@ import uuidv1 from 'uuid/v1';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../../Core/UserGroup/redux/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
