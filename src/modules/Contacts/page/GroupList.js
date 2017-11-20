@@ -22,7 +22,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../../Core/UserGroup/redux/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/UserGroup';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';

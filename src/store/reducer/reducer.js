@@ -4,7 +4,7 @@
 import { combineReducers } from 'redux';
 import loginStore from '../../modules/Login/reducer';
 import chatRecordStore from '../../Core/Redux/chat/index';
-import recentListStore from '../../Core/UserGroup/redux/index';
+import recentListStore from '../../Core/Redux/RecentList/index';
 import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../Core/Redux/contact';
