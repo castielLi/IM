@@ -11,7 +11,7 @@ import * as Actions from '../../Login/reducer/action';
 import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import IM from '../../../Core/IM'
-import User from '../../../Core/User'
+import User from '../../../Core/UserGroup'
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as unReadMessageAction from '../../MainTabbar/reducer/action'
 let currentObj = undefined;

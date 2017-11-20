@@ -29,7 +29,7 @@ import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
-import User from '../../../../Core/User'
+import User from '../../../../Core/UserGroup'
 
 
 let _listHeight = 0; //list显示高度

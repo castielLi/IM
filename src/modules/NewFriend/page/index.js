@@ -20,7 +20,7 @@ import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Swipeout from 'react-native-swipeout';
 import IM from '../../../Core/IM';
-import User from '../../../Core/User';
+import User from '../../../Core/UserGroup';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import * as relationActions from '../../../Core/Redux/contact/action';

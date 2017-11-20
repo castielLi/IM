@@ -16,7 +16,7 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as commonActions from '../../../Core/Redux/chat/action';
-import * as recentListActions from '../../../Core/User/redux/action';
+import * as recentListActions from '../../../Core/UserGroup/redux/action';
 import * as chatDetailActions from '../reducer/action';
 import RNFS from 'react-native-fs';
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
@@ -25,7 +25,7 @@ import Chat from './List/index'
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as groupStoreSqlite from '../../../Core/User/StoreSqlite/Group'
+import * as groupStoreSqlite from '../../../Core/UserGroup/StoreSqlite/Group'
 
 class ChatDetail extends ContainerComponent {
 	constructor(props) {

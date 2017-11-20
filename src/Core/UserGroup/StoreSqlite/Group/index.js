@@ -106,7 +106,7 @@ GROUPFMDB.initIMDataBase = function(){
             for (key in sqls.InitIMTable) {
                 let sql = sqls.InitIMTable[key];
                 tx.executeSql(sql, [], (tx, results) => {
-                    console.log('create User database success');
+                    console.log('create UserGroup database success');
                 }, (err)=>{errorDB('创建数据表',err)});
             }
         });

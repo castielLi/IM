@@ -15,7 +15,7 @@ import configureNetwork from './Core/Networking/configureNetwork'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
-import User from './Core/User'
+import User from './Core/UserGroup'
 import DisplayComponent from './Core/Component'
 import * as IMHandle from './Core/IM/action/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';

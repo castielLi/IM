@@ -17,7 +17,7 @@ import * as Actions from '../reducer/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
 
 import IM from '../../../Core/IM'
-import User from '../../../Core/User'
+import User from '../../../Core/UserGroup'
 import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
 import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
