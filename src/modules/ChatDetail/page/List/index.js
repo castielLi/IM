@@ -29,7 +29,7 @@ import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
-import User from '../../../../Core/User'
+import User from '../../../../Core/UserGroup'
 
 
 let _listHeight = 0; //list显示高度
@@ -52,7 +52,7 @@ class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status || r1.message.Resource[0].RemoteSource !== r2.message.Resource[0].RemoteSource;
+            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
         }});
 
         this.data = [];

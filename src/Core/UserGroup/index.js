@@ -6,7 +6,7 @@ import * as storeSqlite from './StoreSqlite/User/index'
 import * as groupStoreSqlite from './StoreSqlite/Group'
 
 import dataRquest from './dataRequest'
-import RelationModel from '../../Core/User/dto/RelationModel'
+import RelationModel from './/dto/RelationModel'
 import MessageCommandEnum from '../../Core/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../Core/IM/dto/AppCommandEnum'
 
@@ -275,7 +275,7 @@ export default class User {
 
 
 
-    //User part:
+    //UserGroup part:
 
 
     getAllRelation(callback){

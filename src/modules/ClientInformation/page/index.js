@@ -15,8 +15,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import User from '../../../Core/User'
-import Relation from '../../../Core/User/dto/RelationModel'
+import User from '../../../Core/UserGroup'
+import Relation from '../../../Core/UserGroup/dto/RelationModel'
 import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 import netWorking from '../../../Core/Networking/Network'

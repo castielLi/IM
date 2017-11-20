@@ -1,7 +1,7 @@
 import IM from '../../IM/index';
 import * as DtoMethods from '../../IM/dto/Common';
 import InitChatRecordConfig from './InitChatRecordConfig';
-import * as recentListAction from '../../User/redux/action';
+import * as recentListAction from '../../UserGroup/redux/action';
 
 let im = new IM();
 import RNFS from 'react-native-fs';

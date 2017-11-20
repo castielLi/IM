@@ -20,7 +20,7 @@ import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import IM from '../../../Core/IM';
-import User from '../../../Core/User';
+import User from '../../../Core/UserGroup';
 import {bindActionCreators} from 'redux';
 
 
