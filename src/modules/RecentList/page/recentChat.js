@@ -139,14 +139,8 @@ class RecentChat extends ContainerComponent {
                     unReadMessageCount+=v.unReadMessageCount;
                 }
 
-                for( let j=0;j<this.props.relationStore.length;j++){
-					if(v.Client === this.props.relationStore[j].RelationId || v.Type === 'chatroom'){
-                        needArr.push(v);
-                        break;
-					}
-				}
 			})
-
+            needArr = chatListArr.concat();
 	        this.props.initRecentList(needArr);
 
             this.props.initUnReadMessageNumber(unReadMessageCount)
