@@ -131,17 +131,20 @@ class Chat extends Component {
 
         let {isMore} = this.state;
 
-        this._gestureHandlers = {
-            onStartShouldSetResponder: () => true,  //对触摸进行响应
-            onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        this._panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: () => false,  //对触摸进行响应
+            onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
+            onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
+            onMoveShouldSetPanResponder: ()=> true,  //对滑动进行响应
+            onPanResponderTerminate : ()=> true,
             //激活时做的动作
-            onResponderGrant: (e)=>{
+            onPanResponderGrant: (e)=>{
                 this.move = e.nativeEvent.pageY;
             },
             //移动时作出的动作
-            onResponderMove: (e)=>{
+            onPanResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(this.reduxData.length && e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
+                if(this.reduxData.length && e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     this.noMore = msgState.LOADING;
                     this.setState({
@@ -195,7 +198,7 @@ class Chat extends Component {
                     },500)
                 }
             },
-        }
+        })
 
         if(!chatRecordStore.length){
             return;
@@ -643,7 +646,7 @@ class Chat extends Component {
                             enableEmptySections={true}
 
                             //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-                            {...this._gestureHandlers}
+                            {...this._panResponder.panHandlers}
                         />
                         {this.renderModal()}
                     </View>

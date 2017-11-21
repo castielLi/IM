@@ -72,7 +72,7 @@ class ClientInformation extends ContainerComponent {
             if(propsRelation.LocalImage){
                 RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
             }
-
+            //todo:缺少数据库操作
         };
         if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
             propsRelation.avator = UserInfo.HeadImageUrl;
