@@ -24,11 +24,11 @@ import * as recentListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
 import RNFS from 'react-native-fs';
 
-import User from '../../../Core/User';
+import User from '../../../Core/UserGroup';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initSection,initDataFormate,initFlatListData} from './formateData';
-import RelationModel from '../../../Core/User/dto/RelationModel'
+import RelationModel from '../../../Core/UserGroup/dto/RelationModel'
 import {startChatRoomMessage,buildInvationGroupMessage,buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 

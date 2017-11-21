@@ -63,13 +63,13 @@ class MoreUseBox extends Component {
   
 imagePikerCallBack(response){
   if (response.didCancel) {//如果用户取消上传
-        console.log('User cancelled image picker');
+        console.log('UserGroup cancelled image picker');
   }
   else if (response.error) {//如果有错
     console.log('ImagePicker Error: ', response.error);
   }
   else if (response.customButton) {//如果点击了自定义按钮
-    console.log('User tapped custom button: ', response.customButton);
+    console.log('UserGroup tapped custom button: ', response.customButton);
   }
   else {
     //console.log(response.uri)// 选择本地content://media/external/images/media/30；拍照file:///storage/emulated/0/Pictures/image-ad930ba1-fc6f-44c5-afb4-dda910fccc8c.jpg
@@ -102,13 +102,13 @@ useCameraVideo(){
         console.log('Response = ', response);
 
         if (response.didCancel) {
-            console.log('User cancelled video picker');
+            console.log('UserGroup cancelled video picker');
         }
         else if (response.error) {
             console.log('ImagePicker Error: ', response.error);
         }
         else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
+            console.log('UserGroup tapped custom button: ', response.customButton);
         }
         else{
             let responsePath = 'file://'+response.path;
@@ -126,13 +126,13 @@ useLocalVideo(){
         console.log('Response = ', response);
 
         if (response.didCancel) {
-            console.log('User cancelled video picker');
+            console.log('UserGroup cancelled video picker');
         }
         else if (response.error) {
             console.log('ImagePicker Error: ', response.error);
         }
         else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
+            console.log('UserGroup tapped custom button: ', response.customButton);
         }
         else{
             let responsePath = 'file://'+response.path;
