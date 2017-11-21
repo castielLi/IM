@@ -8,7 +8,7 @@ import AppCommandEnum from '../dto/AppCommandEnum'
 import * as ActionForChatRecordStore from '../../Redux/chat/action'
 import {changeRelationOfShow,addRelation} from '../../Redux/contact/action';
 import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
-import User from '../../User'
+import User from '../../UserGroup'
 import IM from '../../IM'
 import {Alert} from 'react-native'
 import MessageType from '../../IM/dto/MessageType'

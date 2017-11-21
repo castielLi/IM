@@ -21,8 +21,8 @@ import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import User from '../../Core/User'
-import Relation from '../../Core/User/dto/RelationModel'
+import User from '../../Core/UserGroup'
+import Relation from '../../Core/UserGroup/dto/RelationModel'
 import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
 let im = new IM();
 let currentObj = undefined;

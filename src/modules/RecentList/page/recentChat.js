@@ -17,7 +17,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
-import * as recentListActions from '../../../Core/User/redux/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
@@ -26,7 +26,7 @@ import {
 	checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
-import User from '../../../Core/User';
+import User from '../../../Core/UserGroup';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 let im = new IM();
 let user = new User();
@@ -139,14 +139,8 @@ class RecentChat extends ContainerComponent {
                     unReadMessageCount+=v.unReadMessageCount;
                 }
 
-                for( let j=0;j<this.props.relationStore.length;j++){
-					if(v.Client === this.props.relationStore[j].RelationId || v.Type === 'chatroom'){
-                        needArr.push(v);
-                        break;
-					}
-				}
 			})
-
+            needArr = chatListArr.concat();
 	        this.props.initRecentList(needArr);
 
             this.props.initUnReadMessageNumber(unReadMessageCount)

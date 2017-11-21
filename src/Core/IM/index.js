@@ -23,7 +23,6 @@ import * as cacheMethods from './action/createCacheMessage'
 
 
 let _socket = new Connect();
-let _network = new netWorking();
 
 //网络状态
 let networkStatus = "";
