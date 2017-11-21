@@ -360,7 +360,15 @@ class ChooseClient extends ContainerComponent {
 		}
 	}
 
-
+    initFlatListData = (type,arr=[],filterStr)=>{
+        let needArr = [];
+        arr.forEach((v,i)=>{
+            if(v.Type === type&&(v.show === true || v.show === 'true')&&HanZi_PinYin.get(v.Nick).indexOf(filterStr.toUpperCase()) >= 0){
+                needArr.push(v)
+            }
+        })
+        return needArr;
+	}
 	render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;

@@ -2,7 +2,7 @@ import HanZi_PinYin from './getFirestLetter';
 export function initDataFormate(type='private',arr){
     let snapArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&v.show==='true'){
+        if(v.Type === type&&(v.show === true || v.show === 'true')){
             snapArr.push(v)
         }
     })
@@ -46,7 +46,7 @@ export function initSection(arr=[]){
 export function initFlatListData(type,arr=[],filterStr){
     let needArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&v.show === 'true'&&v.Nick.indexOf(filterStr) >= 0){
+        if(v.Type === type&&(v.show === true || v.show === 'true')&&HanZi_PinYin.get(v.Nick).indexOf(filterStr.toUpperCase()) >= 0){
             needArr.push(v)
         }
     })
