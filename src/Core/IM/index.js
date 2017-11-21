@@ -27,8 +27,12 @@ let _socket = new Connect();
 //网络状态
 let networkStatus = "";
 
-//缓存消息
+//IM 内部缓存，用于sendManager，fileManager通过MSGID获取消息
 let cacheMessage = [];
+
+//Message缓存，用于外部通过MSGID获取完整消息内容
+let storeMessage = [];
+
 
 let heartBeatInterval;
 let loopInterval;
@@ -58,19 +62,19 @@ let currentObj = undefined;
 
 //上层应用IM的接口
 //返回消息结果回调
-let AppMessageResultHandle = undefined;
+let ControllerMessageResultHandle = undefined;
 //function(success:boolean,data:{})
 //返回修改消息状态回调
-let AppMessageChangeStatusHandle = undefined;
+let ControllerMessageChangeStatusHandle = undefined;
 //function(message:message);
 
 //返回收到消息回调
-let AppReceiveMessageHandle = undefined;
+let ControllerReceiveMessageHandle = undefined;
 
 //踢出消息回调
-let AppKickOutHandle = undefined;
+let ControllerKickOutHandle = undefined;
 
-let handleRecieveAddFriendMessage = undefined;
+let ControllerHandleRecieveAddFriendMessage = undefined;
 
 
 let __instance = (function () {
@@ -115,11 +119,11 @@ export default class IM {
 
     //赋值外部IM接口
     connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
-        AppMessageResultHandle = getMessageResultHandle;
-        AppMessageChangeStatusHandle = changeMessageHandle;
-        AppReceiveMessageHandle = receiveMessageHandle;
-        AppKickOutHandle = kickOutMessage;
-        handleRecieveAddFriendMessage = recieveAddFriendMessage;
+        ControllerMessageResultHandle = getMessageResultHandle;
+        ControllerMessageChangeStatusHandle = changeMessageHandle;
+        ControllerReceiveMessageHandle = receiveMessageHandle;
+        ControllerKickOutHandle = kickOutMessage;
+        ControllerHandleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
     startIM(){
@@ -341,6 +345,7 @@ export default class IM {
             message.MSGID = messageId;
 
             cacheMessage.push(cacheMethods.createCacheMessage(message,callback,onprogess));
+            storeMessage.push({"MSGID":message.MSGID,"message":message});
 
 
             //把消息存入消息sqlite中
@@ -432,7 +437,7 @@ export default class IM {
 
     //操作好友管理模块,申请好友通过，设置关系显示状态
     updateRelation(relationId){
-        handleRecieveAddFriendMessage(relationId);
+        ControllerHandleRecieveAddFriendMessage(relationId);
     }
 
 
@@ -488,6 +493,11 @@ export default class IM {
         }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
             ReceiveManager.receiveMessageOpreator(message);
         }
+    }
+
+    //向message缓存中添加消息
+    storeMessageCache(obj){
+        storeMessage.push(obj);
     }
 
 
@@ -551,7 +561,7 @@ export default class IM {
             return;
         }else if(type == MessageCommandEnum.MSG_KICKOUT){
             console.log("设备被踢出消息")
-            AppKickOutHandle();
+            ControllerKickOutHandle();
             return;
         }
 
@@ -565,16 +575,16 @@ export default class IM {
 
 
     ReceiveMessageHandle(message){
-        AppReceiveMessageHandle(message);
+        ControllerReceiveMessageHandle(message);
     }
 
     MessageResultHandle(success,message){
-        AppMessageResultHandle(success,message)
+        ControllerMessageResultHandle(success,message)
     }
 
 
     MessageChangeStatusHandle(message){
-        AppMessageChangeStatusHandle(message)
+        ControllerMessageChangeStatusHandle(message)
     }
 
 

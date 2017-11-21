@@ -46,8 +46,8 @@ export default function App() {
         IMHandle.handleMessageResult(status,MSGID);
     }
     //改变消息数据 {state: ,message:{这里变化}}
-    let handleMessageChange = function(message){
-       IMHandle.handleMessageChange(message);
+    let handleMessageChange = function(message,relation){
+       IMHandle.handleMessageChange(message,relation);
     }
 
 
