@@ -4,7 +4,7 @@ const initialState = {
     data:[
     ]
 };
-//{data:[{Client: "wg000008", Type: "private", LastMessage: "222", Time: 1508231012500}]}
+//{data:[{Client: "wg000008", Type: "private", LastMessage: "222", unReadMessageCount:'',Time: 1508231012500,Nick:'玩玩',localImage:'',avator:'',}]}
 export default function recentListStore(state=initialState, action){
 
     switch(action.type){

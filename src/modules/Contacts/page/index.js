@@ -22,7 +22,7 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/UserGroup';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import {initSection,initDataFormate} from './formateData';
+import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 
 
@@ -70,7 +70,7 @@ class Contacts extends ContainerComponent {
 		if(this.relationStore.length === 0){
 			return null
 		}else{
-            let sections = initSection(this.relationStore)
+            let sections = this.sectionStore;
             let array = new Array();
             for (let i = 0; i < sections.length; i++) {
                 array.push(
@@ -211,8 +211,9 @@ class Contacts extends ContainerComponent {
         this.setState({showFeatures:newState});
     }
 	render() {
-
-		this.relationStore = initDataFormate('private',this.props.relationStore,this.state.text);
+		let objData = initDataFormate('private',this.props.relationStore,this.state.text);
+		this.relationStore = objData.needArr;
+		this.sectionStore = objData.sectionArr;
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar

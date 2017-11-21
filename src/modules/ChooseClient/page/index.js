@@ -27,7 +27,7 @@ import RNFS from 'react-native-fs';
 import User from '../../../Core/UserGroup';
 import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import {initSection,initDataFormate,initFlatListData} from './formateData';
+import {initDataFormate,initFlatListData} from './formateData';
 import RelationModel from '../../../Core/UserGroup/dto/RelationModel'
 import {startChatRoomMessage,buildInvationGroupMessage,buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
@@ -41,6 +41,9 @@ class ChooseClient extends ContainerComponent {
 
 	constructor(props) {
 		super(props);
+		let dataObj = initDataFormate('private',props.relationStore);
+		let relationStore = dataObj.needArr;
+		let sectionStore = dataObj.sectionArr;
 		this.state={
 			data:[
 				{key:'',
@@ -55,8 +58,10 @@ class ChooseClient extends ContainerComponent {
             chooseObj:[],//选择的好友的id
 			text:'',//输入框文字,
             isShowFlatList:false,
-            relationStore:initDataFormate('private',props.relationStore),
-		}
+            relationStore,
+            sectionStore,
+
+        }
         this.splNeedArr = [];
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
@@ -83,7 +88,7 @@ class ChooseClient extends ContainerComponent {
 		if(this.state.relationStore.length === 0){
 			return null
 		}else{
-            let sections = initSection(this.state.relationStore)
+            let sections = this.state.sectionStore;
             let array = new Array();
             for (let i = 0; i < sections.length; i++) {
                 array.push(
@@ -360,15 +365,6 @@ class ChooseClient extends ContainerComponent {
 		}
 	}
 
-    initFlatListData = (type,arr=[],filterStr)=>{
-        let needArr = [];
-        arr.forEach((v,i)=>{
-            if(v.Type === type&&(v.show === true || v.show === 'true')&&HanZi_PinYin.get(v.Nick).indexOf(filterStr.toUpperCase()) >= 0){
-                needArr.push(v)
-            }
-        })
-        return needArr;
-	}
 	render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
