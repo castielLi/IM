@@ -44,6 +44,7 @@ let ListLayout = false;
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
 let recordData;
+let _responderPageY;
 
 let user = new User();
 
@@ -133,10 +134,17 @@ class Chat extends Component {
         let {isMore} = this.state;
 
         this._panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: () => false,  //对触摸进行响应
+            onStartShouldSetPanResponder: (e) => {_responderPageY = e.nativeEvent.pageY; return false},  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
             onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
-            onMoveShouldSetPanResponder: ()=> true,  //对滑动进行响应
+            onMoveShouldSetPanResponder: (e)=> {
+                if(e.nativeEvent.pageY - _responderPageY > 20){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            },//对滑动进行响应
             onPanResponderTerminate : ()=> true,
             //激活时做的动作
             onPanResponderGrant: (e)=>{
@@ -635,21 +643,22 @@ class Chat extends Component {
         if(!showInvertible){
             return (
                     <View style={styles.chatListView}>
-                        <ListView
-                            ref={(lv) => this.listView = lv}
-                            dataSource={this.state.dataSource}
-                            removeClippedSubviews={false}
-                            renderRow={this.renderRow}
-                            style={{paddingHorizontal:10}}
+                        <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
+                            <ListView
+                                ref={(lv) => this.listView = lv}
+                                dataSource={this.state.dataSource}
+                                removeClippedSubviews={false}
+                                renderRow={this.renderRow}
+                                style={{paddingHorizontal:10}}
 
-                            renderFooter={this.myRenderFooter.bind(this)}
-                            renderHeader={()=>this.myRenderHeader()}
-                            onLayout={this._onListViewLayout}
-                            enableEmptySections={true}
+                                renderFooter={this.myRenderFooter.bind(this)}
+                                renderHeader={()=>this.myRenderHeader()}
+                                onLayout={this._onListViewLayout}
+                                enableEmptySections={true}
 
-                            //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-                            {...this._panResponder.panHandlers}
-                        />
+                                //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
+                            />
+                        </View>
                         {this.renderModal()}
                     </View>
             );
