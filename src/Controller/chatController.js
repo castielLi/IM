@@ -90,6 +90,28 @@ export default class chatController {
 
 
     //todo 张彤 applyFriend
+    acceptFriend(requestURL,params,callback){
+        let {key,send} = params.data;
+        this.network.methodPOST(requestURL,params,function(results){
+            let result;
+            if(results.success){
+                //todo controller operate
+                let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+                currentObj.user.AddNewRelation(relationObj);
+                //修改好友申请消息状态
+                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
+                result = true;
+            }
+            else{
+                result = false;
+            }
+            callback(result,data);
+        })
+    }
+    getApplicantsInfo(idS,callback){
+        this.user.GetRelationsByRelationIds(idS,callback)
+    }
 
 
 

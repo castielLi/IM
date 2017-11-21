@@ -68,6 +68,22 @@ class NewFriend extends ContainerComponent {
     //     })
     // }
 
+    // acceptFriend = (params)=>{
+    //
+    //     callback = function (results,data) {
+    //         if(results){
+    //             currentObj.props.acceptFriendApplication(data.key);
+    //             currentObj.props.cutUnDealRequestNumber(1);
+    //             currentObj.props.changeRelationOfShow(Account);
+    //         }else{
+    //             alert('失败')
+    //         }
+    //     }
+    //
+    //     chatController.acceptFriend(requestURL,params,callback)
+    //
+    // }
+
     agreeApply = (index,data)=>{
         let {key,send} = data;
         this.showLoading();
