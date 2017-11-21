@@ -21,7 +21,7 @@ let AppKickOutHandle = undefined;
 
 let handleRecieveAddFriendMessage = undefined;
 
-let __instance = (function () {
+let __instance = (function() {
     let instance;
     return (newInstance) => {
         if (newInstance) instance = newInstance;
@@ -52,7 +52,7 @@ export default class chatController {
     }
 
 
-    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
+    connectApp(getMessageResultHandle, changeMessageHandle, receiveMessageHandle, kickOutMessage, recieveAddFriendMessage) {
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
@@ -62,30 +62,34 @@ export default class chatController {
 
 
     //接口方法
-    setCurrentChat(chat){
+    setCurrentChat(chat) {
         currentChat = chat;
     }
 
-    emptyCurrentChat(){
+    emptyCurrentChat() {
         currentChat = undefined;
     }
 
 
     //todo黄昊东  recentlist
+    //右滑删除最近聊天
+    deleteRecentChatList(rowData) {
+        //删除ChatRecode表中记录
+        this.im.deleteChatRecode(rowData.Client);
+        //删除该与client的所以聊天记录
+        this.im.deleteCurrentChatMessage(rowData.Client, rowData.Type);
+    }
 
 
-     AcceptFriend(requestURL,params,callback){
-        this.network.methodPOST(requestURL,params,function(result){
+    AcceptFriend(requestURL, params, callback) {
+        this.network.methodPOST(requestURL, params, function(result) {
 
             //todo controller operate
 
-            callback(success,data);
+            callback(success, data);
 
         })
-     }
-
-
-
+    }
 
 
 
@@ -93,46 +97,40 @@ export default class chatController {
 
 
 
-
-
-
-
-
-
     //todo 李宗骏  通过cache messageId 获得IM 数据
 
-    getMessagesByIds(){
+    getMessagesByIds() {
 
     }
 
 
 }
 //私有方法,不允许外部调用
-function connectIM(){
-    currentObj.im.connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage)
+function connectIM() {
+    currentObj.im.connectIM(getMessageResultHandle, changeMessageHandle, receiveMessageHandle, kickOutMessage, recieveAddFriendMessage)
 }
 
-function getMessageResultHandle(status,MSGID){
-   AppMessageResultHandle(status,MSGID);
+function getMessageResultHandle(status, MSGID) {
+    AppMessageResultHandle(status, MSGID);
 }
 
-function changeMessageHandle(message){
+function changeMessageHandle(message) {
     AppMessageChangeStatusHandle(message);
 }
 
-function kickOutMessage(){
+function kickOutMessage() {
     AppKickOutHandle()
 }
 
-function receiveMessageHandle(message){
+function receiveMessageHandle(message) {
 
-    currentObj.user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
+    currentObj.user.getInformationByIdandType(message.Data.Data.Sender, message.way, function(relation) {
         //添加进relation redux
 
-        if(message.way == "chatroom"){
+        if (message.way == "chatroom") {
             //添加进group数据库
 
-            if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+            if (message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP) {
 
                 // let accounts = message.Data.Data.Data.split(',');
                 //
@@ -148,7 +146,7 @@ function receiveMessageHandle(message){
                 // let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
                 // message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
 
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+            } else if (message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER) {
 
                 // let accounts = message.Data.Data.Data.split(',');
                 //
@@ -158,7 +156,7 @@ function receiveMessageHandle(message){
                 //
                 // message.Data.Data.Data = inviter + "邀请" + nick + "加入群聊";
 
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
+            } else if (message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER) {
 
                 // let nick = user.getUserInfoById(message.Data.Data.Data).Nick;
                 // let inviter = '';
@@ -170,25 +168,25 @@ function receiveMessageHandle(message){
                 //
                 // message.Data.Data.Data =  nick + "被踢"+ inviter+"出了群聊";
 
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
+            } else if (message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP) {
 
                 // let accounts = message.Data.Data.Data.split(',');
                 //
                 // let nick = user.getUserInfoById(accounts[0]).Nick
                 //
                 // message.Data.Data.Data =  nick + "退出了群聊";
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
-                message.Data.Data.Data =  "群主修改了群昵称";
+            } else if (message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO) {
+                message.Data.Data.Data = "群主修改了群昵称";
             }
         }
-    },message.Command,message.Data.Data.Command);
+    }, message.Command, message.Data.Data.Command);
     //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
 
 
-    AppReceiveMessageHandle(message,relation);
+    AppReceiveMessageHandle(message, relation);
 }
 
-function recieveAddFriendMessage(relationId){
-    currentObj.user.updateDisplayOfRelation(relationId,'true');
+function recieveAddFriendMessage(relationId) {
+    currentObj.user.updateDisplayOfRelation(relationId, 'true');
     recieveAddFriendMessage(relationId)
 }

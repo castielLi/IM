@@ -50,11 +50,12 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
                         break;
                     }
                 }
-                if(existItem){
-                    im.updateUnReadMessageNumber(client,clientUnReadNumber+1);
-                }else{
-                    im.updateUnReadMessageNumber(client,1);
-                }
+                //现在由controller控制
+                // if(existItem){
+                //     im.updateUnReadMessageNumber(client,clientUnReadNumber+1);
+                // }else{
+                //     im.updateUnReadMessageNumber(client,1);
+                // }
 
                 dispatch(addUnReadMessageNumber());
 

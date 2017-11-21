@@ -14,8 +14,12 @@ import {
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import {
+	connect
+} from 'react-redux';
+import {
+	bindActionCreators
+} from 'redux';
 import Features from '../../Common/menu/features';
 import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
@@ -28,83 +32,84 @@ import {
 import IM from '../../../Core/IM';
 import User from '../../../Core/UserGroup';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import ChatController from '../../../Controller/chatController';
 let im = new IM();
 let user = new User();
+let chatController = new ChatController();
 
 let styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#f2f2f2"
-    },
-    ListContainer: {
-        flexDirection: 'row',
-        height: checkDeviceHeight(130),
-        backgroundColor: '#ffffff',
-        paddingLeft:checkDeviceWidth(20),
-    },
-    userLogo: {
-        height: checkDeviceHeight(130),
-        width: checkDeviceWidth(125),
-        justifyContent: 'center',
-    },
-    avatar: {
-        height: checkDeviceHeight(100),
-        width: checkDeviceHeight(100),
-        borderRadius: checkDeviceHeight(50),
-        resizeMode: 'cover',
-    },
-    ChatContent: {
-        flex: 1,
-        height: checkDeviceHeight(130),
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-    },
-    Message: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    NickName: {
-        fontSize: checkDeviceHeight(30),
-        color: '#373737',
-        marginBottom: checkDeviceHeight(10),
-        ...Platform.select({
-            ios: {
-                lineHeight:checkDeviceHeight(34),
-            },
-            android: {
-            },
-        }),
-    },
-    ChatMessage: {
-        fontSize: checkDeviceHeight(30),
-        lineHeight: checkDeviceHeight(35),
-        color: '#999999',
-    },
-    userTime: {
-        height: checkDeviceHeight(130),
-        width: checkDeviceWidth(110),
-        justifyContent: 'center',
-        alignItems: "flex-end",
-        marginRight: checkDeviceWidth(20),
-    },
-    LastMessageTime: {
-        fontSize: checkDeviceHeight(24),
-        color: '#999999',
-        marginBottom: checkDeviceHeight(20),
-    },
-    MessageNumberBox:{
-        height: checkDeviceHeight(25),
-        width: checkDeviceWidth(35),
-        borderRadius: 12,
-        backgroundColor: '#e64545',
-		justifyContent:'center',
-		alignItems:'center'
+	container: {
+		flex: 1,
+		backgroundColor: "#f2f2f2"
 	},
-    MessageNumber: {
-        color: '#ffffff',
-        textAlign: 'center',
-        fontSize: checkDeviceHeight(20),
-    },
+	ListContainer: {
+		flexDirection: 'row',
+		height: checkDeviceHeight(130),
+		backgroundColor: '#ffffff',
+		paddingLeft: checkDeviceWidth(20),
+	},
+	userLogo: {
+		height: checkDeviceHeight(130),
+		width: checkDeviceWidth(125),
+		justifyContent: 'center',
+	},
+	avatar: {
+		height: checkDeviceHeight(100),
+		width: checkDeviceHeight(100),
+		borderRadius: checkDeviceHeight(50),
+		resizeMode: 'cover',
+	},
+	ChatContent: {
+		flex: 1,
+		height: checkDeviceHeight(130),
+		justifyContent: 'space-between',
+		flexDirection: 'row',
+	},
+	Message: {
+		flex: 1,
+		justifyContent: 'center',
+	},
+	NickName: {
+		fontSize: checkDeviceHeight(30),
+		color: '#373737',
+		marginBottom: checkDeviceHeight(10),
+		...Platform.select({
+			ios: {
+				lineHeight: checkDeviceHeight(34),
+			},
+			android: {},
+		}),
+	},
+	ChatMessage: {
+		fontSize: checkDeviceHeight(30),
+		lineHeight: checkDeviceHeight(35),
+		color: '#999999',
+	},
+	userTime: {
+		height: checkDeviceHeight(130),
+		width: checkDeviceWidth(110),
+		justifyContent: 'center',
+		alignItems: "flex-end",
+		marginRight: checkDeviceWidth(20),
+	},
+	LastMessageTime: {
+		fontSize: checkDeviceHeight(24),
+		color: '#999999',
+		marginBottom: checkDeviceHeight(20),
+	},
+	MessageNumberBox: {
+		height: checkDeviceHeight(25),
+		width: checkDeviceWidth(35),
+		borderRadius: 12,
+		backgroundColor: '#e64545',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	MessageNumber: {
+		color: '#ffffff',
+		textAlign: 'center',
+		fontSize: checkDeviceHeight(20),
+	},
 });
 
 
@@ -119,83 +124,69 @@ class RecentChat extends ContainerComponent {
 			sectionID: '',
 			rowID: '',
 			dataSource: ds,
-            groupData:[],
+			//groupData:[],
 		};
 		this.goToChatDetail = this.goToChatDetail.bind(this);
 		this.deleteSomeRow = this.deleteSomeRow.bind(this);
 	}
-	componentWillMount(){
+	componentWillMount() {
 
 		styles = super.componentWillMount(styles)
 
-		//TODO 应该放到登录里
-		//初始化recentListStore
-		im.getChatList((chatListArr) => {
-			//将IM.db最近聊天列表与Acount.db好友列表作对比，如果Acount.db中不存在这个好友，则不添加到recentListStore
-			let needArr = [];
-            //初始化unReadMessageStore
-            let unReadMessageCount = 0;
-            chatListArr.forEach((v,i)=>{
-                if(v.unReadMessageCount){
-                    unReadMessageCount+=v.unReadMessageCount;
-                }
-
-			})
-            needArr = chatListArr.concat();
-	        this.props.initRecentList(needArr);
-
-            this.props.initUnReadMessageNumber(unReadMessageCount)
-	    })
-
-		user.getAllGroupFromGroup((data)=>{
-            this.setState({
-				groupData:data
-			})
-		})
+		// user.getAllGroupFromGroup((data)=>{
+		//    this.setState({
+		// 		groupData:data
+		// 	})
+		// })
 	}
 
-	goToChatDetail(rowData){
-		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type,nick:this.formateRelationData[rowData.Client].Nick}});
+	goToChatDetail(rowData) {
+		this.route.push(this.props, {
+			key: 'ChatDetail',
+			routeId: 'ChatDetail',
+			params: {
+				client: rowData.Client,
+				type: rowData.Type,
+				nick: rowData.Nick
+			}
+		});
 	}
-	deleteSomeRow(rowID,rowData){
-		let oKCallback = ()=>{
+	deleteSomeRow(rowID, rowData) {
+		let oKCallback = () => {
 			//清空recentListStore中对应记录
 			this.props.deleteRecentItem(rowID);
 			//如果该row上有未读消息，减少unReadMessageStore记录
-            rowData.unReadMessageCount&&this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
+			rowData.unReadMessageCount && this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
 			//清空chatRecordStore中对应记录
 			this.props.clearChatRecordFromId(rowData.Client)
-			//删除ChatRecode表中记录
-			im.deleteChatRecode(rowData.Client);
-			//删除该与client的所以聊天记录
-			im.deleteCurrentChatMessage(rowData.Client,rowData.Type);
+			chatController.deleteRecentChatList(rowData);
 
 		}
-		this.confirm('提示','删除后，将清空该聊天的消息记录',okButtonTitle="删除",oKCallback,cancelButtonTitle="取消",cancelCallback=undefined);
+		this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
 	}
-	_renderAvator= (oneRealationObj)=>{
-			if(oneRealationObj){
-				if((!oneRealationObj.localImage||oneRealationObj.localImage === '')&&!oneRealationObj.avator){
-					return 	<Image style = {styles.avatar} source = {require('../resource/avator.jpg')}></Image>
+	_renderAvator = (oneRealationObj) => {
+			if (oneRealationObj) {
+				if ((!oneRealationObj.localImage || oneRealationObj.localImage === '') && !oneRealationObj.avator) {
+					return <Image style = {styles.avatar} source = {require('../resource/avator.jpg')}></Image>
 
-                }
-                return 	<Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!=='')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
+				}
+				return <Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!=='')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
 
-            }else{
+			} else {
 				return null
 			}
-	}
-    formateRelationDataMethod = (arr) =>{
-		let obj = {};
-		arr.forEach((v,i)=>{
-			obj[v.RelationId] = v;
-		})
-		return obj
-	}
+		}
+		// formateRelationDataMethod = (arr) =>{
+		// 	let obj = {};
+		// 	arr.forEach((v,i)=>{
+		// 		obj[v.RelationId] = v;
+		// 	})
+		// 	return obj
+		// }
 	_renderRow = (rowData, sectionID, rowID) => {
-		let needData = this.formateRelationData;
-		if((rowData.Type == 'chatroom')&&!this.formateRelationData[rowData.Client]) needData = this.formateGroupData;
+		// let needData = this.formateRelationData;
+		// if((rowData.Type == 'chatroom')&&!this.formateRelationData[rowData.Client]) needData = this.formateGroupData;
 		return (
 			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
 				<Swipeout
@@ -225,11 +216,11 @@ class RecentChat extends ContainerComponent {
 				<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 					<View style = {styles.ListContainer}>
 						<View style = {styles.userLogo}>
-							{this._renderAvator(needData[rowData.Client])}
+							{this._renderAvator(rowData)}
 						</View>
 						<View style = {styles.ChatContent}>
 							<View style = {styles.Message}>
-								<Text style = {styles.NickName}>{needData[rowData.Client]?needData[rowData.Client].Nick:''}</Text>
+								<Text style = {styles.NickName}>{rowData.Nick}</Text>
 								<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 							</View>
 							<View style = {styles.userTime}>
@@ -245,8 +236,8 @@ class RecentChat extends ContainerComponent {
 	}
 
 	render() {
-		this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
-		this.formateGroupData = this.formateRelationDataMethod(this.state.groupData);
+		// this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
+		// this.formateGroupData = this.formateRelationDataMethod(this.state.groupData);
 		let PopContent = this.PopContent;
 		return (
 			<View style = {styles.container}>
@@ -276,39 +267,39 @@ class RecentChat extends ContainerComponent {
 }
 
 const mapStateToProps = state => ({
-    recentListStore:state.recentListStore,
-    accountId:state.loginStore.accountMessage.accountId,
-	relationStore:state.relationStore,
+	recentListStore: state.recentListStore,
+	accountId: state.loginStore.accountMessage.accountId,
+	relationStore: state.relationStore,
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return{
-    ...bindActionCreators(recentListActions, dispatch),
-    ...bindActionCreators(chatRecordActions, dispatch),
-	  ...bindActionCreators(unReadMessageActions, dispatch),
-      ...bindActionCreators(featuresAction, dispatch)
+	return {
+		...bindActionCreators(recentListActions, dispatch),
+		...bindActionCreators(chatRecordActions, dispatch),
+		...bindActionCreators(unReadMessageActions, dispatch),
+		...bindActionCreators(featuresAction, dispatch)
 
 
-  }};
+	}
+};
 
- export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);
+export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);
 
 
-function dateFtt(fmt,date)   
-{ //author: meizz   
-  var o = {   
-    "M+" : date.getMonth()+1,                 //月份   
-    "d+" : date.getDate(),                    //日   
-    "h+" : date.getHours(),                   //小时   
-    "m+" : date.getMinutes(),                 //分   
-    "s+" : date.getSeconds(),                 //秒   
-    "q+" : Math.floor((date.getMonth()+3)/3), //季度   
-    "S"  : date.getMilliseconds()             //毫秒   
-  };   
-  if(/(y+)/.test(fmt))   
-    fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length));   
-  for(var k in o)   
-    if(new RegExp("("+ k +")").test(fmt))   
-  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
-  return fmt;   
+function dateFtt(fmt, date) { //author: meizz   
+	var o = {
+		"M+": date.getMonth() + 1, //月份   
+		"d+": date.getDate(), //日   
+		"h+": date.getHours(), //小时   
+		"m+": date.getMinutes(), //分   
+		"s+": date.getSeconds(), //秒   
+		"q+": Math.floor((date.getMonth() + 3) / 3), //季度   
+		"S": date.getMilliseconds() //毫秒   
+	};
+	if (/(y+)/.test(fmt))
+		fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+	for (var k in o)
+		if (new RegExp("(" + k + ")").test(fmt))
+			fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+	return fmt;
 }
