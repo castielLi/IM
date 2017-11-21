@@ -35,6 +35,7 @@ let currentChat = undefined
 
 //数据缓存
 let cache = {};
+//{"wg003723":[MSGID,MSGID]}
 
 let currentObj = undefined;
 
@@ -67,6 +68,34 @@ export default class chatController {
         currentChat = undefined;
     }
 
+
+    //todo黄昊东  recentlist
+
+
+
+
+
+
+
+
+
+    //todo 张彤 applyFriend
+
+
+
+
+
+
+
+
+
+    //todo 李宗骏  通过cache messageId 获得IM 数据
+
+    getMessagesByIds(){
+
+    }
+
+
 }
 //私有方法,不允许外部调用
 function connectIM(){
@@ -81,7 +110,6 @@ function changeMessageHandle(message){
 
         user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
             //添加进relation redux
-            // store.dispatch(addRelation(relation));
 
             if(message.way == "chatroom"){
                 //添加进group数据库
@@ -136,10 +164,6 @@ function changeMessageHandle(message){
 
                     message.Data.Data.Data =  "群主修改了群昵称";
                 }
-                // store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-
-            }else{
-                store.dispatch(ActionForChatRecordStore.receiveMessage(message))
             }
         },message.Command,message.Data.Data.Command);
         //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
