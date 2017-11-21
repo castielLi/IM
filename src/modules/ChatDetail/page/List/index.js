@@ -363,6 +363,7 @@ class Chat extends Component {
         }
         return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
     }
+    //todo 可以写到controller
     // getNikesFromIds = (idString) =>{
     //     let Members = this.state.groupMembers;
     //     let MembersLength = Members.length;

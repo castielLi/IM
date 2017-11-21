@@ -128,6 +128,7 @@ class RecentChat extends ContainerComponent {
 
 		styles = super.componentWillMount(styles)
 
+		//TODO 应该放到登录里
 		//初始化recentListStore
 		im.getChatList((chatListArr) => {
 			//将IM.db最近聊天列表与Acount.db好友列表作对比，如果Acount.db中不存在这个好友，则不添加到recentListStore
