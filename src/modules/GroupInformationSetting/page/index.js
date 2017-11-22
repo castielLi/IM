@@ -30,7 +30,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import IM from '../../../Core/IM';
 import User from '../../../Core/UserGroup';
-import chatController from '../../../Controller/chatController'
+import chatController from '../../../Controller/settingController'
 
 let im = new IM();
 let user = new User();
