@@ -164,4 +164,39 @@ export default class settingController {
             this.user.updateRelation(propsRelation)
         }
     }
+    //创建群
+    createGroup(accountId,accountName,members,Nicks,splNeedArr,groupId,chooseArr,params,callback){
+        this.network.methodPOST('Member/CreateGroup',params,function(result){
+            if(result.success){
+                if(result.data.Data == null){
+                    alert("返回群数据出错")
+                    return;
+                }
+                let relation = new RelationModel();
+                relation.RelationId = result.data.Data;
+                relation.owner = accountId;
+                relation.Nick = accountName + "发起的群聊";
+                relation.Type = 'chatroom';
+                relation.show = 'false';
+
+                //添加关系到数据库
+                this.user.AddNewGroupToGroup(relation,members);
+                let messageId = uuidv1();
+                //创建群组消息
+                let text = Nicks;
+
+                //todo：lizongjun 现在不需要自己发送消息，后台统一发送
+                //向添加的用户发送邀请消息
+                let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
+                im.storeSendMessage(sendMessage);
+                //添加新人到缓存和数据库
+                user.AddGroupAndMember(groupId,splNeedArr);
+                chooseArr.forEach((val,it)=>{
+                    user.groupAddMemberChangeCash(groupId,val.RelationId);
+                    user.privateAddMemberChangeCash(val.RelationId,val)
+                })
+            }
+            callback(results);
+        })
+    }
 }

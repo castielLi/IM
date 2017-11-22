@@ -257,52 +257,54 @@ class ChooseClient extends ContainerComponent {
 
 		if(this.hasGroup) {
             currentObj.showLoading()
-            this.fetchData("POST", "Member/AddGroupMember", function (result) {
-                currentObj.hideLoading();
-                if (result.success) {
-                    if (result.data.Data == null) {
-                        alert("返回群数据出错")
-                        return;
-                    }
+            // this.fetchData("POST", "Member/AddGroupMember", function (result) {
+            //     currentObj.hideLoading();
+            //     if (result.success) {
+            //         if (result.data.Data == null) {
+            //             alert("返回群数据出错")
+            //             return;
+            //         }
+            //
+            //
+				// 	let messageId = uuidv1();
+            //         let text = Nicks;
+            //         let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
+            //         im.storeSendMessage(sendMessage);
+            //
+            //         //更新redux message
+            //         let copyMessage = Object.assign({},sendMessage);
+            //         let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
+            //         currentObj.props.addMessage(reduxMessage);
+            //         //添加新人到缓存和数据库
+				// 	user.AddGroupAndMember(currentObj.props.groupId,currentObj.splNeedArr);
+            //         currentObj.state.chooseArr.forEach((val,it)=>{
+            //             user.groupAddMemberChangeCash(currentObj.props.groupId,val.RelationId);
+            //             user.privateAddMemberChangeCash(val.RelationId,val)
+				// 	})
+            //         //路由跳转
+            //         let routes = currentObj.props.navigator.getCurrentRoutes();
+            //         let index;
+            //         for (let i = 0; i < routes.length; i++) {
+            //             if (routes[i]["key"] == "GroupInformationSetting") {
+            //                 index = i;
+            //                 break;
+            //             }
+            //         }
+            //         alert('添加成功');
+            //         //跳转到群设置
+            //         currentObj.route.replaceAtIndex(currentObj.props,{
+            //             key:'GroupInformationSetting',
+            //             routeId: 'GroupInformationSetting',
+            //             params:{"groupId":currentObj.props.groupId}
+            //         },index)
+            //
+            //     } else {
+            //         alert(result.errorMessage);
+            //         return;
+            //     }
+            // }, {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts});
+			let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
 
-
-					let messageId = uuidv1();
-                    let text = Nicks;
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
-                    im.storeSendMessage(sendMessage);
-
-                    //更新redux message
-                    let copyMessage = Object.assign({},sendMessage);
-                    let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
-                    currentObj.props.addMessage(reduxMessage);
-                    //添加新人到缓存和数据库
-					user.AddGroupAndMember(currentObj.props.groupId,currentObj.splNeedArr);
-                    currentObj.state.chooseArr.forEach((val,it)=>{
-                        user.groupAddMemberChangeCash(currentObj.props.groupId,val.RelationId);
-                        user.privateAddMemberChangeCash(val.RelationId,val)
-					})
-                    //路由跳转
-                    let routes = currentObj.props.navigator.getCurrentRoutes();
-                    let index;
-                    for (let i = 0; i < routes.length; i++) {
-                        if (routes[i]["key"] == "GroupInformationSetting") {
-                            index = i;
-                            break;
-                        }
-                    }
-                    alert('添加成功');
-                    //跳转到群设置
-                    currentObj.route.replaceAtIndex(currentObj.props,{
-                        key:'GroupInformationSetting',
-                        routeId: 'GroupInformationSetting',
-                        params:{"groupId":currentObj.props.groupId}
-                    },index)
-
-                } else {
-                    alert(result.errorMessage);
-                    return;
-                }
-            }, {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts});
         }
         //未有群 创建群
         else{
