@@ -44,8 +44,8 @@ export default class ThouchBar extends Component {
   render() {
     return (
       <View style={styles.thouchBarBox} >
-        <ThouchBarBoxTopBox ref={e => this.bar = e} emojiText={this.state.emojiText} emojiId={this.state.emojiId}  client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl} setTextInputData={this.setTextInputData}></ThouchBarBoxTopBox>
-        <ThouchBarBoxBottomBox setEmoji={this.setEmoji}  client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl} textInputData={this.state.textInputData} _onSubmitEditing={this._onSubmitEditing}></ThouchBarBoxBottomBox>
+        <ThouchBarBoxTopBox ref={e => this.bar = e} emojiText={this.state.emojiText} emojiId={this.state.emojiId}  client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl} setTextInputData={this.setTextInputData}></ThouchBarBoxTopBox>
+        <ThouchBarBoxBottomBox setEmoji={this.setEmoji}  client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl} textInputData={this.state.textInputData} _onSubmitEditing={this._onSubmitEditing}></ThouchBarBoxBottomBox>
       </View>
     );
   }

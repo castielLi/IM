@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     friendApplicationStore : state.friendApplicationStore,
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId
 });
 

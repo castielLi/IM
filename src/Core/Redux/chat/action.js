@@ -15,7 +15,7 @@ export function addClient(client){
 	}
 }
 //向chatRecordStore中某确定的聊天对象添加 一条消息
-export function addMessage(message,nickAndHeadImageUrlObj){
+export function addMessage(message,NickAndHeadImageUrlObj){
 	//let client = InterceptionClientFromId(message.MSGID);
 	return (dispatch,getState)=>{
 		dispatch({
@@ -24,7 +24,7 @@ export function addMessage(message,nickAndHeadImageUrlObj){
 		message
 		})
 		//同时更新recentListStore
-		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message),message.Data.LocalTime,false,nickAndHeadImageUrlObj))
+		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message),message.Data.LocalTime,false,NickAndHeadImageUrlObj))
 	}
 }
 export function receiveMessage(message){
@@ -70,7 +70,7 @@ export function receiveMessage(message){
                     message
                 })
                 //同时更新recentListStore
-                dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true,{nick:message.nick,avator:message.avator}))
+                dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true,{Nick:message.Nick,avator:message.avator}))
 
 
         }

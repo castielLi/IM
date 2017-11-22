@@ -18,7 +18,7 @@ export default class SendMessageDto{
         //同上，代表message的状态
         this.status = "";
         this.resourceTime="";
-        this.nick = "";
+        this.Nick = "";
         this.avator = "";
     }
 }

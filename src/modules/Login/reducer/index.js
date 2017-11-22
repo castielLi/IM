@@ -9,7 +9,7 @@ const initialState = {
     accountMessage:{
         accountId:'',
         SessionToken:'',
-        nick:'',
+        Nick:'',
         avator:""
     }
 };

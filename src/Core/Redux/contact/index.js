@@ -48,7 +48,7 @@ export default function relationStore(state=initialState, action){
                 }
             }
             return state.concat([]);
-        case 'CHANGE_RELATION_OF_NICK':
+        case 'CHANGE_RELATION_OF_Nick':
             for(let i=0;i<state.length;i++){
                 if(state[i].RelationId === action.relationId){
                     state[i].Nick = action.Nick;

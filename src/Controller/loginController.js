@@ -42,7 +42,7 @@ export default class loginController {
                 Network.setAuthorization(result.data.Data["SessionToken"]);
 
                 let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
-                    ,gender:result.data.Data["Gender"],nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
+                    ,gender:result.data.Data["Gender"],Nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
                     ,device:"Mobile",deviceId:"1"};
 
                 //存储登录状态
@@ -115,7 +115,7 @@ export default class loginController {
                             IMToken: storage.IMToken
                             ,
                             gender: storage.gender,
-                            nick: storage.nick,
+                            Nick: storage.Nick,
                             avator: storage.avator,
                             phone: storage.phone
                             ,
@@ -179,7 +179,7 @@ export default class loginController {
                                             }
                                             for (let m = 0; m < data.length; m++) {
                                                 if (v.Client == data[m].RelationId) {
-                                                    v.nick = data[m].Nick;
+                                                    v.Nick = data[m].Nick;
                                                     v.localImage = data[m].localImage;
                                                     v.avator = data[m].avator;
                                                     break;

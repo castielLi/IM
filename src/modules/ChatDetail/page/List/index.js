@@ -822,7 +822,7 @@ const mapStateToProps = (state,props) => ({
     chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
     accountId:state.loginStore.accountMessage.accountId,
     myAvator:state.loginStore.accountMessage.avator,
-    accountName:state.loginStore.accountMessage.nick
+    accountName:state.loginStore.accountMessage.Nick
 });
 
 const mapDispatchToProps = dispatch => ({

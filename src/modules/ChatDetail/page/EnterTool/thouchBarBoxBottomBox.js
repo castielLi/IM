@@ -41,7 +41,7 @@ render(){
         )
     }else if(isPlusPage){
       return(
-        <MoreUseBox client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl}></MoreUseBox>
+        <MoreUseBox client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></MoreUseBox>
         )
     }else{
       return(
