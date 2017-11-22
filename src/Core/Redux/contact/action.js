@@ -30,7 +30,7 @@ export function changeRelationOfShow(relationId){
 }
 export function changeRelationOfNick(relationId,Nick){
     return {
-        type: 'CHANGE_RELATION_OF_NICK',
+        type: 'CHANGE_RELATION_OF_Nick',
         relationId,
         Nick
     }

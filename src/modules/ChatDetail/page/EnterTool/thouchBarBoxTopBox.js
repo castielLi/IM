@@ -211,7 +211,7 @@ class ThouchBarBoxTopBox extends Component {
             chatController.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
+            this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
           }, [(tips) => {
             console.log(tips)
           }]);
@@ -267,7 +267,7 @@ class ThouchBarBoxTopBox extends Component {
         <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?(Platform.OS === 'android'?65:50):-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
-        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl}></AutoExpandingTextInput>
+        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></AutoExpandingTextInput>
       </View>
     )
   }

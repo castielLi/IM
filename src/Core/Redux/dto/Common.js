@@ -11,7 +11,7 @@ export function buildMessageDto(message,relation){
     dto.type = message.type;
     dto.Data = message.Data.Data.Data;
     dto.resourceTime = message.resourceTime;
-    dto.nick = relation.Nick;
+    dto.Nick = relation.Nick;
     dto.avator = relation.localImage == ""?relation.avatar:relation.localImage;
     return dto;
 }

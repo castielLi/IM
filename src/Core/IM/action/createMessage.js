@@ -108,12 +108,12 @@ export function buildInvationSendMessageToRudexMessage(message){
 export function buildChangeGroupNickMessage(Sender,Receiver,text,messageId){
     let message = createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
     message.status = MessageStatus.SendSuccess
-    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_NICK;
+    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_Nick;
     message.MSGID = messageId;
     return message;
 }
 
 export function buildChangeGroupNickSendMessageToRudexMessage(message){
-    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_NICK;
+    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_Nick;
     return message;
 }

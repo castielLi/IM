@@ -64,7 +64,7 @@ class Validate extends ContainerComponent {
         let {Applicant,Respondent} = this.props;
         // currentObj.showLoading()
         Keyboard.dismiss();
-        // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
+        // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,Nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
         // im.addMessage(addMessage,function(){
         //     currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒",
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     accountId:state.loginStore.accountMessage.accountId,
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     avator:state.loginStore.accountMessage.avator,
 });
 const mapDispatchToProps = dispatch => ({

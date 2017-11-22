@@ -235,7 +235,7 @@ class ChooseClient extends ContainerComponent {
 
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
-		let nicks = "";
+		let Nicks = "";
 		let members = [];
 		let splNeedArr = [];
 		//拼接选中用户id
@@ -243,9 +243,9 @@ class ChooseClient extends ContainerComponent {
 			accounts+= chooseArr[item].RelationId+",";
             splNeedArr.push({Account:chooseArr[item].RelationId});
 			if(item < chooseArr.length - 1){
-				nicks += chooseArr[item].Nick+",";
+				Nicks += chooseArr[item].Nick+",";
 			}else{
-				nicks += chooseArr[item].Nick;
+				Nicks += chooseArr[item].Nick;
 			}
 
 			members.push({"Account":chooseArr[item].RelationId})
@@ -267,7 +267,7 @@ class ChooseClient extends ContainerComponent {
 
 
 					let messageId = uuidv1();
-                    let text = nicks;
+                    let text = Nicks;
                     let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
                     im.storeSendMessage(sendMessage);
 
@@ -308,7 +308,7 @@ class ChooseClient extends ContainerComponent {
         else{
 
         	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',nick:chooseArr[0].Nick}});
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',Nick:chooseArr[0].Nick}});
                 return;
 			}
 
@@ -338,7 +338,7 @@ class ChooseClient extends ContainerComponent {
 					//todo 模拟一条消息，xx邀请xx和xx加入群聊
 					let messageId = uuidv1();
 					//创建群组消息
-					let text = nicks;
+					let text = Nicks;
 
 					//todo：lizongjun 现在不需要自己发送消息，后台统一发送
                     //向添加的用户发送邀请消息
@@ -537,7 +537,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     relationStore: state.relationStore,
-	accountName:state.loginStore.accountMessage.nick,
+	accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId,
 });
 

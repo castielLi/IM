@@ -11,7 +11,7 @@ export default class reduxMessageDto{
         this.Data = {};
         this.type = "";
         this.resourceTime="";
-        this.nick = "";
+        this.Nick = "";
         this.avator = "";
     }
 }

@@ -172,7 +172,7 @@ class RecentChat extends ContainerComponent {
             params: {
                 client: rowData.Client,
                 type: rowData.Type,
-                nick: rowData.Nick
+                Nick: rowData.Nick
             }
         });
     }
@@ -245,7 +245,7 @@ class RecentChat extends ContainerComponent {
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
-									<Text style = {styles.NickName}>{rowData.nick}</Text>
+									<Text style = {styles.NickName}>{rowData.Nick}</Text>
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>

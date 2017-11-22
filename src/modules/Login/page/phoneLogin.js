@@ -89,7 +89,7 @@ class PhoneLogin extends ContainerComponent {
                     }
                     currentObj.props.signDoing();
                     let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
-                        ,gender:result.data.Data["Gender"],nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
+                        ,gender:result.data.Data["Gender"],Nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
                         ,device:"Mobile",deviceId:"1"};
 
                     currentObj.props.signIn(account);

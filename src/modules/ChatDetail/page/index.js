@@ -139,14 +139,14 @@ class ChatDetail extends ContainerComponent {
     			<MyNavigationBar
 					left={{func:()=>{this.route.toMain(this.props);this.props.changeChatDetailPageStatus(false,'','')}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
-					heading={this.props.nick} />
+					heading={this.props.Nick} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
 						<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>
 					</View>
 				</TouchableWithoutFeedback>
 				{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}
-				<ThouchBar client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl}></ThouchBar>
+				<ThouchBar client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></ThouchBar>
     		</MyView>
 
 		);
