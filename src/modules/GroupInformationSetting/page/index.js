@@ -28,12 +28,12 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import IM from '../../../Core/IM';
-import User from '../../../Core/UserGroup';
+// import IM from '../../../Core/IM';
+// import User from '../../../Core/UserGroup';
 import chatController from '../../../Controller/settingController'
 
-let im = new IM();
-let user = new User();
+// let im = new IM();
+// let user = new User();
 let ChatController = new chatController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
