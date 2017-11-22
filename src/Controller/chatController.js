@@ -85,6 +85,10 @@ export default class chatController {
             callback(messages)
         })
     }
+    //通知controller正在与某人会话
+    chatWithNewClient(client,type){
+
+    }
      AcceptFriend(requestURL,params,callback){
         this.network.methodPOST(requestURL,params,function(result){
 

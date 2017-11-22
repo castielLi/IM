@@ -113,7 +113,8 @@ class ChatDetail extends ContainerComponent {
 		this.props.changeChatDetailPageStatus(true,client,type)
 		//清空未读消息计数红点
 		this.props.updateRecentItemLastMessage(client,type,false);
-
+		//通知controller正在与某人会话
+        chatController.chatWithNewClient(client,type);
 	}
 	componentWillUnmount(){
 		//修改chatDetailPageStore
