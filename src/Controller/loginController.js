@@ -95,6 +95,50 @@ export default class loginController {
         },false);
     }
 
+    loginWithToken(callback,params,storage){
+
+        Network.setNeedAuth(true)
+        Network.setAuthorization(storage.SessionToken);
+
+        this.network.methodPOST("/Member/LoginByToken",params,function(result){
+
+            if(result.success) {
+                if (result.data.Data != null) {
+                    //缓存token
+
+                    Network.setAuthorization(result.data.Data["SessionToken"]);
+
+                    AsyncStorage.setItem('account', JSON.stringify(
+                        {
+                            accountId: storage.accountId,
+                            SessionToken: result.data.Data["SessionToken"],
+                            IMToken: storage.IMToken
+                            ,
+                            gender: storage.gender,
+                            nick: storage.nick,
+                            avator: storage.avator,
+                            phone: storage.phone
+                            ,
+                            device: storage.device,
+                            deviceId: storage.deviceId
+                        }
+                    ));
+                    setMyAccoundId(storage.accountId);
+                    currentObj.im.setSocket(storage.accountId, storage.device, storage.deviceId, storage.IMToken);
+                    result.data.account = storage;
+
+                    if (Platform.OS === 'ios') {
+                        currentObj.im.initIMDatabase(storage.accountId)
+                        currentObj.user.initIMDatabase(storage.accountId)
+                    }
+                    callback(result);
+                }
+            }else{
+                callback(result);
+            }
+        },false);
+    }
+
     getContactList(callback,params){
         this.network.methodPOST("/Member/GetContactList",params,function(result){
             if(result.success){
