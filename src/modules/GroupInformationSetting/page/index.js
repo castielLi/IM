@@ -30,11 +30,11 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 // import IM from '../../../Core/IM';
 // import User from '../../../Core/UserGroup';
-import chatController from '../../../Controller/settingController'
+import settingController from '../../../Controller/settingController'
 
 // let im = new IM();
 // let user = new User();
-let ChatController = new chatController();
+let SettingController = new settingController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -87,10 +87,10 @@ class GroupInformationSetting extends ContainerComponent {
             }
         };
         if(Save){
-            ChatController.addGroupToContact(data,callback);
+            SettingController.addGroupToContact(data,callback);
         }
         else{
-            ChatController.removeGroupFromContact(data,callback);
+            SettingController.removeGroupFromContact(data,callback);
         }
     }
 
@@ -180,7 +180,7 @@ class GroupInformationSetting extends ContainerComponent {
                 console.log('获取群信息失败')
             }
         };
-        ChatController.getGroupInfo(params,callback);
+        SettingController.getGroupInfo(params,callback);
 
         // currentObj.showLoading()
         // currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
@@ -249,7 +249,7 @@ class GroupInformationSetting extends ContainerComponent {
                     console.log('退出群组出错')
                 }
             };
-            ChatController.exitGroup(params,callback);
+            SettingController.exitGroup(params,callback);
             // currentObj.showLoading()
             // this.fetchData("POST","Member/ExitGroup",function(result){
             //     currentObj.hideLoading()
@@ -330,7 +330,7 @@ class GroupInformationSetting extends ContainerComponent {
                 console.log('查询用户信息出错');
             }
         };
-        ChatController.searchUser(params,callback);
+        SettingController.searchUser(params,callback);
         // currentObj.showLoading()
         // this.fetchData("POST","Member/SearchUser",function(result){
         //     currentObj.hideLoading()

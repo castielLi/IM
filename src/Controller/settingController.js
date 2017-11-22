@@ -80,6 +80,11 @@ export default class settingController {
             callback(results);
         })
     }
+
+    //申请好友验证(validate)
+    addNewRelation(relationObj){
+        this.user.AddNewRelation(relationObj);
+    }
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
