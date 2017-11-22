@@ -11,11 +11,6 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
-<<<<<<< HEAD
-=======
-import * as recentActions from '../../../Core/Redux/RecentList/action';
-import * as relationActions from '../../../Core/Redux/contact/action';
->>>>>>> develope
 import UUIDGenerator from 'react-native-uuid-generator';
 import LoginController from '../../../Controller/loginController'
 
@@ -99,34 +94,10 @@ class PhoneLogin extends ContainerComponent {
 
                     currentObj.props.signIn(account);
 
-<<<<<<< HEAD
                     currentObj.route.push(currentObj.props,{
                         key:'MainTabbar',
                         routeId: 'MainTabbar'
                     });
-=======
-
-
-                    loginController.getContactList(function(result){
-
-                        if(!result.success){
-                            currentObj.hideLoading();
-                            alert("初始化account出错" + result.errorMessage);
-                            return;
-                        }
-
-                        currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
-
-                        currentObj.props.initRelation(result.data.relations);
-                        currentObj.props.initRecentList(result.data.chatListArr);
-                        currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
-                        currentObj.route.push(currentObj.props,{
-                            key:'MainTabbar',
-                            routeId: 'MainTabbar'
-                        });
-
-                    },{"Account": currentObj.state.phoneText})
->>>>>>> develope
 
                 },{
                     "Account": currentObj.state.phoneText,
@@ -369,16 +340,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-<<<<<<< HEAD
-    ...bindActionCreators(Actions, dispatch)
-=======
-    ...bindActionCreators(Actions, dispatch),
-      ...bindActionCreators(relationActions, dispatch),
-	  ...bindActionCreators(ApplyFriendAction,dispatch),
-      ...bindActionCreators(unReadMessageAction,dispatch),
-      ...bindActionCreators(recentActions,dispatch)
->>>>>>> develope
 
-  }};
+    ...bindActionCreators(Actions, dispatch)
+
+  }
+};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);
