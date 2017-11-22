@@ -139,6 +139,12 @@ export default class loginController {
         },false);
     }
 
+    loginOut(){
+        this.im.closeImDb();
+        this.user.closeDB();
+        this.im.logout();
+    }
+    
     getContactList(callback,params){
         this.network.methodPOST("/Member/GetContactList",params,function(result){
             if(result.success){

@@ -502,7 +502,10 @@ export default class IM {
         storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
     }
 
-
+    //关闭数据库
+    closeImDb(){
+        storeSqlite.closeImDb();
+    }
     receiveMessageOpreator(message){
         if(message.Command == undefined) {
             this.ackBackMessageHandle(message);

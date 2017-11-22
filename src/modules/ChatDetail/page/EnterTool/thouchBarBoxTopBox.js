@@ -31,12 +31,12 @@ import AutoExpandingTextInput from './autoExpandingTextInput';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
-const im = new IM();
+const chatController = new ChatController();
 var {
   height,
   width
@@ -208,7 +208,7 @@ class ThouchBarBoxTopBox extends Component {
               Time:currentTime?currentTime:1
           }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             //发送消息到IM
-          im.addMessage(message, (status, messageId) => {
+            chatController.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
             this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})

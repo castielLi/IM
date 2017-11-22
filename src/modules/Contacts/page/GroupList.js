@@ -26,7 +26,7 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/UserGroup';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import {initSection,initDataFormate,initFlatListData} from './formateData';
+import {initFlatListData} from './formateData';
 var {height, width} = Dimensions.get('window');
 
 class GroupList extends ContainerComponent {

@@ -96,15 +96,13 @@ export default class chatController {
             cache[client] = { messages: [],unread:0}
         }
     }
-     AcceptFriend(requestURL,params,callback){
-        this.network.methodPOST(requestURL,params,function(result){
-
-            //todo controller operate
-
-            // callback(success,data);
-
+    //发送消息
+    addMessage(message,callback){
+        this.im.addMessage(message, (status, messageId) => {
+            callback(status, messageId)
         })
-     }
+    }
+
 
 
 
@@ -184,44 +182,22 @@ export default class chatController {
         })
     }
 
-    //用户设置页面（InformationSetting）
-    removeBlackMember(data,callback){
-        let params = data.params;
-        let value = data.value;
-        this.network.methodPOST('Member/RemoveBlackMember',params,function(results){
-            if(results.success){
-                currentObj.user.changeRelationBlackList(value, params.client);
-            }
-            callback(results);
-        })
-    }
-    addBlackMember(data,callback){
-        let params = data.params;
-        let value = data.value;
-        this.network.methodPOST('Member/AddBlackMember',params,function(results){
-            if(results.success){
-                currentObj.user.changeRelationBlackList(value, params.client);
-            }
-            callback(results);
-        })
-    }
-    deleteFriend(params,callback){
-        let {client,accountId} = params;
-        this.network.methodPOST('Member/DeleteFriend',params,function(results){
-            if(results.success){
-                //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(client);
-                //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(client,'private');
-                //删除account数据库
-                currentObj.user.deleteRelation(client);
-            }
-            callback(results);
-        })
-    }
 
 
 
+    //用户详情页面
+    // applyFriend(params,callback){
+    //     this.network.methodPOST('Member/ApplyFriend',params,function(results){
+    //         if(results.success && results.data.Data instanceof Object){
+    //             //relationStore里面添加该好友(或者重新初始化)
+    //             let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+    //             let IsInBlackList =result.data.Data.IsInBlackList
+    //             let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+    //             currentObj.user.AddNewRelation(relationObj)
+    //         }
+    //         callback(results);
+    //     })
+    // }
 
 
 

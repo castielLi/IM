@@ -40,3 +40,9 @@ export function initDataFormate(type='private',arr,filterStr){
 
     return dataObj;
 }
+
+export function initFlatListData(type='private',arr){
+    return arr.filter((v,i)=>{
+        return v.Type === type&&(v.show === true || v.show === 'true')
+    })
+}
