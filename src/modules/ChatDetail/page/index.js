@@ -137,7 +137,7 @@ class ChatDetail extends ContainerComponent {
 					</View>
 				</TouchableWithoutFeedback>
 				{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}
-				<ThouchBar client={this.props.client} type={this.props.type}></ThouchBar>
+				<ThouchBar client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl}></ThouchBar>
     		</MyView>
 
 		);

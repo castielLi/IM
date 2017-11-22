@@ -263,7 +263,7 @@ class PhoneLogin extends ContainerComponent {
 												}
 												for (let m = 0; m < data.length; m++) {
 													if (v.Client == data[m].RelationId) {
-														v.Nick = data[m].Nick;
+														v.nick = data[m].Nick;
 														v.localImage = data[m].localImage;
 														v.avator = data[m].avator;
 														break;

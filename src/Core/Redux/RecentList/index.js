@@ -62,7 +62,7 @@ export default function recentListStore(state=initialState, action){
                 if(action.LastMessage === false){
                     return state;
                 }
-                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage,Time:action.Time};
+                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage,Time:action.Time,...action.nickAndHeadImageUrlObj};
                 //如果允许添加未读消息
                 if(action.isAddUnReadMessage===true){
                     obj.unReadMessageCount = 1;
