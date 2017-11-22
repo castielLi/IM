@@ -200,7 +200,7 @@ class Me extends ContainerComponent {
                         <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
                     }
                     <View style={{height:60,justifyContent:'space-between'}}>
-                        <Text style={styles.headerText}>{this.props.nick}</Text>
+                        <Text style={styles.headerText}>{this.props.Nick}</Text>
                         <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
                     </View>
                 </View>
@@ -252,7 +252,7 @@ class Me extends ContainerComponent {
 const mapStateToProps = state => ({
     accountId:state.loginStore.accountMessage.accountId,
     avator:state.loginStore.accountMessage.avator,
-    nick:state.loginStore.accountMessage.nick,
+    Nick:state.loginStore.accountMessage.Nick,
 
 });
 

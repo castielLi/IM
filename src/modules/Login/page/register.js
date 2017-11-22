@@ -15,7 +15,7 @@ export default class Register extends ContainerComponent {
 		super();
 
         this.state = {
-            nickNameText:'',
+            NickNameText:'',
             phoneText:'',
             passWordText:'',
             codeText:'',
@@ -46,7 +46,7 @@ export default class Register extends ContainerComponent {
 
 	register=()=>{
 
-		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.passWordText&&this.state.nickNameText){
+		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.passWordText&&this.state.NickNameText){
 			// this.setState({
 			// 	showConfirm:true,
 			// });
@@ -65,7 +65,7 @@ export default class Register extends ContainerComponent {
                         })
 					})
 				}
-            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.nickNameText,"Captcha":this.state.codeText,"Password":this.state.passWordText})
+            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.NickNameText,"Captcha":this.state.codeText,"Password":this.state.passWordText})
 
 		}else{
 			alert('信息不能为空!');
@@ -91,13 +91,13 @@ export default class Register extends ContainerComponent {
 				<View style={styles.content}>
 					<View style={styles.inputBox}>
 						<View style={styles.imageBox}>
-							<Text style = {styles.nickName}>昵称</Text>
+							<Text style = {styles.NickName}>昵称</Text>
 						</View>
 						<TextInput 
 							style = {[styles.textInput,{marginLeft:-10}]}
 							placeholderTextColor = '#bebebe' 
 							placeholder = '例如：王凯'
-							onChangeText={(Text)=>{this.setState({nickNameText:Text})}}
+							onChangeText={(Text)=>{this.setState({NickNameText:Text})}}
 							underlineColorAndroid= {'transparent'}
 						></TextInput>
 					</View>
@@ -152,7 +152,7 @@ export default class Register extends ContainerComponent {
 					</View>
 					<Text style={{fontSize:checkDeviceHeight(24),color:'#bebebe'}}>密码由8-12位组成, 其中最少包括一个字母和数字，不能使用符号</Text>
 					{
-						this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.nickNameText?
+						this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NickNameText?
 						(
 							<TouchableOpacity activeOpacity = {0.8} style={styles.register} onPress = {()=>this.register()}>
 								<Text style = {styles.registerText}>注册</Text>
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
 		width:Dimensions.get('window').width - checkDeviceHeight(80),
 		flex:1,
 	},
-	nickName:{
+	NickName:{
 		fontSize:checkDeviceHeight(30),
 		color:'#333333',
 	},

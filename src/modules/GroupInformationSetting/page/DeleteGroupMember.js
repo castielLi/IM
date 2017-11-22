@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     recentListStore:state.recentListStore,
     relationStore: state.relationStore,
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId,
 });
 

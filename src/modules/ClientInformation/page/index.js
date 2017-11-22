@@ -143,7 +143,7 @@ class ClientInformation extends ContainerComponent {
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.Account,type:'private',HeadImageUrl:this.state.HeadImageUrl,nick:this.state.Nickname}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.Account,type:'private',HeadImageUrl:this.state.HeadImageUrl,Nick:this.state.Nickname}});
     }
 
     addFriend = (Respondent)=>{

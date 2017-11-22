@@ -28,7 +28,7 @@ export function deleteRecentItemFromId(id){
 
 }
 //RecentList更新某个item  lastMessage为false表示只清空未读消息计数红点，而不修改LastMessagew文本  如果是接收消息而调用updateRecentItemLastMessage，则isReceiveMessage为true
-export function updateRecentItemLastMessage(client,type,lastMessage,time,isReceiveMessage,nickAndHeadImageUrlObj){
+export function updateRecentItemLastMessage(client,type,lastMessage,time,isReceiveMessage,NickAndHeadImageUrlObj){
     return (dispatch,getState)=>{
         let isAddUnReadMessage = false;//默认每次不添加未读消息
         //如果是接收到一条消息
@@ -85,7 +85,7 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
             LastMessage:lastMessage,
             Time:time,
             isAddUnReadMessage,
-            nickAndHeadImageUrlObj
+            NickAndHeadImageUrlObj
         });
     }
 
