@@ -175,9 +175,11 @@ export default class chatController {
                 //删除account数据库中数据
                 currentObj.user.deleteFromGrroup(groupId);
             }
-            else{
-                console.log("http请求出错")
-            }
+            callback(results);
+        })
+    }
+    searchUser(params,callback){
+        this.network.methodPOST('Member/SearchUser',params,function(results){
             callback(results);
         })
     }
