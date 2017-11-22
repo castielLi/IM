@@ -4,7 +4,7 @@
 import IM from '../Core/IM'
 import User from '../Core/UserGroup'
 import Network from '../Core/Networking/Network'
-
+import RNFS from 'react-native-fs'
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -80,6 +80,11 @@ export default class settingController {
             callback(results);
         })
     }
+
+    //申请好友验证(validate)
+    addNewRelation(relationObj){
+        this.user.AddNewRelation(relationObj);
+    }
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
@@ -111,5 +116,52 @@ export default class settingController {
             }
             callback(results);
         })
+    }
+    //用户页面（clientInformation.js）
+    getFriendUserInfo(params,callback){
+        this.network.methodPOST('Member/GetFriendUserInfo',params,function(results){
+            callback(results);
+        })
+    }
+    applyFriend(params,callback){
+        this.network.methodPOST('Member/ApplyFriend',params,function(result){
+            //单方面添加好友
+            if(result.success && result.data.Data instanceof Object){
+                let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+                let IsInBlackList =result.data.Data.IsInBlackList
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+                currentObj.user.AddNewRelation(relationObj)
+            }
+            callback(result);
+        })
+    }
+    //更新关系和头像 （clientInformation.js）
+    UpdateFriendInfo(accountId,UserInfo,propsRelation){
+        let isUpdate;
+        let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
+
+        if(propsRelation.Nick !== UserInfo.Nickname || propsRelation.OtherComment !== UserInfo.Gender || propsRelation.Email !== UserInfo.Email){
+            propsRelation.Nick = UserInfo.Nickname;
+            propsRelation.OtherComment = UserInfo.Gender;
+            propsRelation.Email = UserInfo.Email;
+            isUpdate = true;
+        }
+        updateImage = (result) => {
+            console.log('下载成功,对数据库进行更改')
+            //LocalImage = toFile;
+            if(propsRelation.LocalImage){
+                RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+            }
+            //todo:缺少数据库操作
+        };
+        if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
+            propsRelation.avator = UserInfo.HeadImageUrl;
+            isUpdate = true;
+            this.network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
+        }
+
+        if(isUpdate){
+            this.user.updateRelation(propsRelation)
+        }
     }
 }

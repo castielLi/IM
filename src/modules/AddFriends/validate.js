@@ -17,16 +17,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../../Core/Component/NavigationBar';
-import IM from '../../Core/IM';
+// import IM from '../../Core/IM';
 import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import User from '../../Core/UserGroup'
+// import User from '../../Core/UserGroup'
 import Relation from '../../Core/UserGroup/dto/RelationModel'
 import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
-let im = new IM();
+import settingController from  '../../Controller/settingController';
+// let im = new IM();
 let currentObj = undefined;
-let user = new User();
+// let user = new User();
+let SettingController = new settingController();
 
 class Validate extends ContainerComponent {
     constructor(props){
@@ -80,7 +82,8 @@ class Validate extends ContainerComponent {
             relation.avator = currentObj.props.relation.HeadImageUrl;
             relation.Type = ChatWayEnum.Private;
             relation.show = 'false';
-            user.AddNewRelation(relation);
+            // user.AddNewRelation(relation);
+            SettingController.addNewRelation(relation);
             currentObj.props.addRelation(relation);
 
         // })

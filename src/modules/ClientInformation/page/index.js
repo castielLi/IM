@@ -3,10 +3,7 @@ import React, {Component} from 'react';
 import {Text,
     StyleSheet,
     View,
-    TextInput,
     TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform,
     Image,
     TouchableHighlight,
     Dimensions
@@ -15,27 +12,17 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import User from '../../../Core/UserGroup'
-import Relation from '../../../Core/UserGroup/dto/RelationModel'
+
 import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import netWorking from '../../../Core/Networking/Network'
-import RNFS from 'react-native-fs'
-import IM from '../../../Core/IM'
 
-import {addApplyFriendMessage} from '../../../Core/IM/action/createMessage';
-
-import ChatCommandEnum from '../../../Core/IM/dto/ChatCommandEnum'
-import MessageBodyTypeEnum from '../../../Core/IM/dto/MessageBodyTypeEnum'
-import MessageCommandEnum from '../../../Core/IM/dto/MessageCommandEnum'
-
-import SendMessageBodyDto from '../../../Core/IM/dto/SendMessageBodyDto'
-import SendMessageDto from '../../../Core/IM/dto/SendMessageDto'
-import messageBodyChatDto from '../../../Core/IM/dto/messageBodyChatDto'
+import SettingController from '../../../Controller/settingController'
 
 
-let im = new IM();
-let user = new User();
+
+
+let settingController = new SettingController();
+
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -53,36 +40,40 @@ class ClientInformation extends ContainerComponent {
         currentObj = this;
     }
 
+    // isUpdateFriendInfo = (UserInfo,propsRelation) =>{
+    //     let isUpdate;
+    //     let _network = new netWorking();
+    //     let {accountId} = this.props.loginStore;
+    //     let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
+    //     let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
+    //
+    //     if(propsRelation.Nick !== UserInfo.Nickname || _Relation.OtherComment !== UserInfo.Gender || _Relation.Email !== UserInfo.Email){
+    //         propsRelation.Nick = UserInfo.Nickname;
+    //         propsRelation.OtherComment = UserInfo.Gender;
+    //         propsRelation.Email = UserInfo.Email;
+    //         isUpdate = true;
+    //     }
+    //     updateImage = (result) => {
+    //         console.log('下载成功,对数据库进行更改')
+    //         //LocalImage = toFile;
+    //         if(propsRelation.LocalImage){
+    //             RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+    //         }
+    //         //todo:缺少数据库操作
+    //     };
+    //     if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
+    //         propsRelation.avator = UserInfo.HeadImageUrl;
+    //         isUpdate = true;
+    //         _network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
+    //     }
+    //
+    //     if(isUpdate){
+    //         user.updateRelation(_Relation)
+    //     }
+    // }
     isUpdateFriendInfo = (UserInfo,propsRelation) =>{
-        let isUpdate;
-        let _network = new netWorking();
         let {accountId} = this.props.loginStore;
-        let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
-        let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
-
-        if(propsRelation.Nick !== UserInfo.Nickname || _Relation.OtherComment !== UserInfo.Gender || _Relation.Email !== UserInfo.Email){
-            propsRelation.Nick = UserInfo.Nickname;
-            propsRelation.OtherComment = UserInfo.Gender;
-            propsRelation.Email = UserInfo.Email;
-            isUpdate = true;
-        }
-        updateImage = (result) => {
-            console.log('下载成功,对数据库进行更改')
-            //LocalImage = toFile;
-            if(propsRelation.LocalImage){
-                RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
-            }
-            //todo:缺少数据库操作
-        };
-        if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
-            propsRelation.avator = UserInfo.HeadImageUrl;
-            isUpdate = true;
-            _network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
-        }
-
-        if(isUpdate){
-            user.updateRelation(_Relation)
-        }
+        settingController.UpdateFriendInfo(accountId,UserInfo,propsRelation)
     }
     componentDidMount() {
 
@@ -91,26 +82,24 @@ class ClientInformation extends ContainerComponent {
 
             let accountId = currentObj.props.Relation.RelationId;
             this.showLoading()
-            this.fetchData("POST","Member/GetFriendUserInfo",function(result){
+
+            let params = {"Account":accountId}
+            settingController.getFriendUserInfo(params,(results)=>{
                 currentObj.hideLoading();
-                if(!result.success){
+                if(!results.success){
                     alert(result.errorMessage);
                     return;
                 }
-
-                if(result.data.Data){
-                    let {Account,Nickname,PhoneNumber,HeadImageUrl} = result.data.Data;
+                if(results.data.Data){
+                    let {Account,Nickname,PhoneNumber,HeadImageUrl} = results.data.Data;
                     currentObj.setState({
                         Account,
                         Nickname,
                         PhoneNumber,
                         HeadImageUrl
                     })
-                    currentObj.isUpdateFriendInfo(result.data.Data,needRelation);
-
+                    currentObj.isUpdateFriendInfo(results.data.Data,needRelation);
                 }
-            },{
-                "Account":accountId
             })
         }else{
 
@@ -160,7 +149,10 @@ class ClientInformation extends ContainerComponent {
     addFriend = (Respondent)=>{
         let Applicant = this.props.loginStore.accountId;
         currentObj.showLoading()
-        this.fetchData("POST","Member/ApplyFriend",function(result){
+
+
+        let params = {Applicant,Respondent};
+        settingController.applyFriend(params,(result)=>{
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);
@@ -171,19 +163,17 @@ class ClientInformation extends ContainerComponent {
                 currentObj.setState({
                     isRenderSendMessage:true
                 })
-            //relationStore里面添加该好友(或者重新初始化)
+                //relationStore里面添加该好友(或者重新初始化)
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
                 currentObj.props.addRelation(relationObj);
-                user.AddNewRelation(relationObj)
             }
             //双方互不为好友
             else if(result.success && typeof result.data.Data === 'string'){
-
                 currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.data.Data,"relation":currentObj.props.Relation,Applicant,Respondent}})
             }
-        },{Applicant,Respondent})
+        })
     }
     render() {
         let Popup = this.PopContent;
