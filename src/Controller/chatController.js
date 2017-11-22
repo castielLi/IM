@@ -184,41 +184,7 @@ export default class chatController {
         })
     }
 
-    //用户设置页面（InformationSetting）
-    removeBlackMember(data,callback){
-        let params = data.params;
-        let value = data.value;
-        this.network.methodPOST('Member/RemoveBlackMember',params,function(results){
-            if(results.success){
-                currentObj.user.changeRelationBlackList(value, params.client);
-            }
-            callback(results);
-        })
-    }
-    addBlackMember(data,callback){
-        let params = data.params;
-        let value = data.value;
-        this.network.methodPOST('Member/AddBlackMember',params,function(results){
-            if(results.success){
-                currentObj.user.changeRelationBlackList(value, params.client);
-            }
-            callback(results);
-        })
-    }
-    deleteFriend(params,callback){
-        let {client,accountId} = params;
-        this.network.methodPOST('Member/DeleteFriend',params,function(results){
-            if(results.success){
-                //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(client);
-                //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(client,'private');
-                //删除account数据库
-                currentObj.user.deleteRelation(client);
-            }
-            callback(results);
-        })
-    }
+
 
 
     //用户详情页面
