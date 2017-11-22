@@ -112,10 +112,9 @@ export default class chatController {
 
 
     //todo 张彤 applyFriend
-    acceptFriend(requestURL,params,callback){
-        let {key,send} = params.data;
-        this.network.methodPOST(requestURL,params,function(results){
-            let result;
+    acceptFriend(params,callback){
+        let {key} = params;
+        this.network.methodPOST('Member/AcceptFriend',params,function(results){
             if(results.success){
                 //todo controller operate
                 let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
@@ -123,20 +122,103 @@ export default class chatController {
                 currentObj.user.AddNewRelation(relationObj);
                 //修改好友申请消息状态
                 currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
-                result = true;
+                results.data.acceptFriend = {key,Account}
             }
-            else{
-                result = false;
-            }
-            callback(result,data);
-        })
+            callback(results);
+        },false)
     }
     getApplicantsInfo(idS,callback){
         this.user.GetRelationsByRelationIds(idS,callback)
     }
 
+    //群设置（GroupInformationSetting）
+    addGroupToContact(data,callback){
+        let params = data.params;
+        let info = data.info;
+        this.network.methodPOST('Member/AddGroupToContact',params,function(results){
+            if(results.success && results.data.Result){
+                let obj = {
+                    RelationId:info.ID,
+                    OtherComment:info.Description,
+                    Nick:info.Name,
+                    BlackList:false,
+                    Type:'chatroom',
+                    avator:info.ProfilePicture==null?"":info.ProfilePicture,
+                    owner:info.Owner,
+                    show:true}
+                currentObj.user.AddNewGroup(obj);
+            }
+            callback(results);
+        })
+    }
+    removeGroupFromContact(data,callback){
+        let params = data.params;
+        let info = data.info;
+        this.network.methodPOST('Member/RemoveGroupFromContact',params,function(results){
+            if(results.success && results.data.Result){
+                currentObj.user.RemoveGroupFromContact(info.ID);
+            }
+            callback(results);
+        })
+    }
+    getGroupInfo(params,callback){
+        this.network.methodPOST('Member/GetGroupInfo',params,function(results){
+            callback(results);
+        })
+    }
+    exitGroup(params,callback){
+        let {groupId,accountId} = params;
+        this.network.methodPOST('Member/ExitGroup',params,function(results){
+            if(results.success){
+                //删除ChatRecode表中记录
+                currentObj.im.deleteChatRecode(groupId);
+                //删除该与client的所以聊天记录
+                currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
+                //删除account数据库中数据
+                currentObj.user.deleteFromGrroup(groupId);
+            }
+            else{
+                console.log("http请求出错")
+            }
+            callback(results);
+        })
+    }
 
-
+    //用户设置页面（InformationSetting）
+    removeBlackMember(data,callback){
+        let params = data.params;
+        let value = data.value;
+        this.network.methodPOST('Member/RemoveBlackMember',params,function(results){
+            if(results.success){
+                currentObj.user.changeRelationBlackList(value, params.client);
+            }
+            callback(results);
+        })
+    }
+    addBlackMember(data,callback){
+        let params = data.params;
+        let value = data.value;
+        this.network.methodPOST('Member/AddBlackMember',params,function(results){
+            if(results.success){
+                currentObj.user.changeRelationBlackList(value, params.client);
+            }
+            callback(results);
+        })
+    }
+    deleteFriend(params,callback){
+        let {client,accountId} = params;
+        this.network.methodPOST('Member/DeleteFriend',params,function(results){
+            if(results.success){
+                //删除ChatRecode表中记录
+                currentObj.im.deleteChatRecode(client);
+                //删除该与client的所以聊天记录
+                currentObj.im.deleteCurrentChatMessage(client,'private');
+                //删除account数据库
+                currentObj.user.deleteRelation(client);
+            }
+            callback(results);
+        })
+    }
 
 
 
