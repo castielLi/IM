@@ -3,13 +3,8 @@ import React, {Component} from 'react';
 import {Text,
     StyleSheet,
     View,
-    TextInput,
     TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform,
-    Image,
     TouchableHighlight,
-    Dimensions,
     Switch
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
@@ -27,7 +22,6 @@ import SettingController from '../../../Controller/settingController';
 
 let settingController = new SettingController();
 
-let {height,width} = Dimensions.get('window');
 let currentObj;
 
 const options = ['取消','确认删除']
