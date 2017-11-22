@@ -37,7 +37,8 @@ let currentChat = undefined
 
 //数据缓存
 let cache = {};
-//{"wg003723":[MSGID,MSGID]}
+//{ "wg003723" : { messages: [],unread:1}}
+
 
 let currentObj = undefined;
 
@@ -85,9 +86,11 @@ export default class chatController {
             callback(messages)
         })
     }
-    //通知controller正在与某人会话
-    chatWithNewClient(client,type){
-
+    //界面通知controller正在与某人会话
+    chatWithNewClient(client){
+        currentChat = client;
+        cache[client].unread = 0;
+        this.im.updateUnReadMessageNumber(client,0);
     }
      AcceptFriend(requestURL,params,callback){
         this.network.methodPOST(requestURL,params,function(result){
