@@ -135,15 +135,10 @@ class GroupInformationSetting extends ContainerComponent {
 
 
     componentDidMount(){
-        currentObj.showLoading()
-        currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
-            currentObj.hideLoading();
-
-            if(!result.success){
-                alert(result.errorMessage)
-                return;
-            }else{
-                let Data = result.data.Data;
+        let params = {"GroupId":this.props.groupId};
+        callback = (results)=>{
+            if(results.success){
+                let Data = results.data.Data;
                 let groupInformation = {
                     ID:Data.ID,
                     LastUpdateTime:Data.LastUpdateTime,
@@ -172,8 +167,51 @@ class GroupInformationSetting extends ContainerComponent {
                     isSave:save
                 })
             }
+            else{
+                console.log('获取群信息失败')
+            }
+        };
+        ChatController.getGroupInfo(params,callback);
 
-        },{"GroupId":this.props.groupId})
+        // currentObj.showLoading()
+        // currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
+        //     currentObj.hideLoading();
+        //
+        //     if(!result.success){
+        //         alert(result.errorMessage)
+        //         return;
+        //     }else{
+        //         let Data = result.data.Data;
+        //         let groupInformation = {
+        //             ID:Data.ID,
+        //             LastUpdateTime:Data.LastUpdateTime,
+        //             Name:Data.Name,
+        //             Owner:Data.Owner,
+        //             ProfilePicture:Data.ProfilePicture,
+        //             Description:Data.Description,
+        //         };
+        //         let members;
+        //         if(Data.MemberList.length>13){
+        //             members = Data.MemberList.slice(0,13);
+        //         }else{
+        //             members = Data.MemberList.concat()
+        //         }
+        //         let save = false;
+        //         let relations = currentObj.props.relations;
+        //         for(let i=0;i<relations.length;i++){
+        //             if(relations[i].RelationId === groupInformation.ID && relations[i].show === 'true' ){
+        //                 save = true;
+        //             }
+        //         }
+        //         currentObj.setState({
+        //             members:members.concat([{},{}]),
+        //             realMemberList:Data.MemberList,
+        //             groupInformation,
+        //             isSave:save
+        //         })
+        //     }
+        //
+        // },{"GroupId":this.props.groupId})
     }
 
 
