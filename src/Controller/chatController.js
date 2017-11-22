@@ -200,7 +200,19 @@ export default class chatController {
     }
 
 
-
+    //用户详情页面
+    // applyFriend(params,callback){
+    //     this.network.methodPOST('Member/ApplyFriend',params,function(results){
+    //         if(results.success && results.data.Data instanceof Object){
+    //             //relationStore里面添加该好友(或者重新初始化)
+    //             let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+    //             let IsInBlackList =result.data.Data.IsInBlackList
+    //             let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+    //             currentObj.user.AddNewRelation(relationObj)
+    //         }
+    //         callback(results);
+    //     })
+    // }
 
 
 

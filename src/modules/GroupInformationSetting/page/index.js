@@ -29,10 +29,12 @@ import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import IM from '../../../Core/IM';
-import User from '../../../Core/UserGroup'
+import User from '../../../Core/UserGroup';
+import chatController from '../../../Controller/chatController'
 
 let im = new IM();
 let user = new User();
+let ChatController = new chatController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -66,50 +68,70 @@ class GroupInformationSetting extends ContainerComponent {
         })
     }
 
-    addToContacts = ()=>{
+    addOrRemoveTheContacts = () =>{
         let Save = !this.state.isSave;
         let info = this.state.groupInformation;
-        currentObj.showLoading();
+        let params = {"Account":this.props.accountId,"GroupId":this.props.groupId};
+        let data = {params,info};
+        callback = (results)=>{
+            currentObj.props.changeRelationOfShow(info.ID);
+            currentObj.setState({
+                isSave:Save
+            })
+        };
         if(Save){
-            this.fetchData('POST','Member/AddGroupToContact',function (result) {
-                currentObj.hideLoading();
-                if(result.success && result.data.Result){
-                    // alert('添加通讯录成功')
-                    let obj = {
-                        RelationId:info.ID,
-                        OtherComment:info.Description,
-                        Nick:info.Name,
-                        BlackList:false,
-                        Type:'chatroom',
-                        avator:info.ProfilePicture==null?"":info.ProfilePicture,
-                        owner:info.Owner,
-                        show:true}
-                    user.AddNewGroup(obj);
-                    // currentObj.props.addRelation(obj);
-                    currentObj.props.changeRelationOfShow(info.ID);
-                    currentObj.setState({
-                        isSave:Save
-                    })
-                }
-            },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+            ChatController.addGroupToContact(data,callback);
         }
         else{
-            this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
-                currentObj.hideLoading();
-                if(result.success && result.data.Result){
-                    // alert('移除通讯录成功')
-                    info.show = false;
-                    user.RemoveGroupFromContact(info.ID);
-                    //currentObj.props.deleteRelation(info.ID);
-                    currentObj.props.changeRelationOfShow(info.ID);
-
-                    currentObj.setState({
-                        isSave:Save
-                    })
-                }
-            },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+            ChatController.removeGroupFromContact(data,callback);
         }
     }
+
+
+    // addToContacts = ()=>{
+    //     let Save = !this.state.isSave;
+    //     let info = this.state.groupInformation;
+    //     currentObj.showLoading();
+    //     if(Save){
+    //         this.fetchData('POST','Member/AddGroupToContact',function (result) {
+    //             currentObj.hideLoading();
+    //             if(result.success && result.data.Result){
+    //                 // alert('添加通讯录成功')
+    //                 let obj = {
+    //                     RelationId:info.ID,
+    //                     OtherComment:info.Description,
+    //                     Nick:info.Name,
+    //                     BlackList:false,
+    //                     Type:'chatroom',
+    //                     avator:info.ProfilePicture==null?"":info.ProfilePicture,
+    //                     owner:info.Owner,
+    //                     show:true}
+    //                 user.AddNewGroup(obj);
+    //                 // currentObj.props.addRelation(obj);
+    //                 currentObj.props.changeRelationOfShow(info.ID);
+    //                 currentObj.setState({
+    //                     isSave:Save
+    //                 })
+    //             }
+    //         },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+    //     }
+    //     else{
+    //         this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
+    //             currentObj.hideLoading();
+    //             if(result.success && result.data.Result){
+    //                 // alert('移除通讯录成功')
+    //                 info.show = false;
+    //                 user.RemoveGroupFromContact(info.ID);
+    //                 //currentObj.props.deleteRelation(info.ID);
+    //                 currentObj.props.changeRelationOfShow(info.ID);
+    //
+    //                 currentObj.setState({
+    //                     isSave:Save
+    //                 })
+    //             }
+    //         },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+    //     }
+    // }
 
 
     componentDidMount(){
@@ -420,7 +442,7 @@ class GroupInformationSetting extends ContainerComponent {
                             <Text style={styles.remarks}>添加到通讯录</Text>
                             <Switch
                                 value={this.state.isSave}
-                                onValueChange={this.addToContacts}
+                                onValueChange={this.addOrRemoveTheContacts}
                             ></Switch>
                         </View>
                     </View>
