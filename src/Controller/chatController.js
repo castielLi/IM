@@ -124,12 +124,13 @@ export default class chatController {
 
     //todo 李宗骏  通过cache messageId 获得IM 数据
 
+    //获得当前聊天下所有的聊天记录
     getMessagesByIds(){
 
          let ids;
          for(let item in cache){
             if(item == currentChat){
-                ids = cache[item];
+                ids = cache[item].messages;
             }
          }
 
@@ -163,58 +164,58 @@ function receiveMessageHandle(message){
         if(message.way == "chatroom"){
             //添加进group数据库
 
+
+            //todo 李宗骏:这里要根据实际情况进行判断，修改message的data值，并且更改数据库中的data
+
             if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
 
-                // let accounts = message.Data.Data.Data.split(',');
-                //
-                // let nicks = "";
-                // for(let i = 0; i<accounts.length;i++){
-                //     if(i != accounts.length - 1){
-                //         nicks += user.getUserInfoById(accounts[i]).Nick + ",";
-                //     }else{
-                //         nicks += user.getUserInfoById(accounts[i]).Nick;
-                //     }
-                // }
-                //
-                // let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
-                // message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
+                let accounts = message.Data.Data.Data.split(',');
+
+                let nicks = "";
+                for(let i = 0; i<accounts.length;i++){
+                    if(i != accounts.length - 1){
+                        nicks += currentObj.user.getUserInfoById(accounts[i]).Nick + ",";
+                    }else{
+                        nicks += currentObj.user.getUserInfoById(accounts[i]).Nick;
+                    }
+                }
+
+                let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                message.Data.Data.Data = inviter + "邀请" + nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
-                // let accounts = message.Data.Data.Data.split(',');
+                let accounts = message.Data.Data.Data.split(',');
+
+                let nick = currentObj.user.getUserInfoById(accounts[0]).Nick
+
+                let inviter = currentObj.user.getUserInfoById(accounts[1]).Nick;
                 //
-                // let nick = user.getUserInfoById(accounts[0]).Nick
-                //
-                // let inviter = user.getUserInfoById(accounts[1]).Nick;
-                //
-                // message.Data.Data.Data = inviter + "邀请" + nick + "加入群聊";
+                message.Data.Data.Data = inviter + "邀请" + nick + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
 
-                // let nick = user.getUserInfoById(message.Data.Data.Data).Nick;
-                // let inviter = '';
-                // if(message.Data.Data.Receiver == myAccountId){
-                //     inviter = myAccountId;
-                // }else{
-                //     inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;;
-                // }
-                //
-                // message.Data.Data.Data =  nick + "被踢"+ inviter+"出了群聊";
+                let nick = currentObj.user.getUserInfoById(message.Data.Data.Data).Nick;
+                let inviter = '';
+                if(message.Data.Data.Receiver == myAccountId){
+                    inviter = myAccountId;
+                }else{
+                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;;
+                }
+
+                message.Data.Data.Data =  nick + "被踢"+ inviter+"出了群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
 
-                // let accounts = message.Data.Data.Data.split(',');
-                //
-                // let nick = user.getUserInfoById(accounts[0]).Nick
-                //
-                // message.Data.Data.Data =  nick + "退出了群聊";
+                let accounts = message.Data.Data.Data.split(',');
+
+                let nick = currentObj.user.getUserInfoById(accounts[0]).Nick
+
+                message.Data.Data.Data =  nick + "退出了群聊";
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
                 message.Data.Data.Data =  "群主修改了群昵称";
             }
         }
-
-
-        //todo 李宗骏： 向message中添加头像和昵称
 
         let reduxMessageDto = buildMessageDto(message,relation);
 

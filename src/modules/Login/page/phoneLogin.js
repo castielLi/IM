@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,AsyncStorage,Keyboard,Platform,KeyboardAvoidingView}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard,KeyboardAvoidingView}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {
     Navigator
@@ -15,14 +15,12 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
-
-import IM from '../../../Core/IM'
-import User from '../../../Core/UserGroup'
-import {setMyAccoundId} from '../../../Core/IM/action/receiveHandleMessage';
-import RNFS from 'react-native-fs'
 import UUIDGenerator from 'react-native-uuid-generator';
 import * as ApplyFriendAction from '../../../Core/Redux/applyFriend/action'
 import * as unReadMessageAction from '../../MainTabbar/reducer/action'
+import LoginController from '../../../Controller/loginController'
+
+let loginController = new LoginController();
 let currentObj = undefined;
 
 class PhoneLogin extends ContainerComponent {
@@ -83,145 +81,45 @@ class PhoneLogin extends ContainerComponent {
 
                 currentObj.showLoading();
                 Keyboard.dismiss();//关闭软键盘
-                currentObj.fetchData("POST","/Member/Login",function(result){
-                    //todo: 存储用户信息
 
+				loginController.login(function(result){
+                    if(!result.success){
+                        currentObj.hideLoading()
 
-					if(!result.success){
-                    	currentObj.hideLoading()
-
-						if(result.errorCode == 1003){
-                    		currentObj.alert("账号或者密码错误","错误");
-						}else{
-							alert(result.errorMessage);
-						}
-                    	return;
-					}
-
-
-                    currentObj.setFetchAuthorization(result.data.Data["SessionToken"])
-
-
-                    //登录中
-                    currentObj.props.signDoing();
-                    //服务器验证
-                    //...
-                    //验证通过
-                    let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
-                    ,gender:result.data.Data["Gender"],nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
-					,device:"Mobile",deviceId:"1"};
-
-                    //存储登录状态
-                    AsyncStorage.setItem('account',JSON.stringify(account));
-                    setMyAccoundId(account.accountId);
-                    //修改loginStore登录状态
-                    currentObj.props.signIn(account);
-                    //如果是ios
-                    if(Platform.OS === 'ios'){
-                        //初始化im
-                        let im = new IM();
-                        im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-                        im.initIMDatabase(account.accountId)
-                        dealCommon();
-                        //如果是android
-                    }else{
-
-
-                        let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
-                        let AccountDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Account.db';
-                        let GroupDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Group.db';
-                        //文件夹判断是否是第一次登录
-                        RNFS.exists(ImDbPath).then((bool)=>{if(bool){
-                            //若不是
-                            //根据accountId在对应文件夹中找数据库文件，移动我数据库文件至databases
-                            RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
-                                RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
-                                    RNFS.copyFile(GroupDbPath,'/data/data/com.im/databases/Group.db').then(()=>{
-                                        //初始化im
-                                        let im = new IM();
-                                        im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-                                        dealCommon();
-									})
-								})
-							});
-                            //若是第一次登陆
+                        if(result.errorCode == 1003){
+                            currentObj.alert("账号或者密码错误","错误");
                         }else{
-                            //初始化im
-                            let im = new IM();
-                            im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-                            im.initIMDatabase(account.accountId);
-                            dealCommon();
+                            alert(result.errorMessage);
+                        }
+                        return;
+                    }
+                    currentObj.props.signDoing();
+                    let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
+                        ,gender:result.data.Data["Gender"],nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
+                        ,device:"Mobile",deviceId:"1"};
+
+                    currentObj.props.signIn(account);
+
+
+
+                    loginController.getContactList(function(result){
+
+                        if(!result.success){
+                            currentObj.hideLoading();
+                            alert("初始化account出错" + result.errorMessage);
+                            return;
                         }
 
-                        })
-                    }
-                    //创建文件夹
-                    let avatorPath = RNFS.DocumentDirectoryPath + '/' +account.accountId+'/image/avator';
-                    RNFS.mkdir(avatorPath);
-                    //删除Account.db
+                        currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
 
-					let AccountPath = "";
+                        currentObj.props.initRelation(result.data.relations);
 
-                    if(Platform.OS === 'android'){
+                        currentObj.route.push(currentObj.props,{
+                            key:'MainTabbar',
+                            routeId: 'MainTabbar'
+                        });
 
-                        AccountPath = '/data/data/com.im/databases/Account.db';
-                    }else{
-
-                        AccountPath = RNFS.DocumentDirectoryPath+"/"+account.accountId+"/database/Account.db";
-                    }
-
-
-
-                    function dealCommon(){
-                       //初始化用户系统
-                       let user = new User();
-                       let im = new IM();
-                       user.initIMDatabase(account.accountId);
-
-                       currentObj.fetchData("POST","/Member/GetContactList",function(result){
-
-
-                       	   if(!result.success){
-                               currentObj.hideLoading();
-                               alert("初始化account出错" + result.errorMessage);
-                               return;
-						   }
-
-                           im.getAllApplyFriendMessage(function(result){
-
-                               currentObj.props.initFriendApplication(result);
-								let unUnDealRequestCount = 0;
-                               result.forEach((v,i)=>{
-                               		if(v.status == "wait"){
-                                        unUnDealRequestCount++
-									}
-							   })
-                               currentObj.props.initUnDealRequestNumber(unUnDealRequestCount);
-                           })
-
-                           //添加名单
-                           user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
-                               user.getAllRelation((data)=>{
-                                   user.initGroup(result.data.Data["GroupList"],function(){
-
-
-                                       user.getAllGroupFromGroup(function(results){
-                                           currentObj.hideLoading();
-
-                                           data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
-                                           currentObj.props.initRelation(data);
-
-                                           currentObj.route.push(currentObj.props,{
-                                               key:'MainTabbar',
-                                               routeId: 'MainTabbar'
-                                           });
-                                       })
-								   })
-                               })
-                           })
-
-                       },{"Account": currentObj.state.phoneText})
-				   }
+                    },{"Account": currentObj.state.phoneText})
 
                 },{
                     "Account": currentObj.state.phoneText,
@@ -232,8 +130,6 @@ class PhoneLogin extends ContainerComponent {
                     "Password": currentObj.state.passWordText,
                     "Session": uuid
                 })
-
-
 			});
 	}
 
