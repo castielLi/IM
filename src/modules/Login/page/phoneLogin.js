@@ -1,9 +1,6 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard,KeyboardAvoidingView}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import {
-    Navigator
-} from 'react-native-deprecated-custom-components';
 import Main from './main';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
@@ -14,11 +11,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
-import * as recentActions from '../../../Core/Redux/RecentList/action';
-import * as relationActions from '../../../Core/Redux/contact/action';
 import UUIDGenerator from 'react-native-uuid-generator';
-import * as ApplyFriendAction from '../../../Core/Redux/applyFriend/action'
-import * as unReadMessageAction from '../../MainTabbar/reducer/action'
 import LoginController from '../../../Controller/loginController'
 
 let loginController = new LoginController();
@@ -101,27 +94,10 @@ class PhoneLogin extends ContainerComponent {
 
                     currentObj.props.signIn(account);
 
-
-
-                    loginController.getContactList(function(result){
-
-                        if(!result.success){
-                            currentObj.hideLoading();
-                            alert("初始化account出错" + result.errorMessage);
-                            return;
-                        }
-
-                        currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
-
-                        currentObj.props.initRelation(result.data.relations);
-                        currentObj.props.initRecentList(result.data.chatListArr);
-                        currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
-                        currentObj.route.push(currentObj.props,{
-                            key:'MainTabbar',
-                            routeId: 'MainTabbar'
-                        });
-
-                    },{"Account": currentObj.state.phoneText})
+                    currentObj.route.push(currentObj.props,{
+                        key:'MainTabbar',
+                        routeId: 'MainTabbar'
+                    });
 
                 },{
                     "Account": currentObj.state.phoneText,
@@ -364,12 +340,10 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(Actions, dispatch),
-      ...bindActionCreators(relationActions, dispatch),
-	  ...bindActionCreators(ApplyFriendAction,dispatch),
-      ...bindActionCreators(unReadMessageAction,dispatch),
-      ...bindActionCreators(recentActions,dispatch)
 
-  }};
+    ...bindActionCreators(Actions, dispatch)
+
+  }
+};
 
  export default connect(mapStateToProps, mapDispatchToProps)(PhoneLogin);
