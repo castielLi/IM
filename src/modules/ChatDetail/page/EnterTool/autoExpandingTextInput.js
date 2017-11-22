@@ -15,13 +15,13 @@ import {
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import {addTextMessage} from '../../../../Core/IM/action/createMessage';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
 var {height, width} = Dimensions.get('window');
-const im = new IM();
+const chatController = new ChatController();
 let isIos = (Platform.OS === 'ios') ? true : false;
 class AutoExpandingTextInput extends Component {  
   constructor(props) {  
@@ -46,11 +46,12 @@ class AutoExpandingTextInput extends Component {
     if(this.state.data){
       //初始化消息
       let message = addTextMessage(this.state.data,this.props.type,this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
-      im.addMessage(message,(status,messageId)=>{
+        chatController.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(message);
-        this.input.clear();
+          this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
+
+          this.input.clear();
         if(isIos){
             //发送表情不会获得焦点
             if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();

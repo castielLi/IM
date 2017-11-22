@@ -31,12 +31,12 @@ import AutoExpandingTextInput from './autoExpandingTextInput';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
-const im = new IM();
+const chatController = new ChatController();
 var {
   height,
   width
@@ -208,10 +208,10 @@ class ThouchBarBoxTopBox extends Component {
               Time:currentTime?currentTime:1
           }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             //发送消息到IM
-          im.addMessage(message, (status, messageId) => {
+            chatController.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage( message)
+            this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
           }, [(tips) => {
             console.log(tips)
           }]);
@@ -267,7 +267,7 @@ class ThouchBarBoxTopBox extends Component {
         <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?(Platform.OS === 'android'?65:50):-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
-        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type}></AutoExpandingTextInput>
+        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type} nick={this.props.nick} HeadImageUrl={this.props.HeadImageUrl}></AutoExpandingTextInput>
       </View>
     )
   }

@@ -14,6 +14,7 @@ import IM from '../../../Core/IM'
 import User from '../../../Core/UserGroup'
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as unReadMessageAction from '../../MainTabbar/reducer/action'
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 let currentObj = undefined;
 
 class Start extends ContainerComponent {
@@ -76,6 +77,7 @@ class Start extends ContainerComponent {
                                 user.initIMDatabase(account.accountId)
                             }
 
+                            //初始化applyFriendStore
                             im.getAllApplyFriendMessage((result) => {
 
                                 currentObj.props.initFriendApplication(result);
@@ -92,7 +94,31 @@ class Start extends ContainerComponent {
 
                                         data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
                                         currentObj.props.initRelation(data);
+                                        //初始化recentListStore
+                                        im.getChatList((chatListArr) => {
+                                            //将IM.db最近聊天列表与Acount.db好友列表作对比，如果Acount.db中不存在这个好友，则不添加到recentListStore
+                                            let needArr = [];
+                                            //初始化unReadMessageStore
+                                            let unReadMessageCount = 0;
+                                            chatListArr.forEach((v,i)=>{
+                                                if(v.unReadMessageCount){
+                                                    unReadMessageCount+=v.unReadMessageCount;
+                                                }
+                                                for(let m=0;m<data.length;m++){
+                                                    if(v.Client == data[m].RelationId){
+                                                        v.nick = data[m].Nick;
+                                                        v.localImage = data[m].localImage;
+                                                        v.avator = data[m].avator;
+                                                        break;
+                                                    }
+                                                }
+                                            })
 
+                                            needArr = chatListArr.concat();
+                                            currentObj.props.initRecentList(needArr);
+
+                                            currentObj.props.initUnReadMessageNumber(unReadMessageCount)
+                                        })
                                         currentObj.props.signIn(account)
                                         currentObj.route.push(currentObj.props,{
                                             key:'MainTabbar',
@@ -156,7 +182,9 @@ const mapDispatchToProps = (dispatch) => {
     ...bindActionCreators(Actions, dispatch),
       ...bindActionCreators(relationActions, dispatch),
       ...bindActionCreators(friendApplicationActions, dispatch),
-      ...bindActionCreators(unReadMessageAction,dispatch)
+      ...bindActionCreators(unReadMessageAction,dispatch),
+      ...bindActionCreators(recentListActions, dispatch),
+
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(Start);

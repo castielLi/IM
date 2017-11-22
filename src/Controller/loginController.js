@@ -94,13 +94,17 @@ export default class loginController {
 
         },false);
     }
-
+    loginOut(){
+        this.im.closeImDb();
+        this.user.closeDB();
+        this.im.logout();
+    }
     getContactList(callback,params){
         this.network.methodPOST("/Member/GetContactList",params,function(result){
             if(result.success){
 
                 currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
-                    user.getAllRelation((data)=>{
+                    currentObj.user.getAllRelation((data)=>{
                         currentObj.user.initGroup(result.data.Data["GroupList"],function(){
 
                             currentObj.user.getAllGroupFromGroup(function(results){
@@ -118,7 +122,32 @@ export default class loginController {
                                         }
                                     })
                                     result.data.unUnDealRequestCount = unUnDealRequestCount;
-                                    callback(result);
+                                    //初始化recentListStore
+                                    currentObj.im.getChatList((chatListArr) => {
+                                        let needArr = [];
+                                        //初始化unReadMessageStore
+                                        let unReadMessageCount = 0;
+                                        chatListArr.forEach((v, i) => {
+                                            if (v.unReadMessageCount) {
+                                                unReadMessageCount += v.unReadMessageCount;
+                                            }
+                                            for (let m = 0; m < data.length; m++) {
+                                                if (v.Client == data[m].RelationId) {
+                                                    v.nick = data[m].Nick;
+                                                    v.localImage = data[m].localImage;
+                                                    v.avator = data[m].avator;
+                                                    break;
+                                                }
+                                            }
+                                        })
+
+                                        needArr = chatListArr.concat();
+
+                                        result.data.unReadMessageCount = unReadMessageCount;
+                                        result.data.chatListArr = needArr;
+                                        callback(result);
+                                    })
+
                                 })
                             })
                         })

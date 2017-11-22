@@ -247,7 +247,10 @@ export default class IM {
     updateUnReadMessageNumber(name,number){
         storeSqlite.updateUnReadMessageNumber(name,number)
     }
-
+    //某client的未读消息数量加一
+    addChatUnReadMessageaNumber(name){
+        storeSqlite.addChatUnReadMessageaNumber(name)
+    }
     //获取当前用户或者群组的聊天记录
     getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
         storeSqlite.queryRecentMessage(account,way,range,callback);
@@ -499,7 +502,10 @@ export default class IM {
         storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
     }
 
-
+    //关闭数据库
+    closeImDb(){
+        storeSqlite.closeImDb();
+    }
     receiveMessageOpreator(message){
         if(message.Command == undefined) {
             this.ackBackMessageHandle(message);

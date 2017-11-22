@@ -37,7 +37,8 @@ let currentChat = undefined
 
 //数据缓存
 let cache = {};
-//{"wg003723":[MSGID,MSGID]}
+//{ "wg003723" : { messages: [],unread:1}}
+
 
 let currentObj = undefined;
 
@@ -73,17 +74,35 @@ export default class chatController {
 
 
     //todo黄昊东  recentlist
-
-
-     AcceptFriend(requestURL,params,callback){
-        this.network.methodPOST(requestURL,params,function(result){
-
-            //todo controller operate
-
-            // callback(success,data);
-
+    deleteRecentChatList(rowData){
+        //删除chatRecord表中对应记录
+        this.im.deleteChatRecode(rowData.Client);
+        //删除与该client的所有聊天记录
+        this.im.deleteCurrentChatMessage(rowData.Client,rowData.Type)
+    }
+    //从数据库获取与client的指定聊天记录  start:{start:起始位置,limit:结束位置}
+    getRecentChatRecode(client,type,start,callback){
+        this.im.getRecentChatRecode(client,type,start,function(messages){
+            callback(messages)
         })
-     }
+    }
+    //界面通知controller正在与某人会话
+    chatWithNewClient(client){
+        currentChat = client;
+        if(cache[client]){
+            cache[client].unread = 0;
+            this.im.updateUnReadMessageNumber(client,0);
+        }else{
+            cache[client] = { messages: [],unread:0}
+        }
+    }
+    //发送消息
+    addMessage(message,callback){
+        this.im.addMessage(message, (status, messageId) => {
+            callback(status, messageId)
+        })
+    }
+
 
 
 
@@ -314,6 +333,11 @@ function receiveMessageHandle(message){
         let reduxMessageDto = buildMessageDto(message,relation);
 
         AppReceiveMessageHandle(reduxMessageDto,relation);
+        //收到消息，判断数据库是否需要修改未读消息
+        let sender = message.Data.Data.Sender;
+        if(sender != currentChat){
+            currentObj.im.addChatUnReadMessageaNumber(sender);
+        }
     },message.Command,message.Data.Data.Command);
     //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
 }
