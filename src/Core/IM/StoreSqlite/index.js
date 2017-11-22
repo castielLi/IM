@@ -43,10 +43,15 @@ export function deleteMessage(message,chatType,client){
 export function deleteChatRecode(name){
     IMFMDB.DeleteClientRecodeByName(name);
 }
+
 //修改某client的未读消息数量
 export function updateUnReadMessageNumber(name,number){
     IMFMDB.updateUnReadMessageNumber(name,number);
 }
+export function addChatUnReadMessageaNumber(name){
+    IMFMDB.addChatUnReadMessageaNumber(name);
+}
+
 export function InsertResource(messageId,localPath){
     IMFMDB.InsertResource(messageId,localPath);
 }
@@ -632,6 +637,18 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
 
+IMFMDB.addChatUnReadMessageaNumber = function(name){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            addChatUnReadMessageaNumber(name,tx)
+        });
+
+    }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
+}
+
 IMFMDB.updateMessageLocalSource = function(messageId,url){
     let sql = sqls.ExcuteIMSql.UpdateMessageLocalSource
 
@@ -750,6 +767,16 @@ function updateUnReadMessage(name,number,tx){
         console.log("update unReadMessageNumber success");
 
     }, (err)=>{errorDB('update unReadMessageNumber',err)});
+}
+
+function addChatUnReadMessageaNumber(name,tx){
+    let updateSql = sqls.ExcuteIMSql.AddChatUnReadMessageaNumber;
+    updateSql = commonMethods.sqlFormat(updateSql,[name]);
+    tx.executeSql(updateSql, [], (tx, results) => {
+
+        console.log("add unReadMessageNumber success");
+
+    }, (err)=>{errorDB('add unReadMessageNumber',err)});
 }
 
 function deleteClientChatList(tableName,tx){
