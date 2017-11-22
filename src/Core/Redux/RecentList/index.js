@@ -4,7 +4,7 @@ const initialState = {
     data:[
     ]
 };
-//{data:[{Client: "wg000008", Type: "private", LastMessage: "222", Time: 1508231012500}]}
+//{data:[{Client: "wg000008", Type: "private", LastMessage: "222", unReadMessageCount:'',Time: 1508231012500,Nick:'玩玩',localImage:'',avator:''}]}
 export default function recentListStore(state=initialState, action){
 
     switch(action.type){
@@ -62,7 +62,7 @@ export default function recentListStore(state=initialState, action){
                 if(action.LastMessage === false){
                     return state;
                 }
-                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage,Time:action.Time};
+                let obj = {Client:action.Client,Type:action.Type,LastMessage:action.LastMessage,Time:action.Time,...action.nickAndHeadImageUrlObj};
                 //如果允许添加未读消息
                 if(action.isAddUnReadMessage===true){
                     obj.unReadMessageCount = 1;

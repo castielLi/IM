@@ -83,8 +83,9 @@ imagePikerCallBack(response){
     im.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(message)
-      },[(tips)=>{console.log(tips)}]);
+        this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
+
+    },[(tips)=>{console.log(tips)}]);
 
   }
 }
@@ -116,7 +117,8 @@ useCameraVideo(){
             im.addMessage(message,(status,messageId)=>{
                 message.MSGID = messageId;
                 //更新chatRecordStore
-                this.props.addMessage(message)
+                this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
+
             },[(tips)=>{console.log(tips)}]);
         }
     });
@@ -140,7 +142,8 @@ useLocalVideo(){
             im.addMessage(message,(status,messageId)=>{
                 message.MSGID = messageId;
                 //更新chatRecordStore
-                this.props.addMessage(message)
+                this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
+
             },[(tips)=>{console.log(tips)}]);
         }
     });

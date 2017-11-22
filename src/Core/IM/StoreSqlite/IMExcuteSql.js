@@ -31,6 +31,7 @@ export const ExcuteIMSql = {
     "DeleteSendMessageByMessageId":"delete from SendMessageRecode where messageId = ?",
     "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ? where Client = ?",
     "UpdateChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = ? where Client = ?",
+    "AddChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = unReadMessageCount+1 where Client = ?",
     "InsertMessageToRecode":"insert into MessageRecode (messageId,Command,send,rec,time,content,type,localPath,resourceTime,url,status) values (?,?,?,?,?,?,?,?,?,?,?)",
     "InsertUploadFileRecode":"insert into ResourceRecode(messageId,localResource) values (?,?)",
     "DeleteUploadFileRecode":"Delete from ResourceRecode where messageId = ? and localResource = ?",

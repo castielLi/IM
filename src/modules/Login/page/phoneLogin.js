@@ -1,9 +1,6 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard,KeyboardAvoidingView}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import {
-    Navigator
-} from 'react-native-deprecated-custom-components';
 import Main from './main';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
@@ -14,10 +11,7 @@ import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
-import * as relationActions from '../../../Core/Redux/contact/action';
 import UUIDGenerator from 'react-native-uuid-generator';
-import * as ApplyFriendAction from '../../../Core/Redux/applyFriend/action'
-import * as unReadMessageAction from '../../MainTabbar/reducer/action'
 import LoginController from '../../../Controller/loginController'
 
 let loginController = new LoginController();
@@ -346,10 +340,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(Actions, dispatch),
-      ...bindActionCreators(relationActions, dispatch),
-	  ...bindActionCreators(ApplyFriendAction,dispatch),
-      ...bindActionCreators(unReadMessageAction,dispatch)
+    ...bindActionCreators(Actions, dispatch)
 
   }};
 
