@@ -26,12 +26,15 @@ import * as friendApplicationActions from '../../../Core/Redux/applyFriend/actio
 import * as relationActions from '../../../Core/Redux/contact/action';
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
+import chatController from '../../../Controller/chatController';
 
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let im = new IM();
 let user = new User();
+let ChatController = new chatController();
+
 class NewFriend extends ContainerComponent {
     constructor(props){
         super(props)
@@ -68,21 +71,21 @@ class NewFriend extends ContainerComponent {
     //     })
     // }
 
-    // acceptFriend = (params)=>{
-    //
-    //     callback = function (results,data) {
-    //         if(results){
-    //             currentObj.props.acceptFriendApplication(data.key);
-    //             currentObj.props.cutUnDealRequestNumber(1);
-    //             currentObj.props.changeRelationOfShow(Account);
-    //         }else{
-    //             alert('失败')
-    //         }
-    //     }
-    //
-    //     chatController.acceptFriend(requestURL,params,callback)
-    //
-    // }
+    acceptFriend = (params)=>{
+
+        callback = function (results,data) {
+            if(results){
+                currentObj.props.acceptFriendApplication(data.key);
+                currentObj.props.cutUnDealRequestNumber(1);
+                currentObj.props.changeRelationOfShow(Account);
+            }else{
+                alert('失败')
+            }
+        }
+
+        ChatController.acceptFriend(requestURL,params,callback)
+
+    }
 
     agreeApply = (index,data)=>{
         let {key,send} = data;
@@ -219,6 +222,26 @@ class NewFriend extends ContainerComponent {
             })
 
     }
+
+    // componentDidMount(){
+    //
+    //     ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
+    //         let needObj = this.formateArrToObj(realations);
+    //         this.setState({
+    //             dataObj:needObj
+    //         })
+    //     });
+    // }
+    // componentWillReceiveProps(newProps){
+    //     this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
+    //     ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
+    //         let needObj = this.formateArrToObj(realations);
+    //         this.setState({
+    //             dataObj:needObj
+    //         })
+    //     });
+    //
+    // }
     componentWillUnMount(){
         this.props.clearUnDealRequestNumber();
     }
