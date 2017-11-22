@@ -22,11 +22,11 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import IM from '../../../Core/IM';
-import User from '../../../Core/UserGroup'
+import SettingController from '../../../Controller/settingController';
 
-let im = new IM();
-let user = new User();
+
+let settingController = new SettingController();
+
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -116,27 +116,18 @@ class InformationSetting extends ContainerComponent {
 
         currentObj.showLoading()
         if(!value){
-            currentObj.fetchData("POST","Member/RemoveBlackMember",function(result){
-
+            let params = {  "Applicant":currentObj.props.accountId,
+                            "Account":currentObj.props.client,
+                            "IsDelete":false}
+            settingController.removeBlackMember(params,()=>{
                 currentObj.hideLoading()
-                if(result.success) {
-                    user.changeRelationBlackList(value, currentObj.props.client);
-                }
-
-            },{"Applicant":currentObj.props.accountId
-                ,"Account":currentObj.props.client,
-              "IsDelete":false})
+            })
 
         }else{
-            currentObj.fetchData("POST","Member/AddBlackMember",function(result){
-
+            let params = {"Applicant":currentObj.props.accountId,"Account":currentObj.props.client}
+            settingController.addBlackMember(params,()=>{
                 currentObj.hideLoading()
-                if(result.success) {
-                    user.changeRelationBlackList(value, currentObj.props.client);
-                }
-
-            },{"Applicant":currentObj.props.accountId
-                ,"Account":currentObj.props.client})
+            })
         }
 
 
@@ -147,48 +138,34 @@ class InformationSetting extends ContainerComponent {
         let {client,type,accountId} = this.props;
         //删除好友
         if(1 == i){
-            currentObj.showLoading()
-            this.fetchData("POST","Member/DeleteFriend",function(result){
-                  currentObj.hideLoading()
-                  if(!result.success){
-                      alert(result.errorMessage);
-                      return;
-                  }
+            currentObj.showLoading();
+            let params = {"Applicant":accountId,"Friend":client};
+            settingController.deleteFriend(params,(results)=>{
+                currentObj.hideLoading();
+                if(results.success){
+                    //todo： 添加更改rudex 好友列表和消息列表
+                    currentObj.props.deleteRelation(client);
+                    //清空chatRecordStore中对应记录
+                    currentObj.props.clearChatRecordFromId(client)
 
-                  if(result.data.Data){
+                    currentObj.props.recentListStore.data.forEach((v,i)=>{
+                        if(v.Client === client){
+                            //清空recentListStore中对应记录
+                            currentObj.props.deleteRecentItem(i);
+                            //如果该row上有未读消息，减少unReadMessageStore记录
+                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+                        }
+                    })
 
-                      //todo： 添加更改rudex 好友列表和消息列表
-                      currentObj.props.deleteRelation(client);
-                      //清空chatRecordStore中对应记录
-                      currentObj.props.clearChatRecordFromId(client)
-                      //删除ChatRecode表中记录
-                      im.deleteChatRecode(client);
-                      //删除该与client的所以聊天记录
-                      im.deleteCurrentChatMessage(client,'private');
-                      //删除account数据库
-                      user.deleteRelation(client);
+                    let pages = currentObj.props.navigator.getCurrentRoutes();
+                    let target = pages[pages.length - 3];
 
-                      currentObj.props.recentListStore.data.forEach((v,i)=>{
-                          if(v.Client === client){
-                              //清空recentListStore中对应记录
-                              currentObj.props.deleteRecentItem(i);
-                              //如果该row上有未读消息，减少unReadMessageStore记录
-                              v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-                          }
-                      })
+                    currentObj.route.popToSpecialRoute(currentObj.props,target);
+                }else{
+                    alert("http请求出错")
+                }
+            })
 
-
-
-                      let pages = currentObj.props.navigator.getCurrentRoutes();
-                      let target = pages[pages.length - 3];
-
-                      currentObj.route.popToSpecialRoute(currentObj.props,target);
-                  }else{
-                      alert("http请求出错")
-                  }
-
-
-            },{"Applicant":accountId,"Friend":client})
         }
     }
 
