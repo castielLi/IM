@@ -259,6 +259,19 @@ export default class IM {
     }
 
 
+    getStoreMessagesByMSGIDs(ids){
+        let cache = [];
+        for(let item in storeMessage){
+            for(let i in ids){
+                if(storeMessage[item].MSGID == ids[i]){
+                    cache.push(storeMessage[item].message)
+                    break;
+                }
+            }
+        }
+        return cache;
+    }
+
 
     //获取当前所有未发出去的消息添加入消息队列
     addAllUnsendMessageToSendQueue(){

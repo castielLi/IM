@@ -4,6 +4,7 @@
 import IM from '../Core/IM'
 import User from '../Core/UserGroup'
 import Network from '../Core/Networking/Network'
+import {buildMessageDto} from '../Core/Redux/dto/Common'
 
 //上层应用Controller的接口
 //返回消息结果回调
@@ -79,7 +80,7 @@ export default class chatController {
 
             //todo controller operate
 
-            callback(success,data);
+            // callback(success,data);
 
         })
      }
@@ -125,6 +126,14 @@ export default class chatController {
 
     getMessagesByIds(){
 
+         let ids;
+         for(let item in cache){
+            if(item == currentChat){
+                ids = cache[item];
+            }
+         }
+
+        return this.im.getStoreMessagesByMSGIDs(ids);
     }
 
 
@@ -203,11 +212,15 @@ function receiveMessageHandle(message){
                 message.Data.Data.Data =  "群主修改了群昵称";
             }
         }
+
+
+        //todo 李宗骏： 向message中添加头像和昵称
+
+        let reduxMessageDto = buildMessageDto(message,relation);
+
+        AppReceiveMessageHandle(reduxMessageDto,relation);
     },message.Command,message.Data.Data.Command);
     //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
-
-
-    AppReceiveMessageHandle(message,relation);
 }
 
 function recieveAddFriendMessage(relationId){
