@@ -242,8 +242,9 @@ function receiveMessageHandle(message){
 
         AppReceiveMessageHandle(reduxMessageDto,relation);
         //收到消息，判断数据库是否需要修改未读消息
-        if(message.Data.Data.Sender != currentChat){
-            currentObj.im.addChatUnReadMessageaNumber(message.Data.Data.Sender);
+        let sender = message.Data.Data.Sender;
+        if(sender != currentChat){
+            currentObj.im.addChatUnReadMessageaNumber(sender);
         }
     },message.Command,message.Data.Data.Command);
     //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
