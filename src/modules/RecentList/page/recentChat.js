@@ -11,6 +11,7 @@ import {
 	Platform,
 	StyleSheet,
 	Alert,
+    AsyncStorage
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
@@ -21,6 +22,7 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
+import * as relationActions from '../../../Core/Redux/contact/action';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
@@ -28,8 +30,10 @@ import {
 import IM from '../../../Core/IM';
 import User from '../../../Core/UserGroup';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-let im = new IM();
-let user = new User();
+import LoginController from '../../../Controller/loginController'
+
+let loginController = new LoginController();
+let currentObj = undefined;
 
 let styles = StyleSheet.create({
     container: {
@@ -121,6 +125,8 @@ class RecentChat extends ContainerComponent {
 			dataSource: ds,
             groupData:[],
 		};
+
+        currentObj = this;
 		this.goToChatDetail = this.goToChatDetail.bind(this);
 		this.deleteSomeRow = this.deleteSomeRow.bind(this);
 	}
@@ -130,29 +136,54 @@ class RecentChat extends ContainerComponent {
 
 		//TODO 应该放到登录里
 		//初始化recentListStore
-		im.getChatList((chatListArr) => {
-			//将IM.db最近聊天列表与Acount.db好友列表作对比，如果Acount.db中不存在这个好友，则不添加到recentListStore
-			let needArr = [];
-            //初始化unReadMessageStore
-            let unReadMessageCount = 0;
-            chatListArr.forEach((v,i)=>{
-                if(v.unReadMessageCount){
-                    unReadMessageCount+=v.unReadMessageCount;
-                }
-
-			})
-            needArr = chatListArr.concat();
-	        this.props.initRecentList(needArr);
-
-            this.props.initUnReadMessageNumber(unReadMessageCount)
-	    })
-
-		user.getAllGroupFromGroup((data)=>{
-            this.setState({
-				groupData:data
-			})
-		})
+		// im.getChatList((chatListArr) => {
+		// 	//将IM.db最近聊天列表与Acount.db好友列表作对比，如果Acount.db中不存在这个好友，则不添加到recentListStore
+		// 	let needArr = [];
+         //    //初始化unReadMessageStore
+         //    let unReadMessageCount = 0;
+         //    chatListArr.forEach((v,i)=>{
+         //        if(v.unReadMessageCount){
+         //            unReadMessageCount+=v.unReadMessageCount;
+         //        }
+        //
+		// 	})
+         //    needArr = chatListArr.concat();
+	     //    this.props.initRecentList(needArr);
+        //
+         //    this.props.initUnReadMessageNumber(unReadMessageCount)
+        // })
+        //
+		// user.getAllGroupFromGroup((data)=>{
+         //    this.setState({
+		// 		groupData:data
+		// 	})
+		// })
 	}
+
+
+	componentDidMount(){
+
+        currentObj.showLoading();
+        AsyncStorage.getItem('account')
+            .then((value) => {
+                let account = JSON.parse(value);
+
+                loginController.getContactList(function(result){
+                    if(!result.success){
+                        alert("初始化account出错" + result.errorMessage);
+                        return;
+                    }
+
+                    currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
+
+                    currentObj.props.initRelation(result.data.relations);
+
+                    currentObj.hideLoading();
+
+                },{"Account": account.phone})
+        });
+	}
+
 
 	goToChatDetail(rowData){
 		this.route.push(this.props,{key: 'ChatDetail',routeId: 'ChatDetail',params:{client:rowData.Client,type:rowData.Type,nick:this.formateRelationData[rowData.Client].Nick}});
@@ -245,7 +276,10 @@ class RecentChat extends ContainerComponent {
 	}
 
 	render() {
-		this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
+
+        this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
 		this.formateGroupData = this.formateRelationDataMethod(this.state.groupData);
 		let PopContent = this.PopContent;
 		return (
@@ -270,6 +304,8 @@ class RecentChat extends ContainerComponent {
 				{/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
 				<Features navigator={this.props.navigator}/>
 				<PopContent ref={(p)=>{this.popup = p}}></PopContent>
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 			</View>
 		)
 	}
@@ -286,9 +322,8 @@ const mapDispatchToProps = (dispatch) => {
     ...bindActionCreators(recentListActions, dispatch),
     ...bindActionCreators(chatRecordActions, dispatch),
 	  ...bindActionCreators(unReadMessageActions, dispatch),
-      ...bindActionCreators(featuresAction, dispatch)
-
-
+      ...bindActionCreators(featuresAction, dispatch),
+      ...bindActionCreators(relationActions, dispatch)
   }};
 
  export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);

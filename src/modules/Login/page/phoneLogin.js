@@ -100,26 +100,10 @@ class PhoneLogin extends ContainerComponent {
 
                     currentObj.props.signIn(account);
 
-
-
-                    loginController.getContactList(function(result){
-
-                        if(!result.success){
-                            currentObj.hideLoading();
-                            alert("初始化account出错" + result.errorMessage);
-                            return;
-                        }
-
-                        currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
-
-                        currentObj.props.initRelation(result.data.relations);
-
-                        currentObj.route.push(currentObj.props,{
-                            key:'MainTabbar',
-                            routeId: 'MainTabbar'
-                        });
-
-                    },{"Account": currentObj.state.phoneText})
+                    currentObj.route.push(currentObj.props,{
+                        key:'MainTabbar',
+                        routeId: 'MainTabbar'
+                    });
 
                 },{
                     "Account": currentObj.state.phoneText,

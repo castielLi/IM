@@ -100,7 +100,7 @@ export default class loginController {
             if(result.success){
 
                 currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
-                    user.getAllRelation((data)=>{
+                    currentObj.user.getAllRelation((data)=>{
                         currentObj.user.initGroup(result.data.Data["GroupList"],function(){
 
                             currentObj.user.getAllGroupFromGroup(function(results){
