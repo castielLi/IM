@@ -23,16 +23,19 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import * as groupStoreSqlite from '../../../Core/UserGroup/StoreSqlite/Group'
+import ChatController from '../../../Controller/chatController';
+import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig';
+import * as DtoMethods from '../../../Core/IM/dto/Common';
 
+let chatController = new ChatController();
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
 			this.state = {
                 isDisabled:true
 			};
+        currentObj = this;
         this.isDisabled = false
 		}
     goToChatSeeting = ()=>{
@@ -84,7 +87,12 @@ class ChatDetail extends ContainerComponent {
 		let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
 		if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
             //初始化chatRecordStore
-            this.props.getChatRecord(client,type,chatRecordLength)
+            chatController.getRecentChatRecode(client,type,{start:chatRecordLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+                let messageList = messages.map((message)=>{
+                    return DtoMethods.sqlMessageToMessage(message);
+                })
+                currentObj.props.initChatRecord(client,messageList);
+            })
 		}
 
 

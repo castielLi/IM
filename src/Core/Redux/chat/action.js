@@ -1,9 +1,9 @@
-import IM from '../../IM/index';
-import * as DtoMethods from '../../IM/dto/Common';
-import InitChatRecordConfig from './InitChatRecordConfig';
+
+
+
 import * as recentListAction from '../RecentList/action';
 
-let im = new IM();
+
 import RNFS from 'react-native-fs';
 
 import * as friendApplicationActions from '../applyFriend/action'
@@ -112,18 +112,7 @@ export function updateMessage(message){
 		MSGID:message.MSGID,
 	}
 }
-//打开聊天窗口的时候，给client对应的chatRecordStore.ChatRecord数据添加10条初始数据
-export function getChatRecord(Client,Type,start,callback){
-	return (dispatch)=>{
-        im.getRecentChatRecode(Client,Type,{start:start,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-        	let messageList = messages.map((message)=>{
-								return DtoMethods.sqlMessageToMessage(message);
-							})
-            dispatch(initChatRecord(Client,messageList));
-        	callback&&callback();
-		})
-	}
-}
+
 
 export function handleChatRecord(client){
     return {

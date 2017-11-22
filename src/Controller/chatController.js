@@ -79,7 +79,12 @@ export default class chatController {
         //删除与该client的所有聊天记录
         this.im.deleteCurrentChatMessage(rowData.Client,rowData.Type)
     }
-
+    //从数据库获取与client的指定聊天记录  start:{start:起始位置,limit:结束位置}
+    getRecentChatRecode(client,type,start,callback){
+        this.im.getRecentChatRecode(client,type,start,function(messages){
+            callback(messages)
+        })
+    }
      AcceptFriend(requestURL,params,callback){
         this.network.methodPOST(requestURL,params,function(result){
 
