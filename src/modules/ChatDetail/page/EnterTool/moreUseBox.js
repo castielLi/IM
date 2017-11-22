@@ -21,13 +21,13 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createResourceMessageObj} from './createMessageObj';
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-const im = new IM();
+const chatController = new ChatController();
 var ImagePicker = require('react-native-image-picker');
 var {height, width} = Dimensions.get('window');
   
@@ -80,7 +80,7 @@ imagePikerCallBack(response){
     //初始化消息
     let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
     let message = addResourceMessage('image',this.props.type,[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-    im.addMessage(message,(status,messageId)=>{
+      chatController.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
         this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
@@ -114,7 +114,7 @@ useCameraVideo(){
         else{
             let responsePath = 'file://'+response.path;
             let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            im.addMessage(message,(status,messageId)=>{
+            chatController.addMessage(message,(status,messageId)=>{
                 message.MSGID = messageId;
                 //更新chatRecordStore
                 this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})
@@ -139,7 +139,7 @@ useLocalVideo(){
         else{
             let responsePath = 'file://'+response.path;
             let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            im.addMessage(message,(status,messageId)=>{
+            chatController.addMessage(message,(status,messageId)=>{
                 message.MSGID = messageId;
                 //更新chatRecordStore
                 this.props.addMessage( message,{nick:this.props.nick,avator:this.props.HeadImageUrl})

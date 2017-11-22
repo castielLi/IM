@@ -9,14 +9,10 @@ import * as TYPES from './actionTypes';
 import {clearChatRecord} from '../../../Core/Redux/chat/action';
 import {clearRelation} from '../../../Core/Redux/contact/action';
 import {clearRecentList} from '../../../Core/Redux/RecentList/action';
-import {closeImDb} from '../../../Core/IM/StoreSqlite';
 import {clearFriendApplication} from '../../../Core/Redux/applyFriend/action'
 import {clearAllTabberMessageNumber,changeTabBar} from '../../MainTabbar/reducer/action';
-import Route from '../../../Core/route/router';
-import User from '../../../Core/UserGroup'
-import IM from '../../../Core/IM'
-let im = new IM();
-let user = new User();
+
+
 export function signIn(accountMessage){
     return {
         type: TYPES.LOGGED_IN,
@@ -46,10 +42,6 @@ export function signOut(){
         dispatch(clearRecentList());
         dispatch(clearAllTabberMessageNumber());
         dispatch(changeTabBar(0));
-        closeImDb();
-        user.closeDB();
-        im.logout();
-        Route.ToLogin();
     }
 }
 

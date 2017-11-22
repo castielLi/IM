@@ -96,15 +96,13 @@ export default class chatController {
             cache[client] = { messages: [],unread:0}
         }
     }
-     AcceptFriend(requestURL,params,callback){
-        this.network.methodPOST(requestURL,params,function(result){
-
-            //todo controller operate
-
-            // callback(success,data);
-
+    //发送消息
+    addMessage(message,callback){
+        this.im.addMessage(message, (status, messageId) => {
+            callback(status, messageId)
         })
-     }
+    }
+
 
 
 

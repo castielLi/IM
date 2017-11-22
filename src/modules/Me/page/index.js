@@ -22,9 +22,10 @@ import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
-import IM from '../../../Core/IM'
+import LoginController from '../../../Controller/loginController';
+import Route from '../../../Core/route/router';
 let {height,width} = Dimensions.get('window');
-let im = new IM();
+let loginController = new LoginController();
 var originData = [
     {
         'key':'1',
@@ -139,6 +140,8 @@ class Me extends ContainerComponent {
 
     loginOut = ()=>{
         this.props.signOut();
+        loginController.loginOut();
+        Route.ToLogin();
     }
 
     changeShowFeature=(newState)=>{
