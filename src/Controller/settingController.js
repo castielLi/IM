@@ -130,6 +130,7 @@ export default class settingController {
             callback(result);
         })
     }
+    //更新关系和头像 （clientInformation.js）
     UpdateFriendInfo(accountId,UserInfo,propsRelation){
         let isUpdate;
         let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
