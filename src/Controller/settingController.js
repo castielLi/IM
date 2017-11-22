@@ -13,6 +13,8 @@ let __instance = (function () {
     }
 }());
 
+let currentObj = undefined;
+
 export default class settingController {
     constructor() {
         if (__instance()) return __instance();
@@ -24,6 +26,60 @@ export default class settingController {
         currentObj = this;
     }
 
+    //群设置（GroupInformationSetting）
+    addGroupToContact(data,callback){
+        let params = data.params;
+        let info = data.info;
+        this.network.methodPOST('Member/AddGroupToContact',params,function(results){
+            if(results.success && results.data.Result){
+                let obj = {
+                    RelationId:info.ID,
+                    OtherComment:info.Description,
+                    Nick:info.Name,
+                    BlackList:false,
+                    Type:'chatroom',
+                    avator:info.ProfilePicture==null?"":info.ProfilePicture,
+                    owner:info.Owner,
+                    show:true}
+                currentObj.user.AddNewGroup(obj);
+            }
+            callback(results);
+        })
+    }
+    removeGroupFromContact(data,callback){
+        let params = data.params;
+        let info = data.info;
+        this.network.methodPOST('Member/RemoveGroupFromContact',params,function(results){
+            if(results.success && results.data.Result){
+                currentObj.user.RemoveGroupFromContact(info.ID);
+            }
+            callback(results);
+        })
+    }
+    getGroupInfo(params,callback){
+        this.network.methodPOST('Member/GetGroupInfo',params,function(results){
+            callback(results);
+        })
+    }
+    exitGroup(params,callback){
+        let {groupId,accountId} = params;
+        this.network.methodPOST('Member/ExitGroup',params,function(results){
+            if(results.success){
+                //删除ChatRecode表中记录
+                currentObj.im.deleteChatRecode(groupId);
+                //删除该与client的所以聊天记录
+                currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
+                //删除account数据库中数据
+                currentObj.user.deleteFromGrroup(groupId);
+            }
+            callback(results);
+        })
+    }
+    searchUser(params,callback){
+        this.network.methodPOST('Member/SearchUser',params,function(results){
+            callback(results);
+        })
+    }
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
