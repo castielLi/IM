@@ -83,7 +83,7 @@ export default class settingController {
     removeGroupMember(data,callback){
         let {GroupId} = data.params;
         let {close} = data.argument;
-        this.network.methodPOST('Member/RemoveGroupMember',params,function(results){
+        this.network.methodPOST('Member/RemoveGroupMember',data.params,function(results){
             if(results.success && results.data.Data){
                 if(close){
                     currentObj.destroyGroup(GroupId);

@@ -249,7 +249,7 @@ function receiveMessageHandle(message){
         }
 
         let reduxMessageDto = buildMessageDto(message,relation);
-
+        currentObj.im.storeRecMessage(reduxMessageDto);
         AppReceiveMessageHandle(reduxMessageDto,relation);
         //收到消息，判断数据库是否需要修改未读消息
         let sender = message.Data.Data.Sender;
