@@ -79,6 +79,7 @@ export default class settingController {
             callback(results);
         })
     }
+    //搜索用户界面也用到了
     searchUser(params,callback){
         this.network.methodPOST('Member/SearchUser',params,function(results){
             callback(results);
