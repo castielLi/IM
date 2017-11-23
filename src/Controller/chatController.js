@@ -137,6 +137,14 @@ export default class chatController {
         this.user.getInformationByIdandType(Id,type,callback,messageCommand,contentCommand)
     }
 
+    updateMessageLocalSource(MSGID,path){
+        this.im.updateMessageLocalSource(MSGID,path)
+    }
+
+    updateMessageRemoteSource(MSGID,url){
+        this.im.updateMessageLocalSource(MSGID,url)
+    }
+
     // getRecentChatRecode(client,way,range,callback){
     //     this.im.getRecentChatRecode(client,way,range,callback)
     // }

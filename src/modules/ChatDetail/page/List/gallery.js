@@ -25,7 +25,8 @@ import * as Actions from '../../reducer/action'
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 import netWorking from '../../../../Core/Networking/Network';
-import IM from '../../../../Core/IM';
+// import IM from '../../../../Core/IM';
+import chatController from '../../../../Controller/chatController';
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'
@@ -36,6 +37,8 @@ const images = [{
 }]
 
 const uri = 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460';
+
+let ChatController = new chatController();
 
 class Gallery extends ContainerComponent {
     constructor(props) {
@@ -74,7 +77,7 @@ class Gallery extends ContainerComponent {
 
     downOriginalImage = (path,Remote,MSGID,Sender)=>{
         let network = new netWorking();
-        let im = new IM();
+        // let im = new IM();
         let currentObj = this;
         let url = Remote.match(/([\s\S]*)#imageView2/)[1];
         network.methodDownloadWithProgress(url,path,function () {
@@ -84,8 +87,8 @@ class Gallery extends ContainerComponent {
 
             //todo:图片下载成功后会覆盖之前的缩略图，但是不会刷新需要重新开启APP
             currentObj.props.updateMessageUrl(MSGID,url,Sender);
-            im.updateMessageRemoteSource(MSGID,url);
-
+            //im.updateMessageRemoteSource(MSGID,url);
+            ChatController.updateMessageRemoteSource(MSGID,url);
             currentObj.setState({
                 path,
                 download:false,
