@@ -47,13 +47,13 @@ export default function App() {
         IMHandle.handleMessageResult(status,MSGID);
     }
     //改变消息数据 {state: ,message:{这里变化}}
-    let handleMessageChange = function(message,relation){
-       IMHandle.handleMessageChange(message,relation);
+    let handleMessageChange = function(message){
+       IMHandle.handleMessageChange(message);
     }
 
 
-    let handleRecieveMessage = function(message){
-       IMHandle.handleRecieveMessage(message);
+    let handleRecieveMessage = function(message,relation){
+       IMHandle.handleRecieveMessage(message,relation);
     }
 
     //收到同意添加好友申请回调
