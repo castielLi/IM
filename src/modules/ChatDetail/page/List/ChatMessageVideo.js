@@ -65,9 +65,9 @@ class ChatMessageVideo extends ContainerComponent {
                 let msgID = data.message.MSGID;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
 
-                ChatController.downloadVideoSource(Remote,filePath,function () {
+                ChatController.downloadVideo(Remote,filePath,function () {
 
-                    currentObj.props.downloadVideo(msgID,filePath,Sender)
+                    currentObj.props.updateMessagePath(msgID,filePath,Sender)
                     //im.updateMessageLocalSource(msgID,filePath)
                     ChatController.updateMessageLocalSource(msgID,filePath);
 
