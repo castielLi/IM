@@ -592,6 +592,10 @@ export default class IM {
         FileManager.downloadResource(message,callback);
     }
 
+    addDownloadVideoSource(remoteURL,filePath,callback,onprogress){
+        FileManager.downloadVideoSource(remoteURL,filePath,callback,onprogress);
+    }
+
 
     ReceiveMessageHandle(message){
         ControllerReceiveMessageHandle(message);

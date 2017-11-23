@@ -14,7 +14,6 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
 // import IM from '../../../../Core/IM';
 import chatController from '../../../../Controller/chatController';
@@ -65,7 +64,8 @@ class ChatMessageVideo extends ContainerComponent {
                 let format = Remote.slice(Remote.lastIndexOf('.'));
                 let msgID = data.message.MSGID;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
-                network.methodDownloadWithProgress(Remote,filePath,function () {
+
+                ChatController.downloadVideoSource(Remote,filePath,function () {
 
                     currentObj.props.updateMessagePath(msgID,filePath,Sender)
                     //im.updateMessageLocalSource(msgID,filePath)
@@ -81,7 +81,7 @@ class ChatMessageVideo extends ContainerComponent {
                         progress:Math.ceil(percent * 100),
                         download:true,
                     });
-                })
+                });
             }
             else{
                 //this.props.showMediaPlayer(Local)

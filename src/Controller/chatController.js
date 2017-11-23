@@ -155,6 +155,12 @@ export default class chatController {
 
     //todo 李宗骏  通过cache messageId 获得IM 数据
 
+
+    downloadVideo(requestURL,filePath,callback,onprogress){
+       this.im.addDownloadVideoSource(requestURL,filePath,callback,onprogress);
+    }
+
+
     //获得当前聊天下所有的聊天记录
     getMessagesByIds(){
 
