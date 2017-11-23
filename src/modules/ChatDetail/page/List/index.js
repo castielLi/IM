@@ -122,12 +122,17 @@ class Chat extends Component {
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
         if(this.props.type == "chatroom"){
-            user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
+            ChatController.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
                 currentObj.setState({
                     groupMembers,
-
                 })
             });
+            // user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
+            //     currentObj.setState({
+            //         groupMembers,
+            //
+            //     })
+            // });
         }
 
 
@@ -164,50 +169,50 @@ class Chat extends Component {
                     let dataLength = this.shortData.length;
                     let {client} = this.props;
                     let that = this;
-                    //ChatController.getRecentChatRecode()
-                    setTimeout(()=>{
-                        this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+                    ChatController.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
-                            if(!messages){
-                                that.noMore  = msgState.NOMORE;
-                                that.setState({
-                                    isMore:that.noMore,
-                                });
-                                return;
-                            }
-                            let msgLength = messages.length;
-
-                            // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                            //     messages.pop();
-                            // }
-
-                            let msg = messages.map((message)=>{
-                                return DtoMethods.sqlMessageToMessage(message);
-                            });
-                            let msg2 = msg.concat();
-
-                            that.historyData = msg.reverse().concat(that.historyData);
-                            that.shortData = that.historyData.concat(that.reduxData);
-                            that.data = that.prepareMessages(that.shortData);
-
-                            that.historyData2 = that.historyData2.concat(msg2);
-                            that.shortData2 = that.reduxData2.concat(that.historyData2);
-                            that.data2 = that.prepareMessages(that.shortData2);
-
-                            if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                                that.noMore  = msgState.NOMORE;
-                            }
-                            else{
-                                that.noMore  = msgState.END;
-                            }
-
+                        if(!messages){
+                            that.noMore  = msgState.NOMORE;
                             that.setState({
-                                dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
-                                dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
                                 isMore:that.noMore,
-                            })
+                            });
+                            return;
+                        }
+                        let msgLength = messages.length;
+
+                        // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                        //     messages.pop();
+                        // }
+
+                        let msg = messages.map((message)=>{
+                            return DtoMethods.sqlMessageToMessage(message);
+                        });
+                        let msg2 = msg.concat();
+
+                        that.historyData = msg.reverse().concat(that.historyData);
+                        that.shortData = that.historyData.concat(that.reduxData);
+                        that.data = that.prepareMessages(that.shortData);
+
+                        that.historyData2 = that.historyData2.concat(msg2);
+                        that.shortData2 = that.reduxData2.concat(that.historyData2);
+                        that.data2 = that.prepareMessages(that.shortData2);
+
+                        if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                            that.noMore  = msgState.NOMORE;
+                        }
+                        else{
+                            that.noMore  = msgState.END;
+                        }
+
+                        that.setState({
+                            dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
+                            dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
+                            isMore:that.noMore,
                         })
-                    },500)
+                    })
+                    // setTimeout(()=>{
+                    //     this.im.getRecentChatRecode()
+                    // },500)
                 }
             },
         })
@@ -506,44 +511,44 @@ class Chat extends Component {
             let dataLength = this.shortData2.length;
             let {client} = this.props;
             let that = this;
-            //ChatController.getRecentChatRecode()
-            setTimeout(()=>{
-                this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+            ChatController.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
-                    if(!messages){
-                        that.noMore  = msgState.NOMORE;
-                        that.setState({
-                            isMore:that.noMore,
-                        });
-                        return;
-                    }
-                    let msgLength = messages.length;
-
-
-                    // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                    //     messages.pop();
-                    // }
-                    let msg = messages.map((message)=>{
-                        return DtoMethods.sqlMessageToMessage(message);
-                    });
-
-                    that.historyData2 = that.historyData2.concat(msg);
-                    that.shortData2 = that.reduxData2.concat(that.historyData2);
-                    that.data2 = that.prepareMessages(that.shortData2);
-
-                    if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                        that.noMore  = msgState.NOMORE;
-                    }
-                    else{
-                        that.noMore  = msgState.END;
-                    }
-
+                if(!messages){
+                    that.noMore  = msgState.NOMORE;
                     that.setState({
-                        dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
                         isMore:that.noMore,
                     });
-                })
-            },500)
+                    return;
+                }
+                let msgLength = messages.length;
+
+
+                // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                //     messages.pop();
+                // }
+                let msg = messages.map((message)=>{
+                    return DtoMethods.sqlMessageToMessage(message);
+                });
+
+                that.historyData2 = that.historyData2.concat(msg);
+                that.shortData2 = that.reduxData2.concat(that.historyData2);
+                that.data2 = that.prepareMessages(that.shortData2);
+
+                if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                    that.noMore  = msgState.NOMORE;
+                }
+                else{
+                    that.noMore  = msgState.END;
+                }
+
+                that.setState({
+                    dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
+                    isMore:that.noMore,
+                });
+            })
+            // setTimeout(()=>{
+            //     this.im.getRecentChatRecode()
+            // },500)
         }
 
     }
