@@ -10,7 +10,7 @@ import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} fro
 import relationStore from '../../Core/Redux/contact';
 import friendApplicationStore from '../../Core/Redux/applyFriend/index'
 import FeaturesStore from '../../modules/Common/menu/reducer'
-import NavigationBottomStore  from '../../Core/Component/Redux/NavigationBar'
+import NavigationBottomStore  from '../../modules/Common/NavigationBar/reducer/index'
 export default combineReducers({
 	//登录状态
     loginStore,

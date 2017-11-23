@@ -246,4 +246,10 @@ export default class settingController {
             callback(result);
         })
     }
+
+    //修改群组的名称
+    updateGroupName(groupId,name,message){
+        this.im.storeSendMessage(message);
+        this.user.updateGroupName(groupId,name);
+    }
 }

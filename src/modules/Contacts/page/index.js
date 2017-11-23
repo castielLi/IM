@@ -21,7 +21,7 @@ import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/UserGroup';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 
