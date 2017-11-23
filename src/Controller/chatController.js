@@ -207,7 +207,7 @@ function receiveMessageHandle(message){
                     }
                 }
 
-                let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                let inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
                 message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
