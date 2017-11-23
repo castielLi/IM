@@ -22,7 +22,7 @@ import RNFS from 'react-native-fs';
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ChatController from '../../../Controller/chatController';
 import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig';

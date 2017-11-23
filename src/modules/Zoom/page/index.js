@@ -18,7 +18,7 @@ import {
 	checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import IM from '../../../Core/IM';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {bindActionCreators} from 'redux';

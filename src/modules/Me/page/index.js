@@ -21,7 +21,7 @@ import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MyNavigationBar from '../../../Core/Component/NavigationBar'
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../Controller/loginController';
 import Route from '../../../Core/route/router';
 let {height,width} = Dimensions.get('window');

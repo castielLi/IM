@@ -24,7 +24,7 @@ import * as recentListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
 import RNFS from 'react-native-fs';
 
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Controller/settingController';
 let settingController = new SettingController();
