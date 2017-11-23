@@ -139,7 +139,7 @@ class DeleteGroupMember extends ContainerComponent {
                     //清空chatRecordStore中对应记录
                     currentObj.props.clearChatRecordFromId(ID)
 
-                    
+
                     //settingController.destroyGroup(ID);
 
 
