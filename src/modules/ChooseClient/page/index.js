@@ -24,19 +24,14 @@ import * as recentListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
 import RNFS from 'react-native-fs';
 
-import User from '../../../Core/UserGroup';
-import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import RelationModel from '../../../Core/UserGroup/dto/RelationModel'
 import SettingController from '../../../Controller/settingController';
 let settingController = new SettingController();
-import {startChatRoomMessage,buildInvationGroupMessage,buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
+import {buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let user = new User();
-let im = new IM();
 let title = null;
 
 class ChooseClient extends ContainerComponent {

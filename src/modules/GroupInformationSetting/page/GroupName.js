@@ -19,19 +19,18 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
-
-import IM from '../../../Core/IM';
-import User from '../../../Core/UserGroup';
+import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';;
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
+import SettingController from '../../../Controller/settingController'
 
+
+let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let im = new IM();
-let user = new User();
+
 class GroupName extends ContainerComponent {
     constructor(){
         super()
@@ -79,11 +78,11 @@ class GroupName extends ContainerComponent {
             }
             if(result.data.Data){
                 currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
-                user.updateGroupName(ID,currentObj.state.text);
                 //本地模拟消息
                 let messageId = uuidv1();
                 let sendMessage = buildChangeGroupNickMessage(accountId,ID,"你修改了群昵称",messageId);
-                im.storeSendMessage(sendMessage);
+
+                settingController.updateGroupName(ID,currentObj.state.text,sendMessage);
 
                 //更新redux message
                 let copyMessage = Object.assign({},sendMessage);
