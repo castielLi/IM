@@ -69,22 +69,26 @@ export default class settingController {
         let {groupId,accountId} = params;
         this.network.methodPOST('Member/ExitGroup',params,function(results){
             if(results.success){
-                //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(groupId);
-                //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
-                //删除account数据库中数据
-                currentObj.user.deleteFromGrroup(groupId);
+                // //删除ChatRecode表中记录
+                // currentObj.im.deleteChatRecode(groupId);
+                // //删除该与client的所以聊天记录
+                // currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
+                // //删除account数据库中数据
+                // currentObj.user.deleteFromGrroup(groupId);
+                currentObj.destroyGroup(groupId);
             }
             callback(results);
         })
     }
-    removeGroupMember(params,callback){
-        let {GroupId} = params;
+    removeGroupMember(data,callback){
+        let {GroupId} = data.params;
+        let {close} = data.arguments;
         this.network.methodPOST('Member/RemoveGroupMember',params,function(results){
-            // if(results.success && results.data.Data){
-            //     currentObj.destroyGroup(GroupId)
-            // }
+            if(results.success && results.data.Data){
+                if(close){
+                    currentObj.destroyGroup(GroupId);
+                }
+            }
             callback(results)
         })
     }

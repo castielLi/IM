@@ -127,17 +127,20 @@ class DeleteGroupMember extends ContainerComponent {
     _rightButton() {
         let {accountId,ID,navigator} = this.props;
         let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
+        let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
+        let arguments = {close};
+        let data = {params,arguments};
         currentObj.showLoading();
         callback = (result){
             if(result.success && result.data.Data){
-                if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
+                if(close){
                     //删除最近聊天redux对应id
                     currentObj.props.deleteRelation(ID);
                     //清空chatRecordStore中对应记录
                     currentObj.props.clearChatRecordFromId(ID)
 
 
-                    settingController.destroyGroup(ID);
+                    //settingController.destroyGroup(ID);
 
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === ID){
@@ -172,7 +175,7 @@ class DeleteGroupMember extends ContainerComponent {
                 console.log("http请求出错")
             }
         }
-        settingController.removeGroupMember(params,callback);
+        settingController.removeGroupMember(data,callback);
 
         // this.fetchData("POST","Member/RemoveGroupMember",function(result){
         //     currentObj.hideLoading()
