@@ -142,7 +142,7 @@ class DeleteGroupMember extends ContainerComponent {
                     currentObj.props.clearChatRecordFromId(ID)
 
 
-                    settingController.destroyGroup(ID);
+                    settingController.destroRyGroup(ID);
 
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === ID){
