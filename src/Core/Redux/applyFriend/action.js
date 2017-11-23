@@ -1,8 +1,6 @@
 /**
  * Created by Hsu. on 2017/10/23.
  */
-import IM from '../../IM/index'
-let im = new IM();
 import ApplyFriendEnum from '../../IM/dto/ApplyFriendEnum'
 import {addUnDealRequestNumber} from '../../../modules/MainTabbar/reducer/action';
 export function getApplicantInfo(message) {

@@ -168,6 +168,16 @@ export default class settingController {
             this.user.updateRelation(propsRelation)
         }
     }
+
+
+
+    //摧毁群
+    destroyGroup(groupId){
+        this.im.deleteChatRecode(groupId);
+        this.im.deleteCurrentChatMessage(groupId,"chatroom");
+        this.user.deleteFromGrroup(groupId);
+    }
+
     //创建群
     //参数：发起人id,发起人昵称,[{"Account":选中的id1},{"Account":选中的id2},...],“选中的nick1,选中的nick2,...”，请求参数，回调函数
     createGroup(accountId,accountName,splNeedArr,Nicks,params,callback){

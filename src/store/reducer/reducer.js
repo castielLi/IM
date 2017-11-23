@@ -10,6 +10,7 @@ import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} fro
 import relationStore from '../../Core/Redux/contact';
 import friendApplicationStore from '../../Core/Redux/applyFriend/index'
 import FeaturesStore from '../../modules/Common/menu/reducer'
+import NavigationBottomStore  from '../../Core/Component/Redux/NavigationBar'
 export default combineReducers({
 	//登录状态
     loginStore,
@@ -34,6 +35,8 @@ export default combineReducers({
     //控制features显示隐藏
     FeaturesStore,
     //播放器状态
-    mediaPlayerStore
+    mediaPlayerStore,
+    //导航底部显示隐藏
+    NavigationBottomStore
 
 });
