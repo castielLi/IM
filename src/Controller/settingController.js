@@ -66,7 +66,7 @@ export default class settingController {
         })
     }
     exitGroup(params,callback){
-        let {groupId,accountId} = params;
+        let {GroupId,Account} = params;
         this.network.methodPOST('Member/ExitGroup',params,function(results){
             if(results.success){
                 // //删除ChatRecode表中记录
@@ -75,7 +75,7 @@ export default class settingController {
                 // currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
                 // //删除account数据库中数据
                 // currentObj.user.deleteFromGrroup(groupId);
-                currentObj.destroyGroup(groupId);
+                currentObj.destroyGroup(GroupId);
             }
             callback(results);
         })
