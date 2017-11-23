@@ -32,7 +32,7 @@ let __instance = (function () {
 
 
 //
-let myAccountId;
+let myAccount;
 //标示当前正在聊天的对象
 let currentChat = undefined
 
@@ -77,8 +77,8 @@ export default class chatController {
     }
 
 
-    setMyAccountId(myId){
-        myAccountId = myId;
+    setMyAccount(accountObj){
+        myAccount = accountObj;
     }
     //todo黄昊东  recentlist
     deleteRecentChatList(rowData){
@@ -228,8 +228,8 @@ function receiveMessageHandle(message){
 
                 let Nick = currentObj.user.getUserInfoById(message.Data.Data.Data).Nick;
                 let inviter = '';
-                if(message.Data.Data.Receiver == myAccountId){
-                    inviter = myAccountId;
+                if(message.Data.Data.Receiver == myAccount.accountId){
+                    inviter = myAccount.accountId;
                 }else{
                     inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
                 }

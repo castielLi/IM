@@ -13,8 +13,9 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import UUIDGenerator from 'react-native-uuid-generator';
 import LoginController from '../../../Controller/loginController'
-
+import ChatController from '../../../Controller/chatController'
 let loginController = new LoginController();
+let chatController = new ChatController();
 let currentObj = undefined;
 
 class PhoneLogin extends ContainerComponent {
@@ -93,7 +94,7 @@ class PhoneLogin extends ContainerComponent {
                         ,device:"Mobile",deviceId:"1"};
 
                     currentObj.props.signIn(account);
-
+                    chatController.setMyAccount(account);
                     currentObj.route.push(currentObj.props,{
                         key:'MainTabbar',
                         routeId: 'MainTabbar'
