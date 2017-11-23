@@ -112,7 +112,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
             message.Data.Data.Sender = message.Data.Data.Receiver;
             message.Data.Data.Receiver = sender;
             message.way = "chatroom"
-            //currentObj.storeRecMessage(message)
+            currentObj.storeRecMessage(message)
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
 

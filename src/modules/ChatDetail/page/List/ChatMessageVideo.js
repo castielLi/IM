@@ -45,7 +45,7 @@ class ChatMessageVideo extends ContainerComponent {
     };
 
     playVideo = (Local,Remote,data)=>{
-        let network = new netWorking();
+        //let network = new netWorking();
         let currentObj = this;
         RNFS.exists(Local).then((success) => {
             if(!success){
@@ -67,7 +67,7 @@ class ChatMessageVideo extends ContainerComponent {
 
                 ChatController.downloadVideoSource(Remote,filePath,function () {
 
-                    currentObj.props.updateMessagePath(msgID,filePath,Sender)
+                    currentObj.props.downloadVideo(msgID,filePath,Sender)
                     //im.updateMessageLocalSource(msgID,filePath)
                     ChatController.updateMessageLocalSource(msgID,filePath);
 

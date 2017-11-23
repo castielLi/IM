@@ -487,15 +487,7 @@ class Chat extends Component {
 
         }
     }
-    scrollToEnd = () => {
-        if(this.state.showInvertible){
-            if (this._invertibleScrollViewRef === null) { return }
-            this._invertibleScrollViewRef.scrollTo({
-                y: 0,
-                animated:false,
-            });
-        }
-    }
+
     oldMsg = () => {
         //console.log('oldMsg');
         //alert(this.props.client+this.state.isMore)
@@ -595,6 +587,7 @@ class Chat extends Component {
         // }
         FooterLayout = false
         ListLayout=false
+        console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight+'   距离屏幕高度'+_footerY)
         if (_listHeight && _footerY && _footerY > _listHeight) {
             scrollDistance = _listHeight - _footerY;
             this.listView.scrollTo({
@@ -611,9 +604,20 @@ class Chat extends Component {
         }
     }
 
+    scrollToEnd = () => {
+        if(this.state.showInvertible){
+            if (this._invertibleScrollViewRef === null) { return }
+            this._invertibleScrollViewRef.scrollTo({
+                y: 0,
+                animated:false,
+            });
+        }
+    }
+
     //界面变化触发
     _onListViewLayout = (event) =>{
         const {showInvertible}=this.state
+        console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight)
         if(!showInvertible){
             if(!_MaxListHeight){
                 _MaxListHeight = event.nativeEvent.layout.height;

@@ -252,9 +252,9 @@ export default class User {
         }
     }
 
-    //从cache里面取出数据
+    //从cache里面取出用户名
     getUserInfoById(accountId){
-       return cache["private"][accountId];
+        return cache["private"][accountId]["Nick"]
     }
 
     //通过id组成的数组从数据库批量查询user信息,返回数组
