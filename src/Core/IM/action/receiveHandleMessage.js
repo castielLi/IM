@@ -3,20 +3,12 @@
  */
 
 import Store from '../../../store'
-import MessageCommandEnum from '../dto/MessageCommandEnum'
-import AppCommandEnum from '../dto/AppCommandEnum'
 import * as ActionForChatRecordStore from '../../Redux/chat/action'
 import {changeRelationOfShow,addRelation} from '../../Redux/contact/action';
 import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
-import User from '../../UserGroup'
-import IM from '../../IM'
 import {Alert} from 'react-native'
-import MessageType from '../../IM/dto/MessageType'
-
-let user = new User();
 let store = Store;
 let myAccountId = '';
-let im = new IM();
 
 export function setMyAccoundId(id){
     myAccountId = id;

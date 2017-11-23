@@ -16,25 +16,20 @@ import {
     FlatList
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import uuidv1 from 'uuid/v1';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
-import User from '../../../Core/UserGroup';
-import IM from '../../../Core/IM';
 import MyNavigationBar from '../../../Core/Component/NavigationBar';
-
+import SettingController from '../../../Controller/settingController'
 
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let user = new User();
-let im = new IM();
 let title = null;
+let settingController = new SettingController();
 
 class DeleteGroupMember extends ContainerComponent {
 
@@ -145,12 +140,10 @@ class DeleteGroupMember extends ContainerComponent {
                     currentObj.props.deleteRelation(ID);
                     //清空chatRecordStore中对应记录
                     currentObj.props.clearChatRecordFromId(ID)
-                    //删除ChatRecode表中记录
-                    im.deleteChatRecode(ID);
-                    //删除该与client的所以聊天记录
-                    im.deleteCurrentChatMessage(ID,'chatroom');
-                    //删除account数据库中数据
-                    user.deleteFromGrroup(ID);
+
+
+                    settingController.destroyGroup(ID);
+
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === ID){
                             //清空recentListStore中对应记录
@@ -231,6 +224,7 @@ class DeleteGroupMember extends ContainerComponent {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:"white"
     },
     sectionHeader:{
         height: 30,
