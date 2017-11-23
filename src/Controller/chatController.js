@@ -129,23 +129,10 @@ export default class chatController {
         this.user.GetRelationsByRelationIds(idS,callback)
     }
 
-
-
-
-
-    //用户详情页面
-    // applyFriend(params,callback){
-    //     this.network.methodPOST('Member/ApplyFriend',params,function(results){
-    //         if(results.success && results.data.Data instanceof Object){
-    //             //relationStore里面添加该好友(或者重新初始化)
-    //             let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-    //             let IsInBlackList =result.data.Data.IsInBlackList
-    //             let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-    //             currentObj.user.AddNewRelation(relationObj)
-    //         }
-    //         callback(results);
-    //     })
-    // }
+    //聊天信息显示页面(chatDetail/List)
+    getRecentChatRecode(client,way,range = {start:0,limit:10},callback){
+        this.im.getRecentChatRecode(client,way,range,callback)
+    }
 
 
 
