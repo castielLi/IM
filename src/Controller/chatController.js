@@ -125,7 +125,7 @@ export default class chatController {
             if(results.success){
                 //todo controller operate
                 let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
                 currentObj.user.AddNewRelation(relationObj);
                 //修改好友申请消息状态
                 currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
