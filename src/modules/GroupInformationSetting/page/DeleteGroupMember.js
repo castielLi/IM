@@ -128,10 +128,10 @@ class DeleteGroupMember extends ContainerComponent {
         let {accountId,ID,navigator} = this.props;
         let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
         let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
-        let arguments = {close};
-        let data = {params,arguments};
+        let argument = {close};
+        let data = {params,argument};
         currentObj.showLoading();
-        callback = (result){
+        callback = (result)=>{
             if(result.success && result.data.Data){
                 if(close){
                     //删除最近聊天redux对应id
