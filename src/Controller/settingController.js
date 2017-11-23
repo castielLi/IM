@@ -5,6 +5,10 @@ import IM from '../Core/IM'
 import User from '../Core/UserGroup'
 import Network from '../Core/Networking/Network'
 import RNFS from 'react-native-fs'
+import uuidv1 from 'uuid/v1';
+import {buildInvationGroupMessage} from '../Core/IM/action/createMessage';
+import RelationModel from '../Core/UserGroup/dto/RelationModel'
+
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -165,7 +169,7 @@ export default class settingController {
         }
     }
     //创建群
-    createGroup(accountId,accountName,members,Nicks,splNeedArr,groupId,chooseArr,params,callback){
+    createGroup(accountId,accountName,members,Nicks,params,callback){
         this.network.methodPOST('Member/CreateGroup',params,function(result){
             if(result.success){
                 if(result.data.Data == null){
@@ -180,7 +184,8 @@ export default class settingController {
                 relation.show = 'false';
 
                 //添加关系到数据库
-                this.user.AddNewGroupToGroup(relation,members);
+                currentObj.user.AddNewGroupToGroup(relation,members);
+                result.data.relation = relation;
                 let messageId = uuidv1();
                 //创建群组消息
                 let text = Nicks;
@@ -188,15 +193,45 @@ export default class settingController {
                 //todo：lizongjun 现在不需要自己发送消息，后台统一发送
                 //向添加的用户发送邀请消息
                 let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
-                im.storeSendMessage(sendMessage);
+                currentObj.im.storeSendMessage(sendMessage);
+                result.data.sendMessage = sendMessage;
+                //创建文件夹
+                let audioPath = RNFS.DocumentDirectoryPath + '/' +accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
+                let imagePath = RNFS.DocumentDirectoryPath + '/' +accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
+                RNFS.mkdir(audioPath)
+                RNFS.mkdir(imagePath)
+
+            }
+            callback(result);
+        })
+    }
+    //添加群成员
+    addGroupMember(accountId,Nicks,splNeedArr,groupId,chooseArr,params,callback){
+        this.network.methodPOST('Member/AddGroupMember',params,function(result){
+            if(result.success){
+                if(result.data.Data == null){
+                    alert("返回群数据出错")
+                    return;
+                }
+
+                let messageId = uuidv1();
+                //创建群组消息
+                let text = Nicks;
+
+                //todo：lizongjun 现在不需要自己发送消息，后台统一发送
+                //向添加的用户发送邀请消息
+                let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
+                result.data.sendMessage = sendMessage;
+                currentObj.im.storeSendMessage(sendMessage);
+
                 //添加新人到缓存和数据库
-                user.AddGroupAndMember(groupId,splNeedArr);
+                currentObj.user.AddGroupAndMember(groupId,splNeedArr);
                 chooseArr.forEach((val,it)=>{
-                    user.groupAddMemberChangeCash(groupId,val.RelationId);
-                    user.privateAddMemberChangeCash(val.RelationId,val)
+                    currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
+                    currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
                 })
             }
-            callback(results);
+            callback(result);
         })
     }
 }
