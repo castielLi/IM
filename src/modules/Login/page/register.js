@@ -151,16 +151,11 @@ export default class Register extends ContainerComponent {
 						</TouchableOpacity>
 					</View>
 					<Text style={{fontSize:checkDeviceHeight(24),color:'#bebebe'}}>密码由8-12位组成, 其中最少包括一个字母和数字，不能使用符号</Text>
-					{
-						this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NickNameText?
-						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.register} onPress = {()=>this.register()}>
-								<Text style = {styles.registerText}>注册</Text>
-							</TouchableOpacity>)
-						:(
-							<Image style={[styles.register,{backgroundColor:'transparent'}]} source = {require('../resource/notregister.png')}></Image>
-							)
-					}
+
+							<TouchableOpacity disabled={!(this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NickNameText)} activeOpacity = {0.8} style={[styles.register,{backgroundColor:this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NickNameText?'#1aad19':'#ccc' }]} onPress = {()=>this.register()}>
+								<Text style = {[styles.registerText]}>注册</Text>
+							</TouchableOpacity>
+
 					<View>
 						<Text style = {styles.explanation}>
 							点击上面的“注册”按钮,即表示你同意
@@ -257,7 +252,7 @@ const styles = StyleSheet.create({
 		height:checkDeviceHeight(45),
 		borderRightWidth:1,
 		borderColor:'#ddddde',
-		resizeMode:'stretch',
+		resizeMode:'contain',
 	},
 	imageBox:{
 		width:checkDeviceWidth(125),

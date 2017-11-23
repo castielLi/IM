@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
 		height:checkDeviceHeight(45),
 		borderRightWidth:1,
 		borderColor:'#ddddde',
-		resizeMode:'stretch',
+		resizeMode:'contain',
 	},
 	imageBox:{
 		width:checkDeviceWidth(125),

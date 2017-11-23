@@ -31,7 +31,8 @@ let __instance = (function () {
 }());
 
 
-
+//
+let myAccountId;
 //标示当前正在聊天的对象
 let currentChat = undefined
 
@@ -76,6 +77,9 @@ export default class chatController {
     }
 
 
+    setMyAccountId(myId){
+        myAccountId = myId;
+    }
     //todo黄昊东  recentlist
     deleteRecentChatList(rowData){
         //删除chatRecord表中对应记录
@@ -229,7 +233,7 @@ function receiveMessageHandle(message){
                 if(message.Data.Data.Receiver == myAccountId){
                     inviter = myAccountId;
                 }else{
-                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;;
+                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
                 }
 
                 message.Data.Data.Data =  Nick + "被踢"+ inviter+"出了群聊";
