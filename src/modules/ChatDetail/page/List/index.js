@@ -30,6 +30,7 @@ import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConf
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
 import User from '../../../../Core/UserGroup'
+import chatController from '../../../../Controller/chatController'
 
 
 let _listHeight = 0; //list显示高度
@@ -47,6 +48,7 @@ let recordData;
 let _responderPageY;
 
 let user = new User();
+let ChatController = new chatController();
 
 
 class Chat extends Component {
@@ -162,6 +164,7 @@ class Chat extends Component {
                     let dataLength = this.shortData.length;
                     let {client} = this.props;
                     let that = this;
+                    //ChatController.getRecentChatRecode()
                     setTimeout(()=>{
                         this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
@@ -503,6 +506,7 @@ class Chat extends Component {
             let dataLength = this.shortData2.length;
             let {client} = this.props;
             let that = this;
+            //ChatController.getRecentChatRecode()
             setTimeout(()=>{
                 this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
