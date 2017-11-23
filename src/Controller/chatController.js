@@ -103,6 +103,10 @@ export default class chatController {
             cache[client] = { messages: [],unread:0}
         }
     }
+    //界面通知controller结束与某人会话
+    stopChatWithOldClient(){
+        currentChat = '';
+    }
     //发送消息
     addMessage(message,callback,onprogress){
         this.im.addMessage(message,callback,onprogress);
