@@ -249,7 +249,7 @@ export default class IM {
     }
     //某client的未读消息数量加一
     addChatUnReadMessageaNumber(name){
-        storeSqlite.addChatUnReadMessageaNumber(name)
+        storeSqlite.addChatUnReadMessageNumber(name)
     }
     //获取当前用户或者群组的聊天记录
     getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
