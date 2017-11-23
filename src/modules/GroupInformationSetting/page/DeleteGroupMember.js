@@ -139,8 +139,9 @@ class DeleteGroupMember extends ContainerComponent {
                     //清空chatRecordStore中对应记录
                     currentObj.props.clearChatRecordFromId(ID)
 
-
+                    
                     //settingController.destroyGroup(ID);
+
 
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === ID){

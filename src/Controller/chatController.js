@@ -100,10 +100,8 @@ export default class chatController {
         }
     }
     //发送消息
-    addMessage(message,callback){
-        this.im.addMessage(message, (status, messageId) => {
-            callback(status, messageId)
-        })
+    addMessage(message,callback,onprogress){
+        this.im.addMessage(message,callback,onprogress);
     }
 
 
@@ -209,7 +207,7 @@ function receiveMessageHandle(message){
                     }
                 }
 
-                let inviter = user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                let inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
                 message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
