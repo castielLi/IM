@@ -136,4 +136,10 @@ FileManager.downloadResource = function(message,callback){
     console.log('receiveMessageOpreator:  ',message)
 }
 
+
+FileManager.downloadVideoSource = function(remoteURL,filePath,callback,onprogeress){
+    _network.methodDownloadWithProgress(remoteURL,filePath,callback,onprogeress);
+}
+
+
 export default FileManager;
