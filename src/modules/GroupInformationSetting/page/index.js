@@ -241,6 +241,7 @@ class GroupInformationSetting extends ContainerComponent {
                     currentObj.route.toMain(currentObj.props);
                 }
                 else{
+                    alert(results.errorMessage);
                     console.log('退出群组出错')
                 }
             };
