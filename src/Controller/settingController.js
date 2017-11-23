@@ -164,4 +164,12 @@ export default class settingController {
             this.user.updateRelation(propsRelation)
         }
     }
+
+
+    //摧毁群
+    destroyGroup(groupId){
+        this.im.deleteChatRecode(groupId);
+        this.im.deleteCurrentChatMessage(groupId,"chatroom");
+        this.user.deleteFromGrroup(groupId);
+    }
 }
