@@ -69,16 +69,30 @@ export default class settingController {
         let {groupId,accountId} = params;
         this.network.methodPOST('Member/ExitGroup',params,function(results){
             if(results.success){
-                //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(groupId);
-                //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
-                //删除account数据库中数据
-                currentObj.user.deleteFromGrroup(groupId);
+                // //删除ChatRecode表中记录
+                // currentObj.im.deleteChatRecode(groupId);
+                // //删除该与client的所以聊天记录
+                // currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
+                // //删除account数据库中数据
+                // currentObj.user.deleteFromGrroup(groupId);
+                currentObj.destroyGroup(groupId);
             }
             callback(results);
         })
     }
+    removeGroupMember(data,callback){
+        let {GroupId} = data.params;
+        let {close} = data.argument;
+        this.network.methodPOST('Member/RemoveGroupMember',params,function(results){
+            if(results.success && results.data.Data){
+                if(close){
+                    currentObj.destroyGroup(GroupId);
+                }
+            }
+            callback(results)
+        })
+    }
+
     //搜索用户界面也用到了
     searchUser(params,callback){
         this.network.methodPOST('Member/SearchUser',params,function(results){

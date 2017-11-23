@@ -48,7 +48,7 @@ export function deleteChatRecode(name){
 export function updateUnReadMessageNumber(name,number){
     IMFMDB.updateUnReadMessageNumber(name,number);
 }
-export function addChatUnReadMessageaNumber(name){
+export function addChatUnReadMessageNumber(name){
     IMFMDB.addChatUnReadMessageaNumber(name);
 }
 
