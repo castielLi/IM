@@ -133,9 +133,13 @@ export default class chatController {
     }
 
     //聊天信息显示页面(chatDetail/List)
-    getRecentChatRecode(client,way,range = {start:0,limit:10},callback){
-        this.im.getRecentChatRecode(client,way,range,callback)
+    getInformationByIdandType(Id,type,callback,messageCommand,contentCommand){
+        this.user.getInformationByIdandType(Id,type,callback,messageCommand,contentCommand)
     }
+
+    // getRecentChatRecode(client,way,range,callback){
+    //     this.im.getRecentChatRecode(client,way,range,callback)
+    // }
 
 
 
