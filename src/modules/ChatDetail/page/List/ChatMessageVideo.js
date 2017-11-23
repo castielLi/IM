@@ -16,14 +16,16 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
-import IM from '../../../../Core/IM';
+// import IM from '../../../../Core/IM';
+import chatController from '../../../../Controller/chatController';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
 
-let im = new IM();
+// let im = new IM();
+let ChatController = new chatController();
 
 let {width, height} = Dimensions.get('window');
 
@@ -66,7 +68,8 @@ class ChatMessageVideo extends ContainerComponent {
                 network.methodDownloadWithProgress(Remote,filePath,function () {
 
                     currentObj.props.updateMessagePath(msgID,filePath,Sender)
-                    im.updateMessageLocalSource(msgID,filePath)
+                    //im.updateMessageLocalSource(msgID,filePath)
+                    ChatController.updateMessageLocalSource(msgID,filePath);
 
                     currentObj.setState({
                         download:false,

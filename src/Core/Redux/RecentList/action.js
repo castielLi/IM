@@ -1,8 +1,7 @@
 
 import {addUnReadMessageNumber,cutUnReadMessageNumber} from '../../../modules/MainTabbar/reducer/action';
-import IM from '../../IM/index';
 
-let im = new IM();
+
 //登陆成功过后，初始化RecentListStore数据 
 export function initRecentList(data){
     return {
@@ -70,7 +69,6 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
                 if(v.Client === client){
                     //说明recentListStore存在对应的item
                     existItem = true;
-                    im.updateUnReadMessageNumber(client,0);
                     dispatch(cutUnReadMessageNumber(v.unReadMessageCount));
                     //终止循环
                     return false;

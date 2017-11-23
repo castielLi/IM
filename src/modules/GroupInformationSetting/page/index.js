@@ -367,7 +367,9 @@ class GroupInformationSetting extends ContainerComponent {
             return item.Account;
         });
         let groupId = this.props.groupId;
-        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId}})
+        let groupNick = this.state.groupInformation.Name;
+        let groupAvator = this.state.groupInformation.ProfilePicture;
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,groupNick,groupAvator}})
     }
     goToDeleteClient = ()=>{
         this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{ID:this.state.groupInformation.ID,realMemberList:this.state.realMemberList}})
