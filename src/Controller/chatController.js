@@ -60,6 +60,9 @@ export default class chatController {
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
         handleRecieveAddFriendMessage = recieveAddFriendMessage;
+
+        //向im注入controller chat回调方法
+        connectIM()
     }
 
 
