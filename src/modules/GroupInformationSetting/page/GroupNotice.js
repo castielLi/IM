@@ -19,7 +19,7 @@ import {
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 
 class GroupNotice extends ContainerComponent {
 

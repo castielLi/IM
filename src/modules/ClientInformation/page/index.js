@@ -10,7 +10,7 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import MyNavigationBar from '../../../Core/Component/NavigationBar'
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import * as relationActions from '../../../Core/Redux/contact/action';

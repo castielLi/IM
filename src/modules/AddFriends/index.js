@@ -15,7 +15,7 @@ import {
 
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import MyNavigationBar from '../../Core/Component/NavigationBar';
+import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 
 
 export default class AddFriends extends ContainerComponent {

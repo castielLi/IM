@@ -16,7 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import ContainerComponent from '../../Core/Component/ContainerComponent';
-import MyNavigationBar from '../../Core/Component/NavigationBar';
+import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 import Relation from '../../Core/UserGroup/dto/RelationModel'

@@ -27,11 +27,12 @@ import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
+import * as navigationActions from '../../Common/NavigationBar/reducer/action'
 import {
     checkDeviceHeight,
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import ChatController from '../../../Controller/chatController';
 import LoginController from '../../../Controller/loginController'
 let chatController = new ChatController();
@@ -139,7 +140,7 @@ class RecentChat extends ContainerComponent {
     }
     componentDidMount() {
 
-        currentObj.showLoading();
+        this.props.showNavigationBottom();
 
         AsyncStorage.getItem('account').then((value) => {
             let account = JSON.parse(value);
@@ -156,7 +157,7 @@ class RecentChat extends ContainerComponent {
                 currentObj.props.initRecentList(result.data.chatListArr);
                 currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
 
-                currentObj.hideLoading();
+                currentObj.props.hideNavigationBottom();
 
             }, {"Account": account.phone});
         });
@@ -309,7 +310,8 @@ const mapDispatchToProps = (dispatch) => {
         ...bindActionCreators(chatRecordActions, dispatch),
         ...bindActionCreators(unReadMessageActions, dispatch),
         ...bindActionCreators(featuresAction, dispatch),
-        ...bindActionCreators(relationActions, dispatch)
+        ...bindActionCreators(relationActions, dispatch),
+        ...bindActionCreators(navigationActions,dispatch)
     }
 };
 
