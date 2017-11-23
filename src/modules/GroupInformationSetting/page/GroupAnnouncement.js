@@ -17,18 +17,9 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-import IM from '../../../Core/IM';
-import User from '../../../Core/UserGroup';
-import {bindActionCreators} from 'redux';
-
-
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let im = new IM();
-let user = new User();
 class GroupAnnouncement extends ContainerComponent {
     constructor(){
         super()

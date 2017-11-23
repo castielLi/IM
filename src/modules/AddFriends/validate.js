@@ -27,7 +27,6 @@ import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
 import settingController from  '../../Controller/settingController';
 // let im = new IM();
 let currentObj = undefined;
-// let user = new User();
 let SettingController = new settingController();
 
 class Validate extends ContainerComponent {

@@ -17,10 +17,6 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../../Core/Component/NavigationBar'
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Swipeout from 'react-native-swipeout';
-// import IM from '../../../Core/IM';
-// import User from '../../../Core/UserGroup';
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import * as relationActions from '../../../Core/Redux/contact/action';
@@ -31,8 +27,6 @@ import chatController from '../../../Controller/chatController';
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-// let im = new IM();
-// let user = new User();
 let ChatController = new chatController();
 
 class NewFriend extends ContainerComponent {
