@@ -238,7 +238,7 @@ class ChooseClient extends ContainerComponent {
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
 		let Nicks = "";
-		let members = [];
+		//let members = [];
 		let splNeedArr = [];
 		//拼接选中用户id
 		for(let item in chooseArr){
@@ -250,7 +250,7 @@ class ChooseClient extends ContainerComponent {
 				Nicks += chooseArr[item].Nick;
 			}
 
-			members.push({"Account":chooseArr[item].RelationId})
+			//members.push({"Account":chooseArr[item].RelationId})
 		}
 		this.splNeedArr = splNeedArr;
 		accounts += currentObj.props.accountId;
@@ -316,7 +316,8 @@ class ChooseClient extends ContainerComponent {
                         //更新redux message
                         let copyMessage = Object.assign({},result.data.sendMessage);
                         let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
-                        currentObj.props.addMessage(reduxMessage);
+                        let {groupName,groupAvator,groupId} = currentObj.props;
+                        currentObj.props.addMessage(reduxMessage,{Nick:groupName,avator:groupAvator});
                         //路由跳转
                         let routes = currentObj.props.navigator.getCurrentRoutes();
                         let index;
@@ -331,7 +332,7 @@ class ChooseClient extends ContainerComponent {
                         currentObj.route.replaceAtIndex(currentObj.props,{
                             key:'GroupInformationSetting',
                             routeId: 'GroupInformationSetting',
-                            params:{"groupId":currentObj.props.groupId}
+                            params:{"groupId":groupId}
                         },index)
                     }else{
                         alert(result.errorMessage);
@@ -399,7 +400,7 @@ class ChooseClient extends ContainerComponent {
             //
             // },{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
             let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
-        	settingController.createGroup(this.props.accountId,this.props.accountName,members,Nicks,params,(result)=>{
+        	settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
                 currentObj.hideLoading();
                 if (result.success) {
                     if (result.data.Data == null) {
@@ -411,9 +412,10 @@ class ChooseClient extends ContainerComponent {
                     //更新redux message
                     let copyMessage = Object.assign({},result.data.sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
-                    currentObj.props.addMessage(reduxMessage);
+                    let {Nick,LocalImage} = result.data.relation;
+                    currentObj.props.addMessage(reduxMessage,{Nick,avator:LocalImage});
                     //路由跳转
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom",HeadImageUrl:LocalImage,Nick}});
 
                 }else{
                     alert(result.errorMessage);

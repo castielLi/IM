@@ -179,7 +179,8 @@ export default class settingController {
     }
 
     //创建群
-    createGroup(accountId,accountName,members,Nicks,params,callback){
+    //参数：发起人id,发起人昵称,[{"Account":选中的id1},{"Account":选中的id2},...],“选中的nick1,选中的nick2,...”，请求参数，回调函数
+    createGroup(accountId,accountName,splNeedArr,Nicks,params,callback){
         this.network.methodPOST('Member/CreateGroup',params,function(result){
             if(result.success){
                 if(result.data.Data == null){
@@ -194,7 +195,7 @@ export default class settingController {
                 relation.show = 'false';
 
                 //添加关系到数据库
-                currentObj.user.AddNewGroupToGroup(relation,members);
+                currentObj.user.AddNewGroupToGroup(relation,splNeedArr);
                 result.data.relation = relation;
                 let messageId = uuidv1();
                 //创建群组消息
@@ -216,6 +217,7 @@ export default class settingController {
         })
     }
     //添加群成员
+    //参数：发起人id,“选中的nick1,选中的nick2,...”,[{"Account":选中的id1},{"Account":选中的id2},...]，群Id,,请求参数，回调函数
     addGroupMember(accountId,Nicks,splNeedArr,groupId,chooseArr,params,callback){
         this.network.methodPOST('Member/AddGroupMember',params,function(result){
             if(result.success){
@@ -230,7 +232,7 @@ export default class settingController {
 
                 //todo：lizongjun 现在不需要自己发送消息，后台统一发送
                 //向添加的用户发送邀请消息
-                let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
+                let sendMessage = buildInvationGroupMessage(accountId,groupId,text,messageId);
                 result.data.sendMessage = sendMessage;
                 currentObj.im.storeSendMessage(sendMessage);
 
