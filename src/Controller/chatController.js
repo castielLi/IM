@@ -104,10 +104,8 @@ export default class chatController {
         }
     }
     //发送消息
-    addMessage(message,callback){
-        this.im.addMessage(message, (status, messageId) => {
-            callback(status, messageId)
-        })
+    addMessage(message,callback,onprogress){
+        this.im.addMessage(message,callback,onprogress);
     }
 
 
