@@ -116,10 +116,7 @@ class ChatDetail extends ContainerComponent {
 		//通知controller正在与某人会话
         chatController.chatWithNewClient(client,type);
 	}
-	componentWillUnmount(){
-		//修改chatDetailPageStore
-		//this.props.changeChatDetailPageStatus(false,'','')
-	}
+
 	componentWillReceiveProps(newProps){
         let {isRecordPage,isExpressionPage,isPlusPage,listScrollToEnd} = newProps.thouchBarStore;
         if(isRecordPage||(!isExpressionPage&&!isPlusPage&&!listScrollToEnd)){
@@ -137,7 +134,11 @@ class ChatDetail extends ContainerComponent {
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<MyNavigationBar
-					left={{func:()=>{this.route.toMain(this.props);this.props.changeChatDetailPageStatus(false,'','')}}}
+					left={{func:()=>{
+					    this.route.toMain(this.props);
+					    this.props.changeChatDetailPageStatus(false,'','');
+                        chatController.stopChatWithOldClient();
+					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={this.props.Nick} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>

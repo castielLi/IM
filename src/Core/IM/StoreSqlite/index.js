@@ -60,6 +60,10 @@ export function DeleteResource(messageId,localPath){
    IMFMDB.DeleteResource(messageId,localPath);
 }
 
+export function UpdateMessageContentByMSGID(content,messageId){
+    IMFMDB.UpdateMessageContent(content,messageId);
+}
+
 //向消息列表中添加消息
 export function addMessageToSendSqlite(message){
     IMFMDB.addSendMessage(message);
@@ -158,6 +162,8 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
         });
     }, (err)=>{errorDB('初始化数据库',err)});
 }
+
+
 
 //todo：想办法进行批量操作
 IMFMDB.InsertMessageWithCondition = function(message,client,callback){
@@ -265,6 +271,23 @@ IMFMDB.InsertFriendMessage = function(message){
             tx.executeSql(insertSql, [], (tx, results) => {
                console.log("添加好友申请消息成功");
             }, (err)=>{errorDB('添加好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
+//修改message的消息内容
+IMFMDB.UpdateMessageContent = function(content,messageId){
+    let updateSql = sqls.ExcuteIMSql.UpdateMessageContent;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[content,messageId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(updateSql, [], (tx, results) => {
+                console.log("修改消息内容成功");
+            }, (err)=>{errorDB('修改消息内容',err)});
         });
     }, errorDB);
 }

@@ -519,6 +519,10 @@ export default class IM {
         storeMessage.push(obj);
     }
 
+    updateReceiveMessageContentById(content,MSGID){
+        storeSqlite.UpdateMessageContentByMSGID(content,MSGID);
+    }
+
 
     sendOverMaxTimesHandle(messageId){
         let cache = this.getCacheFromCacheByMSGID(messageId);

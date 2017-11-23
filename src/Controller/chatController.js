@@ -5,6 +5,8 @@ import IM from '../Core/IM'
 import User from '../Core/UserGroup'
 import Network from '../Core/Networking/Network'
 import {buildMessageDto} from '../Core/Redux/dto/Common'
+import AppCommandEnum from '../Core/IM/dto/AppCommandEnum'
+import MessageCommandEnum from '../Core/IM/dto/MessageCommandEnum'
 
 //上层应用Controller的接口
 //返回消息结果回调
@@ -39,6 +41,7 @@ let currentChat = undefined
 //数据缓存
 let cache = {};
 //{ "wg003723" : { messages: [],unread:1}}
+
 
 
 let currentObj = undefined;
@@ -102,6 +105,10 @@ export default class chatController {
         }else{
             cache[client] = { messages: [],unread:0}
         }
+    }
+    //界面通知controller结束与某人会话
+    stopChatWithOldClient(){
+        currentChat = '';
     }
     //发送消息
     addMessage(message,callback,onprogress){
@@ -206,56 +213,60 @@ function receiveMessageHandle(message){
 
             if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
 
-                let accounts = message.Data.Data.Data.split(',');
+                var accounts = message.Data.Data.Data.split(',');
 
                 let Nicks = "";
                 for(let i = 0; i<accounts.length;i++){
                     if(i != accounts.length - 1){
-                        Nicks += currentObj.user.getUserInfoById(accounts[i]).Nick + ",";
+                        Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
                     }else{
-                        Nicks += currentObj.user.getUserInfoById(accounts[i]).Nick;
+                        Nicks += currentObj.user.getUserInfoById(accounts[i]);
                     }
                 }
 
-                let inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
                 message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
-                let accounts = message.Data.Data.Data.split(',');
+                var accounts = message.Data.Data.Data.split(',');
 
-                let Nick = currentObj.user.getUserInfoById(accounts[0]).Nick
+                var name = currentObj.user.getUserInfoById(accounts[0])
 
-                let inviter = currentObj.user.getUserInfoById(accounts[1]).Nick;
+                var inviter = currentObj.user.getUserInfoById(accounts[1]);
                 //
-                message.Data.Data.Data = inviter + "邀请" + Nick + "加入群聊";
+                message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
 
-                let Nick = currentObj.user.getUserInfoById(message.Data.Data.Data).Nick;
-                let inviter = '';
+                var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
+                var inviter = '';
                 if(message.Data.Data.Receiver == myAccount.accountId){
                     inviter = myAccount.accountId;
                 }else{
-                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
                 }
 
-                message.Data.Data.Data =  Nick + "被踢"+ inviter+"出了群聊";
+                message.Data.Data.Data =  name + "被踢"+ inviter+"出了群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
 
-                let accounts = message.Data.Data.Data.split(',');
+                var accounts = message.Data.Data.Data.split(',');
 
-                let Nick = currentObj.user.getUserInfoById(accounts[0]).Nick
+                var name = currentObj.user.getUserInfoById(accounts[0])
 
-                message.Data.Data.Data =  Nick + "退出了群聊";
+                message.Data.Data.Data =  name + "退出了群聊";
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
                 message.Data.Data.Data =  "群主修改了群昵称";
+            }
+
+            //如果是chatroom 的通知消息需要修改数据库中message的内容，因为第一次存储只会有id，而不是文字
+            if(message.Command == MessageCommandEnum.MSG_INFO){
+                currentObj.im.updateReceiveMessageContentById(message.Data.Data.Data,message.MSGID);
             }
         }
 
         let reduxMessageDto = buildMessageDto(message,relation);
-        currentObj.im.storeRecMessage(reduxMessageDto);
         AppReceiveMessageHandle(reduxMessageDto,relation);
         //收到消息，判断数据库是否需要修改未读消息
         let sender = message.Data.Data.Sender;
