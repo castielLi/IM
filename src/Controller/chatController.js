@@ -101,10 +101,11 @@ export default class chatController {
         currentChat = client;
         if(cache[client]){
             cache[client].unread = 0;
-            this.im.updateUnReadMessageNumber(client,0);
+
         }else{
             cache[client] = { messages: [],unread:0}
         }
+        this.im.updateUnReadMessageNumber(client,0);
     }
     //界面通知controller结束与某人会话
     stopChatWithOldClient(){
