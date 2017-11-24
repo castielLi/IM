@@ -52,7 +52,9 @@ export default class User {
     //通过id和类型获取群或者好友的信息
     getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
         console.log(cache);
-        if(cache[type].length == 0 || cache[type][Id] == undefined){
+
+        //当消息为向群组添加新人的时候必须重新获取数据库表
+        if(cache[type].length == 0 || cache[type][Id] == undefined || contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
             if(type == 'private'){
                     storeSqlite.getRelation(Id,type,(relations)=>{
@@ -93,7 +95,7 @@ export default class User {
                     groupStoreSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
 
-                        if(relations.length == 0){
+                        if(relations.length == 0 || AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
                             this.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
                                 if(success) {
                                     let relation = new RelationModel();
