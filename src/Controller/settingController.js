@@ -123,15 +123,15 @@ export default class settingController {
         })
     }
     deleteFriend(params,callback){
-        let {client,accountId} = params;
+        let {Friend,Applicant} = params;
         this.network.methodPOST('Member/DeleteFriend',params,function(results){
             if(results.success){
                 //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(client);
+                currentObj.im.deleteChatRecode(Friend);
                 //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(client,'private');
+                currentObj.im.deleteCurrentChatMessage(Friend,'private');
                 //删除account数据库
-                currentObj.user.deleteRelation(client);
+                currentObj.user.deleteRelation(Friend);
             }
             callback(results);
         })
