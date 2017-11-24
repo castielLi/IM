@@ -125,7 +125,7 @@ useCameraVideo(){
     });
 }
 useLocalVideo(){
-    ImagePicker.launchImageLibrary({mediaType: 'video'},(response) => {
+    ImagePicker.launchImageLibrary(videoOptions,(response) => {
         console.log('Response = ', response);
 
         if (response.didCancel) {
