@@ -225,7 +225,7 @@ function receiveMessageHandle(message){
                     }
                 }
 
-                var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
                 message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
