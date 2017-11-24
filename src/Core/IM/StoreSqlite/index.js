@@ -798,7 +798,7 @@ function addChatUnReadMessageaNumber(name,tx){
     tx.executeSql(updateSql, [], (tx, results) => {
 
         console.log("add unReadMessageNumber success");
-
+        console.log("add unReadMessageNumber success");
     }, (err)=>{errorDB('add unReadMessageNumber',err)});
 }
 

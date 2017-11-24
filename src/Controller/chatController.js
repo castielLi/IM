@@ -101,10 +101,11 @@ export default class chatController {
         currentChat = client;
         if(cache[client]){
             cache[client].unread = 0;
-            this.im.updateUnReadMessageNumber(client,0);
+
         }else{
             cache[client] = { messages: [],unread:0}
         }
+        this.im.updateUnReadMessageNumber(client,0);
     }
     //界面通知controller结束与某人会话
     stopChatWithOldClient(){
@@ -216,6 +217,14 @@ function receiveMessageHandle(message){
                 var accounts = message.Data.Data.Data.split(',');
 
                 let Nicks = "";
+
+
+                for(let i = 0; i<accounts.length;i++){
+                    if(accounts[i] == message.Data.Data.Receiver){
+                        accounts.splice(i,1);
+                    }
+                }
+
                 for(let i = 0; i<accounts.length;i++){
                     if(i != accounts.length - 1){
                         Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
@@ -224,7 +233,7 @@ function receiveMessageHandle(message){
                     }
                 }
 
-                var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver).Nick;
+                var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
                 message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
