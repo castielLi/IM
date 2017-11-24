@@ -277,4 +277,10 @@ export default class settingController {
         })
     }
 
+    //修改群公告
+    toChangeDiscription(params,callback){
+        this.network.methodPOST('Member/ModifyGroupDescription',params,function(result){
+            callback(result);
+        })
+    }
 }
