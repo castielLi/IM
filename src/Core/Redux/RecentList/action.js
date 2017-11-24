@@ -89,7 +89,15 @@ export function updateRecentItemLastMessage(client,type,lastMessage,time,isRecei
 
 }
 
+//RecentList修改一个群item的昵称
+export function changeRecentListOfGropName(groupId,groupName){
+    return {
+        type: 'CHANGE_RECENTLIST_GROUP_NAME',
+        groupId,
+        groupName
+    };
 
+}
 export function clearRecentList(){
     return {
         type: 'CLEAR_RECENTLIST',

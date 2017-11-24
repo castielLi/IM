@@ -23,6 +23,8 @@ import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessag
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
+
 import SettingController from '../../../Controller/settingController'
 
 
@@ -79,7 +81,7 @@ class GroupName extends ContainerComponent {
             }
             if(result.data.Data){
                 currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
-
+                currentObj.props.changeRecentListOfGropName(ID,currentObj.state.text)
 
                 //更新redux message
                 let copyMessage = Object.assign({},result.data.sendMessage);
@@ -191,6 +193,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(relationListActions,dispatch),
     ...bindActionCreators(Actions, dispatch),
+    ...bindActionCreators(recentListActions, dispatch),
 
 });
 

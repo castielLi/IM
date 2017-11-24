@@ -45,7 +45,7 @@ class GroupList extends ContainerComponent {
     }
 
     goToChat = (item)=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type,HeadImageUrl:item.avator,Nick:item.Nick}});
     }
 
     _renderAvator= (Obj)=>{
