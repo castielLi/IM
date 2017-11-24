@@ -145,7 +145,7 @@ class Chat extends Component {
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
             onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
             onMoveShouldSetPanResponder: (e)=> {
-                if(e.nativeEvent.pageY - _responderPageY > 20){
+                if(e.nativeEvent.pageY - _responderPageY > 30 && e.nativeEvent.pageY){
                     return true;
                 }
                 else{
