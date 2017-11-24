@@ -86,7 +86,7 @@ class GroupName extends ContainerComponent {
                 //更新redux message
                 let copyMessage = Object.assign({},result.data.sendMessage);
                 let reduxMessage = buildChangeGroupNickSendMessageToRudexMessage(copyMessage);
-                currentObj.props.addMessage(reduxMessage);
+                currentObj.props.addMessage(reduxMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
 
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
