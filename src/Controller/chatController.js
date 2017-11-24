@@ -247,8 +247,17 @@ function receiveMessageHandle(message){
                 message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
+                var accounts = message.Data.Data.Data.split(',');
+                let Nicks = "";
+                for(let i = 0; i<accounts.length;i++){
+                    if(i != accounts.length - 1){
+                        Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                    }else{
+                        Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                    }
+                }
 
-                var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
+                //var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
                 var inviter = '';
                 if(message.Data.Data.Receiver == myAccount.accountId){
                     inviter = myAccount.accountId;
@@ -256,7 +265,7 @@ function receiveMessageHandle(message){
                     inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
                 }
 
-                message.Data.Data.Data =  name + "被踢"+ inviter+"出了群聊";
+                message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
 
