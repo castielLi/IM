@@ -6,7 +6,7 @@ import User from '../Core/UserGroup'
 import Network from '../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
-import {buildInvationGroupMessage} from '../Core/IM/action/createMessage';
+import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../Core/IM/action/createMessage';
 import RelationModel from '../Core/UserGroup/dto/RelationModel'
 
 let __instance = (function () {
@@ -198,34 +198,33 @@ export default class settingController {
     createGroup(accountId,accountName,splNeedArr,Nicks,params,callback){
         this.network.methodPOST('Member/CreateGroup',params,function(result){
             if(result.success){
-                if(result.data.Data == null){
-                    alert("返回群数据出错")
-                    return;
+                if(result.data.Data != null){
+                    let relation = new RelationModel();
+                    relation.RelationId = result.data.Data;
+                    relation.owner = accountId;
+                    relation.Nick = accountName + "发起的群聊";
+                    relation.Type = 'chatroom';
+                    relation.show = 'false';
+
+                    //添加关系到数据库
+                    currentObj.user.AddNewGroupToGroup(relation,splNeedArr);
+                    result.data.relation = relation;
+                    let messageId = uuidv1();
+                    //创建群组消息
+                    let text = Nicks;
+
+                    //todo：lizongjun 现在不需要自己发送消息，后台统一发送
+                    //向添加的用户发送邀请消息
+                    let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
+                    currentObj.im.storeSendMessage(sendMessage);
+                    result.data.sendMessage = sendMessage;
+                    //创建文件夹
+                    let audioPath = RNFS.DocumentDirectoryPath + '/' +accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
+                    let imagePath = RNFS.DocumentDirectoryPath + '/' +accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
+                    RNFS.mkdir(audioPath)
+                    RNFS.mkdir(imagePath)
                 }
-                let relation = new RelationModel();
-                relation.RelationId = result.data.Data;
-                relation.owner = accountId;
-                relation.Nick = accountName + "发起的群聊";
-                relation.Type = 'chatroom';
-                relation.show = 'false';
 
-                //添加关系到数据库
-                currentObj.user.AddNewGroupToGroup(relation,splNeedArr);
-                result.data.relation = relation;
-                let messageId = uuidv1();
-                //创建群组消息
-                let text = Nicks;
-
-                //todo：lizongjun 现在不需要自己发送消息，后台统一发送
-                //向添加的用户发送邀请消息
-                let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
-                currentObj.im.storeSendMessage(sendMessage);
-                result.data.sendMessage = sendMessage;
-                //创建文件夹
-                let audioPath = RNFS.DocumentDirectoryPath + '/' +accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
-                let imagePath = RNFS.DocumentDirectoryPath + '/' +accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
-                RNFS.mkdir(audioPath)
-                RNFS.mkdir(imagePath)
 
             }
             callback(result);
@@ -236,35 +235,46 @@ export default class settingController {
     addGroupMember(accountId,Nicks,splNeedArr,groupId,chooseArr,params,callback){
         this.network.methodPOST('Member/AddGroupMember',params,function(result){
             if(result.success){
-                if(result.data.Data == null){
-                    alert("返回群数据出错")
-                    return;
+                if(result.data.Data != null){
+                    let messageId = uuidv1();
+                    //创建群组消息
+                    let text = Nicks;
+
+                    //todo：lizongjun 现在不需要自己发送消息，后台统一发送
+                    //向添加的用户发送邀请消息
+                    let sendMessage = buildInvationGroupMessage(accountId,groupId,text,messageId);
+                    result.data.sendMessage = sendMessage;
+                    currentObj.im.storeSendMessage(sendMessage);
+
+                    //添加新人到缓存和数据库
+                    currentObj.user.AddGroupAndMember(groupId,splNeedArr);
+                    chooseArr.forEach((val,it)=>{
+                        currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
+                        currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
+                    })
                 }
 
-                let messageId = uuidv1();
-                //创建群组消息
-                let text = Nicks;
-
-                //todo：lizongjun 现在不需要自己发送消息，后台统一发送
-                //向添加的用户发送邀请消息
-                let sendMessage = buildInvationGroupMessage(accountId,groupId,text,messageId);
-                result.data.sendMessage = sendMessage;
-                currentObj.im.storeSendMessage(sendMessage);
-
-                //添加新人到缓存和数据库
-                currentObj.user.AddGroupAndMember(groupId,splNeedArr);
-                chooseArr.forEach((val,it)=>{
-                    currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
-                    currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
-                })
             }
             callback(result);
         })
     }
 
     //修改群组的名称
-    updateGroupName(groupId,name,message){
-        this.im.storeSendMessage(message);
-        this.user.updateGroupName(groupId,name);
+    //参数 群id，群名称，请求参数，回调
+    updateGroupName(accountId,groupId,name,params,callback){
+        this.network.methodPOST('Member/ModifyGroupName',params,function(result){
+            if(result.success){
+                if(result.data.Data){
+                    //本地模拟消息
+                    let messageId = uuidv1();
+                    let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
+                    currentObj.im.storeSendMessage(sendMessage);
+                    result.data.sendMessage = sendMessage;
+                    currentObj.user.updateGroupName(groupId,name);
+                }
+            }
+            callback(result);
+        })
     }
+
 }
