@@ -217,6 +217,14 @@ function receiveMessageHandle(message){
                 var accounts = message.Data.Data.Data.split(',');
 
                 let Nicks = "";
+
+
+                for(let i = 0; i<accounts.length;i++){
+                    if(accounts[i] == message.Data.Data.Receiver){
+                        accounts.splice(i,1);
+                    }
+                }
+
                 for(let i = 0; i<accounts.length;i++){
                     if(i != accounts.length - 1){
                         Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
