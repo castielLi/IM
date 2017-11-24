@@ -45,6 +45,9 @@ let styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#f2f2f2"
     },
+    content:{
+      flex:1
+    },
     ListContainer: {
         flexDirection: 'row',
         height: checkDeviceHeight(130),

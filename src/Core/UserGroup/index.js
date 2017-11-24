@@ -113,6 +113,7 @@ export default class User {
                                             let model = new RelationModel();
                                             model.avator = results.MemberList[i].HeadImageUrl;
                                             model.Nick = results.MemberList[i].Nickname;
+                                            model.RelationId = results.MemberList[i].Account;
                                             cache["private"][accountId] = model;
                                             groupMembers.push(model);
                                             cacheGroupMembers.push(accountId)

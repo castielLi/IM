@@ -619,7 +619,7 @@ class Chat extends Component {
         const {showInvertible}=this.state
         console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight)
         if(!showInvertible){
-            if(!_MaxListHeight){
+            if(!_MaxListHeight || _MaxListHeight < event.nativeEvent.layout.height){
                 _MaxListHeight = event.nativeEvent.layout.height;
             }
             //ListLayout = event.nativeEvent.layout.height!==_listHeight;
