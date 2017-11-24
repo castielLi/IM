@@ -44,7 +44,8 @@ var options = {
 }
 let videoOptions = {
     mediaType: 'video',
-    videoQuality: 'medium',
+    videoQuality: CameraConfig.VEDIO_QUALITY,
+    durationLimit:CameraConfig.VEDIO_MAX_TIME,
     storageOptions: {
         skipBackup: true,
         path: 'video'//存放位置
