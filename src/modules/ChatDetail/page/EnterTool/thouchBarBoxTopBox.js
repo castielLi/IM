@@ -330,7 +330,14 @@ class ThouchBarBoxTopBox extends Component {
           }
         },
 }
-
+      this._noGesture = {
+          onStartShouldSetResponder: () => {
+              return false;
+          },
+          onMoveShouldSetResponder: ()=> {
+              return false;
+          },
+      }
     //创建文件夹
     let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + this.props.type +'-'+this.props.client;
     let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + this.props.type +'-'+this.props.client;
@@ -345,7 +352,7 @@ class ThouchBarBoxTopBox extends Component {
                 onRequestClose={()=>{}}
                 visible={this.state.isShowModal}
               >
-                <View style={styles.recordingModalBox}>
+                <View style={styles.recordingModalBox} {...this._noGesture}>
                   <View style={styles.recordingModal}>
                     {this.renderModalBoxContent()}
                   </View>
