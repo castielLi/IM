@@ -241,6 +241,7 @@ class GroupInformationSetting extends ContainerComponent {
                     currentObj.route.toMain(currentObj.props);
                 }
                 else{
+                    alert(results.errorMessage);
                     console.log('退出群组出错')
                 }
             };
@@ -425,7 +426,7 @@ class GroupInformationSetting extends ContainerComponent {
         }
     }
     gotoGroupName = ()=>{
-
+        let groupAvator = this.state.groupInformation.ProfilePicture;
             this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation}});
 
     }

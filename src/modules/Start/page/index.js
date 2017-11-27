@@ -9,7 +9,8 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import LoginController from '../../../Controller/loginController'
-
+import ChatController from '../../../Controller/chatController'
+let chatController = new ChatController();
 let loginController = new LoginController();
 let currentObj = undefined;
 
@@ -52,7 +53,9 @@ class Start extends ContainerComponent {
                             });
                         }else{
                             account = result.data.account;
-                            currentObj.props.signIn(account)
+                            currentObj.props.signIn(account);
+                            chatController.setMyAccount(account);
+
                             currentObj.route.push(currentObj.props,{
                                 key:'MainTabbar',
                                 routeId: 'MainTabbar'

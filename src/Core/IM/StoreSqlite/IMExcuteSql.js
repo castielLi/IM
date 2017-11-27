@@ -14,7 +14,7 @@ export const InitIMTable = {
 export const ExcuteIMSql = {
     "QueryChatIsExist":"select * from ChatRecode where client = ?",
     "GetChatList":"select * from ChatRecode",
-    "InsertChatRecode":"insert into ChatRecode (Client,Type) values (?,?)",
+    "InsertChatRecode":"insert into ChatRecode (Client,Type,unReadMessageCount) values (?,?,0)",
     "CreateChatTable"
         : "CREATE TABLE IF NOT EXISTS ? (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255))",
     "InsertMessageToTalk":"insert into ? (messageId) values (?)",
@@ -41,7 +41,8 @@ export const ExcuteIMSql = {
     "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?",
     "UpdateMessageLocalSource":"update MessageRecode set localPath=? where messageId=?",
-    "UpdateMessageRemoteSource":"update MessageRecode set url=? where messageId=?"
+    "UpdateMessageRemoteSource":"update MessageRecode set url=? where messageId=?",
+    "UpdateMessageContent":"update MessageRecode set content=? where messageId = ?"
 }
 
 

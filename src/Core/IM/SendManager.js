@@ -30,7 +30,11 @@ SendManager.addSendMessage = function(messageId,needACK=true){
     let callback = cache["callback"];
 
     console.log("message 加入发送队列",message)
-    callback && callback(true,message.MSGID);
+
+    //为了防止资源消息callback两次
+    if(cache.message.Resource == null) {
+        callback && callback(true, message.MSGID);
+    }
 
 }
 

@@ -122,6 +122,15 @@ class Chat extends Component {
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
         if(this.props.type == "chatroom"){
+
+
+            //设置人员变动的回调
+            ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
+                currentObj.setState({
+                    groupMembers
+                })
+            })
+
             ChatController.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
                 currentObj.setState({
                     groupMembers,
@@ -145,7 +154,7 @@ class Chat extends Component {
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
             onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
             onMoveShouldSetPanResponder: (e)=> {
-                if(e.nativeEvent.pageY - _responderPageY > 20){
+                if(e.nativeEvent.pageY - _responderPageY > 30 && e.nativeEvent.pageY){
                     return true;
                 }
                 else{
@@ -487,15 +496,7 @@ class Chat extends Component {
 
         }
     }
-    scrollToEnd = () => {
-        if(this.state.showInvertible){
-            if (this._invertibleScrollViewRef === null) { return }
-            this._invertibleScrollViewRef.scrollTo({
-                y: 0,
-                animated:false,
-            });
-        }
-    }
+
     oldMsg = () => {
         //console.log('oldMsg');
         //alert(this.props.client+this.state.isMore)
@@ -595,6 +596,7 @@ class Chat extends Component {
         // }
         FooterLayout = false
         ListLayout=false
+        console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight+'   距离屏幕高度'+_footerY)
         if (_listHeight && _footerY && _footerY > _listHeight) {
             scrollDistance = _listHeight - _footerY;
             this.listView.scrollTo({
@@ -611,11 +613,22 @@ class Chat extends Component {
         }
     }
 
+    scrollToEnd = () => {
+        if(this.state.showInvertible){
+            if (this._invertibleScrollViewRef === null) { return }
+            this._invertibleScrollViewRef.scrollTo({
+                y: 0,
+                animated:false,
+            });
+        }
+    }
+
     //界面变化触发
     _onListViewLayout = (event) =>{
         const {showInvertible}=this.state
+        console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight)
         if(!showInvertible){
-            if(!_MaxListHeight){
+            if(!_MaxListHeight || _MaxListHeight < event.nativeEvent.layout.height){
                 _MaxListHeight = event.nativeEvent.layout.height;
             }
             //ListLayout = event.nativeEvent.layout.height!==_listHeight;

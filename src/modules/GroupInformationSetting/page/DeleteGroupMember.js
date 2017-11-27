@@ -126,23 +126,22 @@ class DeleteGroupMember extends ContainerComponent {
     //定义上导航的右按钮
     _rightButton() {
         let {accountId,ID,navigator} = this.props;
-        currentObj.showLoading()
-        this.fetchData("POST","Member/RemoveGroupMember",function(result){
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-            if(result.data.Data){
-                //如果删得只剩一个人，销毁群
-                if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
+        let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
+        let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
+        let argument = {close};
+        let data = {params,argument};
+        currentObj.showLoading();
+        callback = (result)=>{
+            if(result.success && result.data.Data){
+                if(close){
                     //删除最近聊天redux对应id
                     currentObj.props.deleteRelation(ID);
                     //清空chatRecordStore中对应记录
                     currentObj.props.clearChatRecordFromId(ID)
 
 
-                    settingController.destroyGroup(ID);
+                    //settingController.destroyGroup(ID);
+
 
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === ID){
@@ -172,12 +171,64 @@ class DeleteGroupMember extends ContainerComponent {
                     routeId: 'GroupInformationSetting',
                     params:{"groupId":ID}
                 },index)
-            }else{
-                alert("http请求出错")
             }
+            else{
+                console.log("http请求出错")
+            }
+        }
+        settingController.removeGroupMember(data,callback);
 
-
-        },{"Operater":accountId,"GroupId":ID,"Accounts":this.needStr})
+        // this.fetchData("POST","Member/RemoveGroupMember",function(result){
+        //     currentObj.hideLoading()
+        //     if(!result.success){
+        //         alert(result.errorMessage);
+        //         return;
+        //     }
+        //     if(result.data.Data){
+        //         //如果删得只剩一个人，销毁群
+        //         if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
+        //             //删除最近聊天redux对应id
+        //             currentObj.props.deleteRelation(ID);
+        //             //清空chatRecordStore中对应记录
+        //             currentObj.props.clearChatRecordFromId(ID)
+        //
+        //
+        //             settingController.destroyGroup(ID);
+        //
+        //             currentObj.props.recentListStore.data.forEach((v,i)=>{
+        //                 if(v.Client === ID){
+        //                     //清空recentListStore中对应记录
+        //                     currentObj.props.deleteRecentItem(i);
+        //                     //如果该row上有未读消息，减少unReadMessageStore记录
+        //                     v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+        //                 }
+        //             })
+        //             currentObj.alert('群解散了');
+        //             currentObj.route.toMain(currentObj.props);
+        //
+        //             return;
+        //         }
+        //
+        //         let routes = navigator.getCurrentRoutes();
+        //         let index;
+        //         for (let i = 0; i < routes.length; i++) {
+        //             if (routes[i]["key"] == "GroupInformationSetting") {
+        //                 index = i;
+        //                 break;
+        //             }
+        //         }
+        //         //跳转到群设置
+        //         currentObj.route.replaceAtIndex(currentObj.props,{
+        //             key:'GroupInformationSetting',
+        //             routeId: 'GroupInformationSetting',
+        //             params:{"groupId":ID}
+        //         },index)
+        //     }else{
+        //         alert("http请求出错")
+        //     }
+        //
+        //
+        // },{"Operater":accountId,"GroupId":ID,"Accounts":this.needStr})
 
     }
 

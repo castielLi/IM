@@ -23,6 +23,8 @@ import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessag
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
+
 import SettingController from '../../../Controller/settingController'
 
 
@@ -69,25 +71,22 @@ class GroupName extends ContainerComponent {
 
     toChangeName = ()=>{
         let {accountId,ID,navigator} = this.props;
-        currentObj.showLoading()
-        this.fetchData("POST","Member/ModifyGroupName",function(result){
-            currentObj.hideLoading()
+        currentObj.showLoading();
+        let params = {"Operater":accountId,"GroupId":ID,"Name":this.state.text};
+        settingController.updateGroupName(accountId,ID,currentObj.state.text,params,(result)=>{
+            currentObj.hideLoading();
             if(!result.success){
                 alert(result.errorMessage);
                 return;
             }
             if(result.data.Data){
                 currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
-                //本地模拟消息
-                let messageId = uuidv1();
-                let sendMessage = buildChangeGroupNickMessage(accountId,ID,"你修改了群昵称",messageId);
-
-                settingController.updateGroupName(ID,currentObj.state.text,sendMessage);
+                currentObj.props.changeRecentListOfGropName(ID,currentObj.state.text)
 
                 //更新redux message
-                let copyMessage = Object.assign({},sendMessage);
+                let copyMessage = Object.assign({},result.data.sendMessage);
                 let reduxMessage = buildChangeGroupNickSendMessageToRudexMessage(copyMessage);
-                currentObj.props.addMessage(reduxMessage);
+                currentObj.props.addMessage(reduxMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
 
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
@@ -108,9 +107,8 @@ class GroupName extends ContainerComponent {
             }else{
                 alert("http请求出错")
             }
+        });
 
-
-        },{"Operater":accountId,"GroupId":ID,"Name":this.state.text})
     }
 
     render() {
@@ -148,7 +146,6 @@ class GroupName extends ContainerComponent {
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
         )
-
     }
 }
 
@@ -196,6 +193,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(relationListActions,dispatch),
     ...bindActionCreators(Actions, dispatch),
+    ...bindActionCreators(recentListActions, dispatch),
 
 });
 

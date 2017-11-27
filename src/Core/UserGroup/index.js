@@ -6,7 +6,7 @@ import * as storeSqlite from './StoreSqlite/User/index'
 import * as groupStoreSqlite from './StoreSqlite/Group'
 
 import dataRquest from './dataRequest'
-import RelationModel from './/dto/RelationModel'
+import RelationModel from './dto/RelationModel'
 import MessageCommandEnum from '../../Core/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../Core/IM/dto/AppCommandEnum'
 
@@ -52,6 +52,8 @@ export default class User {
     //通过id和类型获取群或者好友的信息
     getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
         console.log(cache);
+
+        //当消息为向群组添加新人的时候必须重新获取数据库表
         if(cache[type].length == 0 || cache[type][Id] == undefined){
 
             if(type == 'private'){
@@ -87,8 +89,8 @@ export default class User {
 
             }else if(type == 'chatroom'){
 
-                let groupMembers = [];
-                let groupMembersInfo = [];
+                var groupMembers = [];
+                var groupMembersInfo = [];
 
                     groupStoreSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
@@ -113,6 +115,7 @@ export default class User {
                                             let model = new RelationModel();
                                             model.avator = results.MemberList[i].HeadImageUrl;
                                             model.Nick = results.MemberList[i].Nickname;
+                                            model.RelationId = results.MemberList[i].Account;
                                             cache["private"][accountId] = model;
                                             groupMembers.push(model);
                                             cacheGroupMembers.push(accountId)
@@ -152,6 +155,7 @@ export default class User {
                                                     let model = new RelationModel();
                                                     model.avator = results.MemberList[i].HeadImageUrl;
                                                     model.Nick = results.MemberList[i].Nickname;
+                                                    model.RelationId = results.MemberList[i].Account;
                                                     cache["private"][accountId] = model;
                                                     groupMembers.push(model);
                                                     cacheGroupMembers.push(accountId)
@@ -193,10 +197,10 @@ export default class User {
         }else{
             //从cache中取出group和groupMember
             if(type == "chatroom"){
-                let groupMembers = [];
-                let groupMembersInfo = [];
+                var groupMembers = [];
+                var groupMembersInfo = [];
                 //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
-                if(messageCommand == MessageCommandEnum.MSG_INFO && contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+                if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
                     this.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
                         if(success) {
                             let relation = new RelationModel();
@@ -210,14 +214,15 @@ export default class User {
 
                             for(let i = 0;i<results.MemberList.length;i++){
                                 let accountId = results.MemberList[i].Account;
+                                let model = new RelationModel();
+                                model.avator = results.MemberList[i].HeadImageUrl;
+                                model.Nick = results.MemberList[i].Nickname;
+                                model.RelationId = results.MemberList[i].Account;
                                 if(cache["private"][accountId] == undefined){
-                                    let model = new RelationModel();
-                                    model.avator = results.MemberList[i].HeadImageUrl;
-                                    model.Nick = results.MemberList[i].Nickname;
                                     cache["private"][accountId] = model;
-                                    groupMembers.push(model);
-                                    groupMembersInfo.push(accountId)
                                 }
+                                groupMembers.push(model);
+                                groupMembersInfo.push(accountId)
                             }
 
                             callback(relation,groupMembers)
@@ -252,9 +257,9 @@ export default class User {
         }
     }
 
-    //从cache里面取出数据
+    //从cache里面取出用户名
     getUserInfoById(accountId){
-       return cache["private"][accountId];
+        return cache["private"][accountId]["Nick"]
     }
 
     //通过id组成的数组从数据库批量查询user信息,返回数组

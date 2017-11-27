@@ -14,7 +14,6 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
 // import IM from '../../../../Core/IM';
 import chatController from '../../../../Controller/chatController';
@@ -46,7 +45,7 @@ class ChatMessageVideo extends ContainerComponent {
     };
 
     playVideo = (Local,Remote,data)=>{
-        let network = new netWorking();
+        //let network = new netWorking();
         let currentObj = this;
         RNFS.exists(Local).then((success) => {
             if(!success){
@@ -65,8 +64,9 @@ class ChatMessageVideo extends ContainerComponent {
                 let format = Remote.slice(Remote.lastIndexOf('.'));
                 let msgID = data.message.MSGID;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
-                network.methodDownloadWithProgress(Remote,filePath,function () {
 
+                ChatController.downloadVideo(Remote,filePath,function () {
+                    //alert('保存到本地：'+filePath)
                     currentObj.props.updateMessagePath(msgID,filePath,Sender)
                     //im.updateMessageLocalSource(msgID,filePath)
                     ChatController.updateMessageLocalSource(msgID,filePath);
@@ -81,7 +81,7 @@ class ChatMessageVideo extends ContainerComponent {
                         progress:Math.ceil(percent * 100),
                         download:true,
                     });
-                })
+                });
             }
             else{
                 //this.props.showMediaPlayer(Local)

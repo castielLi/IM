@@ -11,8 +11,8 @@ export default class Relation{
         this.BlackList = false;
         this.avator = "";
         this.Email = "";
-        this.LocalImage = "";
-        this.type = "";
+        this.localImage = "";
+        this.Type = "";
         this.owner = "";
         this.show = true;
     }

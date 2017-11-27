@@ -72,6 +72,21 @@ export default function recentListStore(state=initialState, action){
             return {
                 ...state
             };
+
+        case 'CHANGE_RECENTLIST_GROUP_NAME':
+            state.data.every((v,i,arr)=>{
+                if(v.Client === action.groupId){
+                    v.Nick = action.groupName
+                    //终止循环
+                    return false;
+                }
+                return true;
+            })
+            return {
+                ...state
+            };
+
+
         default:
             return state;
     }

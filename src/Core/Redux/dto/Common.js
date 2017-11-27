@@ -14,5 +14,6 @@ export function buildMessageDto(message,relation){
     dto.Nick = relation.Nick;
     dto.avator = relation.localImage == ""?relation.avatar:relation.localImage;
     dto.way = message.way;
+    dto.Command = message.Command;
     return dto;
 }

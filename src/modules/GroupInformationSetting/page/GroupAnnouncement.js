@@ -17,6 +17,8 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
+import SettingController from '../../../Controller/settingController';
+let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -60,8 +62,9 @@ class GroupAnnouncement extends ContainerComponent {
 
     toChangeDiscription = ()=>{
         let {accountId,ID,navigator} = this.props;
-        currentObj.showLoading()
-        this.fetchData("POST","Member/ModifyGroupDescription",function(result){
+        currentObj.showLoading();
+        let params = {"Operater":accountId,"GroupId":ID,"Desc":this.state.text};
+        settingController.toChangeDiscription(params,(result)=>{
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);
@@ -86,9 +89,7 @@ class GroupAnnouncement extends ContainerComponent {
             }else{
                 alert("http请求出错")
             }
-
-
-        },{"Operater":accountId,"GroupId":ID,"Desc":this.state.text})
+        })
     }
 
     render() {

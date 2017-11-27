@@ -17,6 +17,7 @@ import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
 import SettingController from '../../../Controller/settingController'
+import RelationModel from '../../../Core/UserGroup/dto/RelationModel'
 
 
 
@@ -165,8 +166,16 @@ class ClientInformation extends ContainerComponent {
                 })
                 //relationStore里面添加该好友(或者重新初始化)
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-                let IsInBlackList =result.data.Data.IsInBlackList
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+                let IsInBlackList =result.data.Data.IsInBlackList;
+                let relationObj = new RelationModel();
+                relationObj.RelationId = Account;
+                relationObj.avator = HeadImageUrl;
+                relationObj.Nick = Nickname;
+                relationObj.Type = 'private';
+                relationObj.Email = Email;
+                relationObj.BlackList = IsInBlackList;
+                relationObj.show = 'true';
+
                 currentObj.props.addRelation(relationObj);
             }
             //双方互不为好友

@@ -116,10 +116,7 @@ class ChatDetail extends ContainerComponent {
 		//通知controller正在与某人会话
         chatController.chatWithNewClient(client,type);
 	}
-	componentWillUnmount(){
-		//修改chatDetailPageStore
-		//this.props.changeChatDetailPageStatus(false,'','')
-	}
+
 	componentWillReceiveProps(newProps){
         let {isRecordPage,isExpressionPage,isPlusPage,listScrollToEnd} = newProps.thouchBarStore;
         if(isRecordPage||(!isExpressionPage&&!isPlusPage&&!listScrollToEnd)){
@@ -132,14 +129,30 @@ class ChatDetail extends ContainerComponent {
             })
 		}
 	}
+	getNickByIdFromRelation(groupId){
+	    let relationStore = this.props.relationStore;
+	    let nick = '';
+	    for(let i=0;i<relationStore.length;i++){
+	        if(relationStore[i].RelationId == groupId){
+	            nick =  relationStore[i].Nick;
+	            break;
+            }
+        }
+        return nick;
+    }
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'>
     			<MyNavigationBar
-					left={{func:()=>{this.route.toMain(this.props);this.props.changeChatDetailPageStatus(false,'','')}}}
+					left={{func:()=>{
+					    this.route.toMain(this.props);
+					    this.props.changeChatDetailPageStatus(false,'','');
+                        chatController.emptyCurrentChat();
+                        chatController.emptyChangeCallback()
+					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
-					heading={this.props.Nick} />
+					heading={this.getNickByIdFromRelation(this.props.client)} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
 						<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>
@@ -175,7 +188,7 @@ const mapStateToProps = state => ({
   ChatRecord: state.chatRecordStore.ChatRecord,
     thouchBarStore: state.thouchBarStore,
 	accountId:state.loginStore.accountMessage.accountId,
-
+    relationStore: state.relationStore,
 });
 const mapDispatchToProps = (dispatch) => {
   return{
