@@ -42,6 +42,11 @@ class SearchNewFriend extends ContainerComponent {
 
 
     searchUser = (keyword)=>{
+        if(keyword == this.props.loginStore.accountId){
+            currentObj.alert("不能自己加自己","错误");
+            return;
+        }
+
         let params = {"Keyword":keyword};
         currentObj.showLoading();
         callback = (result) =>{
