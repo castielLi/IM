@@ -58,4 +58,100 @@ export default class ApiBridge {
             callback(result);
         })
     }
+
+    AddGroupToContact(params,callback){
+        this.network.methodPOST(ApiUrls.API_AddGroupToContact,params,function(result){
+            callback(result);
+        })
+    }
+
+    RemoveGroupFromContact(params,callback){
+        this.network.methodPOST(ApiUrls.API_RemoveGroupFromContact,params,function(result){
+            callback(result);
+        })
+    }
+
+    GetGroupInfo(params,callback){
+        this.network.methodPOST(ApiUrls.API_GetGroupInfo,params,function(result){
+            callback(result);
+        })
+    }
+
+    ExitGroup(params,callback){
+        this.network.methodPOST(ApiUrls.API_ExitGroup,params,function(result){
+            callback(result);
+        })
+    }
+
+    RemoveGroupMember(params,callback){
+        this.network.methodPOST(ApiUrls.API_RemoveGroupMember,params,function(result){
+            callback(result);
+        })
+    }
+
+    SearchUser(params,callback){
+        this.network.methodPOST(ApiUrls.API_SearchUser,params,function(result){
+            callback(result);
+        })
+    }
+
+    RemoveBlackMember(params,callback){
+        this.network.methodPOST(ApiUrls.API_RemoveBlackMember,params,function(result){
+            callback(result);
+        })
+    }
+
+    AddBlackMember(params,callback){
+        this.network.methodPOST(ApiUrls.API_AddBlackMember,params,function(result){
+            callback(result);
+        })
+    }
+
+    DeleteFriend(params,callback){
+        this.network.methodPOST(ApiUrls.API_DeleteFriend,params,function(result){
+            callback(result);
+        })
+    }
+
+    GetFriendUserInfo(params,callback){
+        this.network.methodPOST(ApiUrls.API_GetFriendUserInfo,params,function(result){
+            callback(result);
+        })
+    }
+
+    ApplyFriend(params,callback){
+        this.network.methodPOST(ApiUrls.API_ApplyFriend,params,function(result){
+            callback(result);
+        })
+    }
+
+    AcceptFriend(params,callback){
+        this.network.methodPOST(ApiUrls.API_AcceptFriend,params,function(result){
+            callback(result);
+        })
+    }
+
+    CreateGroup(params,callback){
+        this.network.methodPOST(ApiUrls.API_CreateGroup,params,function(result){
+            callback(result);
+        })
+    }
+
+    AddGroupMember(params,callback){
+        this.network.methodPOST(ApiUrls.API_AddGroupMember,params,function(result){
+            callback(result);
+        })
+    }
+
+    ModifyGroupName(params,callback){
+        this.network.methodPOST(ApiUrls.API_ModifyGroupName,params,function(result){
+            callback(result);
+        })
+    }
+
+    ModifyGroupDescription(params,callback){
+        this.network.methodPOST(ApiUrls.API_ModifyGroupDescription,params,function(result){
+            callback(result);
+        })
+    }
 }

@@ -43,7 +43,7 @@ class SearchNewFriend extends ContainerComponent {
 
     searchUser = (keyword)=>{
         if(keyword == this.props.loginStore.accountId){
-            currentObj.alert("","不能自己加自己");
+            currentObj.alert("不能自己加自己","错误");
             return;
         }
 
@@ -68,7 +68,7 @@ class SearchNewFriend extends ContainerComponent {
                 currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
             }
             else{
-                currentObj.alert("","用户不存在");
+                currentObj.alert("用户不存在","错误");
             }
         };
         SettingController.searchUser(params,callback);
