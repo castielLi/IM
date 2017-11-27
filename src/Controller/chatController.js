@@ -38,6 +38,9 @@ let myAccount;
 //标示当前正在聊天的对象
 let currentChat = undefined
 
+//标示当前群组聊天人员名单变动回调
+let currentGroupChatMemberChangesCallback = undefined;
+
 //数据缓存
 let cache = {};
 //{ "wg003723" : { messages: [],unread:1}}
@@ -76,7 +79,15 @@ export default class chatController {
     }
 
     emptyCurrentChat(){
-        currentChat = undefined;
+        currentChat = '';
+    }
+
+    setCurrentGroupChatMemberChangeCallback(callback){
+        currentGroupChatMemberChangesCallback = callback;
+    }
+
+    emptyChangeCallback(){
+        currentGroupChatMemberChangesCallback = undefined;
     }
 
 
@@ -107,10 +118,8 @@ export default class chatController {
         }
         this.im.updateUnReadMessageNumber(client,0);
     }
-    //界面通知controller结束与某人会话
-    stopChatWithOldClient(){
-        currentChat = '';
-    }
+
+
     //发送消息
     addMessage(message,callback,onprogress){
         this.im.addMessage(message,callback,onprogress);
@@ -203,7 +212,7 @@ function kickOutMessage(){
 
 function receiveMessageHandle(message){
 
-    currentObj.user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation){
+    currentObj.user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation,groupMembers){
         //添加进relation redux
 
         if(message.way == "chatroom"){
@@ -237,6 +246,8 @@ function receiveMessageHandle(message){
                 message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+
+                currentGroupChatMemberChangesCallback(groupMembers);
 
                 var accounts = message.Data.Data.Data.split(',');
 
