@@ -191,21 +191,26 @@ class ThouchBarBoxTopBox extends Component {
     }
 
 
-      // setTimeout(()=>{this.setState({
-      //     isShowModal: false,
-      // })},1000)
       this.setState({
               isShowModal: false,
           })
     let stop = () => {
         audio&&audio._stop((currentTime) => {
-
+          let counTime;
+          if(currentTime){
+            if(currentTime>60){
+                counTime = 60;
+            }
+            counTime = currentTime;
+          }else{
+              counTime = 1;
+          }
             //初始化消息
           let message = addResourceMessage('audio',this.props.type, [{
             FileType: ResourceTypeEnum.audio,
             LocalSource: this.audioPath + '/' + this.state.fileName + '.aac',
             RemoteSource: '',
-              Time:currentTime?currentTime:1
+              Time:counTime?counTime:1
           }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             //发送消息到IM
             chatController.addMessage(message, (status, messageId) => {
@@ -233,7 +238,6 @@ class ThouchBarBoxTopBox extends Component {
     //结束录音 
     let stop = ()=>{
       audio._stop((currentTime)=>{
-        this.shouldPressSpeakBox = true;
       //删除该录音文件
       RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
       });
