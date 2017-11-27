@@ -117,14 +117,18 @@ FileManager.downloadResource = function(message,callback){
         toFile;
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('/'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}${format}`;
+
+    type === 'image' ? toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/thumbnail${format}`
+        : toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}${format}`;
+
+
 
     console.log('下载前=============================:  ',message,toFile)
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
         if(type === 'image'){
             toFile = 'file://'+toFile;
-            message.Resource[0].RemoteSource = fromUrl + '#imageView2/0/w/200/h/200';
+            //message.Resource[0].RemoteSource = fromUrl + '#imageView2/0/w/200/h/200';
         }
         message.Resource[0].LocalSource = toFile;
         console.log('下载成功后=============================:  ',message)
@@ -136,8 +140,7 @@ FileManager.downloadResource = function(message,callback){
     console.log('receiveMessageOpreator:  ',message)
 }
 
-
-FileManager.downloadVideoSource = function(remoteURL,filePath,callback,onprogeress){
+FileManager.manualDownloadResource = function(remoteURL,filePath,callback,onprogeress){
     _network.methodDownloadWithProgress(remoteURL,filePath,callback,onprogeress);
 }
 

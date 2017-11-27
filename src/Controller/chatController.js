@@ -161,7 +161,7 @@ export default class chatController {
     }
 
     updateMessageRemoteSource(MSGID,url){
-        this.im.updateMessageLocalSource(MSGID,url)
+        this.im.updateMessageRemoteSource(MSGID,url)
     }
 
     // getRecentChatRecode(client,way,range,callback){
@@ -173,8 +173,8 @@ export default class chatController {
     //todo 李宗骏  通过cache messageId 获得IM 数据
 
 
-    downloadVideo(requestURL,filePath,callback,onprogress){
-       this.im.addDownloadVideoSource(requestURL,filePath,callback,onprogress);
+    manualDownloadResource(requestURL,filePath,callback,onprogress){
+       this.im.manualDownloadResource(requestURL,filePath,callback,onprogress);
     }
 
 
