@@ -9,7 +9,7 @@ import {
     Image,
     Dimensions,
     TouchableOpacity,
-    Modal
+    Modal,
 } from 'react-native';
 
 import {connect} from 'react-redux';
@@ -17,18 +17,22 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Slider from "react-native-slider";
+import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 
 let {width, height} = Dimensions.get('window');
 
-class Player extends Component {
+class Player extends ContainerComponent {
     constructor(props){
         super(props)
         this.state = {
-            isShow : false,
-            url: '',
+            // isShow : false,
+            // url: '',
 
             paused:false,
-
+            video:{time:'00:00',duration:'00:00'},
+            progress:0,
+            duration:0,
         }
     }
 
@@ -38,13 +42,13 @@ class Player extends Component {
     static propTypes = {
 
     };
-    componentWillReceiveProps(newProps){
-        let {url,isShow} = newProps.mediaPlayerStore;
-        this.setState({
-            url,
-            isShow,
-        });
-    }
+    // componentWillReceiveProps(newProps){
+    //     let {url,isShow} = newProps.mediaPlayerStore;
+    //     this.setState({
+    //         url,
+    //         isShow,
+    //     });
+    // }
 
     // pause(){
     //     this.setState({
@@ -71,51 +75,115 @@ class Player extends Component {
     //         </View>
     //     );
     // }
-
+    slidingStart = ()=>{
+        this.setState({
+            paused:true,
+        })
+    }
+    slidingComplete =()=>{
+        this.setState({
+            paused:false,
+        })
+    }
     defaultControlsBox = ()=>{
         let playButton = (<TouchableOpacity onPress={()=>this.pause()}><Icon size={20} name="play" color='#fff' /></TouchableOpacity>);
         let pauseButton = (<TouchableOpacity onPress={()=>this.pause()}><Icon size={20} name="pause" color='#fff' /></TouchableOpacity>);
         let playOrPause = this.state.paused ? playButton : pauseButton;
         return(
             <View style={{width,height,position:'absolute'}}>
-                <View style={{backgroundColor:'rgba(0,0,0,.5)',width}}>
-                    <TouchableOpacity style={{width:30,height:30,marginLeft:20,marginTop:20}} onPress={()=>{this.props.hideMediaPlayer();this.setState({paused:false})}}>
+                <View style={{width}}>
+                    <TouchableOpacity style={{width:30,height:30,marginLeft:20,marginTop:20}} onPress={()=>{this.route.pop(this.props);this.setState({paused:false})}}>
                         <Icon size={30} name="close" color='#fff' />
                     </TouchableOpacity>
                 </View>
-                <View style={{flexDirection:'row',position:'absolute',bottom:20,width,alignItems:'center',justifyContent:'center',backgroundColor:'rgba(0,0,0,.5)',paddingVertical:10}}>
-                     <View hidden={true} style={styles.playButtonBox}>
+                <View style={{flexDirection:'row',position:'absolute',bottom:30,width,alignItems:'center',justifyContent:'center',paddingVertical:10}}>
+                    <View hidden={true} style={styles.playButtonBox}>
                          {playOrPause}
-                     </View>
+                    </View>
+                    <Text style={styles.time}>{this.state.video.time}</Text>
+                    <Slider
+                        style={styles.sliderStyle}
+                        value={this.state.progress}
+                        maximumTrackTintColor={'#666'}
+                        minimumTrackTintColor={'#fff'}
+                        // thumbTouchSize={{width:25,height:25}}
+                        // thumbTintColor={'#fff'}
+                        thumbStyle={{backgroundColor:'#fff',width:20,height:20}}
+                        minimumValue={0}
+                        maximumValue={this.state.duration}
+                        onValueChange={(value)=>this.seek(value)}
+                        onSlidingStart={()=>this.slidingStart()}
+                        onSlidingComplete={()=>this.slidingComplete()}
+                    />
+                    <Text style={styles.time}>{this.state.video.duration}</Text>
+                    <View hidden={true} style={styles.playButtonBox}/>
                 </View>
             </View>
         )
     }
 
 
+    formatTime = (time)=>{
+        //四舍五入取整
+        let timer = Math.round(time);
+        let points,seconds;
+        points = Math.floor(timer/60);
+        if(points < 10){
+            points = '0'+points;
+        }
+        seconds = timer%60;
+        if(seconds < 10){
+            seconds = '0'+seconds;
+        }
+        return points+':'+seconds;
+    };
     pause = ()=>{
         this.setState({
             paused:!this.state.paused,
         })
-    }
+    };
     onEnd = ()=>{
+        let duration = this.state.video.duration;
         this.setState({
+            video:{time:'00:00',duration},
+            progress:0,
             paused:true,
         })
-    }
+        this.video.seek(0);
+    };
     onProgress = (e)=>{
-        console.log(e)
+        //alert(JSON.stringify(e))
+        let duration = this.state.video.duration;
+        let time = this.formatTime(e.currentTime);
+        this.setState({
+            video:{time,duration},
+            progress:e.currentTime,
+        })
+    };
+    setDuration = (e)=>{
+        //alert('加载完成:'+JSON.stringify(e))
+        let duration = this.formatTime(e.duration);
+        this.setState({
+            video:{time:null,duration},
+            duration:e.duration,
+        })
+    };
+
+    seek = (value)=>{
+        this.video.seek(value);
+        let duration = this.state.video.duration;
+        let currentTime = value;
+        this.setState({video:{time:this.formatTime(currentTime),duration}});
     }
     render() {
-        if(this.state.isShow){
             return(
-                <Modal style={styles.container} animationType={'fade'} onRequestClose={()=>{}}>
+                <View style={styles.container} >
                     <Video
                         ref={(ref) => {
                             this.video = ref
                         }}
                         //来自本地的MP4视频
-                        source={{uri:this.state.url}}
+                        source={{uri:this.props.path}}
                         //1.0表示默认速率
                         rate={1.0}
                         //图片等比例缩放
@@ -129,7 +197,7 @@ class Player extends Component {
                         // 当app转到后台运行的时候，播放是否暂停
                         playInBackground={false}
                         // onLoadStart={this.loadStart} // 当视频开始加载时的回调函数
-                        // onLoad={this.setDuration}    // 当视频加载完毕时的回调函数
+                        onLoad={(e)=>this.setDuration(e)}    // 当视频加载完毕时的回调函数
                         onEnd={()=>this.onEnd()}           // 当视频播放完毕后的回调函数
                         // onError={this.videoError}    // 当视频不能加载，或出错后的回调函数
                         onProgress={(e)=>this.onProgress(e)}    //  进度控制，每250ms调用一次，以获取视频播放的进度
@@ -139,11 +207,8 @@ class Player extends Component {
                     {/*{this.defaultControlsView()}*/}
                     {/*<TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow',position:'absolute',top:0,right:0}} onPress={()=>{this.pause()}}/>*/}
                     {this.defaultControlsBox()}
-                </Modal>
+                </View>
             )
-        }else{
-            return null;
-        }
     }
 }
 
@@ -152,6 +217,7 @@ class Player extends Component {
 const styles = StyleSheet.create({
     container:{
       flex:1,
+        backgroundColor:'#000'
     },
     player:{
         width:width,
@@ -179,8 +245,10 @@ const styles = StyleSheet.create({
     //     backgroundColor:'rgba(0,0,0,1)'
     // },
     playButtonBox:{
-        width:20,
-        height:20
+        width:50,
+        height:20,
+        justifyContent:'center',
+        alignItems:'center'
     },
     // bottomBox:{
     //     width:playerDefaultWidth,
@@ -192,11 +260,10 @@ const styles = StyleSheet.create({
     //     justifyContent: 'flex-start',
     //     flexDirection: 'row',
     // },
-    // sliderStyle:{
-    //     height:20,
-    //     width:playerDefaultWidth-120,
-    //     backgroundColor:'rgba(0,0,0,0.5)'
-    // },
+    sliderStyle:{
+        height:20,
+        width:width-200,
+    },
     // trackStyle:{
     //     width:playerDefaultWidth-120,
     //     height:2
@@ -206,16 +273,14 @@ const styles = StyleSheet.create({
     //     width:10,
     //     height:10
     // },
-    // time:{
-    //     color:'#fff',
-    //     width:40,
-    //     textAlign: 'center',
-    //     justifyContent: 'center',
-    //     height:20,
-    //     paddingTop:5,
-    //     fontSize:8,
-    //     backgroundColor:'rgba(0,0,0,0.5)'
-    // },
+    time:{
+        color:'#fff',
+        width:50,
+        textAlign: 'center',
+        justifyContent: 'center',
+        height:20,
+        fontSize:14,
+    },
     // button:{
     //     backgroundColor:'rgba(0,0,0,1)'
     // }

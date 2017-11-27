@@ -1,52 +1,59 @@
 import HanZi_PinYin from './getFirestLetter';
 export function initDataFormate(type='private',arr){
+
+    let dataObj = {
+        needArr : [],
+        sectionArr : [],
+    };
     let snapArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&v.show==='true'){
+        if(v.Type === type&&(v.show === true || v.show === 'true')){
             snapArr.push(v)
         }
+
     })
 
-    let needArr = [];
     snapArr.forEach((value,index)=>{
         let firstLetter = HanZi_PinYin.get(value.Nick.slice(0,1)).slice(0,1);
         let exist = false;
-        if(needArr.length === 0){
-            needArr.push({'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
+        if(dataObj.needArr.length === 0){
+            dataObj.needArr.push({'key':firstLetter,'data':[value]})
+            dataObj.sectionArr.push(firstLetter);
         }else{
-            for(var i=0;i<needArr.length;i++){
-                if(needArr[i]&&needArr[i].key===firstLetter){
-                    needArr[i].data.push({'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage})
+            for(var i=0;i<dataObj.needArr.length;i++){
+                if(dataObj.needArr[i]&&dataObj.needArr[i].key===firstLetter){
+                    dataObj.needArr[i].data.push(value)
                     exist = true;
                 }
             }
             if(exist === false){
-                if(needArr[needArr.length-1].key<=firstLetter){
-                    needArr.push({'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
+                dataObj.sectionArr.push(firstLetter);
+                if(dataObj.needArr[dataObj.needArr.length-1].key<=firstLetter){
+                    dataObj.needArr.push({'key':firstLetter,'data':[value]})
 
                 }else{
-                    needArr.splice(needArr.length-2,0,{'key':firstLetter,'data':[{'Nick': value.Nick,'Type':value.Type,'avator':value.avator,RelationId:value.RelationId,OtherComment:value.OtherComment,Remark:value.Remark,BlackList:value.BlackList,Email:value.Email,LocalImage:value.LocalImage}]})
+                    dataObj.needArr.splice(dataObj.needArr.length-2,0,{'key':firstLetter,'data':[value]})
                 }
             }
         }
 
     })
 
-    return needArr;
+    return dataObj;
 }
 
-export function initSection(arr=[]){
-    let needArr = [];
-    arr.forEach((v,i)=>{
-        needArr.push(v.key)
-    })
-    return needArr;
-}
+// export function initSection(arr=[]){
+//     let needArr = [];
+//     arr.forEach((v,i)=>{
+//         needArr.push(v.key)
+//     })
+//     return needArr;
+// }
 
 export function initFlatListData(type,arr=[],filterStr){
     let needArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&v.show === 'true'&&v.Nick.indexOf(filterStr) >= 0){
+        if(v.Type === type&&(v.show === true || v.show === 'true')&&HanZi_PinYin.get(v.Nick).indexOf(filterStr.toUpperCase()) >= 0){
             needArr.push(v)
         }
     })

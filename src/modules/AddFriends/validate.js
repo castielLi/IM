@@ -16,17 +16,14 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import ContainerComponent from '../../Core/Component/ContainerComponent';
-import MyNavigationBar from '../../Core/Component/NavigationBar';
-import IM from '../../Core/IM';
-import {addApplyFriendMessage} from '../../Core/IM/action/createMessage';
+import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import User from '../../Core/User'
-import Relation from '../../Core/User/dto/RelationModel'
+import Relation from '../../Core/UserGroup/dto/RelationModel'
 import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
-let im = new IM();
+import settingController from  '../../Controller/settingController';
 let currentObj = undefined;
-let user = new User();
+let SettingController = new settingController();
 
 class Validate extends ContainerComponent {
     constructor(props){
@@ -64,7 +61,7 @@ class Validate extends ContainerComponent {
         let {Applicant,Respondent} = this.props;
         // currentObj.showLoading()
         Keyboard.dismiss();
-        // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
+        // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,Nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
         // im.addMessage(addMessage,function(){
         //     currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒",
@@ -80,7 +77,8 @@ class Validate extends ContainerComponent {
             relation.avator = currentObj.props.relation.HeadImageUrl;
             relation.Type = ChatWayEnum.Private;
             relation.show = 'false';
-            user.AddNewRelation(relation);
+            // user.AddNewRelation(relation);
+            SettingController.addNewRelation(relation);
             currentObj.props.addRelation(relation);
 
         // })
@@ -173,7 +171,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     accountId:state.loginStore.accountMessage.accountId,
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     avator:state.loginStore.accountMessage.avator,
 });
 const mapDispatchToProps = dispatch => ({

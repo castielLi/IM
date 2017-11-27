@@ -24,23 +24,23 @@ import * as recentListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
 import RNFS from 'react-native-fs';
 
-import User from '../../../Core/User';
-import IM from '../../../Core/IM';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import {initSection,initDataFormate,initFlatListData} from './formateData';
-import RelationModel from '../../../Core/User/dto/RelationModel'
-import {startChatRoomMessage,buildInvationGroupMessage,buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
+import {initDataFormate,initFlatListData} from './formateData';
+import SettingController from '../../../Controller/settingController';
+let settingController = new SettingController();
+import {buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let user = new User();
-let im = new IM();
 let title = null;
 
 class ChooseClient extends ContainerComponent {
 
 	constructor(props) {
 		super(props);
+		let dataObj = initDataFormate('private',props.relationStore);
+		let relationStore = dataObj.needArr;
+		let sectionStore = dataObj.sectionArr;
 		this.state={
 			data:[
 				{key:'',
@@ -55,8 +55,11 @@ class ChooseClient extends ContainerComponent {
             chooseObj:[],//选择的好友的id
 			text:'',//输入框文字,
             isShowFlatList:false,
-            relationStore:initDataFormate('private',props.relationStore),
-		}
+            relationStore,
+            sectionStore,
+
+        }
+        this.splNeedArr = [];
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
 	}
@@ -82,7 +85,7 @@ class ChooseClient extends ContainerComponent {
 		if(this.state.relationStore.length === 0){
 			return null
 		}else{
-            let sections = initSection(this.state.relationStore)
+            let sections = this.state.sectionStore;
             let array = new Array();
             for (let i = 0; i < sections.length; i++) {
                 array.push(
@@ -229,128 +232,98 @@ class ChooseClient extends ContainerComponent {
 
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
-		let nicks = "";
-		let members = [];
+		let Nicks = "";
+		//let members = [];
+		let splNeedArr = [];
 		//拼接选中用户id
 		for(let item in chooseArr){
 			accounts+= chooseArr[item].RelationId+",";
-
+            splNeedArr.push({Account:chooseArr[item].RelationId});
 			if(item < chooseArr.length - 1){
-				nicks += chooseArr[item].Nick+",";
+				Nicks += chooseArr[item].Nick+",";
 			}else{
-				nicks += chooseArr[item].Nick;
+				Nicks += chooseArr[item].Nick;
 			}
 
-			members.push({"Account":chooseArr[item].RelationId})
+			//members.push({"Account":chooseArr[item].RelationId})
 		}
+		this.splNeedArr = splNeedArr;
 		accounts += currentObj.props.accountId;
 
 		//已有群 添加新成员
 
 		if(this.hasGroup) {
             currentObj.showLoading()
-            this.fetchData("POST", "Member/AddGroupMember", function (result) {
+			let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
+            settingController.addGroupMember(this.props.accountId,Nicks,this.splNeedArr,this.props.groupId,this.state.chooseArr,params,(result)=>{
+                    currentObj.hideLoading();
+                    if (result.success) {
+                        if (result.data.Data == null) {
+                            alert("返回群数据出错")
+                            return;
+                        }
+                        //更新redux message
+                        let copyMessage = Object.assign({},result.data.sendMessage);
+                        let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
+                        let {groupName,groupAvator,groupId} = currentObj.props;
+                        currentObj.props.addMessage(reduxMessage,{Nick:groupName,avator:groupAvator});
+                        //路由跳转
+                        let routes = currentObj.props.navigator.getCurrentRoutes();
+                        let index;
+                        for (let i = 0; i < routes.length; i++) {
+                            if (routes[i]["key"] == "GroupInformationSetting") {
+                                index = i;
+                                break;
+                            }
+                        }
+                        alert('添加成功');
+                        //跳转到群设置
+                        currentObj.route.replaceAtIndex(currentObj.props,{
+                            key:'GroupInformationSetting',
+                            routeId: 'GroupInformationSetting',
+                            params:{"groupId":groupId}
+                        },index)
+                    }else{
+                        alert(result.errorMessage);
+                        return;
+                    }
+            })
+
+        }
+        //未有群 创建群
+        else{
+
+        	if(chooseArr.length == 1){
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',Nick:chooseArr[0].Nick}});
+                return;
+			}
+
+            currentObj.showLoading()
+            let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
+        	settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
                 currentObj.hideLoading();
                 if (result.success) {
                     if (result.data.Data == null) {
                         alert("返回群数据出错")
                         return;
                     }
-
-                    //向添加的用户发送邀请消息
-					let messageId = uuidv1();
-                    let text = nicks;
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,currentObj.props.groupId,text,messageId);
-                    im.storeSendMessage(sendMessage);
+                    currentObj.props.addRelation(result.data.relation);
 
                     //更新redux message
-                    let copyMessage = Object.assign({},sendMessage);
+                    let copyMessage = Object.assign({},result.data.sendMessage);
                     let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
-                    currentObj.props.addMessage(reduxMessage);
+                    let {Nick,LocalImage} = result.data.relation;
+                    currentObj.props.addMessage(reduxMessage,{Nick,avator:LocalImage});
                     //路由跳转
-                    let routes = currentObj.props.navigator.getCurrentRoutes();
-                    let index;
-                    for (let i = 0; i < routes.length; i++) {
-                        if (routes[i]["key"] == "GroupInformationSetting") {
-                            index = i;
-                            break;
-                        }
-                    }
-                    alert('添加成功');
-                    //跳转到群设置
-                    currentObj.route.replaceAtIndex(currentObj.props,{
-                        key:'GroupInformationSetting',
-                        routeId: 'GroupInformationSetting',
-                        params:{"groupId":currentObj.props.groupId}
-                    },index)
-
-                } else {
-                    alert(result.errorMessage);
-                    return;
-                }
-            }, {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts});
-        }
-        //未有群 创建群
-        else{
-
-        	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private'}});
-                return;
-			}
-
-            currentObj.showLoading()
-            this.fetchData("POST","Member/CreateGroup",function(result){
-                currentObj.hideLoading();
-
-                console.log(result);
-
-                if(result.success){
-
-                    if(result.data.Data == null){
-                        alert("返回群数据出错")
-                        return;
-                    }
-                    let relation = new RelationModel();
-                    relation.RelationId = result.data.Data;
-                    relation.owner = currentObj.props.accountId;
-                    relation.Nick = currentObj.props.accountName + "发起的群聊";
-                    relation.Type = 'chatroom';
-                    relation.show = 'false';
-
-                    //添加关系到数据库
-                    user.AddNewGroupToGroup(relation,members);
-                    //todo 添加群聊关系到redux
-                    currentObj.props.addRelation(relation);
-					//todo 模拟一条消息，xx邀请xx和xx加入群聊
-					let messageId = uuidv1();
-					//创建群组消息
-					let text = nicks;
-
-					//todo：lizongjun 现在不需要自己发送消息，后台统一发送
-                    //向添加的用户发送邀请消息
-                    let sendMessage = buildInvationGroupMessage(currentObj.props.accountId,result.data.Data,text,messageId);
-                    im.storeSendMessage(sendMessage);
-
-					//更新redux message
-					let copyMessage = Object.assign({},sendMessage);
-                    let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
-					currentObj.props.addMessage(reduxMessage);
-					//创建文件夹
-                    let audioPath = RNFS.DocumentDirectoryPath + '/' +currentObj.props.accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
-                    let imagePath = RNFS.DocumentDirectoryPath + '/' +currentObj.props.accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
-                    RNFS.mkdir(audioPath)
-                    RNFS.mkdir(imagePath)
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom"}});
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom",HeadImageUrl:LocalImage,Nick}});
 
                 }else{
                     alert(result.errorMessage);
                     return;
                 }
-
-            },{"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts})
+            })
 		}
 	}
-
 
 	render() {
         let Popup = this.PopContent;
@@ -416,6 +389,7 @@ class ChooseClient extends ContainerComponent {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor:"white"
 	},
 	sectionHeader:{
 		height: 30,
@@ -524,7 +498,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     relationStore: state.relationStore,
-	accountName:state.loginStore.accountMessage.nick,
+	accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId,
 });
 

@@ -7,14 +7,14 @@ export const InitIMTable = {
     "createMessageRecodeTable":"CREATE TABLE IF NOT EXISTS MessageRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255),Command varchar(255),send varchar(255), rec varchar(255) , time varchar(255), content varchar(255), type varchar(255), localPath varchar(255), resourceTime varchar(255), url varchar(255) , status varchar(255))",
     "CreateSendMessageTable":"CREATE TABLE IF NOT EXISTS SendMessageRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255),status varchar(255),times varchar(255))",
     "CreateChatTableIndex":"CREATE INDEX index_id ON MessageRecode(messageId)",
-    "CreateApplyFriendTable":"CREATE TABLE IF NOT EXISTS ApplyFriend (Id INTEGER PRIMARY KEY AUTOINCREMENT,send varchar(255), rec varchar(255) , status varchar(255), comment varchar(255), time varchar(255),key varchar(255),nick varchar(255),avator varchar(255))",
+    "CreateApplyFriendTable":"CREATE TABLE IF NOT EXISTS ApplyFriend (Id INTEGER PRIMARY KEY AUTOINCREMENT,send varchar(255), rec varchar(255) , status varchar(255), comment varchar(255), time varchar(255),key varchar(255),Nick varchar(255),avator varchar(255))",
     "CreateUploadFileResourceRecode":"CREATE TABLE IF NOT EXISTS ResourceRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT, messageId varchar(255),localResource varchar(255))",
 }
 
 export const ExcuteIMSql = {
     "QueryChatIsExist":"select * from ChatRecode where client = ?",
     "GetChatList":"select * from ChatRecode",
-    "InsertChatRecode":"insert into ChatRecode (Client,Type) values (?,?)",
+    "InsertChatRecode":"insert into ChatRecode (Client,Type,unReadMessageCount) values (?,?,0)",
     "CreateChatTable"
         : "CREATE TABLE IF NOT EXISTS ? (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255))",
     "InsertMessageToTalk":"insert into ? (messageId) values (?)",
@@ -31,15 +31,18 @@ export const ExcuteIMSql = {
     "DeleteSendMessageByMessageId":"delete from SendMessageRecode where messageId = ?",
     "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ? where Client = ?",
     "UpdateChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = ? where Client = ?",
+    "AddChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = unReadMessageCount+1 where Client = ?",
     "InsertMessageToRecode":"insert into MessageRecode (messageId,Command,send,rec,time,content,type,localPath,resourceTime,url,status) values (?,?,?,?,?,?,?,?,?,?,?)",
     "InsertUploadFileRecode":"insert into ResourceRecode(messageId,localResource) values (?,?)",
     "DeleteUploadFileRecode":"Delete from ResourceRecode where messageId = ? and localResource = ?",
     "QueryChatRecodeByClient":"select messageId from ? order by Id desc LIMIT ?,?",
     "QueryMessageResourceExist":"select * from ResourceRecode where messageId = ? and localResource = ?",
-    "AddNewMessageToApplyFriend":"insert into ApplyFriend (send,rec,status,comment,time,key,nick,avator) values(?,?,?,?,?,?,?,?)",
+    "AddNewMessageToApplyFriend":"insert or replace into ApplyFriend (send,rec,status,comment,time,key,Nick,avator) values(?,?,?,?,?,?,?,?)",
     "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?",
-    "UpdateMessageRemoteUrl":"update MessageRecode set localPath=? where messageId=?"
+    "UpdateMessageLocalSource":"update MessageRecode set localPath=? where messageId=?",
+    "UpdateMessageRemoteSource":"update MessageRecode set url=? where messageId=?",
+    "UpdateMessageContent":"update MessageRecode set content=? where messageId = ?"
 }
 
 

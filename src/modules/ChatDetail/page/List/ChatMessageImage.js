@@ -14,10 +14,14 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
+import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import {
+    Navigator,
+} from 'react-native-deprecated-custom-components';
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageImage extends Component {
+class ChatMessageImage extends ContainerComponent {
     constructor(props){
         super(props)
 
@@ -55,8 +59,12 @@ class ChatMessageImage extends Component {
         return {uri:Source}
     }
 
+    goToCes = (path,Remote,MSGID,Sender)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    }
     render() {
         let {data, style} = this.props;
+        let {MSGID} = data.message;
         let {Sender,Receiver} = data.message.Data.Data;
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         //let uri = LocalSource.substr(7);
@@ -70,10 +78,10 @@ class ChatMessageImage extends Component {
 
         return(
             <View style={[style,styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.props.showImageModal(LocalSource || RemoteSource)}>
+                <TouchableOpacity onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
-                        source={this.localSourceObj(LocalSource || RemoteSource)}
+                        source={this.localSourceObj(LocalSource)}
                         style={[styles.imageStyle]}
                     />
                 </TouchableOpacity>

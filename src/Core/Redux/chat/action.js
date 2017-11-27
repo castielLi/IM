@@ -1,9 +1,9 @@
-import IM from '../../IM/index';
-import * as DtoMethods from '../../IM/dto/Common';
-import InitChatRecordConfig from './InitChatRecordConfig';
-import * as recentListAction from '../../User/redux/action';
 
-let im = new IM();
+
+
+import * as recentListAction from '../RecentList/action';
+
+
 import RNFS from 'react-native-fs';
 
 import * as friendApplicationActions from '../applyFriend/action'
@@ -15,7 +15,7 @@ export function addClient(client){
 	}
 }
 //向chatRecordStore中某确定的聊天对象添加 一条消息
-export function addMessage(message){
+export function addMessage(message,NickAndHeadImageUrlObj){
 	//let client = InterceptionClientFromId(message.MSGID);
 	return (dispatch,getState)=>{
 		dispatch({
@@ -24,7 +24,7 @@ export function addMessage(message){
 		message
 		})
 		//同时更新recentListStore
-		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message),message.Data.LocalTime))
+		dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Receiver,message.way,extractMessage(message),message.Data.LocalTime,false,NickAndHeadImageUrlObj))
 	}
 }
 export function receiveMessage(message){
@@ -70,7 +70,7 @@ export function receiveMessage(message){
                     message
                 })
                 //同时更新recentListStore
-                dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true))
+                dispatch(recentListAction.updateRecentItemLastMessage(message.Data.Data.Sender,message.way,extractMessage(message),message.Data.LocalTime,true,{Nick:message.Nick,avator:message.avator}))
 
 
         }
@@ -94,6 +94,15 @@ export function updateMessagePath(MSGID,path,sender){
         path
     }
 }
+//修改资源文件的远程地址
+export function updateMessageUrl(MSGID,url,sender){
+    return{
+        type:'UPDATE_MESSAGES_URL',
+        sender,
+        MSGID,
+        url
+    }
+}
 //修改某条消息的网络路径
 export function updateMessage(message){
 	return{
@@ -103,18 +112,7 @@ export function updateMessage(message){
 		MSGID:message.MSGID,
 	}
 }
-//打开聊天窗口的时候，给client对应的chatRecordStore.ChatRecord数据添加10条初始数据
-export function getChatRecord(Client,Type,start,callback){
-	return (dispatch)=>{
-        im.getRecentChatRecode(Client,Type,{start:start,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-        	let messageList = messages.map((message)=>{
-								return DtoMethods.sqlMessageToMessage(message);
-							})
-            dispatch(initChatRecord(Client,messageList));
-        	callback&&callback();
-		})
-	}
-}
+
 
 export function handleChatRecord(client){
     return {

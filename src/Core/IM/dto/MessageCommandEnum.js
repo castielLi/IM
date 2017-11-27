@@ -17,6 +17,7 @@ export default MessageCommandEnum = {
     //前端传输管理定义
 
     MSG_INFO:101,//模拟消息
+    MSG_INFO_CHANGE_GROUP_Nick:102,//修改群昵称 模拟消息
 
 }
 

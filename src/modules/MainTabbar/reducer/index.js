@@ -42,6 +42,11 @@ export  function unReadMessageStore(state=initialState, action){
                 ...state,
                 unDealRequestNumber:action.number
             };
+        case 'CLEAR_UNDEALREQUEST_NUMBER':
+            return {
+                ...state,
+                unDealRequestNumber:0
+            };
         case 'CLEAR_ALLTABBERMESSAGE_NUMBER':
             return {
                 ...initialState

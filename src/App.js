@@ -15,12 +15,13 @@ import configureNetwork from './Core/Networking/configureNetwork'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import IM from './Core/IM'
-import User from './Core/User'
+import User from './Core/UserGroup'
 import DisplayComponent from './Core/Component'
 import * as IMHandle from './Core/IM/action/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import Network from './Core/Networking/Network'
-let network = new Network();
+import ChatController from './Controller/chatController'
+let chatController = new ChatController();
 
 export default function App() {
 
@@ -51,8 +52,8 @@ export default function App() {
     }
 
 
-    let handleRecieveMessage = function(message){
-       IMHandle.handleRecieveMessage(message);
+    let handleRecieveMessage = function(message,relation){
+       IMHandle.handleRecieveMessage(message,relation);
     }
 
     //收到同意添加好友申请回调
@@ -65,7 +66,7 @@ export default function App() {
         IMHandle.handleKickOutMessage()
     }
 
-    im.connectIM(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage)
+    chatController.connectApp(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage)
 
 
     class InitApp extends DisplayComponent {

@@ -20,19 +20,16 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import MyNavigationBar from '../../../Core/Component/NavigationBar'
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
 import * as relationActions from '../../../Core/Redux/contact/action';
-import * as recentListActions from '../../../Core/User/redux/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import IM from '../../../Core/IM';
-import User from '../../../Core/User'
-
-let im = new IM();
-let user = new User();
+import settingController from '../../../Controller/settingController'
+let SettingController = new settingController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -66,62 +63,86 @@ class GroupInformationSetting extends ContainerComponent {
         })
     }
 
-    addToContacts = ()=>{
+    addOrRemoveTheContacts = () =>{
         let Save = !this.state.isSave;
         let info = this.state.groupInformation;
+        let params = {"Account":this.props.accountId,"GroupId":this.props.groupId};
+        let data = {params,info};
         currentObj.showLoading();
+        callback = (results)=>{
+            currentObj.hideLoading();
+            if(results.success && results.data.Result){
+                currentObj.props.changeRelationOfShow(info.ID);
+                currentObj.setState({
+                    isSave:Save
+                })
+            }
+            else{
+                console.log('群通讯录操作出错');
+            }
+        };
         if(Save){
-            this.fetchData('POST','Member/AddGroupToContact',function (result) {
-                currentObj.hideLoading();
-                if(result.success && result.data.Result){
-                    // alert('添加通讯录成功')
-                    let obj = {
-                        RelationId:info.ID,
-                        OtherComment:info.Description,
-                        Nick:info.Name,
-                        BlackList:false,
-                        Type:'chatroom',
-                        avator:info.ProfilePicture==null?"":info.ProfilePicture,
-                        owner:info.Owner,
-                        show:true}
-                    user.AddNewGroup(obj);
-                    // currentObj.props.addRelation(obj);
-                    currentObj.props.changeRelationOfShow(info.ID);
-                    currentObj.setState({
-                        isSave:Save
-                    })
-                }
-            },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+            SettingController.addGroupToContact(data,callback);
         }
         else{
-            this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
-                currentObj.hideLoading();
-                if(result.success && result.data.Result){
-                    // alert('移除通讯录成功')
-                    info.show = false;
-                    user.RemoveGroupFromContact(info.ID);
-                    //currentObj.props.deleteRelation(info.ID);
-                    currentObj.props.changeRelationOfShow(info.ID);
-
-                    currentObj.setState({
-                        isSave:Save
-                    })
-                }
-            },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+            SettingController.removeGroupFromContact(data,callback);
         }
     }
 
 
-    componentDidMount(){
-        currentObj.showLoading()
-        currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
-            currentObj.hideLoading();
+    // addToContacts = ()=>{
+    //     let Save = !this.state.isSave;
+    //     let info = this.state.groupInformation;
+    //     currentObj.showLoading();
+    //     if(Save){
+    //         this.fetchData('POST','Member/AddGroupToContact',function (result) {
+    //             currentObj.hideLoading();
+    //             if(result.success && result.data.Result){
+    //                 // alert('添加通讯录成功')
+    //                 let obj = {
+    //                     RelationId:info.ID,
+    //                     OtherComment:info.Description,
+    //                     Nick:info.Name,
+    //                     BlackList:false,
+    //                     Type:'chatroom',
+    //                     avator:info.ProfilePicture==null?"":info.ProfilePicture,
+    //                     owner:info.Owner,
+    //                     show:true}
+    //                 user.AddNewGroup(obj);
+    //                 // currentObj.props.addRelation(obj);
+    //                 currentObj.props.changeRelationOfShow(info.ID);
+    //                 currentObj.setState({
+    //                     isSave:Save
+    //                 })
+    //             }
+    //         },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+    //     }
+    //     else{
+    //         this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
+    //             currentObj.hideLoading();
+    //             if(result.success && result.data.Result){
+    //                 // alert('移除通讯录成功')
+    //                 info.show = false;
+    //                 user.RemoveGroupFromContact(info.ID);
+    //                 //currentObj.props.deleteRelation(info.ID);
+    //                 currentObj.props.changeRelationOfShow(info.ID);
+    //
+    //                 currentObj.setState({
+    //                     isSave:Save
+    //                 })
+    //             }
+    //         },{"Account":this.props.accountId,"GroupId":this.props.groupId})
+    //     }
+    // }
 
-            if(!result.success){
-                alert(result.errorMessage)
-                return;
-            }else{
-                let Data = result.data.Data;
+
+    componentDidMount(){
+        let params = {"GroupId":this.props.groupId};
+        currentObj.showLoading();
+        callback = (results)=>{
+            currentObj.hideLoading();
+            if(results.success){
+                let Data = results.data.Data;
                 let groupInformation = {
                     ID:Data.ID,
                     LastUpdateTime:Data.LastUpdateTime,
@@ -150,34 +171,65 @@ class GroupInformationSetting extends ContainerComponent {
                     isSave:save
                 })
             }
+            else{
+                console.log('获取群信息失败')
+            }
+        };
+        SettingController.getGroupInfo(params,callback);
 
-        },{"GroupId":this.props.groupId})
+        // currentObj.showLoading()
+        // currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
+        //     currentObj.hideLoading();
+        //
+        //     if(!result.success){
+        //         alert(result.errorMessage)
+        //         return;
+        //     }else{
+        //         let Data = result.data.Data;
+        //         let groupInformation = {
+        //             ID:Data.ID,
+        //             LastUpdateTime:Data.LastUpdateTime,
+        //             Name:Data.Name,
+        //             Owner:Data.Owner,
+        //             ProfilePicture:Data.ProfilePicture,
+        //             Description:Data.Description,
+        //         };
+        //         let members;
+        //         if(Data.MemberList.length>13){
+        //             members = Data.MemberList.slice(0,13);
+        //         }else{
+        //             members = Data.MemberList.concat()
+        //         }
+        //         let save = false;
+        //         let relations = currentObj.props.relations;
+        //         for(let i=0;i<relations.length;i++){
+        //             if(relations[i].RelationId === groupInformation.ID && relations[i].show === 'true' ){
+        //                 save = true;
+        //             }
+        //         }
+        //         currentObj.setState({
+        //             members:members.concat([{},{}]),
+        //             realMemberList:Data.MemberList,
+        //             groupInformation,
+        //             isSave:save
+        //         })
+        //     }
+        //
+        // },{"GroupId":this.props.groupId})
     }
 
 
     handlePress(i){
         let {groupId,accountId} = this.props;
+        let params = {"GroupId":groupId,"Account":accountId};
         //退出群组
         if(1 == i){
-            currentObj.showLoading()
-            this.fetchData("POST","Member/ExitGroup",function(result){
-                currentObj.hideLoading()
-                if(!result.success){
-                    alert(result.errorMessage);
-                    return;
-                }
-
-                if(result.data.Data){
-                    //todo:添加删除group的redux
+            currentObj.showLoading();
+            callback = (results)=>{
+                currentObj.hideLoading();
+                if(results.data.Data){
                     currentObj.props.deleteRelation(groupId);
-                    //清空chatRecordStore中对应记录
-                    currentObj.props.clearChatRecordFromId(groupId)
-                    //删除ChatRecode表中记录
-                    im.deleteChatRecode(groupId);
-                    //删除该与client的所以聊天记录
-                    im.deleteCurrentChatMessage(groupId,'chatroom');
-                    //删除account数据库中数据
-                    user.deleteFromGrroup(groupId);
+                    currentObj.props.clearChatRecordFromId(groupId);
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === groupId){
                             //清空recentListStore中对应记录
@@ -185,16 +237,51 @@ class GroupInformationSetting extends ContainerComponent {
                             //如果该row上有未读消息，减少unReadMessageStore记录
                             v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
                         }
-                    })
+                    });
                     currentObj.route.toMain(currentObj.props);
-
-
-                }else{
-                    alert("http请求出错")
                 }
-
-
-            },{"GroupId":groupId,"Account":accountId})
+                else{
+                    alert(results.errorMessage);
+                    console.log('退出群组出错')
+                }
+            };
+            SettingController.exitGroup(params,callback);
+            // currentObj.showLoading()
+            // this.fetchData("POST","Member/ExitGroup",function(result){
+            //     currentObj.hideLoading()
+            //     if(!result.success){
+            //         alert(result.errorMessage);
+            //         return;
+            //     }
+            //
+            //     if(result.data.Data){
+            //         //todo:添加删除group的redux
+            //         currentObj.props.deleteRelation(groupId);
+            //         //清空chatRecordStore中对应记录
+            //         currentObj.props.clearChatRecordFromId(groupId)
+            //         //删除ChatRecode表中记录
+            //         im.deleteChatRecode(groupId);
+            //         //删除该与client的所以聊天记录
+            //         im.deleteCurrentChatMessage(groupId,'chatroom');
+            //         //删除account数据库中数据
+            //         user.deleteFromGrroup(groupId);
+            //         currentObj.props.recentListStore.data.forEach((v,i)=>{
+            //             if(v.Client === groupId){
+            //                 //清空recentListStore中对应记录
+            //                 currentObj.props.deleteRecentItem(i);
+            //                 //如果该row上有未读消息，减少unReadMessageStore记录
+            //                 v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+            //             }
+            //         })
+            //         currentObj.route.toMain(currentObj.props);
+            //
+            //
+            //     }else{
+            //         alert("http请求出错")
+            //     }
+            //
+            //
+            // },{"GroupId":groupId,"Account":accountId})
         }
     }
 
@@ -214,41 +301,66 @@ class GroupInformationSetting extends ContainerComponent {
 
 
     searchUser = (keyword)=>{
-
-        currentObj.showLoading()
-        this.fetchData("POST","Member/SearchUser",function(result){
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-
-
-            if(result.data.Data){
-
-
+        let params = {"Keyword":keyword};
+        currentObj.showLoading();
+        callback = (results) =>{
+            currentObj.hideLoading();
+            if(results.success && results.data.Data){
                 let relations = currentObj.props.relations;
                 let needRelation = null;
                 let hasRelation = false;
                 for(let item in relations){
-                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+                    if(relations[item].RelationId == results.data.Data.Account && relations[item].show === 'true'){
                         hasRelation = !hasRelation;
                         needRelation = relations[item];
                         break;
                     }
                 }
                 if(hasRelation===false){
-                    needRelation = result.data.Data;
+                    needRelation = results.data.Data;
                 }
                 currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
 
-
-            }else{
-                that.setState({
-                    searchResult:false
-                })
             }
-        },{"Keyword":keyword})
+            else{
+                console.log('查询用户信息出错');
+            }
+        };
+        SettingController.searchUser(params,callback);
+        // currentObj.showLoading()
+        // this.fetchData("POST","Member/SearchUser",function(result){
+        //     currentObj.hideLoading()
+        //     if(!result.success){
+        //         alert(result.errorMessage);
+        //         return;
+        //     }
+        //
+        //
+        //     if(result.data.Data){
+        //
+        //
+        //         let relations = currentObj.props.relations;
+        //         let needRelation = null;
+        //         let hasRelation = false;
+        //         for(let item in relations){
+        //             if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+        //                 hasRelation = !hasRelation;
+        //                 needRelation = relations[item];
+        //                 break;
+        //             }
+        //         }
+        //         if(hasRelation===false){
+        //             needRelation = result.data.Data;
+        //         }
+        //         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+        //
+        //
+        //     }else{
+        //         that.setState({
+        //             searchResult:false
+        //         })
+        //     }
+        // },{"Keyword":keyword})
     }
 
     goToChooseClient = ()=>{
@@ -256,7 +368,9 @@ class GroupInformationSetting extends ContainerComponent {
             return item.Account;
         });
         let groupId = this.props.groupId;
-        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId}})
+        let groupNick = this.state.groupInformation.Name;
+        let groupAvator = this.state.groupInformation.ProfilePicture;
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,groupNick,groupAvator}})
     }
     goToDeleteClient = ()=>{
         this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{ID:this.state.groupInformation.ID,realMemberList:this.state.realMemberList}})
@@ -312,7 +426,7 @@ class GroupInformationSetting extends ContainerComponent {
         }
     }
     gotoGroupName = ()=>{
-
+        let groupAvator = this.state.groupInformation.ProfilePicture;
             this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation}});
 
     }
@@ -420,7 +534,7 @@ class GroupInformationSetting extends ContainerComponent {
                             <Text style={styles.remarks}>添加到通讯录</Text>
                             <Switch
                                 value={this.state.isSave}
-                                onValueChange={this.addToContacts}
+                                onValueChange={this.addOrRemoveTheContacts}
                             ></Switch>
                         </View>
                     </View>

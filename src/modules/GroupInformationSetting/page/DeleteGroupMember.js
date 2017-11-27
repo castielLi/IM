@@ -16,25 +16,20 @@ import {
     FlatList
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import uuidv1 from 'uuid/v1';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../../Core/User/redux/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
-import User from '../../../Core/User';
-import IM from '../../../Core/IM';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
-
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
+import SettingController from '../../../Controller/settingController'
 
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let user = new User();
-let im = new IM();
 let title = null;
+let settingController = new SettingController();
 
 class DeleteGroupMember extends ContainerComponent {
 
@@ -131,26 +126,23 @@ class DeleteGroupMember extends ContainerComponent {
     //定义上导航的右按钮
     _rightButton() {
         let {accountId,ID,navigator} = this.props;
-        currentObj.showLoading()
-        this.fetchData("POST","Member/RemoveGroupMember",function(result){
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-            if(result.data.Data){
-                //如果删得只剩一个人，销毁群
-                if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
+        let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
+        let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
+        let argument = {close};
+        let data = {params,argument};
+        currentObj.showLoading();
+        callback = (result)=>{
+            if(result.success && result.data.Data){
+                if(close){
                     //删除最近聊天redux对应id
                     currentObj.props.deleteRelation(ID);
                     //清空chatRecordStore中对应记录
                     currentObj.props.clearChatRecordFromId(ID)
-                    //删除ChatRecode表中记录
-                    im.deleteChatRecode(ID);
-                    //删除该与client的所以聊天记录
-                    im.deleteCurrentChatMessage(ID,'chatroom');
-                    //删除account数据库中数据
-                    user.deleteFromGrroup(ID);
+
+
+                    //settingController.destroyGroup(ID);
+
+
                     currentObj.props.recentListStore.data.forEach((v,i)=>{
                         if(v.Client === ID){
                             //清空recentListStore中对应记录
@@ -179,12 +171,64 @@ class DeleteGroupMember extends ContainerComponent {
                     routeId: 'GroupInformationSetting',
                     params:{"groupId":ID}
                 },index)
-            }else{
-                alert("http请求出错")
             }
+            else{
+                console.log("http请求出错")
+            }
+        }
+        settingController.removeGroupMember(data,callback);
 
-
-        },{"Operater":accountId,"GroupId":ID,"Accounts":this.needStr})
+        // this.fetchData("POST","Member/RemoveGroupMember",function(result){
+        //     currentObj.hideLoading()
+        //     if(!result.success){
+        //         alert(result.errorMessage);
+        //         return;
+        //     }
+        //     if(result.data.Data){
+        //         //如果删得只剩一个人，销毁群
+        //         if(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1){
+        //             //删除最近聊天redux对应id
+        //             currentObj.props.deleteRelation(ID);
+        //             //清空chatRecordStore中对应记录
+        //             currentObj.props.clearChatRecordFromId(ID)
+        //
+        //
+        //             settingController.destroyGroup(ID);
+        //
+        //             currentObj.props.recentListStore.data.forEach((v,i)=>{
+        //                 if(v.Client === ID){
+        //                     //清空recentListStore中对应记录
+        //                     currentObj.props.deleteRecentItem(i);
+        //                     //如果该row上有未读消息，减少unReadMessageStore记录
+        //                     v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
+        //                 }
+        //             })
+        //             currentObj.alert('群解散了');
+        //             currentObj.route.toMain(currentObj.props);
+        //
+        //             return;
+        //         }
+        //
+        //         let routes = navigator.getCurrentRoutes();
+        //         let index;
+        //         for (let i = 0; i < routes.length; i++) {
+        //             if (routes[i]["key"] == "GroupInformationSetting") {
+        //                 index = i;
+        //                 break;
+        //             }
+        //         }
+        //         //跳转到群设置
+        //         currentObj.route.replaceAtIndex(currentObj.props,{
+        //             key:'GroupInformationSetting',
+        //             routeId: 'GroupInformationSetting',
+        //             params:{"groupId":ID}
+        //         },index)
+        //     }else{
+        //         alert("http请求出错")
+        //     }
+        //
+        //
+        // },{"Operater":accountId,"GroupId":ID,"Accounts":this.needStr})
 
     }
 
@@ -231,6 +275,7 @@ class DeleteGroupMember extends ContainerComponent {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:"white"
     },
     sectionHeader:{
         height: 30,
@@ -340,7 +385,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     recentListStore:state.recentListStore,
     relationStore: state.relationStore,
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId,
 });
 

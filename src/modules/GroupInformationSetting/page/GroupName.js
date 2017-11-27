@@ -14,21 +14,25 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
+import uuidv1 from 'uuid/v1';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import MyNavigationBar from '../../../Core/Component/NavigationBar'
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-import IM from '../../../Core/IM';
-import User from '../../../Core/User';
+import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';;
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
+import * as Actions from '../../../Core/Redux/chat/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 
+import SettingController from '../../../Controller/settingController'
+
+
+let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let im = new IM();
-let user = new User();
+
 class GroupName extends ContainerComponent {
     constructor(){
         super()
@@ -67,16 +71,23 @@ class GroupName extends ContainerComponent {
 
     toChangeName = ()=>{
         let {accountId,ID,navigator} = this.props;
-        currentObj.showLoading()
-        this.fetchData("POST","Member/ModifyGroupName",function(result){
-            currentObj.hideLoading()
+        currentObj.showLoading();
+        let params = {"Operater":accountId,"GroupId":ID,"Name":this.state.text};
+        settingController.updateGroupName(accountId,ID,currentObj.state.text,params,(result)=>{
+            currentObj.hideLoading();
             if(!result.success){
                 alert(result.errorMessage);
                 return;
             }
             if(result.data.Data){
                 currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
-                user.updateGroupName(ID,currentObj.state.text);
+                currentObj.props.changeRecentListOfGropName(ID,currentObj.state.text)
+
+                //更新redux message
+                let copyMessage = Object.assign({},result.data.sendMessage);
+                let reduxMessage = buildChangeGroupNickSendMessageToRudexMessage(copyMessage);
+                currentObj.props.addMessage(reduxMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
+
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
                 let index;
@@ -96,9 +107,8 @@ class GroupName extends ContainerComponent {
             }else{
                 alert("http请求出错")
             }
+        });
 
-
-        },{"Operater":accountId,"GroupId":ID,"Name":this.state.text})
     }
 
     render() {
@@ -136,7 +146,6 @@ class GroupName extends ContainerComponent {
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
         )
-
     }
 }
 
@@ -177,12 +186,14 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
 
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId
 });
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(relationListActions,dispatch),
+    ...bindActionCreators(Actions, dispatch),
+    ...bindActionCreators(recentListActions, dispatch),
 
 });
 

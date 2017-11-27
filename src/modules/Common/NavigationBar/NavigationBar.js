@@ -17,8 +17,11 @@ import {Text,
 
 import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as NavigationBottomAction from './reducer/action';
 
-export default class MyNavigationBar extends Component {
+class MyNavigationBar extends Component {
     constructor(props){
         super(props)
     }
@@ -63,10 +66,16 @@ export default class MyNavigationBar extends Component {
         if(!heading){
             return null;
         }
-        return {
-            title: heading,
-            tintColor:'#fff',
-        }
+        // return {
+        //     title: heading,
+        //     tintColor:'#fff',
+        //     numberOfLines:1
+        // }
+
+        return (
+                <Text numberOfLines = {1} style={styles.title}>{heading}</Text>
+
+        )
     };
 
     _rightButton = ()=>{
@@ -103,13 +112,22 @@ export default class MyNavigationBar extends Component {
 
     render() {
         return (
-            <NavigationBar
-                tintColor="#38373d"
-                leftButton={this._leftButton()}
-                title={this._title()}
-                rightButton={this._rightButton()}
-                {...this.props}
-            />
+            <View>
+                <NavigationBar
+                    tintColor="#38373d"
+                    leftButton={this._leftButton()}
+                    title={this._title()}
+                    rightButton={this._rightButton()}
+                    {...this.props}
+                >
+                </NavigationBar>
+                {this.props.NavigationBottomStore ?
+                    <View style={{justifyContent:'center',alignItems:'center',height:30}}>
+                        <Text style={{}}>Loading...</Text>
+                    </View>
+                    : null
+                }
+            </View>
         )
     }
 }
@@ -160,5 +178,22 @@ const styles = StyleSheet.create({
         alignItems:'center',
         flex:1,
         paddingHorizontal:15
+    },
+    title:{
+        fontSize:17,
+        textAlignVertical:'center',
+        color:'#fff',
+        fontWeight:'600',
+        maxWidth:200,
     }
 });
+
+const mapStateToProps = state => ({
+    NavigationBottomStore : state.NavigationBottomStore.isShow,
+});
+
+const mapDispatchToProps = dispatch => ({
+    ...bindActionCreators(NavigationBottomAction, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyNavigationBar);

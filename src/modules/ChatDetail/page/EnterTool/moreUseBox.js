@@ -21,13 +21,13 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createResourceMessageObj} from './createMessageObj';
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-const im = new IM();
+const chatController = new ChatController();
 var ImagePicker = require('react-native-image-picker');
 var {height, width} = Dimensions.get('window');
   
@@ -36,6 +36,7 @@ var options = {
     quality:CameraConfig.PHOTO_QUALITY,
     maxWidth:CameraConfig.PHOTO_MAX_WIDTH,
     maxHeight:CameraConfig.PHOTO_MAX_HEIGHT,
+    mediaType: 'photo',
     storageOptions: {
         skipBackup: true,
         path: 'images'//存放位置
@@ -43,7 +44,8 @@ var options = {
 }
 let videoOptions = {
     mediaType: 'video',
-    videoQuality: 'medium',
+    videoQuality: CameraConfig.VEDIO_QUALITY,
+    durationLimit:CameraConfig.VEDIO_MAX_TIME,
     storageOptions: {
         skipBackup: true,
         path: 'video'//存放位置
@@ -62,13 +64,13 @@ class MoreUseBox extends Component {
   
 imagePikerCallBack(response){
   if (response.didCancel) {//如果用户取消上传
-        console.log('User cancelled image picker');
+        console.log('UserGroup cancelled image picker');
   }
   else if (response.error) {//如果有错
     console.log('ImagePicker Error: ', response.error);
   }
   else if (response.customButton) {//如果点击了自定义按钮
-    console.log('User tapped custom button: ', response.customButton);
+    console.log('UserGroup tapped custom button: ', response.customButton);
   }
   else {
     //console.log(response.uri)// 选择本地content://media/external/images/media/30；拍照file:///storage/emulated/0/Pictures/image-ad930ba1-fc6f-44c5-afb4-dda910fccc8c.jpg
@@ -79,11 +81,12 @@ imagePikerCallBack(response){
     //初始化消息
     let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
     let message = addResourceMessage('image',this.props.type,[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-    im.addMessage(message,(status,messageId)=>{
+      chatController.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(message)
-      },[(tips)=>{console.log(tips)}]);
+        this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+
+    },[(tips)=>{console.log(tips)}]);
 
   }
 }
@@ -93,7 +96,7 @@ useCamera(){
     ImagePicker.launchCamera( options,this.imagePikerCallBack);
   }
 useLocal(){
-  ImagePicker.launchImageLibrary({mediaType: 'photo'},this.imagePikerCallBack);
+  ImagePicker.launchImageLibrary(options,this.imagePikerCallBack);
 }
 
 useCameraVideo(){
@@ -101,45 +104,47 @@ useCameraVideo(){
         console.log('Response = ', response);
 
         if (response.didCancel) {
-            console.log('User cancelled video picker');
+            console.log('UserGroup cancelled video picker');
         }
         else if (response.error) {
             console.log('ImagePicker Error: ', response.error);
         }
         else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
+            console.log('UserGroup tapped custom button: ', response.customButton);
         }
         else{
             let responsePath = 'file://'+response.path;
             let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            im.addMessage(message,(status,messageId)=>{
+            chatController.addMessage(message,(status,messageId)=>{
                 message.MSGID = messageId;
                 //更新chatRecordStore
-                this.props.addMessage(message)
+                this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+
             },[(tips)=>{console.log(tips)}]);
         }
     });
 }
 useLocalVideo(){
-    ImagePicker.launchImageLibrary({mediaType: 'video'},(response) => {
+    ImagePicker.launchImageLibrary(videoOptions,(response) => {
         console.log('Response = ', response);
 
         if (response.didCancel) {
-            console.log('User cancelled video picker');
+            console.log('UserGroup cancelled video picker');
         }
         else if (response.error) {
             console.log('ImagePicker Error: ', response.error);
         }
         else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
+            console.log('UserGroup tapped custom button: ', response.customButton);
         }
         else{
             let responsePath = 'file://'+response.path;
             let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            im.addMessage(message,(status,messageId)=>{
+            chatController.addMessage(message,(status,messageId)=>{
                 message.MSGID = messageId;
                 //更新chatRecordStore
-                this.props.addMessage(message)
+                this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+
             },[(tips)=>{console.log(tips)}]);
         }
     });

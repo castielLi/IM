@@ -16,22 +16,19 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import MyNavigationBar from '../../../Core/Component/NavigationBar'
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Swipeout from 'react-native-swipeout';
-import IM from '../../../Core/IM';
-import User from '../../../Core/User';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import * as relationActions from '../../../Core/Redux/contact/action';
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
+import chatController from '../../../Controller/chatController';
 
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let im = new IM();
-let user = new User();
+let ChatController = new chatController();
+
 class NewFriend extends ContainerComponent {
     constructor(props){
         super(props)
@@ -39,7 +36,6 @@ class NewFriend extends ContainerComponent {
         let ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 !== r2,
         })
-        this.im = new IM();
         this.state = {
             dataSource: ds,
             dataObj:{},
@@ -68,34 +64,54 @@ class NewFriend extends ContainerComponent {
     //     })
     // }
 
-    agreeApply = (index,data)=>{
-        let {key,send} = data;
+    acceptFriend = (data)=>{
+        let {key} = data;
+        let params = {key};
         this.showLoading();
-        this.fetchData('POST','Member/AcceptFriend',function (result) {
+        callback = (results) => {
             currentObj.hideLoading();
-            if(result.success){
-                // let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,send);
-                // im.addMessage(addMessage,function(){
-                //添加到relationStore
-                    let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
-                    let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                    //currentObj.props.addRelation(relationObj);
-                    currentObj.props.changeRelationOfShow(Account);
-                    //添加到数据库
-                    user.AddNewRelation(relationObj)
-                    //修改friendMessage状态
-                    im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":data.key})
-                    currentObj.props.acceptFriendApplication(data.key);
-                    currentObj.props.cutUnDealRequestNumber(1);
-                // });
+            if(results.success){
+                let {key,Account} = results.data.acceptFriend;
+                currentObj.props.acceptFriendApplication(key);
+                currentObj.props.cutUnDealRequestNumber(1);
+                currentObj.props.changeRelationOfShow(Account);
             }else{
-                alert(result.errorMessage);
-                return;
+                console.log('接受好友申請失败')
             }
-        },{
-            key
-        })
-    };
+        }
+
+        ChatController.acceptFriend(params,callback)
+
+    }
+
+    // agreeApply = (index,data)=>{
+    //     let {key,send} = data;
+    //     this.showLoading();
+    //     this.fetchData('POST','Member/AcceptFriend',function (result) {
+    //         currentObj.hideLoading();
+    //         if(result.success){
+    //             // let addMessage = addAddFriendMessage({comment:currentObj.props.accountName,key},currentObj.props.accountId,send);
+    //             // im.addMessage(addMessage,function(){
+    //             //添加到relationStore
+    //                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
+    //                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+    //                 //currentObj.props.addRelation(relationObj);
+    //                 currentObj.props.changeRelationOfShow(Account);
+    //                 //添加到数据库
+    //                 user.AddNewRelation(relationObj)
+    //                 //修改friendMessage状态
+    //                 im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":data.key})
+    //                 currentObj.props.acceptFriendApplication(data.key);
+    //                 currentObj.props.cutUnDealRequestNumber(1);
+    //             // });
+    //         }else{
+    //             alert(result.errorMessage);
+    //             return;
+    //         }
+    //     },{
+    //         key
+    //     })
+    // };
     deleteApply = (index)=>{
         alert('删除好友申请')
         //this.props.deleteFriendApplication(index)
@@ -107,7 +123,7 @@ class NewFriend extends ContainerComponent {
             return (
                 <TouchableHighlight
                     underlayColor="#1FB579"
-                    onPress={()=>{this.agreeApply(rowID,rowData)}}
+                    onPress={()=>{this.acceptFriend(rowData)}}
                     style={styles.btnBox}>
                     <View style={styles.btnView}>
                         <Text style={styles.btnText}>接受</Text>
@@ -184,24 +200,47 @@ class NewFriend extends ContainerComponent {
         return needObj;
     }
 
+    // componentDidMount(){
+    //
+    //     user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+    //         let needObj = this.formateArrToObj(realations);
+    //         this.setState({
+    //             dataObj:needObj
+    //         })
+    //     })
+    // }
+    // componentWillReceiveProps(newProps){
+    //         this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
+    //         user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+    //             let needObj = this.formateArrToObj(realations);
+    //             this.setState({
+    //                 dataObj:needObj
+    //             })
+    //         })
+    //
+    // }
+
     componentDidMount(){
 
-        user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
+        ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
             let needObj = this.formateArrToObj(realations);
             this.setState({
                 dataObj:needObj
             })
-        })
+        });
     }
     componentWillReceiveProps(newProps){
-            this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
-            user.GetRelationsByRelationIds(this.state.idS,(realations)=>{
-                let needObj = this.formateArrToObj(realations);
-                this.setState({
-                    dataObj:needObj
-                })
+        this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
+        ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
+            let needObj = this.formateArrToObj(realations);
+            this.setState({
+                dataObj:needObj
             })
+        });
 
+    }
+    componentWillUnMount(){
+        this.props.clearUnDealRequestNumber();
     }
     render() {
         let Loading = this.Loading;
@@ -318,7 +357,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     friendApplicationStore : state.friendApplicationStore,
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId
 });
 

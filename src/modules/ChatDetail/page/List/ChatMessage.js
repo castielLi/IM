@@ -38,6 +38,7 @@ export default class ChatMessage extends Component {
                         data={data}
                         style={style}
                         type={chatType}
+                        navigator={this.props.navigator}
                     />
                 )
             }
@@ -48,6 +49,7 @@ export default class ChatMessage extends Component {
                         data={data}
                         style={style}
                         type={chatType}
+                        navigator={this.props.navigator}
                     />
                 )
             }
@@ -58,6 +60,7 @@ export default class ChatMessage extends Component {
                         data={data}
                         style={style}
                         type={chatType}
+                        navigator={this.props.navigator}
                     />
                 )
             }
@@ -68,6 +71,7 @@ export default class ChatMessage extends Component {
                         data={data}
                         style={style}
                         type={chatType}
+                        navigator={this.props.navigator}
                     />
                 )
             }

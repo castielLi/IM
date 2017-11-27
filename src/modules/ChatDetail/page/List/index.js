@@ -27,12 +27,10 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
-import Ces from './ces';
-import ImageModal from './ImageModal';
 import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
-import Player from './player'
-import User from '../../../../Core/User'
+import User from '../../../../Core/UserGroup'
+import chatController from '../../../../Controller/chatController'
 
 
 let _listHeight = 0; //list显示高度
@@ -47,8 +45,10 @@ let ListLayout = false;
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
 let recordData;
+let _responderPageY;
 
 let user = new User();
+let ChatController = new chatController();
 
 
 class Chat extends Component {
@@ -122,16 +122,100 @@ class Chat extends Component {
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
         if(this.props.type == "chatroom"){
-            user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
+            ChatController.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
                 currentObj.setState({
                     groupMembers,
                 })
             });
+            // user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
+            //     currentObj.setState({
+            //         groupMembers,
+            //
+            //     })
+            // });
         }
 
 
         let chatRecordStore = this.props.chatRecordStore.concat();
+
         let {isMore} = this.state;
+
+        this._panResponder = PanResponder.create({
+            onStartShouldSetPanResponder: (e) => {_responderPageY = e.nativeEvent.pageY; return false},  //对触摸进行响应
+            onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
+            onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
+            onMoveShouldSetPanResponder: (e)=> {
+                if(e.nativeEvent.pageY - _responderPageY > 30 && e.nativeEvent.pageY){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            },//对滑动进行响应
+            onPanResponderTerminate : ()=> true,
+            //激活时做的动作
+            onPanResponderGrant: (e)=>{
+                this.move = e.nativeEvent.pageY;
+            },
+            //移动时作出的动作
+            onPanResponderMove: (e)=>{
+                let {msgState} = ListConst;
+                if(this.reduxData.length && e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
+                {
+                    this.noMore = msgState.LOADING;
+                    this.setState({
+                        isMore : ListConst.msgState.LOADING,
+                    })
+                    let dataLength = this.shortData.length;
+                    let {client} = this.props;
+                    let that = this;
+                    ChatController.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+
+                        if(!messages){
+                            that.noMore  = msgState.NOMORE;
+                            that.setState({
+                                isMore:that.noMore,
+                            });
+                            return;
+                        }
+                        let msgLength = messages.length;
+
+                        // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                        //     messages.pop();
+                        // }
+
+                        let msg = messages.map((message)=>{
+                            return DtoMethods.sqlMessageToMessage(message);
+                        });
+                        let msg2 = msg.concat();
+
+                        that.historyData = msg.reverse().concat(that.historyData);
+                        that.shortData = that.historyData.concat(that.reduxData);
+                        that.data = that.prepareMessages(that.shortData);
+
+                        that.historyData2 = that.historyData2.concat(msg2);
+                        that.shortData2 = that.reduxData2.concat(that.historyData2);
+                        that.data2 = that.prepareMessages(that.shortData2);
+
+                        if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                            that.noMore  = msgState.NOMORE;
+                        }
+                        else{
+                            that.noMore  = msgState.END;
+                        }
+
+                        that.setState({
+                            dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
+                            dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
+                            isMore:that.noMore,
+                        })
+                    })
+                    // setTimeout(()=>{
+                    //     this.im.getRecentChatRecode()
+                    // },500)
+                }
+            },
+        })
 
         if(!chatRecordStore.length){
             return;
@@ -157,74 +241,11 @@ class Chat extends Component {
             dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
             dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
         });
-
-        this._gestureHandlers = {
-            onStartShouldSetResponder: () => true,  //对触摸进行响应
-            onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
-            //激活时做的动作
-            onResponderGrant: (e)=>{
-                this.move = e.nativeEvent.pageY;
-            },
-            //移动时作出的动作
-            onResponderMove: (e)=>{
-                let {msgState} = ListConst;
-                if(e.nativeEvent.pageY>this.move && this.noMore === msgState.END && !this.state.showInvertible)
-                {
-                    this.noMore = msgState.LOADING;
-                    this.setState({
-                        isMore : ListConst.msgState.LOADING,
-                    })
-                    let dataLength = this.shortData.length;
-                    let {client} = this.props;
-                    let that = this;
-                    setTimeout(()=>{
-                        this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-
-                            if(!messages){
-                                that.noMore  = msgState.NOMORE;
-                                that.setState({
-                                    isMore:that.noMore,
-                                });
-                                return;
-                            }
-                            let msgLength = messages.length;
-
-                            if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                                messages.pop();
-                            }
-
-                            let msg = messages.map((message)=>{
-                                return DtoMethods.sqlMessageToMessage(message);
-                            });
-                            let msg2 = msg.concat();
-
-                            that.historyData = msg.reverse().concat(that.historyData);
-                            that.shortData = that.historyData.concat(that.reduxData);
-                            that.data = that.prepareMessages(that.shortData);
-
-                            that.historyData2 = that.historyData2.concat(msg2);
-                            that.shortData2 = that.reduxData2.concat(that.historyData2);
-                            that.data2 = that.prepareMessages(that.shortData2);
-
-                            if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                                that.noMore  = msgState.NOMORE;
-                            }
-                            else{
-                                that.noMore  = msgState.END;
-                            }
-
-                            that.setState({
-                                dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
-                                dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
-                                isMore:that.noMore,
-                            })
-                        })
-                    },500)
-                }
-            },
-        }
     }
 
+    componentWillUnmount(){
+        this.props.handleChatRecord(this.props.client);
+    }
     prepareMessages(messages) {
         //console.log(messages)
         return {
@@ -350,6 +371,22 @@ class Chat extends Component {
         }
         return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
     }
+    //todo 可以写到controller
+    // getNikesFromIds = (idString) =>{
+    //     let Members = this.state.groupMembers;
+    //     let MembersLength = Members.length;
+    //     let ids = idString.split(',');
+    //     let needStr = '';
+    //     for(let i=0;i<MembersLength;i++){
+    //         for(let j=0;j<ids.length;j++){
+    //             if(Members[i].RelationId == ids[j]){
+    //                 needStr+= Members[i].Nick+',';
+    //                 break;
+    //             }
+    //         }
+    //     }
+    //     return needStr;
+    // }
     renderRow = (row,sid,rowid) => {
         console.log('执行了renderRow');
         let {Sender} = row.message.Data.Data;
@@ -369,7 +406,16 @@ class Chat extends Component {
                         </View>
                     </View>
                 )
-         }else{
+         }else if(row.message.Command * 1 == 102 && this.props.type == "chatroom"){
+             return(
+                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                         <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
+                     </View>
+                 </View>
+             )
+         }
+         else{
              return(
                  <View key={rowid} style={styles.itemViewRight}>
                      <View style={styles.timestampView}>
@@ -383,7 +429,7 @@ class Chat extends Component {
                                  }
                              </TouchableOpacity>
                          </View>
-                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type}/>
+                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
                          {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                      </View>
@@ -412,6 +458,15 @@ class Chat extends Component {
                 </View>)
 
 
+            }else if(row.message.Command * 1 == 102){
+
+                return(<View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
+                    </View>
+                </View>)
+
+
             }
             else{
                 return(
@@ -423,7 +478,7 @@ class Chat extends Component {
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
                                 {this.props.type === 'chatroom' ? this.getGroupMembersInfo(Receiver) : null}
-                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type}/>
+                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
                             </View>
                         </View>
                     </View>
@@ -432,22 +487,14 @@ class Chat extends Component {
 
         }
     }
-    scrollToEnd = () => {
-        if(this.state.showInvertible){
-            if (this._invertibleScrollViewRef === null) { return }
-            this._invertibleScrollViewRef.scrollTo({
-                y: 0,
-                animated:false,
-            });
-        }
-    }
+
     oldMsg = () => {
         //console.log('oldMsg');
         //alert(this.props.client+this.state.isMore)
         let {msgState} = ListConst;
-        if(!firstOldMsg){
-            return firstOldMsg = true;
-        }
+        // if(!firstOldMsg){
+        //     return firstOldMsg = true;
+        // }
         if(this.noMore === msgState.END){
             this.noMore = msgState.LOADING;
             this.setState({
@@ -456,42 +503,44 @@ class Chat extends Component {
             let dataLength = this.shortData2.length;
             let {client} = this.props;
             let that = this;
-            setTimeout(()=>{
-                this.im.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+            ChatController.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
 
-                    if(!messages){
-                        that.noMore  = msgState.NOMORE;
-                        that.setState({
-                            isMore:that.noMore,
-                        });
-                        return;
-                    }
-                    let msgLength = messages.length;
-
-                    if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                        messages.pop();
-                    }
-                    let msg = messages.map((message)=>{
-                        return DtoMethods.sqlMessageToMessage(message);
-                    });
-
-                    that.historyData2 = that.historyData2.concat(msg);
-                    that.shortData2 = that.reduxData2.concat(that.historyData2);
-                    that.data2 = that.prepareMessages(that.shortData2);
-
-                    if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                        that.noMore  = msgState.NOMORE;
-                    }
-                    else{
-                        that.noMore  = msgState.END;
-                    }
-
+                if(!messages){
+                    that.noMore  = msgState.NOMORE;
                     that.setState({
-                        dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
                         isMore:that.noMore,
                     });
-                })
-            },500)
+                    return;
+                }
+                let msgLength = messages.length;
+
+
+                // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                //     messages.pop();
+                // }
+                let msg = messages.map((message)=>{
+                    return DtoMethods.sqlMessageToMessage(message);
+                });
+
+                that.historyData2 = that.historyData2.concat(msg);
+                that.shortData2 = that.reduxData2.concat(that.historyData2);
+                that.data2 = that.prepareMessages(that.shortData2);
+
+                if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                    that.noMore  = msgState.NOMORE;
+                }
+                else{
+                    that.noMore  = msgState.END;
+                }
+
+                that.setState({
+                    dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
+                    isMore:that.noMore,
+                });
+            })
+            // setTimeout(()=>{
+            //     this.im.getRecentChatRecode()
+            // },500)
         }
 
     }
@@ -538,6 +587,7 @@ class Chat extends Component {
         // }
         FooterLayout = false
         ListLayout=false
+        console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight+'   距离屏幕高度'+_footerY)
         if (_listHeight && _footerY && _footerY > _listHeight) {
             scrollDistance = _listHeight - _footerY;
             this.listView.scrollTo({
@@ -554,11 +604,22 @@ class Chat extends Component {
         }
     }
 
+    scrollToEnd = () => {
+        if(this.state.showInvertible){
+            if (this._invertibleScrollViewRef === null) { return }
+            this._invertibleScrollViewRef.scrollTo({
+                y: 0,
+                animated:false,
+            });
+        }
+    }
+
     //界面变化触发
     _onListViewLayout = (event) =>{
         const {showInvertible}=this.state
+        console.log('屏幕最大高度：'+_MaxListHeight+'   当前高度：'+_listHeight)
         if(!showInvertible){
-            if(!_MaxListHeight){
+            if(!_MaxListHeight || _MaxListHeight < event.nativeEvent.layout.height){
                 _MaxListHeight = event.nativeEvent.layout.height;
             }
             //ListLayout = event.nativeEvent.layout.height!==_listHeight;
@@ -595,24 +656,22 @@ class Chat extends Component {
         if(!showInvertible){
             return (
                     <View style={styles.chatListView}>
-                        <ListView
-                            ref={(lv) => this.listView = lv}
-                            dataSource={this.state.dataSource}
-                            removeClippedSubviews={false}
-                            renderRow={this.renderRow}
-                            style={{paddingHorizontal:10}}
+                        <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
+                            <ListView
+                                ref={(lv) => this.listView = lv}
+                                dataSource={this.state.dataSource}
+                                removeClippedSubviews={false}
+                                renderRow={this.renderRow}
+                                style={{paddingHorizontal:10}}
 
-                            renderFooter={this.myRenderFooter.bind(this)}
-                            renderHeader={()=>this.myRenderHeader()}
-                            onLayout={this._onListViewLayout}
-                            enableEmptySections={true}
+                                renderFooter={this.myRenderFooter.bind(this)}
+                                renderHeader={()=>this.myRenderHeader()}
+                                onLayout={this._onListViewLayout}
+                                enableEmptySections={true}
 
-                            //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-                            {...this._gestureHandlers}
-                        />
-                        <Ces/>
-                        {/*<ImageModal/>*/}
-                        <Player/>
+                                //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
+                            />
+                        </View>
                         {this.renderModal()}
                     </View>
             );
@@ -635,9 +694,6 @@ class Chat extends Component {
 
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
-                        <Ces/>
-                        {/*<ImageModal/>*/}
-                        <Player/>
                         {this.renderModal()}
                     </View>
                 )
@@ -779,7 +835,7 @@ const mapStateToProps = (state,props) => ({
     chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
     accountId:state.loginStore.accountMessage.accountId,
     myAvator:state.loginStore.accountMessage.avator,
-    accountName:state.loginStore.accountMessage.nick
+    accountName:state.loginStore.accountMessage.Nick
 });
 
 const mapDispatchToProps = dispatch => ({

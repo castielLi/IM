@@ -16,19 +16,12 @@ import {Text,
 } from 'react-native';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
-import MyNavigationBar from '../../../Core/Component/NavigationBar'
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-import IM from '../../../Core/IM';
-import User from '../../../Core/User';
-import {bindActionCreators} from 'redux';
-
-
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
+import SettingController from '../../../Controller/settingController';
+let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let im = new IM();
-let user = new User();
 class GroupAnnouncement extends ContainerComponent {
     constructor(){
         super()
@@ -69,8 +62,9 @@ class GroupAnnouncement extends ContainerComponent {
 
     toChangeDiscription = ()=>{
         let {accountId,ID,navigator} = this.props;
-        currentObj.showLoading()
-        this.fetchData("POST","Member/ModifyGroupDescription",function(result){
+        currentObj.showLoading();
+        let params = {"Operater":accountId,"GroupId":ID,"Desc":this.state.text};
+        settingController.toChangeDiscription(params,(result)=>{
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);
@@ -95,9 +89,7 @@ class GroupAnnouncement extends ContainerComponent {
             }else{
                 alert("http请求出错")
             }
-
-
-        },{"Operater":accountId,"GroupId":ID,"Desc":this.state.text})
+        })
     }
 
     render() {
@@ -171,7 +163,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
 
-    accountName:state.loginStore.accountMessage.nick,
+    accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId
 });
 

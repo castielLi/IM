@@ -43,16 +43,25 @@ export function deleteMessage(message,chatType,client){
 export function deleteChatRecode(name){
     IMFMDB.DeleteClientRecodeByName(name);
 }
+
 //修改某client的未读消息数量
 export function updateUnReadMessageNumber(name,number){
     IMFMDB.updateUnReadMessageNumber(name,number);
 }
+export function addChatUnReadMessageNumber(name){
+    IMFMDB.addChatUnReadMessageaNumber(name);
+}
+
 export function InsertResource(messageId,localPath){
     IMFMDB.InsertResource(messageId,localPath);
 }
 
 export function DeleteResource(messageId,localPath){
    IMFMDB.DeleteResource(messageId,localPath);
+}
+
+export function UpdateMessageContentByMSGID(content,messageId){
+    IMFMDB.UpdateMessageContent(content,messageId);
 }
 
 //向消息列表中添加消息
@@ -69,9 +78,13 @@ export function popMessageInSendSqlite(messageId){
 export function getAllCurrentSendMessage(callback){
     return IMFMDB.getAllCurrentSendMessages(callback)
 }
-
-export function updateMessageRemoteUrl(messageId,url){
-    IMFMDB.updateMessageRemoteUrl(messageId,url);
+//更改资源文件的本地路径
+export function updateMessageLocalSource(messageId,url){
+    IMFMDB.updateMessageLocalSource(messageId,url);
+}
+//更改资源文件的远程路径
+export function updateMessageRemoteSource(messageId,url){
+    IMFMDB.updateMessageRemoteSource(messageId,url);
 }
 
 //修改发送队列中的消息状态
@@ -149,6 +162,8 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
         });
     }, (err)=>{errorDB('初始化数据库',err)});
 }
+
+
 
 //todo：想办法进行批量操作
 IMFMDB.InsertMessageWithCondition = function(message,client,callback){
@@ -256,6 +271,23 @@ IMFMDB.InsertFriendMessage = function(message){
             tx.executeSql(insertSql, [], (tx, results) => {
                console.log("添加好友申请消息成功");
             }, (err)=>{errorDB('添加好友申请消息',err)});
+        });
+    }, errorDB);
+}
+
+//修改message的消息内容
+IMFMDB.UpdateMessageContent = function(content,messageId){
+    let updateSql = sqls.ExcuteIMSql.UpdateMessageContent;
+
+    updateSql = commonMethods.sqlFormat(updateSql,[content,messageId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(updateSql, [], (tx, results) => {
+                console.log("修改消息内容成功");
+            }, (err)=>{errorDB('修改消息内容',err)});
         });
     }, errorDB);
 }
@@ -628,8 +660,20 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
 
-IMFMDB.updateMessageRemoteUrl = function(messageId,url){
-    let sql = sqls.ExcuteIMSql.UpdateMessageRemoteUrl
+IMFMDB.addChatUnReadMessageaNumber = function(name){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            addChatUnReadMessageaNumber(name,tx)
+        });
+
+    }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
+}
+
+IMFMDB.updateMessageLocalSource = function(messageId,url){
+    let sql = sqls.ExcuteIMSql.UpdateMessageLocalSource
 
     sql = commonMethods.sqlFormat(sql,[url,messageId]);
     var db = SQLite.openDatabase({
@@ -639,12 +683,31 @@ IMFMDB.updateMessageRemoteUrl = function(messageId,url){
         db.transaction((tx) => {
             tx.executeSql(sql, [], (tx, results) => {
 
-                console.log("修改video消息url路径成功");
+                console.log("修改消息path路径成功");
 
-            }, (err)=>{errorDB('修改video消息url',err)});
+            }, (err)=>{errorDB('修改消息path',err)});
         });
 
-    }, (err)=>{errorDB('修改video消息url失败',err)});
+    }, (err)=>{errorDB('修改消息path失败',err)});
+}
+
+IMFMDB.updateMessageRemoteSource = function(messageId,url){
+    let sql = sqls.ExcuteIMSql.UpdateMessageRemoteSource
+
+    sql = commonMethods.sqlFormat(sql,[url,messageId]);
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("修改消息url路径成功");
+
+            }, (err)=>{errorDB('修改消息url',err)});
+        });
+
+    }, (err)=>{errorDB('修改消息url失败',err)});
 }
 
 IMFMDB.closeImDb = function(){
@@ -727,6 +790,16 @@ function updateUnReadMessage(name,number,tx){
         console.log("update unReadMessageNumber success");
 
     }, (err)=>{errorDB('update unReadMessageNumber',err)});
+}
+
+function addChatUnReadMessageaNumber(name,tx){
+    let updateSql = sqls.ExcuteIMSql.AddChatUnReadMessageaNumber;
+    updateSql = commonMethods.sqlFormat(updateSql,[name]);
+    tx.executeSql(updateSql, [], (tx, results) => {
+
+        console.log("add unReadMessageNumber success");
+        console.log("add unReadMessageNumber success");
+    }, (err)=>{errorDB('add unReadMessageNumber',err)});
 }
 
 function deleteClientChatList(tableName,tx){

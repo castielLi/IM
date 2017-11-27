@@ -15,13 +15,13 @@ import {
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import {addTextMessage} from '../../../../Core/IM/action/createMessage';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
 var {height, width} = Dimensions.get('window');
-const im = new IM();
+const chatController = new ChatController();
 let isIos = (Platform.OS === 'ios') ? true : false;
 class AutoExpandingTextInput extends Component {  
   constructor(props) {  
@@ -46,11 +46,12 @@ class AutoExpandingTextInput extends Component {
     if(this.state.data){
       //初始化消息
       let message = addTextMessage(this.state.data,this.props.type,this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
-      im.addMessage(message,(status,messageId)=>{
+        chatController.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-        this.props.addMessage(message);
-        this.input.clear();
+          this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+
+          this.input.clear();
         if(isIos){
             //发送表情不会获得焦点
             if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
@@ -102,7 +103,7 @@ class AutoExpandingTextInput extends Component {
        maxLength = {150}
        defaultValue={this.state.data}  
        onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
-       style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:50}]}  
+       style={[styles.textInputStyle,{height:Math.max(pxToPt(40),pxToPt(this.state.inputHeight)),left:this.props.thouchBarStore.isRecordPage?-999:(Platform.OS === 'android'?65:50)}]}
        >  
       </TextInput>  
     );  
@@ -120,17 +121,17 @@ class AutoExpandingTextInput extends Component {
 const styles = StyleSheet.create({  
   textInputStyle:{ 
     position:'absolute',
-    left:50,
-    top:pxToPt(5), 
+    left:Platform.OS === 'android'?90:50,
+      bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
     fontSize:20, 
     lineHeight:20, 
-    width:width-150,
+    width:Platform.OS === 'android'?width-185:width-140,
     height:40,
     borderColor:'#ccc',
     borderWidth:pxToPt(1),   
     backgroundColor:'#fff',  
     borderRadius:5,
-    overflow:'hidden',
+    //overflow:'hidden',
     padding:0,
     paddingLeft:5,
     paddingRight:5,

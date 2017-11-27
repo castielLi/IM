@@ -8,15 +8,11 @@ import RNFS from 'react-native-fs';
 import * as TYPES from './actionTypes';
 import {clearChatRecord} from '../../../Core/Redux/chat/action';
 import {clearRelation} from '../../../Core/Redux/contact/action';
-import {clearRecentList} from '../../../Core/User/redux/action';
-import {closeImDb} from '../../../Core/IM/StoreSqlite';
+import {clearRecentList} from '../../../Core/Redux/RecentList/action';
 import {clearFriendApplication} from '../../../Core/Redux/applyFriend/action'
 import {clearAllTabberMessageNumber,changeTabBar} from '../../MainTabbar/reducer/action';
-import Route from '../../../Core/route/router';
-import User from '../../../Core/User'
-import IM from '../../../Core/IM'
-let im = new IM();
-let user = new User();
+
+
 export function signIn(accountMessage){
     return {
         type: TYPES.LOGGED_IN,
@@ -46,10 +42,6 @@ export function signOut(){
         dispatch(clearRecentList());
         dispatch(clearAllTabberMessageNumber());
         dispatch(changeTabBar(0));
-        closeImDb();
-        user.closeDB();
-        im.logout();
-        Route.ToLogin();
     }
 }
 

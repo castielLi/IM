@@ -18,10 +18,15 @@ FileManager.Ioc = function(im){
     currentObj = im;
 }
 
-FileManager.addResource = function(message,onprogress,callback){
+FileManager.addResource = function(messageId){
 
-    resourceQueue.push({onprogress:onprogress,message:message})
-    callback(true,message.MSGID);
+    let cache = currentObj.getCacheFromCacheByMSGID(messageId);
+    let callback = cache["callback"];
+    let onprogress = cache["onprogress"];
+    let message = cache["message"];
+
+    resourceQueue.push({onprogress:onprogress,message:message,callback:callback})
+    callback&&callback(true,messageId);
 }
 
 //执行resource队列
@@ -29,19 +34,11 @@ FileManager.handleResourceQueue = function(){
 
     if(resourceQueue.length > 0){
 
-        let copyResourceQueue = Helper.cloneArray(resourceQueue);
 
-        //cloneArry 方法不能拷贝方法
         for(let item in resourceQueue){
-            copyResourceQueue[item].onprogress = resourceQueue[item].onprogress;
+            FileManager.uploadResource(resourceQueue[item]);
         }
-
-        resourceQueue = [];
-
-        for(let item in copyResourceQueue){
-            FileManager.uploadResource(copyResourceQueue[item]);
-        }
-        copyResourceQueue=[];
+        resourceQueue=[];
 
     }
 }
@@ -49,12 +46,11 @@ FileManager.handleResourceQueue = function(){
 //执行upload函数体
 FileManager.uploadResource = function(obj){
 
+    let messageId = obj["messageId"];
+
     let message = obj["message"];
 
-    let copyMessage = Object.assign({}, message);
-
     let progressHandles = obj["onprogress"] != null?obj["onprogress"]:null;
-    let callback = obj["callback"];
 
     if(window.networkStatus == networkStatuesType.normal) {
 
@@ -94,13 +90,11 @@ FileManager.uploadResource = function(obj){
         Promise.all(uploadQueue).then(function(values){
             console.log(values + "已经上传成功了" + message.MSGID);
 
-            let copyMessage = Object.assign({}, message);
-
-            copyMessage.status = SendStatus.PrepareToSend;
-            currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+            message.status = SendStatus.PrepareToSend;
+            currentObj.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
 
             //返回IM logic 添加message到发送队列中
-            currentObj.addSendMessageQueue(message);
+            currentObj.addSendMessageQueue(message.MSGID);
 
             //App上层修改message细节
             currentObj.MessageChangeStatusHandle(message);
@@ -109,8 +103,8 @@ FileManager.uploadResource = function(obj){
             console.log('上传失败的内容是',values);
         })
     }else{
-        copyMessage.status = SendStatus.PrepareToUpload;
-        currentObj.addUpdateSqliteQueue(copyMessage,UpdateMessageSqliteType.changeSendMessage)
+        message.status = SendStatus.PrepareToUpload;
+        currentObj.addUpdateSqliteQueue(message,UpdateMessageSqliteType.changeSendMessage)
     }
 }
 
@@ -122,24 +116,30 @@ FileManager.downloadResource = function(message,callback){
         way = message.way,
         toFile;
 
-    let format = fromUrl.slice(fromUrl.lastIndexOf('.'));
-    toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/${new Date().getTime()}${format}`;
+    let format = fromUrl.slice(fromUrl.lastIndexOf('/'));
+    toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}${format}`;
 
     console.log('下载前=============================:  ',message,toFile)
-
     message.Resource[0].LocalSource = null;
     updateMessage = (result) => {
         if(type === 'image'){
             toFile = 'file://'+toFile;
+            message.Resource[0].RemoteSource = fromUrl + '#imageView2/0/w/200/h/200';
         }
         message.Resource[0].LocalSource = toFile;
         console.log('下载成功后=============================:  ',message)
         callback(message)
     }
-
-    _network.methodDownload(fromUrl,toFile,updateMessage)
+    let url = type === 'image' ? fromUrl + '?imageView2/0/w/200/h/200' : fromUrl;
+    _network.methodDownload(url,toFile,updateMessage)
 
     console.log('receiveMessageOpreator:  ',message)
 }
+
+
+FileManager.downloadVideoSource = function(remoteURL,filePath,callback,onprogeress){
+    _network.methodDownloadWithProgress(remoteURL,filePath,callback,onprogeress);
+}
+
 
 export default FileManager;

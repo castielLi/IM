@@ -14,16 +14,21 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import netWorking from '../../../../Core/Networking/Network';
 import RNFS from 'react-native-fs';
-import IM from '../../../../Core/IM';
+// import IM from '../../../../Core/IM';
+import chatController from '../../../../Controller/chatController';
 import * as commonActions from '../../../../Core/Redux/chat/action';
+import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import {
+    Navigator,
+} from 'react-native-deprecated-custom-components';
 
-let im = new IM();
+// let im = new IM();
+let ChatController = new chatController();
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageVideo extends Component {
+class ChatMessageVideo extends ContainerComponent {
     constructor(props){
         super(props)
         this.state = {
@@ -40,7 +45,7 @@ class ChatMessageVideo extends Component {
     };
 
     playVideo = (Local,Remote,data)=>{
-        let network = new netWorking();
+        //let network = new netWorking();
         let currentObj = this;
         RNFS.exists(Local).then((success) => {
             if(!success){
@@ -59,24 +64,28 @@ class ChatMessageVideo extends Component {
                 let format = Remote.slice(Remote.lastIndexOf('.'));
                 let msgID = data.message.MSGID;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
-                network.methodDownloadWithProgress(Remote,filePath,function () {
 
+                ChatController.downloadVideo(Remote,filePath,function () {
+                    //alert('保存到本地：'+filePath)
                     currentObj.props.updateMessagePath(msgID,filePath,Sender)
-                    im.updateMessageRemoteUrl(msgID,filePath)
+                    //im.updateMessageLocalSource(msgID,filePath)
+                    ChatController.updateMessageLocalSource(msgID,filePath);
 
                     currentObj.setState({
                         download:false,
                     })
-                    currentObj.props.showMediaPlayer(filePath)
+                    //currentObj.props.showMediaPlayer(filePath)
+                    currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
                 },function (percent) {
                     currentObj.setState({
                         progress:Math.ceil(percent * 100),
                         download:true,
                     });
-                })
+                });
             }
             else{
-                this.props.showMediaPlayer(Local)
+                //this.props.showMediaPlayer(Local)
+                this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
             }
         }).catch((err) => {
             console.log(err.message);

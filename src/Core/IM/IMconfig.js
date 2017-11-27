@@ -7,3 +7,4 @@ export const RunloopIntervalTime = 200;
 export const SendMessageIntervalTime = 100;
 export const RecMessageIntervalTime = 100;
 export const ackIntervalTime = 100;
+export const Max_Send_Times = 3;

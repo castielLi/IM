@@ -65,6 +65,8 @@ ReceiveManager.receiveMessageOpreator = function(message){
             let blackMessage = blackListMessage(sender,message.MSGID);
             currentObj.storeRecMessage(blackMessage);
 
+            currentObj.storeMessageCache({"MSGID":message.MSGID,"message":message});
+
             //收到新的消息界面响应
              currentObj.ReceiveMessageHandle(blackMessage);
 
@@ -79,6 +81,12 @@ ReceiveManager.receiveMessageOpreator = function(message){
             currentObj.addUpdateSqliteQueue(updateMessage, UpdateMessageSqliteType.storeMessage)
 
             currentObj.sendReceiveAckMessage(blackMessage.MSGID)
+        }else{
+            let sender = message.Data.SourceMSGID.split("_")[0];
+            let blackMessage = blackListMessage(sender,message.MSGID);
+
+            currentObj.sendReceiveAckMessage(blackMessage.MSGID)
+            currentObj.storeMessageCache({"MSGID":message.MSGID,"message":message});
         }
         return;
     }
@@ -107,6 +115,9 @@ ReceiveManager.receiveMessageOpreator = function(message){
             currentObj.storeRecMessage(message)
             //回调App上层发送成功
             currentObj.ReceiveMessageHandle(message);
+
+            currentObj.storeMessageCache({"MSGID":message.MSGID,"message":message});
+
         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND){
             message.type = MessageType.friend
             message.way = "private"
@@ -154,6 +165,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
         })
     }
 
+    currentObj.storeMessageCache({"MSGID":message.MSGID,"message":message});
     currentObj.sendReceiveAckMessage(message.MSGID)
 }
 

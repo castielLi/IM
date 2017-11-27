@@ -31,12 +31,12 @@ import AutoExpandingTextInput from './autoExpandingTextInput';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 
-import IM from '../../../../Core/IM/index';
+import ChatController from '../../../../Controller/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
-const im = new IM();
+const chatController = new ChatController();
 var {
   height,
   width
@@ -142,7 +142,9 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressIn() {
-    if(!this.shouldPressSpeakBox) return;
+    if(!this.shouldPressSpeakBox){
+        return;
+    }
     clearInterval(checkMaxRecordTimeInterval);
     clearTimeout(recordTimer);
     //开始录音
@@ -168,6 +170,7 @@ class ThouchBarBoxTopBox extends Component {
   }
 
   _onPressOut() {
+    this.shouldPressSpeakBox = false;
     clearInterval(checkMaxRecordTimeInterval)
     //针对点了立即放的情况
     if (Date.now() - startTime < 200) {
@@ -186,11 +189,17 @@ class ThouchBarBoxTopBox extends Component {
       }, 1000)
       return;
     }
+
+
+      // setTimeout(()=>{this.setState({
+      //     isShowModal: false,
+      // })},1000)
+      this.setState({
+              isShowModal: false,
+          })
     let stop = () => {
         audio&&audio._stop((currentTime) => {
-          this.setState({
-              isShowModal: false,
-            })
+
             //初始化消息
           let message = addResourceMessage('audio',this.props.type, [{
             FileType: ResourceTypeEnum.audio,
@@ -199,10 +208,10 @@ class ThouchBarBoxTopBox extends Component {
               Time:currentTime?currentTime:1
           }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             //发送消息到IM
-          im.addMessage(message, (status, messageId) => {
+            chatController.addMessage(message, (status, messageId) => {
             message.MSGID = messageId;
             //更新chatRecordStore
-            this.props.addMessage( message)
+            this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
           }, [(tips) => {
             console.log(tips)
           }]);
@@ -219,10 +228,12 @@ class ThouchBarBoxTopBox extends Component {
     })
   }
   _onPressCancel() {
+      this.shouldPressSpeakBox = false;
     clearInterval(checkMaxRecordTimeInterval)
     //结束录音 
     let stop = ()=>{
       audio._stop((currentTime)=>{
+        this.shouldPressSpeakBox = true;
       //删除该录音文件
       RNFS.unlink(this.audioPath + '/' + this.state.fileName  + '.aac')
       });
@@ -253,10 +264,10 @@ class ThouchBarBoxTopBox extends Component {
   renderEnterBox() {
     return (
       <View style={{overflow:"hidden",flex:1}}>
-        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?50:-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
+        <View ref={(com)=>this.re = com} {...this._gestureHandlers} style={[styles.speakBox,{left:this.props.thouchBarStore.isRecordPage?(Platform.OS === 'android'?65:50):-999,backgroundColor:this.state.isOnPressSpeakBox?'#bbb':'transparent'}]} >
            <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
         </View>
-        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type}></AutoExpandingTextInput>
+        <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject} changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight} emojiText={this.props.emojiText} emojiId={this.props.emojiId} setTextInputData={this.setTextInputData} client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></AutoExpandingTextInput>
       </View>
     )
   }
@@ -268,11 +279,18 @@ class ThouchBarBoxTopBox extends Component {
   }
   componentWillMount() {
     this._gestureHandlers = {
-        onStartShouldSetResponder: () => true,  //对触摸进行响应
-        onMoveShouldSetResponder: ()=> true,  //对滑动进行响应
+        onStartShouldSetResponder: () => {if(!this.shouldPressSpeakBox){
+            return false;
+        }else{return true}},  //对触摸进行响应
+        onMoveShouldSetResponder: ()=> {if(!this.shouldPressSpeakBox){
+            return false;
+        }else{return true}},  //对滑动进行响应
         onResponderTerminationRequest: ()=>false,// 有其他组件请求接替响应者，当前View拒绝放权
         //激活时做的动作
         onResponderGrant: ()=>{
+            // if(!this.shouldPressSpeakBox){
+            //     return;
+            // }
           this.setState({
             isOnPressSpeakBox:true
           })
@@ -280,6 +298,9 @@ class ThouchBarBoxTopBox extends Component {
         },
         //移动时作出的动作
         onResponderMove: (e)=>{
+            // if(!this.shouldPressSpeakBox){
+            //     return;
+            // }
           if(e.nativeEvent.pageY<this.speakBoxOffsetY){
               this.setState({
               recordingModalStatus: 2,
@@ -292,6 +313,9 @@ class ThouchBarBoxTopBox extends Component {
         },
         //动作释放后做的动作
         onResponderRelease: ()=>{
+            // if(!this.shouldPressSpeakBox){
+            //     return;
+            // }
           this.setState({
             isOnPressSpeakBox:false
           })
@@ -403,8 +427,8 @@ const styles = StyleSheet.create({
   },
   button: {
     position: 'absolute',
-    height: pxToPt(30),
-    width: pxToPt(30),
+    height: Platform.OS === 'android'?pxToPt(40):pxToPt(30),
+    width: Platform.OS === 'android'?pxToPt(40):pxToPt(30),
     borderWidth: pxToPt(1),
     borderColor: '#aaa',
     borderRadius: pxToPt(20),
@@ -412,26 +436,27 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   voiceButton: {
-    bottom: pxToPt(10),
-    left: 5
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    left: Platform.OS === 'android'?15:5,
   },
   smileButton: {
-    bottom: pxToPt(10),
-    right: 60
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    right: Platform.OS === 'android'?70:50,
   },
   plusButton: {
-    bottom: pxToPt(10),
-    right: 5
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    right: Platform.OS === 'android'?15:5,
   },
     sendButton:{
         position: 'absolute',
         height: pxToPt(40),
-        width: pxToPt(45),
+        width: pxToPt(55),
         backgroundColor:'#3399ff',
         justifyContent: 'center',
         alignItems: 'center',
-        bottom: pxToPt(5),
-        right: 5
+        bottom: pxToPt(6),
+        right: 5,
+        borderRadius:4
     },
     sendButtonTxt:{
       color:'#fff'
@@ -439,9 +464,9 @@ const styles = StyleSheet.create({
   speakBox: {
     position: 'absolute',
     height: pxToPt(40),
-    width: width - 150,
-    left: 50,
-    top: 5,
+    width: Platform.OS === 'android'?width-185:width-140,
+    left: Platform.OS === 'android'?90:50,
+      bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
     borderRadius: 5,
     borderColor: '#ccc',
     borderWidth: pxToPt(1),

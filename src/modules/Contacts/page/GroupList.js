@@ -22,11 +22,11 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../../Core/User/redux/action';
+import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as contactsActions from '../../../Core/Redux/contact/action';
-import User from '../../../Core/User';
-import MyNavigationBar from '../../../Core/Component/NavigationBar';
-import {initSection,initDataFormate,initFlatListData} from './formateData';
+import User from '../../../Core/UserGroup';
+import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
+import {initFlatListData} from './formateData';
 var {height, width} = Dimensions.get('window');
 
 class GroupList extends ContainerComponent {
@@ -45,7 +45,7 @@ class GroupList extends ContainerComponent {
     }
 
     goToChat = (item)=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type,HeadImageUrl:item.avator,Nick:item.Nick}});
     }
 
     _renderAvator= (Obj)=>{
@@ -114,6 +114,7 @@ class GroupList extends ContainerComponent {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor:'white'
     },
     sectionHeader:{
         height: 30,

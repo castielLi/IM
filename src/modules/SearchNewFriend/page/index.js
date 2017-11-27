@@ -15,10 +15,12 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import settingController from '../../../Controller/settingController';
 
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
+let SettingController = new settingController();
 
 class SearchNewFriend extends ContainerComponent {
     constructor(){
@@ -40,41 +42,66 @@ class SearchNewFriend extends ContainerComponent {
 
 
     searchUser = (keyword)=>{
-
-        currentObj.showLoading()
-        this.fetchData("POST","Member/SearchUser",function(result){
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-
-
-            if(result.data.Data){
-
-
+        let params = {"Keyword":keyword};
+        currentObj.showLoading();
+        callback = (result) =>{
+            currentObj.hideLoading();
+            if(result.success && result.data.Data){
                 let relations = currentObj.props.relations;
                 let needRelation = null;
                 let hasRelation = false;
                 for(let item in relations){
-                     if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-                         hasRelation = !hasRelation;
-                         needRelation = relations[item];
-                         break;
-                     }
+                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+                        hasRelation = !hasRelation;
+                        needRelation = relations[item];
+                        break;
+                    }
                 }
                 if(hasRelation===false){
                     needRelation = result.data.Data;
                 }
                 currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-
-
-            }else{
-                that.setState({
-                    searchResult:false
-                })
             }
-        },{"Keyword":keyword})
+            else{
+                console.log('查找用户出错');
+            }
+        };
+        SettingController.searchUser(params,callback);
+
+        // currentObj.showLoading()
+        // this.fetchData("POST","Member/SearchUser",function(result){
+        //     currentObj.hideLoading()
+        //     if(!result.success){
+        //         alert(result.errorMessage);
+        //         return;
+        //     }
+        //
+        //
+        //     if(result.data.Data){
+        //
+        //
+        //         let relations = currentObj.props.relations;
+        //         let needRelation = null;
+        //         let hasRelation = false;
+        //         for(let item in relations){
+        //              if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+        //                  hasRelation = !hasRelation;
+        //                  needRelation = relations[item];
+        //                  break;
+        //              }
+        //         }
+        //         if(hasRelation===false){
+        //             needRelation = result.data.Data;
+        //         }
+        //         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+        //
+        //
+        //     }else{
+        //         that.setState({
+        //             searchResult:false
+        //         })
+        //     }
+        // },{"Keyword":keyword})
     }
 
     render() {

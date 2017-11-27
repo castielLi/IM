@@ -4,12 +4,13 @@
 import { combineReducers } from 'redux';
 import loginStore from '../../modules/Login/reducer';
 import chatRecordStore from '../../Core/Redux/chat/index';
-import recentListStore from '../../Core/User/redux/index';
+import recentListStore from '../../Core/Redux/RecentList/index';
 import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} from '../../modules/ChatDetail/reducer/index';
 import relationStore from '../../Core/Redux/contact';
 import friendApplicationStore from '../../Core/Redux/applyFriend/index'
 import FeaturesStore from '../../modules/Common/menu/reducer'
+import NavigationBottomStore  from '../../modules/Common/NavigationBar/reducer/index'
 export default combineReducers({
 	//登录状态
     loginStore,
@@ -34,6 +35,8 @@ export default combineReducers({
     //控制features显示隐藏
     FeaturesStore,
     //播放器状态
-    mediaPlayerStore
+    mediaPlayerStore,
+    //导航底部显示隐藏
+    NavigationBottomStore
 
 });
