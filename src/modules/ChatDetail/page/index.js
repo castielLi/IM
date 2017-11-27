@@ -156,7 +156,8 @@ class ChatDetail extends ContainerComponent {
 					left={{func:()=>{
 					    this.route.toMain(this.props);
 					    this.props.changeChatDetailPageStatus(false,'','');
-                        chatController.stopChatWithOldClient();
+                        chatController.emptyCurrentChat();
+                        chatController.emptyChangeCallback()
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={this.getNickByIdFromRelation(this.props.client)} />

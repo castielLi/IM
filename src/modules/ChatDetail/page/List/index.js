@@ -128,6 +128,15 @@ class Chat extends Component {
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
         if(this.props.type == "chatroom"){
+
+
+            //设置人员变动的回调
+            ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
+                currentObj.setState({
+                    groupMembers
+                })
+            })
+
             ChatController.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
                 currentObj.setState({
                     groupMembers,

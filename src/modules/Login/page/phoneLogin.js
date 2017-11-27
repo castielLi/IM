@@ -14,6 +14,8 @@ import * as Actions from '../reducer/action';
 import UUIDGenerator from 'react-native-uuid-generator';
 import LoginController from '../../../Controller/loginController'
 import ChatController from '../../../Controller/chatController'
+import Touch from '../../Common/Thouch/index';
+//import Touch from 'react-native-touch-once';
 let loginController = new LoginController();
 let chatController = new ChatController();
 let currentObj = undefined;
@@ -184,7 +186,10 @@ class PhoneLogin extends ContainerComponent {
 
 				<View style= {styles.footer}>
 					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
-					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
+					{/*<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>*/}
+					<Touch onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'});}} activeOpacity = {0.8}
+						return
+					><Text style= {styles.footerText}>忘记密码</Text></Touch>
 				</View>
 				</View>
 				{
