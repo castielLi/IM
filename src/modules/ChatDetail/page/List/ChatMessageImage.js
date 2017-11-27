@@ -59,8 +59,8 @@ class ChatMessageImage extends ContainerComponent {
         return {uri:Source}
     }
 
-    goToCes = (path,Remote,MSGID,Sender)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    goToCes = (Path,Remote,MSGID,Sender)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"Path":Path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;

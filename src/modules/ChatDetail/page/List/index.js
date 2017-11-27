@@ -31,7 +31,7 @@ import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
 import User from '../../../../Core/UserGroup'
 import chatController from '../../../../Controller/chatController'
-
+import SettingController from '../../../../Controller/settingController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -47,14 +47,20 @@ let firstOldMsg;
 let recordData;
 let _responderPageY;
 
-let user = new User();
-let ChatController = new chatController();
 
+let ChatController = new chatController();
+let settingController = new SettingController();
 
 class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
+            if(r1.message.type === 'image')
+            {
+                let r1Local = r1.message.Resource[0].LocalSource;
+                let r2Local = r2.message.Resource[0].LocalSource;
+                return r1Local !== r2Local || r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
+            }
             return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
         }});
 
@@ -126,6 +132,12 @@ class Chat extends Component {
 
             //设置人员变动的回调
             ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
+                currentObj.setState({
+                    groupMembers
+                })
+            })
+
+            settingController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
                 currentObj.setState({
                     groupMembers
                 })

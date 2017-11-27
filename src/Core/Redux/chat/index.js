@@ -128,31 +128,52 @@ export default function chatRecordStore(state = initialState, action) {
             if(state.ChatRecord[action.sender]===undefined){
                 state.ChatRecord[action.sender] = []
             }
-            state.ChatRecord[action.sender].forEach(function(itemArr,index,arr) {
+            let PATHState = JSON.parse(JSON.stringify(state));
+            PATHState.ChatRecord[action.sender].forEach(function (itemArr,index,arr) {
                 if(itemArr.message.MSGID === action.MSGID){
                     itemArr.message.Resource[0].LocalSource = action.path;
                 }
             });
-            //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
-            state.ChatRecord[action.sender] = state.ChatRecord[action.sender].concat([]);
-            return {
-                ...state
-            };
+            return PATHState;
+            // state.ChatRecord[action.sender].forEach(function(itemArr,index,arr) {
+            //     if(itemArr.message.MSGID === action.MSGID){
+            //         itemArr.message.Resource[0].LocalSource = action.path;
+            //     }
+            // });
+            // //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
+            // state.ChatRecord[action.sender] = state.ChatRecord[action.sender].concat([]);
+            // return {
+            //     ...state
+            // };
 
         case 'UPDATE_MESSAGES_URL':
             if(state.ChatRecord[action.sender]===undefined){
                 state.ChatRecord[action.sender] = []
             }
-            state.ChatRecord[action.sender].forEach(function(itemArr,index,arr) {
+            let URLState = JSON.parse(JSON.stringify(state));
+            URLState.ChatRecord[action.sender].forEach(function (itemArr,index,arr) {
                 if(itemArr.message.MSGID === action.MSGID){
                     itemArr.message.Resource[0].RemoteSource = action.url;
                 }
             });
-            //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
-            state.ChatRecord[action.sender] = state.ChatRecord[action.sender].concat([]);
-            return {
-                ...state
-            };
+            return URLState;
+            // state.ChatRecord[action.sender].forEach(function(itemArr,index,arr) {
+            //     if(itemArr.message.MSGID === action.MSGID){
+            //         itemArr.message.Resource[0] = {...itemArr.message.Resource[0]};
+            //         itemArr.message.Resource[0].RemoteSource = action.url;
+            //
+            //     }
+            // });
+            // //聊天内容页面需要刷新，实现某用户聊天数组的深拷贝，改变聊天数组的引用
+            // state.ChatRecord[action.sender] = state.ChatRecord[action.sender].concat([]);
+            // return {
+            //     ...state,
+            //     message:{
+            //         Resource:[
+            //             {...itemArr.message.Resource[0]}
+            //         ]
+            //     }
+            // };
 
         case 'HANDLE_CHATRECORD':
             let ChatRecord = state.ChatRecord[action.client];

@@ -596,8 +596,8 @@ export default class IM {
         FileManager.downloadResource(message,callback);
     }
 
-    addDownloadVideoSource(remoteURL,filePath,callback,onprogress){
-        FileManager.downloadVideoSource(remoteURL,filePath,callback,onprogress);
+    manualDownloadResource(remoteURL,filePath,callback,onprogress){
+        FileManager.manualDownloadResource(remoteURL,filePath,callback,onprogress);
     }
 
 
