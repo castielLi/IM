@@ -507,8 +507,8 @@ export default class IM {
         storeSqlite.closeImDb();
     }
     receiveMessageOpreator(message){
-        if(message.Command == undefined) {
-            this.ackBackMessageHandle(message);
+        if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
+            this.ackBackMessageHandle(message.Data);
         }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
             ReceiveManager.receiveMessageOpreator(message);
         }
@@ -576,7 +576,6 @@ export default class IM {
         console.log("IM Core:消息内容"+message + " 开始执行pop程序");
 
         if(type == MessageCommandEnum.MSG_HEART){
-            // message.Command = MessageCommandEnum.MSG_HEART;
             console.log("心跳包压入发送队列")
             //将心跳包消息存入cache，便于send消息
             cacheMessage.push(cacheMethods.createCacheMessage(message));
@@ -584,6 +583,7 @@ export default class IM {
             return;
         }else if(type == MessageCommandEnum.MSG_KICKOUT){
             console.log("设备被踢出消息")
+            currentObj.socket.logout();
             ControllerKickOutHandle();
             return;
         }
