@@ -247,7 +247,7 @@ function receiveMessageHandle(message){
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
-                currentGroupChatMemberChangesCallback(groupMembers);
+                currentGroupChatMemberChangesCallback&&currentGroupChatMemberChangesCallback(groupMembers);
 
                 var accounts = message.Data.Data.Data.split(',');
 

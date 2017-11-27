@@ -19,6 +19,9 @@ let __instance = (function () {
 
 let currentObj = undefined;
 
+//标示当前群组聊天人员名单变动回调
+let currentGroupChatMemberChangesCallback = undefined;
+
 export default class settingController {
     constructor() {
         if (__instance()) return __instance();
@@ -230,6 +233,11 @@ export default class settingController {
             callback(result);
         })
     }
+
+    setCurrentGroupChatMemberChangeCallback(callback){
+        currentGroupChatMemberChangesCallback = callback;
+    }
+
     //添加群成员
     //参数：发起人id,“选中的nick1,选中的nick2,...”,[{"Account":选中的id1},{"Account":选中的id2},...]，群Id,,请求参数，回调函数
     addGroupMember(accountId,Nicks,splNeedArr,groupId,chooseArr,params,callback){
@@ -251,6 +259,10 @@ export default class settingController {
                     chooseArr.forEach((val,it)=>{
                         currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
                         currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
+                    })
+                    //成员增加后，聊天室的groupMembers也要增加
+                    currentObj.user.getInformationByIdandType(groupId,'chatroom',function(relation,groupMembers){
+                        currentGroupChatMemberChangesCallback(groupMembers);
                     })
                 }
 
