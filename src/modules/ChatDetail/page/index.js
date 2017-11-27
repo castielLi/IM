@@ -61,6 +61,7 @@ class ChatDetail extends ContainerComponent {
             //新建文件夹
             let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
             let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
+            let thumbnail = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client+'/thumbnail';
             let videoPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/video/chat/' + type + '-' +client;
             RNFS.mkdir(audioPath)
                 .then((success) => {
@@ -70,6 +71,13 @@ class ChatDetail extends ContainerComponent {
                     console.log(err.message);
                 });
             RNFS.mkdir(imagePath)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+            RNFS.mkdir(thumbnail)
                 .then((success) => {
                     console.log('create new dir success!');
                 })
