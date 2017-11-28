@@ -19,6 +19,7 @@ import RNFS from 'react-native-fs';
 import chatController from '../../../../Controller/chatController';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
@@ -100,14 +101,14 @@ class ChatMessageVideo extends ContainerComponent {
         let {LocalSource,RemoteSource} = data.message.Resource[0];
         return(
             <View style={[styles.bubble]}>
-                <TouchableOpacity onPress={()=>{this.playVideo(LocalSource,RemoteSource,data)}} disabled={this.state.download}>
+                <Thouch onPress={()=>{this.playVideo(LocalSource,RemoteSource,data)}} disabled={this.state.download}>
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
                             <Text style={styles.progressText}>{this.state.progress}%</Text>
                         </View> :null
                     }
-                </TouchableOpacity>
+                </Thouch>
             </View>
         )
     }
