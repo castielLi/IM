@@ -22,8 +22,6 @@ let _device = undefined;
 let _imToken = undefined;
 let netWorkStatus = undefined;
 let currentObj = undefined;
-let heartBeatCode = undefined;
-let NeedToReConnect = true;
 
 export default class Connect extends Component{
 
@@ -51,31 +49,13 @@ export default class Connect extends Component{
                 return ;
             }
             let message = JSON.parse(event.data);
-            console.log("消息类型是："+message.Command,message,'-----------------------------------------------------------------------------');
-            if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
-                onRecieveMessage(message.Data,MessageCommandEnum.MSG_SEND_ACK);
-            }else if(message.Command == MessageCommandEnum.MSG_HEART){
-                heartBeatCode = message;
-                onRecieveMessage(message,MessageCommandEnum.MSG_HEART);
-            }else if(message.Command == MessageCommandEnum.MSG_BODY ){
-                onRecieveMessage(message,MessageCommandEnum.MSG_BODY);
-            }else if(message.Command == MessageCommandEnum.MSG_KICKOUT){
-                NeedToReConnect = false;
-                currentObj.webSocket.close();
-                onRecieveMessage(message,MessageCommandEnum.MSG_KICKOUT);
-            }else if(message.Command == MessageCommandEnum.MSG_ERROR){
-                onRecieveMessage(message,MessageCommandEnum.MSG_ERROR);
-            }
+            onRecieveMessage(message,message.Command);
         });
 
         this.webSocket.addEventListener('open', function (event) {
             console.log('Hello Server!');
 
             callback&&callback();
-
-            if(heartBeatCode != undefined){
-                currentObj.sendMessage(heartBeatCode);
-            }
         });
 
 
@@ -87,25 +67,13 @@ export default class Connect extends Component{
         this.webSocket.addEventListener('close', function (event) {
 
             console.log("socket close")
-            // if(netWorkStatus == "none"){
             console.log('GoodBye Server!');
-            // currentObj.webSocket.close();
-            // }else{
-            //     if(NeedToReConnect) {
-            //         currentObj.reConnectNet();
-            //     }
-            //     NeedToReConnect = !NeedToReConnect;
-            // }
         });
     }
 
     sendMessage(message){
         if(this.webSocket.readyState == this.webSocket.OPEN){
             console.log("Socket Core: 发送消息:   ",message);
-
-            if(message.Command == MessageCommandEnum.MSG_HEART){
-                heartBeatCode = undefined;
-            }
 
             this.webSocket.send(JSON.stringify(message));
             return true;
@@ -115,7 +83,6 @@ export default class Connect extends Component{
 
 
     logout(){
-        // NeedToReConnect = false;
         this.webSocket.close();
     }
 
