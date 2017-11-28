@@ -8,6 +8,7 @@ import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../Core/IM/action/createMessage';
 import RelationModel from '../Core/UserGroup/dto/RelationModel'
+import ApiBridge from './ApiBridge'
 
 let __instance = (function () {
     let instance;
@@ -30,6 +31,7 @@ export default class settingController {
         this.im = new IM();
         this.user = new User();
         this.network = new Network();
+        this.apiBridge = new ApiBridge();
         currentObj = this;
     }
 
@@ -37,7 +39,7 @@ export default class settingController {
     addGroupToContact(data,callback){
         let params = data.params;
         let info = data.info;
-        this.network.methodPOST('Member/AddGroupToContact',params,function(results){
+        this.apiBridge.AddGroupToContact(params,function(results){
             if(results.success && results.data.Result){
                 let obj = {
                     RelationId:info.ID,
@@ -51,12 +53,12 @@ export default class settingController {
                 currentObj.user.AddNewGroup(obj);
             }
             callback(results);
-        })
+        });
     }
     removeGroupFromContact(data,callback){
         let params = data.params;
         let info = data.info;
-        this.network.methodPOST('Member/RemoveGroupFromContact',params,function(results){
+        this.apiBridge.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
                 currentObj.user.RemoveGroupFromContact(info.ID);
             }
@@ -70,7 +72,7 @@ export default class settingController {
     }
     exitGroup(params,callback){
         let {GroupId,Account} = params;
-        this.network.methodPOST('Member/ExitGroup',params,function(results){
+        this.apiBridge.ExitGroup(params,function(results){
             if(results.success){
                 // //删除ChatRecode表中记录
                 // currentObj.im.deleteChatRecode(groupId);
@@ -86,7 +88,7 @@ export default class settingController {
     removeGroupMember(data,callback){
         let {GroupId} = data.params;
         let {close} = data.argument;
-        this.network.methodPOST('Member/RemoveGroupMember',data.params,function(results){
+        this.apiBridge.RemoveGroupMember(data.params,function(results){
             if(results.success && results.data.Data){
                 if(close){
                     currentObj.destroyGroup(GroupId);
@@ -98,7 +100,7 @@ export default class settingController {
 
     //搜索用户界面也用到了
     searchUser(params,callback){
-        this.network.methodPOST('Member/SearchUser',params,function(results){
+        this.apiBridge.SearchUser(params,function(results){
             callback(results);
         })
     }
@@ -110,7 +112,7 @@ export default class settingController {
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
-        this.network.methodPOST('Member/RemoveBlackMember',params,function(results){
+        this.apiBridge.RemoveBlackMember(params,function(results){
             if(results.success){
                 currentObj.user.changeRelationBlackList(false, params.Account);
             }
@@ -118,7 +120,7 @@ export default class settingController {
         })
     }
     addBlackMember(params,callback){
-        this.network.methodPOST('Member/AddBlackMember',params,function(results){
+        this.apiBridge.AddBlackMember(params,function(results){
             if(results.success){
                 currentObj.user.changeRelationBlackList(true, params.Account);
             }
@@ -127,7 +129,7 @@ export default class settingController {
     }
     deleteFriend(params,callback){
         let {Friend,Applicant} = params;
-        this.network.methodPOST('Member/DeleteFriend',params,function(results){
+        this.apiBridge.DeleteFriend(params,function(results){
             if(results.success){
                 //删除ChatRecode表中记录
                 currentObj.im.deleteChatRecode(Friend);
@@ -141,12 +143,12 @@ export default class settingController {
     }
     //用户页面（clientInformation.js）
     getFriendUserInfo(params,callback){
-        this.network.methodPOST('Member/GetFriendUserInfo',params,function(results){
+        this.apiBridge.GetFriendUserInfo(params,function(results){
             callback(results);
         })
     }
     applyFriend(params,callback){
-        this.network.methodPOST('Member/ApplyFriend',params,function(result){
+        this.apiBridge.ApplyFriend(params,function(result){
             //单方面添加好友
             if(result.success && result.data.Data instanceof Object){
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
