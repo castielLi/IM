@@ -453,6 +453,7 @@ export default class IM {
 
     //操作好友管理模块,申请好友通过，设置关系显示状态
     updateRelation(relationId){
+        console.log("执行了IM")
         ControllerHandleRecieveAddFriendMessage(relationId);
     }
 
