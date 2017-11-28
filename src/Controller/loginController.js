@@ -34,7 +34,7 @@ export default class loginController {
     }
 
     login(callback,params){
-        this.apiBridge.Login(params,function(result){
+        this.apiBridge.request.Login(params,function(result){
 
             if(result.success){
 
@@ -89,12 +89,12 @@ export default class loginController {
             }
 
 
-        },false);
+        });
     }
 
     loginWithToken(callback,params,storage){
 
-        this.apiBridge.LoginWithToken(params,function(result){
+        this.apiBridge.request.LoginWithToken(params,function(result){
 
             if(result.success) {
                 if (result.data.Data != null) {
@@ -127,7 +127,7 @@ export default class loginController {
             }else{
                 callback(result);
             }
-        },false);
+        },storage);
     }
 
     loginOut(){
@@ -137,7 +137,7 @@ export default class loginController {
     }
     
     getContactList(callback,params){
-        this.apiBridge.GetContactList(params,function(result){
+        this.apiBridge.request.GetContactList(params,function(result){
             if(result.success){
 
                 currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
@@ -194,7 +194,7 @@ export default class loginController {
             }else{
                 callback(result)
             }
-        },false)
+        })
     }
 
 }

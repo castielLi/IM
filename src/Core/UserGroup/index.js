@@ -5,7 +5,7 @@ import * as storeSqlite from './StoreSqlite/User/index'
 
 import * as groupStoreSqlite from './StoreSqlite/Group'
 
-import dataRquest from './dataRequest'
+import dataRquest from '../../Controller/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
 import MessageCommandEnum from '../../Core/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../Core/IM/dto/AppCommandEnum'
