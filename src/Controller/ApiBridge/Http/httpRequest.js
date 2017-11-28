@@ -2,7 +2,7 @@
  * Created by apple on 2017/11/3.
  */
 
-import netWorking from '../../Networking/Network'
+import netWorking from '../../../Core/Networking/Network'
 
 let _network = new netWorking()
 
