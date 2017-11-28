@@ -61,12 +61,15 @@ export default function App() {
       IMHandle.handleRecieveAddFriendMessage(relation);
     }
 
-
+    //收到群名修改通知
+    let handleRecieveChangeGroupNameMessage = function(MSGID,newGroupname){
+        IMHandle.handleRecieveChangeGroupNameMessage(MSGID,newGroupname);
+    }
     let handleKickOutMessage = function(){
         IMHandle.handleKickOutMessage()
     }
 
-    chatController.connectApp(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage)
+    chatController.connectApp(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage,handleRecieveChangeGroupNameMessage)
 
 
     class InitApp extends DisplayComponent {
