@@ -285,6 +285,9 @@ function receiveMessageHandle(message){
 }
 
 function recieveAddFriendMessage(relationId){
+
+    console.log("执行了chatcontroller")
+
     currentObj.user.updateDisplayOfRelation(relationId,'true');
-    recieveAddFriendMessage(relationId)
+    handleRecieveAddFriendMessage(relationId)
 }

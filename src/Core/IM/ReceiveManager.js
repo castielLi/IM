@@ -34,15 +34,11 @@ ReceiveManager.handleRecieveMessageQueue = function(){
 
     if(recieveMessageQueue.length > 0){
 
-        let copyRecQueue = Helper.cloneArray(recieveMessageQueue);
-        recieveMessageQueue = [];
-
-        for(let item in copyRecQueue){
-            currentObj.receiveMessageOpreator(copyRecQueue[item])
-            // recieveMessageQueue.shift();
+        for(let item in recieveMessageQueue){
+            currentObj.receiveMessageOpreator(recieveMessageQueue[item])
         }
 
-        copyRecQueue = [];
+        recieveMessageQueue = [];
     }
 }
 
@@ -128,6 +124,7 @@ ReceiveManager.receiveMessageOpreator = function(message){
             // message.type = MessageType.friend
             // message.way = "private"
             // currentObj.storeRecMessage(message)
+            console.log("执行了receivermanager")
             currentObj.updateRelation(message.Data.Data.Sender)
         }
 
