@@ -15,6 +15,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
@@ -78,13 +79,13 @@ class ChatMessageImage extends ContainerComponent {
 
         return(
             <View style={[style,styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
+                <Thouch onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
                         source={this.localSourceObj(LocalSource)}
                         style={[styles.imageStyle]}
                     />
-                </TouchableOpacity>
+                </Thouch>
             </View>
         )
     }

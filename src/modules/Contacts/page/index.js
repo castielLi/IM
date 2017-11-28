@@ -109,7 +109,9 @@ class Contacts extends ContainerComponent {
 
 	_sectionComp = (info) => {
 		var txt = info.section.key;
-		return <Text style={styles.sectionHeader}>{txt}</Text>
+		return  <View style={styles.sectionHeaderBox}>
+					<Text style={styles.sectionHeader}>{txt}</Text>
+				</View>
 	}
     goToNewFriend = () =>{
         this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
@@ -248,15 +250,15 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 	},
+    sectionHeaderBox:{
+        height: 30,
+        backgroundColor: '#eee',
+		paddingLeft:10,
+		justifyContent:'center'
+    },
 	sectionHeader:{
-		height: 30,
-		textAlign: 'left', 
-		textAlignVertical: 'center', 
-		backgroundColor: '#eee', 
 		color: '#aaa', 
 		fontSize: 14,
-		paddingLeft:10,
-		paddingTop:8
 	},
 	itemBox:{
 		flex:1,
