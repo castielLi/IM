@@ -78,6 +78,7 @@ class ChatMessageVideo extends ContainerComponent {
                     //currentObj.props.showMediaPlayer(filePath)
                     currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
                 },function (percent) {
+                    console.log(percent)
                     currentObj.setState({
                         progress:Math.ceil(percent * 100),
                         download:true,

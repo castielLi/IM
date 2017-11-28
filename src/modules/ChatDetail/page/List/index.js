@@ -54,7 +54,7 @@ class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            if(r1.message.type === 'image')
+            if(r1.message.type !== 'text')
             {
                 let r1Local = r1.message.Resource[0].LocalSource;
                 let r2Local = r2.message.Resource[0].LocalSource;
