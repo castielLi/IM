@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import Sound from 'react-native-sound';
+import Thouch from '../../../Common/Thouch/index'
 
 let {width, height} = Dimensions.get('window');
 let stopSoundObj = null;
@@ -82,9 +83,9 @@ export default class ChatMessageSound extends Component {
 
         return(
             <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.playSound(LocalSource)}>
+                <Thouch onPress={()=>this.playSound(LocalSource)}>
                     <Text>{Time}"</Text>
-                </TouchableOpacity>
+                </Thouch>
             </View>
         )
     }
