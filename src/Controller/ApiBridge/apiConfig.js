@@ -1,7 +1,7 @@
 /**
  * Created by apple on 2017/11/27.
  */
-
+//login
 export const API_Login = "Member/Login";
 
 export const API_LoginByToken = "Member/LoginByToken";
@@ -30,6 +30,8 @@ export const API_GetFriendUserInfo = "Member/GetFriendUserInfo";
 
 export const API_ApplyFriend = "Member/ApplyFriend";
 
+export const API_AcceptFriend = "Member/AcceptFriend";
+
 export const API_CreateGroup = "Member/CreateGroup";
 
 export const API_AddGroupMember = "Member/AddGroupMember";
@@ -37,3 +39,4 @@ export const API_AddGroupMember = "Member/AddGroupMember";
 export const API_ModifyGroupName = "Member/ModifyGroupName";
 
 export const API_ModifyGroupDescription = "Member/ModifyGroupDescription";
+

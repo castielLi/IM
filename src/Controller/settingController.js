@@ -66,7 +66,7 @@ export default class settingController {
         })
     }
     getGroupInfo(params,callback){
-        this.network.methodPOST('Member/GetGroupInfo',params,function(results){
+        this.apiBridge.GetGroupInfo(params,function(results){
             callback(results);
         })
     }
@@ -130,6 +130,7 @@ export default class settingController {
     deleteFriend(params,callback){
         let {Friend,Applicant} = params;
         this.apiBridge.DeleteFriend(params,function(results){
+
             if(results.success){
                 //删除ChatRecode表中记录
                 currentObj.im.deleteChatRecode(Friend);
@@ -158,6 +159,21 @@ export default class settingController {
             }
             callback(result);
         })
+    }
+    acceptFriend(params,callback){
+        let {key} = params;
+        this.apiBridge.AcceptFriend(params,function(results){
+            if(results.success){
+                //todo controller operate
+                let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+                currentObj.user.AddNewRelation(relationObj);
+                //修改好友申请消息状态
+                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
+                results.data.acceptFriend = {key,Account}
+            }
+            callback(results);
+        },false)
     }
     //更新关系和头像 （clientInformation.js）
     UpdateFriendInfo(accountId,UserInfo,propsRelation){
@@ -201,7 +217,7 @@ export default class settingController {
     //创建群
     //参数：发起人id,发起人昵称,[{"Account":选中的id1},{"Account":选中的id2},...],“选中的nick1,选中的nick2,...”，请求参数，回调函数
     createGroup(accountId,accountName,splNeedArr,Nicks,params,callback){
-        this.network.methodPOST('Member/CreateGroup',params,function(result){
+        this.apiBridge.CreateGroup(params,function(result){
             if(result.success){
                 if(result.data.Data != null){
                     let relation = new RelationModel();
@@ -243,7 +259,7 @@ export default class settingController {
     //添加群成员
     //参数：发起人id,“选中的nick1,选中的nick2,...”,[{"Account":选中的id1},{"Account":选中的id2},...]，群Id,,请求参数，回调函数
     addGroupMember(accountId,Nicks,splNeedArr,groupId,chooseArr,params,callback){
-        this.network.methodPOST('Member/AddGroupMember',params,function(result){
+        this.apiBridge.AddGroupMember(params,function(result){
             if(result.success){
                 if(result.data.Data != null){
                     let messageId = uuidv1();
@@ -276,7 +292,7 @@ export default class settingController {
     //修改群组的名称
     //参数 群id，群名称，请求参数，回调
     updateGroupName(accountId,groupId,name,params,callback){
-        this.network.methodPOST('Member/ModifyGroupName',params,function(result){
+        this.apiBridge.ModifyGroupName(params,function(result){
             if(result.success){
                 if(result.data.Data){
                     //本地模拟消息
@@ -293,7 +309,7 @@ export default class settingController {
 
     //修改群公告
     toChangeDiscription(params,callback){
-        this.network.methodPOST('Member/ModifyGroupDescription',params,function(result){
+        this.apiBridge.ModifyGroupDescription(params,function(result){
             callback(result);
         })
     }

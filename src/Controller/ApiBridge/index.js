@@ -125,4 +125,27 @@ export default class ApiBridge {
         })
     }
 
+    CreateGroup(params,callback){
+        this.network.methodPOST(ApiUrls.API_CreateGroup,params,function(result){
+            callback(result);
+        })
+    }
+
+    AddGroupMember(params,callback){
+        this.network.methodPOST(ApiUrls.API_AddGroupMember,params,function(result){
+            callback(result);
+        })
+    }
+
+    ModifyGroupName(params,callback){
+        this.network.methodPOST(ApiUrls.API_ModifyGroupName,params,function(result){
+            callback(result);
+        })
+    }
+
+    ModifyGroupDescription(params,callback){
+        this.network.methodPOST(ApiUrls.API_ModifyGroupDescription,params,function(result){
+            callback(result);
+        })
+    }
 }
