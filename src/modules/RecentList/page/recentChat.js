@@ -28,6 +28,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as navigationActions from '../../Common/NavigationBar/reducer/action'
+import * as applyFriendActions from '../../../Core/Redux/applyFriend/action'
 import {
     checkDeviceHeight,
     checkDeviceWidth
@@ -159,6 +160,7 @@ class RecentChat extends ContainerComponent {
 
                 currentObj.props.initRecentList(result.data.chatListArr);
                 currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
+                currentObj.props.initFriendApplication(result.data.applyFriendMessage);
 
                 currentObj.props.hideNavigationBottom();
 
@@ -314,7 +316,9 @@ const mapDispatchToProps = (dispatch) => {
         ...bindActionCreators(unReadMessageActions, dispatch),
         ...bindActionCreators(featuresAction, dispatch),
         ...bindActionCreators(relationActions, dispatch),
-        ...bindActionCreators(navigationActions,dispatch)
+        ...bindActionCreators(navigationActions,dispatch),
+        ...bindActionCreators(applyFriendActions,dispatch)
+
     }
 };
 
