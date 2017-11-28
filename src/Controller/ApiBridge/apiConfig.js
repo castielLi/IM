@@ -8,7 +8,6 @@ export const API_LoginByToken = "Member/LoginByToken";
 
 export const API_GetContactList = "Member/GetContactList";
 
-//setting
 export const API_AddGroupToContact = "Member/AddGroupToContact";
 
 export const API_RemoveGroupFromContact = "Member/RemoveGroupFromContact";

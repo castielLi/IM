@@ -53,7 +53,7 @@ export default class settingController {
                 currentObj.user.AddNewGroup(obj);
             }
             callback(results);
-        })
+        });
     }
     removeGroupFromContact(data,callback){
         let params = data.params;
@@ -129,7 +129,8 @@ export default class settingController {
     }
     deleteFriend(params,callback){
         let {Friend,Applicant} = params;
-        this.apiBridge.DeleteFriend('Member/DeleteFriend',params,function(results){
+        this.apiBridge.DeleteFriend(params,function(results){
+
             if(results.success){
                 //删除ChatRecode表中记录
                 currentObj.im.deleteChatRecode(Friend);
