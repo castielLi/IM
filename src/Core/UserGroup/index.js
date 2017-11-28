@@ -37,11 +37,6 @@ export default class User {
         currentObj = this;
     }
 
-    //设置request的方式webapi，还是socket
-    // setRequest(request){
-    //     _request = request;
-    // }
-
 
     //todo:lizongjun 把所有的用户，包括没有添加为好友的用户全部放到user表中，user表中group和user 分开，单独管理,groupMemberList用来管理群成员
 

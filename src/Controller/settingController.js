@@ -8,7 +8,7 @@ import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../Core/IM/action/createMessage';
 import RelationModel from '../Core/UserGroup/dto/RelationModel'
-import ApiBridge from './ApiBridge/Http/HttpBridge'
+import ApiBridge from './ApiBridge'
 
 let __instance = (function () {
     let instance;
