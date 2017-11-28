@@ -107,6 +107,12 @@ export default class HttpBridge {
         })
     }
 
+    AcceptFriend(params,callback){
+        this.network.methodPOST(ApiUrls.API_AcceptFriend,params,function(result){
+            callback(result);
+        })
+    }
+
     DeleteFriend(params,callback){
         this.network.methodPOST(ApiUrls.API_DeleteFriend,params,function(result){
             callback(result);
