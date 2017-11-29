@@ -200,7 +200,7 @@ export default class User {
                 var groupMembers = [];
                 var groupMembersInfo = [];
                 //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
-                if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+                if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER||contentCommand == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
                     currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
                         if(response.success) {
                             let results = response.data.Data;
