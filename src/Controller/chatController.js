@@ -59,13 +59,13 @@ export default class chatController {
     }
 
 
-    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
+    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage,recieveChangeGroupNameMessage){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
         handleRecieveAddFriendMessage = recieveAddFriendMessage;
-
+        handleRecieveChangeGroupNameMessage = recieveChangeGroupNameMessage
         //向im注入controller chat回调方法
         connectIM()
     }
@@ -264,7 +264,16 @@ function receiveMessageHandle(message){
 
                 message.Data.Data.Data =  name + "退出了群聊";
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
-                message.Data.Data.Data =  "群主修改了群昵称";
+
+                 var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+
+                message.Data.Data.Data =  name+"修改了群昵称";
+                let groupName = relation.Nick;
+                let groupId = message.Data.Data.Sender;
+                //修改redux
+                handleRecieveChangeGroupNameMessage(groupId,groupName)
+                //修改数据库
+                currentObj.user.updateGroupName(groupId,groupName);
             }
 
             //如果是chatroom 的通知消息需要修改数据库中message的内容，因为第一次存储只会有id，而不是文字
@@ -291,3 +300,4 @@ function recieveAddFriendMessage(relationId){
     currentObj.user.updateDisplayOfRelation(relationId,'true');
     handleRecieveAddFriendMessage(relationId)
 }
+

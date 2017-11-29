@@ -6,6 +6,8 @@ import Store from '../../../store'
 import * as ActionForChatRecordStore from '../../Redux/chat/action'
 import {changeRelationOfShow,addRelation} from '../../Redux/contact/action';
 import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
+import {changeRelationOfNick} from '../../Redux/contact/action';
+import {changeRecentListOfGropName} from '../../Redux/RecentList/action'
 import Route from '../../route/router'
 import {Alert} from 'react-native'
 let store = Store;
@@ -49,3 +51,9 @@ export function handleRecieveAddFriendMessage(relation){
     //修改relationStore
     store.dispatch(changeRelationOfShow(relation))
 }
+
+export function handleRecieveChangeGroupNameMessage(groupId,newGroupname){
+    store.dispatch(changeRelationOfNick(groupId,newGroupname))
+    store.dispatch(changeRecentListOfGropName(groupId,newGroupname))
+}
+
