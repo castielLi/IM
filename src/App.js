@@ -62,8 +62,8 @@ export default function App() {
     }
 
     //收到群名修改通知
-    let handleRecieveChangeGroupNameMessage = function(MSGID,newGroupname){
-        IMHandle.handleRecieveChangeGroupNameMessage(MSGID,newGroupname);
+    let handleRecieveChangeGroupNameMessage = function(groupId,newGroupname){
+        IMHandle.handleRecieveChangeGroupNameMessage(groupId,newGroupname);
     }
     let handleKickOutMessage = function(){
         IMHandle.handleKickOutMessage()

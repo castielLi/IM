@@ -268,10 +268,12 @@ function receiveMessageHandle(message){
                  var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
 
                 message.Data.Data.Data =  name+"修改了群昵称";
+                let groupName = relation.Nick;
+                let groupId = message.Data.Data.Sender;
                 //修改redux
-                //handleRecieveChangeGroupNameMessage(MSGID,newGroupname)
+                handleRecieveChangeGroupNameMessage(groupId,groupName)
                 //修改数据库
-                //currentObj.user.updateGroupName(groupId,name);
+                currentObj.user.updateGroupName(groupId,groupName);
             }
 
             //如果是chatroom 的通知消息需要修改数据库中message的内容，因为第一次存储只会有id，而不是文字
