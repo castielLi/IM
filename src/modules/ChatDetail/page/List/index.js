@@ -459,10 +459,21 @@ class Chat extends Component {
         }
         else{
             if(row.message.Command * 1 == 5){
+
+                if(this.props.type == "chatroom"){
+
+                    return(
+                        <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                            <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                                <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>您已经被管理员移除群聊了</Text>
+                            </View>
+                        </View>
+                    )
+                }
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收，</Text>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>消息已经发出，但被对方拒收，</Text>
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                                 <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
                             </TouchableOpacity>

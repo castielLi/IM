@@ -4,7 +4,7 @@
 import * as Helper from '../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from './dto/MessageType'
-import {isApplyFriendMessageType,blackListMessage} from './action/createMessage'
+import {blackListMessage,NotGroupMemberMessage} from './action/createMessage'
 import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
 import MessageCommandEnum from './dto/MessageCommandEnum'
 import ChatWayEnum from './dto/ChatWayEnum'
@@ -56,9 +56,16 @@ ReceiveManager.receiveMessageOpreator = function(message){
 
     //错误消息
     if(message.Command == MessageCommandEnum.MSG_ERROR){
-        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted || message.Data.ErrorCode == CommandErrorCodeEnum.NotFriend){
+        if(message.Data.ErrorCode == CommandErrorCodeEnum.Blacklisted || message.Data.ErrorCode == CommandErrorCodeEnum.NotFriend
+        || message.Data.ErrorCode == CommandErrorCodeEnum.NotBelongToGroup){
             let sender = message.Data.SourceMSGID.split("_")[0];
-            let blackMessage = blackListMessage(sender,message.MSGID);
+            let blackMessage = undefined;
+            if(message.Data.ErrorCode != CommandErrorCodeEnum.NotBelongToGroup){
+                blackMessage = blackListMessage(sender,message.MSGID);;
+            }else{
+                blackMessage = NotGroupMemberMessage(sender,message.MSGID);
+            }
+
             currentObj.storeRecMessage(blackMessage);
 
             currentObj.storeMessageCache({"MSGID":message.MSGID,"message":message});
