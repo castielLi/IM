@@ -241,10 +241,10 @@ const styles = StyleSheet.create({
     borderTopWidth:1
   },
   wrapper:{
-    flex:1,
+    //flex:1,
   },
   swiperSlide:{
-    flex:1,
+    //flex:1,
     flexWrap:'wrap',
     flexDirection:'row',
   },
