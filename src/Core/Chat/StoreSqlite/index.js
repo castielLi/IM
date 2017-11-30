@@ -14,49 +14,45 @@ import MessageStatus from '../dto/MessageStatus'
 
 export function storeSendMessage(message){
 
-    IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
+    CHATFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
 
 }
 
 export function storeRecMessage(message,callback){
 
-    if(message.type != "friend") {
-        message.status = MessageStatus.SendSuccess;
-        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
-    }
-    // else{
-    //     IMFMDB.InsertFriendMessage(message);
-    // }
+    message.status = MessageStatus.SendSuccess;
+    CHATFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
+
 }
 
 export function deleteClientRecode(name,chatType){
-    IMFMDB.DeleteChatByClientId(name,chatType);
+    CHATFMDB.DeleteChatByClientId(name,chatType);
 }
 
 export function deleteMessage(message,chatType,client){
-    IMFMDB.DeleteChatMessage(message,chatType,client);
+    CHATFMDB.DeleteChatMessage(message,chatType,client);
 }
 //删除ChatRecode中某条记录
 export function deleteChatRecode(name){
-    IMFMDB.DeleteClientRecodeByName(name);
+    CHATFMDB.DeleteClientRecodeByName(name);
 }
 
 //修改某client的未读消息数量
 export function updateUnReadMessageNumber(name,number){
-    IMFMDB.updateUnReadMessageNumber(name,number);
+    CHATFMDB.updateUnReadMessageNumber(name,number);
 }
 export function addChatUnReadMessageNumber(name){
-    IMFMDB.addChatUnReadMessageaNumber(name);
+    CHATFMDB.addChatUnReadMessageaNumber(name);
 }
 
 
 //获取range范围的消息
 export function queryRecentMessage(account,way,range,callback){
-    IMFMDB.getRangeMessages(account,way,range,callback)
+    CHATFMDB.getRangeMessages(account,way,range,callback)
 }
 
 export function getChatList(callback){
-    IMFMDB.getAllChatClientList(callback)
+    CHATFMDB.getAllChatClientList(callback)
 }
 
 
@@ -84,15 +80,15 @@ export function initIMDatabase(AccountId,callback){
             console.log(err.message);
         });
 
-    IMFMDB.initIMDataBase(AccountId,callback);
+    CHATFMDB.initIMDataBase(AccountId,callback);
 }
 
 export function closeImDb(){
-    IMFMDB.closeImDb()
+    CHATFMDB.closeImDb()
 }
 
-let IMFMDB = {};
-IMFMDB.initIMDataBase = function(AccountId,callback){
+let CHATFMDB = {};
+CHATFMDB.initIMDataBase = function(AccountId,callback){
 
 
     var db = SQLite.openDatabase({
@@ -114,7 +110,7 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
 
 
 //todo：想办法进行批量操作
-IMFMDB.InsertMessageWithCondition = function(message,client,callback){
+CHATFMDB.InsertMessageWithCondition = function(message,client,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
@@ -132,10 +128,6 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
     let time = message.Data.LocalTime;
 
 
-
-
-
-    //insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx); 方法sql
     let insertChatToSpecialRecodeSqlSql = sqls.ExcuteIMSql.InsertMessageToTalk;
     insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.MSGID]);
 
@@ -155,13 +147,10 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 
                     updateChat(conetnt,time,client,tx);
 
-
                     insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
                 }else{
                     //如果当前聊天是新的聊天对象
-
-
                     tx.executeSql(createTableSql, [], (tx, results) => {
 
                         console.log("create chat table success");
@@ -170,10 +159,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 
                         updateChat(conetnt,time,client,tx);
 
-
                         insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
-
-                        // insertIndexForTable(tableName,tx);
 
                     }, (err)=>{errorDB('创建新聊天对象表',err)});
                 }
@@ -184,16 +170,8 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
 }
 
 
-
-
-
-
-
-
-
-
 //删除当前用户的聊天记录
-IMFMDB.DeleteChatByClientId = function(name,chatType){
+CHATFMDB.DeleteChatByClientId = function(name,chatType){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -212,11 +190,8 @@ IMFMDB.DeleteChatByClientId = function(name,chatType){
 
 
 
-
-
-
 //删除聊天室聊天记录
-IMFMDB.DeleteChatByChatRoomId = function(chatRoom){
+CHATFMDB.DeleteChatByChatRoomId = function(chatRoom){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -238,7 +213,7 @@ IMFMDB.DeleteChatByChatRoomId = function(chatRoom){
 }
 
 //删除具体消息
-IMFMDB.DeleteChatMessage = function(message,chatType,client){
+CHATFMDB.DeleteChatMessage = function(message,chatType,client){
 
     let tableName = chatType=="chatroom"? "ChatRoom_"+client : "Private"+client;
 
@@ -262,7 +237,7 @@ IMFMDB.DeleteChatMessage = function(message,chatType,client){
 }
 
 //获取所有聊天用户
-IMFMDB.getAllChatClientList = function(callback){
+CHATFMDB.getAllChatClientList = function(callback){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -284,7 +259,7 @@ IMFMDB.getAllChatClientList = function(callback){
 
 
 
-IMFMDB.getRangeMessages = function(account,way,range,callback){
+CHATFMDB.getRangeMessages = function(account,way,range,callback){
 
     let tabName = way  == ChatWayEnum.Private?"Private_" + account:"ChatRoom_" + account;
 
@@ -329,7 +304,7 @@ IMFMDB.getRangeMessages = function(account,way,range,callback){
 
 
 
-IMFMDB.DeleteClientRecodeByName = function(name){
+CHATFMDB.DeleteClientRecodeByName = function(name){
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -344,7 +319,7 @@ IMFMDB.DeleteClientRecodeByName = function(name){
     }, errorDB);
 }
 
-IMFMDB.updateUnReadMessageNumber = function(name,number){
+CHATFMDB.updateUnReadMessageNumber = function(name,number){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -356,7 +331,7 @@ IMFMDB.updateUnReadMessageNumber = function(name,number){
     }, (err)=>{errorDB('修改ChatRecorde数据表未读消息数量失败',err)});
 }
 
-IMFMDB.addChatUnReadMessageaNumber = function(name){
+CHATFMDB.addChatUnReadMessageaNumber = function(name){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -372,7 +347,7 @@ IMFMDB.addChatUnReadMessageaNumber = function(name){
 
 
 
-IMFMDB.closeImDb = function(){
+CHATFMDB.closeImDb = function(){
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
