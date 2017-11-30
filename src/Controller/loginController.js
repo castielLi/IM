@@ -7,7 +7,7 @@ import User from '../Core/UserGroup'
 import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';
 import RNFS from 'react-native-fs'
-import {setMyAccoundId} from '../Core/IM/action/receiveHandleMessage';
+import {setMyAccoundId} from './AppHandler/receiveHandleMessage';
 
 let __instance = (function () {
     let instance;

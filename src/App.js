@@ -17,7 +17,7 @@ import * as router from './modules/routerMap'
 import IM from './Core/IM'
 import User from './Core/UserGroup'
 import DisplayComponent from './Core/Component'
-import * as IMHandle from './Core/IM/action/receiveHandleMessage'
+import * as IMHandle from './Controller/AppHandler/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import Network from './Core/Networking/Network'
 import ChatController from './Controller/chatController'
