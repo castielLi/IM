@@ -85,6 +85,12 @@ export function blackListMessage(Sender,messageId){
     return createMessageObj(MessageType.information,"","private",null,Sender,"empty",0,0,MessageCommandEnum.MSG_ERROR,messageId)
 }
 
+//返回非群组成员消息结构
+export function NotGroupMemberMessage(Sender,messageId){
+    return createMessageObj(MessageType.information,"","chatroom",null,Sender,"empty",0,0,MessageCommandEnum.MSG_ERROR,messageId)
+}
+
+
 //返回发起群聊成功提示消息结构
 export function startChatRoomMessage(Sender,messageId){
     return createMessageObj(MessageType.information,"","chatroom",null,Sender,"empty",0,0,MessageCommandEnum.MSG_INFO,messageId)

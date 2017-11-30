@@ -55,8 +55,9 @@ export default class User {
                     storeSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
-                            currentObj.apiBridge.request.SearchUser({"Keyword":Id},(success,results,errMsg)=>{
-                                if(success) {
+                            currentObj.apiBridge.request.SearchUser({"Keyword":Id},(response)=>{
+                                if(response.success) {
+                                    let results = response.data.Data;
                                     let relation = new RelationModel();
                                     relation.RelationId = results.Account;
                                     relation.Nick = results.Nickname;
@@ -72,6 +73,7 @@ export default class User {
                                     });
 
                                 }else{
+                                    let errMsg = response.errorMessage;
                                     alert("获取群消息失败，原因："+errMsg)
                                 }
                             })
@@ -91,8 +93,9 @@ export default class User {
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
-                            currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(success,results,errMsg)=>{
-                                if(success) {
+                            currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
+                                if(response.success) {
+                                    let results = response.data.Data;
                                     let relation = new RelationModel();
                                     relation.RelationId = results.ID;
                                     relation.owner = results.Owner;
@@ -127,6 +130,7 @@ export default class User {
                                     cache["groupMember"][Id] = cacheGroupMembers;
                                     cache[type][Id] = relation;
                                 }else{
+                                    let errMsg = response.errorMessage;
                                     alert("获取群消息失败，原因："+errMsg)
                                 }
                             })
@@ -140,9 +144,9 @@ export default class User {
                                 //代表数据库里面并没有groupMembers的对应关系，需要进行下载
                                 if(results.length == 0){
 
-                                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(success,results,errMsg)=>{
-                                        if(success) {
-
+                                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
+                                        if(response.success) {
+                                            let results = response.data.Data;
                                             let cacheGroupMembers = [];
                                             for(let i = 0;i<results.MemberList.length;i++){
                                                 let accountId = results.MemberList[i].Account;
@@ -166,6 +170,7 @@ export default class User {
                                             currentObj.AddGroupMember(results.MemberList)
                                             cache["groupMember"][Id] = cacheGroupMembers;
                                         }else{
+                                            let errMsg = response.errorMessage;
                                             alert("获取群消息失败，原因："+errMsg)
                                         }
                                     })
@@ -195,9 +200,10 @@ export default class User {
                 var groupMembers = [];
                 var groupMembersInfo = [];
                 //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
-                if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
-                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(success,results,errMsg)=>{
-                        if(success) {
+                if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER||contentCommand == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
+                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
+                        if(response.success) {
+                            let results = response.data.Data;
                             let relation = new RelationModel();
                             relation.RelationId = results.ID;
                             relation.owner = results.Owner;
@@ -230,6 +236,7 @@ export default class User {
                             cache["groupMember"][Id] = groupMembersInfo;
                             cache[type][Id] = relation;
                         }else{
+                            let errMsg = response.errorMessage;
                             alert("获取群消息失败，原因："+errMsg)
                         }
                     })

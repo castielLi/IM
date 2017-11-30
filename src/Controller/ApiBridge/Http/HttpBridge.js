@@ -131,6 +131,12 @@ export default class HttpBridge {
         })
     }
 
+    AcceptFriend(params,callback){
+        this.network.methodPOST(ApiUrls.API_AcceptFriend,params,function(result){
+            callback(result);
+        })
+    }
+
     CreateGroup(params,callback){
         this.network.methodPOST(ApiUrls.API_CreateGroup,params,function(result){
             callback(result);

@@ -59,13 +59,13 @@ export default class chatController {
     }
 
 
-    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
+    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage,recieveChangeGroupNameMessage){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
         handleRecieveAddFriendMessage = recieveAddFriendMessage;
-
+        handleRecieveChangeGroupNameMessage = recieveChangeGroupNameMessage
         //向im注入controller chat回调方法
         connectIM()
     }
@@ -74,6 +74,13 @@ export default class chatController {
     //接口方法
     setCurrentChat(chat){
         currentChat = chat;
+        if(cache[chat]){
+            cache[chat].unread = 0;
+
+        }else{
+            cache[chat] = { messages: [],unread:0}
+        }
+        this.im.updateUnReadMessageNumber(chat,0);
     }
 
     emptyCurrentChat(){
@@ -104,17 +111,6 @@ export default class chatController {
         this.im.getRecentChatRecode(client,type,start,function(messages){
             callback(messages)
         })
-    }
-    //界面通知controller正在与某人会话
-    chatWithNewClient(client){
-        currentChat = client;
-        if(cache[client]){
-            cache[client].unread = 0;
-
-        }else{
-            cache[client] = { messages: [],unread:0}
-        }
-        this.im.updateUnReadMessageNumber(client,0);
     }
 
 
@@ -157,7 +153,7 @@ export default class chatController {
 
 
     //获得当前聊天下所有的聊天记录
-    getMessagesByIds(){
+    getCurrentChatMessages(){
 
          let ids;
          for(let item in cache){
@@ -237,25 +233,37 @@ function receiveMessageHandle(message){
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
                 var accounts = message.Data.Data.Data.split(',');
-                let Nicks = "";
+                //默认收到被踢消息的人不是被踢人
+                let isKickedClient = false;
                 for(let i = 0; i<accounts.length;i++){
-                    if(i != accounts.length - 1){
-                        Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                    }else{
-                        Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                    if(accounts[i] == myAccount.accountId){
+                        isKickedClient = true;
+                        break;
                     }
                 }
-
-                //var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
-                var inviter = '';
-                if(message.Data.Data.Receiver == myAccount.accountId){
-                    inviter = myAccount.accountId;
+                if(isKickedClient){
+                    message.Data.Data.Data =  "你被群主踢出了该群聊";
+                    //处理来自界面的回调方法，隐藏群设置按钮
                 }else{
-                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                    let Nicks = "";
+                    for(let i = 0; i<accounts.length;i++){
+                        if(i != accounts.length - 1){
+                            Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                        }else{
+                            Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                        }
+                    }
+
+                    //var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
+                    var inviter = '';
+                    if(message.Data.Data.Receiver == myAccount.accountId){
+                        inviter = myAccount.accountId;
+                    }else{
+                        inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                    }
+
+                    message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
                 }
-
-                message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
-
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
 
                 var accounts = message.Data.Data.Data.split(',');
@@ -264,7 +272,16 @@ function receiveMessageHandle(message){
 
                 message.Data.Data.Data =  name + "退出了群聊";
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
-                message.Data.Data.Data =  "群主修改了群昵称";
+
+                 var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+
+                message.Data.Data.Data =  name+"修改了群昵称";
+                let groupName = relation.Nick;
+                let groupId = message.Data.Data.Sender;
+                //修改redux
+                handleRecieveChangeGroupNameMessage(groupId,groupName)
+                //修改数据库
+                currentObj.user.updateGroupName(groupId,groupName);
             }
 
             //如果是chatroom 的通知消息需要修改数据库中message的内容，因为第一次存储只会有id，而不是文字
@@ -291,3 +308,4 @@ function recieveAddFriendMessage(relationId){
     currentObj.user.updateDisplayOfRelation(relationId,'true');
     handleRecieveAddFriendMessage(relationId)
 }
+

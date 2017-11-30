@@ -48,7 +48,8 @@ export default class loginController {
 
                 if(Platform.OS === 'ios'){
                     //初始化im
-                    currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                    //现在登录完，进入recentlist并且redux初始完成之后才开启IM
+                    // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                     currentObj.im.initIMDatabase(account.accountId)
                     currentObj.user.initIMDatabase(account.accountId);
                     callback(result)
@@ -75,7 +76,8 @@ export default class loginController {
                             //若是第一次登陆
                         }else{
                             //初始化im
-                            currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                            //现在登录完，进入recentlist并且redux初始完成之后才开启IM
+                            // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             currentObj.im.initIMDatabase(account.accountId);
                             currentObj.user.initIMDatabase(account.accountId);
                             callback(result)
@@ -115,7 +117,9 @@ export default class loginController {
                         }
                     ));
                     setMyAccoundId(storage.accountId);
-                    currentObj.im.setSocket(storage.accountId, storage.device, storage.deviceId, storage.IMToken);
+
+                    //现在登录完，进入recentlist并且redux初始完成之后才开启IM
+                    // currentObj.im.setSocket(storage.accountId, storage.device, storage.deviceId, storage.IMToken);
                     result.data.account = storage;
 
                     if (Platform.OS === 'ios') {
@@ -140,56 +144,64 @@ export default class loginController {
         this.apiBridge.request.GetContactList(params,function(result){
             if(result.success){
 
-                currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
-                    currentObj.user.getAllRelation((data)=>{
-                        currentObj.user.initGroup(result.data.Data["GroupList"],function(){
+                AsyncStorage.getItem('account').then((value)=>{
 
-                            currentObj.user.getAllGroupFromGroup(function(results){
+                    let account = JSON.parse(value);
 
-                                data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
-                                result.data.relations = data;
+                    currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
+                        currentObj.user.getAllRelation((data)=>{
+                            currentObj.user.initGroup(result.data.Data["GroupList"],function(){
 
-                                currentObj.im.getAllApplyFriendMessage(function(results){
+                                currentObj.user.getAllGroupFromGroup(function(results){
 
-                                    result.data.applyFriendMessage = results;
-                                    let unUnDealRequestCount = 0;
-                                    results.forEach((v,i)=>{
-                                        if(v.status == "wait"){
-                                            unUnDealRequestCount++
-                                        }
-                                    })
-                                    result.data.unUnDealRequestCount = unUnDealRequestCount;
-                                    //初始化recentListStore
-                                    currentObj.im.getChatList((chatListArr) => {
-                                        let needArr = [];
-                                        //初始化unReadMessageStore
-                                        let unReadMessageCount = 0;
-                                        chatListArr.forEach((v, i) => {
-                                            if (v.unReadMessageCount) {
-                                                unReadMessageCount += v.unReadMessageCount;
-                                            }
-                                            for (let m = 0; m < data.length; m++) {
-                                                if (v.Client == data[m].RelationId) {
-                                                    v.Nick = data[m].Nick;
-                                                    v.localImage = data[m].localImage;
-                                                    v.avator = data[m].avator;
-                                                    break;
-                                                }
+                                    data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
+                                    result.data.relations = data;
+
+                                    currentObj.im.getAllApplyFriendMessage(function(results){
+
+                                        result.data.applyFriendMessage = results;
+                                        let unUnDealRequestCount = 0;
+                                        results.forEach((v,i)=>{
+                                            if(v.status == "wait"){
+                                                unUnDealRequestCount++
                                             }
                                         })
+                                        result.data.unUnDealRequestCount = unUnDealRequestCount;
+                                        //初始化recentListStore
+                                        currentObj.im.getChatList((chatListArr) => {
+                                            let needArr = [];
+                                            //初始化unReadMessageStore
+                                            let unReadMessageCount = 0;
+                                            chatListArr.forEach((v, i) => {
+                                                if (v.unReadMessageCount) {
+                                                    unReadMessageCount += v.unReadMessageCount;
+                                                }
+                                                for (let m = 0; m < data.length; m++) {
+                                                    if (v.Client == data[m].RelationId) {
+                                                        v.Nick = data[m].Nick;
+                                                        v.localImage = data[m].localImage;
+                                                        v.avator = data[m].avator;
+                                                        break;
+                                                    }
+                                                }
+                                            })
 
-                                        needArr = chatListArr.concat();
+                                            needArr = chatListArr.concat();
 
-                                        result.data.unReadMessageCount = unReadMessageCount;
-                                        result.data.chatListArr = needArr;
-                                        callback(result);
+                                            result.data.unReadMessageCount = unReadMessageCount;
+                                            result.data.chatListArr = needArr;
+
+                                            currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+
+                                            callback(result);
+                                        })
+
                                     })
-
                                 })
                             })
                         })
                     })
-                })
+                });
 
             }else{
                 callback(result)
