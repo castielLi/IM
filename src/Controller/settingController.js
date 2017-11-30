@@ -228,7 +228,7 @@ export default class settingController {
                     relation.show = 'false';
 
                     //添加关系到数据库
-                    currentObj.user.AddNewGroupToGroup(relation,splNeedArr);
+                    currentObj.user.AddGroupAndMember(relation,splNeedArr);
                     result.data.relation = relation;
                     let messageId = uuidv1();
                     //创建群组消息

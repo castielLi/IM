@@ -254,7 +254,7 @@ export default class User {
     }
 
     //todo:替代redux中RelationStore操作
-    //初始化关系缓存
+    //初始化关系缓存 relations根据目前代码为 通讯录中的好友和群
     initUserGroupCache(relations){
         if(relations == undefined || relations == 'undefined' || !relations){
             return;
@@ -319,6 +319,7 @@ export default class User {
     //UserGroup part:
 
 
+    //获取Account中Relation表中的show为true的信息
     getAllRelation(callback){
         return storeSqlite.GetRelationList(callback)
     }
@@ -336,7 +337,7 @@ export default class User {
 
 
 
-    //初始化好友列表
+    //初始化好友列表  根据http请求结果初始化account中的表 有改无加
     initRelations(friendList,blackList,callback){
         storeSqlite.initRelations(friendList,blackList,callback);
     }
@@ -346,7 +347,7 @@ export default class User {
         storeSqlite.changeRelationBliackList(isBlackList,RelationId);
     }
 
-    //删除好友或者退出群组
+    //删除好友 将好友信息show设为false
     deleteRelation(RelationId){
         storeSqlite.deleteRelation(RelationId)
     }
@@ -356,11 +357,12 @@ export default class User {
 
     }
 
-    //修改关系
+    //修改关系 发现关系信息更新时改变信息
     updateRelation(Relation){
         storeSqlite.updateRelation(Relation)
     }
 
+    //更新好友显示状态 show 目前用于接收到添加好友信息
     updateDisplayOfRelation(relationId,bool){
         storeSqlite.updateRelationDisplayStatus(relationId,bool);
     }
@@ -376,10 +378,12 @@ export default class User {
         storeSqlite.getAllRelationAvatorAndName(callback);
     }
 
-    //添加新关系
+    //添加新关系 有改无加
     AddNewRelation(Relation,callback){
         storeSqlite.addNewRelation(Relation,callback)
     }
+
+    //==============================
 
     //获取关系设置
     GetRelationSetting(RelationId,callback){
@@ -435,13 +439,7 @@ export default class User {
         return groupStoreSqlite.GetRelationList(callback,show)
     }
 
-
-    //添加群进Group
-    AddNewGroupToGroup(Relation,members){
-        groupStoreSqlite.addNewRelation(Relation)
-
-        groupStoreSqlite.initGroupMemberByGroupId(Relation.RelationId,members)
-    }
+    //初始化群关系信息  有改无加
     initGroup(GroupList,callback){
         groupStoreSqlite.initRelations(GroupList,callback);
     }
@@ -459,6 +457,7 @@ export default class User {
         groupStoreSqlite.RemoveGroupFromContact(groupId);
     }
 
+    //先去对应表中找到成员ID 再去Account中找对应信息
     GetGroupMemberIdsByGroupId(groupId,callback){
        groupStoreSqlite.GetMembersByGroupId(groupId,function(results){
            if(results.length > 0){
