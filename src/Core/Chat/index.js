@@ -43,11 +43,11 @@ export default class Chat {
     getAllChatList(callback){
         currentObj.getChatList((results)=>{
             let cache = formatArrToObjById(results);
-            callback(cache);
+            callback(deepCopy(cache));
             ChatCache = cache;
         });
     }
-    //获取单个会话,打开一个聊天窗口的时候
+    //获取单个会话聊天记录,打开一个聊天窗口的时候
     getOneChat(clientId,type,callback){
         if(ChatCache[clientId] == undefined){
             callback([])
@@ -55,18 +55,18 @@ export default class Chat {
             if(ChatCache[clientId]['Record'].length < InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                 let needLength = InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER - ChatCache[clientId]['Record'].length;
                 currentObj.getRecentChatRecode(clientId,type,{start:0,limit:needLength},(results)=>{
-                    callback(results);
+                    callback(deepCopy(results));
                     ChatCache[clientId]['Record'] = results;
                 });
             }else{
-                callback(ChatCache[clientId]['Record']);
+                callback(deepCopy(ChatCache[clientId]['Record']));
             }
         }
     }
     //删除一个会话
     deleteOneChat(clientId,type,callback){
         delete ChatCache[clientId];
-        callback(ChatCache);
+        callback(deepCopy(ChatCache));
         //删除chatRecord表中对应记录
         this.deleteChatRecode(clientId);
         //删除与该client的所有聊天记录
@@ -78,18 +78,18 @@ export default class Chat {
         //recentObj.LastMessage = newChatObj.data
         recentObj.Record.unshift(messageId);
         ChatCache[clientId] = recentObj;
-        callback(ChatCache)
+        callback(deepCopy(ChatCache))
     }
     //未读消息+1
     addUnReadMsgNumber(clientId,callback){
         ChatCache[clientId]['unReadMessageCount'] +=1;
-        callback(ChatCache)
+        callback(deepCopy(ChatCache))
         currentObj.addChatUnReadMessageaNumber(clientId);
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId,callback){
         ChatCache[clientId]['unReadMessageCount'] = 0;
-        callback(ChatCache)
+        callback(deepCopy(ChatCache))
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
     //修改最后一条消息内容
@@ -101,7 +101,7 @@ export default class Chat {
             ChatCache[clientId].Record.pop();
         }
         ChatCache[clientId].Record.unshift(messageId);
-        callback(ChatCache);
+        callback(deepCopy(ChatCache));
     }
 
 
@@ -172,4 +172,8 @@ function formatArrToObjById(arr){
                 };
                 return o;
             }, {})
+}
+//深拷贝方法
+function deepCopy(obj){
+    return JSON.parse(JSON.stringify(obj))
 }
