@@ -3,7 +3,6 @@
  */
 import IM from '../Core/IM'
 import User from '../Core/UserGroup'
-import Network from '../Core/Networking/Network'
 import {buildMessageDto} from '../Core/Redux/dto/Common'
 import AppCommandEnum from '../Core/IM/dto/AppCommandEnum'
 import MessageCommandEnum from '../Core/IM/dto/MessageCommandEnum'
@@ -56,7 +55,6 @@ export default class chatController {
         __instance(this);
         this.im = new IM();
         this.user = new User();
-        this.network = new Network();
         currentObj = this;
     }
 
@@ -127,26 +125,6 @@ export default class chatController {
 
 
 
-
-
-
-
-    //todo 张彤 applyFriend
-    acceptFriend(params,callback){
-        let {key} = params;
-        this.network.methodPOST('Member/AcceptFriend',params,function(results){
-            if(results.success){
-                //todo controller operate
-                let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                currentObj.user.AddNewRelation(relationObj);
-                //修改好友申请消息状态
-                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
-                results.data.acceptFriend = {key,Account}
-            }
-            callback(results);
-        },false)
-    }
     getApplicantsInfo(idS,callback){
         this.user.GetRelationsByRelationIds(idS,callback)
     }
@@ -161,7 +139,7 @@ export default class chatController {
     }
 
     updateMessageRemoteSource(MSGID,url){
-        this.im.updateMessageLocalSource(MSGID,url)
+        this.im.updateMessageRemoteSource(MSGID,url)
     }
 
     // getRecentChatRecode(client,way,range,callback){
@@ -173,8 +151,8 @@ export default class chatController {
     //todo 李宗骏  通过cache messageId 获得IM 数据
 
 
-    downloadVideo(requestURL,filePath,callback,onprogress){
-       this.im.addDownloadVideoSource(requestURL,filePath,callback,onprogress);
+    manualDownloadResource(requestURL,filePath,callback,onprogress){
+       this.im.manualDownloadResource(requestURL,filePath,callback,onprogress);
     }
 
 
@@ -247,7 +225,7 @@ function receiveMessageHandle(message){
 
             }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
 
-                currentGroupChatMemberChangesCallback(groupMembers);
+                currentGroupChatMemberChangesCallback&&currentGroupChatMemberChangesCallback(groupMembers);
 
                 var accounts = message.Data.Data.Data.split(',');
 
@@ -307,6 +285,9 @@ function receiveMessageHandle(message){
 }
 
 function recieveAddFriendMessage(relationId){
+
+    console.log("执行了chatcontroller")
+
     currentObj.user.updateDisplayOfRelation(relationId,'true');
-    recieveAddFriendMessage(relationId)
+    handleRecieveAddFriendMessage(relationId)
 }

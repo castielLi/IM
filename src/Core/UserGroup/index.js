@@ -5,7 +5,7 @@ import * as storeSqlite from './StoreSqlite/User/index'
 
 import * as groupStoreSqlite from './StoreSqlite/Group'
 
-import dataRquest from './dataRequest'
+import ApiBridge from '../../Controller/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
 import MessageCommandEnum from '../../Core/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../Core/IM/dto/AppCommandEnum'
@@ -19,7 +19,7 @@ let __instance = (function () {
 }());
 
 
-let _request = new dataRquest();
+let _apiBridge = new ApiBridge();
 let currentObj = undefined;
 
 //缓存数据
@@ -32,15 +32,10 @@ export default class User {
 
         __instance(this);
 
-        this.request = _request;
+        this.apiBridge = _apiBridge;
 
         currentObj = this;
     }
-
-    //设置request的方式webapi，还是socket
-    // setRequest(request){
-    //     _request = request;
-    // }
 
 
     //todo:lizongjun 把所有的用户，包括没有添加为好友的用户全部放到user表中，user表中group和user 分开，单独管理,groupMemberList用来管理群成员
@@ -60,7 +55,7 @@ export default class User {
                     storeSqlite.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
-                            currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
+                            currentObj.apiBridge.request.SearchUser({"Keyword":Id},(success,results,errMsg)=>{
                                 if(success) {
                                     let relation = new RelationModel();
                                     relation.RelationId = results.Account;
@@ -96,7 +91,7 @@ export default class User {
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
-                            this.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
+                            currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(success,results,errMsg)=>{
                                 if(success) {
                                     let relation = new RelationModel();
                                     relation.RelationId = results.ID;
@@ -145,7 +140,7 @@ export default class User {
                                 //代表数据库里面并没有groupMembers的对应关系，需要进行下载
                                 if(results.length == 0){
 
-                                    currentObj.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
+                                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(success,results,errMsg)=>{
                                         if(success) {
 
                                             let cacheGroupMembers = [];
@@ -201,7 +196,7 @@ export default class User {
                 var groupMembersInfo = [];
                 //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
                 if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
-                    this.request.getAccountByAccountIdAndType(Id,type,(success,results,errMsg)=>{
+                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(success,results,errMsg)=>{
                         if(success) {
                             let relation = new RelationModel();
                             relation.RelationId = results.ID;

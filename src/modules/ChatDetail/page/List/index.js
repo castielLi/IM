@@ -31,7 +31,7 @@ import IM from '../../../../Core/IM';
 import * as DtoMethods from '../../../../Core/IM/dto/Common'
 import User from '../../../../Core/UserGroup'
 import chatController from '../../../../Controller/chatController'
-
+import SettingController from '../../../../Controller/settingController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -45,16 +45,21 @@ let ListLayout = false;
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
 let recordData;
-let _responderPageY;
 
-let user = new User();
+
 let ChatController = new chatController();
-
+let settingController = new SettingController();
 
 class Chat extends Component {
     constructor(props){
         super(props)
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
+            if(r1.message.type === 'image')
+            {
+                let r1Local = r1.message.Resource[0].LocalSource;
+                let r2Local = r2.message.Resource[0].LocalSource;
+                return r1Local !== r2Local || r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
+            }
             return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
         }});
 
@@ -131,6 +136,12 @@ class Chat extends Component {
                 })
             })
 
+            settingController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
+                currentObj.setState({
+                    groupMembers
+                })
+            })
+
             ChatController.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
                 currentObj.setState({
                     groupMembers,
@@ -150,11 +161,11 @@ class Chat extends Component {
         let {isMore} = this.state;
 
         this._panResponder = PanResponder.create({
-            onStartShouldSetPanResponder: (e) => {_responderPageY = e.nativeEvent.pageY; return false},  //对触摸进行响应
+            onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
             onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
-            onMoveShouldSetPanResponder: (e)=> {
-                if(e.nativeEvent.pageY - _responderPageY > 30 && e.nativeEvent.pageY){
+            onMoveShouldSetPanResponder: (e,g)=> {
+                if(g.dy > 30){
                     return true;
                 }
                 else{

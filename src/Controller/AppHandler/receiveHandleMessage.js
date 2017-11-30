@@ -2,10 +2,10 @@
  * Created by apple on 2017/11/8.
  */
 
-import Store from '../../../store'
-import * as ActionForChatRecordStore from '../../Redux/chat/action'
-import {changeRelationOfShow,addRelation} from '../../Redux/contact/action';
-import * as ActionForLoginStore from '../../../modules/Login/reducer/action'
+import Store from '../../store/index'
+import * as ActionForChatRecordStore from '../../Core/Redux/chat/action'
+import {changeRelationOfShow,addRelation} from '../../Core/Redux/contact/action';
+import * as ActionForLoginStore from '../../modules/Login/reducer/action'
 import {Alert} from 'react-native'
 let store = Store;
 let myAccountId = '';

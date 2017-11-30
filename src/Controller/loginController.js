@@ -4,10 +4,10 @@
 
 import IM from '../Core/IM'
 import User from '../Core/UserGroup'
-import Network from '../Core/Networking/Network'
+import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';
 import RNFS from 'react-native-fs'
-import {setMyAccoundId} from '../Core/IM/action/receiveHandleMessage';
+import {setMyAccoundId} from './AppHandler/receiveHandleMessage';
 
 let __instance = (function () {
     let instance;
@@ -30,16 +30,13 @@ export default class loginController {
         currentObj = this;
         this.user = new User();
         this.im = new IM();
-        this.network = new Network();
-
+        this.apiBridge = new ApiBridge();
     }
 
     login(callback,params){
-        this.network.methodPOST("/Member/Login",params,function(result){
+        this.apiBridge.request.Login(params,function(result){
 
             if(result.success){
-                Network.setNeedAuth(true)
-                Network.setAuthorization(result.data.Data["SessionToken"]);
 
                 let account = { accountId:result.data.Data["Account"],SessionToken:result.data.Data["SessionToken"],IMToken:result.data.Data["IMToken"]
                     ,gender:result.data.Data["Gender"],Nick:result.data.Data["Nickname"],avator:result.data.Data["HeadImageUrl"],phone:result.data.Data["PhoneNumber"]
@@ -92,22 +89,16 @@ export default class loginController {
             }
 
 
-        },false);
+        });
     }
 
     loginWithToken(callback,params,storage){
 
-        Network.setNeedAuth(true)
-        Network.setAuthorization(storage.SessionToken);
-
-        this.network.methodPOST("/Member/LoginByToken",params,function(result){
+        this.apiBridge.request.LoginWithToken(params,function(result){
 
             if(result.success) {
                 if (result.data.Data != null) {
                     //缓存token
-
-                    Network.setAuthorization(result.data.Data["SessionToken"]);
-
                     AsyncStorage.setItem('account', JSON.stringify(
                         {
                             accountId: storage.accountId,
@@ -136,7 +127,7 @@ export default class loginController {
             }else{
                 callback(result);
             }
-        },false);
+        },storage);
     }
 
     loginOut(){
@@ -146,7 +137,7 @@ export default class loginController {
     }
     
     getContactList(callback,params){
-        this.network.methodPOST("/Member/GetContactList",params,function(result){
+        this.apiBridge.request.GetContactList(params,function(result){
             if(result.success){
 
                 currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
@@ -203,7 +194,7 @@ export default class loginController {
             }else{
                 callback(result)
             }
-        },false)
+        })
     }
 
 }

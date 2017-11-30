@@ -23,11 +23,12 @@ import * as relationActions from '../../../Core/Redux/contact/action';
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import {addAddFriendMessage} from '../../../Core/IM/action/createMessage';
 import chatController from '../../../Controller/chatController';
-
+import SettingController from '../../../Controller/settingController';
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let ChatController = new chatController();
+let settingController = new SettingController();
 
 class NewFriend extends ContainerComponent {
     constructor(props){
@@ -80,7 +81,7 @@ class NewFriend extends ContainerComponent {
             }
         }
 
-        ChatController.acceptFriend(params,callback)
+        settingController.acceptFriend(params,callback)
 
     }
 

@@ -15,6 +15,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
@@ -59,8 +60,8 @@ class ChatMessageImage extends ContainerComponent {
         return {uri:Source}
     }
 
-    goToCes = (path,Remote,MSGID,Sender)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    goToCes = (Path,Remote,MSGID,Sender)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"Path":Path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;
@@ -78,13 +79,13 @@ class ChatMessageImage extends ContainerComponent {
 
         return(
             <View style={[style,styles.bubble]}>
-                <TouchableOpacity onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
+                <Thouch onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
                         source={this.localSourceObj(LocalSource)}
                         style={[styles.imageStyle]}
                     />
-                </TouchableOpacity>
+                </Thouch>
             </View>
         )
     }
