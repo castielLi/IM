@@ -229,39 +229,9 @@ export default class IM {
         }, 1000);
     }
 
-    //删除当前聊天所有消息
-    deleteCurrentChatMessage(name,chatType){
-        storeSqlite.deleteClientRecode(name,chatType);
-    }
-
-    //删除ChatRecode中某条记录
-    deleteChatRecode(name){
-        storeSqlite.deleteChatRecode(name);
-    }
-    //删除当条消息
-    deleteMessage(message,chatType,client){
-        storeSqlite.deleteMessage(message,chatType,client);
-    }
-
-    //修改某client的未读消息数量
-    updateUnReadMessageNumber(name,number){
-        storeSqlite.updateUnReadMessageNumber(name,number)
-    }
-    //某client的未读消息数量加一
-    addChatUnReadMessageaNumber(name){
-        storeSqlite.addChatUnReadMessageNumber(name)
-    }
-    //获取当前用户或者群组的聊天记录
-    getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
-        storeSqlite.queryRecentMessage(account,way,range,callback);
-    }
-
-    //获取聊天列表
-    getChatList(callback){
-        storeSqlite.getChatList(callback);
-    }
 
 
+    //操作Cache
     getStoreMessagesByMSGIDs(ids){
         let cache = [];
         for(let item in storeMessage){
@@ -274,58 +244,6 @@ export default class IM {
         }
         return cache;
     }
-
-
-    //获取当前所有未发出去的消息添加入消息队列
-    addAllUnsendMessageToSendQueue(){
-        storeSqlite.getAllCurrentSendMessage(function(currentSendMessages){
-            console.log("复制未发送的消息进入发送队列");
-            if(currentSendMessages == null){
-                return;
-            }
-
-            let messages = [];
-            let sendMessage = [];
-
-            currentSendMessages.forEach(function (item) {
-                let message = DtoMethods.sqliteMessageToMessage(item);
-
-                //根据消息类型加入队列
-                if(message.type == "text"){
-                    sendMessage.push(message);
-                }else{
-
-                    if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
-
-                        cacheMessage.push(cacheMethods.createCacheMessage(message));
-                        FileManager.addResource(message.MSGID);
-
-                        console.log("加入资源队列" + message.MSGID);
-                    }else{
-                        sendMessage.push(message);
-                    }
-                }
-            })
-
-            // sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
-            for(let item in sendMessage){
-                cacheMessage.push(cacheMethods.createCacheMessage(sendMessage[item]));
-                SendManager.addSendMessage(sendMessage[item].MSGID);
-            }
-        });
-    }
-
-
-    //获取所有好友申请消息
-    getAllApplyFriendMessage(callback){
-        storeSqlite.getAllApplyFriendMessage(callback);
-    }
-
-    //修改好友申请消息
-    updateApplyFriendMessage(message){
-        storeSqlite.updateApplyFriendMessage(message);
-    }
-
 
     //通过MSGID来获取cache中的message数据
     getCacheFromCacheByMSGID(messageId){
@@ -346,6 +264,11 @@ export default class IM {
         }
     }
 
+
+
+
+
+    //发送消息
     //外部接口，添加消息
     addMessage(message,callback=function(success,content){},onprogess="undefined") {
 
@@ -440,90 +363,14 @@ export default class IM {
         }
     }
 
-
-    //存储发送消息
-    storeSendMessage(message){
-        storeSqlite.storeSendMessage(message);
+    sendReceiveAckMessage(messageId){
+        UUIDGenerator.getRandomUUID().then((uuid) => {
+            let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
+            //把收到消息ack回执添加到cache中，便于send时获取
+            cacheMessage.push(cacheMethods.createCacheMessage(receiveAckMessage));
+            SendManager.addSendMessage(receiveAckMessage.MSGID,false);
+        })
     }
-
-    //存储接收消息
-    storeRecMessage(message,callback){
-        storeSqlite.storeRecMessage(message,callback);
-    }
-
-    //操作好友管理模块,申请好友通过，设置关系显示状态
-    updateRelation(relationId){
-        console.log("执行了IM")
-        ControllerHandleRecieveAddFriendMessage(relationId);
-    }
-
-
-    //向sqlite队列中push元素
-    addUpdateSqliteQueue(message,type){
-        // handleSqliteQueue.push({message:message,type:type});
-        this.updateSqliteMessage(message,type);
-    }
-
-    //更改消息状态
-    updateSqliteMessage(message,way){
-        //根据类别修改消息结果或者是发送消息的消息状态
-        if(way == UpdateMessageSqliteType.storeMessage){
-            //修改message表中message状态
-            storeSqlite.updateMessageStatus(message);
-        }else{
-            //修改发送队列中message状态
-            storeSqlite.updateSendMessageStatus(message);
-        }
-
-    }
-
-    //更改消息本地资源路径
-    updateMessageLocalSource(messageId,url){
-       storeSqlite.updateMessageLocalSource(messageId,url);
-    }
-    //更改消息远程资源路径
-    updateMessageRemoteSource(messageId,url){
-        storeSqlite.updateMessageRemoteSource(messageId,url);
-    }
-
-
-    //删除数据库中发送队列的message
-    popCurrentMessageSqlite(messageId){
-        storeSqlite.popMessageInSendSqlite(messageId);
-    }
-
-
-    //添加资源文件到数据库
-    addResourceSqlite(message,item){
-        storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
-    }
-
-    //从数据库删除资源文件
-    deleteResourceSqlite(message,item){
-        storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
-    }
-
-    //关闭数据库
-    closeImDb(){
-        storeSqlite.closeImDb();
-    }
-    receiveMessageOpreator(message){
-        if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
-            this.ackBackMessageHandle(message.Data);
-        }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
-            ReceiveManager.receiveMessageOpreator(message);
-        }
-    }
-
-    //向message缓存中添加消息
-    storeMessageCache(obj){
-        storeMessage.push(obj);
-    }
-
-    updateReceiveMessageContentById(content,MSGID){
-        storeSqlite.UpdateMessageContentByMSGID(content,MSGID);
-    }
-
 
     sendOverMaxTimesHandle(messageId){
         let cache = this.getCacheFromCacheByMSGID(messageId);
@@ -538,6 +385,38 @@ export default class IM {
         currentObj.popCurrentMessageSqlite(message.MSGID)
 
 
+    }
+
+
+
+    //接收消息
+    recMessage(message,type=null) {
+
+        //处理收到消息的逻辑
+        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
+
+        if(type == MessageCommandEnum.MSG_HEART){
+            console.log("心跳包压入发送队列")
+            //将心跳包消息存入cache，便于send消息
+            cacheMessage.push(cacheMethods.createCacheMessage(message));
+            SendManager.addSendMessage(message.MSGID,false)
+            return;
+        }else if(type == MessageCommandEnum.MSG_KICKOUT){
+            console.log("设备被踢出消息")
+            currentObj.socket.logout();
+            ControllerKickOutHandle();
+            return;
+        }
+
+        currentObj.receiveMessageOpreator(message)
+    }
+
+    receiveMessageOpreator(message){
+        if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
+            this.ackBackMessageHandle(message.Data);
+        }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
+            ReceiveManager.receiveMessageOpreator(message);
+        }
     }
 
     ackBackMessageHandle(messageId){
@@ -570,29 +449,7 @@ export default class IM {
 
 
 
-
-    recMessage(message,type=null) {
-
-        //处理收到消息的逻辑
-        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
-
-        if(type == MessageCommandEnum.MSG_HEART){
-            console.log("心跳包压入发送队列")
-            //将心跳包消息存入cache，便于send消息
-            cacheMessage.push(cacheMethods.createCacheMessage(message));
-            SendManager.addSendMessage(message.MSGID,false)
-            return;
-        }else if(type == MessageCommandEnum.MSG_KICKOUT){
-            console.log("设备被踢出消息")
-            currentObj.socket.logout();
-            ControllerKickOutHandle();
-            return;
-        }
-
-        currentObj.receiveMessageOpreator(message)
-    }
-
-
+    //资源
     addDownloadResource(message,callback){
         FileManager.downloadResource(message,callback);
     }
@@ -602,27 +459,17 @@ export default class IM {
     }
 
 
-    ReceiveMessageHandle(message){
-        ControllerReceiveMessageHandle(message);
+
+
+    //向sqlite队列中push元素
+    addUpdateSqliteQueue(message,type){
+        // handleSqliteQueue.push({message:message,type:type});
+        this.updateSqliteMessage(message,type);
     }
 
-    MessageResultHandle(success,message){
-        ControllerMessageResultHandle(success,message)
-    }
-
-
-    MessageChangeStatusHandle(message){
-        ControllerMessageChangeStatusHandle(message)
-    }
-
-
-    sendReceiveAckMessage(messageId){
-        UUIDGenerator.getRandomUUID().then((uuid) => {
-            let receiveAckMessage = {"Command":MessageCommandEnum.MSG_REV_ACK,"MSGID":ME + "_" +uuid,"Data":messageId};
-            //把收到消息ack回执添加到cache中，便于send时获取
-            cacheMessage.push(cacheMethods.createCacheMessage(receiveAckMessage));
-            SendManager.addSendMessage(receiveAckMessage.MSGID,false);
-        })
+    //向message缓存中添加消息
+    storeMessageCache(obj){
+        storeMessage.push(obj);
     }
 
 
@@ -654,16 +501,148 @@ export default class IM {
                 }, recMessageIntervalTime)
             }
 
-            // if(ackMessageInterval == -1) {
-            //     ackMessageInterval = setInterval(function () {
-            //         // AckManager.handAckQueue();
-            //     }, ackMessageIntervalTime)
-            // }
-
-
             FileManager.handleResourceQueue();
 
         }, configs.RunloopIntervalTime);
+    }
+
+
+    //上层注入的MessageHandler
+    ReceiveMessageHandle(message){
+        ControllerReceiveMessageHandle(message);
+    }
+
+    MessageResultHandle(success,message){
+        ControllerMessageResultHandle(success,message)
+    }
+
+
+    MessageChangeStatusHandle(message){
+        ControllerMessageChangeStatusHandle(message)
+    }
+
+    //操作好友管理模块,申请好友通过，设置关系显示状态
+    updateRelation(relationId){
+        console.log("执行了IM")
+        ControllerHandleRecieveAddFriendMessage(relationId);
+    }
+
+
+
+
+
+
+    //IM 数据库操作
+
+    //通过MSGIDS获取消息
+    getMessagesByIds(Ids,callback){
+        storeSqlite.getMessagesByIds(Ids,callback)
+    }
+
+    //获取所有好友申请消息
+    getAllApplyFriendMessage(callback){
+        storeSqlite.getAllApplyFriendMessage(callback);
+    }
+
+    //修改好友申请消息
+    updateApplyFriendMessage(message){
+        storeSqlite.updateApplyFriendMessage(message);
+    }
+
+    //获取当前所有未发出去的消息添加入消息队列
+    addAllUnsendMessageToSendQueue(){
+        storeSqlite.getAllCurrentSendMessage(function(currentSendMessages){
+            console.log("复制未发送的消息进入发送队列");
+            if(currentSendMessages == null){
+                return;
+            }
+
+            let messages = [];
+            let sendMessage = [];
+
+            currentSendMessages.forEach(function (item) {
+                let message = DtoMethods.sqliteMessageToMessage(item);
+
+                //根据消息类型加入队列
+                if(message.type == "text"){
+                    sendMessage.push(message);
+                }else{
+
+                    if(message.status == SendStatus.PrepareToUpload || message.status == MessageStatus.WaitOpreator) {
+
+                        cacheMessage.push(cacheMethods.createCacheMessage(message));
+                        FileManager.addResource(message.MSGID);
+
+                        console.log("加入资源队列" + message.MSGID);
+                    }else{
+                        sendMessage.push(message);
+                    }
+                }
+            })
+
+            // sendMessageQueue = sendMessage.reduce(function(prev, curr){ prev.push(curr); return prev; },sendMessageQueue);
+            for(let item in sendMessage){
+                cacheMessage.push(cacheMethods.createCacheMessage(sendMessage[item]));
+                SendManager.addSendMessage(sendMessage[item].MSGID);
+            }
+        });
+    }
+
+    //存储发送消息
+    storeSendMessage(message){
+        storeSqlite.storeSendMessage(message);
+    }
+
+    //存储接收消息
+    storeRecMessage(message,callback){
+        storeSqlite.storeRecMessage(message,callback);
+    }
+
+    //更改消息状态
+    updateSqliteMessage(message,way){
+        //根据类别修改消息结果或者是发送消息的消息状态
+        if(way == UpdateMessageSqliteType.storeMessage){
+            //修改message表中message状态
+            storeSqlite.updateMessageStatus(message);
+        }else{
+            //修改发送队列中message状态
+            storeSqlite.updateSendMessageStatus(message);
+        }
+
+    }
+
+    //更改消息本地资源路径
+    updateMessageLocalSource(messageId,url){
+        storeSqlite.updateMessageLocalSource(messageId,url);
+    }
+    //更改消息远程资源路径
+
+    updateMessageRemoteSource(messageId,url){
+        storeSqlite.updateMessageRemoteSource(messageId,url);
+    }
+
+    //删除数据库中发送队列的message
+    popCurrentMessageSqlite(messageId){
+        storeSqlite.popMessageInSendSqlite(messageId);
+    }
+
+    //添加资源文件到数据库
+    addResourceSqlite(message,item){
+        storeSqlite.InsertResource(message.MSGID,message.Resource[item].LocalSource);
+    }
+
+    //从数据库删除资源文件
+    deleteResourceSqlite(message,item){
+        storeSqlite.DeleteResource(message.MSGID,message.Resource[item].LocalSource);
+    }
+
+    updateReceiveMessageContentById(content,MSGID){
+        storeSqlite.UpdateMessageContentByMSGID(content,MSGID);
+    }
+
+    //关闭数据库
+    closeImDb(){
+        storeSqlite.closeImDb();
     }
 
 }
