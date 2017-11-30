@@ -2,6 +2,7 @@ import ChatCommandEnum from '../dto/ChatCommandEnum';
 import AppCommandEnum from '../dto/AppCommandEnum'
 import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum';
 import MessageCommandEnum from '../dto/MessageCommandEnum';
+import MessageCommand from '../StoreSqlite/dto/MessageCommand'
 
 import SendMessageBodyDto from '../dto/SendMessageBodyDto';
 import SendMessageDto from '../dto/SendMessageDto';
@@ -100,13 +101,13 @@ export function startChatRoomMessage(Sender,messageId){
 export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
     let message = createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
     message.status = MessageStatus.SendSuccess
-    message.Command = MessageCommandEnum.MSG_INFO;
+    message.Command = MessageCommand.MSG_INFO;
     message.MSGID = messageId;
     return message;
 }
 
 export function buildInvationSendMessageToRudexMessage(message){
-    message.Command = MessageCommandEnum.MSG_INFO;
+    message.Command = MessageCommand.MSG_INFO;
     return message;
 }
 
@@ -114,12 +115,12 @@ export function buildInvationSendMessageToRudexMessage(message){
 export function buildChangeGroupNickMessage(Sender,Receiver,text,messageId){
     let message = createMessageObj(MessageType.information,text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
     message.status = MessageStatus.SendSuccess
-    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_Nick;
+    message.Command = MessageCommand.MSG_INFO_CHANGE_GROUP_Nick;
     message.MSGID = messageId;
     return message;
 }
 
 export function buildChangeGroupNickSendMessageToRudexMessage(message){
-    message.Command = MessageCommandEnum.MSG_INFO_CHANGE_GROUP_Nick;
+    message.Command = MessageCommand.MSG_INFO_CHANGE_GROUP_Nick;
     return message;
 }
