@@ -74,6 +74,13 @@ export default class chatController {
     //接口方法
     setCurrentChat(chat){
         currentChat = chat;
+        if(cache[chat]){
+            cache[chat].unread = 0;
+
+        }else{
+            cache[chat] = { messages: [],unread:0}
+        }
+        this.im.updateUnReadMessageNumber(chat,0);
     }
 
     emptyCurrentChat(){
@@ -104,17 +111,6 @@ export default class chatController {
         this.im.getRecentChatRecode(client,type,start,function(messages){
             callback(messages)
         })
-    }
-    //界面通知controller正在与某人会话
-    chatWithNewClient(client){
-        currentChat = client;
-        if(cache[client]){
-            cache[client].unread = 0;
-
-        }else{
-            cache[client] = { messages: [],unread:0}
-        }
-        this.im.updateUnReadMessageNumber(client,0);
     }
 
 
@@ -157,7 +153,7 @@ export default class chatController {
 
 
     //获得当前聊天下所有的聊天记录
-    getMessagesByIds(){
+    getCurrentChatMessages(){
 
          let ids;
          for(let item in cache){
