@@ -3,13 +3,15 @@
  */
 
 import * as storeSqlite from './StoreSqlite'
+import RecentRecordDtoDto from './dto/RecentRecordDto';
+import InitChatRecordConfig from './dto/InitChatRecordConfig';
 
 let currentObj = undefined;
 
 //会话缓存
 //格式 []
-let ChatCash = {}
-// let ChatCash = {
+let ChatCache = {}
+// let ChatCache = {
 //     'wg003722':{
 //         Client: "wg003722",
 //         LastMessage: "4444",
@@ -40,56 +42,72 @@ export default class Chat {
     //获取所有聊天会话列表，只有每次登陆后才会获取所有列表
     getAllChatList(callback){
         currentObj.getChatList((results)=>{
-            let cash = fomateArrToObjById(results);
-            callback(cash);
-            ChatCash = cash;
+            let cache = formatArrToObjById(results);
+            callback(deepCopy(cache));
+            ChatCache = cache;
         });
     }
-    //获取单个会话,打开一个聊天窗口的时候
+    //获取单个会话聊天记录,打开一个聊天窗口的时候
     getOneChat(clientId,type,callback){
-        if(ChatCash[clientId] == undefined){
+        if(ChatCache[clientId] == undefined){
             callback([])
         }else{
-            if(ChatCash[clientId][Record].length == 0){
-                currentObj.getRecentChatRecode(clientId,type,{start:0,limit:10},(results)=>{
-                    callback(results);
-                    ChatCash[clientId][Record] = results;
+            if(ChatCache[clientId]['Record'].length < InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
+                let needLength = InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER - ChatCache[clientId]['Record'].length;
+                currentObj.getRecentChatRecode(clientId,type,{start:0,limit:needLength},(results)=>{
+                    callback(deepCopy(results));
+                    ChatCache[clientId]['Record'] = results;
                 });
             }else{
-                callback(ChatCash[clientId][Record]);
+                callback(deepCopy(ChatCache[clientId]['Record']));
             }
         }
     }
     //删除一个会话
     deleteOneChat(clientId,type,callback){
-        delete ChatCash[clientId];
-        callback(ChatCash);
+        delete ChatCache[clientId];
+        callback(deepCopy(ChatCache));
         //删除chatRecord表中对应记录
         this.deleteChatRecode(clientId);
         //删除与该client的所有聊天记录
         this.deleteCurrentChatMessage(clientId,type)
     }
     //添加一个会话
-    addOneChat(clientId,newChatObj,callback){
-        ChatCash[clientId] = newChatObj;
-        callback(ChatCash)
+    addOneChat(clientId,newChatObj,messageId,callback){
+        let recentObj = new RecentRecordDtoDto();
+        //recentObj.LastMessage = newChatObj.data
+        recentObj.Record.unshift(messageId);
+        ChatCache[clientId] = recentObj;
+        callback(deepCopy(ChatCache))
     }
     //未读消息+1
     addUnReadMsgNumber(clientId,callback){
-        ChatCash[clientId][unReadMessageCount] +=1;
-        callback(ChatCash)
+        ChatCache[clientId]['unReadMessageCount'] +=1;
+        callback(deepCopy(ChatCache))
         currentObj.addChatUnReadMessageaNumber(clientId);
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId,callback){
-        ChatCash[clientId][unReadMessageCount] = 0;
-        callback(ChatCash)
+        ChatCache[clientId]['unReadMessageCount'] = 0;
+        callback(deepCopy(ChatCache))
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
     //修改最后一条消息内容
-    updateLastMessageAndTime(){
-        
+    updateLastMessageAndTime(clientId,messageContent,time,messageId){
+        ChatCache[clientId].LastMessage = messageContent;
+        ChatCache[clientId].Time = time;
+        let needLength = ChatCache[clientId].Record.length;
+        if(needLength>=InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
+            ChatCache[clientId].Record.pop();
+        }
+        ChatCache[clientId].Record.unshift(messageId);
+        callback(deepCopy(ChatCache));
     }
+
+
+
+
+
     //初始化Chat数据库
     initIMDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
@@ -132,7 +150,7 @@ export default class Chat {
         storeSqlite.addChatUnReadMessageNumber(name)
     }
     //获取当前用户或者群组的聊天记录
-    getRecentChatRecode(account,way,range = {start:0,limit:10},callback){
+    getRecentChatRecode(account,way,range = {start:0,limit:InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER},callback){
         storeSqlite.queryRecentMessage(account,way,range,callback);
     }
 
@@ -145,7 +163,7 @@ export default class Chat {
 
 //私有方法
 //数组转对象
-function fomateArrToObjById(arr){
+function formatArrToObjById(arr){
     return arr.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
 
                 o[m.Client] = {
@@ -154,4 +172,8 @@ function fomateArrToObjById(arr){
                 };
                 return o;
             }, {})
+}
+//深拷贝方法
+function deepCopy(obj){
+    return JSON.parse(JSON.stringify(obj))
 }

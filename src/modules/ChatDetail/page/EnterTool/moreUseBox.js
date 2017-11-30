@@ -20,7 +20,6 @@ import {
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
-import {createResourceMessageObj} from './createMessageObj';
 import ChatController from '../../../../Controller/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';

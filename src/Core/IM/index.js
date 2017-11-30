@@ -393,37 +393,41 @@ export default class IM {
     recMessage(message,type=null) {
 
         //处理收到消息的逻辑
-        console.log("IM Core:消息内容"+message + " 开始执行pop程序");
+        console.log("IM Core:收到消息,开始执行分类程序");
 
-        if(type == MessageCommandEnum.MSG_HEART){
-            console.log("心跳包压入发送队列")
-            //将心跳包消息存入cache，便于send消息
-            cacheMessage.push(cacheMethods.createCacheMessage(message));
-            SendManager.addSendMessage(message.MSGID,false)
-            return;
-        }else if(type == MessageCommandEnum.MSG_KICKOUT){
-            console.log("设备被踢出消息")
-            currentObj.socket.logout();
-            ControllerKickOutHandle();
+        if(message == null){
             return;
         }
 
-        currentObj.receiveMessageOpreator(message)
-    }
-
-    receiveMessageOpreator(message){
-        if(message.Command == MessageCommandEnum.MSG_SEND_ACK) {
-            this.ackBackMessageHandle(message.Data);
-        }else if(message.Command == MessageCommandEnum.MSG_BODY || message.Command == MessageCommandEnum.MSG_ERROR){
-            ReceiveManager.receiveMessageOpreator(message);
+        switch(type){
+            case MessageCommandEnum.MSG_HEART:
+                console.log("心跳包压入发送队列")
+                //将心跳包消息存入cache，便于send消息
+                cacheMessage.push(cacheMethods.createCacheMessage(message));
+                SendManager.addSendMessage(message.MSGID,false)
+                break;
+            case MessageCommandEnum.MSG_KICKOUT:
+                console.log("设备被踢出消息")
+                currentObj.socket.logout();
+                ControllerKickOutHandle();
+                break;
+            case MessageCommandEnum.MSG_SEND_ACK:
+                this.ackBackMessageHandle(message.Data);
+                break;
+            case MessageCommandEnum.MSG_ERROR:
+                ReceiveManager.receiveErrorMessage(message);
+                break;
+            case MessageCommandEnum.MSG_BODY:
+                ReceiveManager.receiveBodyMessage(message)
+                break;
         }
+
     }
 
     ackBackMessageHandle(messageId){
 
         for(let item in cacheMessage) {
             if (cacheMessage[item].MSGID == messageId) {
-
 
                 currentObj.MessageResultHandle(true, messageId);
 
@@ -440,7 +444,6 @@ export default class IM {
                 SendManager.receieveAckHandle(messageId);
 
                 this.popMessageFromCache(messageId);
-
 
                 break;
             }
