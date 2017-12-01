@@ -53,6 +53,10 @@ UserManager.getAllRelationAvatorAndName = function(callback){
     storeSqlite.getAllRelationAvatorAndName(callback);
 }
 
+UserManager.GetRelationByIdAndType = function(Id,type,callback){
+    storeSqlite.GetRelationByIdAndType(Id,type,callback)
+}
+
 UserManager.addNewRelation = function(Relation,callback){
     storeSqlite.addNewRelation(Relation,callback)
 }

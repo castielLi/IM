@@ -251,7 +251,7 @@ CHATFMDB.getAllChatClientList = function(callback){
             }, (err)=>{errorDB('获取聊天列表失败',err)});
 
         });
-    }, errorDB);
+    }, (err)=>{errorDB('打开Chat.db失败',err)});
 }
 
 

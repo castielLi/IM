@@ -28,7 +28,7 @@ export function initIMDatabase(AccountId,callback){
     USERFMDB.initIMDataBase(AccountId,callback);
 }
 
-export function getRelation(Id,type,callback){
+export function GetRelationByIdAndType(Id,type,callback){
     USERFMDB.GetRelationByIdAndType(Id,type,callback);
 }
 

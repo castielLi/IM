@@ -33,6 +33,9 @@ GroupManager.GetRelationList = function(callback,show) {
     groupStoreSqlite.GetRelationList(callback, show);
 }
 
+GroupManager.GetRelationByIdAndType = function(Id,type,callback) {
+    groupStoreSqlite.GetRelationByIdAndType(Id,type,callback)
+}
 GroupManager.initRelations = function(GroupList,callback){
     groupStoreSqlite.initRelations(GroupList,callback);
 }

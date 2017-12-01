@@ -484,6 +484,17 @@ export default class User {
     getUserInfoById(accountId){
         return cache["private"][accountId]["Nick"]
     }
+
+
+    getNickAndAvatorById(accountId,type){
+        let needObj = {};
+        this.getInformationByIdandType(accountId,type,(realtion)=>{
+            needObj.Nick =  realtion["Nick"];
+            needObj.avator = realtion["avator"];
+        })
+    }
+
+
     getCachePrivateInfo(){
         let concat = Object.values(cache['private']) //将对象的value 组成数组
         return concat;
