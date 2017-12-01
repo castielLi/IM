@@ -22,6 +22,10 @@ export function storeRecMessage(message,callback){
     }
 }
 
+export function selectMessagesByIds(ids,callback) {
+    IMFMDB.selectMessagesByIds(ids,callback);
+
+}
 //删除ChatRecode中某条记录
 
 
@@ -166,6 +170,21 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
         });
 
     }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+IMFMDB.selectMessagesByIds = function(ids,callback){
+    let selectMessages = sqls.ExcuteIMSql.GetMessagesInMessageTableByIds;
+    selectMessages = commonMethods.sqlQueueFormat(selectMessages,ids);
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(selectMessages, [], (tx, results) => {
+                callback(results.rows.raw());
+                console.log("根据ids从IM批量获取message成功");
+            }, (err)=>{errorDB('根据ids从IM批量获取message失败',err)});
+        });
+    }, errorDB);
 }
 
 //添加申请好友和收到好友申请的消息

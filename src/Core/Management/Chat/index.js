@@ -39,6 +39,11 @@ export default class Chat {
         currentObj = this;
     }
 
+    //获取缓存信息
+    getChatCache(){
+        return deepCopy(ChatCache);
+    }
+
     //获取所有聊天会话列表，只有每次登陆后才会获取所有列表
     getAllChatList(callback){
         currentObj.getChatList((results)=>{
@@ -55,6 +60,7 @@ export default class Chat {
             if(ChatCache[clientId]['Record'].length < InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
                 let needLength = InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER - ChatCache[clientId]['Record'].length;
                 currentObj.getRecentChatRecode(clientId,type,{start:0,limit:needLength},(results)=>{
+                    //返回messageId组成的数组
                     callback(deepCopy(results));
                     ChatCache[clientId]['Record'] = results;
                 });
@@ -90,12 +96,13 @@ export default class Chat {
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId,callback){
+        if(ChatCache[clientId] == undefined) return;
         ChatCache[clientId]['unReadMessageCount'] = 0;
         callback(deepCopy(ChatCache))
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
     //收到或者发送消息,要修改最后一条消息内容
-    updateLastMessageAndTime(clientId,messageContent,time,messageId){
+    updateLastMessageAndTime(clientId,messageContent,time,messageId,callback){
         ChatCache[clientId].LastMessage = messageContent;
         ChatCache[clientId].Time = time;
         let needLength = ChatCache[clientId].Record.length;

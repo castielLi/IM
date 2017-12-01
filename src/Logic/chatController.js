@@ -24,6 +24,8 @@ let AppKickOutHandle = undefined;
 
 let handleRecieveAddFriendMessage = undefined;
 
+let user = new User();
+
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -42,6 +44,8 @@ let currentChat = undefined
 let currentGroupChatMemberChangesCallback = undefined;
 //重新渲染recentList回调
 let reRenderRecentListCallBack = undefined;
+//重新渲染聊天记录回调
+let reRenderChatRecordCallBack = undefined;
 //数据缓存
 let cache = {};
 //{ "wg003723" : { messages: [],unread:1}}
@@ -78,13 +82,10 @@ export default class chatController {
     //接口方法
     setCurrentChat(chat){
         currentChat = chat;
-        if(cache[chat]){
-            cache[chat].unread = 0;
-
-        }else{
-            cache[chat] = { messages: [],unread:0}
-        }
-        this.im.updateUnReadMessageNumber(chat,0);
+        this.chat.clearUnReadMsgNumber(chat,(results)=>{
+            let needData = fillNickAndAvatorData(results)
+            reRenderRecentListCallBack(needData);
+        });
     }
 
     emptyCurrentChat(){
@@ -107,10 +108,22 @@ export default class chatController {
     reRenderRecentList(callback){
         reRenderRecentListCallBack = callback;
     }
-    //初始化ChatCash
+    reRenderChatRecord(callback){
+        reRenderChatRecordCallBack = callback;
+    }
+    //初始化最近聊天数据
     initChat(callback){
         this.chat.getAllChatList((results)=>{
-            callback(results);
+            let needData = fillNickAndAvatorData(results)
+            callback(needData);
+        })
+    }
+    //初始化某聊天窗口的聊天记录
+    initChatRecord(clientId,type,callback){
+        this.chat.getOneChat(clientId,type,(ids)=>{
+            currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                callback(messages)
+            })
         })
     }
     deleteRecentChatList(rowData){
@@ -131,14 +144,33 @@ export default class chatController {
     addMessage(message,callback,onprogress){
         this.im.addMessage(message,(status,messageId)=>{
             message.MSGID = messageId;
-            //if(testCache[message.Data.Data.Receiver]==undefined){//没有该会话
-            // //新增一个会话
-            //   currentObj.chat.addOneChat(message.Data.Data.Receiver,message,message.MSGID,(results)=>{
-            //       callback(results);
-            //       reRenderRecentListCallBack(results);
-            //       testCache = results;
-            //   })
-            // }
+            let ChatCache = currentObj.chat.getChatCache();
+            if(ChatCache[message.Data.Data.Receiver]==undefined){//没有该会话
+            //新增一个会话
+              currentObj.chat.addOneChat(message.Data.Data.Receiver,message,message.MSGID,(results)=>{
+                  //重新渲染聊天记录
+                  currentObj.chat.getOneChat(message.Data.Data.Receiver,message.way,(ids)=>{
+                      currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                          reRenderChatRecordCallBack(messages);
+                      })
+                  })
+                  //重新渲染最近聊天列表
+                  let needData = fillNickAndAvatorData(results)
+                  reRenderRecentListCallBack(needData);
+              })
+            }else{
+                currentObj.chat.updateLastMessageAndTime(message.Data.Data.Receiver,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
+                    //重新渲染聊天记录
+                    currentObj.chat.getOneChat(message.Data.Data.Receiver,message.way,(ids)=>{
+                        currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                            reRenderChatRecordCallBack(messages);
+                        })
+                    })
+                    //重新渲染最近聊天列表
+                    let needData = fillNickAndAvatorData(results)
+                    reRenderRecentListCallBack(needData);
+                })
+            }
         },onprogress);
 
     }
@@ -314,12 +346,39 @@ function receiveMessageHandle(message){
             }
         }
 
-        let reduxMessageDto = buildMessageDto(message,relation);
-        AppReceiveMessageHandle(reduxMessageDto,relation);
-        //收到消息，判断数据库是否需要修改未读消息
+        //let reduxMessageDto = buildMessageDto(message,relation);
+        //AppReceiveMessageHandle(reduxMessageDto,relation);
+
+        //收到消息，判断是否是当前对话
         let sender = message.Data.Data.Sender;
-        if(sender != currentChat){
-            currentObj.im.addChatUnReadMessageaNumber(sender);
+        if(sender == currentChat){
+            currentObj.chat.updateLastMessageAndTime(message.Data.Data.Sender,extractMessage(message),message.Data.LocalTime,message.MSGID,(results)=>{
+                //重新渲染聊天记录
+                currentObj.chat.getOneChat(message.Data.Data.Sender,message.way,(ids)=>{
+                    currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                        reRenderChatRecordCallBack(messages);
+                    })
+                })
+                //重新渲染最近聊天列表
+                let needData = fillNickAndAvatorData(results)
+                reRenderRecentListCallBack(needData);
+            })
+        }else{
+            //新增一个会话
+            currentObj.chat.addOneChat(message.Data.Data.Sender,message,message.MSGID,()=>{
+                //未读消息+1
+                currentObj.caht.addUnReadMsgNumber(message.Data.Data.Sender,(results)=>{
+                    //重新渲染聊天记录
+                    currentObj.chat.getOneChat(message.Data.Data.Sender,message.way,(ids)=>{
+                        currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                            reRenderChatRecordCallBack(messages);
+                        })
+                    })
+                    //重新渲染最近聊天列表
+                    let needData = fillNickAndAvatorData(results)
+                    reRenderRecentListCallBack(needData);
+                })
+            })
         }
     },message.Command,message.Data.Data.Command);
     //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
@@ -332,4 +391,30 @@ function recieveAddFriendMessage(relationId){
     currentObj.user.updateDisplayOfRelation(relationId,'true');
     handleRecieveAddFriendMessage(relationId)
 }
-
+//消息提取
+function extractMessage(message){
+    switch (message.type) {
+        case 'text':
+            return message.Data.Data.Data;
+        case 'image':
+            return '[图片]';
+        case 'audio':
+            return '[音频]';
+        case 'video':
+            return '[视频]';
+        case 'information':
+            return '[通知]'
+        // return message.Data.Data.Data
+        default:
+            return '';
+    }
+}
+//数据填充
+//填充最近聊天头像昵称
+function fillNickAndAvatorData(data){
+    for(let key in data){
+        let nickAndAvatorObj = user.getNickAndAvatorById(key);
+        data[key] = {...data[key],...nickAndAvatorObj}
+    }
+    return data;
+}

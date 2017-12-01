@@ -79,7 +79,7 @@ class Validate extends ContainerComponent {
             relation.show = 'false';
             // user.AddNewRelation(relation);
             SettingController.addNewRelation(relation);
-            currentObj.props.addRelation(relation);
+            //currentObj.props.addRelation(relation);
 
         // })
     }

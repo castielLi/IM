@@ -22,6 +22,8 @@ let currentObj = undefined;
 
 //标示当前群组聊天人员名单变动回调
 let currentGroupChatMemberChangesCallback = undefined;
+let setGroupListChangeCallback = undefined;
+let setContactListChangeCallback = undefined;
 
 export default class settingController {
     constructor() {
@@ -33,6 +35,28 @@ export default class settingController {
         this.network = new Network();
         this.apiBridge = new ApiBridge();
         currentObj = this;
+    }
+
+
+    //todo:来之页面的注入回调
+    setGroupListChangeCallback(callback){
+        setGroupListChangeCallback = callback;
+    }
+    setContactListChangeCallback(callback){
+        setContactListChangeCallback = callback;
+    }
+
+    //todo：页面获取到信息的方法
+    getLatestGroupList(callback){
+        let concat = this.user.getCacheChatroomInfo();
+        callback && callback(concat);
+    }
+    getLatestContactList(callback){
+        let concat = this.user.getCachePrivateInfo();
+        callback && callback(concat);
+    }
+    initUserGroupCache(relations){
+        this.user.initUserGroupCache(relations)
     }
 
     //群设置（GroupInformationSetting）
@@ -108,6 +132,7 @@ export default class settingController {
     //申请好友验证(validate)
     addNewRelation(relationObj){
         this.user.AddNewRelation(relationObj);
+        this.user.addUserGroupCache(relationObj);
     }
     //私聊设置
     //用户设置页面（InformationSetting）
@@ -156,6 +181,8 @@ export default class settingController {
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
                 currentObj.user.AddNewRelation(relationObj)
+                currentObj.user.addUserGroupCache(relationObj)
+
             }
             callback(result);
         })
@@ -229,6 +256,7 @@ export default class settingController {
 
                     //添加关系到数据库
                     currentObj.user.AddGroupAndMember(relation,splNeedArr);
+                    currentObj.user.addGroupAndMemberCache(relation,splNeedArr );
                     result.data.relation = relation;
                     let messageId = uuidv1();
                     //创建群组消息

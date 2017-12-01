@@ -307,7 +307,7 @@ class ChooseClient extends ContainerComponent {
                         alert("返回群数据出错")
                         return;
                     }
-                    currentObj.props.addRelation(result.data.relation);
+                    //currentObj.props.addRelation(result.data.relation);
 
                     //更新redux message
                     let copyMessage = Object.assign({},result.data.sendMessage);

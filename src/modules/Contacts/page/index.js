@@ -24,7 +24,10 @@ import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
+import SettingController from '../../../Logic/settingController'
 
+let settingController = new SettingController();
+let currentObj = undefined;
 
 var {height, width} = Dimensions.get('window');
 import Features from '../../Common/menu/features';
@@ -45,8 +48,11 @@ class Contacts extends ContainerComponent {
 
 			isShowSearchInput:false,
 			text:'',//textInput文字
+
+            contacts:[],
 		}
-        this.relationStore = []
+        this.relationStore = [];
+        currentObj = this;
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -212,8 +218,23 @@ class Contacts extends ContainerComponent {
     changeShowFeature=(newState)=>{
         this.setState({showFeatures:newState});
     }
+
+    componentWillMount(){
+        //改变页面state的回调 注入到chatController
+        settingController.setContactListChangeCallback(function (contact) {
+            currentObj.setState({
+                contacts:contact
+            })
+        })
+        //获取最新的列表
+        settingController.getLatestContactList(function (contact) {
+            currentObj.setState({
+                contacts:contact
+            })
+        });
+	}
 	render() {
-		let objData = initDataFormate('private',this.props.relationStore,this.state.text);
+		let objData = initDataFormate('private',this.state.contacts,this.state.text);
 		this.relationStore = objData.needArr;
 		this.sectionStore = objData.sectionArr;
 		return (

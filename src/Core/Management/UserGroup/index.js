@@ -355,10 +355,18 @@ export default class User {
         }
     }
 
-
+    //todo：缓存（cache）的操作
     //从cache里面取出用户名
     getUserInfoById(accountId){
         return cache["private"][accountId]["Nick"]
+    }
+    getCachePrivateInfo(){
+        let concat = Object.values(cache['private']) //将对象的value 组成数组
+        return concat;
+    }
+    getCacheChatroomInfo(){
+        let concat = Object.values(cache['chatroom']) //将对象的value 组成数组
+        return concat;
     }
 
     //通过id组成的数组从数据库批量查询user信息,返回数组
@@ -422,6 +430,19 @@ export default class User {
         }
         cache[Type][RelationId] = relation;
     }
+    //添加新的群关系和成员信息
+    addGroupAndMemberCache(relation,member){
+        let {Type,RelationId} = relation;
+        let Obj = cache[Type][RelationId];
+        if(Obj != undefined || Obj != 'undefined' || Obj){
+            return;
+        }
+        cache[Type][RelationId] = relation;
+        if(!member || !member.length){
+            return;
+        }
+        cache['groupMember'][RelationId] = member;
+    }
     //删除关系
     deleteUserGroupCache(id,type){
         let Obj = cache[type][id];
@@ -429,6 +450,15 @@ export default class User {
             return;
         }
         delete cache[type][id];
+    }
+    //添加缓存
+    //群拉人，添加到cache["groupMember"]缓存
+    groupAddMemberChangeCash(groupId,memberId){
+        cache["groupMember"][groupId].push(memberId);
+    }
+    //添加到cache["private"]
+    privateAddMemberChangeCash(memberId,memberObj){
+        cache["private"][memberId] = memberObj;
     }
 
     //先去对应表中找到成员ID 再去Account中找对应信息
@@ -449,15 +479,6 @@ export default class User {
                callback(results);
            }
        })
-    }
-    //添加缓存
-    //群拉人，添加到cache["groupMember"]缓存
-    groupAddMemberChangeCash(groupId,memberId){
-        cache["groupMember"][groupId].push(memberId);
-    }
-    //添加到cache["private"]
-    privateAddMemberChangeCash(memberId,memberObj){
-        cache["private"][memberId] = memberObj;
     }
 
 }
