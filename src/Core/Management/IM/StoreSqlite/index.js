@@ -4,7 +4,7 @@
 import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
-import * as commonMethods from '../../Helper/formatQuerySql'
+import * as commonMethods from '../../../Helper/formatQuerySql'
 import RNFS from 'react-native-fs';
 import MessageStatus from '../dto/MessageStatus'
 

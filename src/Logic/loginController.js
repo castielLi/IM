@@ -2,7 +2,7 @@
  * Created by apple on 2017/11/22.
  */
 
-import IM from '../Core/IM'
+import IM from '../Core/Management/IM'
 import User from '../Core/Management/UserGroup'
 import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';

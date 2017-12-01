@@ -1,11 +1,11 @@
 /**
  * Created by apple on 2017/11/21.
  */
-import IM from '../Core/IM'
+import IM from '../Core/Management/IM'
 import User from '../Core/Management/UserGroup'
 import {buildMessageDto} from '../Core/Redux/dto/Common'
-import AppCommandEnum from '../Core/IM/dto/AppCommandEnum'
-import MessageCommandEnum from '../Core/IM/dto/MessageCommandEnum'
+import AppCommandEnum from '../Core/Management/IM/dto/AppCommandEnum'
+import MessageCommandEnum from '../Core/Management/IM/dto/MessageCommandEnum'
 
 //上层应用Controller的接口
 //返回消息结果回调

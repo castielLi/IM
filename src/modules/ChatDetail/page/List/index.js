@@ -27,8 +27,8 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
-import IM from '../../../../Core/IM';
-import * as DtoMethods from '../../../../Core/IM/dto/Common'
+import IM from '../../../../Core/Management/IM';
+import * as DtoMethods from '../../../../Core/Management/IM/dto/Common'
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/chatController'
 import SettingController from '../../../../Logic/settingController'
