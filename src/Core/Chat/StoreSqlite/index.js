@@ -273,7 +273,7 @@ IMFMDB.getAllChatClientList = function(callback){
                 console.log(results);
                 callback(results.rows.raw());
 
-            }, errorDB);
+            }, (err)=>{errorDB('获取聊天列表失败',err)});
 
         });
     }, errorDB);

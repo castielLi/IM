@@ -49,7 +49,7 @@ class AutoExpandingTextInput extends Component {
         chatController.addMessage(message,(status,messageId)=>{
         message.MSGID = messageId;
         //更新chatRecordStore
-          this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+          //this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
 
           this.input.clear();
         if(isIos){
@@ -61,8 +61,8 @@ class AutoExpandingTextInput extends Component {
           this.state.data = '';
         this.props.setTextInputData('');
       });
-     
-      
+
+
       this.setState({
         inputHeight:this.state.firstInputHeight
       })

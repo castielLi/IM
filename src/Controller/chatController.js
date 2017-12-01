@@ -3,6 +3,7 @@
  */
 import IM from '../Core/IM'
 import User from '../Core/UserGroup'
+import Chat from '../Core/Chat'
 import {buildMessageDto} from '../Core/Redux/dto/Common'
 import AppCommandEnum from '../Core/IM/dto/AppCommandEnum'
 import MessageCommandEnum from '../Core/IM/dto/MessageCommandEnum'
@@ -40,9 +41,11 @@ let currentChat = undefined
 //标示当前群组聊天人员名单变动回调
 let currentGroupChatMemberChangesCallback = undefined;
 
+let reRenderRecentListCallBack = undefined;
 //数据缓存
 let cache = {};
 //{ "wg003723" : { messages: [],unread:1}}
+let testCache = {};
 
 
 
@@ -55,6 +58,7 @@ export default class chatController {
         __instance(this);
         this.im = new IM();
         this.user = new User();
+        this.chat = new Chat();
         currentObj = this;
     }
 
@@ -99,7 +103,17 @@ export default class chatController {
     setMyAccount(accountObj){
         myAccount = accountObj;
     }
+    reRenderRecentList(callback){
+        reRenderRecentListCallBack = callback
+    }
     //todo黄昊东  recentlist
+    //初始化ChatCache
+    initChat(callback){
+        this.chat.getAllChatList((result)=>{
+            callback(result)
+            testCache = result;
+        })
+    }
     deleteRecentChatList(rowData){
         //删除chatRecord表中对应记录
         this.im.deleteChatRecode(rowData.Client);
@@ -108,7 +122,7 @@ export default class chatController {
     }
     //从数据库获取与client的指定聊天记录  start:{start:起始位置,limit:结束位置}
     getRecentChatRecode(client,type,start,callback){
-        this.im.getRecentChatRecode(client,type,start,function(messages){
+        this.chat.getRecentChatRecode(client,type,start,function(messages){
             callback(messages)
         })
     }
@@ -116,7 +130,20 @@ export default class chatController {
 
     //发送消息
     addMessage(message,callback,onprogress){
-        this.im.addMessage(message,callback,onprogress);
+        this.im.addMessage(message,(status,messageId)=>{
+            message.MSGID = messageId;
+            if(testCache[message.Data.Data.Receiver]==undefined){
+
+                currentObj.chat.addOneChat(message.Data.Data.Receiver,message,message.MSGID,(results)=>{
+                    callback(results);
+                    reRenderRecentListCallBack(results)
+                    testCache =  results;
+                })
+            }
+
+            this.chat.sendMessage(message);
+        },onprogress);
+
     }
 
 
