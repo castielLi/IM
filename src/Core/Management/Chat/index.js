@@ -47,9 +47,11 @@ export default class Chat {
     //获取所有聊天会话列表，只有每次登陆后才会获取所有列表
     getAllChatList(callback){
         currentObj.getChatList((results)=>{
+            console.log('ChatCache::::::::',results)
             let cache = formatArrToObjById(results);
             callback(deepCopy(cache));
             ChatCache = cache;
+
         });
     }
     //获取单个会话聊天记录,打开一个聊天窗口的时候
@@ -79,10 +81,11 @@ export default class Chat {
         this.deleteCurrentChatMessage(clientId,type)
     }
     //添加一个会话
-    addOneChat(clientId,newChatObj,messageId,callback){
+    addOneChat(clientId,newChatObj,content,messageId,callback){
         let recentObj = new RecentRecordDtoDto();
         recentObj.Client = newChatObj.Data.Data.Receiver;
-        recentObj.LastMessage = newChatObj.Data.Data.Data;
+        recentObj.Type = newChatObj.way;
+        recentObj.LastMessage = content;
         recentObj.Time = newChatObj.Data.LocalTime;
         recentObj.Record.unshift(messageId);
         ChatCache[clientId] = recentObj;

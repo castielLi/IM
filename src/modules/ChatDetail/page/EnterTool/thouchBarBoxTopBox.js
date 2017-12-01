@@ -213,10 +213,8 @@ class ThouchBarBoxTopBox extends Component {
               Time:counTime?counTime:1
           }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             //发送消息到IM
-            chatController.addMessage(message, (status, messageId) => {
-            message.MSGID = messageId;
-            //更新chatRecordStore
-            this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+            chatController.addMessage(message, (results) => {
+
           }, [(tips) => {
             console.log(tips)
           }]);

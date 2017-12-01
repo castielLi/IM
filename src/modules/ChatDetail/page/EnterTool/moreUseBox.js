@@ -80,11 +80,7 @@ imagePikerCallBack(response){
     //初始化消息
     let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
     let message = addResourceMessage('image',this.props.type,[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-      chatController.addMessage(message,(status,messageId)=>{
-        message.MSGID = messageId;
-        //更新chatRecordStore
-        this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
-
+      chatController.addMessage(message,(result)=>{
     },[(tips)=>{console.log(tips)}]);
 
   }
@@ -114,11 +110,7 @@ useCameraVideo(){
         else{
             let responsePath = 'file://'+response.path;
             let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            chatController.addMessage(message,(status,messageId)=>{
-                message.MSGID = messageId;
-                //更新chatRecordStore
-                this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
-
+            chatController.addMessage(message,(result)=>{
             },[(tips)=>{console.log(tips)}]);
         }
     });
@@ -139,11 +131,7 @@ useLocalVideo(){
         else{
             let responsePath = 'file://'+response.path;
             let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            chatController.addMessage(message,(status,messageId)=>{
-                message.MSGID = messageId;
-                //更新chatRecordStore
-                this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
-
+            chatController.addMessage(message,(result)=>{
             },[(tips)=>{console.log(tips)}]);
         }
     });

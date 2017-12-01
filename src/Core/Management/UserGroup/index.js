@@ -96,6 +96,9 @@ export default class User {
 
 
     //添加新关系 有改无加
+    GetPrivateRelationByIdAndType(Id,type,callback){
+        UserManager.GetRelationByIdAndType(Id,type,callback);
+    }
     AddNewRelation(Relation,callback){
         UserManager.addNewRelation(Relation,callback)
     }
@@ -117,6 +120,10 @@ export default class User {
     }
 
     //Group:
+
+    GetGroupRelationByIdAndType(Id,type,callback){
+        GroupManager.GetRelationByIdAndType(Id,type,callback);
+    }
     AddNewGroup(Relation){
         GroupManager.addNewRelation(Relation)
     }
@@ -183,7 +190,7 @@ export default class User {
 
             //向数据库查找好友信息
             if(type == 'private'){
-                    storeSqlite.getRelation(Id,type,(relations)=>{
+                    this.GetPrivateRelationByIdAndType(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
                             //请求http获取信息
@@ -221,7 +228,7 @@ export default class User {
                 let groupMembers = [];
                 let groupMembersInfo = [];
 
-                    groupStoreSqlite.getRelation(Id,type,(relations)=>{
+                    this.GetGroupRelationByIdAndType(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
@@ -355,6 +362,13 @@ export default class User {
     //从cache里面取出用户名
     getUserInfoById(accountId){
         return cache["private"][accountId]["Nick"]
+    }
+    getNickAndAvatorById(accountId,type){
+        let needObj = {};
+        this.getInformationByIdandType(accountId,type,(realtion)=>{
+            needObj.Nick =  realtion["Nick"];
+            needObj.avator = realtion["avator"];
+        })
     }
     getCachePrivateInfo(){
         let concat = Object.values(cache['private']) //将对象的value 组成数组
