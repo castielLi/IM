@@ -4,6 +4,7 @@
 import * as storeSqlite from './StoreSqlite/User/index'
 
 let UserManager = {};
+export default UserManager;
 
 
 UserManager.initDatabase = function(AccountId){
