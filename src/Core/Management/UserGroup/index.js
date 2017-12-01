@@ -173,6 +173,53 @@ export default class User {
     //todo:lizongjun 用户管理模块里面包含了所有数据，1 从缓存找 2从数据库找 3请求获取，暴露给外界接口
     //新方法：
 
+
+    requestInfomation(Id,type,callback){
+        switch(type){
+            case "chatroom":
+                currentObj.apiBridge.GetGroupInfo({"GroupId":Id},(response)=>{
+                    callback(response)
+                });
+                break;
+            default:
+                currentObj.apiBridge.request.SearchUser({"Keyword":Id},(response)=>{
+                    callback(response);
+                });
+                break;
+
+        }
+    }
+
+    readInformation(Id,type,callback){
+        switch (type){
+            case "chatroom":
+                GroupManager.getRelation(Id,type,(relations)=>{
+                    callback(relations);
+                });
+                break;
+            default:
+                UserManager.getRelation(Id,type,(relations)=>{
+                    callback(relations);
+                });
+                break;
+        }
+    }
+
+
+    getCacheInformation(Id,type,callback,contentCommand){
+        switch (type){
+            case "chatroom":
+
+            default:
+                callback(cache[type][Id])
+                break;
+        }
+    }
+
+
+
+
+
     //通过id和类型获取群或者好友的信息
     getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
         console.log(cache);
