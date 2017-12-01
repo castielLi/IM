@@ -45,6 +45,10 @@ GroupManager.RemoveGroupFromContact = function(groupId){
     groupStoreSqlite.RemoveGroupFromContact(groupId);
 }
 
+GroupManager.getRelation = function(Id,type,callback){
+    groupStoreSqlite.getRelation(Id,type,callback);
+}
+
 GroupManager.closeDB = function(){
     groupStoreSqlite.closeAccountDb()
 }

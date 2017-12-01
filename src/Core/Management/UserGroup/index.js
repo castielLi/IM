@@ -183,7 +183,7 @@ export default class User {
 
             //向数据库查找好友信息
             if(type == 'private'){
-                    storeSqlite.getRelation(Id,type,(relations)=>{
+                    UserManager.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
                             //请求http获取信息
@@ -221,7 +221,7 @@ export default class User {
                 let groupMembers = [];
                 let groupMembersInfo = [];
 
-                    groupStoreSqlite.getRelation(Id,type,(relations)=>{
+                    GroupManager.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
