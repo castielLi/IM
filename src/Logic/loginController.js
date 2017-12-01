@@ -15,9 +15,6 @@ let __instance = (function () {
     return (newInstance) => {
         if (newInstance) instance = newInstance;
         return instance;
-        this.im = new IM();
-        this.user = new User();
-        this.chat = new Chat();
     }
 }());
 
@@ -32,6 +29,7 @@ export default class loginController {
         currentObj = this;
         this.user = new User();
         this.im = new IM();
+        this.chat = new Chat();
         this.apiBridge = new ApiBridge();
     }
 
