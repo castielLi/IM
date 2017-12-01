@@ -54,7 +54,7 @@ export default class loginController {
                     // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                     currentObj.im.initIMDatabase(account.accountId)
                     currentObj.user.initIMDatabase(account.accountId);
-                    currentObj.chat.initIMDatabase(account.accountId);
+                    currentObj.chat.initChatDatabase(account.accountId);
 
                     callback(result)
 
@@ -76,7 +76,7 @@ export default class loginController {
                                             //初始化im
                                             currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                                             currentObj.user.initIMDatabase(account.accountId);
-                                            currentObj.chat.initIMDatabase(account.accountId);
+                                            currentObj.chat.initChatDatabase(account.accountId);
 
                                             callback(result)
                                         })
@@ -91,7 +91,7 @@ export default class loginController {
                             // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             currentObj.im.initIMDatabase(account.accountId);
                             currentObj.user.initIMDatabase(account.accountId);
-                            currentObj.chat.initIMDatabase(account.accountId);
+                            currentObj.chat.initChatDatabase(account.accountId);
 
                             callback(result)
                         }
@@ -138,7 +138,7 @@ export default class loginController {
                     if (Platform.OS === 'ios') {
                         currentObj.im.initIMDatabase(storage.accountId)
                         currentObj.user.initIMDatabase(storage.accountId)
-                        currentObj.chat.initIMDatabase(storage.accountId);
+                        currentObj.chat.initChatDatabase(storage.accountId);
 
                     }
                     callback(result);
