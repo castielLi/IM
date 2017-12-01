@@ -96,9 +96,6 @@ export default class User {
 
 
     //添加新关系 有改无加
-    GetPrivateRelationByIdAndType(Id,type,callback){
-        UserManager.GetRelationByIdAndType(Id,type,callback);
-    }
     AddNewRelation(Relation,callback){
         UserManager.addNewRelation(Relation,callback)
     }
@@ -120,10 +117,6 @@ export default class User {
     }
 
     //Group:
-
-    GetGroupRelationByIdAndType(Id,type,callback){
-        GroupManager.GetRelationByIdAndType(Id,type,callback);
-    }
     AddNewGroup(Relation){
         GroupManager.addNewRelation(Relation)
     }
@@ -180,6 +173,53 @@ export default class User {
     //todo:lizongjun 用户管理模块里面包含了所有数据，1 从缓存找 2从数据库找 3请求获取，暴露给外界接口
     //新方法：
 
+
+    requestInfomation(Id,type,callback){
+        switch(type){
+            case "chatroom":
+                currentObj.apiBridge.GetGroupInfo({"GroupId":Id},(response)=>{
+                    callback(response)
+                });
+                break;
+            default:
+                currentObj.apiBridge.request.SearchUser({"Keyword":Id},(response)=>{
+                    callback(response);
+                });
+                break;
+
+        }
+    }
+
+    readInformation(Id,type,callback){
+        switch (type){
+            case "chatroom":
+                GroupManager.getRelation(Id,type,(relations)=>{
+                    callback(relations);
+                });
+                break;
+            default:
+                UserManager.getRelation(Id,type,(relations)=>{
+                    callback(relations);
+                });
+                break;
+        }
+    }
+
+
+    getCacheInformation(Id,type,callback,contentCommand){
+        switch (type){
+            case "chatroom":
+
+            default:
+                callback(cache[type][Id])
+                break;
+        }
+    }
+
+
+
+
+
     //通过id和类型获取群或者好友的信息
     getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
         console.log(cache);
@@ -190,7 +230,7 @@ export default class User {
 
             //向数据库查找好友信息
             if(type == 'private'){
-                    this.GetPrivateRelationByIdAndType(Id,type,(relations)=>{
+                    UserManager.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
                             //请求http获取信息
@@ -228,7 +268,7 @@ export default class User {
                 let groupMembers = [];
                 let groupMembersInfo = [];
 
-                    this.GetGroupRelationByIdAndType(Id,type,(relations)=>{
+                    GroupManager.getRelation(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
@@ -363,6 +403,8 @@ export default class User {
     getUserInfoById(accountId){
         return cache["private"][accountId]["Nick"]
     }
+
+
     getNickAndAvatorById(accountId,type){
         let needObj = {};
         this.getInformationByIdandType(accountId,type,(realtion)=>{
@@ -370,6 +412,8 @@ export default class User {
             needObj.avator = realtion["avator"];
         })
     }
+
+
     getCachePrivateInfo(){
         let concat = Object.values(cache['private']) //将对象的value 组成数组
         return concat;
