@@ -66,6 +66,10 @@ UserManager.addNewRelationSetting = function(RelationSetting){
     storeSqlite.addNewRelationSetting(RelationSetting);
 }
 
+UserManager.getRelation = function(Id,type,callback){
+    storeSqlite.getRelation(Id,type,callback);
+}
+
 UserManager.closeDB = function(){
     storeSqlite.closeAccountDb()
 }
