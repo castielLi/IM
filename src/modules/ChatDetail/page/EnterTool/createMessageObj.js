@@ -1,10 +1,10 @@
-import ChatCommandEnum from '../../../../Core/IM/dto/ChatCommandEnum'
-import MessageBodyTypeEnum from '../../../../Core/IM/dto/MessageBodyTypeEnum'
-import MessageCommandEnum from '../../../../Core/IM/dto/MessageCommandEnum'
+import ChatCommandEnum from '../../../../Core/Management/Common/dto/ChatCommandEnum'
+import MessageBodyTypeEnum from '../../../../Core/Management/IM/dto/MessageBodyTypeEnum'
+import MessageCommandEnum from '../../../../Core/Management/IM/dto/MessageCommandEnum'
 
-import SendMessageBodyDto from '../../../../Core/IM/dto/SendMessageBodyDto'
-import SendMessageDto from '../../../../Core/IM/dto/SendMessageDto'
-import messageBodyChatDto from '../../../../Core/IM/dto/messageBodyChatDto'
+import SendMessageBodyDto from '../../../../Core/Management/IM/dto/SendMessageBodyDto'
+import SendMessageDto from '../../../../Core/Management/IM/dto/SendMessageDto'
+import messageBodyChatDto from '../../../../Core/Management/IM/dto/messageBodyChatDto'
 
 export function createTextMessageObj(text,way,Sender,Receiver){
 	    let addMessage = new SendMessageDto();

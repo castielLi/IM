@@ -19,7 +19,6 @@ import FindPassword from './Login/page/findPassword'
 import ChangePassword from './Login/page/changePassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
-import Camera from './Camera'
 import Start from './Start/page'
 import RecentList from './RecentList/page/recentChat'
 import Contacts from './Contacts/page'
@@ -129,12 +128,6 @@ export const RouteMap = {
     'ChatDetail': {
         'ChatDetail': {
             component: ChatDetail,
-            params: {}
-        }
-    },
-    'Camera': {
-        'Camera': {
-            component: Camera,
             params: {}
         }
     },

@@ -27,11 +27,11 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
-import IM from '../../../../Core/IM';
-import * as DtoMethods from '../../../../Core/IM/dto/Common'
-import User from '../../../../Core/UserGroup'
-import chatController from '../../../../Controller/chatController'
-import SettingController from '../../../../Controller/settingController'
+import IM from '../../../../Core/Management/IM';
+import * as DtoMethods from '../../../../Core/Management/IM/Common/SqliteMessageToDtoMessage'
+import User from '../../../../Core/Management/UserGroup'
+import chatController from '../../../../Logic/chatController'
+import SettingController from '../../../../Logic/settingController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -53,8 +53,11 @@ let settingController = new SettingController();
 class Chat extends Component {
     constructor(props){
         super(props)
+        this.state = {
+            chatRecordStore:[]
+        }
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            if(r1.message.type === 'image')
+            if(r1.message.type === 'image' || r1.message.type === 'video')
             {
                 let r1Local = r1.message.Resource[0].LocalSource;
                 let r2Local = r2.message.Resource[0].LocalSource;
@@ -126,9 +129,17 @@ class Chat extends Component {
         let currentObj = this;
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
+        ChatController.initChatRecord((results)=>{
+            this.setState({
+                chatRecordStore:results
+            })
+        })
+        ChatController.reRenderChatRecord((results)=>{
+            this.setState({
+                relationStore:results
+            })
+        })
         if(this.props.type == "chatroom"){
-
-
             //设置人员变动的回调
             ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
                 currentObj.setState({
@@ -147,12 +158,7 @@ class Chat extends Component {
                     groupMembers,
                 })
             });
-            // user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
-            //     currentObj.setState({
-            //         groupMembers,
-            //
-            //     })
-            // });
+
         }
 
 
@@ -459,10 +465,21 @@ class Chat extends Component {
         }
         else{
             if(row.message.Command * 1 == 5){
+
+                if(this.props.type == "chatroom"){
+
+                    return(
+                        <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                            <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                                <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>您已经被管理员移除群聊了</Text>
+                            </View>
+                        </View>
+                    )
+                }
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left'}]}>消息已经发出，但被对方拒收，</Text>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>消息已经发出，但被对方拒收，</Text>
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                                 <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
                             </TouchableOpacity>

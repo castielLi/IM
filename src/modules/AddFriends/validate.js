@@ -19,9 +19,9 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import Relation from '../../Core/UserGroup/dto/RelationModel'
-import ChatWayEnum from '../../Core/IM/dto/ChatWayEnum'
-import settingController from  '../../Controller/settingController';
+import Relation from '../../Core/Management/UserGroup/dto/RelationModel'
+import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum'
+import settingController from  '../../Logic/settingController';
 let currentObj = undefined;
 let SettingController = new settingController();
 
@@ -79,7 +79,7 @@ class Validate extends ContainerComponent {
             relation.show = 'false';
             // user.AddNewRelation(relation);
             SettingController.addNewRelation(relation);
-            currentObj.props.addRelation(relation);
+            //currentObj.props.addRelation(relation);
 
         // })
     }

@@ -15,7 +15,7 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import settingController from '../../../Controller/settingController';
+import settingController from '../../../Logic/settingController';
 
 
 let {height,width} = Dimensions.get('window');

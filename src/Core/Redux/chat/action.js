@@ -58,7 +58,7 @@ export function receiveMessage(message){
             	//创建文件夹
                 let audioPath = RNFS.DocumentDirectoryPath + '/' +myId+'/audio/chat/' + way + '-' +client;
                 let imagePath = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + way + '-' +client;
-                let thumbnail = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + type + '-' +client+'/thumbnail';
+                let thumbnail = RNFS.DocumentDirectoryPath + '/' +myId+'/image/chat/' + way + '-' +client+'/thumbnail';
                 let videoPath = RNFS.DocumentDirectoryPath + '/' +myId+'/video/chat/' + way + '-' +client;
                 RNFS.mkdir(audioPath)
                 RNFS.mkdir(imagePath)

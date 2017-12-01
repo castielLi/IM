@@ -16,8 +16,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
-import SettingController from '../../../Controller/settingController'
-import RelationModel from '../../../Core/UserGroup/dto/RelationModel'
+import SettingController from '../../../Logic/settingController'
+import RelationModel from '../../../Core/Management/UserGroup/dto/RelationModel'
 
 
 
@@ -176,7 +176,7 @@ class ClientInformation extends ContainerComponent {
                 relationObj.BlackList = IsInBlackList;
                 relationObj.show = 'true';
 
-                currentObj.props.addRelation(relationObj);
+                //currentObj.props.addRelation(relationObj);
             }
             //双方互不为好友
             else if(result.success && typeof result.data.Data === 'string'){

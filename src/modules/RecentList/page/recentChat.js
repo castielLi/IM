@@ -28,15 +28,18 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import * as navigationActions from '../../Common/NavigationBar/reducer/action'
+import * as applyFriendActions from '../../../Core/Redux/applyFriend/action'
 import {
     checkDeviceHeight,
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import ChatController from '../../../Controller/chatController';
-import LoginController from '../../../Controller/loginController'
+import ChatController from '../../../Logic/chatController';
+import LoginController from '../../../Logic/loginController'
+import SettingController from '../../../Logic/settingController'
 let chatController = new ChatController();
 let loginController = new LoginController();
+let settingController = new SettingController();
 
 let currentObj= undefined;
 
@@ -130,6 +133,7 @@ class RecentChat extends ContainerComponent {
             sectionID: '',
             rowID: '',
             dataSource: ds,
+            relationStore:[]
             //groupData:[],
         };
         this.goToChatDetail = this.goToChatDetail.bind(this);
@@ -139,7 +143,16 @@ class RecentChat extends ContainerComponent {
     componentWillMount() {
 
         styles = super.componentWillMount(styles)
-
+        chatController.initChat((results)=>{
+            this.setState({
+                relationStore:formatOjbToneedArr(results)
+            })
+        })
+        chatController.reRenderRecentList((results)=>{
+            this.setState({
+                relationStore:formatOjbToneedArr(results)
+            })
+        })
     }
     componentDidMount() {
 
@@ -155,10 +168,12 @@ class RecentChat extends ContainerComponent {
                 }
                 currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
 
-                currentObj.props.initRelation(result.data.relations);
+                //currentObj.props.initRelation(result.data.relations);
+                settingController.initUserGroupCache(result.data.relations);
 
                 currentObj.props.initRecentList(result.data.chatListArr);
                 currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
+                currentObj.props.initFriendApplication(result.data.applyFriendMessage);
 
                 currentObj.props.hideNavigationBottom();
 
@@ -283,7 +298,7 @@ class RecentChat extends ContainerComponent {
 				<View style = {styles.content}>
 					<ListView
 						style = {{height:checkDeviceHeight(1110)}}
-						dataSource = {this.state.dataSource.cloneWithRows(this.props.recentListStore.data)}
+						dataSource = {this.state.dataSource.cloneWithRows(this.state.relationStore)}
 						renderRow = {this._renderRow}
 						enableEmptySections = {true}
 						removeClippedSubviews={false}
@@ -314,7 +329,9 @@ const mapDispatchToProps = (dispatch) => {
         ...bindActionCreators(unReadMessageActions, dispatch),
         ...bindActionCreators(featuresAction, dispatch),
         ...bindActionCreators(relationActions, dispatch),
-        ...bindActionCreators(navigationActions,dispatch)
+        ...bindActionCreators(navigationActions,dispatch),
+        ...bindActionCreators(applyFriendActions,dispatch)
+
     }
 };
 
@@ -337,4 +354,28 @@ function dateFtt(fmt, date) { //author: meizz
         if (new RegExp("(" + k + ")").test(fmt))
             fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
     return fmt;
+}
+//格式转换
+//{
+//     'wg003722':{
+//         Client: "wg003722",
+//         LastMessage: "4444",
+//         Time: "1511925305221",
+//         Type: "private",
+//         unReadMessageCount: 0,
+//         Record:[msgId1,msgId2...]},
+//     }
+//to
+//         [{Client: "wg003722",
+//         LastMessage: "4444",
+//         Time: "1511925305221",
+//         Type: "private",
+//         unReadMessageCount: 0,
+//         Record:[msgId1,msgId2...]},...]
+function formatOjbToneedArr(obj){
+    let needArr = [];
+    for(let key in obj){
+        needArr.push(obj[key]);
+    }
+    return needArr;
 }

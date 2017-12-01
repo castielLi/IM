@@ -15,8 +15,8 @@ import {
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
-import ChatController from '../../../../Controller/chatController';
-import {addTextMessage} from '../../../../Core/IM/action/createMessage';
+import ChatController from '../../../../Logic/chatController';
+import {addTextMessage} from '../../../../Core/Management/IM/action/createMessage';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
@@ -46,10 +46,9 @@ class AutoExpandingTextInput extends Component {
     if(this.state.data){
       //初始化消息
       let message = addTextMessage(this.state.data,this.props.type,this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
-        chatController.addMessage(message,(status,messageId)=>{
-        message.MSGID = messageId;
+        chatController.addMessage(message,(results)=>{
         //更新chatRecordStore
-          this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+          //this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
 
           this.input.clear();
         if(isIos){
@@ -61,8 +60,7 @@ class AutoExpandingTextInput extends Component {
           this.state.data = '';
         this.props.setTextInputData('');
       });
-     
-      
+
       this.setState({
         inputHeight:this.state.firstInputHeight
       })

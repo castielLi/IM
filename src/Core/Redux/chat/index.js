@@ -37,7 +37,7 @@
 //     }
 // }
 import InitChatRecordConfig from './InitChatRecordConfig';
-import MessageStatus from '../../IM/dto/MessageStatus';
+import MessageStatus from '../../Management/Common/dto/MessageStatus';
 
 const initialState = {
     ChatRecord: {}
