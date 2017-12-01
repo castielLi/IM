@@ -111,7 +111,7 @@ export default class Chat {
 
 
     //初始化Chat数据库
-    initIMDatabase(AccountId){
+    initChatDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
             //获取之前没有发送出去的消息重新加入消息队列
         });
