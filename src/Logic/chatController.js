@@ -3,6 +3,7 @@
  */
 import IM from '../Core/Management/IM'
 import User from '../Core/Management/UserGroup'
+import Chat from '../Core/Management/Chat'
 import {buildMessageDto} from '../Core/Redux/dto/Common'
 import AppCommandEnum from '../Core/Management/IM/dto/AppCommandEnum'
 import MessageCommandEnum from '../Core/Management/IM/dto/MessageCommandEnum'
@@ -39,11 +40,13 @@ let currentChat = undefined
 
 //标示当前群组聊天人员名单变动回调
 let currentGroupChatMemberChangesCallback = undefined;
-
+//重新渲染recentList回调
+let reRenderRecentListCallBack = undefined;
 //数据缓存
 let cache = {};
 //{ "wg003723" : { messages: [],unread:1}}
-
+//测试缓存
+//let testCache = {};
 
 
 let currentObj = undefined;
@@ -55,6 +58,7 @@ export default class chatController {
         __instance(this);
         this.im = new IM();
         this.user = new User();
+        this.chat = new Chat();
         currentObj = this;
     }
 
@@ -100,6 +104,15 @@ export default class chatController {
         myAccount = accountObj;
     }
     //todo黄昊东  recentlist
+    reRenderRecentList(callback){
+        reRenderRecentListCallBack = callback;
+    }
+    //初始化ChatCash
+    initChat(callback){
+        this.chat.getAllChatList((results)=>{
+            callback(results);
+        })
+    }
     deleteRecentChatList(rowData){
         //删除chatRecord表中对应记录
         this.im.deleteChatRecode(rowData.Client);
@@ -116,7 +129,18 @@ export default class chatController {
 
     //发送消息
     addMessage(message,callback,onprogress){
-        this.im.addMessage(message,callback,onprogress);
+        this.im.addMessage(message,(status,messageId)=>{
+            message.MSGID = messageId;
+            //if(testCache[message.Data.Data.Receiver]==undefined){//没有该会话
+            // //新增一个会话
+            //   currentObj.chat.addOneChat(message.Data.Data.Receiver,message,message.MSGID,(results)=>{
+            //       callback(results);
+            //       reRenderRecentListCallBack(results);
+            //       testCache = results;
+            //   })
+            // }
+        },onprogress);
+
     }
 
 

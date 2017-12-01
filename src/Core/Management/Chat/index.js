@@ -75,7 +75,9 @@ export default class Chat {
     //添加一个会话
     addOneChat(clientId,newChatObj,messageId,callback){
         let recentObj = new RecentRecordDtoDto();
-        //recentObj.LastMessage = newChatObj.data
+        recentObj.Client = newChatObj.Data.Data.Receiver;
+        recentObj.LastMessage = newChatObj.Data.Data.Data;
+        recentObj.Time = newChatObj.Data.LocalTime;
         recentObj.Record.unshift(messageId);
         ChatCache[clientId] = recentObj;
         callback(deepCopy(ChatCache))
@@ -92,7 +94,7 @@ export default class Chat {
         callback(deepCopy(ChatCache))
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
-    //修改最后一条消息内容
+    //收到或者发送消息,要修改最后一条消息内容
     updateLastMessageAndTime(clientId,messageContent,time,messageId){
         ChatCache[clientId].LastMessage = messageContent;
         ChatCache[clientId].Time = time;
@@ -109,7 +111,7 @@ export default class Chat {
 
 
     //初始化Chat数据库
-    initIMDatabase(AccountId){
+    initChatDatabase(AccountId){
         storeSqlite.initIMDatabase(AccountId,function(){
             //获取之前没有发送出去的消息重新加入消息队列
         });
@@ -155,9 +157,10 @@ export default class Chat {
     }
 
     //关闭数据库
-    closeImDb(){
+    closeDB(){
         storeSqlite.closeImDb();
     }
+
 
 }
 

@@ -86,7 +86,7 @@ export default class User {
 
                                 }else{
                                     let errMsg = response.errorMessage;
-                                    alert("获取群消息失败，原因："+errMsg)
+                                    //alert("获取个人信息失败，原因："+errMsg)
                                 }
                             })
                         }else{
@@ -111,7 +111,7 @@ export default class User {
 
                                 }else{
                                     let errMsg = response.errorMessage;
-                                    alert("获取群消息失败，原因："+errMsg)
+                                    //alert("获取群信息失败，原因："+errMsg)
                                 }
                             })
                         }else{
@@ -130,7 +130,7 @@ export default class User {
 
                                         }else{
                                             let errMsg = response.errorMessage;
-                                            alert("获取群消息失败，原因："+errMsg)
+                                            //alert("获取群信息失败，原因："+errMsg)
                                         }
                                     })
 
@@ -162,7 +162,7 @@ export default class User {
 
                         }else{
                             let errMsg = response.errorMessage;
-                            alert("获取群消息失败，原因："+errMsg)
+                            //alert("获取群消息失败，原因："+errMsg)
                         }
                     })
                 }else{

@@ -5,15 +5,13 @@
 import Connect from './socket'
 import * as storeSqlite from './StoreSqlite'
 import UUIDGenerator from 'react-native-uuid-generator';
-import MessageStatus from "./dto/MessageStatus"
+import MessageStatus from "../Common/dto/MessageStatus"
 import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
 import MessageCommandEnum from './dto/MessageCommandEnum'
-import * as DtoMethods from './dto/Common'
-import MessageType from './dto/MessageType'
-import netWorking from '../../Networking/Network'
+import * as DtoMethods from './Common/SqliteMessageToDtoMessage'
+import MessageType from '../Common/dto/MessageType'
 import SendManager from './SendManager'
-// import AckManager from './AckManager'
 import FileManager from './FileManager'
 import ReceiveManager from './ReceiveManager'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
@@ -412,7 +410,7 @@ export default class IM {
                 ControllerKickOutHandle();
                 break;
             case MessageCommandEnum.MSG_SEND_ACK:
-                this.ackBackMessageHandle(message.Data);
+                currentObj.ackBackMessageHandle(message.Data);
                 break;
             case MessageCommandEnum.MSG_ERROR:
                 ReceiveManager.receiveErrorMessage(message);

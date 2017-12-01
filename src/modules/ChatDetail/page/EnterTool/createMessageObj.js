@@ -1,4 +1,4 @@
-import ChatCommandEnum from '../../../../Core/Management/IM/dto/ChatCommandEnum'
+import ChatCommandEnum from '../../../../Core/Management/Common/dto/ChatCommandEnum'
 import MessageBodyTypeEnum from '../../../../Core/Management/IM/dto/MessageBodyTypeEnum'
 import MessageCommandEnum from '../../../../Core/Management/IM/dto/MessageCommandEnum'
 

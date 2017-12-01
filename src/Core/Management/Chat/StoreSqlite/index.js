@@ -5,12 +5,12 @@ import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './ChatExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
-import ChatWayEnum from '../dto/ChatWayEnum'
-import ResourceTypeEnum from '../dto/ResourceTypeEnum'
-import ChatCommandEnum from '../dto/ChatCommandEnum'
+import ChatWayEnum from '../../Common/dto/ChatWayEnum'
+import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
+import ChatCommandEnum from '../../Common/dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
-import MessageType from '../dto/MessageType';
-import MessageStatus from '../dto/MessageStatus'
+import MessageType from '../../Common/dto/MessageType';
+import MessageStatus from '../../Common/dto/MessageStatus'
 
 export function storeSendMessage(message){
 
@@ -248,7 +248,7 @@ CHATFMDB.getAllChatClientList = function(callback){
                 console.log(results);
                 callback(results.rows.raw());
 
-            }, errorDB);
+            }, (err)=>{errorDB('获取聊天列表失败',err)});
 
         });
     }, errorDB);
