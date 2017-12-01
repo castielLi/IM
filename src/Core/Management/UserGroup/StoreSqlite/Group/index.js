@@ -5,7 +5,7 @@
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './GroupExcuteSql'
 import { Platform, StyleSheet } from 'react-native';
-import * as commonMethods from '../../../Helper/formatQuerySql';
+import * as commonMethods from '../../../../Helper/formatQuerySql';
 
 
 

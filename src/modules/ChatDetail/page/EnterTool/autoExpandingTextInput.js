@@ -15,7 +15,7 @@ import {
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
-import ChatController from '../../../../Controller/chatController';
+import ChatController from '../../../../Logic/chatController';
 import {addTextMessage} from '../../../../Core/IM/action/createMessage';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);

@@ -16,8 +16,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
-import SettingController from '../../../Controller/settingController'
-import RelationModel from '../../../Core/UserGroup/dto/RelationModel'
+import SettingController from '../../../Logic/settingController'
+import RelationModel from '../../../Core/Management/UserGroup/dto/RelationModel'
 
 
 

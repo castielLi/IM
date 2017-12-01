@@ -2,7 +2,7 @@
  * Created by apple on 2017/11/21.
  */
 import IM from '../Core/IM'
-import User from '../Core/UserGroup'
+import User from '../Core/Management/UserGroup'
 import {buildMessageDto} from '../Core/Redux/dto/Common'
 import AppCommandEnum from '../Core/IM/dto/AppCommandEnum'
 import MessageCommandEnum from '../Core/IM/dto/MessageCommandEnum'

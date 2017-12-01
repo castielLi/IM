@@ -25,7 +25,7 @@ import * as relationListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
 import * as recentListActions from '../../../Core/Redux/RecentList/action';
 
-import SettingController from '../../../Controller/settingController'
+import SettingController from '../../../Logic/settingController'
 
 
 let settingController = new SettingController();

@@ -31,7 +31,7 @@ import AutoExpandingTextInput from './autoExpandingTextInput';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
 
-import ChatController from '../../../../Controller/chatController';
+import ChatController from '../../../../Logic/chatController';
 import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
