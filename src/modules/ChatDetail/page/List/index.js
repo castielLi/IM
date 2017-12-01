@@ -53,6 +53,9 @@ let settingController = new SettingController();
 class Chat extends Component {
     constructor(props){
         super(props)
+        this.state = {
+            chatRecordStore:[]
+        }
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
             if(r1.message.type === 'image' || r1.message.type === 'video')
             {
@@ -126,9 +129,17 @@ class Chat extends Component {
         let currentObj = this;
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
+        ChatController.initChatRecord((results)=>{
+            this.setState({
+                chatRecordStore:results
+            })
+        })
+        ChatController.reRenderChatRecord((results)=>{
+            this.setState({
+                relationStore:results
+            })
+        })
         if(this.props.type == "chatroom"){
-
-
             //设置人员变动的回调
             ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
                 currentObj.setState({
@@ -147,12 +158,7 @@ class Chat extends Component {
                     groupMembers,
                 })
             });
-            // user.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
-            //     currentObj.setState({
-            //         groupMembers,
-            //
-            //     })
-            // });
+
         }
 
 
