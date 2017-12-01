@@ -6,7 +6,7 @@ let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './IMExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
 import RNFS from 'react-native-fs';
-import MessageStatus from '../dto/MessageStatus'
+import MessageStatus from '../../Common/dto/MessageStatus'
 
 export function storeSendMessage(message){
     IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
