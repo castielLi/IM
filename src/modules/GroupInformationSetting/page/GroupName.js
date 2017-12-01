@@ -19,13 +19,13 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';;
+import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/Management/IM/action/createMessage';;
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
 import * as recentListActions from '../../../Core/Redux/RecentList/action';
 
-import SettingController from '../../../Controller/settingController'
+import SettingController from '../../../Logic/settingController'
 
 
 let settingController = new SettingController();

@@ -34,8 +34,8 @@ import {
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import ChatController from '../../../Controller/chatController';
-import LoginController from '../../../Controller/loginController'
+import ChatController from '../../../Logic/chatController';
+import LoginController from '../../../Logic/loginController'
 let chatController = new ChatController();
 let loginController = new LoginController();
 

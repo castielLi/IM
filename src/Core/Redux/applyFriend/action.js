@@ -1,7 +1,7 @@
 /**
  * Created by Hsu. on 2017/10/23.
  */
-import ApplyFriendEnum from '../../IM/dto/ApplyFriendEnum'
+import ApplyFriendEnum from '../../Management/IM/dto/ApplyFriendEnum'
 import {addUnDealRequestNumber} from '../../../modules/MainTabbar/reducer/action';
 export function getApplicantInfo(message) {
 

@@ -26,9 +26,9 @@ import RNFS from 'react-native-fs';
 
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import SettingController from '../../../Controller/settingController';
+import SettingController from '../../../Logic/settingController';
 let settingController = new SettingController();
-import {buildInvationSendMessageToRudexMessage} from '../../../Core/IM/action/createMessage';
+import {buildInvationSendMessageToRudexMessage} from '../../../Core/Management/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;

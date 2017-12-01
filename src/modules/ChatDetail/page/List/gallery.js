@@ -25,7 +25,7 @@ import * as Actions from '../../reducer/action'
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 // import IM from '../../../../Core/IM';
-import chatController from '../../../../Controller/chatController';
+import chatController from '../../../../Logic/chatController';
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'

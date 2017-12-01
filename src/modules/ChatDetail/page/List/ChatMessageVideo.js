@@ -16,7 +16,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import RNFS from 'react-native-fs';
 // import IM from '../../../../Core/IM';
-import chatController from '../../../../Controller/chatController';
+import chatController from '../../../../Logic/chatController';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 import Thouch from '../../../Common/Thouch/index'

@@ -14,13 +14,13 @@ import Store from './store'
 import configureNetwork from './Core/Networking/configureNetwork'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
-import IM from './Core/IM'
-import User from './Core/UserGroup'
+import IM from './Core/Management/IM'
+import User from './Core/Management/UserGroup'
 import DisplayComponent from './Core/Component'
-import * as IMHandle from './Controller/AppHandler/receiveHandleMessage'
+import * as IMHandle from './Logic/AppHandler/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import Network from './Core/Networking/Network'
-import ChatController from './Controller/chatController'
+import ChatController from './Logic/chatController'
 let chatController = new ChatController();
 
 export default function App() {

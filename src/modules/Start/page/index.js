@@ -8,8 +8,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
-import LoginController from '../../../Controller/loginController'
-import ChatController from '../../../Controller/chatController'
+import LoginController from '../../../Logic/loginController'
+import ChatController from '../../../Logic/chatController'
 let chatController = new ChatController();
 let loginController = new LoginController();
 let currentObj = undefined;
