@@ -3,7 +3,7 @@
  */
 
 import IM from '../Core/IM'
-import User from '../Core/UserGroup'
+import User from '../Core/Management/UserGroup'
 import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';
 import RNFS from 'react-native-fs'

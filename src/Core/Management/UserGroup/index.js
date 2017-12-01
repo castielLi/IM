@@ -3,9 +3,9 @@
  */
 import * as storeSqlite from './StoreSqlite/User/index'
 
-import * as groupStoreSqlite from './StoreSqlite/Group'
+import * as groupStoreSqlite from './StoreSqlite/Group/index'
 
-import ApiBridge from '../../Controller/ApiBridge/index'
+import ApiBridge from '../../../Logic/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
 import MessageCommandEnum from '../../Core/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../Core/IM/dto/AppCommandEnum'

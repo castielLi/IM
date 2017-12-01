@@ -24,7 +24,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as contactsActions from '../../../Core/Redux/contact/action';
-import User from '../../../Core/UserGroup';
+import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
 var {height, width} = Dimensions.get('window');

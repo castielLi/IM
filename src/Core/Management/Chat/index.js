@@ -2,7 +2,7 @@
  * Created by apple on 2017/7/26.
  */
 
-import * as storeSqlite from './StoreSqlite'
+import * as storeSqlite from './StoreSqlite/index'
 import RecentRecordDtoDto from './dto/RecentRecordDto';
 import InitChatRecordConfig from './dto/InitChatRecordConfig';
 
