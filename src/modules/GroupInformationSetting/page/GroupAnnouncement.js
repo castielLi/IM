@@ -17,7 +17,7 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import SettingController from '../../../Controller/settingController';
+import SettingController from '../../../Logic/settingController';
 let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 

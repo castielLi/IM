@@ -12,8 +12,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import UUIDGenerator from 'react-native-uuid-generator';
-import LoginController from '../../../Controller/loginController'
-import ChatController from '../../../Controller/chatController'
+import LoginController from '../../../Logic/loginController'
+import ChatController from '../../../Logic/chatController'
 import Touch from '../../Common/Thouch/index';
 //import Touch from 'react-native-touch-once';
 let loginController = new LoginController();

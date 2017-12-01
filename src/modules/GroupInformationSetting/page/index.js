@@ -28,7 +28,7 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import settingController from '../../../Controller/settingController'
+import settingController from '../../../Logic/settingController'
 let SettingController = new settingController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
