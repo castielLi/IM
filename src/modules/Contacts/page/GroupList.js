@@ -27,6 +27,9 @@ import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
+import SettingController from '../../../Logic/settingController'
+
+let settingController = new SettingController();
 var {height, width} = Dimensions.get('window');
 
 class GroupList extends ContainerComponent {
@@ -40,6 +43,7 @@ class GroupList extends ContainerComponent {
             ],
             sections:[],
             totalItemLength:0,
+            contacts:[]
         }
         this.relationStore = []
     }
@@ -89,8 +93,22 @@ class GroupList extends ContainerComponent {
     }
 
 
+    componentWillMount(){
+        //改变页面state的回调 注入到chatController
+        settingController.setGroupListChangeCallback(function (contact) {
+            this.setState({
+                contacts:contact
+            })
+        })
+        //获取最新的列表
+        settingController.getLatestGroupList(function (contact) {
+            this.setState({
+                contacts:contact
+            })
+        });
+    }
     render() {
-        this.relationStore = initFlatListData('chatroom',this.props.relationStore);
+        this.relationStore = initFlatListData('chatroom',this.state.contacts);
         return (
             <View style={styles.container}>
                 <MyNavigationBar

@@ -176,7 +176,7 @@ class ClientInformation extends ContainerComponent {
                 relationObj.BlackList = IsInBlackList;
                 relationObj.show = 'true';
 
-                currentObj.props.addRelation(relationObj);
+                //currentObj.props.addRelation(relationObj);
             }
             //双方互不为好友
             else if(result.success && typeof result.data.Data === 'string'){

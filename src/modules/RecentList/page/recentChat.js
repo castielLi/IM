@@ -36,8 +36,10 @@ import {
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import ChatController from '../../../Logic/chatController';
 import LoginController from '../../../Logic/loginController'
+import SettingController from '../../../Logic/settingController'
 let chatController = new ChatController();
 let loginController = new LoginController();
+let settingController = new SettingController();
 
 let currentObj= undefined;
 
@@ -156,7 +158,8 @@ class RecentChat extends ContainerComponent {
                 }
                 currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
 
-                currentObj.props.initRelation(result.data.relations);
+                //currentObj.props.initRelation(result.data.relations);
+                settingController.initUserGroupCache(result.data.relations);
 
                 currentObj.props.initRecentList(result.data.chatListArr);
                 currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
