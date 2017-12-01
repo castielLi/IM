@@ -34,6 +34,7 @@ export function signOut(){
         RNFS.moveFile('/data/data/com.im/databases/IM.db', '/data/data/com.im/files/' + getState().loginStore.accountMessage.accountId + '/database/IM.db');
         RNFS.moveFile('/data/data/com.im/databases/Account.db', '/data/data/com.im/files/' + getState().loginStore.accountMessage.accountId + '/database/Account.db');
         RNFS.moveFile('/data/data/com.im/databases/Group.db', '/data/data/com.im/files/' + getState().loginStore.accountMessage.accountId + '/database/Group.db');
+        RNFS.moveFile('/data/data/com.im/databases/Chat.db', '/data/data/com.im/files/' + getState().loginStore.accountMessage.accountId + '/database/Chat.db');
 
         dispatch({type: TYPES.LOGGED_OUT});
         dispatch(clearChatRecord());
