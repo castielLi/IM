@@ -1,13 +1,9 @@
 /**
  * Created by apple on 2017/9/29.
  */
-import * as storeSqlite from './StoreSqlite/User/index'
-
-import * as groupStoreSqlite from './StoreSqlite/Group/index'
 
 import ApiBridge from '../../../Logic/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
-import MessageCommandEnum from '../../../Core/Management/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../../Core/Management/IM/dto/AppCommandEnum'
 import UserManager from '../UserGroup/UserManager'
 import GroupManager from '../UserGroup/GroupManager'

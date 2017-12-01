@@ -4,6 +4,7 @@
 import * as groupStoreSqlite from './StoreSqlite/Group/index'
 
 let GroupManager = {};
+export default GroupManager;
 
 GroupManager.initDatabase = function(AccountId){
     groupStoreSqlite.initIMDatabase(AccountId,function(){
