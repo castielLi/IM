@@ -21,8 +21,8 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ChatController from '../../../../Logic/chatController';
-import ResourceTypeEnum from '../../../../Core/IM/dto/ResourceTypeEnum'
-import {addResourceMessage} from '../../../../Core/IM/action/createMessage';
+import ResourceTypeEnum from '../../../../Core/Management/IM/dto/ResourceTypeEnum'
+import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);

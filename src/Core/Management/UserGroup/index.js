@@ -7,8 +7,8 @@ import * as groupStoreSqlite from './StoreSqlite/Group/index'
 
 import ApiBridge from '../../../Logic/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
-import MessageCommandEnum from '../../Core/IM/dto/MessageCommandEnum'
-import AppCommandEnum from '../../Core/IM/dto/AppCommandEnum'
+import MessageCommandEnum from '../../../Core/Management/IM/dto/MessageCommandEnum'
+import AppCommandEnum from '../../../Core/Management/IM/dto/AppCommandEnum'
 
 let __instance = (function () {
     let instance;

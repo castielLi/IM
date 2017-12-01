@@ -1,7 +1,7 @@
 /**
  * Created by apple on 2017/10/11.
  */
-import * as Helper from '../Helper'
+import * as Helper from '../../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from './dto/MessageType'
 import {blackListMessage,NotGroupMemberMessage} from './action/createMessage'
