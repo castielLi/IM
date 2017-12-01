@@ -31,6 +31,7 @@ import SettingController from '../../../Logic/settingController'
 
 let settingController = new SettingController();
 var {height, width} = Dimensions.get('window');
+let currentObj = undefined;
 
 class GroupList extends ContainerComponent {
 
@@ -45,7 +46,8 @@ class GroupList extends ContainerComponent {
             totalItemLength:0,
             contacts:[]
         }
-        this.relationStore = []
+        this.relationStore = [];
+        currentObj = this;
     }
 
     goToChat = (item)=>{
@@ -96,13 +98,13 @@ class GroupList extends ContainerComponent {
     componentWillMount(){
         //改变页面state的回调 注入到chatController
         settingController.setGroupListChangeCallback(function (contact) {
-            this.setState({
+            currentObj.setState({
                 contacts:contact
             })
         })
         //获取最新的列表
         settingController.getLatestGroupList(function (contact) {
-            this.setState({
+            currentObj.setState({
                 contacts:contact
             })
         });

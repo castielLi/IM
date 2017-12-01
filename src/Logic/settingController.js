@@ -49,11 +49,11 @@ export default class settingController {
     //todo：页面获取到信息的方法
     getLatestGroupList(callback){
         let concat = this.user.getCacheChatroomInfo();
-        return concat;
+        callback && callback(concat);
     }
     getLatestContactList(callback){
         let concat = this.user.getCachePrivateInfo();
-        return concat;
+        callback && callback(concat);
     }
     initUserGroupCache(relations){
         this.user.initUserGroupCache(relations)
