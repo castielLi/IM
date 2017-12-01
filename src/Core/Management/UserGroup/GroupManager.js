@@ -25,8 +25,12 @@ GroupManager.GetMembersByGroupId = function(groupId,callback){
     groupStoreSqlite.GetMembersByGroupId(groupId,callback);
 }
 
+GroupManager.getRelation = function (Id,type,callback) {
+    groupStoreSqlite.getRelation(Id,type,callback);
+}
+
 GroupManager.GetRelationList = function(callback,show) {
-    groupStoreSqlite.GetRelationList(callback, show)
+    groupStoreSqlite.GetRelationList(callback, show);
 }
 
 GroupManager.GetRelationByIdAndType = function(Id,type,callback) {
