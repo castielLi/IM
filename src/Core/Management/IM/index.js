@@ -9,7 +9,7 @@ import MessageStatus from "./dto/MessageStatus"
 import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
 import MessageCommandEnum from './dto/MessageCommandEnum'
-import * as DtoMethods from './dto/Common'
+import * as DtoMethods from './Common/SqliteMessageToDtoMessage'
 import MessageType from './dto/MessageType'
 import netWorking from '../../Networking/Network'
 import SendManager from './SendManager'

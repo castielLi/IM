@@ -7,7 +7,7 @@ import MessageType from './dto/MessageType'
 import {blackListMessage,NotGroupMemberMessage} from './action/createMessage'
 import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
 import MessageCommandEnum from './dto/MessageCommandEnum'
-import ChatWayEnum from './dto/ChatWayEnum'
+import ChatWayEnum from '../Common/dto/ChatWayEnum'
 import MessageBodyTypeEnum from './dto/MessageBodyTypeEnum'
 import AppCommandEnum from './dto/AppCommandEnum'
 
