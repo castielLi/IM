@@ -116,6 +116,13 @@ export default class User {
         UserManager.addNewRelationSetting(RelationSetting);
     }
 
+    //通过id组成的数组从数据库批量查询user信息,返回数组
+    GetRelationsByRelationIds(ids,callback){
+        UserManager.GetRelationsByRelationIds(ids,function(results){
+            callback(results);
+        })
+    }
+
     //Group:
     AddNewGroup(Relation){
         GroupManager.addNewRelation(Relation)
@@ -166,6 +173,28 @@ export default class User {
     }
 
 
+
+
+
+    //先去对应表中找到成员ID 再去Account中找对应信息
+    GetGroupMemberIdsByGroupId(groupId,callback){
+        GroupManager.GetMembersByGroupId(groupId,function(results){
+            if(results.length > 0){
+
+                let ids = [];
+
+                for(let i = 0;i<results.length;i++){
+                    ids.push(results[i].RelationId);
+                }
+
+                UserManager.GetRelationsByRelationIds(ids,function(results){
+                    callback(results);
+                })
+            }else{
+                callback(results);
+            }
+        })
+    }
 
     //todo:lizongjun 把所有的用户，包括没有添加为好友的用户全部放到user表中，user表中group和user 分开，单独管理,groupMemberList用来管理群成员
 
@@ -310,7 +339,7 @@ export default class User {
                                         groupMembersInfo.push(results[i])
                                     }
                                     cache["groupMember"][Id] = groupMembers;
-                                    callback(relations[0],groupMembersInfo)
+                                        callback(relations[0],groupMembersInfo)
                                 }
                             });
                         }
@@ -332,7 +361,59 @@ export default class User {
                             //alert("获取群消息失败，原因："+errMsg)
                         }
                     })
-                }else{
+                }
+                //如果缓存中没有对应的groupmember信息就去找sql，sql没有就http
+                else if(!cache["groupMember"][Id] || !cache["groupMember"][Id].length){
+                    currentObj.GetGroupMemberIdsByGroupId(Id,function (results) {
+                        if(results.length == 0){
+
+                            currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
+                                if(response.success) {
+                                    //currentObj.setCacheAndSql(type,Id,response,callback)
+                                    let results = response.data.Data;
+                                    for(let i = 0;i<results.MemberList.length;i++){
+                                        let accountId = results.MemberList[i].Account;
+                                        let model = new RelationModel();
+                                        model.avator = results.MemberList[i].HeadImageUrl;
+                                        model.Nick = results.MemberList[i].Nickname;
+                                        model.RelationId = results.MemberList[i].Account;
+                                        if(cache["private"][accountId] == undefined){
+                                            cache["private"][accountId] = model;
+                                        }
+                                        groupMembers.push(model);
+                                        groupMembersInfo.push(accountId)
+                                    }
+                                    callback(cache[type][Id],groupMembers)
+                                    //数据库也没有这条group的记录，那么就需要添加进groupList中
+                                    //并且添加groupMember表，存储group和user关系
+                                    //存储新的群user到account表中
+                                    //currentObj.AddGroupAndMember(relation,results.MemberList);
+                                    GroupManager.initGroupMemberByGroupId(Id,results.MemberList)
+                                    currentObj.AddGroupMember(results.MemberList);
+                                    cache["groupMember"][Id] = groupMembersInfo;
+
+                                }else{
+                                    let errMsg = response.errorMessage;
+                                    //alert("获取群信息失败，原因："+errMsg)
+                                }
+                            })
+
+                        }else{
+
+                            for(let i = 0;i<results.length;i++){
+                                //因为数据库的结构就是relationModel的结构
+                                if(cache["private"][results[i].RelationId] == undefined){
+                                    cache["private"][results[i].RelationId] = results[i];
+                                }
+                                groupMembers.push(results[i].RelationId)
+                                groupMembersInfo.push(results[i])
+                            }
+                            cache["groupMember"][Id] = groupMembers;
+                            callback(cache[type][Id],groupMembersInfo)
+                        }
+                    })
+                }
+                else{
                     let list = cache["groupMember"][Id]
                     if(list == undefined || list == 'undefined'){
                         callback(cache[type][Id],groupMembers);
@@ -411,14 +492,6 @@ export default class User {
         let concat = Object.values(cache['chatroom']) //将对象的value 组成数组
         return concat;
     }
-
-    //通过id组成的数组从数据库批量查询user信息,返回数组
-    GetRelationsByRelationIds(ids,callback){
-        storeSqlite.GetRelationsByRelationIds(ids,function(results){
-            callback(results);
-        })
-    }
-
 
     //todo:替代redux中RelationStore操作
     //初始化关系缓存 relations根据目前代码为 通讯录中的好友和群
@@ -504,24 +577,5 @@ export default class User {
         cache["private"][memberId] = memberObj;
     }
 
-    //先去对应表中找到成员ID 再去Account中找对应信息
-    GetGroupMemberIdsByGroupId(groupId,callback){
-       groupStoreSqlite.GetMembersByGroupId(groupId,function(results){
-           if(results.length > 0){
-
-               let ids = [];
-
-               for(let i = 0;i<results.length;i++){
-                   ids.push(results[i].RelationId);
-               }
-
-               storeSqlite.GetRelationsByRelationIds(ids,function(results){
-                    callback(results);
-               })
-           }else{
-               callback(results);
-           }
-       })
-    }
 
 }
