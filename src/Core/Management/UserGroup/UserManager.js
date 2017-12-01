@@ -2,6 +2,7 @@
  * Created by apple on 2017/12/1.
  */
 import * as storeSqlite from './StoreSqlite/User/index'
+import User from "./index";
 
 let UserManager = {};
 export default UserManager;
@@ -15,6 +16,10 @@ UserManager.initDatabase = function(AccountId){
 
 UserManager.getAllUsers = function(callback){
     return storeSqlite.GetRelationList(callback)
+}
+
+UserManager.getRelation = function (Id,type,callback) {
+    storeSqlite.getRelation(Id,type,callback);
 }
 
 UserManager.addGroupMembers = function(members){
@@ -64,6 +69,10 @@ UserManager.updateRelationSetting = function(RelationSetting){
 
 UserManager.addNewRelationSetting = function(RelationSetting){
     storeSqlite.addNewRelationSetting(RelationSetting);
+}
+
+UserManager.GetRelationsByRelationIds = function (relationIds,callback) {
+    storeSqlite.GetRelationsByRelationIds(relationIds,callback);
 }
 
 UserManager.closeDB = function(){
