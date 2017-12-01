@@ -9,6 +9,8 @@ import ApiBridge from '../../../Logic/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
 import MessageCommandEnum from '../../../Core/Management/IM/dto/MessageCommandEnum'
 import AppCommandEnum from '../../../Core/Management/IM/dto/AppCommandEnum'
+import UserManager from '../UserGroup/UserManager'
+import GroupManager from '../UserGroup/GroupManager'
 
 let __instance = (function () {
     let instance;
@@ -45,6 +47,128 @@ export default class User {
 
         currentObj = this;
     }
+
+    //Manager操作
+
+    //初始化数据库
+    initIMDatabase(AccountId){
+
+        UserManager.initDatabase(AccountId);
+
+        GroupManager.initDatabase(AccountId);
+    }
+
+    //User:
+    getAllRelation(callback){
+        return UserManager.getAllUsers(callback);
+    }
+
+    //添加group成员到account表中，便于group聊天时显示
+    AddGroupMember(members){
+        UserManager.addGroupMembers(members)
+    }
+
+    //初始化好友列表  根据http请求结果初始化account中的表 有改无加
+    initRelations(friendList,blackList,callback){
+        UserManager.initRelations(friendList,blackList,callback);
+    }
+
+    //更改好友黑名单设置
+    changeRelationBlackList(isBlackList,RelationId){
+        UserManager.changeRelationBliackList(isBlackList,RelationId);
+    }
+
+    //删除好友 将好友信息show设为false
+    deleteRelation(RelationId){
+        UserManager.deleteRelation(RelationId)
+    }
+
+    //修改关系 发现关系信息更新时改变信息
+    updateRelation(Relation){
+        UserManager.updateRelation(Relation)
+    }
+
+    //更新好友显示状态 show 目前用于接收到添加好友信息
+    updateDisplayOfRelation(relationId,bool){
+        UserManager.updateRelationDisplayStatus(relationId,bool);
+    }
+
+    //获取所有关系的名字和头像
+    getAllRelationNameAndAvator(callback){
+        UserManager.getAllRelationAvatorAndName(callback);
+    }
+
+
+    //添加新关系 有改无加
+    AddNewRelation(Relation,callback){
+        UserManager.addNewRelation(Relation,callback)
+    }
+
+    //获取关系设置
+    GetRelationSetting(RelationId,callback){
+        UserManager.getRelationSetting(RelationId,callback);
+    }
+
+
+    //修改关系设置
+    ChangeRelationSetting(RelationSetting){
+        UserManager.updateRelationSetting(RelationSetting);
+    }
+
+    //添加关系设置
+    AddNewRelationSetting(RelationSetting){
+        UserManager.addNewRelationSetting(RelationSetting);
+    }
+
+    //Group:
+    AddNewGroup(Relation){
+        GroupManager.addNewRelation(Relation)
+    }
+
+    //添加Group到GourpList中去,添加group与user关系表GroupMember
+    AddGroupAndMember(Group,members){
+
+        //添加群到grouplist中
+        GroupManager.addNewRelation(Group);
+
+        //为group添加groupMember
+        GroupManager.initGroupMemberByGroupId(Group.RelationId,members)
+
+    }
+
+    //通过GroupId获取当前群的member信息
+    GetMembersByGroupId(groupId,callback){
+        GroupManager.GetMembersByGroupId(groupId,callback);
+    }
+
+    //获取所有的group
+    getAllGroupFromGroup(callback,show=undefined){
+        return GroupManager.GetRelationList(callback,show)
+    }
+
+    //初始化群关系信息  有改无加
+    initGroup(GroupList,callback){
+        GroupManager.initRelations(GroupList,callback);
+    }
+    //更新群名
+    updateGroupName(relationId,name){
+        GroupManager.UpdateGroupName(relationId,name);
+    }
+    //退群
+    deleteFromGrroup(RelationId){
+        GroupManager.deleteRelation(RelationId)
+    }
+
+    //将群移除通讯录
+    RemoveGroupFromContact(groupId){
+        GroupManager.RemoveGroupFromContact(groupId);
+    }
+
+    closeDB(){
+        UserManager.closeDB();
+        GroupManager.closeDB();
+    }
+
 
 
     //todo:lizongjun 把所有的用户，包括没有添加为好友的用户全部放到user表中，user表中group和user 分开，单独管理,groupMemberList用来管理群成员
@@ -243,15 +367,7 @@ export default class User {
             callback(results);
         })
     }
-    //初始化数据库
-    initIMDatabase(AccountId){
-        storeSqlite.initIMDatabase(AccountId,function(){
 
-        });
-        groupStoreSqlite.initIMDatabase(AccountId,function(){
-
-        })
-    }
 
     //todo:替代redux中RelationStore操作
     //初始化关系缓存 relations根据目前代码为 通讯录中的好友和群
@@ -281,6 +397,7 @@ export default class User {
             Obj.show = 'true';
         }
     }
+
     changeUserGroupCacheOfNick(id,type,nick){
         let Obj = cache[type][id];
         if(Obj == undefined || Obj == 'undefined' || !Obj){
@@ -288,6 +405,7 @@ export default class User {
         }
         Obj.Nick = nick;
     }
+
     changeUserGroupCacheOfBlackList(id,type,value){
         let Obj = cache[type][id];
         if(Obj == undefined || Obj == 'undefined' || !Obj){
@@ -313,150 +431,6 @@ export default class User {
         delete cache[type][id];
     }
 
-
-
-
-    //UserGroup part:
-
-
-    //获取Account中Relation表中的show为true的信息
-    getAllRelation(callback){
-        return storeSqlite.GetRelationList(callback)
-    }
-
-    getRelation(Id,type,callback){
-
-    }
-
-
-    //添加group成员到account表中，便于group聊天时显示
-    AddGroupMember(members){
-        storeSqlite.addGroupMember(members)
-    }
-
-
-
-
-    //初始化好友列表  根据http请求结果初始化account中的表 有改无加
-    initRelations(friendList,blackList,callback){
-        storeSqlite.initRelations(friendList,blackList,callback);
-    }
-
-    //更改好友黑名单设置
-    changeRelationBlackList(isBlackList,RelationId){
-        storeSqlite.changeRelationBliackList(isBlackList,RelationId);
-    }
-
-    //删除好友 将好友信息show设为false
-    deleteRelation(RelationId){
-        storeSqlite.deleteRelation(RelationId)
-    }
-
-    //更新关系头像
-    updateAvator(RelationId,localImagePath,avatorUrl){
-
-    }
-
-    //修改关系 发现关系信息更新时改变信息
-    updateRelation(Relation){
-        storeSqlite.updateRelation(Relation)
-    }
-
-    //更新好友显示状态 show 目前用于接收到添加好友信息
-    updateDisplayOfRelation(relationId,bool){
-        storeSqlite.updateRelationDisplayStatus(relationId,bool);
-    }
-
-    //修改群备注
-    updateGroupComment(RelationId,Comment){
-
-    }
-
-
-    //获取所有关系的名字和头像
-    getAllRelationNameAndAvator(callback){
-        storeSqlite.getAllRelationAvatorAndName(callback);
-    }
-
-    //添加新关系 有改无加
-    AddNewRelation(Relation,callback){
-        storeSqlite.addNewRelation(Relation,callback)
-    }
-
-    //==============================
-
-    //获取关系设置
-    GetRelationSetting(RelationId,callback){
-        storeSqlite.getRelationSetting(RelationId,callback);
-    }
-
-    //修改关系设置
-    ChangeRelationSetting(RelationSetting){
-        storeSqlite.updateRelationSetting(RelationSetting);
-    }
-
-    //添加关系设置
-    AddNewRelationSetting(RelationSetting){
-        storeSqlite.addNewRelationSetting(RelationSetting);
-    }
-
-
-
-
-
-
-
-
-
-
-
-    //Group part:
-    //添加一个新的group
-    AddNewGroup(Relation){
-        groupStoreSqlite.addNewRelation(Relation)
-    }
-
-    //添加Group到GourpList中去,添加group与user关系表GroupMember
-    AddGroupAndMember(Group,members){
-
-        //添加群到grouplist中
-        groupStoreSqlite.addNewRelation(Group);
-
-        //为group添加groupMember
-        groupStoreSqlite.initGroupMemberByGroupId(Group.RelationId,members)
-
-    }
-
-
-    //通过GroupId获取当前群的member信息
-    GetMembersByGroupId(groupId,callback){
-        groupStoreSqlite.GetMembersByGroupId(groupId,callback);
-    }
-
-
-    //获取所有的group
-    getAllGroupFromGroup(callback,show=undefined){
-        return groupStoreSqlite.GetRelationList(callback,show)
-    }
-
-    //初始化群关系信息  有改无加
-    initGroup(GroupList,callback){
-        groupStoreSqlite.initRelations(GroupList,callback);
-    }
-    //更新群名
-    updateGroupName(relationId,name){
-        groupStoreSqlite.UpdateGroupName(relationId,name);
-    }
-    //退群
-    deleteFromGrroup(RelationId){
-        groupStoreSqlite.deleteRelation(RelationId)
-    }
-
-    //将群移除通讯录
-    RemoveGroupFromContact(groupId){
-        groupStoreSqlite.RemoveGroupFromContact(groupId);
-    }
-
     //先去对应表中找到成员ID 再去Account中找对应信息
     GetGroupMemberIdsByGroupId(groupId,callback){
        groupStoreSqlite.GetMembersByGroupId(groupId,function(results){
@@ -476,14 +450,6 @@ export default class User {
            }
        })
     }
-
-
-    closeDB(){
-        storeSqlite.closeAccountDb();
-        groupStoreSqlite.closeAccountDb();
-    }
-
-
     //添加缓存
     //群拉人，添加到cache["groupMember"]缓存
     groupAddMemberChangeCash(groupId,memberId){
