@@ -32,7 +32,7 @@ import * as commonActions from '../../../../Core/Redux/chat/action';
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 
 import ChatController from '../../../../Logic/chatController';
-import ResourceTypeEnum from '../../../../Core/Management/IM/dto/ResourceTypeEnum'
+import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);

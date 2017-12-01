@@ -3,7 +3,7 @@
  */
 import * as Helper from '../../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
-import MessageType from './dto/MessageType'
+import MessageType from '../Common/dto/MessageType'
 import {blackListMessage,NotGroupMemberMessage} from './action/createMessage'
 import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
 import MessageCommandEnum from './dto/MessageCommandEnum'
