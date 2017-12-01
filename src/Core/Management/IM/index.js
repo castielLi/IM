@@ -598,7 +598,15 @@ export default class IM {
     storeRecMessage(message,callback){
         storeSqlite.storeRecMessage(message,callback);
     }
-
+    //根据ids从IM批量获取message
+    selectMessagesByIds(ids,callback){
+        storeSqlite.selectMessagesByIds(ids,(messages)=>{
+            let messageList = messages.map((message)=>{
+                            return DtoMethods.sqlMessageToMessage(message);
+                        })
+            callback(messageList);
+        });
+    }
     //更改消息状态
     updateSqliteMessage(message,way){
         //根据类别修改消息结果或者是发送消息的消息状态
