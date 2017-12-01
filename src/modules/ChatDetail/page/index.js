@@ -93,36 +93,36 @@ class ChatDetail extends ContainerComponent {
                 });
         }
 		let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
-		if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            //初始化chatRecordStore
-            chatController.getRecentChatRecode(client,type,{start:chatRecordLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-                let messageList = messages.map((message)=>{
-                    return DtoMethods.sqlMessageToMessage(message);
-                })
-                currentObj.props.initChatRecord(client,messageList);
-            })
-		}
-
-
-
-		// if(type == 'chatroom'){
-         //    groupStoreSqlite.FindGroupTable(client,function (results) {
-		// 		console.log(results)
-		// 		if(results.length == 0){
+        // if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+        //     //初始化chatRecordStore
+        //     chatController.getRecentChatRecode(client,type,{start:chatRecordLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
+        //         let messageList = messages.map((message)=>{
+        //             return DtoMethods.sqlMessageToMessage(message);
+        //         })
+        //         currentObj.props.initChatRecord(client,messageList);
+        //     })
+        // }
         //
         //
         //
-         //            groupStoreSqlite.initGroupMemberByGroupId(client)
-		// 			callback()
-		// 		}
-         //    })
-		// }
-		//修改chatDetailPageStore
-		this.props.changeChatDetailPageStatus(true,client,type)
-		//清空未读消息计数红点
-		this.props.updateRecentItemLastMessage(client,type,false);
-		//通知controller正在与某人会话
-        chatController.setCurrentChat(client,type);
+        // // if(type == 'chatroom'){
+        //  //    groupStoreSqlite.FindGroupTable(client,function (results) {
+        // // 		console.log(results)
+        // // 		if(results.length == 0){
+        // //
+        // //
+        // //
+        //  //            groupStoreSqlite.initGroupMemberByGroupId(client)
+        // // 			callback()
+        // // 		}
+        //  //    })
+        // // }
+        // //修改chatDetailPageStore
+        // this.props.changeChatDetailPageStatus(true,client,type)
+        // //清空未读消息计数红点
+        // this.props.updateRecentItemLastMessage(client,type,false);
+        // //通知controller正在与某人会话
+        // chatController.setCurrentChat(client,type);
 	}
 
 	componentWillReceiveProps(newProps){

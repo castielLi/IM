@@ -4,6 +4,7 @@
 
 import IM from '../Core/Management/IM'
 import User from '../Core/Management/UserGroup'
+import Chat from '../Core/Management/Chat'
 import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';
 import RNFS from 'react-native-fs'
@@ -16,6 +17,7 @@ let __instance = (function () {
         return instance;
         this.im = new IM();
         this.user = new User();
+        this.chat = new Chat();
     }
 }());
 
@@ -52,12 +54,16 @@ export default class loginController {
                     // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                     currentObj.im.initIMDatabase(account.accountId)
                     currentObj.user.initIMDatabase(account.accountId);
+                    currentObj.chat.initIMDatabase(account.accountId);
+
                     callback(result)
 
                 }else{
                     let ImDbPath = '/data/data/com.im/files/'+account.accountId +'/database/IM.db';
                     let AccountDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Account.db';
                     let GroupDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Group.db';
+                    let ChatDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Chat.db';
+
                     //文件夹判断是否是第一次登录
                     RNFS.exists(ImDbPath).then((bool)=>{
                         if(bool){
@@ -66,10 +72,15 @@ export default class loginController {
                             RNFS.copyFile(ImDbPath,'/data/data/com.im/databases/IM.db').then(()=>{
                                 RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
                                     RNFS.copyFile(GroupDbPath,'/data/data/com.im/databases/Group.db').then(()=>{
-                                        //初始化im
-                                        currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-                                        currentObj.user.initIMDatabase(account.accountId);
-                                        callback(result)
+                                        RNFS.copyFile(ChatDbPath,'/data/data/com.im/databases/Chat.db').then(()=>{
+                                            //初始化im
+                                            currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                                            currentObj.user.initIMDatabase(account.accountId);
+                                            currentObj.chat.initIMDatabase(account.accountId);
+
+                                            callback(result)
+                                        })
+
                                     })
                                 })
                             });
@@ -80,6 +91,8 @@ export default class loginController {
                             // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             currentObj.im.initIMDatabase(account.accountId);
                             currentObj.user.initIMDatabase(account.accountId);
+                            currentObj.chat.initIMDatabase(account.accountId);
+
                             callback(result)
                         }
                     })
@@ -125,6 +138,8 @@ export default class loginController {
                     if (Platform.OS === 'ios') {
                         currentObj.im.initIMDatabase(storage.accountId)
                         currentObj.user.initIMDatabase(storage.accountId)
+                        currentObj.chat.initIMDatabase(storage.accountId);
+
                     }
                     callback(result);
                 }
@@ -137,6 +152,7 @@ export default class loginController {
     loginOut(){
         this.im.closeImDb();
         this.user.closeDB();
+        this.chat.closeDB();
         this.im.logout();
     }
     
@@ -167,34 +183,37 @@ export default class loginController {
                                             }
                                         })
                                         result.data.unUnDealRequestCount = unUnDealRequestCount;
+                                        currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+
+                                        callback(result);
                                         //初始化recentListStore
-                                        currentObj.im.getChatList((chatListArr) => {
-                                            let needArr = [];
-                                            //初始化unReadMessageStore
-                                            let unReadMessageCount = 0;
-                                            chatListArr.forEach((v, i) => {
-                                                if (v.unReadMessageCount) {
-                                                    unReadMessageCount += v.unReadMessageCount;
-                                                }
-                                                for (let m = 0; m < data.length; m++) {
-                                                    if (v.Client == data[m].RelationId) {
-                                                        v.Nick = data[m].Nick;
-                                                        v.localImage = data[m].localImage;
-                                                        v.avator = data[m].avator;
-                                                        break;
-                                                    }
-                                                }
-                                            })
-
-                                            needArr = chatListArr.concat();
-
-                                            result.data.unReadMessageCount = unReadMessageCount;
-                                            result.data.chatListArr = needArr;
-
-                                            currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-
-                                            callback(result);
-                                        })
+                                        // currentObj.im.getChatList((chatListArr) => {
+                                        //     let needArr = [];
+                                        //     //初始化unReadMessageStore
+                                        //     let unReadMessageCount = 0;
+                                        //     chatListArr.forEach((v, i) => {
+                                        //         if (v.unReadMessageCount) {
+                                        //             unReadMessageCount += v.unReadMessageCount;
+                                        //         }
+                                        //         for (let m = 0; m < data.length; m++) {
+                                        //             if (v.Client == data[m].RelationId) {
+                                        //                 v.Nick = data[m].Nick;
+                                        //                 v.localImage = data[m].localImage;
+                                        //                 v.avator = data[m].avator;
+                                        //                 break;
+                                        //             }
+                                        //         }
+                                        //     })
+                                        //
+                                        //     needArr = chatListArr.concat();
+                                        //
+                                        //     result.data.unReadMessageCount = unReadMessageCount;
+                                        //     result.data.chatListArr = needArr;
+                                        //
+                                        //     currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                                        //
+                                        //     callback(result);
+                                        // })
 
                                     })
                                 })
