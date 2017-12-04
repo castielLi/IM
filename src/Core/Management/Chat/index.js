@@ -47,7 +47,6 @@ export default class Chat {
             let cache = formatArrToObjById(results);
             callback(deepCopy(cache));
             ChatCache = cache;
-
         });
     }
     //初始化聊天记录,打开一个聊天窗口的时候
@@ -68,9 +67,10 @@ export default class Chat {
     }
     //updateType修改类型，'send','receive','unread'，若为'unread'，参数message为undefined
     upDateChatCache(updateType,currentChat,message,callback){
+        let clientId;
         switch(updateType){
             case 'send':
-                let clientId = message.Data.Data.Receiver;
+                clientId = message.Data.Data.Receiver;
                 if(ChatCache[clientId]==undefined){//没有该会话
                     //新增一个会话
                     currentObj.addOneChat(clientId,message,(results)=>{
@@ -87,7 +87,7 @@ export default class Chat {
                 }
                 break;
             case 'receive':
-                let clientId = message.Data.Data.Sender;
+                clientId = message.Data.Data.Sender;
                 if(clientId == currentChat){
                     currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
                         //重新渲染聊天记录

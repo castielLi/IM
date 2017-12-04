@@ -115,7 +115,7 @@ export default class chatController {
     }
     //初始化最近聊天数据
     initChat(callback){
-        this.chat.getChatList((results)=>{
+        this.chat.getAllChatList((results)=>{
             fillNickAndAvatorData(results,(needData)=>{
                 callback(needData);
             });
