@@ -83,8 +83,10 @@ export default class chatController {
     setCurrentChat(chat){
         currentChat = chat;
         this.chat.clearUnReadMsgNumber(chat,(results)=>{
-            let needData = fillNickAndAvatorData(results)
-            reRenderRecentListCallBack(needData);
+            fillNickAndAvatorData(results,(needData)=>{
+                reRenderRecentListCallBack(needData);
+            })
+
         });
     }
 
@@ -114,9 +116,10 @@ export default class chatController {
     //初始化最近聊天数据
     initChat(callback){
         this.chat.getAllChatList((results)=>{
-            let needData = fillNickAndAvatorData(results);
-            console.log('22222222222222222222222222222222222',needData)
-            callback(needData);
+            fillNickAndAvatorData(results,(needData)=>{
+                callback(needData);
+            });
+
         })
     }
     //初始化某聊天窗口的聊天记录
@@ -156,8 +159,10 @@ export default class chatController {
                       })
                   })
                   //重新渲染最近聊天列表
-                  let needData = fillNickAndAvatorData(results)
-                  reRenderRecentListCallBack(needData);
+                  fillNickAndAvatorData(results,(needData)=>{
+                      reRenderRecentListCallBack(needData);
+                  })
+
 
                   callback();
               })
@@ -170,8 +175,10 @@ export default class chatController {
                         })
                     })
                     //重新渲染最近聊天列表
-                    let needData = fillNickAndAvatorData(results)
-                    reRenderRecentListCallBack(needData);
+                    fillNickAndAvatorData(results,(needData)=>{
+                        reRenderRecentListCallBack(needData);
+                    })
+
 
                     callback();
                 })
@@ -366,8 +373,10 @@ function receiveMessageHandle(message){
                     })
                 })
                 //重新渲染最近聊天列表
-                let needData = fillNickAndAvatorData(results)
-                reRenderRecentListCallBack(needData);
+                fillNickAndAvatorData(results,(needData)=>{
+                    reRenderRecentListCallBack(needData);
+                })
+
             })
         }else{
             //新增一个会话
@@ -381,8 +390,10 @@ function receiveMessageHandle(message){
                         })
                     })
                     //重新渲染最近聊天列表
-                    let needData = fillNickAndAvatorData(results)
-                    reRenderRecentListCallBack(needData);
+                    fillNickAndAvatorData(results,(needData)=>{
+                        reRenderRecentListCallBack(needData);
+                    })
+
                 })
             })
         }
@@ -419,10 +430,16 @@ function extractMessage(message){
 }
 //数据填充
 //填充最近聊天头像昵称
-function fillNickAndAvatorData(data){
+function fillNickAndAvatorData(data,callback){
+    objLength = Object.keys(data).length;
+    let account = 0;
     for(let key in data){
-        let nickAndAvatorObj = user.getNickAndAvatorById(key,data[key].Type);
-        data[key] = {...data[key],...nickAndAvatorObj}
+        user.getNickAndAvatorById(key,data[key].Type,(nickAndAvatorObj)=>{
+            account++;
+            data[key] = {...data[key],...nickAndAvatorObj}
+            if(account == objLength){
+                callback(data)
+            }
+        });
     }
-    return data;
 }
