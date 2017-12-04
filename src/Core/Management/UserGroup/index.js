@@ -222,12 +222,12 @@ export default class User {
     readInformation(Id,type,callback){
         switch (type){
             case "chatroom":
-                GroupManager.getRelation(Id,type,(relations)=>{
+                GroupManager.GetRelationByIdAndType(Id,type,(relations)=>{
                     callback(relations);
                 });
                 break;
             default:
-                UserManager.getRelation(Id,type,(relations)=>{
+                UserManager.GetRelationByIdAndType(Id,type,(relations)=>{
                     callback(relations);
                 });
                 break;
@@ -245,8 +245,125 @@ export default class User {
         }
     }
 
+    getHttpGroupInfo(Id,type,callback,Relation = undefined){
+        let groupMembers = [];
+        let groupMembersInfo = [];
+        this.apiBridge.request.GetGroupInfo({"GroupId":Id},(result)=>{
+            if(result.success) {
+                let data = result.data.Data;
+                let relation = new RelationModel();
+                if(!Relation){
+                    relation.RelationId = data.ID;
+                    relation.owner = data.Owner;
+                    relation.Nick = data.Name;
+                    relation.Type = 'chatroom';
+                    relation.show = 'false';
+                    relation.avator = data.ProfilePicture == null?"":data.ProfilePicture;
+                    relation.MemberList = data.MemberList;
+                    cache[type][Id] = relation;
+                }
+                else{
+                    relation = Relation;
+                }
+                let members = relation.MemberList;
+                for(let i = 0;i<members.length;i++){
+                    let accountId = members[i].Account;
+                    let model = new RelationModel();
+                    model.avator = members[i].HeadImageUrl;
+                    model.Nick = members[i].Nickname;
+                    model.RelationId = members[i].Account;
+                    if(cache["private"][accountId] == undefined){
+                        cache["private"][accountId] = model;
+                    }
+                    groupMembers.push(model);
+                    groupMembersInfo.push(accountId)
+                }
+                callback(relation,groupMembers);
+                currentObj.AddGroupAndMember(relation,members);
+                currentObj.AddGroupMember(members);
+                cache["groupMember"][Id] = groupMembersInfo;
+            }else{
+                console.log(result.errorMessage)
+            }
+        });
 
+        callback(relation,groupMembers)
+        //数据库也没有这条group的记录，那么就需要添加进groupList中
+        //并且添加groupMember表，存储group和user关系
+        //存储新的群user到account表中
+        currentObj.AddGroupAndMember(relation,results.MemberList);
+        currentObj.AddGroupMember(results.MemberList);
+        cache["groupMember"][Id] = groupMembersInfo;
+    }
 
+    //todo:拆分通过id和类型获取群或者好友的信息的方法
+    getUserInfoByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
+        if(cache[type].length == 0 || cache[type][Id] == undefined){
+            this.readInformation(Id,type,function (relations) {
+                if(relations.length == 0){
+                    currentObj.requestInfomation(Id,type,function (result) {
+                        if(result.success){
+                            let data = result.data.Data;
+                            let relation = new RelationModel();
+                            relation.RelationId = data.Account;
+                            relation.Nick = data.Nickname;
+                            relation.Type = 'private';
+                            relation.show = 'false';
+                            relation.avator = data.HeadImageUrl == null?"":data.HeadImageUrl;
+                            cache[type][Id] = relation;
+                            currentObj.AddNewRelation(relation,function(){
+                                callback(relation);
+                            });
+                        }else{
+                            console.log(result.errorMessage)
+                        }
+                    })
+                }
+                else{
+                    cache[type][Id] = relations[0];
+                    callback(relations[0])
+                }
+            })
+        }
+        else{
+            callback(cache[type][Id])
+        }
+    }
+    getGroupInfoByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
+        let groupMembers = [];
+        let groupMembersInfo = [];
+        if(cache[type].length == 0 || cache[type][Id] == undefined){
+            this.readInformation(Id,type,function (relations) {
+                if(relations.length == 0){
+                    currentObj.getHttpGroupInfo(Id,type,callback);
+                }
+                else{
+                    cache[type][Id] = relations[0];
+                    currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
+                        if(results.length == 0){
+                            currentObj.getHttpGroupInfo(Id,type,callback,relations[0]);
+                        }else{
+                            //todo:考虑要是private里面没有对应 d 的信息
+                            for(let i = 0;i<results.length;i++){
+                                cache["private"][results[i].RelationId] = results[i];
+                                groupMembers.push(results[i].RelationId)
+                                groupMembersInfo.push(results[i])
+                            }
+                            cache["groupMember"][Id] = groupMembers;
+                            callback(relations[0],groupMembersInfo)
+                        }
+                    });
+                }
+            })
+        }
+        else{
+            //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
+            if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER||contentCommand == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
+                let relation = cache[type][Id];
+                currentObj.getHttpGroupInfo(Id,type,callback,relation);
+            }
+        }
+    }
 
 
     //通过id和类型获取群或者好友的信息
@@ -493,18 +610,8 @@ export default class User {
             needObj.avator = realtion["avator"];
             callback(needObj);
         })
-
     }
 
-
-    getCachePrivateInfo(){
-        let concat = Object.values(cache['private']) //将对象的value 组成数组
-        return concat;
-    }
-    getCacheChatroomInfo(){
-        let concat = Object.values(cache['chatroom']) //将对象的value 组成数组
-        return concat;
-    }
     getCacheInfo(type){
         let concat = Object.values(cache[type]) //将对象的value 组成数组
         return concat;
@@ -512,6 +619,110 @@ export default class User {
 
     //todo:替代redux中RelationStore操作
     //初始化关系缓存 relations根据目前代码为 通讯录中的好友和群
+    // initUserGroupCache(relations){
+    //     if(relations == undefined || relations == 'undefined' || !relations){
+    //         return;
+    //     }
+    //     let length = relations.length;
+    //     for(let i=0;i<length;i++){
+    //         let {Type,RelationId} = relations[i];
+    //         cache[Type][RelationId] = relations[i];
+    //     }
+    // }
+    //清空缓存
+    clearUserGroupCache(){
+        //关闭app缓存自动清空
+    }
+    //更改缓存信息
+    // changeUserGroupCacheOfShow(id,type){
+    //     let Obj = cache[type][id];
+    //     if(Obj == undefined || Obj == 'undefined' || !Obj){
+    //         return;
+    //     }
+    //     if(Obj.show === 'true'){
+    //         Obj.show = 'false';
+    //     }else if(Obj.show === 'false'){
+    //         Obj.show = 'true';
+    //     }
+    // }
+    //
+    // changeUserGroupCacheOfNick(id,type,nick){
+    //     let Obj = cache[type][id];
+    //     if(Obj == undefined || Obj == 'undefined' || !Obj){
+    //         return;
+    //     }
+    //     Obj.Nick = nick;
+    // }
+    //
+    // changeUserGroupCacheOfBlackList(id,type,value){
+    //     let Obj = cache[type][id];
+    //     if(Obj == undefined || Obj == 'undefined' || !Obj){
+    //         return;
+    //     }
+    //     Obj.BlackList = value;
+    // }
+    //添加新的关系进缓存
+    // addUserGroupCache(relation,member){
+    //     let {Type,RelationId} = relation;
+    //     let Obj = cache[Type][RelationId];
+    //     if(Obj != undefined || Obj != 'undefined' || Obj){
+    //         return;
+    //     }
+    //     cache[Type][RelationId] = relation;
+    //     if(!member || !member.length){
+    //         return;
+    //     }
+    //     cache['groupMember'][RelationId] = member;
+    // }
+    //删除关系
+    // removeUserGroupCache(id,type){
+    //     let Obj = cache[type][id];
+    //     if(Obj == undefined || Obj == 'undefined' || !Obj){
+    //         return;
+    //     }
+    //     delete cache[type][id];
+    // }
+    //添加缓存
+    //群拉人，添加到cache["groupMember"]缓存
+    // groupAddMemberChangeCash(groupId,memberId){
+    //     cache["groupMember"][groupId].push(memberId);
+    // }
+    // //添加到cache["private"]
+    // privateAddMemberChangeCash(memberId,memberObj){
+    //     cache["private"][memberId] = memberObj;
+    // }
+    //添加关系
+    // addUserGroupCache(relation,members,groupId){
+    //     let {Type,RelationId} = relation;
+    //     let Obj = cache[Type][RelationId];
+    //     if(Obj != undefined || Obj != 'undefined' || Obj){
+    //         return;
+    //     }
+    //     cache[Type][RelationId] = relation;
+    //     if(!member || !member.length){
+    //         return;
+    //     }
+    //     cache['groupMember'][RelationId] = member;
+    // }
+    //groupId:string  memberId :arry  memberObj:arry
+
+    //todo：方法整合
+    //获取关系信息
+    getUserGroupCache(enumerate,data){
+        switch (enumerate){
+            case 'single':
+                let {Id,type,callback} = data;
+                currentObj.getInformationByIdandType(Id,type,callback);
+                break;
+            case 'list':
+                let {type} = data;
+                currentObj.getCacheInfo(type);
+                break;
+            default:
+                break;
+        }
+    }
+    //初始化关系
     initUserGroupCache(relations){
         if(relations == undefined || relations == 'undefined' || !relations){
             return;
@@ -522,72 +733,8 @@ export default class User {
             cache[Type][RelationId] = relations[i];
         }
     }
-    //清空缓存
-    clearUserGroupCache(){
-        //关闭app缓存自动清空
-    }
-    //更改缓存信息
-    changeUserGroupCacheOfShow(id,type){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
-        }
-        if(Obj.show === 'true'){
-            Obj.show = 'false';
-        }else if(Obj.show === 'false'){
-            Obj.show = 'true';
-        }
-    }
-
-    changeUserGroupCacheOfNick(id,type,nick){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
-        }
-        Obj.Nick = nick;
-    }
-
-    changeUserGroupCacheOfBlackList(id,type,value){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
-        }
-        Obj.BlackList = value;
-    }
-    //添加新的关系进缓存
-    addUserGroupCache(relation,member){
-        let {Type,RelationId} = relation;
-        let Obj = cache[Type][RelationId];
-        if(Obj != undefined || Obj != 'undefined' || Obj){
-            return;
-        }
-        cache[Type][RelationId] = relation;
-        if(!member || !member.length){
-            return;
-        }
-        cache['groupMember'][RelationId] = member;
-    }
-    //删除关系
-    removeUserGroupCache(id,type){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
-        }
-        delete cache[type][id];
-    }
-    //添加缓存
-    //群拉人，添加到cache["groupMember"]缓存
-    groupAddMemberChangeCash(groupId,memberId){
-        cache["groupMember"][groupId].push(memberId);
-    }
-    //添加到cache["private"]
-    privateAddMemberChangeCash(memberId,memberObj){
-        cache["private"][memberId] = memberObj;
-    }
-
-
-    //todo：方法整合
-    changeUserGroup(id,type,method){
+    //改变关系
+    changeUserGroupCache(id,type,method){
         let Obj = cache[type][id];
         if(Obj == undefined || Obj == 'undefined' || !Obj){
             return;
@@ -601,6 +748,62 @@ export default class User {
         else if(method.select == 'BlackList'){
             Obj.BlackList = method.data;
         }
+    }
+    //新增关系
+    addUserGroupCache(enumerate,data){
+        switch (enumerate){
+            case "addFriend":
+                let {relation} = data;
+                let {Type,RelationId} = relation;
+                let obj = cache[Type][RelationId];
+                if(obj != undefined || obj != 'undefined' || obj){
+                    return;
+                }
+                cache[Type][RelationId] = relation;
+                break;
+            case "createGroup":
+                let {relation,members} = data;
+                let {Type,RelationId} = relation;
+                let obj = cache[Type][RelationId];
+                if(obj != undefined || obj != 'undefined' || obj){
+                    return;
+                }
+                cache[Type][RelationId] = relation;
+                if(!members || !members.length){
+                    return;
+                }
+                members.forEach(function (current,index) {
+                    cache['groupMember'][RelationId].push(current);
+                });
+                break;
+            case "addMember":
+                let {groupId,relation,members} = data;
+                for(let current of relation){
+                    let {Type,RelationId} = current;
+                    let obj = cache[Type][RelationId];
+                    if(obj != undefined || obj != 'undefined' || obj){
+                        continue;
+                    }
+                    cache[Type][RelationId] = current;
+                }
+                if(!members || !members.length){
+                    return;
+                }
+                members.forEach(function (current,index) {
+                    cache['groupMember'][groupId].push(current);
+                });
+                break;
+            default:
+                break;
+        }
+    }
+    //删除关系
+    removeUserGroupCache(id,type){
+        let Obj = cache[type][id];
+        if(Obj == undefined || Obj == 'undefined' || !Obj){
+            return;
+        }
+        delete cache[type][id];
     }
 
 }
