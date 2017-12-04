@@ -85,6 +85,7 @@ export default class Chat {
                         })
                     })
                 }
+                currentObj.sendMessage(message);
                 break;
             case 'receive':
                 clientId = message.Data.Data.Sender;
@@ -96,16 +97,19 @@ export default class Chat {
                         })
                     })
                 }else{
-                    //新增一个会话
-                    currentObj.addOneChat(clientId,message,extractMessage(message),message.MSGID,()=>{
-                        //未读消息+1
-                        currentObj.addUnReadMsgNumber(clientId,(results)=>{
-                            //重新渲染聊天记录
-                            currentObj.getChatRecord(clientId,message.way,(ids)=>{
-                                callback(ids,results);
+                    if(ChatCache[clientId] == undefined){
+                        //新增一个会话
+                        currentObj.addOneChat(clientId,message,extractMessage(message),message.MSGID,()=>{
+                            //未读消息+1
+                            currentObj.addUnReadMsgNumber(clientId,(results)=>{
+                                //重新渲染聊天记录
+                                currentObj.getChatRecord(clientId,message.way,(ids)=>{
+                                    callback(ids,results);
+                                })
                             })
                         })
-                    })
+                    }
+
                 }
                 break;
             case 'unread':
