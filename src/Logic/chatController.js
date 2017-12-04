@@ -83,8 +83,10 @@ export default class chatController {
     setCurrentChat(chat){
         currentChat = chat;
         this.chat.clearUnReadMsgNumber(chat,(results)=>{
-            let needData = fillNickAndAvatorData(results)
-            reRenderRecentListCallBack(needData);
+            fillNickAndAvatorData(results,(needData)=>{
+                reRenderRecentListCallBack(needData);
+            })
+
         });
     }
 
@@ -114,8 +116,10 @@ export default class chatController {
     //初始化最近聊天数据
     initChat(callback){
         this.chat.getAllChatList((results)=>{
-            let needData = fillNickAndAvatorData(results)
-            callback(needData);
+            fillNickAndAvatorData(results,(needData)=>{
+                callback(needData);
+            });
+
         })
     }
     //初始化某聊天窗口的聊天记录
@@ -147,7 +151,7 @@ export default class chatController {
             let ChatCache = currentObj.chat.getChatCache();
             if(ChatCache[message.Data.Data.Receiver]==undefined){//没有该会话
             //新增一个会话
-              currentObj.chat.addOneChat(message.Data.Data.Receiver,message,message.MSGID,(results)=>{
+              currentObj.chat.addOneChat(message.Data.Data.Receiver,message,extractMessage(message),message.MSGID,(results)=>{
                   //重新渲染聊天记录
                   currentObj.chat.getOneChat(message.Data.Data.Receiver,message.way,(ids)=>{
                       currentObj.im.selectMessagesByIds(ids,(messages)=>{
@@ -155,8 +159,12 @@ export default class chatController {
                       })
                   })
                   //重新渲染最近聊天列表
-                  let needData = fillNickAndAvatorData(results)
-                  reRenderRecentListCallBack(needData);
+                  fillNickAndAvatorData(results,(needData)=>{
+                      reRenderRecentListCallBack(needData);
+                  })
+
+
+                  callback();
               })
             }else{
                 currentObj.chat.updateLastMessageAndTime(message.Data.Data.Receiver,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
@@ -167,12 +175,17 @@ export default class chatController {
                         })
                     })
                     //重新渲染最近聊天列表
-                    let needData = fillNickAndAvatorData(results)
-                    reRenderRecentListCallBack(needData);
+                    fillNickAndAvatorData(results,(needData)=>{
+                        reRenderRecentListCallBack(needData);
+                    })
+
+
+                    callback();
                 })
             }
         },onprogress);
 
+        this.chat.sendMessage(message);
     }
 
 
@@ -360,12 +373,14 @@ function receiveMessageHandle(message){
                     })
                 })
                 //重新渲染最近聊天列表
-                let needData = fillNickAndAvatorData(results)
-                reRenderRecentListCallBack(needData);
+                fillNickAndAvatorData(results,(needData)=>{
+                    reRenderRecentListCallBack(needData);
+                })
+
             })
         }else{
             //新增一个会话
-            currentObj.chat.addOneChat(message.Data.Data.Sender,message,message.MSGID,()=>{
+            currentObj.chat.addOneChat(message.Data.Data.Sender,message,extractMessage(message),message.MSGID,()=>{
                 //未读消息+1
                 currentObj.caht.addUnReadMsgNumber(message.Data.Data.Sender,(results)=>{
                     //重新渲染聊天记录
@@ -375,13 +390,17 @@ function receiveMessageHandle(message){
                         })
                     })
                     //重新渲染最近聊天列表
-                    let needData = fillNickAndAvatorData(results)
-                    reRenderRecentListCallBack(needData);
+                    fillNickAndAvatorData(results,(needData)=>{
+                        reRenderRecentListCallBack(needData);
+                    })
+
                 })
             })
         }
+
+        currentObj.chat.receiveMessage(message)
     },message.Command,message.Data.Data.Command);
-    //todo: 添加这个新的relation进 redux， 如果是group则还需要添加进group数据库
+
 }
 
 function recieveAddFriendMessage(relationId){
@@ -411,10 +430,16 @@ function extractMessage(message){
 }
 //数据填充
 //填充最近聊天头像昵称
-function fillNickAndAvatorData(data){
+function fillNickAndAvatorData(data,callback){
+    objLength = Object.keys(data).length;
+    let account = 0;
     for(let key in data){
-        let nickAndAvatorObj = user.getNickAndAvatorById(key);
-        data[key] = {...data[key],...nickAndAvatorObj}
+        user.getNickAndAvatorById(key,data[key].Type,(nickAndAvatorObj)=>{
+            account++;
+            data[key] = {...data[key],...nickAndAvatorObj}
+            if(account == objLength){
+                callback(data)
+            }
+        });
     }
-    return data;
 }

@@ -259,7 +259,7 @@ export default class User {
 
             //向数据库查找好友信息
             if(type == 'private'){
-                    UserManager.getRelation(Id,type,(relations)=>{
+                    UserManager.GetRelationByIdAndType(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
                         if(relations.length == 0){
                             //请求http获取信息
@@ -297,7 +297,7 @@ export default class User {
                 let groupMembers = [];
                 let groupMembersInfo = [];
 
-                    GroupManager.getRelation(Id,type,(relations)=>{
+                    GroupManager.GetRelationByIdAndType(Id,type,(relations)=>{
                         //如果数据库也没有这条消息
 
                         if(relations.length == 0){
@@ -484,6 +484,19 @@ export default class User {
     getUserInfoById(accountId){
         return cache["private"][accountId]["Nick"]
     }
+
+
+    getNickAndAvatorById(accountId,type,callback){
+        let needObj = {};
+        this.getInformationByIdandType(accountId,type,(realtion)=>{
+            needObj.Nick =  realtion["Nick"];
+            needObj.avator = realtion["avator"];
+            callback(needObj);
+        })
+
+    }
+
+
     getCachePrivateInfo(){
         let concat = Object.values(cache['private']) //将对象的value 组成数组
         return concat;

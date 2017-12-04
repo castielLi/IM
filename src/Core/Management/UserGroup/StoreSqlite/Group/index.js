@@ -32,7 +32,7 @@ export function GetRelationList(callback,show){
     GROUPFMDB.GetRelationList(callback,show);
 }
 //获取指定群
-export function getRelation(Id,type,callback){
+export function GetRelationByIdAndType(Id,type,callback){
     GROUPFMDB.GetRelationByIdAndType(Id,type,callback);
 }
 
