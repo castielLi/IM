@@ -30,7 +30,7 @@ import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConf
 import IM from '../../../../Core/Management/IM';
 import * as DtoMethods from '../../../../Core/Management/IM/Common/SqliteMessageToDtoMessage'
 import User from '../../../../Core/Management/UserGroup'
-import chatController from '../../../../Logic/chatController'
+import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/settingController'
 
 let _listHeight = 0; //list显示高度

@@ -20,7 +20,7 @@ import DisplayComponent from './Core/Component'
 import * as IMHandle from './Logic/AppHandler/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import Network from './Core/Networking/Network'
-import ChatController from './Logic/chatController'
+import ChatController from './Logic/Chat/chatController'
 let chatController = new ChatController();
 
 export default function App() {

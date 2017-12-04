@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import LoginController from '../../../Logic/loginController'
-import ChatController from '../../../Logic/chatController'
+import ChatController from '../../../Logic/Chat/chatController'
 let chatController = new ChatController();
 let loginController = new LoginController();
 let currentObj = undefined;
