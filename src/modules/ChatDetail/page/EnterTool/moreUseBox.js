@@ -22,7 +22,7 @@ import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ChatController from '../../../../Logic/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
-import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
+import {addResourceMessage} from '../../../../Core/Management/Common/action/createMessage';
 import CameraConfig from './cameraConfig';
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);

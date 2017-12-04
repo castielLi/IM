@@ -8,7 +8,7 @@ import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "../Common/dto/MessageStatus"
 import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
-import MessageCommandEnum from './dto/MessageCommandEnum'
+import MessageCommandEnum from '../Common/dto/MessageCommandEnum'
 import * as DtoMethods from './Common/SqliteMessageToDtoMessage'
 import MessageType from '../Common/dto/MessageType'
 import SendManager from './SendManager'
