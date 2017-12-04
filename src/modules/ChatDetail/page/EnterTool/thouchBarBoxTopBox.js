@@ -29,7 +29,7 @@ import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
 import * as commonActions from '../../../../Core/Redux/chat/action';
-import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
+import {addResourceMessage} from '../../../../Core/Management/Common/action/createMessage';
 
 import ChatController from '../../../../Logic/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'

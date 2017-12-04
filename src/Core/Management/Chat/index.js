@@ -21,7 +21,6 @@ let ChatCache = {}
 //         Record:[msgId1,msgId2...]},
 //     }
 
-
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -172,7 +171,46 @@ export default class Chat {
     }
 
 
+
+    //lizongjun
+    AddChat(message,isCurrent,name,isSend){
+        if(ChatCache[name]){
+            let records = ChatCache[name]["Record"];
+            for(let item in records){
+                if(records[item] == message.MSGID){
+                    return;
+                }
+            }
+            records.push[message.MSGID];
+            addSqliteRecordInCondition(name,message,isCurrent,isSend);
+        }else{
+            let record = [];
+            record.push(message.MSGID);
+            ChatCache[name] = {};
+
+        }
+    }
+
+    DeleteChat(){
+
+    }
+
 }
+
+function addSqliteRecordInCondition(name,message,isCurrent,isSend){
+    if(isSend){
+        currentObj.sendMessage(message);
+    }else{
+        currentObj.receiveMessage(message);
+    }
+
+    if(!isCurrent){
+        currentObj.addChatUnReadMessageaNumber(name);
+    }
+
+}
+
+
 
 //私有方法
 //数组转对象
