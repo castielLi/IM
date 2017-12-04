@@ -369,28 +369,28 @@ export default class User {
 
                             currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
                                 if(response.success) {
-                                    //currentObj.setCacheAndSql(type,Id,response,callback)
-                                    let results = response.data.Data;
-                                    for(let i = 0;i<results.MemberList.length;i++){
-                                        let accountId = results.MemberList[i].Account;
-                                        let model = new RelationModel();
-                                        model.avator = results.MemberList[i].HeadImageUrl;
-                                        model.Nick = results.MemberList[i].Nickname;
-                                        model.RelationId = results.MemberList[i].Account;
-                                        if(cache["private"][accountId] == undefined){
-                                            cache["private"][accountId] = model;
-                                        }
-                                        groupMembers.push(model);
-                                        groupMembersInfo.push(accountId)
-                                    }
-                                    callback(cache[type][Id],groupMembers)
-                                    //数据库也没有这条group的记录，那么就需要添加进groupList中
-                                    //并且添加groupMember表，存储group和user关系
-                                    //存储新的群user到account表中
-                                    //currentObj.AddGroupAndMember(relation,results.MemberList);
-                                    GroupManager.initGroupMemberByGroupId(Id,results.MemberList)
-                                    currentObj.AddGroupMember(results.MemberList);
-                                    cache["groupMember"][Id] = groupMembersInfo;
+                                    currentObj.setCacheAndSql(type,Id,response,callback,cache[type][Id])
+                                    // let results = response.data.Data;
+                                    // for(let i = 0;i<results.MemberList.length;i++){
+                                    //     let accountId = results.MemberList[i].Account;
+                                    //     let model = new RelationModel();
+                                    //     model.avator = results.MemberList[i].HeadImageUrl;
+                                    //     model.Nick = results.MemberList[i].Nickname;
+                                    //     model.RelationId = results.MemberList[i].Account;
+                                    //     if(cache["private"][accountId] == undefined){
+                                    //         cache["private"][accountId] = model;
+                                    //     }
+                                    //     groupMembers.push(model);
+                                    //     groupMembersInfo.push(accountId)
+                                    // }
+                                    // callback(cache[type][Id],groupMembers)
+                                    // //数据库也没有这条group的记录，那么就需要添加进groupList中
+                                    // //并且添加groupMember表，存储group和user关系
+                                    // //存储新的群user到account表中
+                                    // //currentObj.AddGroupAndMember(relation,results.MemberList);
+                                    // GroupManager.initGroupMemberByGroupId(Id,results.MemberList)
+                                    // currentObj.AddGroupMember(results.MemberList);
+                                    // cache["groupMember"][Id] = groupMembersInfo;
 
                                 }else{
                                     let errMsg = response.errorMessage;
@@ -505,6 +505,10 @@ export default class User {
         let concat = Object.values(cache['chatroom']) //将对象的value 组成数组
         return concat;
     }
+    getCacheInfo(type){
+        let concat = Object.values(cache[type]) //将对象的value 组成数组
+        return concat;
+    }
 
     //todo:替代redux中RelationStore操作
     //初始化关系缓存 relations根据目前代码为 通讯录中的好友和群
@@ -551,16 +555,7 @@ export default class User {
         Obj.BlackList = value;
     }
     //添加新的关系进缓存
-    addUserGroupCache(relation){
-        let {Type,RelationId} = relation;
-        let Obj = cache[Type][RelationId];
-        if(Obj != undefined || Obj != 'undefined' || Obj){
-            return;
-        }
-        cache[Type][RelationId] = relation;
-    }
-    //添加新的群关系和成员信息
-    addGroupAndMemberCache(relation,member){
+    addUserGroupCache(relation,member){
         let {Type,RelationId} = relation;
         let Obj = cache[Type][RelationId];
         if(Obj != undefined || Obj != 'undefined' || Obj){
@@ -573,7 +568,7 @@ export default class User {
         cache['groupMember'][RelationId] = member;
     }
     //删除关系
-    deleteUserGroupCache(id,type){
+    removeUserGroupCache(id,type){
         let Obj = cache[type][id];
         if(Obj == undefined || Obj == 'undefined' || !Obj){
             return;
@@ -590,5 +585,22 @@ export default class User {
         cache["private"][memberId] = memberObj;
     }
 
+
+    //todo：方法整合
+    changeUserGroup(id,type,method){
+        let Obj = cache[type][id];
+        if(Obj == undefined || Obj == 'undefined' || !Obj){
+            return;
+        }
+        if(method.select == 'show'){
+            Obj.show = method.data;
+        }
+        else if(method.select == 'nick'){
+            Obj.Nick = method.data;
+        }
+        else if(method.select == 'BlackList'){
+            Obj.BlackList = method.data;
+        }
+    }
 
 }
