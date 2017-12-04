@@ -79,7 +79,7 @@ export default class Chat {
                         })
                     })
                 }else{
-                    currentObj.updateLastMessageAndTime(clientId,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
+                    currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
                         currentObj.getChatRecord(clientId,message.way,(ids)=>{
                             callback(ids,results);
                         })
@@ -158,7 +158,9 @@ export default class Chat {
 
 
 
-    
+
+
+
 
 
     //添加一个会话
