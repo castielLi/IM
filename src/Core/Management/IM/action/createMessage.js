@@ -9,6 +9,8 @@ import SendMessageDto from '../dto/SendMessageDto';
 import messageBodyChatDto from '../dto/messageBodyChatDto';
 import MessageType from '../../Common/dto/MessageType'
 import MessageStatus from '../../Common/dto/MessageStatus'
+import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
+import uploadResourceDto from '../../IM/dto/uploadResourceDto'
 
  function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand,MessageCommand=MessageCommandEnum.MSG_BODY,messageId=""){
     let addMessage = new SendMessageDto();
@@ -37,6 +39,37 @@ import MessageStatus from '../../Common/dto/MessageStatus'
     addMessage.MSGID = messageId;
     return addMessage;
 }
+
+//构造发送消息体
+export function buildSendMessage(messageDto){
+   switch (messageDto.type){
+       case MessageType.text:
+           return addTextMessage(messageDto.data,messageDto.way,messageDto.sender,messageDto.receiver)
+       case MessageType.image:
+           let file = new uploadResourceDto();
+           file.FileType = ResourceTypeEnum.image;
+           file.RemoteSource = messageDto.remoteSource;
+           file.LocalSource = messageDto.localSource;
+           return addResourceMessage(messageDto.type,messageDto.way,file,messageDto.sender,messageDto.receiver);
+       case MessageType.audio:
+           let file = new uploadResourceDto();
+           file.FileType = ResourceTypeEnum.audio;
+           file.RemoteSource = messageDto.remoteSource;
+           file.LocalSource = messageDto.localSource;
+           file.Time = messageDto.sourceTime;
+           return addResourceMessage(messageDto.type,messageDto.way,file,messageDto.sender,messageDto.receiver);
+       case MessageType.video:
+           let file = new uploadResourceDto();
+           file.FileType = ResourceTypeEnum.video;
+           file.RemoteSource = messageDto.remoteSource;
+           file.LocalSource = messageDto.localSource;
+           file.Time = messageDto.sourceTime;
+           return addResourceMessage(messageDto.type,messageDto.way,file,messageDto.sender,messageDto.receiver);
+   }
+}
+
+
+
 //发送文本
  export function addTextMessage(text,way,Sender,Receiver) {
      if(way==='private'){

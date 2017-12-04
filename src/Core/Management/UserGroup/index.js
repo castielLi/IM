@@ -4,7 +4,7 @@
 
 import ApiBridge from '../../../Logic/ApiBridge/index'
 import RelationModel from './dto/RelationModel'
-import AppCommandEnum from '../Common/dto/AppCommandEnum'
+import AppCommandEnum from '../IM/dto/AppCommandEnum'
 import UserManager from '../UserGroup/UserManager'
 import GroupManager from '../UserGroup/GroupManager'
 
