@@ -2,17 +2,17 @@
  * Created by apple on 2017/9/14.
  */
 
-import ChatCommandEnum from '../../Common/dto/ChatCommandEnum'
-import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum'
-import MessageCommandEnum from '../../Common/dto/MessageCommandEnum'
+import ChatCommandEnum from '../dto/ChatCommandEnum'
+import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
+import MessageCommandEnum from '../dto/MessageCommandEnum'
 
-import SendMessageBodyDto from '../../Common/dto/SendMessageBodyDto'
-import SendMessageDto from '../../Common/dto/SendMessageDto'
-import messageBodyChatDto from '../../Common/dto/messageBodyChatDto'
+import SendMessageBodyDto from '../dto/SendMessageBodyDto'
+import SendMessageDto from '../dto/SendMessageDto'
+import messageBodyChatDto from '../dto/messageBodyChatDto'
 
 import MessageType from '../../Common/dto/MessageType'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
-import uploadResourceDto from '../../Common/dto/uploadResourceDto'
+import uploadResourceDto from '../dto/uploadResourceDto'
 
 
 export function sqliteMessageToMessage(sqliteMessage){

@@ -8,7 +8,7 @@ import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "../Common/dto/MessageStatus"
 import SendStatus from './dto/SendStatus'
 import * as configs from './IMconfig'
-import MessageCommandEnum from '../Common/dto/MessageCommandEnum'
+import MessageCommandEnum from './dto/MessageCommandEnum'
 import * as DtoMethods from './Common/SqliteMessageToDtoMessage'
 import MessageType from '../Common/dto/MessageType'
 import SendManager from './SendManager'
@@ -17,6 +17,7 @@ import ReceiveManager from './ReceiveManager'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
 import * as cacheMethods from './action/createCacheMessage'
+import {buildSendMessage} from './action/createMessage'
 
 
 
@@ -268,13 +269,14 @@ export default class IM {
 
     //发送消息
     //外部接口，添加消息
-    addMessage(message,callback=function(success,content){},onprogess="undefined") {
+    addMessage(messageDto,callback=function(success,content){},onprogess="undefined") {
 
+        let message = buildSendMessage(messageDto);
 
-        if (message.type == "undefined") {
-            callback(false, "message type error");
-        }
-
+        // if (message.type == "undefined") {
+        //     callback(false, "message type error");
+        // }
+        //
 
         //先生成唯一的messageID并且添加message进sqlite保存
         UUIDGenerator.getRandomUUID().then((uuid) => {
@@ -321,6 +323,9 @@ export default class IM {
                     break;
             }
 
+            //todo lizongjun 传进来的message是个dto，要把他转换成message消息体的格式
+
+            return message;
         });
     }
 
