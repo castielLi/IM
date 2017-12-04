@@ -47,12 +47,8 @@ export default class settingController {
     }
 
     //todo：页面获取到信息的方法
-    getLatestGroupList(callback){
-        let concat = this.user.getCacheChatroomInfo();
-        callback && callback(concat);
-    }
-    getLatestContactList(callback){
-        let concat = this.user.getCachePrivateInfo();
+    getLatestContactList(type,callback){
+        let concat = this.user.getCacheInfo(type);
         callback && callback(concat);
     }
     initUserGroupCache(relations){
@@ -75,6 +71,7 @@ export default class settingController {
                     owner:info.Owner,
                     show:true}
                 currentObj.user.AddNewGroup(obj);
+                currentObj.user.addUserGroupCache(obj)
             }
             callback(results);
         });
@@ -85,6 +82,7 @@ export default class settingController {
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
                 currentObj.user.RemoveGroupFromContact(info.ID);
+                currentObj.user.removeUserGroupCache(info.ID,'chatroom')
             }
             callback(results);
         })
@@ -256,7 +254,7 @@ export default class settingController {
 
                     //添加关系到数据库
                     currentObj.user.AddGroupAndMember(relation,splNeedArr);
-                    currentObj.user.addGroupAndMemberCache(relation,splNeedArr );
+                    currentObj.user.addUserGroupCache(relation,splNeedArr );
                     result.data.relation = relation;
                     let messageId = uuidv1();
                     //创建群组消息
