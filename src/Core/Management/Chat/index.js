@@ -5,6 +5,7 @@
 import * as storeSqlite from './StoreSqlite/index'
 import RecentRecordDtoDto from './dto/RecentRecordDto';
 import InitChatRecordConfig from './dto/InitChatRecordConfig';
+import DeleteChatEnum from './dto/DeleteChatEnum'
 
 let currentObj = undefined;
 
@@ -116,14 +117,53 @@ export default class Chat {
 
     }
 
+    //lizongjun
+    AddChat(message,isCurrent,name,Type,isSend){
+        if(ChatCache[name]){
+            let records = ChatCache[name]["Record"];
+            for(let item in records){
+                if(records[item] == message.MSGID){
+                    return;
+                }
+            }
+            records.push[message.MSGID];
+            addSqliteRecordInCondition(name,message,isCurrent,isSend);
+        }else{
+            let record = [];
+            record.push(message.MSGID);
+            let unread = isCurrent?0:1;
+            ChatCache[name] = {"Client":name,"LastMessage":extractMessage(message),"Time":message.Data.LocalTime,"Type":Type,
+                "unReadMessageCount":unread,"Record":record};
+            addSqliteRecordInCondition(name,message,isCurrent,isSend)
+        }
+    }
+
+    DeleteChat(deleteType,name,MSGID,chatType){
+        switch(deleteType){
+            case DeleteChatEnum.UniqueMessage:
+                currentObj.deleteMessage({"MSGID":MSGID},chatType,name);
+                break;
+            case DeleteChatEnum.WholeMessages:
+                currentObj.deleteCurrentChatMessage(name,chatType);
+                break;
+        }
+    }
+
+
+
+
+
+
+
+
+
     //删除一个会话
     deleteOneChat(clientId,type,callback){
         delete ChatCache[clientId];
         callback(deepCopy(ChatCache));
         //删除chatRecord表中对应记录
-        this.deleteChatRecode(clientId);
-        //删除与该client的所有聊天记录
         this.deleteCurrentChatMessage(clientId,type)
+
     }
     //添加一个会话
     addOneChat(clientId,message,callback){
@@ -184,15 +224,18 @@ export default class Chat {
     getChatList(callback){
         storeSqlite.getChatList(callback);
     }
+
+
     //删除当前聊天所有消息
     deleteCurrentChatMessage(name,chatType){
+        //删除该用户聊天列表中的消息
         storeSqlite.deleteClientRecode(name,chatType);
-    }
 
-    //删除ChatRecode中某条记录
-    deleteChatRecode(name){
+        //删除最近聊天表中的记录
         storeSqlite.deleteChatRecode(name);
     }
+
+
     //删除当条消息
     deleteMessage(message,chatType,client){
         storeSqlite.deleteMessage(message,chatType,client);
@@ -218,28 +261,7 @@ export default class Chat {
 
 
 
-    //lizongjun
-    AddChat(message,isCurrent,name,isSend){
-        if(ChatCache[name]){
-            let records = ChatCache[name]["Record"];
-            for(let item in records){
-                if(records[item] == message.MSGID){
-                    return;
-                }
-            }
-            records.push[message.MSGID];
-            addSqliteRecordInCondition(name,message,isCurrent,isSend);
-        }else{
-            let record = [];
-            record.push(message.MSGID);
-            ChatCache[name] = {};
 
-        }
-    }
-
-    DeleteChat(){
-
-    }
 
 }
 
@@ -253,7 +275,6 @@ function addSqliteRecordInCondition(name,message,isCurrent,isSend){
     if(!isCurrent){
         currentObj.addChatUnReadMessageaNumber(name);
     }
-
 }
 
 
