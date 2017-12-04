@@ -227,7 +227,7 @@ class Contacts extends ContainerComponent {
             })
         })
         //获取最新的列表
-        settingController.getLatestContactList(function (contact) {
+        settingController.getLatestContactList('private',function (contact) {
             currentObj.setState({
                 contacts:contact
             })

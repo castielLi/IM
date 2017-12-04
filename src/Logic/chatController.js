@@ -82,12 +82,12 @@ export default class chatController {
     //接口方法
     setCurrentChat(chat){
         currentChat = chat;
-        this.chat.clearUnReadMsgNumber(chat,(results)=>{
+        currentObj.chat.upDateChatCache('unread',currentChat,undefined,(results)=>{
             fillNickAndAvatorData(results,(needData)=>{
                 reRenderRecentListCallBack(needData);
             })
+        })
 
-        });
     }
 
     emptyCurrentChat(){
@@ -115,7 +115,7 @@ export default class chatController {
     }
     //初始化最近聊天数据
     initChat(callback){
-        this.chat.getAllChatList((results)=>{
+        this.chat.getChatList((results)=>{
             fillNickAndAvatorData(results,(needData)=>{
                 callback(needData);
             });
@@ -124,7 +124,7 @@ export default class chatController {
     }
     //初始化某聊天窗口的聊天记录
     initChatRecord(clientId,type,callback){
-        this.chat.getOneChat(clientId,type,(ids)=>{
+        this.chat.getChatRecord(clientId,type,(ids)=>{
             currentObj.im.selectMessagesByIds(ids,(messages)=>{
                 callback(messages)
             })
@@ -148,41 +148,51 @@ export default class chatController {
     addMessage(message,callback,onprogress){
         this.im.addMessage(message,(status,messageId)=>{
             message.MSGID = messageId;
-            let ChatCache = currentObj.chat.getChatCache();
-            if(ChatCache[message.Data.Data.Receiver]==undefined){//没有该会话
-            //新增一个会话
-              currentObj.chat.addOneChat(message.Data.Data.Receiver,message,extractMessage(message),message.MSGID,(results)=>{
-                  //重新渲染聊天记录
-                  currentObj.chat.getOneChat(message.Data.Data.Receiver,message.way,(ids)=>{
-                      currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                          reRenderChatRecordCallBack(messages);
-                      })
-                  })
-                  //重新渲染最近聊天列表
-                  fillNickAndAvatorData(results,(needData)=>{
-                      reRenderRecentListCallBack(needData);
-                  })
-
-
-                  callback();
-              })
-            }else{
-                currentObj.chat.updateLastMessageAndTime(message.Data.Data.Receiver,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
-                    //重新渲染聊天记录
-                    currentObj.chat.getOneChat(message.Data.Data.Receiver,message.way,(ids)=>{
-                        currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                            reRenderChatRecordCallBack(messages);
-                        })
-                    })
-                    //重新渲染最近聊天列表
-                    fillNickAndAvatorData(results,(needData)=>{
-                        reRenderRecentListCallBack(needData);
-                    })
-
-
-                    callback();
+            currentObj.chat.upDateChatCache('send',currentChat,message,(ids,results)=>{
+                //重新渲染最近聊天列表
+                fillNickAndAvatorData(results,(needData)=>{
+                    reRenderRecentListCallBack(needData);
                 })
-            }
+                currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                    //重新渲染聊天记录
+                    reRenderChatRecordCallBack(messages);
+                })
+                callback();
+            })
+            // if(ChatCache[message.Data.Data.Receiver]==undefined){//没有该会话
+            // //新增一个会话
+            //   currentObj.chat.addOneChat(message.Data.Data.Receiver,message,extractMessage(message),message.MSGID,(results)=>{
+            //       //重新渲染聊天记录
+            //       currentObj.chat.getChatRecord(message.Data.Data.Receiver,message.way,(ids)=>{
+            //           currentObj.im.selectMessagesByIds(ids,(messages)=>{
+            //               reRenderChatRecordCallBack(messages);
+            //           })
+            //       })
+            //       //重新渲染最近聊天列表
+            //       fillNickAndAvatorData(results,(needData)=>{
+            //           reRenderRecentListCallBack(needData);
+            //       })
+            //
+            //
+            //       callback();
+            //   })
+            // }else{
+            //     currentObj.chat.updateLastMessageAndTime(message.Data.Data.Receiver,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
+            //         //重新渲染聊天记录
+            //         currentObj.chat.getChatRecord(message.Data.Data.Receiver,message.way,(ids)=>{
+            //             currentObj.im.selectMessagesByIds(ids,(messages)=>{
+            //                 reRenderChatRecordCallBack(messages);
+            //             })
+            //         })
+            //         //重新渲染最近聊天列表
+            //         fillNickAndAvatorData(results,(needData)=>{
+            //             reRenderRecentListCallBack(needData);
+            //         })
+            //
+            //
+            //         callback();
+            //     })
+            // }
         },onprogress);
 
         this.chat.sendMessage(message);
@@ -362,41 +372,53 @@ function receiveMessageHandle(message){
         //let reduxMessageDto = buildMessageDto(message,relation);
         //AppReceiveMessageHandle(reduxMessageDto,relation);
 
-        //收到消息，判断是否是当前对话
-        let sender = message.Data.Data.Sender;
-        if(sender == currentChat){
-            currentObj.chat.updateLastMessageAndTime(message.Data.Data.Sender,extractMessage(message),message.Data.LocalTime,message.MSGID,(results)=>{
+        currentObj.chat.upDateChatCache('receive',currentChat,message,(ids,results)=>{
+            //重新渲染最近聊天列表
+            fillNickAndAvatorData(results,(needData)=>{
+                reRenderRecentListCallBack(needData);
+            })
+            currentObj.im.selectMessagesByIds(ids,(messages)=>{
                 //重新渲染聊天记录
-                currentObj.chat.getOneChat(message.Data.Data.Sender,message.way,(ids)=>{
-                    currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                        reRenderChatRecordCallBack(messages);
-                    })
-                })
-                //重新渲染最近聊天列表
-                fillNickAndAvatorData(results,(needData)=>{
-                    reRenderRecentListCallBack(needData);
-                })
+                reRenderChatRecordCallBack(messages);
 
             })
-        }else{
-            //新增一个会话
-            currentObj.chat.addOneChat(message.Data.Data.Sender,message,extractMessage(message),message.MSGID,()=>{
-                //未读消息+1
-                currentObj.caht.addUnReadMsgNumber(message.Data.Data.Sender,(results)=>{
-                    //重新渲染聊天记录
-                    currentObj.chat.getOneChat(message.Data.Data.Sender,message.way,(ids)=>{
-                        currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                            reRenderChatRecordCallBack(messages);
-                        })
-                    })
-                    //重新渲染最近聊天列表
-                    fillNickAndAvatorData(results,(needData)=>{
-                        reRenderRecentListCallBack(needData);
-                    })
+        })
+        //收到消息，判断是否是当前对话
 
-                })
-            })
-        }
+        //let sender = message.Data.Data.Sender;
+        // if(sender == currentChat){
+        //     currentObj.chat.updateLastMessageAndTime(message.Data.Data.Sender,extractMessage(message),message.Data.LocalTime,message.MSGID,(results)=>{
+        //         //重新渲染聊天记录
+        //         currentObj.chat.getChatRecord(message.Data.Data.Sender,message.way,(ids)=>{
+        //             currentObj.im.selectMessagesByIds(ids,(messages)=>{
+        //                 reRenderChatRecordCallBack(messages);
+        //             })
+        //         })
+        //         //重新渲染最近聊天列表
+        //         fillNickAndAvatorData(results,(needData)=>{
+        //             reRenderRecentListCallBack(needData);
+        //         })
+        //
+        //     })
+        // }else{
+        //     //新增一个会话
+        //     currentObj.chat.addOneChat(message.Data.Data.Sender,message,extractMessage(message),message.MSGID,()=>{
+        //         //未读消息+1
+        //         currentObj.caht.addUnReadMsgNumber(message.Data.Data.Sender,(results)=>{
+        //             //重新渲染聊天记录
+        //             currentObj.chat.getChatRecord(message.Data.Data.Sender,message.way,(ids)=>{
+        //                 currentObj.im.selectMessagesByIds(ids,(messages)=>{
+        //                     reRenderChatRecordCallBack(messages);
+        //                 })
+        //             })
+        //             //重新渲染最近聊天列表
+        //             fillNickAndAvatorData(results,(needData)=>{
+        //                 reRenderRecentListCallBack(needData);
+        //             })
+        //
+        //         })
+        //     })
+        // }
 
         currentObj.chat.receiveMessage(message)
     },message.Command,message.Data.Data.Command);
