@@ -5,7 +5,7 @@ import * as configs from './socketConfig'
 import React, {
     Component
 } from 'react';
-import MessageCommandEnum from '../../Common/dto/MessageCommandEnum'
+import MessageCommandEnum from '../dto/MessageCommandEnum'
 
 let __instance = (function () {
     let instance;

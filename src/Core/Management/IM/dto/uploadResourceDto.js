@@ -7,7 +7,7 @@ export default class SendMessageDto{
     constructor(){
         this.FileType = 0;
         this.LocalSource = "";
-        this.RemoteSource = [];
-        this.Time = [];
+        this.RemoteSource = "";
+        this.Time = "";
     }
 }
