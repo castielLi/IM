@@ -28,7 +28,7 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/settingController';
 let settingController = new SettingController();
-import {buildInvationSendMessageToRudexMessage} from '../../../Core/Management/IM/action/createMessage';
+import {buildInvationSendMessageToRudexMessage} from '../../../Core/Management/Common/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;

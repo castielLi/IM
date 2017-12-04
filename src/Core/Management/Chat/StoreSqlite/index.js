@@ -251,54 +251,12 @@ CHATFMDB.getAllChatClientList = function(callback){
             }, (err)=>{errorDB('获取聊天列表失败',err)});
 
         });
-    }, (err)=>{errorDB('打开Chat.db失败',err)});
+    }, errorDB);
 }
 
 
 
 
-
-
-// CHATFMDB.getRangeMessages = function(account,way,range,callback){
-//
-//     let tabName = way  == ChatWayEnum.Private?"Private_" + account:"ChatRoom_" + account;
-//
-//     let querySql = sqls.ExcuteIMSql.QueryChatRecodeByClient;
-//
-//     querySql = commonMethods.sqlFormat(querySql,[tabName,range.start,range.limit]);
-//
-//     var db = SQLite.openDatabase({
-//         ...databaseObj
-//     }, () => {
-//         db.transaction((tx) => {
-//
-//             tx.executeSql(querySql, [], (tx, results) => {
-//
-//                 if(results.rows.length > 0){
-//
-//                     let messageIds = results.rows.raw();
-//
-//                     let ids = [];
-//                     messageIds.forEach(function(item){
-//                         ids.push(item.messageId);
-//                     })
-//
-//                     let selectMessages = sqls.ExcuteIMSql.GetMessagesInMessageTableByIds;
-//
-//                     selectMessages = commonMethods.sqlQueueFormat(selectMessages,ids);
-//
-//                     tx.executeSql(selectMessages, [], (tx, results) => {
-//                         callback(results.rows.raw());
-//                     }, errorDB);
-//                 }else{
-//                     callback(null);
-//                 }
-//
-//             }, errorDB);
-//
-//         });
-//     }, errorDB);
-// }
 
 
 CHATFMDB.getRangeMessages = function(account,way,range,callback){
@@ -325,7 +283,13 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
                         ids.push(item.messageId);
                     })
 
-                    callback(ids)
+                    let selectMessages = sqls.ExcuteIMSql.GetMessagesInMessageTableByIds;
+
+                    selectMessages = commonMethods.sqlQueueFormat(selectMessages,ids);
+
+                    tx.executeSql(selectMessages, [], (tx, results) => {
+                        callback(results.rows.raw());
+                    }, errorDB);
                 }else{
                     callback(null);
                 }
@@ -335,6 +299,9 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
         });
     }, errorDB);
 }
+
+
+
 
 
 CHATFMDB.DeleteClientRecodeByName = function(name){

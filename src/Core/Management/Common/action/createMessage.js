@@ -1,14 +1,14 @@
-import ChatCommandEnum from '../../Common/dto/ChatCommandEnum';
+import ChatCommandEnum from '../dto/ChatCommandEnum';
 import AppCommandEnum from '../dto/AppCommandEnum'
 import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum';
 import MessageCommandEnum from '../dto/MessageCommandEnum';
-import MessageCommand from '../StoreSqlite/dto/MessageCommand'
+import MessageCommand from '../../IM/StoreSqlite/dto/MessageCommand'
 
 import SendMessageBodyDto from '../dto/SendMessageBodyDto';
 import SendMessageDto from '../dto/SendMessageDto';
 import messageBodyChatDto from '../dto/messageBodyChatDto';
-import MessageType from '../../Common/dto/MessageType'
-import MessageStatus from '../../Common/dto/MessageStatus'
+import MessageType from '../dto/MessageType'
+import MessageStatus from '../dto/MessageStatus'
 
  function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand,MessageCommand=MessageCommandEnum.MSG_BODY,messageId=""){
     let addMessage = new SendMessageDto();
