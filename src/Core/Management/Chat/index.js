@@ -134,7 +134,7 @@ export default class Chat {
 
     //lizongjun
 
-    DeleteChat(deleteType,clientId,MSGID,chatType){
+    deleteChat(deleteType,clientId,MSGID,chatType){
         switch(deleteType){
             //删除单条消息
             case DeleteChatEnum.UniqueMessage:
@@ -148,13 +148,17 @@ export default class Chat {
     }
 
 
+    //关闭数据库
+    closeDB(){
+        currentObj.closeDB();
+    }
 
 
 
 
 
 
-
+    
 
 
     //添加一个会话
@@ -192,6 +196,7 @@ export default class Chat {
         ChatCache[clientId].Record.unshift(message.MSGID);
         callback(ChatCache);
     }
+
 
 
 
