@@ -486,12 +486,14 @@ export default class User {
     }
 
 
-    getNickAndAvatorById(accountId,type){
+    getNickAndAvatorById(accountId,type,callback){
         let needObj = {};
         this.getInformationByIdandType(accountId,type,(realtion)=>{
             needObj.Nick =  realtion["Nick"];
             needObj.avator = realtion["avator"];
+            callback(needObj);
         })
+
     }
 
 
