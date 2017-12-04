@@ -6,7 +6,7 @@ import * as storeSqlite from './StoreSqlite/index'
 import RecentRecordDtoDto from './dto/RecentRecordDto';
 import InitChatRecordConfig from './dto/InitChatRecordConfig';
 import DeleteChatEnum from './dto/DeleteChatEnum'
-
+import OperateChatCacheEnum from './dto/OperateChatCacheEnum'
 let currentObj = undefined;
 
 //会话缓存
@@ -45,7 +45,7 @@ export default class Chat {
     getAllChatList(callback){
         currentObj.getChatList((results)=>{
             let cache = formatArrToObjById(results);
-            callback(deepCopy(cache));
+            callback(cache);
             ChatCache = cache;
         });
     }
@@ -57,19 +57,19 @@ export default class Chat {
             if(ChatCache[clientId]['Record'].length == 0){
                 currentObj.getRecentChatRecode(clientId,type,{start:0,limit:InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER},(results)=>{
                     //返回messageId组成的数组
-                    callback(deepCopy(results));
+                    callback(results);
                     ChatCache[clientId]['Record'] = results;
                 });
             }else{
-                callback(deepCopy(ChatCache[clientId]['Record']));
+                callback(ChatCache[clientId]['Record']);
             }
         }
     }
     //updateType修改类型，'send','receive','unread'，若为'unread'，参数message为undefined
-    upDateChatCache(updateType,currentChat,message,callback){
+    operateChatCache(operateType,currentChat,message,callback){
         let clientId;
-        switch(updateType){
-            case 'send':
+        switch(operateType){
+            case OperateChatCacheEnum.Send:
                 clientId = message.Data.Data.Receiver;
                 if(ChatCache[clientId]==undefined){//没有该会话
                     //新增一个会话
@@ -87,7 +87,7 @@ export default class Chat {
                 }
                 currentObj.sendMessage(message);
                 break;
-            case 'receive':
+            case OperateChatCacheEnum.Receive:
                 clientId = message.Data.Data.Sender;
                 if(clientId == currentChat){
                     currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
@@ -108,11 +108,22 @@ export default class Chat {
                                 })
                             })
                         })
+                    }else{
+                        currentObj.updateLastMessageAndTime(clientId,message,()=>{
+                            //未读消息+1
+                            currentObj.addUnReadMsgNumber(clientId,(results)=>{
+                                //重新渲染聊天记录
+                                currentObj.getChatRecord(clientId,message.way,(ids)=>{
+                                    callback(ids,results);
+                                })
+                            })
+                        })
                     }
 
                 }
+                currentObj.receiveMessage(message);
                 break;
-            case 'unread':
+            case OperateChatCacheEnum.Unread:
                 currentObj.clearUnReadMsgNumber(currentChat,(results)=>{
                     callback(results)
                 });
@@ -122,33 +133,16 @@ export default class Chat {
     }
 
     //lizongjun
-    AddChat(message,isCurrent,name,Type,isSend){
-        if(ChatCache[name]){
-            let records = ChatCache[name]["Record"];
-            for(let item in records){
-                if(records[item] == message.MSGID){
-                    return;
-                }
-            }
-            records.push[message.MSGID];
-            addSqliteRecordInCondition(name,message,isCurrent,isSend);
-        }else{
-            let record = [];
-            record.push(message.MSGID);
-            let unread = isCurrent?0:1;
-            ChatCache[name] = {"Client":name,"LastMessage":extractMessage(message),"Time":message.Data.LocalTime,"Type":Type,
-                "unReadMessageCount":unread,"Record":record};
-            addSqliteRecordInCondition(name,message,isCurrent,isSend)
-        }
-    }
 
-    DeleteChat(deleteType,name,MSGID,chatType){
+    DeleteChat(deleteType,clientId,MSGID,chatType){
         switch(deleteType){
+            //删除单条消息
             case DeleteChatEnum.UniqueMessage:
-                currentObj.deleteMessage({"MSGID":MSGID},chatType,name);
+                currentObj.deleteMessage({"MSGID":MSGID},chatType,clientId);
                 break;
+            //删除该用最近消息和聊天记录
             case DeleteChatEnum.WholeMessages:
-                currentObj.deleteCurrentChatMessage(name,chatType);
+                currentObj.deleteCurrentChatMessage(clientId,chatType);
                 break;
         }
     }
@@ -161,14 +155,8 @@ export default class Chat {
 
 
 
-    //删除一个会话
-    deleteOneChat(clientId,type,callback){
-        delete ChatCache[clientId];
-        callback(deepCopy(ChatCache));
-        //删除chatRecord表中对应记录
-        this.deleteCurrentChatMessage(clientId,type)
 
-    }
+
     //添加一个会话
     addOneChat(clientId,message,callback){
         let recentObj = new RecentRecordDtoDto();
@@ -178,19 +166,19 @@ export default class Chat {
         recentObj.Time = message.Data.LocalTime;
         recentObj.Record.unshift(message.MSGID);
         ChatCache[clientId] = recentObj;
-        callback(deepCopy(ChatCache))
+        callback(ChatCache)
     }
     //未读消息+1
     addUnReadMsgNumber(clientId,callback){
         ChatCache[clientId]['unReadMessageCount'] +=1;
-        callback(deepCopy(ChatCache))
+        callback(ChatCache)
         currentObj.addChatUnReadMessageaNumber(clientId);
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId,callback){
         if(ChatCache[clientId] == undefined) return;
         ChatCache[clientId]['unReadMessageCount'] = 0;
-        callback(deepCopy(ChatCache))
+        callback(ChatCache)
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
     //收到或者发送消息,要修改最后一条消息内容
@@ -202,7 +190,7 @@ export default class Chat {
             ChatCache[clientId].Record.pop();
         }
         ChatCache[clientId].Record.unshift(message.MSGID);
-        callback(deepCopy(ChatCache));
+        callback(ChatCache);
     }
 
 
@@ -269,17 +257,6 @@ export default class Chat {
 
 }
 
-function addSqliteRecordInCondition(name,message,isCurrent,isSend){
-    if(isSend){
-        currentObj.sendMessage(message);
-    }else{
-        currentObj.receiveMessage(message);
-    }
-
-    if(!isCurrent){
-        currentObj.addChatUnReadMessageaNumber(name);
-    }
-}
 
 
 
@@ -295,10 +272,7 @@ function formatArrToObjById(arr){
                 return o;
             }, {})
 }
-//深拷贝方法
-function deepCopy(obj){
-    return JSON.parse(JSON.stringify(obj))
-}
+
 
 //消息提取
 function extractMessage(message){
