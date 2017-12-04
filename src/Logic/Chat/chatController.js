@@ -82,7 +82,7 @@ export default class chatController {
     //接口方法
     setCurrentChat(chat){
         currentChat = chat;
-        currentObj.chat.upDateChatCache('unread',currentChat,undefined,(results)=>{
+        currentObj.chat.operateChatCache('unread',currentChat,undefined,(results)=>{
             fillNickAndAvatorData(results,(needData)=>{
                 reRenderRecentListCallBack(needData);
             })
@@ -148,7 +148,7 @@ export default class chatController {
     addMessage(message,callback,onprogress){
         this.im.addMessage(message,(status,messageId)=>{
             message.MSGID = messageId;
-            currentObj.chat.upDateChatCache('send',currentChat,message,(ids,results)=>{
+            currentObj.chat.operateChatCache('send',currentChat,message,(ids,results)=>{
                 //重新渲染最近聊天列表
                 fillNickAndAvatorData(results,(needData)=>{
                     reRenderRecentListCallBack(needData);
@@ -372,7 +372,7 @@ function receiveMessageHandle(message){
         //let reduxMessageDto = buildMessageDto(message,relation);
         //AppReceiveMessageHandle(reduxMessageDto,relation);
 
-        currentObj.chat.upDateChatCache('receive',currentChat,message,(ids,results)=>{
+        currentObj.chat.operateChatCache('receive',currentChat,message,(ids,results)=>{
             //重新渲染最近聊天列表
             fillNickAndAvatorData(results,(needData)=>{
                 reRenderRecentListCallBack(needData);
