@@ -1,12 +1,15 @@
 /**
  * Created by Hsu. on 2017/10/23.
  */
+
+import ApplyFriendEnum from '../../Management/IM/Common/dto/ApplyFriendEnum';
+
 const initialState = {
     applicationRecord:[
 
     ]
 };
-import ApplyFriendEnum from '../../Management/IM/dto/ApplyFriendEnum';
+
 //wait:等待 added:已添加 expired:过期
 export default function friendApplicationStore(state = initialState,action){
     switch (action.type) {

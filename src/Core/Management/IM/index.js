@@ -8,9 +8,9 @@ import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "../Common/dto/MessageStatus"
 import SendStatus from './Common/dto/SendStatus'
 import * as configs from './IMconfig'
-import MessageCommandEnum from './Common/dto/MessageCommandEnum'
+import MessageCommandEnum from '../Common/dto/MessageBodyTypeEnum'
 import * as DtoMethods from './Common/methods/SqliteMessageToDtoMessage'
-import MessageType from '../Common/dto/MessageType'
+import ResourceTypeEnum from '../Common/dto/ResourceTypeEnum'
 import SendManager from './SendManager'
 import FileManager from './FileManager'
 import ReceiveManager from './ReceiveManager'
@@ -73,8 +73,6 @@ let ControllerReceiveMessageHandle = undefined;
 //踢出消息回调
 let ControllerKickOutHandle = undefined;
 
-let ControllerHandleRecieveAddFriendMessage = undefined;
-
 
 let __instance = (function () {
     let instance;
@@ -117,12 +115,11 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         ControllerMessageResultHandle = getMessageResultHandle;
         ControllerMessageChangeStatusHandle = changeMessageHandle;
         ControllerReceiveMessageHandle = receiveMessageHandle;
         ControllerKickOutHandle = kickOutMessage;
-        ControllerHandleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
     startIM(){
@@ -273,11 +270,6 @@ export default class IM {
 
         let message = buildSendMessage(messageDto);
 
-        // if (message.type == "undefined") {
-        //     callback(false, "message type error");
-        // }
-        //
-
         //先生成唯一的messageID并且添加message进sqlite保存
         UUIDGenerator.getRandomUUID().then((uuid) => {
             messageId = message.Data.Data.Receiver + "_" +uuid;
@@ -290,40 +282,28 @@ export default class IM {
             //把消息存入消息sqlite中
             message.status = MessageStatus.WaitOpreator;
 
-            if(message.type != MessageType.friend) {
-
-                if(message.type == MessageType.information){
-                    message.Command = MessageCommandEnum.MSG_INFO;
-                    this.storeSendMessage(message);
-                }else{
-                    this.storeSendMessage(message);
-                }
-            }
+            this.storeSendMessage(message);
 
             storeSqlite.addMessageToSendSqlite(message);
 
-            switch (message.type) {
-                case MessageType.text:
-                    SendManager.addSendMessage(message.MSGID);
-                    break;
-                case MessageType.image:
-                    FileManager.addResource(message.MSGID);
-                    break;
-                case MessageType.audio:
-                    FileManager.addResource(message.MSGID);
-                    break;
-                case MessageType.friend:
-                    SendManager.addSendMessage(message.MSGID);
-                    break;
-                case MessageType.video:
-                    FileManager.addResource(message.MSGID)
-                    break;
-                default:
-                    SendManager.addSendMessage(message.MSGID);
-                    break;
+            if(message.Resource == null){
+                SendManager.addSendMessage(message.MSGID);
+            }else{
+                switch (message.Resource[0].FileType) {
+                    case ResourceTypeEnum.image:
+                        FileManager.addResource(message.MSGID);
+                        break;
+                    case ResourceTypeEnum.audio:
+                        FileManager.addResource(message.MSGID);
+                        break;
+                    case ResourceTypeEnum.video:
+                        FileManager.addResource(message.MSGID)
+                        break;
+                    default:
+                        SendManager.addSendMessage(message.MSGID);
+                        break;
+                }
             }
-
-            //todo lizongjun 传进来的message是个dto，要把他转换成message消息体的格式
 
             return message;
         });
@@ -420,12 +400,6 @@ export default class IM {
             default:
                 ReceiveManager.receiveBodyMessage(message);
                 break;
-            // case MessageCommandEnum.MSG_ERROR:
-            //     ReceiveManager.receiveErrorMessage(message);
-            //     break;
-            // case MessageCommandEnum.MSG_BODY:
-            //     ReceiveManager.receiveBodyMessage(message)
-            //     break;
         }
 
     }
@@ -610,8 +584,8 @@ export default class IM {
     selectMessagesByIds(ids,callback){
         storeSqlite.selectMessagesByIds(ids,(messages)=>{
             let messageList = messages.map((message)=>{
-                            return DtoMethods.sqlMessageToMessage(message);
-                        })
+                return DtoMethods.sqliteMessageToMessage(message);
+            })
             callback(messageList);
         });
     }
