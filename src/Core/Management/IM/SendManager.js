@@ -2,7 +2,7 @@
  * Created by apple on 2017/10/11.
  */
 import * as Helper from '../../Helper'
-import UpdateMessageSqliteType from './UpdateMessageSqliteType'
+import UpdateMessageSqliteType from './Common/dto/UpdateMessageSqliteType'
 import * as configs from './IMconfig'
 
 
