@@ -127,9 +127,7 @@ export default class chatController {
     //初始化某聊天窗口的聊天记录
     initChatRecord(clientId,type,callback){
         this.chat.getChatRecord(clientId,type,(ids)=>{
-            currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                callback(messages)
-            })
+            callback(currentObj.im.getStoreMessagesByMSGIDs(ids));
         })
     }
     //加载更多聊天记录
@@ -147,10 +145,8 @@ export default class chatController {
                 fillNickAndAvatorData(results,(needData)=>{
                     reRenderRecentListCallBack(needData);
                 })
-                currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                    //重新渲染聊天记录
-                    reRenderChatRecordCallBack(messages);
-                })
+                //重新渲染聊天记录
+                reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
                 callback();
             })
         },onprogress);
@@ -346,11 +342,8 @@ function receiveMessageHandle(message){
             fillNickAndAvatorData(results,(needData)=>{
                 reRenderRecentListCallBack(needData);
             })
-            currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                //重新渲染聊天记录
-                reRenderChatRecordCallBack(messages);
-
-            })
+            //重新渲染聊天记录
+            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
         })
     },message.Command,message.Data.Data.Command);
 
@@ -370,10 +363,8 @@ function recieveAddFriendMessage(relationId){
 function messageChange(MSGID){
     currentObj.chat.operateChatCache('message',currentChat,MSGID,(bool,ids)=>{
         if(bool){
-            currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                //重新渲染聊天记录
-                reRenderChatRecordCallBack(messages);
-            })
+            //重新渲染聊天记录
+            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
         }else{
             return;
         }
