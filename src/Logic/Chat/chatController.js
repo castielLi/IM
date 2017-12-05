@@ -69,10 +69,6 @@ export default class chatController {
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
-        // handleRecieveAddFriendMessage = recieveAddFriendMessage;
-        // handleRecieveChangeGroupNameMessage = recieveChangeGroupNameMessage
-        //向im注入controller chat回调方法
-        connectIM()
     }
 
 
@@ -371,16 +367,16 @@ function messageChange(MSGID){
 
 //数据填充
 //填充最近聊天头像昵称
-function fillNickAndAvatorData(data,callback){
-    objLength = Object.keys(data).length;
-    let account = 0;
-    for(let key in data){
-        user.getNickAndAvatorById(key,data[key].Type,(nickAndAvatorObj)=>{
-            account++;
-            data[key] = {...data[key],...nickAndAvatorObj}
-            if(account == objLength){
-                callback(data)
-            }
-        });
-    }
-}
+// function fillNickAndAvatorData(data,callback){
+//     objLength = Object.keys(data).length;
+//     let account = 0;
+//     for(let key in data){
+//         user.getNickAndAvatorById(key,data[key].Type,(nickAndAvatorObj)=>{
+//             account++;
+//             data[key] = {...data[key],...nickAndAvatorObj}
+//             if(account == objLength){
+//                 callback(data)
+//             }
+//         });
+//     }
+// }
