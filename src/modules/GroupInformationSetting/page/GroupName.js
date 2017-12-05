@@ -19,7 +19,6 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {buildChangeGroupNickMessage,buildChangeGroupNickSendMessageToRudexMessage} from '../../../Core/Management/IM/action/createMessage';;
 import {bindActionCreators} from 'redux';
 import * as relationListActions from '../../../Core/Redux/contact/action';
 import * as Actions from '../../../Core/Redux/chat/action';
@@ -85,8 +84,7 @@ class GroupName extends ContainerComponent {
 
                 //更新redux message
                 let copyMessage = Object.assign({},result.data.sendMessage);
-                let reduxMessage = buildChangeGroupNickSendMessageToRudexMessage(copyMessage);
-                currentObj.props.addMessage(reduxMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
+                currentObj.props.addMessage(copyMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
 
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();

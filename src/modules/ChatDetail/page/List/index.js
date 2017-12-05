@@ -28,7 +28,7 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
 import IM from '../../../../Core/Management/IM';
-import * as DtoMethods from '../../../../Core/Management/IM/Common/SqliteMessageToDtoMessage'
+import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/SqliteMessageToDtoMessage'
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/settingController'
@@ -211,7 +211,7 @@ class Chat extends Component {
                         // }
 
                         let msg = messages.map((message)=>{
-                            return DtoMethods.sqlMessageToMessage(message);
+                            return DtoMethods.sqliteMessageToMessage(message);
                         });
                         let msg2 = msg.concat();
 
@@ -556,7 +556,7 @@ class Chat extends Component {
                 //     messages.pop();
                 // }
                 let msg = messages.map((message)=>{
-                    return DtoMethods.sqlMessageToMessage(message);
+                    return DtoMethods.sqliteMessageToMessage(message);
                 });
 
                 that.historyData2 = that.historyData2.concat(msg);
