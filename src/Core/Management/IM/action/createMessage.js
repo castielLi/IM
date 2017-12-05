@@ -1,16 +1,16 @@
-import ChatCommandEnum from '../dto/ChatCommandEnum';
-import AppCommandEnum from '../dto/AppCommandEnum'
+import ChatCommandEnum from '../../Common/dto/ChatCommandEnum';
+import AppCommandEnum from '../../Common/dto/AppCommandEnum'
 import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
-import MessageCommandEnum from '../dto/MessageCommandEnum';
-import MessageCommand from '../StoreSqlite/dto/MessageCommand'
+import MessageCommandEnum from '../Common/dto/MessageCommandEnum';
+import MessageCommand from '../../Common/dto/MessageCommand'
 
-import SendMessageBodyDto from '../dto/SendMessageBodyDto';
-import SendMessageDto from '../dto/SendMessageDto';
-import messageBodyChatDto from '../dto/messageBodyChatDto';
+import SendMessageBodyDto from '../Common/dto/SendMessageBodyDto';
+import SendMessageDto from '../Common/dto/SendMessageDto';
+import messageBodyChatDto from '../Common/dto/messageBodyChatDto';
 import MessageType from '../../Common/dto/MessageType'
 import MessageStatus from '../../Common/dto/MessageStatus'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
-import uploadResourceDto from '../../IM/dto/uploadResourceDto'
+import uploadResourceDto from '../Common/dto/uploadResourceDto'
 
  function createMessageObj(type,text,way,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand,MessageCommand=MessageCommandEnum.MSG_BODY,messageId=""){
     let addMessage = new SendMessageDto();
