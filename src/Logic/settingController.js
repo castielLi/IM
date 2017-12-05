@@ -56,7 +56,12 @@ export default class settingController {
     }
 
     //群设置（GroupInformationSetting）
-    addGroupToContact(data,callback){
+    addGroupToContact(enumerate,data,callback){
+        //data:{enumerate,params,relation}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
         let params = data.params;
         let info = data.info;
         this.apiBridge.request.AddGroupToContact(params,function(results){
@@ -76,7 +81,12 @@ export default class settingController {
             callback(results);
         });
     }
-    removeGroupFromContact(data,callback){
+    removeGroupFromContact(enumerate,data,callback){
+        //data:{enumerate,params,groupId}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
         let params = data.params;
         let info = data.info;
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
@@ -150,7 +160,13 @@ export default class settingController {
             callback(results);
         })
     }
-    deleteFriend(params,callback){
+    deleteFriend(enumerate,params,callback){
+        //data:{enumerate,params}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
+
         let {Friend,Applicant} = params;
         this.apiBridge.request.DeleteFriend(params,function(results){
 
