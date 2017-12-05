@@ -17,7 +17,7 @@ import * as recentListActions from '../../../Core/Redux/RecentList/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import SettingController from '../../../Logic/settingController';
+import SettingController from '../../../Logic/Setting/settingController';
 
 
 let settingController = new SettingController();

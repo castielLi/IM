@@ -22,7 +22,7 @@ import * as friendApplicationActions from '../../../Core/Redux/applyFriend/actio
 import * as relationActions from '../../../Core/Redux/contact/action';
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import chatController from '../../../Logic/Chat/chatController';
-import SettingController from '../../../Logic/settingController';
+import SettingController from '../../../Logic/Setting/settingController';
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;

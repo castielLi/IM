@@ -27,7 +27,7 @@ import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
-import SettingController from '../../../Logic/settingController'
+import SettingController from '../../../Logic/Setting/settingController'
 
 let settingController = new SettingController();
 var {height, width} = Dimensions.get('window');

@@ -1,14 +1,14 @@
 /**
  * Created by apple on 2017/11/21.
  */
-import IM from '../Core/Management/IM'
-import User from '../Core/Management/UserGroup'
-import Network from '../Core/Networking/Network'
+import IM from '../../Core/Management/IM/index'
+import User from '../../Core/Management/UserGroup/index'
+import Network from '../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
-import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../Core/Management/IM/action/createMessage';
-import RelationModel from '../Core/Management/UserGroup/Common/dto/RelationModel'
-import ApiBridge from './ApiBridge'
+import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
+import RelationModel from '../../Core/Management/UserGroup/Common/dto/RelationModel'
+import ApiBridge from '../ApiBridge/index'
 
 let __instance = (function () {
     let instance;

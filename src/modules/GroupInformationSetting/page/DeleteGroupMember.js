@@ -23,7 +23,7 @@ import * as relationActions from '../../../Core/Redux/contact/action';
 import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import SettingController from '../../../Logic/settingController'
+import SettingController from '../../../Logic/Setting/settingController'
 
 var {height, width} = Dimensions.get('window');
 

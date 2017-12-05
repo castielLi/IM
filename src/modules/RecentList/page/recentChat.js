@@ -36,7 +36,7 @@ import {
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import ChatController from '../../../Logic/Chat/chatController';
 import LoginController from '../../../Logic/loginController'
-import SettingController from '../../../Logic/settingController'
+import SettingController from '../../../Logic/Setting/settingController'
 import formatOjbToneedArr from '../common/methods/formatOjbToneedArr';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
 

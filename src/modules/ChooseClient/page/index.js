@@ -26,7 +26,7 @@ import RNFS from 'react-native-fs';
 
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import SettingController from '../../../Logic/settingController';
+import SettingController from '../../../Logic/Setting/settingController';
 let settingController = new SettingController();
 var {height, width} = Dimensions.get('window');
 

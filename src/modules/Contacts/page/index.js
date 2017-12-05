@@ -24,7 +24,7 @@ import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
-import SettingController from '../../../Logic/settingController'
+import SettingController from '../../../Logic/Setting/settingController'
 
 let settingController = new SettingController();
 let currentObj = undefined;

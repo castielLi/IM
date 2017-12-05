@@ -21,7 +21,7 @@ import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 import Relation from '../../Core/Management/UserGroup/Common/dto/RelationModel'
 import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum'
-import settingController from  '../../Logic/settingController';
+import settingController from '../../Logic/Setting/settingController';
 let currentObj = undefined;
 let SettingController = new settingController();
 
