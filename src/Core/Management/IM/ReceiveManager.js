@@ -5,11 +5,11 @@ import * as Helper from '../../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import MessageType from '../Common/dto/MessageType'
 import {blackListMessage,NotGroupMemberMessage} from './action/createMessage'
-import CommandErrorCodeEnum from './dto/CommandErrorCodeEnum'
-import MessageCommandEnum from './dto/MessageCommandEnum'
+import CommandErrorCodeEnum from './Common/dto/CommandErrorCodeEnum'
+import MessageCommandEnum from './Common/dto/MessageCommandEnum'
 import ChatWayEnum from '../Common/dto/ChatWayEnum'
 import MessageBodyTypeEnum from '../Common/dto/MessageBodyTypeEnum'
-import AppCommandEnum from './dto/AppCommandEnum'
+import AppCommandEnum from '../Common/dto/AppCommandEnum'
 
 
 let ReceiveManager = {};

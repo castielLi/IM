@@ -7,7 +7,7 @@ import * as sqls from './ChatExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
 import ChatWayEnum from '../../Common/dto/ChatWayEnum'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
-import ChatCommandEnum from '../../IM/dto/ChatCommandEnum'
+import ChatCommandEnum from '../../Common/dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
 import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
 import MessageStatus from '../../Common/dto/MessageStatus'

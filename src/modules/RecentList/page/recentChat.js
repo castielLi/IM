@@ -37,6 +37,9 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import ChatController from '../../../Logic/Chat/chatController';
 import LoginController from '../../../Logic/loginController'
 import SettingController from '../../../Logic/settingController'
+import formatOjbToneedArr from '../common/methods/formatOjbToneedArr';
+import TimeHelper from '../../../Core/Helper/TimeHelper';
+
 let chatController = new ChatController();
 let loginController = new LoginController();
 let settingController = new SettingController();
@@ -268,7 +271,7 @@ class RecentChat extends ContainerComponent {
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>
-									<Text style ={styles.LastMessageTime}>{dateFtt('hh:mm:ss',new Date(parseInt(rowData.Time)))}</Text>
+									<Text style ={styles.LastMessageTime}>{TimeHelper.formatSpecifiedDate('hh:mm:ss',rowData.Time)}</Text>
                                     {rowData.unReadMessageCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text></View>:null}
 								</View>
 							</View>
@@ -338,44 +341,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(mapStateToProps, mapDispatchToProps)(RecentChat);
 
 
-function dateFtt(fmt, date) { //author: meizz
-    var o = {
-        "M+": date.getMonth() + 1, //月份
-        "d+": date.getDate(), //日
-        "h+": date.getHours(), //小时
-        "m+": date.getMinutes(), //分
-        "s+": date.getSeconds(), //秒
-        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
-        "S": date.getMilliseconds() //毫秒
-    };
-    if (/(y+)/.test(fmt))
-        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt))
-            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-    return fmt;
-}
-//格式转换
-//{
-//     'wg003722':{
-//         Client: "wg003722",
-//         LastMessage: "4444",
-//         Time: "1511925305221",
-//         Type: "private",
-//         unReadMessageCount: 0,
-//         Record:[msgId1,msgId2...]},
-//     }
-//to
-//         [{Client: "wg003722",
-//         LastMessage: "4444",
-//         Time: "1511925305221",
-//         Type: "private",
-//         unReadMessageCount: 0,
-//         Record:[msgId1,msgId2...]},...]
-function formatOjbToneedArr(obj){
-    let needArr = [];
-    for(let key in obj){
-        needArr.push(obj[key]);
-    }
-    return needArr;
-}
+

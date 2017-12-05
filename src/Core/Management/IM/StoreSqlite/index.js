@@ -8,7 +8,7 @@ import * as commonMethods from '../../../Helper/formatQuerySql'
 import RNFS from 'react-native-fs';
 import MessageStatus from '../../Common/dto/MessageStatus'
 import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum'
-import AppCommandEnum from '../dto/AppCommandEnum'
+import AppCommandEnum from '../../Common/dto/AppCommandEnum'
 
 export function storeSendMessage(message){
     IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)

@@ -2,8 +2,8 @@
  * Created by apple on 2017/8/9.
  */
 
-import network from "../../../Networking/Network"
-import QNY from '../../../QNY'
+import network from "../../../../Networking/Network"
+import QNY from '../../../../QNY'
 
 let net = new network();
 let qny = new QNY();

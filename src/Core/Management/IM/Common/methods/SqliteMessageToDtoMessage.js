@@ -2,16 +2,16 @@
  * Created by apple on 2017/9/14.
  */
 
-import ChatCommandEnum from '../dto/ChatCommandEnum'
-import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum'
+import ChatCommandEnum from '../../../Common/dto/ChatCommandEnum'
+import MessageBodyTypeEnum from '../../../Common/dto/MessageBodyTypeEnum'
 import MessageCommandEnum from '../dto/MessageCommandEnum'
 
 import SendMessageBodyDto from '../dto/SendMessageBodyDto'
 import SendMessageDto from '../dto/SendMessageDto'
 import messageBodyChatDto from '../dto/messageBodyChatDto'
 
-import MessageType from '../../Common/dto/MessageType'
-import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
+import MessageType from '../../../Common/dto/MessageType'
+import ResourceTypeEnum from '../../../Common/dto/ResourceTypeEnum'
 import uploadResourceDto from '../dto/uploadResourceDto'
 
 
