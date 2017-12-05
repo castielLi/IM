@@ -19,7 +19,7 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import Relation from '../../Core/Management/UserGroup/dto/RelationModel'
+import Relation from '../../Core/Management/UserGroup/Common/dto/RelationModel'
 import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum'
 import settingController from  '../../Logic/settingController';
 let currentObj = undefined;

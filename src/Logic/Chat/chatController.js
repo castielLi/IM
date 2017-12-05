@@ -67,13 +67,13 @@ export default class chatController {
     }
 
 
-    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage,recieveChangeGroupNameMessage){
+    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         AppMessageResultHandle = getMessageResultHandle;
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
-        handleRecieveAddFriendMessage = recieveAddFriendMessage;
-        handleRecieveChangeGroupNameMessage = recieveChangeGroupNameMessage
+        // handleRecieveAddFriendMessage = recieveAddFriendMessage;
+        // handleRecieveChangeGroupNameMessage = recieveChangeGroupNameMessage
         //向im注入controller chat回调方法
         connectIM()
     }
@@ -212,7 +212,7 @@ export default class chatController {
 }
 //私有方法,不允许外部调用
 function connectIM(){
-    currentObj.im.connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage)
+    currentObj.im.connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage)
 }
 
 
@@ -231,122 +231,122 @@ function kickOutMessage(){
 function receiveMessageHandle(message){
 
 
-    currentObj.user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation,groupMembers){
-        //添加进relation redux
-
-        if(message.way == "chatroom"){
-            //添加进group数据库
-
-
-            //todo 李宗骏:这里要根据实际情况进行判断，修改message的data值，并且更改数据库中的data
-
-            if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
-
-                var accounts = message.Data.Data.Data.split(',');
-
-                let Nicks = "";
-
-
-                for(let i = 0; i<accounts.length;i++){
-                    if(accounts[i] == message.Data.Data.Receiver){
-                        accounts.splice(i,1);
-                    }
-                }
-
-                for(let i = 0; i<accounts.length;i++){
-                    if(i != accounts.length - 1){
-                        Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                    }else{
-                        Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                    }
-                }
-
-                var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
-
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
-
-                currentGroupChatMemberChangesCallback&&currentGroupChatMemberChangesCallback(groupMembers);
-
-                var accounts = message.Data.Data.Data.split(',');
-
-                var name = currentObj.user.getUserInfoById(accounts[0])
-
-                var inviter = currentObj.user.getUserInfoById(accounts[1]);
-                //
-                message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
-
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
-                var accounts = message.Data.Data.Data.split(',');
-                //默认收到被踢消息的人不是被踢人
-                let isKickedClient = false;
-                for(let i = 0; i<accounts.length;i++){
-                    if(accounts[i] == myAccount.accountId){
-                        isKickedClient = true;
-                        break;
-                    }
-                }
-                if(isKickedClient){
-                    message.Data.Data.Data =  "你被群主踢出了该群聊";
-                    //处理来自界面的回调方法，隐藏群设置按钮
-                }else{
-                    let Nicks = "";
-                    for(let i = 0; i<accounts.length;i++){
-                        if(i != accounts.length - 1){
-                            Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                        }else{
-                            Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                        }
-                    }
-
-                    //var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
-                    var inviter = '';
-                    if(message.Data.Data.Receiver == myAccount.accountId){
-                        inviter = myAccount.accountId;
-                    }else{
-                        inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                    }
-
-                    message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
-                }
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
-
-                var accounts = message.Data.Data.Data.split(',');
-
-                var name = currentObj.user.getUserInfoById(accounts[0])
-
-                message.Data.Data.Data =  name + "退出了群聊";
-            }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
-
-                 var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-
-                message.Data.Data.Data =  name+"修改了群昵称";
-                let groupName = relation.Nick;
-                let groupId = message.Data.Data.Sender;
-                //修改redux
-                handleRecieveChangeGroupNameMessage(groupId,groupName)
-                //修改数据库
-                currentObj.user.updateGroupName(groupId,groupName);
-            }
-
-            //如果是chatroom 的通知消息需要修改数据库中message的内容，因为第一次存储只会有id，而不是文字
-            if(message.Command == MessageCommandEnum.MSG_INFO){
-                currentObj.im.updateReceiveMessageContentById(message.Data.Data.Data,message.MSGID);
-            }
-        }
-
-        //let reduxMessageDto = buildMessageDto(message,relation);
-        //AppReceiveMessageHandle(reduxMessageDto,relation);
-
-        currentObj.chat.operateChatCache('receive',currentChat,message,(ids,results)=>{
-            //重新渲染最近聊天列表
-            fillNickAndAvatorData(results,(needData)=>{
-                reRenderRecentListCallBack(needData);
-            })
-            //重新渲染聊天记录
-            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
-        })
-    },message.Command,message.Data.Data.Command);
+    // currentObj.user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation,groupMembers){
+    //     //添加进relation redux
+    //
+    //     if(message.way == "chatroom"){
+    //         //添加进group数据库
+    //
+    //
+    //         //todo 李宗骏:这里要根据实际情况进行判断，修改message的data值，并且更改数据库中的data
+    //
+    //         if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+    //
+    //             var accounts = message.Data.Data.Data.split(',');
+    //
+    //             let Nicks = "";
+    //
+    //
+    //             for(let i = 0; i<accounts.length;i++){
+    //                 if(accounts[i] == message.Data.Data.Receiver){
+    //                     accounts.splice(i,1);
+    //                 }
+    //             }
+    //
+    //             for(let i = 0; i<accounts.length;i++){
+    //                 if(i != accounts.length - 1){
+    //                     Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+    //                 }else{
+    //                     Nicks += currentObj.user.getUserInfoById(accounts[i]);
+    //                 }
+    //             }
+    //
+    //             var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+    //             message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+    //
+    //         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+    //
+    //             currentGroupChatMemberChangesCallback&&currentGroupChatMemberChangesCallback(groupMembers);
+    //
+    //             var accounts = message.Data.Data.Data.split(',');
+    //
+    //             var name = currentObj.user.getUserInfoById(accounts[0])
+    //
+    //             var inviter = currentObj.user.getUserInfoById(accounts[1]);
+    //             //
+    //             message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
+    //
+    //         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
+    //             var accounts = message.Data.Data.Data.split(',');
+    //             //默认收到被踢消息的人不是被踢人
+    //             let isKickedClient = false;
+    //             for(let i = 0; i<accounts.length;i++){
+    //                 if(accounts[i] == myAccount.accountId){
+    //                     isKickedClient = true;
+    //                     break;
+    //                 }
+    //             }
+    //             if(isKickedClient){
+    //                 message.Data.Data.Data =  "你被群主踢出了该群聊";
+    //                 //处理来自界面的回调方法，隐藏群设置按钮
+    //             }else{
+    //                 let Nicks = "";
+    //                 for(let i = 0; i<accounts.length;i++){
+    //                     if(i != accounts.length - 1){
+    //                         Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+    //                     }else{
+    //                         Nicks += currentObj.user.getUserInfoById(accounts[i]);
+    //                     }
+    //                 }
+    //
+    //                 //var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
+    //                 var inviter = '';
+    //                 if(message.Data.Data.Receiver == myAccount.accountId){
+    //                     inviter = myAccount.accountId;
+    //                 }else{
+    //                     inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+    //                 }
+    //
+    //                 message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
+    //             }
+    //         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
+    //
+    //             var accounts = message.Data.Data.Data.split(',');
+    //
+    //             var name = currentObj.user.getUserInfoById(accounts[0])
+    //
+    //             message.Data.Data.Data =  name + "退出了群聊";
+    //         }else if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
+    //
+    //              var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+    //
+    //             message.Data.Data.Data =  name+"修改了群昵称";
+    //             let groupName = relation.Nick;
+    //             let groupId = message.Data.Data.Sender;
+    //             //修改redux
+    //             handleRecieveChangeGroupNameMessage(groupId,groupName)
+    //             //修改数据库
+    //             currentObj.user.updateGroupName(groupId,groupName);
+    //         }
+    //
+    //         //如果是chatroom 的通知消息需要修改数据库中message的内容，因为第一次存储只会有id，而不是文字
+    //         if(message.Command == MessageCommandEnum.MSG_INFO){
+    //             currentObj.im.updateReceiveMessageContentById(message.Data.Data.Data,message.MSGID);
+    //         }
+    //     }
+    //
+    //     //let reduxMessageDto = buildMessageDto(message,relation);
+    //     //AppReceiveMessageHandle(reduxMessageDto,relation);
+    //
+    //     currentObj.chat.operateChatCache('receive',currentChat,message,(ids,results)=>{
+    //         //重新渲染最近聊天列表
+    //         fillNickAndAvatorData(results,(needData)=>{
+    //             reRenderRecentListCallBack(needData);
+    //         })
+    //         //重新渲染聊天记录
+    //         reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
+    //     })
+    // },message.Command,message.Data.Data.Command);
 
 }
 

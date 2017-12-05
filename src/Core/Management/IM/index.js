@@ -73,8 +73,6 @@ let ControllerReceiveMessageHandle = undefined;
 //踢出消息回调
 let ControllerKickOutHandle = undefined;
 
-let ControllerHandleRecieveAddFriendMessage = undefined;
-
 
 let __instance = (function () {
     let instance;
@@ -117,12 +115,11 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         ControllerMessageResultHandle = getMessageResultHandle;
         ControllerMessageChangeStatusHandle = changeMessageHandle;
         ControllerReceiveMessageHandle = receiveMessageHandle;
         ControllerKickOutHandle = kickOutMessage;
-        ControllerHandleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
     startIM(){

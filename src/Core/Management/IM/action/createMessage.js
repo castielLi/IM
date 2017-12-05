@@ -1,9 +1,9 @@
 import ChatCommandEnum from '../../Common/dto/ChatCommandEnum';
 import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
 import MessageCommandEnum from '../Common/dto/MessageCommandEnum';
-import SendMessageBodyDto from '../dto/SendMessageBodyDto';
-import SendMessageDto from '../dto/SendMessageDto';
-import messageBodyChatDto from '../dto/messageBodyChatDto';
+import SendMessageBodyDto from '../Common/dto/SendMessageBodyDto';
+import SendMessageDto from '../Common/dto/SendMessageDto';
+import messageBodyChatDto from '../Common/dto/messageBodyChatDto';
 import MessageType from '../../../../Logic/Chat/dto/MessageType'
 import MessageStatus from '../../Common/dto/MessageStatus'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
@@ -41,20 +41,20 @@ export function buildSendMessage(messageDto){
        case MessageType.text:
            return addTextMessage(messageDto.data,messageDto.way,messageDto.sender,messageDto.receiver)
        case MessageType.image:
-           let file = new uploadResourceDto();
+           var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.image;
            file.RemoteSource = messageDto.remoteSource;
            file.LocalSource = messageDto.localSource;
            return addResourceMessage(messageDto.way,file,messageDto.sender,messageDto.receiver);
        case MessageType.audio:
-           let file = new uploadResourceDto();
+           var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.audio;
            file.RemoteSource = messageDto.remoteSource;
            file.LocalSource = messageDto.localSource;
            file.Time = messageDto.sourceTime;
            return addResourceMessage(messageDto.way,file,messageDto.sender,messageDto.receiver);
        case MessageType.video:
-           let file = new uploadResourceDto();
+           var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.video;
            file.RemoteSource = messageDto.remoteSource;
            file.LocalSource = messageDto.localSource;
