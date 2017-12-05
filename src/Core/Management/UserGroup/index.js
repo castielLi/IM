@@ -386,12 +386,12 @@ export default class User {
         }
     }
 
-    getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
+    getInformationByIdandType(Id,type,callback,FirstCommand=undefined,SecondCommand=undefined){
         if(type == 'chatroom'){
-            this.getGroupInfoByIdandType(Id,type,callback,messageCommand,contentCommand)
+            this.getGroupInfoByIdandType(Id,type,callback,FirstCommand,SecondCommand)
         }
         else if(type == 'private'){
-            this.getUserInfoByIdandType(Id,type,callback,messageCommand,contentCommand)
+            this.getUserInfoByIdandType(Id,type,callback,FirstCommand,SecondCommand)
         }
     }
 
