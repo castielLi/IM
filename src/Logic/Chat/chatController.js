@@ -230,6 +230,7 @@ function kickOutMessage(){
 
 function receiveMessageHandle(message){
 
+
     currentObj.user.getInformationByIdandType(message.Data.Data.Sender,message.way,function(relation,groupMembers){
         //添加进relation redux
 
@@ -349,13 +350,13 @@ function receiveMessageHandle(message){
 
 }
 
-function recieveAddFriendMessage(relationId){
-
-    console.log("执行了chatcontroller")
-
-    currentObj.user.updateDisplayOfRelation(relationId,'true');
-    handleRecieveAddFriendMessage(relationId)
-}
+// function recieveAddFriendMessage(relationId){
+//
+//     console.log("执行了chatcontroller")
+//
+//     currentObj.user.updateDisplayOfRelation(relationId,'true');
+//     handleRecieveAddFriendMessage(relationId)
+// }
 
 
 

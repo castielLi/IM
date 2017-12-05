@@ -1,5 +1,5 @@
 import ChatCommandEnum from '../../../../Core/Management/IM/dto/ChatCommandEnum'
-import MessageBodyTypeEnum from '../../../../Core/Management/IM/dto/MessageBodyTypeEnum'
+import MessageBodyTypeEnum from '../../../../Core/Management/Common/dto/MessageBodyTypeEnum'
 import MessageCommandEnum from '../../../../Core/Management/IM/dto/MessageCommandEnum'
 
 import SendMessageBodyDto from '../../../../Core/Management/IM/dto/SendMessageBodyDto'

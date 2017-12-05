@@ -92,9 +92,6 @@ class Gallery extends ContainerComponent {
             ChatController.updateMessageLocalSource(MSGID,path);
             currentObj.props.updateMessagePath(MSGID,path,Sender);
             //todo:图片下载成功后会覆盖之前的缩略图，但是不会刷新需要重新开启APP，所以采用不同的路径
-            //currentObj.props.updateMessageUrl(MSGID,url,Sender);
-            //im.updateMessageRemoteSource(MSGID,url);
-            //ChatController.updateMessageRemoteSource(MSGID,url);
             currentObj.setState({
                 path,
                 download:false,
