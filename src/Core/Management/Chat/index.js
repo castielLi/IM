@@ -65,7 +65,7 @@ export default class Chat {
             }
         }
     }
-    //updateType修改类型，'send','receive','unread'，若为'unread'，参数message为undefined
+    //updateType修改类型，'send','receive','unread'，若为'unread'，参数message为undefined;若为'message'，参数mesasge为MSGID
     operateChatCache(operateType,currentChat,message,callback){
         let clientId;
         switch(operateType){
@@ -79,7 +79,7 @@ export default class Chat {
                         })
                     })
                 }else{
-                    currentObj.updateLastMessageAndTime(clientId,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
+                    currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
                         currentObj.getChatRecord(clientId,message.way,(ids)=>{
                             callback(ids,results);
                         })
@@ -89,23 +89,24 @@ export default class Chat {
                 break;
             case OperateChatCacheEnum.Receive:
                 clientId = message.Data.Data.Sender;
-                if(clientId == currentChat){
-                    currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
-                        //重新渲染聊天记录
-                        currentObj.getChatRecord(clientId,message.way,(ids)=>{
-                            callback(ids,results);
+                if(ChatCache[clientId] == undefined){
+                    //新增一个会话
+                    currentObj.addOneChat(clientId,message,extractMessage(message),message.MSGID,()=>{
+                        //未读消息+1
+                        currentObj.addUnReadMsgNumber(clientId,(results)=>{
+                            //重新渲染聊天记录
+                            currentObj.getChatRecord(clientId,message.way,(ids)=>{
+                                callback(ids,results);
+                            })
                         })
                     })
+
                 }else{
-                    if(ChatCache[clientId] == undefined){
-                        //新增一个会话
-                        currentObj.addOneChat(clientId,message,extractMessage(message),message.MSGID,()=>{
-                            //未读消息+1
-                            currentObj.addUnReadMsgNumber(clientId,(results)=>{
-                                //重新渲染聊天记录
-                                currentObj.getChatRecord(clientId,message.way,(ids)=>{
-                                    callback(ids,results);
-                                })
+                    if(clientId == currentChat){
+                        currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
+                            //重新渲染聊天记录
+                            currentObj.getChatRecord(clientId,message.way,(ids)=>{
+                                callback(ids,results);
                             })
                         })
                     }else{
@@ -128,6 +129,21 @@ export default class Chat {
                     callback(results)
                 });
                 break;
+            case OperateChatCacheEnum.Message:
+                //此时，ChatCache肯定存在该用户缓存
+                clientId = InterceptionClientFromId(message);//message是一个消息id
+                if(clientId == currentChat){
+                    let ids = ChatCache[clientId]['Record'];
+                    if(existIdInArray(ids,message)){
+                        callback(true,ids);
+                    }else{
+                        callback(false);
+                    }
+                }else{
+                    callback(false);
+                }
+
+
         }
 
     }
@@ -158,7 +174,9 @@ export default class Chat {
 
 
 
-    
+
+
+
 
 
     //添加一个会话
@@ -296,4 +314,22 @@ function extractMessage(message){
         default:
             return '';
     }
+}
+////从id截取用户名
+function InterceptionClientFromId(str){
+    let client = '';
+    client = str.slice(0,str.indexOf('_'));
+    return client;
+}
+
+//判断数组中是否存在指定id
+function existIdInArray(arr,id){
+    let isExist = false;
+    for(let i=0,length = arr.length;i<length;i++){
+        if(arr[i] == id){
+            isExist = true;
+            break;
+        }
+    }
+    return  isExist;
 }

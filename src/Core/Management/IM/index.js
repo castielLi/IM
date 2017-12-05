@@ -417,12 +417,15 @@ export default class IM {
             case MessageCommandEnum.MSG_SEND_ACK:
                 currentObj.ackBackMessageHandle(message.Data);
                 break;
-            case MessageCommandEnum.MSG_ERROR:
-                ReceiveManager.receiveErrorMessage(message);
+            default:
+                ReceiveManager.receiveBodyMessage(message);
                 break;
-            case MessageCommandEnum.MSG_BODY:
-                ReceiveManager.receiveBodyMessage(message)
-                break;
+            // case MessageCommandEnum.MSG_ERROR:
+            //     ReceiveManager.receiveErrorMessage(message);
+            //     break;
+            // case MessageCommandEnum.MSG_BODY:
+            //     ReceiveManager.receiveBodyMessage(message)
+            //     break;
         }
 
     }
@@ -527,11 +530,11 @@ export default class IM {
         ControllerMessageChangeStatusHandle(message)
     }
 
-    //操作好友管理模块,申请好友通过，设置关系显示状态
-    updateRelation(relationId){
-        console.log("执行了IM")
-        ControllerHandleRecieveAddFriendMessage(relationId);
-    }
+    // //操作好友管理模块,申请好友通过，设置关系显示状态
+    // updateRelation(relationId){
+    //     console.log("执行了IM")
+    //     ControllerHandleRecieveAddFriendMessage(relationId);
+    // }
 
 
 
