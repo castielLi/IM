@@ -92,34 +92,32 @@ export default class Chat {
                 break;
             case OperateChatCacheEnum.Receive:
                 clientId = message.Data.Data.Sender;
-                if(ChatCache[clientId] == undefined){
-                    //新增一个会话
-                    currentObj.addOneChat(clientId,message,extractMessage(message),message.MSGID,()=>{
-                        //未读消息+1
-                        currentObj.addUnReadMsgNumber(clientId,(results)=>{
-                            //重新渲染聊天记录
-                            currentObj.getChatRecord(clientId,message.way,(ids)=>{
-                                callback(ids,results);
-                            })
+                if(clientId == currentChat){
+                    currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
+                        //重新渲染聊天记录
+                        currentObj.getChatRecord(clientId,message.way,(ids)=>{
+                            callback(ids,results);
                         })
                     })
 
                 }else{
-                    if(clientId == currentChat){
-                        currentObj.updateLastMessageAndTime(clientId,message,(results)=>{
-                            //重新渲染聊天记录
-                            currentObj.getChatRecord(clientId,message.way,(ids)=>{
-                                callback(ids,results);
+                    if(ChatCache[clientId] == undefined){
+                        //新增一个会话
+                        currentObj.addOneChat(clientId,message,extractMessage(message),message.MSGID,()=>{
+                            //未读消息+1
+                            currentObj.addUnReadMsgNumber(clientId,(results)=>{
+                                    //重新渲染聊天列表而不重新渲染聊天记录
+                                    callback('',results);
+
                             })
                         })
+
                     }else{
                         currentObj.updateLastMessageAndTime(clientId,message,()=>{
                             //未读消息+1
                             currentObj.addUnReadMsgNumber(clientId,(results)=>{
-                                //重新渲染聊天记录
-                                currentObj.getChatRecord(clientId,message.way,(ids)=>{
-                                    callback(ids,results);
-                                })
+                                //重新渲染聊天列表而不重新渲染聊天记录
+                                callback('',results);
                             })
                         })
                     }

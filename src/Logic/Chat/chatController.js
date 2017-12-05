@@ -340,8 +340,9 @@ function receiveMessageHandle(message){
     //         fillNickAndAvatorData(results,(needData)=>{
     //             reRenderRecentListCallBack(needData);
     //         })
+    //
     //         //重新渲染聊天记录
-    //         reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
+    //         ids&&reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
     //     })
     // },message.Command,message.Data.Data.Command);
 
@@ -360,12 +361,10 @@ function receiveMessageHandle(message){
 //修改消息状态或者消息数据的时候
 function messageChange(MSGID){
     currentObj.chat.operateChatCache('message',currentChat,MSGID,(bool,ids)=>{
-        if(bool){
+
             //重新渲染聊天记录
-            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
-        }else{
-            return;
-        }
+            bool&&reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
+
     })
 }
 
