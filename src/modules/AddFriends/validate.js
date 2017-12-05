@@ -19,7 +19,7 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import Relation from '../../Core/Management/UserGroup/Common/dto/RelationModel'
+import Relation from '../../Logic/Setting/dto/RelationDto';
 import ChatWayEnum from '../../Logic/Chat/dto/ChatWayEnum';
 import settingController from '../../Logic/Setting/settingController';
 
