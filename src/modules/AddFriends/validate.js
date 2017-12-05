@@ -19,7 +19,7 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import Relation from '../../Core/Management/UserGroup/dto/RelationModel'
+import Relation from '../../Core/Management/UserGroup/Common/dto/RelationModel'
 import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum'
 import settingController from  '../../Logic/settingController';
 let currentObj = undefined;
@@ -61,7 +61,6 @@ class Validate extends ContainerComponent {
         let {Applicant,Respondent} = this.props;
         // currentObj.showLoading()
         Keyboard.dismiss();
-        // let addMessage = addApplyFriendMessage({comment:this.state.text,key:this.props.validateID,Nick:currentObj.props.accountName,avator:currentObj.props.avator},Applicant,Respondent);
         // im.addMessage(addMessage,function(){
         //     currentObj.hideLoading()
             currentObj.alert("申请消息已经发送,等待对方验证","提醒",

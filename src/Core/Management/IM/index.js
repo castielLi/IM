@@ -6,17 +6,18 @@ import Connect from './socket'
 import * as storeSqlite from './StoreSqlite'
 import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "../Common/dto/MessageStatus"
-import SendStatus from './dto/SendStatus'
+import SendStatus from './Common/dto/SendStatus'
 import * as configs from './IMconfig'
-import MessageCommandEnum from './dto/MessageCommandEnum'
-import * as DtoMethods from './Common/SqliteMessageToDtoMessage'
-import MessageType from '../Common/dto/MessageType'
+import MessageCommandEnum from '../Common/dto/MessageBodyTypeEnum'
+import * as DtoMethods from './Common/methods/SqliteMessageToDtoMessage'
+import ResourceTypeEnum from '../Common/dto/ResourceTypeEnum'
 import SendManager from './SendManager'
 import FileManager from './FileManager'
 import ReceiveManager from './ReceiveManager'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
 import * as cacheMethods from './action/createCacheMessage'
+import {buildSendMessage} from './action/createMessage'
 
 
 
@@ -72,8 +73,6 @@ let ControllerReceiveMessageHandle = undefined;
 //踢出消息回调
 let ControllerKickOutHandle = undefined;
 
-let ControllerHandleRecieveAddFriendMessage = undefined;
-
 
 let __instance = (function () {
     let instance;
@@ -116,12 +115,11 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage){
+    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         ControllerMessageResultHandle = getMessageResultHandle;
         ControllerMessageChangeStatusHandle = changeMessageHandle;
         ControllerReceiveMessageHandle = receiveMessageHandle;
         ControllerKickOutHandle = kickOutMessage;
-        ControllerHandleRecieveAddFriendMessage = recieveAddFriendMessage;
     }
 
     startIM(){
@@ -268,13 +266,9 @@ export default class IM {
 
     //发送消息
     //外部接口，添加消息
-    addMessage(message,callback=function(success,content){},onprogess="undefined") {
+    addMessage(messageDto,callback=function(success,content){},onprogess="undefined") {
 
-
-        if (message.type == "undefined") {
-            callback(false, "message type error");
-        }
-
+        let message = buildSendMessage(messageDto);
 
         //先生成唯一的messageID并且添加message进sqlite保存
         UUIDGenerator.getRandomUUID().then((uuid) => {
@@ -288,39 +282,30 @@ export default class IM {
             //把消息存入消息sqlite中
             message.status = MessageStatus.WaitOpreator;
 
-            if(message.type != MessageType.friend) {
-
-                if(message.type == MessageType.information){
-                    message.Command = MessageCommandEnum.MSG_INFO;
-                    this.storeSendMessage(message);
-                }else{
-                    this.storeSendMessage(message);
-                }
-            }
+            this.storeSendMessage(message);
 
             storeSqlite.addMessageToSendSqlite(message);
 
-            switch (message.type) {
-                case MessageType.text:
-                    SendManager.addSendMessage(message.MSGID);
-                    break;
-                case MessageType.image:
-                    FileManager.addResource(message.MSGID);
-                    break;
-                case MessageType.audio:
-                    FileManager.addResource(message.MSGID);
-                    break;
-                case MessageType.friend:
-                    SendManager.addSendMessage(message.MSGID);
-                    break;
-                case MessageType.video:
-                    FileManager.addResource(message.MSGID)
-                    break;
-                default:
-                    SendManager.addSendMessage(message.MSGID);
-                    break;
+            if(message.Resource == null){
+                SendManager.addSendMessage(message.MSGID);
+            }else{
+                switch (message.Resource[0].FileType) {
+                    case ResourceTypeEnum.image:
+                        FileManager.addResource(message.MSGID);
+                        break;
+                    case ResourceTypeEnum.audio:
+                        FileManager.addResource(message.MSGID);
+                        break;
+                    case ResourceTypeEnum.video:
+                        FileManager.addResource(message.MSGID)
+                        break;
+                    default:
+                        SendManager.addSendMessage(message.MSGID);
+                        break;
+                }
             }
 
+            return message;
         });
     }
 
@@ -412,11 +397,8 @@ export default class IM {
             case MessageCommandEnum.MSG_SEND_ACK:
                 currentObj.ackBackMessageHandle(message.Data);
                 break;
-            case MessageCommandEnum.MSG_ERROR:
-                ReceiveManager.receiveErrorMessage(message);
-                break;
-            case MessageCommandEnum.MSG_BODY:
-                ReceiveManager.receiveBodyMessage(message)
+            default:
+                ReceiveManager.receiveBodyMessage(message);
                 break;
         }
 
@@ -522,11 +504,11 @@ export default class IM {
         ControllerMessageChangeStatusHandle(message)
     }
 
-    //操作好友管理模块,申请好友通过，设置关系显示状态
-    updateRelation(relationId){
-        console.log("执行了IM")
-        ControllerHandleRecieveAddFriendMessage(relationId);
-    }
+    // //操作好友管理模块,申请好友通过，设置关系显示状态
+    // updateRelation(relationId){
+    //     console.log("执行了IM")
+    //     ControllerHandleRecieveAddFriendMessage(relationId);
+    // }
 
 
 
@@ -602,8 +584,8 @@ export default class IM {
     selectMessagesByIds(ids,callback){
         storeSqlite.selectMessagesByIds(ids,(messages)=>{
             let messageList = messages.map((message)=>{
-                            return DtoMethods.sqlMessageToMessage(message);
-                        })
+                return DtoMethods.sqliteMessageToMessage(message);
+            })
             callback(messageList);
         });
     }

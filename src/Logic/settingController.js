@@ -7,7 +7,7 @@ import Network from '../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../Core/Management/IM/action/createMessage';
-import RelationModel from '../Core/Management/UserGroup/dto/RelationModel'
+import RelationModel from '../Core/Management/UserGroup/Common/dto/RelationModel'
 import ApiBridge from './ApiBridge'
 
 let __instance = (function () {
@@ -47,12 +47,8 @@ export default class settingController {
     }
 
     //todo：页面获取到信息的方法
-    getLatestGroupList(callback){
-        let concat = this.user.getCacheChatroomInfo();
-        callback && callback(concat);
-    }
-    getLatestContactList(callback){
-        let concat = this.user.getCachePrivateInfo();
+    getLatestContactList(type,callback){
+        let concat = this.user.getCacheInfo(type);
         callback && callback(concat);
     }
     initUserGroupCache(relations){
@@ -60,7 +56,12 @@ export default class settingController {
     }
 
     //群设置（GroupInformationSetting）
-    addGroupToContact(data,callback){
+    addGroupToContact(enumerate,data,callback){
+        //data:{enumerate,params,relation}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
         let params = data.params;
         let info = data.info;
         this.apiBridge.request.AddGroupToContact(params,function(results){
@@ -75,16 +76,23 @@ export default class settingController {
                     owner:info.Owner,
                     show:true}
                 currentObj.user.AddNewGroup(obj);
+                currentObj.user.addUserGroupCache(obj)
             }
             callback(results);
         });
     }
-    removeGroupFromContact(data,callback){
+    removeGroupFromContact(enumerate,data,callback){
+        //data:{enumerate,params,groupId}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
         let params = data.params;
         let info = data.info;
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
                 currentObj.user.RemoveGroupFromContact(info.ID);
+                currentObj.user.removeUserGroup(info.ID,'chatroom')
             }
             callback(results);
         })
@@ -152,7 +160,13 @@ export default class settingController {
             callback(results);
         })
     }
-    deleteFriend(params,callback){
+    deleteFriend(enumerate,params,callback){
+        //data:{enumerate,params}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
+
         let {Friend,Applicant} = params;
         this.apiBridge.request.DeleteFriend(params,function(results){
 
@@ -256,7 +270,7 @@ export default class settingController {
 
                     //添加关系到数据库
                     currentObj.user.AddGroupAndMember(relation,splNeedArr);
-                    currentObj.user.addGroupAndMemberCache(relation,splNeedArr );
+                    currentObj.user.addUserGroupCache(relation,splNeedArr );
                     result.data.relation = relation;
                     let messageId = uuidv1();
                     //创建群组消息

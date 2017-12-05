@@ -20,7 +20,7 @@ import DisplayComponent from './Core/Component'
 import * as IMHandle from './Logic/AppHandler/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import Network from './Core/Networking/Network'
-import ChatController from './Logic/chatController'
+import ChatController from './Logic/Chat/chatController'
 let chatController = new ChatController();
 
 export default function App() {
@@ -56,20 +56,18 @@ export default function App() {
        IMHandle.handleRecieveMessage(message,relation);
     }
 
-    //收到同意添加好友申请回调
-    let handleRecieveAddFriendMessage = function(relation){
-      IMHandle.handleRecieveAddFriendMessage(relation);
-    }
 
     //收到群名修改通知
-    let handleRecieveChangeGroupNameMessage = function(groupId,newGroupname){
-        IMHandle.handleRecieveChangeGroupNameMessage(groupId,newGroupname);
-    }
+    // let handleRecieveChangeGroupNameMessage = function(groupId,newGroupname){
+    //     IMHandle.handleRecieveChangeGroupNameMessage(groupId,newGroupname);
+    // }
+
+
     let handleKickOutMessage = function(){
         IMHandle.handleKickOutMessage()
     }
 
-    chatController.connectApp(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage,handleRecieveAddFriendMessage,handleRecieveChangeGroupNameMessage)
+    chatController.connectApp(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage)
 
 
     class InitApp extends DisplayComponent {

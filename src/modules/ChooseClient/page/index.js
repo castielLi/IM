@@ -28,7 +28,6 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/settingController';
 let settingController = new SettingController();
-import {buildInvationSendMessageToRudexMessage} from '../../../Core/Management/IM/action/createMessage';
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -264,9 +263,8 @@ class ChooseClient extends ContainerComponent {
                         }
                         //更新redux message
                         let copyMessage = Object.assign({},result.data.sendMessage);
-                        let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
                         let {groupName,groupAvator,groupId} = currentObj.props;
-                        currentObj.props.addMessage(reduxMessage,{Nick:groupName,avator:groupAvator});
+                        currentObj.props.addMessage(copyMessage,{Nick:groupName,avator:groupAvator});
                         //路由跳转
                         let routes = currentObj.props.navigator.getCurrentRoutes();
                         let index;
@@ -311,9 +309,8 @@ class ChooseClient extends ContainerComponent {
 
                     //更新redux message
                     let copyMessage = Object.assign({},result.data.sendMessage);
-                    let reduxMessage = buildInvationSendMessageToRudexMessage(copyMessage);
                     let {Nick,LocalImage} = result.data.relation;
-                    currentObj.props.addMessage(reduxMessage,{Nick,avator:LocalImage});
+                    currentObj.props.addMessage(copyMessage,{Nick,avator:LocalImage});
                     //路由跳转
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom",HeadImageUrl:LocalImage,Nick}});
 

@@ -25,7 +25,7 @@ import * as Actions from '../../reducer/action'
 import * as commonActions from '../../../../Core/Redux/chat/action';
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 // import IM from '../../../../Core/IM';
-import chatController from '../../../../Logic/chatController';
+import chatController from '../../../../Logic/Chat/chatController';
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'
@@ -92,9 +92,6 @@ class Gallery extends ContainerComponent {
             ChatController.updateMessageLocalSource(MSGID,path);
             currentObj.props.updateMessagePath(MSGID,path,Sender);
             //todo:图片下载成功后会覆盖之前的缩略图，但是不会刷新需要重新开启APP，所以采用不同的路径
-            //currentObj.props.updateMessageUrl(MSGID,url,Sender);
-            //im.updateMessageRemoteSource(MSGID,url);
-            //ChatController.updateMessageRemoteSource(MSGID,url);
             currentObj.setState({
                 path,
                 download:false,

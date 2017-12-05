@@ -5,7 +5,7 @@ import RNFS from 'react-native-fs'
 import * as Helper from '../../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
-import * as methods from './Common'
+import * as methods from './Common/methods'
 import netWorking from '../../Networking/Network'
 
 
@@ -65,11 +65,9 @@ FileManager.uploadResource = function(obj){
 
             //整合audio下文件路径
             let resource;
-            // if(message.type == MessageType.audio){
-            //     resource = message.Resource[item].LocalSource.split("_")[0] + ".aac";
-            // }else{
-                resource = message.Resource[item].LocalSource;
-            // }
+
+            resource = message.Resource[item].LocalSource;
+
 
             uploadQueue.push(methods.getUploadPathFromServer(resource,item,function (progress,index) {
                 if(progressHandles != null) {

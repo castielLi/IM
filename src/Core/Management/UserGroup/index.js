@@ -3,8 +3,8 @@
  */
 
 import ApiBridge from '../../../Logic/ApiBridge/index'
-import RelationModel from './dto/RelationModel'
-import AppCommandEnum from '../../../Core/Management/IM/dto/AppCommandEnum'
+import RelationModel from './Common/dto/RelationModel'
+import AppCommandEnum from '../Common/dto/AppCommandEnum'
 import UserManager from '../UserGroup/UserManager'
 import GroupManager from '../UserGroup/GroupManager'
 
@@ -144,6 +144,11 @@ export default class User {
         GroupManager.GetMembersByGroupId(groupId,callback);
     }
 
+    //删除群成员
+    removeGroupMember(groupId,members){
+        GroupManager.removeGroupMember(groupId,members)
+    }
+
     //获取所有的group
     getAllGroupFromGroup(callback,show=undefined){
         return GroupManager.GetRelationList(callback,show)
@@ -222,12 +227,12 @@ export default class User {
     readInformation(Id,type,callback){
         switch (type){
             case "chatroom":
-                GroupManager.getRelation(Id,type,(relations)=>{
+                GroupManager.GetRelationByIdAndType(Id,type,(relations)=>{
                     callback(relations);
                 });
                 break;
             default:
-                UserManager.getRelation(Id,type,(relations)=>{
+                UserManager.GetRelationByIdAndType(Id,type,(relations)=>{
                     callback(relations);
                 });
                 break;
@@ -245,237 +250,148 @@ export default class User {
         }
     }
 
-
-
-
-
-    //通过id和类型获取群或者好友的信息
-    getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
-        console.log(cache);
-
-        //当消息为向群组添加新人的时候必须重新获取数据库表
-        //当缓存中没有该群或者好友信息
-        if(cache[type].length == 0 || cache[type][Id] == undefined){
-
-            //向数据库查找好友信息
-            if(type == 'private'){
-                    UserManager.GetRelationByIdAndType(Id,type,(relations)=>{
-                        //如果数据库也没有这条消息
-                        if(relations.length == 0){
-                            //请求http获取信息
-                            currentObj.apiBridge.request.SearchUser({"Keyword":Id},(response)=>{
-                                if(response.success) {
-                                    let results = response.data.Data;
-                                    let relation = new RelationModel();
-                                    relation.RelationId = results.Account;
-                                    relation.Nick = results.Nickname;
-                                    relation.Type = 'private';
-                                    relation.show = 'false';
-                                    relation.avator = results.HeadImageUrl == null?"":results.HeadImageUrl;
-                                    cache[type][Id] = relation;
-
-                                    //把这个user添加到数据库里面，将show设置为false 代表这个用户不是好友
-
-                                    currentObj.AddNewRelation(relation,function(){
-                                        callback(relation);
-                                    });
-
-                                }else{
-                                    let errMsg = response.errorMessage;
-                                    //alert("获取个人信息失败，原因："+errMsg)
-                                }
-                            })
-                        }else{
-
-                            cache[type][Id] = relations[0];
-                            callback(relations[0])
-                        }
-                    })
-
-            }else if(type == 'chatroom'){
-
-                let groupMembers = [];
-                let groupMembersInfo = [];
-
-                    GroupManager.GetRelationByIdAndType(Id,type,(relations)=>{
-                        //如果数据库也没有这条消息
-
-                        if(relations.length == 0){
-                            currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-                                if(response.success) {
-                                    currentObj.setCacheAndSql(type,Id,response,callback)
-
-                                }else{
-                                    let errMsg = response.errorMessage;
-                                    //alert("获取群信息失败，原因："+errMsg)
-                                }
-                            })
-                        }else{
-
-                            cache[type][Id] = relations[0];
-
-                            //从数据库中获取成员列表，添加进cache中
-                            currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
-
-                                //代表数据库里面并没有groupMembers的对应关系，需要进行下载
-                                if(results.length == 0){
-
-                                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-                                        if(response.success) {
-                                            currentObj.setCacheAndSql(type,Id,response,callback,relations[0])
-
-                                        }else{
-                                            let errMsg = response.errorMessage;
-                                            //alert("获取群信息失败，原因："+errMsg)
-                                        }
-                                    })
-
-                                }else{
-
-                                    for(let i = 0;i<results.length;i++){
-                                        //因为数据库的结构就是relationModel的结构
-                                        cache["private"][results[i].RelationId] = results[i];
-                                        groupMembers.push(results[i].RelationId)
-                                        groupMembersInfo.push(results[i])
-                                    }
-                                    cache["groupMember"][Id] = groupMembers;
-                                        callback(relations[0],groupMembersInfo)
-                                }
-                            });
-                        }
-                    })
-            }
-        }else{
-            //从cache中取出group和groupMember
-            if(type == "chatroom"){
-                let groupMembers = [];
-                let groupMembersInfo = [];
-                //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
-                if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER||contentCommand == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
-                    currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-                        if(response.success) {
-                            currentObj.setCacheAndSql(type,Id,response,callback)
-
-                        }else{
-                            let errMsg = response.errorMessage;
-                            //alert("获取群消息失败，原因："+errMsg)
-                        }
-                    })
+    getHttpGroupInfo(Id,type,callback,Relation = undefined){
+        let groupMembers = [];
+        let groupMembersInfo = [];
+        this.apiBridge.request.GetGroupInfo({"GroupId":Id},(result)=>{
+            if(result.success) {
+                let data = result.data.Data;
+                let relation = new RelationModel();
+                if(!Relation){
+                    relation.RelationId = data.ID;
+                    relation.owner = data.Owner;
+                    relation.Nick = data.Name;
+                    relation.Type = 'chatroom';
+                    relation.show = 'false';
+                    relation.avator = data.ProfilePicture == null?"":data.ProfilePicture;
+                    relation.MemberList = data.MemberList;
+                    cache[type][Id] = relation;
                 }
-                //如果缓存中没有对应的groupmember信息就去找sql，sql没有就http
-                else if(!cache["groupMember"][Id] || !cache["groupMember"][Id].length){
-                    currentObj.GetGroupMemberIdsByGroupId(Id,function (results) {
-                        if(results.length == 0){
+                else{
+                    relation = Relation;
+                }
+                let members = relation.MemberList;
+                for(let i = 0;i<members.length;i++){
+                    let accountId = members[i].Account;
+                    let model = new RelationModel();
+                    model.avator = members[i].HeadImageUrl;
+                    model.Nick = members[i].Nickname;
+                    model.RelationId = members[i].Account;
+                    if(cache["private"][accountId] == undefined){
+                        cache["private"][accountId] = model;
+                    }
+                    groupMembers.push(model);
+                    groupMembersInfo.push(accountId)
+                }
+                callback(relation,groupMembers);
+                currentObj.AddGroupAndMember(relation,members);
+                currentObj.AddGroupMember(members);
+                cache["groupMember"][Id] = groupMembersInfo;
+            }else{
+                console.log(result.errorMessage)
+            }
+        });
+    }
 
-                            currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-                                if(response.success) {
-                                    //currentObj.setCacheAndSql(type,Id,response,callback)
-                                    let results = response.data.Data;
-                                    for(let i = 0;i<results.MemberList.length;i++){
-                                        let accountId = results.MemberList[i].Account;
-                                        let model = new RelationModel();
-                                        model.avator = results.MemberList[i].HeadImageUrl;
-                                        model.Nick = results.MemberList[i].Nickname;
-                                        model.RelationId = results.MemberList[i].Account;
-                                        if(cache["private"][accountId] == undefined){
-                                            cache["private"][accountId] = model;
-                                        }
-                                        groupMembers.push(model);
-                                        groupMembersInfo.push(accountId)
-                                    }
-                                    callback(cache[type][Id],groupMembers)
-                                    //数据库也没有这条group的记录，那么就需要添加进groupList中
-                                    //并且添加groupMember表，存储group和user关系
-                                    //存储新的群user到account表中
-                                    //currentObj.AddGroupAndMember(relation,results.MemberList);
-                                    GroupManager.initGroupMemberByGroupId(Id,results.MemberList)
-                                    currentObj.AddGroupMember(results.MemberList);
-                                    cache["groupMember"][Id] = groupMembersInfo;
+    getMembersIdByGroupId(Id,type,callback,relation){
+        let groupMembers = [];
+        let groupMembersInfo = [];
+        currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
+            if(results.length == 0){
+                currentObj.getHttpGroupInfo(Id,type,callback,relations[0]);
+            }else{
+                //todo:考虑要是private里面没有对应 d 的信息
+                for(let i = 0;i<results.length;i++){
+                    //因为数据库的结构就是relationModel的结构
+                    if(cache["private"][results[i].RelationId] == undefined){
+                        cache["private"][results[i].RelationId] = results[i];
+                    }
+                    groupMembers.push(results[i].RelationId)
+                    groupMembersInfo.push(results[i])
+                }
+                cache["groupMember"][Id] = groupMembers;
+                callback(relation,groupMembersInfo)
+            }
+        });
+    }
 
-                                }else{
-                                    let errMsg = response.errorMessage;
-                                    //alert("获取群信息失败，原因："+errMsg)
-                                }
-                            })
-
+    //todo:拆分通过id和类型获取群或者好友的信息的方法
+    getUserInfoByIdandType(Id,type,callback,messageCommand,contentCommand){
+        if(cache[type].length == 0 || cache[type][Id] == undefined){
+            this.readInformation(Id,type,function (relations) {
+                if(relations.length == 0){
+                    currentObj.requestInfomation(Id,type,function (result) {
+                        if(result.success){
+                            let data = result.data.Data;
+                            let relation = new RelationModel();
+                            relation.RelationId = data.Account;
+                            relation.Nick = data.Nickname;
+                            relation.Type = 'private';
+                            relation.show = 'false';
+                            relation.avator = data.HeadImageUrl == null?"":data.HeadImageUrl;
+                            cache[type][Id] = relation;
+                            currentObj.AddNewRelation(relation,function(){
+                                callback(relation);
+                            });
                         }else{
-
-                            for(let i = 0;i<results.length;i++){
-                                //因为数据库的结构就是relationModel的结构
-                                if(cache["private"][results[i].RelationId] == undefined){
-                                    cache["private"][results[i].RelationId] = results[i];
-                                }
-                                groupMembers.push(results[i].RelationId)
-                                groupMembersInfo.push(results[i])
-                            }
-                            cache["groupMember"][Id] = groupMembers;
-                            callback(cache[type][Id],groupMembersInfo)
+                            console.log(result.errorMessage)
                         }
                     })
                 }
                 else{
-                    let list = cache["groupMember"][Id]
-                    if(list == undefined || list == 'undefined'){
-                        callback(cache[type][Id],groupMembers);
-                    }
-                    for(let i = 0;i<list.length;i++){
-                        let target = list[i];
-                        groupMembers.push(cache["private"][target])
-                    }
-
+                    cache[type][Id] = relations[0];
+                    callback(relations[0])
+                }
+            })
+        }
+        else{
+            callback(cache[type][Id])
+        }
+    }
+    getGroupInfoByIdandType(Id,type,callback,messageCommand,contentCommand){
+        let groupMembers = [];
+        let groupMembersInfo = [];
+        if(cache[type].length == 0 || cache[type][Id] == undefined){
+            this.readInformation(Id,type,function (relations) {
+                if(relations.length == 0){
+                    currentObj.getHttpGroupInfo(Id,type,callback);
+                }
+                else{
+                    cache[type][Id] = relations[0];
+                    currentObj.getMembersIdByGroupId(Id,type,callback,relations[0]);
+                }
+            })
+        }
+        else{
+            let relation = cache[type][Id];
+            //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
+            if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER||contentCommand == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
+                currentObj.getHttpGroupInfo(Id,type,callback,relation);
+            }
+            else if(!cache["groupMember"][Id] || !cache["groupMember"][Id].length){
+                currentObj.getMembersIdByGroupId(Id,type,callback,relation);
+            }
+            else{
+                let list = cache["groupMember"][Id]
+                if(list == undefined || list == 'undefined'){
                     callback(cache[type][Id],groupMembers);
                 }
+                for(let i = 0;i<list.length;i++){
+                    let target = list[i];
+                    groupMembers.push(cache["private"][target])
+                }
 
-            }else{
-                callback(cache[type][Id])
+                callback(cache[type][Id],groupMembers);
             }
         }
     }
 
-    setCacheAndSql(type,Id,response,callback,relations = undefined){
-        if(type == 'private'){
-            return;
+    getInformationByIdandType(Id,type,callback,FirstCommand=undefined,SecondCommand=undefined){
+        if(type == 'chatroom'){
+            this.getGroupInfoByIdandType(Id,type,callback,FirstCommand,SecondCommand)
         }
-        else if(type == 'chatroom'){
-            let results = response.data.Data;
-            let groupMembers = [];
-            let groupMembersInfo = [];
-            let relation;
-            if(!relations){
-                relation = new RelationModel();
-                relation.RelationId = results.ID;
-                relation.owner = results.Owner;
-                relation.Nick = results.Name;
-                relation.Type = 'chatroom';
-                relation.show = 'false';
-                relation.avator = results.ProfilePicture == null?"":results.ProfilePicture;
-                relation.MemberList = results.MemberList;
-
-                cache[type][Id] = relation;
-            }
-            else{
-                relation = relations;
-            }
-            for(let i = 0;i<results.MemberList.length;i++){
-                let accountId = results.MemberList[i].Account;
-                let model = new RelationModel();
-                model.avator = results.MemberList[i].HeadImageUrl;
-                model.Nick = results.MemberList[i].Nickname;
-                model.RelationId = results.MemberList[i].Account;
-                if(cache["private"][accountId] == undefined){
-                    cache["private"][accountId] = model;
-                }
-                groupMembers.push(model);
-                groupMembersInfo.push(accountId)
-            }
-
-            callback(relation,groupMembers)
-            //数据库也没有这条group的记录，那么就需要添加进groupList中
-            //并且添加groupMember表，存储group和user关系
-            //存储新的群user到account表中
-            currentObj.AddGroupAndMember(relation,results.MemberList);
-            currentObj.AddGroupMember(results.MemberList);
-            cache["groupMember"][Id] = groupMembersInfo;
+        else if(type == 'private'){
+            this.getUserInfoByIdandType(Id,type,callback,FirstCommand,SecondCommand)
         }
     }
 
@@ -486,26 +402,37 @@ export default class User {
     }
 
 
-    getNickAndAvatorById(accountId,type){
+    getNickAndAvatorById(accountId,type,callback){
         let needObj = {};
         this.getInformationByIdandType(accountId,type,(realtion)=>{
             needObj.Nick =  realtion["Nick"];
             needObj.avator = realtion["avator"];
+            callback(needObj);
         })
     }
 
-
-    getCachePrivateInfo(){
-        let concat = Object.values(cache['private']) //将对象的value 组成数组
-        return concat;
-    }
-    getCacheChatroomInfo(){
-        let concat = Object.values(cache['chatroom']) //将对象的value 组成数组
+    getCacheInfo(type){
+        let concat = Object.values(cache[type]) //将对象的value 组成数组
         return concat;
     }
 
-    //todo:替代redux中RelationStore操作
-    //初始化关系缓存 relations根据目前代码为 通讯录中的好友和群
+    //todo：方法整合
+    //获取关系信息
+    getUserGroupCache(enumerate,data){
+        switch (enumerate){
+            case 'single':
+                var {Id,type,callback} = data;
+                currentObj.getInformationByIdandType(Id,type,callback);
+                break;
+            case 'list':
+                var {type} = data;
+                currentObj.getCacheInfo(type);
+                break;
+            default:
+                break;
+        }
+    }
+    //初始化关系
     initUserGroupCache(relations){
         if(relations == undefined || relations == 'undefined' || !relations){
             return;
@@ -516,77 +443,217 @@ export default class User {
             cache[Type][RelationId] = relations[i];
         }
     }
-    //清空缓存
-    clearUserGroupCache(){
-        //关闭app缓存自动清空
-    }
-    //更改缓存信息
-    changeUserGroupCacheOfShow(id,type){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
-        }
-        if(Obj.show === 'true'){
-            Obj.show = 'false';
-        }else if(Obj.show === 'false'){
-            Obj.show = 'true';
+    //改变关系
+    changeUserGroupShow(enumerate,data,callback){
+        switch (enumerate){
+            case 'removeFriend'://data:{enumerate,params}
+                var {params} = data;
+                var {Friend} = params;
+                this.apiBridge.request.DeleteFriend(params,function(result){
+                    if(result.success){
+                        currentObj.deleteRelation(Friend);
+                        cache['private'][Friend].show = false;
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                    callback(result);
+                });
+                break;
+            case 'addGroupToContact'://data:{enumerate,params,relation}
+                var {params,relation} = data;
+                this.apiBridge.request.AddGroupToContact(params,function(result){
+                    if(result.success && result.data.Result){
+                        let obj = {
+                            RelationId:relation.ID,
+                            OtherComment:relation.Description,
+                            Nick:relation.Name,
+                            BlackList:false,
+                            Type:'chatroom',
+                            avator:relation.ProfilePicture==null?"":relation.ProfilePicture,
+                            owner:relation.Owner,
+                            show:true
+                        };
+                        currentObj.AddNewGroup(obj);
+                        cache[obj.Type][obj.RelationId].show = true;
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                    callback(result);
+                });
+                break;
+            case 'removeGroupFromContact'://data:{enumerate,params,Id}
+                var {params,groupId} = data;
+                this.apiBridge.request.RemoveGroupFromContact(params,function(result){
+                    if(result.success && result.data.Result){
+                        currentObj.RemoveGroupFromContact(groupId);
+                        cache['chatroom'][groupId].show = false;
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                    callback(result);
+                });
+                break;
+            default:
+                break;
         }
     }
 
-    changeUserGroupCacheOfNick(id,type,nick){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
+    changeUserGroup(enumerate,data,callback){
+        switch (enumerate){
+            case "show":
+                var {enumerate} = data;
+                this.changeUserGroupShow(enumerate,data,callback);
+                break;
+            case "nick":
+                var {params,groupId,name} = data;
+                this.apiBridge.request.ModifyGroupName(params,function(result){
+                    if(result.success){
+                        if(result.data.Data){
+                            currentObj.updateGroupName(groupId,name);
+                            cache['chatroom'][groupId].Nick = name;
+                        }
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            case "BlackList":
+                var {params,value} = data;
+                if(value == 'remove'){
+                    this.apiBridge.request.RemoveBlackMember(params,function(result){
+                        if(result.success){
+                            currentObj.changeRelationBlackList(false, params.Account);
+                        }else{
+                            console.log(result.errorMessage)
+                        }
+                    })
+                }
+                else if(value == 'add'){
+                    this.apiBridge.request.AddBlackMember(params,function(result){
+                        if(result.success){
+                            currentObj.changeRelationBlackList(true, params.Account);
+                        }else{
+                            console.log(result.errorMessage)
+                        }
+                    })
+                }
+                break;
+            default:
+                break;
         }
-        Obj.Nick = nick;
     }
-
-    changeUserGroupCacheOfBlackList(id,type,value){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
+    //新增关系
+    addUserGroup(enumerate,data){
+        switch (enumerate){
+            case "addFriend":
+                var {params,relation} = data;
+                var {Type,RelationId} = relation;
+                this.apiBridge.request.ApplyFriend(params,function(result){
+                    if(result.success && result.data.Data instanceof Object){
+                        var {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+                        var IsInBlackList =result.data.Data.IsInBlackList;
+                        var relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+                        currentObj.AddNewRelation(relationObj);
+                        cache[Type][RelationId] = relation;
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            case "acceptFriend":
+                var {params,relation} = data;
+                var {Type,RelationId} = relation;
+                this.apiBridge.request.AcceptFriend(params,function(result){
+                    if(result.success){
+                        var {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
+                        var relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+                        currentObj.AddNewRelation(relationObj);
+                        cache[Type][RelationId] = relation;
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            case "createGroup": //创建群
+                var {params,group,members} = data;
+                var {Type,RelationId} = group;
+                this.apiBridge.request.CreateGroup(params,function(result){
+                    if(result.success){
+                        if(result.data.Data){
+                            currentObj.AddGroupAndMember(group,members);
+                            cache[Type][RelationId] = group;
+                            for(let current of members){
+                                cache['groupMember'][RelationId].push(current);
+                            }
+                        }
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            case "addMember": //添加群成员
+                var {params,groupId,members,relations} = data;
+                this.apiBridge.request.AddGroupMember(params,function(result){
+                    if(result.success){
+                        if(result.data.Data){
+                            currentObj.AddGroupAndMember(groupId,members);
+                            for(let current of relations){
+                                let {Type,RelationId} = current;
+                                cache[Type][RelationId] = current;
+                            }
+                            for(let current of members){
+                                cache['groupMember'][groupId].push(current);
+                            }
+                        }
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            default:
+                break;
         }
-        Obj.BlackList = value;
-    }
-    //添加新的关系进缓存
-    addUserGroupCache(relation){
-        let {Type,RelationId} = relation;
-        let Obj = cache[Type][RelationId];
-        if(Obj != undefined || Obj != 'undefined' || Obj){
-            return;
-        }
-        cache[Type][RelationId] = relation;
-    }
-    //添加新的群关系和成员信息
-    addGroupAndMemberCache(relation,member){
-        let {Type,RelationId} = relation;
-        let Obj = cache[Type][RelationId];
-        if(Obj != undefined || Obj != 'undefined' || Obj){
-            return;
-        }
-        cache[Type][RelationId] = relation;
-        if(!member || !member.length){
-            return;
-        }
-        cache['groupMember'][RelationId] = member;
     }
     //删除关系
-    deleteUserGroupCache(id,type){
-        let Obj = cache[type][id];
-        if(Obj == undefined || Obj == 'undefined' || !Obj){
-            return;
+    removeUserGroup(enumerate,data){
+        switch (enumerate){
+            case 'removeGroupMember':
+                var {params,close,members} = data;
+                var {GroupId} = params;
+                this.apiBridge.request.RemoveGroupMember(params,function(result){
+                    if(result.success && result.data.Data){
+                        currentObj.removeGroupMember(GroupId,members);
+                        let array = cache['groupMember'][GroupId];
+                        for(let member of members){
+                            let index = array.indexOf(member);
+                            array.splice(index,1)
+                        }
+                        if(close){
+                            currentObj.deleteFromGrroup(GroupId);
+                            delete cache['chatroom'][GroupId];
+                            delete cache['groupMember'][GroupId];
+                        }
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            case 'removeGroup':
+                var {params} = data;
+                var {GroupId} = params;
+                this.apiBridge.request.ExitGroup(params,function(result){
+                    if(result.success){
+                        currentObj.deleteFromGrroup(GroupId);
+                        delete cache['chatroom'][GroupId];
+                        delete cache['groupMember'][GroupId];
+                    }else{
+                        console.log(result.errorMessage)
+                    }
+                });
+                break;
+            default:
+                break;
         }
-        delete cache[type][id];
     }
-    //添加缓存
-    //群拉人，添加到cache["groupMember"]缓存
-    groupAddMemberChangeCash(groupId,memberId){
-        cache["groupMember"][groupId].push(memberId);
-    }
-    //添加到cache["private"]
-    privateAddMemberChangeCash(memberId,memberObj){
-        cache["private"][memberId] = memberObj;
-    }
-
 
 }

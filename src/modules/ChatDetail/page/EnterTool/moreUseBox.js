@@ -20,7 +20,7 @@ import {
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import * as commonActions from '../../../../Core/Redux/chat/action';
-import ChatController from '../../../../Logic/chatController';
+import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';

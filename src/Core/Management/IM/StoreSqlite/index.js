@@ -7,6 +7,8 @@ import * as sqls from './IMExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
 import RNFS from 'react-native-fs';
 import MessageStatus from '../../Common/dto/MessageStatus'
+import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum'
+import AppCommandEnum from '../../Common/dto/AppCommandEnum'
 
 export function storeSendMessage(message){
     IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
@@ -14,7 +16,7 @@ export function storeSendMessage(message){
 
 export function storeRecMessage(message,callback){
 
-    if(message.type != "friend") {
+    if(message.Data.Command != MessageBodyTypeEnum.MSG_BODY_APP || message.Data.Data.Command != AppCommandEnum.MSG_BODY_APP_APPLYFRIEND) {
         message.status = MessageStatus.SendSuccess;
         IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
     }else{
@@ -37,8 +39,14 @@ export function DeleteResource(messageId,localPath){
    IMFMDB.DeleteResource(messageId,localPath);
 }
 
-export function UpdateMessageContentByMSGID(content,messageId){
-    IMFMDB.UpdateMessageContent(content,messageId);
+export function UpdateMessageContentByMSGID(content,MSGID){
+    IMFMDB.getMessageById(messageId,function(results){
+        if(results.length > 0){
+            let message = JSON.parse(results[0]);
+            message.Data.Data.Data = content;
+            IMFMDB.updateMessageByMessageId(message);
+        }
+    })
 }
 
 //向消息列表中添加消息
@@ -57,11 +65,24 @@ export function getAllCurrentSendMessage(callback){
 }
 //更改资源文件的本地路径
 export function updateMessageLocalSource(messageId,url){
-    IMFMDB.updateMessageLocalSource(messageId,url);
+
+    IMFMDB.getMessageById(messageId,function(results){
+        if(results.length > 0){
+            let message = JSON.parse(results[0]);
+            message.Resource[0].LocalSource = url;
+            IMFMDB.updateMessageByMessageId(message);
+        }
+    })
 }
 //更改资源文件的远程路径
 export function updateMessageRemoteSource(messageId,url){
-    IMFMDB.updateMessageRemoteSource(messageId,url);
+    IMFMDB.getMessageById(messageId,function(results){
+        if(results.length > 0){
+            let message = JSON.parse(results[0]);
+            message.Resource[0].RemoteSource = url;
+            IMFMDB.updateMessageByMessageId(message);
+        }
+    })
 }
 
 //修改发送队列中的消息状态
@@ -139,27 +160,29 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
 
 //todo：想办法进行批量操作
 IMFMDB.InsertMessageWithCondition = function(message,client,callback){
-    let localPath = "";
-    let url = "";
-    if(message.Resource!= null && message.Resource.length > 0) {
-        for (let item in message.Resource) {
-            localPath += message.Resource[item].LocalSource;
-            // + ",";
-            url += message.Resource[item].RemoteSource;
-        }
-    }else{
-        localPath = "";
-        url = "";
-    }
-    let sourceTime = "";
-    //音频视频才有时间
-    if(message.type === 'audio'||message.type === 'video'){
-        //默认一条消息只能有一条音频或者视频
-        sourceTime = message.Resource[0].Time;
-    }
+    // let localPath = "";
+    // let url = "";
+    // if(message.Resource!= null && message.Resource.length > 0) {
+    //     for (let item in message.Resource) {
+    //         localPath += message.Resource[item].LocalSource;
+    //         // + ",";
+    //         url += message.Resource[item].RemoteSource;
+    //     }
+    // }else{
+    //     localPath = "";
+    //     url = "";
+    // }
+    // let sourceTime = "";
+    // //音频视频才有时间
+    // if(message.type === 'audio'||message.type === 'video'){
+    //     //默认一条消息只能有一条音频或者视频
+    //     sourceTime = message.Resource[0].Time;
+    // }
+
+    let messageBody = JSON.stringify(message);
 
     let insertChatSql = sqls.ExcuteIMSql.InsertMessageToRecode;
-    insertChatSql = commonMethods.sqlFormat(insertChatSql,[message.MSGID,message.Command,message.Data.Data.Sender,message.Data.Data.Receiver,message.Data.LocalTime,message.Data.Data.Data,message.type,localPath,sourceTime,url,message.status]);
+    insertChatSql = commonMethods.sqlFormat(insertChatSql,[message.MSGID,messageBody,message.Data.LocalTime,message.status]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -170,6 +193,22 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
         });
 
     }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+IMFMDB.getMessageById = function(MSGID,callback){
+    let querySql = sqls.ExcuteIMSql.GetMessageBodyById;
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(querySql, [], (tx, results) => {
+
+                callback(results.rows.raw())
+
+            }, (err)=>{errorDB('获取好友申请消息',err)});
+        });
+    }, errorDB);
 }
 
 IMFMDB.selectMessagesByIds = function(ids,callback){
@@ -202,23 +241,6 @@ IMFMDB.InsertFriendMessage = function(message){
             tx.executeSql(insertSql, [], (tx, results) => {
                console.log("添加好友申请消息成功");
             }, (err)=>{errorDB('添加好友申请消息',err)});
-        });
-    }, errorDB);
-}
-
-//修改message的消息内容
-IMFMDB.UpdateMessageContent = function(content,messageId){
-    let updateSql = sqls.ExcuteIMSql.UpdateMessageContent;
-
-    updateSql = commonMethods.sqlFormat(updateSql,[content,messageId])
-
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-        db.transaction((tx) => {
-            tx.executeSql(updateSql, [], (tx, results) => {
-                console.log("修改消息内容成功");
-            }, (err)=>{errorDB('修改消息内容',err)});
         });
     }, errorDB);
 }
@@ -460,10 +482,12 @@ IMFMDB.DeleteResource = function(messageId,localPath){
     }, errorDB);
 }
 
-IMFMDB.updateMessageLocalSource = function(messageId,url){
-    let sql = sqls.ExcuteIMSql.UpdateMessageLocalSource
+IMFMDB.updateMessageByMessageId = function(message){
+    let sql = sqls.ExcuteIMSql.UpdateMessageByMessageId
 
-    sql = commonMethods.sqlFormat(sql,[url,messageId]);
+    let messageBody = JSON.parse(message);
+
+    sql = commonMethods.sqlFormat(sql,[messageBody,message.MSGID]);
     var db = SQLite.openDatabase({
         ...databaseObj
     }, () => {
@@ -471,31 +495,12 @@ IMFMDB.updateMessageLocalSource = function(messageId,url){
         db.transaction((tx) => {
             tx.executeSql(sql, [], (tx, results) => {
 
-                console.log("修改消息path路径成功");
+                console.log("修改消息内容成功");
 
-            }, (err)=>{errorDB('修改消息path',err)});
+            }, (err)=>{errorDB('修改消息内容',err)});
         });
 
-    }, (err)=>{errorDB('修改消息path失败',err)});
-}
-
-IMFMDB.updateMessageRemoteSource = function(messageId,url){
-    let sql = sqls.ExcuteIMSql.UpdateMessageRemoteSource
-
-    sql = commonMethods.sqlFormat(sql,[url,messageId]);
-    var db = SQLite.openDatabase({
-        ...databaseObj
-    }, () => {
-
-        db.transaction((tx) => {
-            tx.executeSql(sql, [], (tx, results) => {
-
-                console.log("修改消息url路径成功");
-
-            }, (err)=>{errorDB('修改消息url',err)});
-        });
-
-    }, (err)=>{errorDB('修改消息url失败',err)});
+    }, (err)=>{errorDB('修改消息内容',err)});
 }
 
 IMFMDB.closeImDb = function(){
@@ -550,7 +555,6 @@ function errorDB(type,err) {
 function successDB() {
     console.log("open database");
 }
-
 
 
 

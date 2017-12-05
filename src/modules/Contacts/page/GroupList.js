@@ -103,7 +103,7 @@ class GroupList extends ContainerComponent {
             })
         })
         //获取最新的列表
-        settingController.getLatestGroupList(function (contact) {
+        settingController.getLatestContactList('chatroom',function (contact) {
             currentObj.setState({
                 contacts:contact
             })

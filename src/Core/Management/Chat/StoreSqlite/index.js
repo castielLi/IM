@@ -9,7 +9,7 @@ import ChatWayEnum from '../../Common/dto/ChatWayEnum'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
 import ChatCommandEnum from '../../Common/dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
-import MessageType from '../../Common/dto/MessageType';
+import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
 import MessageStatus from '../../Common/dto/MessageStatus'
 
 export function storeSendMessage(message){
@@ -251,54 +251,12 @@ CHATFMDB.getAllChatClientList = function(callback){
             }, (err)=>{errorDB('获取聊天列表失败',err)});
 
         });
-    }, (err)=>{errorDB('打开Chat.db失败',err)});
+    }, errorDB);
 }
 
 
 
 
-
-
-// CHATFMDB.getRangeMessages = function(account,way,range,callback){
-//
-//     let tabName = way  == ChatWayEnum.Private?"Private_" + account:"ChatRoom_" + account;
-//
-//     let querySql = sqls.ExcuteIMSql.QueryChatRecodeByClient;
-//
-//     querySql = commonMethods.sqlFormat(querySql,[tabName,range.start,range.limit]);
-//
-//     var db = SQLite.openDatabase({
-//         ...databaseObj
-//     }, () => {
-//         db.transaction((tx) => {
-//
-//             tx.executeSql(querySql, [], (tx, results) => {
-//
-//                 if(results.rows.length > 0){
-//
-//                     let messageIds = results.rows.raw();
-//
-//                     let ids = [];
-//                     messageIds.forEach(function(item){
-//                         ids.push(item.messageId);
-//                     })
-//
-//                     let selectMessages = sqls.ExcuteIMSql.GetMessagesInMessageTableByIds;
-//
-//                     selectMessages = commonMethods.sqlQueueFormat(selectMessages,ids);
-//
-//                     tx.executeSql(selectMessages, [], (tx, results) => {
-//                         callback(results.rows.raw());
-//                     }, errorDB);
-//                 }else{
-//                     callback(null);
-//                 }
-//
-//             }, errorDB);
-//
-//         });
-//     }, errorDB);
-// }
 
 
 CHATFMDB.getRangeMessages = function(account,way,range,callback){
@@ -325,7 +283,13 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
                         ids.push(item.messageId);
                     })
 
-                    callback(ids)
+                    let selectMessages = sqls.ExcuteIMSql.GetMessagesInMessageTableByIds;
+
+                    selectMessages = commonMethods.sqlQueueFormat(selectMessages,ids);
+
+                    tx.executeSql(selectMessages, [], (tx, results) => {
+                        callback(results.rows.raw());
+                    }, errorDB);
                 }else{
                     callback(null);
                 }
@@ -335,6 +299,9 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
         });
     }, errorDB);
 }
+
+
+
 
 
 CHATFMDB.DeleteClientRecodeByName = function(name){
@@ -478,7 +445,7 @@ function deleteClientChatList(tableName,tx){
 
 function getContentByMessage(message){
     let content = "";
-    if(message.Resource != null && message.Resource.length > 0 && message.Resource.length < 2){
+    if(message.Resource != null && message.Resource.length > 0){
         switch (message.Resource[0].FileType){
             case ResourceTypeEnum.image:
                 content = "[图片]";
@@ -492,7 +459,7 @@ function getContentByMessage(message){
         }
 
     }else if(message.Resource == null){
-        if(message.type == MessageType.information){
+        if(message.data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
             content = "[通知]"
         }else {
             content = message.Data.Data.Data

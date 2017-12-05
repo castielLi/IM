@@ -21,8 +21,7 @@ import {bindActionCreators} from 'redux';
 import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import * as relationActions from '../../../Core/Redux/contact/action';
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
-import {addAddFriendMessage} from '../../../Core/Management/IM/action/createMessage';
-import chatController from '../../../Logic/chatController';
+import chatController from '../../../Logic/Chat/chatController';
 import SettingController from '../../../Logic/settingController';
 let {height,width} = Dimensions.get('window');
 
