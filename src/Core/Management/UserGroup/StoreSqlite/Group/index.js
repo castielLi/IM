@@ -51,6 +51,11 @@ export function RemoveGroupFromContact(groupId){
   GROUPFMDB.RemoveContact(groupId)
 }
 
+//删除群成员
+export function removeGroupMember(groupId,members){
+    GROUPFMDB.removeGroupMember(groupId,members)
+}
+
 //根据groupId获取群组的成员列表
 export function GetMembersByGroupId(groupId,callback){
     GROUPFMDB.GetMembersByGroupId(groupId,callback)
@@ -112,6 +117,34 @@ GROUPFMDB.initIMDataBase = function(){
         });
     }, (err)=>{errorDB('初始化数据库',err)});
 }
+
+GROUPFMDB.removeGroupMember = function (groupId,members) {
+    let deleteSqls = [];
+    for(let current of members){
+        let deleteSql = sqls.ExcuteIMSql.removeGroupMember;
+        deleteSql = commonMethods.sqlFormat(deleteSql,[groupId,current]);
+        deleteSqls.push(deleteSql)
+    }
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            for(let deleteSql of deleteSqls){
+                tx.executeSql(deleteSql, [], (tx, results) => {
+
+                    console.log(results);
+
+                    // callback(results.rows.raw())
+
+                }, (err)=>{errorDB('删除群成员',err)});
+            }
+
+        }, errorDB);
+    }, errorDB);
+};
 
 //接收一个新群的时候，获取这个群的成员列表并保存到groupMember中
 GROUPFMDB.InitGroupMemberByGroupId = function(GroupId,members){
