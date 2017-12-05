@@ -12,6 +12,9 @@ GroupManager.initDatabase = function(AccountId){
     });
 }
 
+GroupManager.removeGroupMember = function(groupId,members){
+    groupStoreSqlite.removeGroupMember(groupId,members)
+}
 
 GroupManager.addNewRelation = function(Relation){
     groupStoreSqlite.addNewRelation(Relation)

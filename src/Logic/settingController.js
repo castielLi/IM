@@ -82,7 +82,7 @@ export default class settingController {
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
                 currentObj.user.RemoveGroupFromContact(info.ID);
-                currentObj.user.removeUserGroupCache(info.ID,'chatroom')
+                currentObj.user.removeUserGroup(info.ID,'chatroom')
             }
             callback(results);
         })
