@@ -456,6 +456,7 @@ export default class User {
                     }else{
                         console.log(result.errorMessage)
                     }
+                    callback(result);
                 });
                 break;
             case 'addGroupToContact'://data:{enumerate,params,relation}
@@ -481,14 +482,15 @@ export default class User {
                 });
                 break;
             case 'removeGroupFromContact'://data:{enumerate,params,Id}
-                var {params,Id} = data;
+                var {params,groupId} = data;
                 this.apiBridge.request.RemoveGroupFromContact(params,function(result){
                     if(result.success && result.data.Result){
-                        currentObj.RemoveGroupFromContact(Id);
-                        cache['chatroom'][Id].show = false;
+                        currentObj.RemoveGroupFromContact(groupId);
+                        cache['chatroom'][groupId].show = false;
                     }else{
                         console.log(result.errorMessage)
                     }
+                    callback(result);
                 });
                 break;
             default:
@@ -496,11 +498,11 @@ export default class User {
         }
     }
 
-    changeUserGroup(enumerate,data){
+    changeUserGroup(enumerate,data,callback){
         switch (enumerate){
             case "show":
                 var {enumerate} = data;
-                this.changeUserGroupShow(enumerate,data);
+                this.changeUserGroupShow(enumerate,data,callback);
                 break;
             case "nick":
                 var {params,groupId,name} = data;
