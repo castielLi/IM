@@ -113,8 +113,10 @@ export default class chatController {
     reRenderChatRecord(callback){
         reRenderChatRecordCallBack = callback;
     }
+
+
     //初始化最近聊天数据
-    initChat(callback){
+    initRecentChatList(callback){
         this.chat.getAllChatList((results)=>{
             fillNickAndAvatorData(results,(needData)=>{
                 callback(needData);
@@ -130,20 +132,12 @@ export default class chatController {
             })
         })
     }
-    deleteRecentChatList(rowData){
-        //删除chatRecord表中对应记录
-        this.im.deleteChatRecode(rowData.Client);
-        //删除与该client的所有聊天记录
-        this.im.deleteCurrentChatMessage(rowData.Client,rowData.Type)
-    }
-    //从数据库获取与client的指定聊天记录  start:{start:起始位置,limit:结束位置}
+    //加载更多聊天记录
     getRecentChatRecode(client,type,start,callback){
         this.im.getRecentChatRecode(client,type,start,function(messages){
             callback(messages)
         })
     }
-
-
     //发送消息
     addMessage(message,callback,onprogress){
         this.im.addMessage(message,(status,messageId)=>{
@@ -159,44 +153,18 @@ export default class chatController {
                 })
                 callback();
             })
-            // if(ChatCache[message.Data.Data.Receiver]==undefined){//没有该会话
-            // //新增一个会话
-            //   currentObj.chat.addOneChat(message.Data.Data.Receiver,message,extractMessage(message),message.MSGID,(results)=>{
-            //       //重新渲染聊天记录
-            //       currentObj.chat.getChatRecord(message.Data.Data.Receiver,message.way,(ids)=>{
-            //           currentObj.im.selectMessagesByIds(ids,(messages)=>{
-            //               reRenderChatRecordCallBack(messages);
-            //           })
-            //       })
-            //       //重新渲染最近聊天列表
-            //       fillNickAndAvatorData(results,(needData)=>{
-            //           reRenderRecentListCallBack(needData);
-            //       })
-            //
-            //
-            //       callback();
-            //   })
-            // }else{
-            //     currentObj.chat.updateLastMessageAndTime(message.Data.Data.Receiver,extractMessage(message),message.Data.LocalTime,messageId,(results)=>{
-            //         //重新渲染聊天记录
-            //         currentObj.chat.getChatRecord(message.Data.Data.Receiver,message.way,(ids)=>{
-            //             currentObj.im.selectMessagesByIds(ids,(messages)=>{
-            //                 reRenderChatRecordCallBack(messages);
-            //             })
-            //         })
-            //         //重新渲染最近聊天列表
-            //         fillNickAndAvatorData(results,(needData)=>{
-            //             reRenderRecentListCallBack(needData);
-            //         })
-            //
-            //
-            //         callback();
-            //     })
-            // }
         },onprogress);
-
-        this.chat.sendMessage(message);
     }
+    //删除
+    deleteChat(deleteType,clientId,MSGID,chatType){
+        this.chat.deleteChat(deleteType,clientId,MSGID,chatType)
+    }
+
+
+
+
+
+
 
 
 
@@ -251,12 +219,13 @@ function connectIM(){
     currentObj.im.connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage,recieveAddFriendMessage)
 }
 
+
 function getMessageResultHandle(status,MSGID){
-   AppMessageResultHandle(status,MSGID);
+    messageChange(MSGID);
 }
 
 function changeMessageHandle(message){
-    AppMessageChangeStatusHandle(message);
+    messageChange(message.MSGID);
 }
 
 function kickOutMessage(){
@@ -383,44 +352,6 @@ function receiveMessageHandle(message){
 
             })
         })
-        //收到消息，判断是否是当前对话
-
-        //let sender = message.Data.Data.Sender;
-        // if(sender == currentChat){
-        //     currentObj.chat.updateLastMessageAndTime(message.Data.Data.Sender,extractMessage(message),message.Data.LocalTime,message.MSGID,(results)=>{
-        //         //重新渲染聊天记录
-        //         currentObj.chat.getChatRecord(message.Data.Data.Sender,message.way,(ids)=>{
-        //             currentObj.im.selectMessagesByIds(ids,(messages)=>{
-        //                 reRenderChatRecordCallBack(messages);
-        //             })
-        //         })
-        //         //重新渲染最近聊天列表
-        //         fillNickAndAvatorData(results,(needData)=>{
-        //             reRenderRecentListCallBack(needData);
-        //         })
-        //
-        //     })
-        // }else{
-        //     //新增一个会话
-        //     currentObj.chat.addOneChat(message.Data.Data.Sender,message,extractMessage(message),message.MSGID,()=>{
-        //         //未读消息+1
-        //         currentObj.caht.addUnReadMsgNumber(message.Data.Data.Sender,(results)=>{
-        //             //重新渲染聊天记录
-        //             currentObj.chat.getChatRecord(message.Data.Data.Sender,message.way,(ids)=>{
-        //                 currentObj.im.selectMessagesByIds(ids,(messages)=>{
-        //                     reRenderChatRecordCallBack(messages);
-        //                 })
-        //             })
-        //             //重新渲染最近聊天列表
-        //             fillNickAndAvatorData(results,(needData)=>{
-        //                 reRenderRecentListCallBack(needData);
-        //             })
-        //
-        //         })
-        //     })
-        // }
-
-        currentObj.chat.receiveMessage(message)
     },message.Command,message.Data.Data.Command);
 
 }
@@ -432,6 +363,23 @@ function recieveAddFriendMessage(relationId){
     currentObj.user.updateDisplayOfRelation(relationId,'true');
     handleRecieveAddFriendMessage(relationId)
 }
+
+
+
+//修改消息状态或者消息数据的时候
+function messageChange(MSGID){
+    currentObj.chat.operateChatCache('message',currentChat,MSGID,(bool,ids)=>{
+        if(bool){
+            currentObj.im.selectMessagesByIds(ids,(messages)=>{
+                //重新渲染聊天记录
+                reRenderChatRecordCallBack(messages);
+            })
+        }else{
+            return;
+        }
+    })
+}
+
 //消息提取
 function extractMessage(message){
     switch (message.type) {
@@ -464,4 +412,21 @@ function fillNickAndAvatorData(data,callback){
             }
         });
     }
+}
+//判断数组中是否存在指定id
+function existIdInArray(arr,id){
+    let isExist = false;
+    for(let i=0,length = arr.length;i<length;i++){
+        if(arr[i] == id){
+            isExist = true;
+            break;
+        }
+    }
+    return  isExist;
+}
+////从id截取用户名
+function InterceptionClientFromId(str){
+    let client = '';
+    client = str.slice(0,str.indexOf('_'));
+    return client;
 }
