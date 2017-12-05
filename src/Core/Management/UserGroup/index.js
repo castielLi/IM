@@ -395,236 +395,6 @@ export default class User {
         }
     }
 
-    // //通过id和类型获取群或者好友的信息
-    // getInformationByIdandType(Id,type,callback,messageCommand=undefined,contentCommand=undefined){
-    //     console.log(cache);
-    //
-    //     //当消息为向群组添加新人的时候必须重新获取数据库表
-    //     //当缓存中没有该群或者好友信息
-    //     if(cache[type].length == 0 || cache[type][Id] == undefined){
-    //
-    //         //向数据库查找好友信息
-    //         if(type == 'private'){
-    //                 UserManager.GetRelationByIdAndType(Id,type,(relations)=>{
-    //                     //如果数据库也没有这条消息
-    //                     if(relations.length == 0){
-    //                         //请求http获取信息
-    //                         currentObj.apiBridge.request.SearchUser({"Keyword":Id},(response)=>{
-    //                             if(response.success) {
-    //                                 let results = response.data.Data;
-    //                                 let relation = new RelationModel();
-    //                                 relation.RelationId = results.Account;
-    //                                 relation.Nick = results.Nickname;
-    //                                 relation.Type = 'private';
-    //                                 relation.show = 'false';
-    //                                 relation.avator = results.HeadImageUrl == null?"":results.HeadImageUrl;
-    //                                 cache[type][Id] = relation;
-    //
-    //                                 //把这个user添加到数据库里面，将show设置为false 代表这个用户不是好友
-    //
-    //                                 currentObj.AddNewRelation(relation,function(){
-    //                                     callback(relation);
-    //                                 });
-    //
-    //                             }else{
-    //                                 let errMsg = response.errorMessage;
-    //                                 //alert("获取个人信息失败，原因："+errMsg)
-    //                             }
-    //                         })
-    //                     }else{
-    //
-    //                         cache[type][Id] = relations[0];
-    //                         callback(relations[0])
-    //                     }
-    //                 })
-    //
-    //         }else if(type == 'chatroom'){
-    //
-    //             let groupMembers = [];
-    //             let groupMembersInfo = [];
-    //
-    //                 GroupManager.GetRelationByIdAndType(Id,type,(relations)=>{
-    //                     //如果数据库也没有这条消息
-    //
-    //                     if(relations.length == 0){
-    //                         currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-    //                             if(response.success) {
-    //                                 currentObj.setCacheAndSql(type,Id,response,callback)
-    //
-    //                             }else{
-    //                                 let errMsg = response.errorMessage;
-    //                                 //alert("获取群信息失败，原因："+errMsg)
-    //                             }
-    //                         })
-    //                     }else{
-    //
-    //                         cache[type][Id] = relations[0];
-    //
-    //                         //从数据库中获取成员列表，添加进cache中
-    //                         currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
-    //
-    //                             //代表数据库里面并没有groupMembers的对应关系，需要进行下载
-    //                             if(results.length == 0){
-    //
-    //                                 currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-    //                                     if(response.success) {
-    //                                         currentObj.setCacheAndSql(type,Id,response,callback,relations[0])
-    //
-    //                                     }else{
-    //                                         let errMsg = response.errorMessage;
-    //                                         //alert("获取群信息失败，原因："+errMsg)
-    //                                     }
-    //                                 })
-    //
-    //                             }else{
-    //
-    //                                 for(let i = 0;i<results.length;i++){
-    //                                     //因为数据库的结构就是relationModel的结构
-    //                                     cache["private"][results[i].RelationId] = results[i];
-    //                                     groupMembers.push(results[i].RelationId)
-    //                                     groupMembersInfo.push(results[i])
-    //                                 }
-    //                                 cache["groupMember"][Id] = groupMembers;
-    //                                     callback(relations[0],groupMembersInfo)
-    //                             }
-    //                         });
-    //                     }
-    //                 })
-    //         }
-    //     }else{
-    //         //从cache中取出group和groupMember
-    //         if(type == "chatroom"){
-    //             let groupMembers = [];
-    //             let groupMembersInfo = [];
-    //             //先判断当前的消息命令是不是向群组里面添加成员，如果是则直接需要从http里面更新新的列表存如数据库
-    //             if(contentCommand == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER||contentCommand == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
-    //                 currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-    //                     if(response.success) {
-    //                         currentObj.setCacheAndSql(type,Id,response,callback)
-    //
-    //                     }else{
-    //                         let errMsg = response.errorMessage;
-    //                         //alert("获取群消息失败，原因："+errMsg)
-    //                     }
-    //                 })
-    //             }
-    //             //如果缓存中没有对应的groupmember信息就去找sql，sql没有就http
-    //             else if(!cache["groupMember"][Id] || !cache["groupMember"][Id].length){
-    //                 currentObj.GetGroupMemberIdsByGroupId(Id,function (results) {
-    //                     if(results.length == 0){
-    //
-    //                         currentObj.apiBridge.request.GetGroupInfo({"GroupId":Id},(response)=>{
-    //                             if(response.success) {
-    //                                 currentObj.setCacheAndSql(type,Id,response,callback,cache[type][Id])
-    //                                 // let results = response.data.Data;
-    //                                 // for(let i = 0;i<results.MemberList.length;i++){
-    //                                 //     let accountId = results.MemberList[i].Account;
-    //                                 //     let model = new RelationModel();
-    //                                 //     model.avator = results.MemberList[i].HeadImageUrl;
-    //                                 //     model.Nick = results.MemberList[i].Nickname;
-    //                                 //     model.RelationId = results.MemberList[i].Account;
-    //                                 //     if(cache["private"][accountId] == undefined){
-    //                                 //         cache["private"][accountId] = model;
-    //                                 //     }
-    //                                 //     groupMembers.push(model);
-    //                                 //     groupMembersInfo.push(accountId)
-    //                                 // }
-    //                                 // callback(cache[type][Id],groupMembers)
-    //                                 // //数据库也没有这条group的记录，那么就需要添加进groupList中
-    //                                 // //并且添加groupMember表，存储group和user关系
-    //                                 // //存储新的群user到account表中
-    //                                 // //currentObj.AddGroupAndMember(relation,results.MemberList);
-    //                                 // GroupManager.initGroupMemberByGroupId(Id,results.MemberList)
-    //                                 // currentObj.AddGroupMember(results.MemberList);
-    //                                 // cache["groupMember"][Id] = groupMembersInfo;
-    //
-    //                             }else{
-    //                                 let errMsg = response.errorMessage;
-    //                                 //alert("获取群信息失败，原因："+errMsg)
-    //                             }
-    //                         })
-    //
-    //                     }else{
-    //
-    //                         for(let i = 0;i<results.length;i++){
-    //                             //因为数据库的结构就是relationModel的结构
-    //                             if(cache["private"][results[i].RelationId] == undefined){
-    //                                 cache["private"][results[i].RelationId] = results[i];
-    //                             }
-    //                             groupMembers.push(results[i].RelationId)
-    //                             groupMembersInfo.push(results[i])
-    //                         }
-    //                         cache["groupMember"][Id] = groupMembers;
-    //                         callback(cache[type][Id],groupMembersInfo)
-    //                     }
-    //                 })
-    //             }
-    //             else{
-    //                 let list = cache["groupMember"][Id]
-    //                 if(list == undefined || list == 'undefined'){
-    //                     callback(cache[type][Id],groupMembers);
-    //                 }
-    //                 for(let i = 0;i<list.length;i++){
-    //                     let target = list[i];
-    //                     groupMembers.push(cache["private"][target])
-    //                 }
-    //
-    //                 callback(cache[type][Id],groupMembers);
-    //             }
-    //
-    //         }else{
-    //             callback(cache[type][Id])
-    //         }
-    //     }
-    // }
-    //
-    // setCacheAndSql(type,Id,response,callback,relations = undefined){
-    //     if(type == 'private'){
-    //         return;
-    //     }
-    //     else if(type == 'chatroom'){
-    //         let results = response.data.Data;
-    //         let groupMembers = [];
-    //         let groupMembersInfo = [];
-    //         let relation;
-    //         if(!relations){
-    //             relation = new RelationModel();
-    //             relation.RelationId = results.ID;
-    //             relation.owner = results.Owner;
-    //             relation.Nick = results.Name;
-    //             relation.Type = 'chatroom';
-    //             relation.show = 'false';
-    //             relation.avator = results.ProfilePicture == null?"":results.ProfilePicture;
-    //             relation.MemberList = results.MemberList;
-    //
-    //             cache[type][Id] = relation;
-    //         }
-    //         else{
-    //             relation = relations;
-    //         }
-    //         for(let i = 0;i<results.MemberList.length;i++){
-    //             let accountId = results.MemberList[i].Account;
-    //             let model = new RelationModel();
-    //             model.avator = results.MemberList[i].HeadImageUrl;
-    //             model.Nick = results.MemberList[i].Nickname;
-    //             model.RelationId = results.MemberList[i].Account;
-    //             if(cache["private"][accountId] == undefined){
-    //                 cache["private"][accountId] = model;
-    //             }
-    //             groupMembers.push(model);
-    //             groupMembersInfo.push(accountId)
-    //         }
-    //
-    //         callback(relation,groupMembers)
-    //         //数据库也没有这条group的记录，那么就需要添加进groupList中
-    //         //并且添加groupMember表，存储group和user关系
-    //         //存储新的群user到account表中
-    //         currentObj.AddGroupAndMember(relation,results.MemberList);
-    //         currentObj.AddGroupMember(results.MemberList);
-    //         cache["groupMember"][Id] = groupMembersInfo;
-    //     }
-    // }
-
     //todo：缓存（cache）的操作
     //从cache里面取出用户名
     getUserInfoById(accountId){
@@ -651,11 +421,11 @@ export default class User {
     getUserGroupCache(enumerate,data){
         switch (enumerate){
             case 'single':
-                let {Id,type,callback} = data;
+                var {Id,type,callback} = data;
                 currentObj.getInformationByIdandType(Id,type,callback);
                 break;
             case 'list':
-                let {type} = data;
+                var {type} = data;
                 currentObj.getCacheInfo(type);
                 break;
             default:
@@ -674,11 +444,11 @@ export default class User {
         }
     }
     //改变关系
-    changeUserGroupShow(enumerate,data){
+    changeUserGroupShow(enumerate,data,callback){
         switch (enumerate){
             case 'removeFriend'://data:{enumerate,params}
-                let {params} = data;
-                let {Friend} = params;
+                var {params} = data;
+                var {Friend} = params;
                 this.apiBridge.request.DeleteFriend(params,function(result){
                     if(result.success){
                         currentObj.deleteRelation(Friend);
@@ -689,7 +459,7 @@ export default class User {
                 });
                 break;
             case 'addGroupToContact'://data:{enumerate,params,relation}
-                let {params,relation} = data;
+                var {params,relation} = data;
                 this.apiBridge.request.AddGroupToContact(params,function(result){
                     if(result.success && result.data.Result){
                         let obj = {
@@ -707,10 +477,11 @@ export default class User {
                     }else{
                         console.log(result.errorMessage)
                     }
+                    callback(result);
                 });
                 break;
             case 'removeGroupFromContact'://data:{enumerate,params,Id}
-                let {params,Id} = data;
+                var {params,Id} = data;
                 this.apiBridge.request.RemoveGroupFromContact(params,function(result){
                     if(result.success && result.data.Result){
                         currentObj.RemoveGroupFromContact(Id);
@@ -728,11 +499,11 @@ export default class User {
     changeUserGroup(enumerate,data){
         switch (enumerate){
             case "show":
-                let {enumerate} = data;
+                var {enumerate} = data;
                 this.changeUserGroupShow(enumerate,data);
                 break;
             case "nick":
-                let {params,groupId,name} = data;
+                var {params,groupId,name} = data;
                 this.apiBridge.request.ModifyGroupName(params,function(result){
                     if(result.success){
                         if(result.data.Data){
@@ -745,7 +516,7 @@ export default class User {
                 });
                 break;
             case "BlackList":
-                let {params,value} = data;
+                var {params,value} = data;
                 if(value == 'remove'){
                     this.apiBridge.request.RemoveBlackMember(params,function(result){
                         if(result.success){
