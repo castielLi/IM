@@ -9,7 +9,7 @@ import ChatWayEnum from '../../Common/dto/ChatWayEnum'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
 import ChatCommandEnum from '../../IM/dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
-import MessageType from '../../Common/dto/MessageType';
+import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
 import MessageStatus from '../../Common/dto/MessageStatus'
 
 export function storeSendMessage(message){
@@ -445,7 +445,7 @@ function deleteClientChatList(tableName,tx){
 
 function getContentByMessage(message){
     let content = "";
-    if(message.Resource != null && message.Resource.length > 0 && message.Resource.length < 2){
+    if(message.Resource != null && message.Resource.length > 0){
         switch (message.Resource[0].FileType){
             case ResourceTypeEnum.image:
                 content = "[图片]";
@@ -459,7 +459,7 @@ function getContentByMessage(message){
         }
 
     }else if(message.Resource == null){
-        if(message.type == MessageType.information){
+        if(message.data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
             content = "[通知]"
         }else {
             content = message.Data.Data.Data

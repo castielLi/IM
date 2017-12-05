@@ -7,7 +7,7 @@ import * as sqls from './IMExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
 import RNFS from 'react-native-fs';
 import MessageStatus from '../../Common/dto/MessageStatus'
-import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
+import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum'
 import AppCommandEnum from '../dto/AppCommandEnum'
 
 export function storeSendMessage(message){
