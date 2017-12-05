@@ -4,9 +4,6 @@
 import IM from '../../Core/Management/IM/index'
 import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
-import {buildMessageDto} from '../../Core/Redux/dto/Common'
-import AppCommandEnum from '../../Core/Management/Common/dto/AppCommandEnum'
-import MessageCommandEnum from '../../Core/Management/Common/dto/MessageCommand'
 
 //上层应用Controller的接口
 //返回消息结果回调
@@ -169,8 +166,8 @@ export default class chatController {
     }
 
     //聊天信息显示页面(chatDetail/List)
-    getInformationByIdandType(Id,type,callback,messageCommand,contentCommand){
-        this.user.getInformationByIdandType(Id,type,callback,messageCommand,contentCommand)
+    getInformationByIdandType(Id,type,callback,FirstCommand,SecondCommand){
+        this.user.getInformationByIdandType(Id,type,callback,FirstCommand,SecondCommand)
     }
 
     updateMessageLocalSource(MSGID,path){
