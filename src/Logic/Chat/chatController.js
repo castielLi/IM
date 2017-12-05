@@ -5,8 +5,8 @@ import IM from '../../Core/Management/IM/index'
 import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
 import {buildMessageDto} from '../../Core/Redux/dto/Common'
-import AppCommandEnum from '../../Core/Management/IM/dto/AppCommandEnum'
-import MessageCommandEnum from '../../Core/Management/IM/dto/MessageCommandEnum'
+import AppCommandEnum from '../../Core/Management/Common/dto/AppCommandEnum'
+import MessageCommandEnum from '../../Core/Management/Common/dto/MessageCommand'
 
 //上层应用Controller的接口
 //返回消息结果回调
@@ -127,9 +127,7 @@ export default class chatController {
     //初始化某聊天窗口的聊天记录
     initChatRecord(clientId,type,callback){
         this.chat.getChatRecord(clientId,type,(ids)=>{
-            currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                callback(messages)
-            })
+            callback(currentObj.im.getStoreMessagesByMSGIDs(ids));
         })
     }
     //加载更多聊天记录
@@ -147,10 +145,8 @@ export default class chatController {
                 fillNickAndAvatorData(results,(needData)=>{
                     reRenderRecentListCallBack(needData);
                 })
-                currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                    //重新渲染聊天记录
-                    reRenderChatRecordCallBack(messages);
-                })
+                //重新渲染聊天记录
+                reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
                 callback();
             })
         },onprogress);
@@ -347,11 +343,8 @@ function receiveMessageHandle(message){
             fillNickAndAvatorData(results,(needData)=>{
                 reRenderRecentListCallBack(needData);
             })
-            currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                //重新渲染聊天记录
-                reRenderChatRecordCallBack(messages);
-
-            })
+            //重新渲染聊天记录
+            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
         })
     },message.Command,message.Data.Data.Command);
 
@@ -371,34 +364,15 @@ function receiveMessageHandle(message){
 function messageChange(MSGID){
     currentObj.chat.operateChatCache('message',currentChat,MSGID,(bool,ids)=>{
         if(bool){
-            currentObj.im.selectMessagesByIds(ids,(messages)=>{
-                //重新渲染聊天记录
-                reRenderChatRecordCallBack(messages);
-            })
+            //重新渲染聊天记录
+            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
         }else{
             return;
         }
     })
 }
 
-//消息提取
-function extractMessage(message){
-    switch (message.type) {
-        case 'text':
-            return message.Data.Data.Data;
-        case 'image':
-            return '[图片]';
-        case 'audio':
-            return '[音频]';
-        case 'video':
-            return '[视频]';
-        case 'information':
-            return '[通知]'
-        // return message.Data.Data.Data
-        default:
-            return '';
-    }
-}
+
 //数据填充
 //填充最近聊天头像昵称
 function fillNickAndAvatorData(data,callback){
@@ -413,21 +387,4 @@ function fillNickAndAvatorData(data,callback){
             }
         });
     }
-}
-//判断数组中是否存在指定id
-function existIdInArray(arr,id){
-    let isExist = false;
-    for(let i=0,length = arr.length;i<length;i++){
-        if(arr[i] == id){
-            isExist = true;
-            break;
-        }
-    }
-    return  isExist;
-}
-////从id截取用户名
-function InterceptionClientFromId(str){
-    let client = '';
-    client = str.slice(0,str.indexOf('_'));
-    return client;
 }

@@ -3,10 +3,13 @@
  */
 
 import * as storeSqlite from './StoreSqlite/index'
-import RecentRecordDtoDto from './dto/RecentRecordDto';
-import InitChatRecordConfig from './dto/InitChatRecordConfig';
-import DeleteChatEnum from './dto/DeleteChatEnum'
-import OperateChatCacheEnum from './dto/OperateChatCacheEnum'
+import RecentRecordDtoDto from './Common/dto/RecentRecordDto';
+import InitChatRecordConfig from './Common/dto/InitChatRecordConfig';
+import DeleteChatEnum from './Common/dto/DeleteChatEnum'
+import OperateChatCacheEnum from './Common/dto/OperateChatCacheEnum'
+import existIdInArray from './Common/methods/existIdInArray';
+import formatArrToObjById from './Common/methods/formatArrToObjById';
+import interceptionClientFromId from './Common/methods/interceptionClientFromId';
 let currentObj = undefined;
 
 //会话缓存
@@ -131,7 +134,7 @@ export default class Chat {
                 break;
             case OperateChatCacheEnum.Message:
                 //此时，ChatCache肯定存在该用户缓存
-                clientId = InterceptionClientFromId(message);//message是一个消息id
+                clientId = interceptionClientFromId(message);//message是一个消息id
                 if(clientId == currentChat){
                     let ids = ChatCache[clientId]['Record'];
                     if(existIdInArray(ids,message)){
@@ -284,52 +287,8 @@ export default class Chat {
 
 
 //私有方法
-//数组转对象
-function formatArrToObjById(arr){
-    return arr.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
-
-                o[m.Client] = {
-                    ...m,
-                    Record:[]
-                };
-                return o;
-            }, {})
-}
 
 
-//消息提取
-function extractMessage(message){
-    switch (message.type) {
-        case 'text':
-            return message.Data.Data.Data;
-        case 'image':
-            return '[图片]';
-        case 'audio':
-            return '[音频]';
-        case 'video':
-            return '[视频]';
-        case 'information':
-            return '[通知]'
-        // return message.Data.Data.Data
-        default:
-            return '';
-    }
-}
-////从id截取用户名
-function InterceptionClientFromId(str){
-    let client = '';
-    client = str.slice(0,str.indexOf('_'));
-    return client;
-}
 
-//判断数组中是否存在指定id
-function existIdInArray(arr,id){
-    let isExist = false;
-    for(let i=0,length = arr.length;i<length;i++){
-        if(arr[i] == id){
-            isExist = true;
-            break;
-        }
-    }
-    return  isExist;
-}
+
+

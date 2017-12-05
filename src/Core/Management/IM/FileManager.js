@@ -5,7 +5,7 @@ import RNFS from 'react-native-fs'
 import * as Helper from '../../Helper'
 import UpdateMessageSqliteType from './UpdateMessageSqliteType'
 import networkStatuesType from './networkStatuesType'
-import * as methods from './Common'
+import * as methods from './Common/methods'
 import netWorking from '../../Networking/Network'
 
 

@@ -6,10 +6,10 @@ import Connect from './socket'
 import * as storeSqlite from './StoreSqlite'
 import UUIDGenerator from 'react-native-uuid-generator';
 import MessageStatus from "../Common/dto/MessageStatus"
-import SendStatus from './dto/SendStatus'
+import SendStatus from './Common/dto/SendStatus'
 import * as configs from './IMconfig'
-import MessageCommandEnum from './dto/MessageCommandEnum'
-import * as DtoMethods from './Common/SqliteMessageToDtoMessage'
+import MessageCommandEnum from '../Common/dto/MessageBodyTypeEnum'
+import * as DtoMethods from './Common/methods/SqliteMessageToDtoMessage'
 import ResourceTypeEnum from '../Common/dto/ResourceTypeEnum'
 import SendManager from './SendManager'
 import FileManager from './FileManager'
@@ -587,8 +587,8 @@ export default class IM {
     selectMessagesByIds(ids,callback){
         storeSqlite.selectMessagesByIds(ids,(messages)=>{
             let messageList = messages.map((message)=>{
-                            return DtoMethods.sqliteMessageToMessage(message);
-                        })
+                return DtoMethods.sqliteMessageToMessage(message);
+            })
             callback(messageList);
         });
     }

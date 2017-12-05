@@ -4,6 +4,7 @@
 import ResourceTypeEnum from '../Common/dto/ResourceTypeEnum'
 
 
+
 let ReceiveManager = {};
 let currentObj = undefined;
 let currentAccount = undefined;
