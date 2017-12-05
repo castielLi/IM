@@ -211,7 +211,7 @@ class Chat extends Component {
                         // }
 
                         let msg = messages.map((message)=>{
-                            return DtoMethods.sqlMessageToMessage(message);
+                            return DtoMethods.sqliteMessageToMessage(message);
                         });
                         let msg2 = msg.concat();
 
@@ -556,7 +556,7 @@ class Chat extends Component {
                 //     messages.pop();
                 // }
                 let msg = messages.map((message)=>{
-                    return DtoMethods.sqlMessageToMessage(message);
+                    return DtoMethods.sqliteMessageToMessage(message);
                 });
 
                 that.historyData2 = that.historyData2.concat(msg);
