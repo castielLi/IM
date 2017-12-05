@@ -417,12 +417,15 @@ export default class IM {
             case MessageCommandEnum.MSG_SEND_ACK:
                 currentObj.ackBackMessageHandle(message.Data);
                 break;
-            case MessageCommandEnum.MSG_ERROR:
-                ReceiveManager.receiveErrorMessage(message);
+            default:
+                ReceiveManager.receiveBodyMessage(message);
                 break;
-            case MessageCommandEnum.MSG_BODY:
-                ReceiveManager.receiveBodyMessage(message)
-                break;
+            // case MessageCommandEnum.MSG_ERROR:
+            //     ReceiveManager.receiveErrorMessage(message);
+            //     break;
+            // case MessageCommandEnum.MSG_BODY:
+            //     ReceiveManager.receiveBodyMessage(message)
+            //     break;
         }
 
     }
