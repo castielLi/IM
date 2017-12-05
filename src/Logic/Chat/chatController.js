@@ -109,18 +109,18 @@ export default class chatController {
 
 
     //初始化最近聊天数据
-    initRecentChatList(callback){
+    initRecentChatList(){
         this.chat.getAllChatList((results)=>{
             fillNickAndAvatorData(results,(needData)=>{
-                callback(needData);
+                reRenderRecentListCallBack(needData);
             });
 
         })
     }
     //初始化某聊天窗口的聊天记录
-    initChatRecord(clientId,type,callback){
+    initChatRecord(clientId,type){
         this.chat.getChatRecord(clientId,type,(ids)=>{
-            callback(currentObj.im.getStoreMessagesByMSGIDs(ids));
+            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
         })
     }
     //加载更多聊天记录
