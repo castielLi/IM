@@ -25,8 +25,7 @@ import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ChatController from '../../../Logic/Chat/chatController';
-import InitChatRecordConfig from '../../../Core/Redux/chat/InitChatRecordConfig';
-import * as DtoMethods from '../../../Core/Management/IM/Common/methods/SqliteMessageToDtoMessage';
+
 
 let chatController = new ChatController();
 class ChatDetail extends ContainerComponent {
