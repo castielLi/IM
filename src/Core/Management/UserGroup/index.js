@@ -544,13 +544,13 @@ export default class User {
     addUserGroup(enumerate,data){
         switch (enumerate){
             case "addFriend":
-                let {params,relation} = data;
-                let {Type,RelationId} = relation;
+                var {params,relation} = data;
+                var {Type,RelationId} = relation;
                 this.apiBridge.request.ApplyFriend(params,function(result){
                     if(result.success && result.data.Data instanceof Object){
-                        let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-                        let IsInBlackList =result.data.Data.IsInBlackList;
-                        let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+                        var {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+                        var IsInBlackList =result.data.Data.IsInBlackList;
+                        var relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
                         currentObj.AddNewRelation(relationObj);
                         cache[Type][RelationId] = relation;
                     }else{
@@ -559,12 +559,12 @@ export default class User {
                 });
                 break;
             case "acceptFriend":
-                let {params,relation} = data;
-                let {Type,RelationId} = relation;
+                var {params,relation} = data;
+                var {Type,RelationId} = relation;
                 this.apiBridge.request.AcceptFriend(params,function(result){
                     if(result.success){
-                        let {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
-                        let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+                        var {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
+                        var relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
                         currentObj.AddNewRelation(relationObj);
                         cache[Type][RelationId] = relation;
                     }else{
@@ -573,8 +573,8 @@ export default class User {
                 });
                 break;
             case "createGroup": //创建群
-                let {params,group,members} = data;
-                let {Type,RelationId} = group;
+                var {params,group,members} = data;
+                var {Type,RelationId} = group;
                 this.apiBridge.request.CreateGroup(params,function(result){
                     if(result.success){
                         if(result.data.Data){
@@ -590,7 +590,7 @@ export default class User {
                 });
                 break;
             case "addMember": //添加群成员
-                let {params,groupId,members,relations} = data;
+                var {params,groupId,members,relations} = data;
                 this.apiBridge.request.AddGroupMember(params,function(result){
                     if(result.success){
                         if(result.data.Data){
@@ -616,8 +616,8 @@ export default class User {
     removeUserGroup(enumerate,data){
         switch (enumerate){
             case 'removeGroupMember':
-                let {params,close,members} = data;
-                let {GroupId} = params;
+                var {params,close,members} = data;
+                var {GroupId} = params;
                 this.apiBridge.request.RemoveGroupMember(params,function(result){
                     if(result.success && result.data.Data){
                         currentObj.removeGroupMember(GroupId,members);
@@ -637,8 +637,8 @@ export default class User {
                 });
                 break;
             case 'removeGroup':
-                let {params} = data;
-                let {GroupId} = params;
+                var {params} = data;
+                var {GroupId} = params;
                 this.apiBridge.request.ExitGroup(params,function(result){
                     if(result.success){
                         currentObj.deleteFromGrroup(GroupId);
