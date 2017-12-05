@@ -3,7 +3,7 @@
  */
 
 import ChatCommandEnum from '../dto/ChatCommandEnum'
-import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
+import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum'
 import MessageCommandEnum from '../dto/MessageCommandEnum'
 
 import SendMessageBodyDto from '../dto/SendMessageBodyDto'

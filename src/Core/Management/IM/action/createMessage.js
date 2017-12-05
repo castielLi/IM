@@ -1,6 +1,6 @@
 import ChatCommandEnum from '../dto/ChatCommandEnum';
 import AppCommandEnum from '../dto/AppCommandEnum'
-import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum';
+import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
 import MessageCommandEnum from '../dto/MessageCommandEnum';
 import MessageCommand from '../StoreSqlite/dto/MessageCommand'
 
