@@ -19,7 +19,7 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-import Relation from '../../Logic/Setting/dto/RelationDto';
+import RelationModel from '../../Logic/Setting/dto/RelationDto'
 import ChatWayEnum from '../../Logic/Chat/dto/ChatWayEnum';
 import settingController from '../../Logic/Setting/settingController';
 
@@ -71,7 +71,7 @@ class Validate extends ContainerComponent {
                 });
 
             //向数据库添加关系，并且标记这条关系显示为false;
-            let relation = new Relation();
+            let relation = new RelationModel();
             relation.Nick = currentObj.props.relation.Nickname;
             relation.RelationId = currentObj.props.relation.Account;
             relation.OtherComment = currentObj.props.relation.Gender;

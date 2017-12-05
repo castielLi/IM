@@ -17,7 +17,7 @@ import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
 import SettingController from '../../../Logic/Setting/settingController'
-import RelationModel from '../../../Core/Management/UserGroup/Common/dto/RelationModel'
+import RelationModel from '../../../Logic/Setting/dto/RelationDto'
 
 
 
