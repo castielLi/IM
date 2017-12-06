@@ -8,6 +8,8 @@ import MessageType from '../../../../Logic/Chat/dto/MessageType'
 import MessageStatus from '../../Common/dto/MessageStatus'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
 import uploadResourceDto from '../Common/dto/uploadResourceDto'
+import ChatWayEnum from '../../Common/dto/ChatWayEnum'
+import ManagementMessageDto from '../../Common/dto/ManagementMessageDto'
 
  function createMessageObj(text,Resource,Sender,Receiver,messageDataCommand,messageBodyCommand,MessageCommand=MessageCommandEnum.MSG_BODY,messageId=""){
     let addMessage = new SendMessageDto();
@@ -36,30 +38,32 @@ import uploadResourceDto from '../Common/dto/uploadResourceDto'
 }
 
 //构造发送消息体
-export function buildSendMessage(messageDto){
+export function buildSendMessage(messageDto = new ManagementMessageDto()){
+
+   let way = messageDto.group ? ChatWayEnum.Group:ChatWayEnum.Private;
+
    switch (messageDto.type){
        case MessageType.text:
-           return addTextMessage(messageDto.data,messageDto.way,messageDto.sender,messageDto.receiver)
+           return addTextMessage(messageDto.message.data,way,messageDto.sender,messageDto.chatId)
        case MessageType.image:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.image;
-           file.RemoteSource = messageDto.remoteSource;
-           file.LocalSource = messageDto.localSource;
-           return addResourceMessage(messageDto.way,file,messageDto.sender,messageDto.receiver);
+           file.RemoteSource = messageDto.data.remoteSource;
+           file.LocalSource = messageDto.data.localSource;
+           return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
        case MessageType.audio:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.audio;
-           file.RemoteSource = messageDto.remoteSource;
-           file.LocalSource = messageDto.localSource;
-           file.Time = messageDto.sourceTime;
-           return addResourceMessage(messageDto.way,file,messageDto.sender,messageDto.receiver);
+           file.RemoteSource = messageDto.data.remoteSource;
+           file.LocalSource = messageDto.data.localSource;
+           return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
        case MessageType.video:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.video;
-           file.RemoteSource = messageDto.remoteSource;
-           file.LocalSource = messageDto.localSource;
+           file.RemoteSource = messageDto.data.remoteSource;
+           file.LocalSource = messageDto.data.localSource;
            file.Time = messageDto.sourceTime;
-           return addResourceMessage(messageDto.way,file,messageDto.sender,messageDto.receiver);
+           return addResourceMessage(way,file,messageDto.sender,messageDto.receiver);
    }
 }
 

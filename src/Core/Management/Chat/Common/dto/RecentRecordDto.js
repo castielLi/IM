@@ -5,7 +5,7 @@
 
 //发送消息的最外层
 
-export default class RecentRecordDtoDto{
+export default class RecentRecordDto{
     constructor(){
             this.Client = "",
             this.LastMessage =  "",
