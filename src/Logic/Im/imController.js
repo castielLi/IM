@@ -4,7 +4,7 @@ import Chat from '../../Core/Management/Chat/index'
 import ControllerChatConversationDto from './dto/ControllerChatConversationDto';
 import ControllerMessageDto from  './dto/ControllerMessageDto';
 import ManagementChatConversationDto from './dto/ManagementChatConversationDto';
-import ManagementMessageDto from  './dto/ManagementMessageDto';
+import ManagementMessageDto from '../../Core/Management/Common/dto/ManagementMessageDto'
 
 
 
@@ -83,9 +83,17 @@ class IMController {
     //设置当前会话
     setCurrentConverse(chatId, group, callback) {
         currentChat = chatId;
-
+        updateChatRecordhandle = callback;
         //初始化前10条聊天记录
         this.chat.getChatList(chatId, group = false, cache.length, (messageList) => {
+
+            if(messageList.length == 0){
+                updateChatRecordhandle({});
+                return;
+            }
+
+            //todo : 黄昊东  把会话列表缓存住
+
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
             this.user.GetBaseInfosByList(snapArr, (relationObj) => {
                 for (let i = 0, length = messageList.length; i < length; i++) {
@@ -109,7 +117,15 @@ class IMController {
 
     //获取历史聊天记录
     getHistoryChatList(chatId, group, callback){
-    this.chat.getChatList(chatId, group = false, cache.length, (messageList) => {
+        this.chat.getChatList(chatId, group = false, cache.length, (messageList) => {
+
+        if(messageList.length == 0){
+            updateChatRecordhandle({});
+            return;
+        }
+
+            //todo : 黄昊东  把会话列表缓存住
+
         let snapArr = formateDataFromChatManageCacheRecord(messageList);
         this.user.GetBaseInfosByList(snapArr, (relationObj) => {
             for (let i = 0, length = messageList.length; i < length; i++) {
@@ -129,7 +145,7 @@ class IMController {
             updateChatRecordhandle(cache);
         })
     })
-}
+    }
     //发送消息
     // UI传过来的消息体
     // {group: false,
@@ -138,7 +154,7 @@ class IMController {
     //  message :  {data:"",time:""},//消息内容，
     //  type : enum,//消息类型
     //   }
-    sendMessage(chatId,message){
+    sendMessage(message){
         let itemManagementMessage = new ManagementMessageDto();
         itemManagementMessage.group = message.group;
         itemManagementMessage.chatId = message.chatId;
@@ -148,7 +164,7 @@ class IMController {
         itemManagementMessage.sendTime = Date.now();
         this.im.addMessage(itemManagementMessage,(managementMessage)=>{
             //managementMessage是带有status和消息id的完整ManagementMessageDto
-            this.chat.addMessage(chatId,managementMessage);
+            this.chat.addMessage(message.chatId,managementMessage);
             //cache添加
 
             this.user.getInformationByIdandType(message.sender,false,(relationObj) => {
@@ -184,7 +200,10 @@ class IMController {
     //清除未读数, 在会话列表处功能(标记为已读)
     clearUnReadNumber(chatId, group){
         //清空对应item未读消息
-        currentObj.chat.clearUnReadNumber(chatId, group, (recentListObj) => {
+
+        //todo : 黄昊东  把会话列表缓存住. 直接把数据清0
+
+        currentObj.chat.clearUnRead(chatId, group, (recentListObj) => {
             let snapArr = formateDataFromChatManageCache(recentListObj);
             this.user.GetBaseInfosByList(snapArr, (relationObj) => {
                 let needArr = [];
@@ -256,9 +275,7 @@ class IMController {
     }
 }
 
-    reRenderRecentList(callback){
-        updateconverslisthandle = callback;
-    }
+
 //message 消息体 协议
 function receivemessage(message){
 

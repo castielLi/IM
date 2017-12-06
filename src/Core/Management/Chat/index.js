@@ -6,7 +6,6 @@ import * as storeSqlite from './StoreSqlite/index'
 import RecentRecordDto from './Common/dto/RecentRecordDto';
 import InitChatRecordConfig from './Common/dto/InitChatRecordConfig';
 import DeleteChatEnum from './Common/dto/DeleteChatEnum'
-import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
 import existIdInArray from './Common/methods/existIdInArray';
 import formatArrToObjById from './Common/methods/formatArrToObjById';
 import getContentOfControllerMessageDto from './Common/methods/GetContentOfControllerMessageDto'
@@ -88,6 +87,10 @@ export default class Chat {
     }
     //初始化聊天记录,打开一个聊天窗口的时候
     getChatList(chatId, group = false, length, callback){
+
+        //length改成maxid 并且仅仅maxid== 0 的时候才缓存， 不然直接把搜索的messages返回给上部
+
+
         if(ChatCache[chatId] == undefined){
             callback([])
         }else{
@@ -124,7 +127,7 @@ export default class Chat {
     }
 
 
-    clearUnRead(clearType,chatId="",group=false){
+    clearUnRead(chatId="",group=false,callback){
        switch (clearType){
            case ClearUnReadEnum.All:
                this.clearAllUnReadMsgNumber()
@@ -133,6 +136,9 @@ export default class Chat {
                this.clearUnReadMsgNumber(chatId)
                break;
        }
+
+        // this.clearUnReadMsgNumber(chatId)
+        // callback();
     }
 
 
