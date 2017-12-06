@@ -129,16 +129,13 @@ class Chat extends Component {
         let currentObj = this;
         //当是群组消息的时候，向cache里面初始化所有的成员信息
         console.log(this.state.groupMembers)
-        ChatController.initChatRecord((results)=>{
-            this.setState({
-                chatRecordStore:results
-            })
-        })
+
         ChatController.reRenderChatRecord((results)=>{
             this.setState({
                 relationStore:results
             })
         })
+        ChatController.initChatRecord(this.props.client,this.props.type);
         if(this.props.type == "chatroom"){
             //设置人员变动的回调
             ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){

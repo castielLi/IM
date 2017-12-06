@@ -5,7 +5,7 @@ import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './ChatExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
-import ChatWayEnum from '../../Common/dto/ChatWayEnum'
+import ChatWayEnum from '../../../../Logic/Chat/dto/ChatWayEnum'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
 import ChatCommandEnum from '../../Common/dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';

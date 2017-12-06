@@ -146,16 +146,14 @@ class RecentChat extends ContainerComponent {
     componentWillMount() {
 
         styles = super.componentWillMount(styles)
-        chatController.initRecentChatList((results)=>{
-            this.setState({
-                relationStore:formatOjbToneedArr(results)
-            })
-        })
+
         chatController.reRenderRecentList((results)=>{
             this.setState({
                 relationStore:formatOjbToneedArr(results)
             })
         })
+
+        chatController.initRecentChatList();
     }
     componentDidMount() {
 

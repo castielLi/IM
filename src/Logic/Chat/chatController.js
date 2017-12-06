@@ -69,10 +69,6 @@ export default class chatController {
         AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
-        // handleRecieveAddFriendMessage = recieveAddFriendMessage;
-        // handleRecieveChangeGroupNameMessage = recieveChangeGroupNameMessage
-        //向im注入controller chat回调方法
-        connectIM()
     }
 
 
@@ -113,18 +109,18 @@ export default class chatController {
 
 
     //初始化最近聊天数据
-    initRecentChatList(callback){
+    initRecentChatList(){
         this.chat.getAllChatList((results)=>{
             fillNickAndAvatorData(results,(needData)=>{
-                callback(needData);
+                reRenderRecentListCallBack(needData);
             });
 
         })
     }
     //初始化某聊天窗口的聊天记录
-    initChatRecord(clientId,type,callback){
+    initChatRecord(clientId,type){
         this.chat.getChatRecord(clientId,type,(ids)=>{
-            callback(currentObj.im.getStoreMessagesByMSGIDs(ids));
+            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
         })
     }
     //加载更多聊天记录
@@ -340,8 +336,9 @@ function receiveMessageHandle(message){
     //         fillNickAndAvatorData(results,(needData)=>{
     //             reRenderRecentListCallBack(needData);
     //         })
+    //
     //         //重新渲染聊天记录
-    //         reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
+    //         ids&&reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
     //     })
     // },message.Command,message.Data.Data.Command);
 
@@ -360,28 +357,26 @@ function receiveMessageHandle(message){
 //修改消息状态或者消息数据的时候
 function messageChange(MSGID){
     currentObj.chat.operateChatCache('message',currentChat,MSGID,(bool,ids)=>{
-        if(bool){
+
             //重新渲染聊天记录
-            reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
-        }else{
-            return;
-        }
+            bool&&reRenderChatRecordCallBack(currentObj.im.getStoreMessagesByMSGIDs(ids));
+
     })
 }
 
 
 //数据填充
 //填充最近聊天头像昵称
-function fillNickAndAvatorData(data,callback){
-    objLength = Object.keys(data).length;
-    let account = 0;
-    for(let key in data){
-        user.getNickAndAvatorById(key,data[key].Type,(nickAndAvatorObj)=>{
-            account++;
-            data[key] = {...data[key],...nickAndAvatorObj}
-            if(account == objLength){
-                callback(data)
-            }
-        });
-    }
-}
+// function fillNickAndAvatorData(data,callback){
+//     objLength = Object.keys(data).length;
+//     let account = 0;
+//     for(let key in data){
+//         user.getNickAndAvatorById(key,data[key].Type,(nickAndAvatorObj)=>{
+//             account++;
+//             data[key] = {...data[key],...nickAndAvatorObj}
+//             if(account == objLength){
+//                 callback(data)
+//             }
+//         });
+//     }
+// }
