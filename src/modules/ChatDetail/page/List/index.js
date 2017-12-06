@@ -32,6 +32,7 @@ import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/Sqlit
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/Setting/settingController'
+import IMController from '../../../../Logic/IM/IMController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -49,13 +50,16 @@ let recordData;
 
 let ChatController = new chatController();
 let settingController = new SettingController();
+let ImController = new IMController();
+let currentObj;
 
 class Chat extends Component {
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             chatRecordStore:[]
         }
+        currentObj = this;
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
             if(r1.message.type === 'image' || r1.message.type === 'video')
             {
@@ -68,16 +72,8 @@ class Chat extends Component {
 
         this.data = [];
         this.data2 = [];
-        this.shortData = [];
-        this.shortData2 = [];
-        this.historyData = [];
-        this.reduxData = [];
-        this.historyData2 = [];
-        this.reduxData2 = [];
 
-        this.firstLoad = true;
         this.timestamp = 0;
-        this.isTime = false;
         this.noMore = 0;
 
         this.state = {
@@ -92,76 +88,24 @@ class Chat extends Component {
         this.renderRow = this.renderRow.bind(this);
     }
 
-    componentWillReceiveProps(newProps){
-        let newData = newProps.chatRecordStore.concat();
-        if(this.firstLoad && newData.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.noMore = ListConst.msgState.NOMORE;
-            this.firstLoad = false;
-        }
-        else if (this.firstLoad){
-            this.firstLoad = false;
-        }
-
-        if(newData.length === InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER){
-            if(recordData && newData[newData.length-1].message.MSGID !== recordData.message.MSGID){
-                this.historyData.push(recordData);
-                this.historyData2.unshift(recordData);
-            }
-            recordData = newData[newData.length-1];
-        }
-
-        this.reduxData = newData.concat().reverse();
-        this.shortData = this.historyData.concat(this.reduxData);
-        this.data = this.prepareMessages(this.shortData);
-
-        this.reduxData2 = newData;
-        this.shortData2 =  this.reduxData2.concat(this.historyData2);
-        this.data2 = this.prepareMessages(this.shortData2);
-
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-        });
+    onUpdataChatRecord(chatRecord){
+        this.data = this.prepareMessages(chatRecord);
+        this.data2 = this.prepareMessages(chatRecord);
+        currentObj.setState({
+            dataSource:this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
+            dataSourceO:this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
+        })
     }
 
     componentWillMount() {
-        this.im = new IM()
-        let currentObj = this;
-        //当是群组消息的时候，向cache里面初始化所有的成员信息
-        console.log(this.state.groupMembers)
-
-        ChatController.reRenderChatRecord((results)=>{
-            this.setState({
-                relationStore:results
-            })
-        })
-        ChatController.initChatRecord(this.props.client,this.props.type);
-        if(this.props.type == "chatroom"){
-            //设置人员变动的回调
-            ChatController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
-                currentObj.setState({
-                    groupMembers
-                })
-            })
-
-            settingController.setCurrentGroupChatMemberChangeCallback(function(groupMembers){
-                currentObj.setState({
-                    groupMembers
-                })
-            })
-
-            ChatController.getInformationByIdandType(this.props.client,"chatroom",function(group,groupMembers){
-                currentObj.setState({
-                    groupMembers,
-                })
-            });
-
+        ImController.init(param);
+        let group;
+        if(this.props.type === 'private'){
+            group = false;
+        }else{
+            group = true;
         }
-
-
-        let chatRecordStore = this.props.chatRecordStore.concat();
-
-        let {isMore} = this.state;
+        ImController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
 
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
@@ -183,92 +127,16 @@ class Chat extends Component {
             //移动时作出的动作
             onPanResponderMove: (e)=>{
                 let {msgState} = ListConst;
-                if(this.reduxData.length && e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
+
+                if(e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
                 {
-                    this.noMore = msgState.LOADING;
-                    this.setState({
-                        isMore : ListConst.msgState.LOADING,
-                    })
-                    let dataLength = this.shortData.length;
-                    let {client} = this.props;
-                    let that = this;
-                    ChatController.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-
-                        if(!messages){
-                            that.noMore  = msgState.NOMORE;
-                            that.setState({
-                                isMore:that.noMore,
-                            });
-                            return;
-                        }
-                        let msgLength = messages.length;
-
-                        // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                        //     messages.pop();
-                        // }
-
-                        let msg = messages.map((message)=>{
-                            return DtoMethods.sqliteMessageToMessage(message);
-                        });
-                        let msg2 = msg.concat();
-
-                        that.historyData = msg.reverse().concat(that.historyData);
-                        that.shortData = that.historyData.concat(that.reduxData);
-                        that.data = that.prepareMessages(that.shortData);
-
-                        that.historyData2 = that.historyData2.concat(msg2);
-                        that.shortData2 = that.reduxData2.concat(that.historyData2);
-                        that.data2 = that.prepareMessages(that.shortData2);
-
-                        if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                            that.noMore  = msgState.NOMORE;
-                        }
-                        else{
-                            that.noMore  = msgState.END;
-                        }
-
-                        that.setState({
-                            dataSource: that.state.dataSource.cloneWithRows(that.data.blob, that.data.keys),
-                            dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
-                            isMore:that.noMore,
-                        })
-                    })
-                    // setTimeout(()=>{
-                    //     this.im.getRecentChatRecode()
-                    // },500)
+                    //获取历史记录 回调修改页面 用到之前的setCurrentConverse方法中传过去的callback取数控逻辑也在 controller
+                    IMController.getHistoryChatList();
                 }
             },
         })
-
-        if(!chatRecordStore.length){
-            return;
-        }
-        else if(this.firstLoad && chatRecordStore.length < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-            this.noMore = ListConst.msgState.NOMORE;
-            this.firstLoad = false;
-        }
-        else{
-            chatRecordStore = chatRecordStore.slice(0,InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER);
-            this.firstLoad = false;
-        }
-
-        this.reduxData = chatRecordStore.concat().reverse()
-        this.shortData = this.historyData.concat(this.reduxData);
-        this.data = this.prepareMessages(this.shortData);
-
-        this.reduxData2 = chatRecordStore;
-        this.shortData2 =  this.reduxData2.concat(this.historyData2);
-        this.data2 = this.prepareMessages(this.shortData2);
-
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-            dataSourceO: this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys),
-        });
     }
 
-    componentWillUnmount(){
-        this.props.handleChatRecord(this.props.client);
-    }
     prepareMessages(messages) {
         //console.log(messages)
         return {
@@ -394,49 +262,22 @@ class Chat extends Component {
         }
         return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
     }
-    //todo 可以写到controller
-    // getNikesFromIds = (idString) =>{
-    //     let Members = this.state.groupMembers;
-    //     let MembersLength = Members.length;
-    //     let ids = idString.split(',');
-    //     let needStr = '';
-    //     for(let i=0;i<MembersLength;i++){
-    //         for(let j=0;j<ids.length;j++){
-    //             if(Members[i].RelationId == ids[j]){
-    //                 needStr+= Members[i].Nick+',';
-    //                 break;
-    //             }
-    //         }
-    //     }
-    //     return needStr;
-    // }
+
     renderRow = (row,sid,rowid) => {
-        console.log('执行了renderRow');
-        let {Sender} = row.message.Data.Data;
-        let {Receiver} = row.message.Data.Data;
-        let {Data} = row.message.Data.Data;
-        let LocalTime = parseInt(row.message.Data.LocalTime);
+        let {sender,message,sendTime,type,status} = row;
+        sendTime = parseInt(sendTime);
 
-        let timer = this.getTimestamp(LocalTime,rowid);
-        if(Sender == this.props.accountId){
-
+        let timer = this.getTimestamp(sendTime,rowid);
+        if(sender == this.props.accountId){
          //显示邀请群组人员消息
-         if(row.message.Command * 1 == 101 && this.props.type == "chatroom"){
-                return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ Data +"进入群聊"}</Text>
-                        </View>
+         if(type == 'info'){
+            return(
+                <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ message +"进入群聊"}</Text>
                     </View>
-                )
-         }else if(row.message.Command * 1 == 102 && this.props.type == "chatroom"){
-             return(
-                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                         <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
-                     </View>
-                 </View>
-             )
+                </View>
+            )
          }
          else{
              return(
@@ -448,11 +289,11 @@ class Chat extends Component {
                          <View style={styles.msgStatus}>
                              <TouchableOpacity>
                                  {
-                                     this.messagesStatus(row.status)
+                                     this.messagesStatus(status)
                                  }
                              </TouchableOpacity>
                          </View>
-                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
+                         <ChatMessage style={styles.bubbleViewRight} rowData={message} type={type} navigator={this.props.navigator}/>
                          {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                      </View>
@@ -461,18 +302,16 @@ class Chat extends Component {
          }
         }
         else{
-            if(row.message.Command * 1 == 5){
-
-                if(this.props.type == "chatroom"){
-
-                    return(
-                        <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                            <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                                <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>您已经被管理员移除群聊了</Text>
-                            </View>
+            if(type == "info"){
+                return(
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                            <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>您已经被管理员移除群聊了</Text>
                         </View>
-                    )
-                }
+                    </View>
+                )
+            }
+            else if(type == 'error'){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
@@ -483,24 +322,6 @@ class Chat extends Component {
                         </View>
                     </View>
                 )
-            }else if(row.message.Command * 1 == 101){
-
-                return(<View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
-                    </View>
-                </View>)
-
-
-            }else if(row.message.Command * 1 == 102){
-
-                return(<View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{Data}</Text>
-                    </View>
-                </View>)
-
-
             }
             else{
                 return(
@@ -511,8 +332,8 @@ class Chat extends Component {
                         <View style={styles.infoView}>
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
-                                {this.props.type === 'chatroom' ? this.getGroupMembersInfo(Receiver) : null}
-                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
+                                {type === 'chatroom' ? this.getGroupMembersInfo(sender) : null}
+                                <ChatMessage style={styles.bubbleView} rowData={message} type={type} navigator={this.props.navigator}/>
                             </View>
                         </View>
                     </View>
@@ -523,59 +344,14 @@ class Chat extends Component {
     }
 
     oldMsg = () => {
-        //console.log('oldMsg');
-        //alert(this.props.client+this.state.isMore)
         let {msgState} = ListConst;
-        // if(!firstOldMsg){
-        //     return firstOldMsg = true;
+        // if(this.noMore === msgState.END){
+        //     this.noMore = msgState.LOADING;
+        //     this.setState({
+        //         isMore : msgState.LOADING
+        //     });
         // }
-        if(this.noMore === msgState.END){
-            this.noMore = msgState.LOADING;
-            this.setState({
-                isMore : msgState.LOADING
-            })
-            let dataLength = this.shortData2.length;
-            let {client} = this.props;
-            let that = this;
-            ChatController.getRecentChatRecode(client,this.props.type,{start:dataLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-
-                if(!messages){
-                    that.noMore  = msgState.NOMORE;
-                    that.setState({
-                        isMore:that.noMore,
-                    });
-                    return;
-                }
-                let msgLength = messages.length;
-
-
-                // if(msgLength === InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                //     messages.pop();
-                // }
-                let msg = messages.map((message)=>{
-                    return DtoMethods.sqliteMessageToMessage(message);
-                });
-
-                that.historyData2 = that.historyData2.concat(msg);
-                that.shortData2 = that.reduxData2.concat(that.historyData2);
-                that.data2 = that.prepareMessages(that.shortData2);
-
-                if(msgLength < InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                    that.noMore  = msgState.NOMORE;
-                }
-                else{
-                    that.noMore  = msgState.END;
-                }
-
-                that.setState({
-                    dataSourceO: that.state.dataSourceO.cloneWithRows(that.data2.blob, that.data2.keys),
-                    isMore:that.noMore,
-                });
-            })
-            // setTimeout(()=>{
-            //     this.im.getRecentChatRecode()
-            // },500)
-        }
+        IMController.getHistoryChatList();
 
     }
 
