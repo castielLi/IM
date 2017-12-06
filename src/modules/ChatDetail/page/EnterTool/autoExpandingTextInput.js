@@ -17,6 +17,9 @@ import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
 import ChatController from '../../../../Logic/Chat/chatController';
 import {addTextMessage} from '../../../../Core/Management/IM/action/createMessage';
+import imController from '../../../../Logic/im/imController';
+import * as commonMethod from '../../common/commonMethod'
+var IMController = new imController();
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
@@ -45,21 +48,31 @@ class AutoExpandingTextInput extends Component {
   _onSubmitEditing(){
     if(this.state.data){
       //初始化消息
-      let message = addTextMessage(this.state.data,this.props.type,this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
-        chatController.addMessage(message,(results)=>{
-        //更新chatRecordStore
-          //this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
-
-          this.input.clear();
+      // let message = addTextMessage(this.state.data,this.props.type,this.props.accountId,this.props.client);//(内容，way，发送者，接收者)
+      //   chatController.addMessage(message,(results)=>{
+      //   //更新chatRecordStore
+      //     //this.props.addMessage( message,{Nick:this.props.Nick,avator:this.props.HeadImageUrl})
+      //
+      //     this.input.clear();
+      //   if(isIos){
+      //       //发送表情不会获得焦点
+      //       if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
+      //   }
+      //
+      //
+      //     this.state.data = '';
+      //   this.props.setTextInputData('');
+      // });
+        let group = this.props.type == 'chatroom' ? true : false;
+        let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,this.state.data,'audio');
+        IMController.addMessage(message);
+        this.input.clear();
         if(isIos){
             //发送表情不会获得焦点
             if(!this.props.thouchBarStore.isExpressionPage) this.input.focus();
         }
-
-
-          this.state.data = '';
+        this.state.data = '';
         this.props.setTextInputData('');
-      });
 
       this.setState({
         inputHeight:this.state.firstInputHeight

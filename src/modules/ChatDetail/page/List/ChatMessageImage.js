@@ -60,29 +60,19 @@ class ChatMessageImage extends ContainerComponent {
         return {uri:Source}
     }
 
-    goToCes = (Path,Remote,MSGID,Sender)=>{
+    goToGallery = (Path,Remote,MSGID,Sender)=>{
         this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"Path":Path,"Remote":Remote,"MSGID":MSGID,"Sender":Sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;
-        let {MSGID} = data.message;
-        let {Sender,Receiver} = data.message.Data.Data;
-        let {LocalSource,RemoteSource} = data.message.Resource[0];
-        //let uri = LocalSource.substr(7);
-
-        console.log(LocalSource,RemoteSource)
-        // this.Size = Image.getSize(LocalSource, (width, height) => {
-        //     return {width,height}
-        // })
-        //this.getImageSize(LocalSource || RemoteSource)
-        //alert(this.Size.width+"11")
+        let {localSource,remoteSource} = data;
 
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToCes(LocalSource,RemoteSource,MSGID,Sender)}>
+                <Thouch onPress={()=>alert('查看大图')}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
-                        source={this.localSourceObj(LocalSource)}
+                        source={this.localSourceObj(localSource)}
                         style={[styles.imageStyle]}
                     />
                 </Thouch>

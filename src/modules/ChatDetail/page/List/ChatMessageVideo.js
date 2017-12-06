@@ -46,7 +46,6 @@ class ChatMessageVideo extends ContainerComponent {
     };
 
     playVideo = (Local,Remote,data)=>{
-        //let network = new netWorking();
         let currentObj = this;
         RNFS.exists(Local).then((success) => {
             if(!success){
@@ -98,10 +97,10 @@ class ChatMessageVideo extends ContainerComponent {
     }
     render() {
         let {data, style} = this.props;
-        let {LocalSource,RemoteSource} = data.message.Resource[0];
+        let {localSource,remoteSource} = data;
         return(
             <View style={[styles.bubble]}>
-                <Thouch onPress={()=>{this.playVideo(LocalSource,RemoteSource,data)}} disabled={this.state.download}>
+                <Thouch onPress={()=>alert('播放视频')} disabled={this.state.download}>
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>

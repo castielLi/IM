@@ -33,6 +33,9 @@ import {addResourceMessage} from '../../../../Core/Management/IM/action/createMe
 
 import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
+import imController from '../../../../Logic/im/imController';
+import * as commonMethod from '../../common/commonMethod'
+var IMController = new imController();
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
@@ -206,18 +209,23 @@ class ThouchBarBoxTopBox extends Component {
               counTime = 1;
           }
             //初始化消息
-          let message = addResourceMessage('audio',this.props.type, [{
-            FileType: ResourceTypeEnum.audio,
-            LocalSource: this.audioPath + '/' + this.state.fileName + '.aac',
-            RemoteSource: '',
-              Time:counTime?counTime:1
-          }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            //发送消息到IM
-            chatController.addMessage(message, (results) => {
-
-          }, [(tips) => {
-            console.log(tips)
-          }]);
+          // let message = addResourceMessage('audio',this.props.type, [{
+          //   FileType: ResourceTypeEnum.audio,
+          //   LocalSource: this.audioPath + '/' + this.state.fileName + '.aac',
+          //   RemoteSource: '',
+          //     Time:counTime?counTime:1
+          // }], this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
+          //   //发送消息到IM
+          //   chatController.addMessage(message, (results) => {
+          //
+          // }, [(tips) => {
+          //   console.log(tips)
+          // }]);
+            let Path = this.audioPath + '/' + this.state.fileName + '.aac';
+            let time = counTime?counTime:1;
+            let group = this.props.type == 'chatroom' ? true : false;
+            let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:Path,remoteSource:'',time},'audio');
+            IMController.addMessage(message);
           //
           this.shouldPressSpeakBox = true;
         });

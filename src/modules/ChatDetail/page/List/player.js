@@ -42,39 +42,7 @@ class Player extends ContainerComponent {
     static propTypes = {
 
     };
-    // componentWillReceiveProps(newProps){
-    //     let {url,isShow} = newProps.mediaPlayerStore;
-    //     this.setState({
-    //         url,
-    //         isShow,
-    //     });
-    // }
 
-    // pause(){
-    //     this.setState({
-    //         playing: !this.state.playing,
-    //     })
-    // }
-    // defaultControlsView = () => {
-    //     let playButton = (<View style={{backgroundColor:'rgba(0,0,0,0.5)'}}><Icon.Button opacity={1} style={[styles.playButton,styles.button]} size={10} onPress={this.pause.bind(this)} name="play" color='#fff' /></View>);
-    //     let pauseButton = (<View style={{backgroundColor:'rgba(0,0,0,0.5)'}}><Icon.Button opacity={1} style={[styles.playButton,styles.button]} size={10} onPress={this.pause.bind(this)} name="pause" color='#fff' /></View>);
-    //     let playOrPause = this.state.playing ? pauseButton : playButton;
-    //     return (
-    //         <View>
-    //             <View style={[styles.buttonBox,{backgroundColor:'rgba(0,0,0,0)'},this.state.customButtonStyle]}><Bars size={10} color={this.state.loadingColor}  /></View>
-    //             <View style={[styles.bottomBox,this.state.bottomBoxStyle]}>
-    //                 <View hidden={true} style={styles.playButtonBox}>
-    //                     {playOrPause}
-    //                 </View>
-    //                 <Text style={styles.time}>{this.state.video.time}</Text>
-    //                 <Slider maximumValue={0.97} thumbTouchSize={this.state.thumbTouchSize} thumbTintColor='#fff' thumbStyle={styles.thumbStyle} style={[styles.sliderStyle,this.state.customTrackStyle]} trackStyle={[styles.trackStyle,this.state.customTrackStyle]} value={this.state.progress} onValueChange={this.seek.bind(this)} />
-    //                 <Text style={styles.time}>{this.state.video.duration}</Text>
-    //                 <View style={{backgroundColor:'rgba(0,0,0,0.5)'}}><Icon.Button opacity={1} style={styles.playButton} size={10} onPress={this.fullscreen.bind(this)} name="expand" color='#fff' /></View>
-    //             </View>
-    //
-    //         </View>
-    //     );
-    // }
     slidingStart = ()=>{
         this.setState({
             paused:true,

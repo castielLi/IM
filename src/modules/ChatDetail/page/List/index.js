@@ -32,7 +32,7 @@ import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/Sqlit
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/Setting/settingController'
-import IMController from '../../../../Logic/IM/IMController'
+import imController from '../../../../Logic/Im/imController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -50,7 +50,7 @@ let recordData;
 
 let ChatController = new chatController();
 let settingController = new SettingController();
-let ImController = new IMController();
+let IMController = new imController();
 let currentObj;
 
 class Chat extends Component {
@@ -98,14 +98,14 @@ class Chat extends Component {
     }
 
     componentWillMount() {
-        ImController.init(param);
+        IMController.init(param);
         let group;
         if(this.props.type === 'private'){
             group = false;
         }else{
             group = true;
         }
-        ImController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
+        IMController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
 
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
@@ -251,24 +251,12 @@ class Chat extends Component {
         })
     }
 
-    getGroupMembersInfo = (MemberID)=>{
-        let Members = this.state.groupMembers;
-        let MembersLength = Members.length;
-        for(let i=0;i<MembersLength;i++){
-            if(Members[i].RelationId == MemberID)
-            {
-                return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{Members[i].Nick}</Text>
-            }
-        }
-        return <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{MemberID}</Text>
-    }
-
     renderRow = (row,sid,rowid) => {
         let {sender,message,sendTime,type,status} = row;
         sendTime = parseInt(sendTime);
 
         let timer = this.getTimestamp(sendTime,rowid);
-        if(sender == this.props.accountId){
+        if(sender.account == this.props.accountId){
          //显示邀请群组人员消息
          if(type == 'info'){
             return(
@@ -332,7 +320,7 @@ class Chat extends Component {
                         <View style={styles.infoView}>
                             {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                             <View>
-                                {type === 'chatroom' ? this.getGroupMembersInfo(sender) : null}
+                                {type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
                                 <ChatMessage style={styles.bubbleView} rowData={message} type={type} navigator={this.props.navigator}/>
                             </View>
                         </View>
