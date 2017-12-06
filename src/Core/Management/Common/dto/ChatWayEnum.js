@@ -4,5 +4,5 @@
 
 export default ChatWayEnum = {
     Private : "private",
-    ChatRoom :"chatroom"
+    Group :"group"
 }
