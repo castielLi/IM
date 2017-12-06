@@ -19,18 +19,13 @@ import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
-<<<<<<< Updated upstream
+
 import RelationModel from '../../Logic/Setting/dto/RelationDto'
 import ChatWayEnum from '../../Logic/Chat/dto/ChatWayEnum';
 import settingController from '../../Logic/Setting/settingController';
 
 
-=======
-import Relation from '../../Core/Management/UserGroup/Common/dto/RelationModel'
-import ChatWayEnum from '../../Logic/Chat/dto/ChatWayEnum'
-import settingController from  '../../Logic/settingController';
->>>>>>> Stashed changes
-let currentObj = undefined;
+
 let SettingController = new settingController();
 
 class Validate extends ContainerComponent {
