@@ -6,12 +6,13 @@ let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './ChatExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
 import ChatWayEnum from '../../Common/dto/ChatWayEnum'
-import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
 import RNFS from 'react-native-fs';
+import ManagementMessageDto from '../../Common/dto/ManagementMessageDto'
+import {getContentOfControllerMessageDto} from './../Common/methods/GetContentOfControllerMessageDto'
 
 export function storeMessage(message){
 
-    CHATFMDB.InsertMessageWithCondition(message, message.sender)
+    CHATFMDB.InsertMessageWithCondition(message, message.chatId)
 
 }
 
@@ -101,7 +102,7 @@ CHATFMDB.initIMDataBase = function(AccountId,callback){
 
 
 //todo：想办法进行批量操作
-CHATFMDB.InsertMessageWithCondition = function(message,client,callback){
+CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDto(),chatId,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
@@ -110,15 +111,16 @@ CHATFMDB.InsertMessageWithCondition = function(message,client,callback){
 
     let tableName;
 
-    tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "Group_" + client;
+    tableName = way == ChatWayEnum.Private ? "Private_" + chatId : "Group_" + chatId;
 
 
-    let conetnt = getContentByMessage(message);
-    let time = message.Data.LocalTime;
+    let conetnt = getContentOfControllerMessageDto(message);
+    let time = message.sendTime;
 
 
     let insertChatToSpecialRecodeSqlSql = sqls.ExcuteIMSql.InsertMessageToTalk;
-    insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.MSGID]);
+    let messageString = JSON.stringify(message);
+    insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.messageId,messageString]);
 
     let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
     createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
@@ -129,12 +131,12 @@ CHATFMDB.InsertMessageWithCondition = function(message,client,callback){
     }, () => {
         db.transaction((tx) => {
 
-            tx.executeSql(checkChatExist, [client], (tx, results) => {
+            tx.executeSql(checkChatExist, [chatId], (tx, results) => {
                 if(results.rows.length){
                     //如果当前聊天对象在数据库中存在有数据
                     //添加数据进数据库
 
-                    updateChat(conetnt,time,client,tx);
+                    updateChat(conetnt,time,chatId,message.sender,tx);
 
                     insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
@@ -144,9 +146,7 @@ CHATFMDB.InsertMessageWithCondition = function(message,client,callback){
 
                         console.log("create chat table success");
 
-                        insertClientRecode(client,way,tx);
-
-                        updateChat(conetnt,time,client,tx);
+                        insertClientRecode(chatId,way,content,message.sendTime,message.sender);
 
                         insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
@@ -166,9 +166,9 @@ CHATFMDB.DeleteChatByClientId = function(name,chatType){
     }, () => {
         db.transaction((tx) => {
 
-            if(chatType =="chatroom"){
+            if(chatType == ChatWayEnum.Group){
 
-                deleteClientChatList("ChatRoom_" + name, tx);
+                deleteClientChatList("Group_" + name, tx);
             }else {
                 deleteClientChatList("Private_" + name, tx);
             }
@@ -204,7 +204,7 @@ CHATFMDB.DeleteChatByChatRoomId = function(chatRoom){
 //删除具体消息
 CHATFMDB.DeleteChatMessage = function(message,chatType,client){
 
-    let tableName = chatType=="chatroom"? "ChatRoom_"+client : "Private"+client;
+    let tableName = chatType==ChatWayEnum.Group? "Group_"+client : "Private"+client;
 
     let deleteSql = sqls.ExcuteIMSql.DeleteMessageById;
 
@@ -250,9 +250,9 @@ CHATFMDB.getAllChatClientList = function(callback){
 
 CHATFMDB.getRangeMessages = function(account,way,range,callback){
 
-    let tabName = way  == ChatWayEnum.Private?"Private_" + account:"ChatRoom_" + account;
+    let tabName = way  == ChatWayEnum.Private?"Private_" + account:"Group_" + account;
 
-    let querySql = sqls.ExcuteIMSql.QueryChatRecodeByClient;
+    let querySql = sqls.ExcuteIMSql.QueryChatRecodeByChatId;
 
     querySql = commonMethods.sqlFormat(querySql,[tabName,range.start,range.limit]);
 
@@ -263,25 +263,7 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
 
             tx.executeSql(querySql, [], (tx, results) => {
 
-                if(results.rows.length > 0){
-
-                    let messageIds = results.rows.raw();
-
-                    let ids = [];
-                    messageIds.forEach(function(item){
-                        ids.push(item.messageId);
-                    })
-
-                    let selectMessages = sqls.ExcuteIMSql.GetMessagesInMessageTableByIds;
-
-                    selectMessages = commonMethods.sqlQueueFormat(selectMessages,ids);
-
-                    tx.executeSql(selectMessages, [], (tx, results) => {
-                        callback(results.rows.raw());
-                    }, errorDB);
-                }else{
-                    callback(null);
-                }
+                callback(results.rows.raw());
 
             }, errorDB);
 
@@ -361,11 +343,11 @@ function insertChatToSpecialRecode(insertSql,tx){
 
 
 //修改chat列表中最近的聊天记录
-function updateChat(content,time,client,tx){
+function updateChat(content,time,chatId,sender,tx){
 
     let updateSql = sqls.ExcuteIMSql.UpdateChatLastContent;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[content,time,client]);
+    updateSql = commonMethods.sqlFormat(updateSql,[content,time,chatId,sender]);
 
     tx.executeSql(updateSql, [], (tx, results) => {
 
@@ -376,10 +358,10 @@ function updateChat(content,time,client,tx){
 }
 
 //添加会话记录
-function insertClientRecode(client,way,tx){
+function insertClientRecode(chatId,way,content,time,sender,tx){
     let insertSql = sqls.ExcuteIMSql.InsertChatRecode;
 
-    insertSql = commonMethods.sqlFormat(insertSql,[client,way]);
+    insertSql = commonMethods.sqlFormat(insertSql,[chatId,way,content,time,sender]);
 
     tx.executeSql(insertSql, [], (tx, results) => {
 
@@ -430,27 +412,6 @@ function deleteClientChatList(tableName,tx){
         console.log("delete chat list success");
 
     }, errorDB);
-}
-
-function getContentByMessage(message){
-    let content = "";
-
-    switch (message.Resource[0].FileType){
-
-        case ResourceTypeEnum.image:
-            content = "[图片]";
-            break;
-
-        case ResourceTypeEnum.audio:
-            content = "[音频]";
-            break;
-
-        case ResourceTypeEnum.video:
-            content = "[视频]";
-            break;
-    }
-
-    return content;
 }
 
 //从id截取用户名

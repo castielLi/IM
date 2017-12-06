@@ -10,20 +10,21 @@ import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
 import existIdInArray from './Common/methods/existIdInArray';
 import formatArrToObjById from './Common/methods/formatArrToObjById';
 import getContentOfControllerMessageDto from './Common/methods/GetContentOfControllerMessageDto'
+import ChatWayEnum from '../Common/dto/ChatWayEnum'
+import ManagementChatRecordDto from './Common/dto/ManagementChatRecordDto'
 let currentObj = undefined;
 
 //会话缓存
 //格式 []
 let ChatCache = {}
-// let ChatCache = {
-//     'wg003722':{
-//         Client: "wg003722",
-//         LastMessage: "4444",
-//         Time: "1511925305221",
-//         Type: "private",
-//         unReadMessageCount: 0,
-//         Record:[msgId1,msgId2...]},
-//     }
+// var ManagementchatRecordDto={
+//     group: false,
+//     chatId: "",//chatId={account/groupId}
+//     lastSender: null,
+//     lastMessage: "",
+//     lastTime: null,
+//     unreadCount: 0, //未读条数
+// }
 
 
 
@@ -66,8 +67,21 @@ export default class Chat {
 
     //获取所有聊天会话列表，只有每次登陆后才会获取所有列表
     getConverseList(callback){
-        currentObj.getChatList((results)=>{
-            let cache = formatArrToObjById(results);
+        currentObj.getRecentChatList((results)=>{
+            let records = [];
+            for(let item in results){
+                let record = new ManagementChatRecordDto();
+                record.group = results[item].Type == ChatWayEnum.Group?true:false;
+                record.chatId = results[item].ChatId;
+                record.lastMessage = results[item].LastMessage;
+                record.lastSender = results[item].LastSender;
+                record.lastTime = results[item].Time;
+                record.unreadCount = results[item].unReadMessageCount;
+                record.Record = [];
+                records.push(record);
+            }
+
+            let cache = formatArrToObjById(records);
             callback(cache);
             ChatCache = cache;
         });
@@ -77,8 +91,8 @@ export default class Chat {
         if(ChatCache[chatId] == undefined){
             callback([])
         }else{
-            if(ChatCache[chatId]['Record'].length == 0){
-                currentObj.getRecentChatRecode(chatId,group,{start:length,limit:InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER},(results)=>{
+            if(ChatCache[chatId]['Record'].length == 0 || ChatCache[chatId]['Record'].length < length - InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                currentObj.getRecentChatRecode(chatId,group,{start:length,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
                     let messages = ChatCache[chatId]['Record'];
                     messages = results.reduce(function(prev, curr){ prev.push(curr); return prev; },messages);
                     ChatCache[chatId]['Record'] = messages;
@@ -164,7 +178,7 @@ export default class Chat {
 
     updateOneChat(chatId,message){
        let recentObj = ChatCache[chatId];
-        recentObj.Type = message.group?"group":"private";
+        recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
         recentObj.LastMessage = getContentOfControllerMessageDto(message);
         recentObj.Time = message.sendTime;
         recentObj.Record.unshift(message);
@@ -174,7 +188,7 @@ export default class Chat {
     addOneChat(chatId,message){
         let recentObj = new RecentRecordDto();
         recentObj.Client = chatId;
-        recentObj.Type = message.group?"group":"private";
+        recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
         recentObj.LastMessage = getContentOfControllerMessageDto(message);
         recentObj.Time = message.sendTime;
         recentObj.Record.unshift(message);
@@ -216,7 +230,7 @@ export default class Chat {
     }
 
     //获取聊天列表
-    getChatList(callback){
+    getRecentChatList(callback){
         storeSqlite.getChatList(callback);
     }
 
@@ -249,7 +263,8 @@ export default class Chat {
         storeSqlite.addChatUnReadMessageNumber(name)
     }
     //获取当前用户或者群组的聊天记录
-    getRecentChatRecode(account,way,range = {start:0,limit:InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER},callback){
+    getRecentChatRecode(account,group,range = {start:0,limit:InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER},callback){
+        let way = group?ChatWayEnum.Group:ChatWayEnum.Private;
         storeSqlite.queryRecentMessage(account,way,range,callback);
     }
 
