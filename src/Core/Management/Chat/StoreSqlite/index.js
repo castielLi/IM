@@ -5,25 +5,16 @@ import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './ChatExcuteSql'
 import * as commonMethods from '../../../Helper/formatQuerySql'
-import ChatWayEnum from '../../../../Logic/Chat/dto/ChatWayEnum'
+import ChatWayEnum from '../../Common/dto/ChatWayEnum'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
-import ChatCommandEnum from '../../Common/dto/ChatCommandEnum'
 import RNFS from 'react-native-fs';
-import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
-import MessageStatus from '../../Common/dto/MessageStatus'
 
-export function storeSendMessage(message){
+export function storeMessage(message){
 
-    CHATFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
+    CHATFMDB.InsertMessageWithCondition(message, message.sender)
 
 }
 
-export function storeRecMessage(message,callback){
-
-    message.status = MessageStatus.SendSuccess;
-    CHATFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
-
-}
 
 export function deleteClientRecode(name,chatType){
     CHATFMDB.DeleteChatByClientId(name,chatType);
@@ -114,15 +105,13 @@ CHATFMDB.InsertMessageWithCondition = function(message,client,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
-    let way = message.way;
+    let way = message.group?ChatWayEnum.ChatRoom:ChatWayEnum.Private;
 
 
     let tableName;
-    if(message.way != "") {
-        tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "ChatRoom_" + client;
-    }else{
-        tableName = message.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2C ?"Private_" + client : "ChatRoom_" + client;
-    }
+
+    tableName = message.way == ChatWayEnum.Private ? "Private_" + client : "Group_" + client;
+
 
     let conetnt = getContentByMessage(message);
     let time = message.Data.LocalTime;
@@ -445,27 +434,20 @@ function deleteClientChatList(tableName,tx){
 
 function getContentByMessage(message){
     let content = "";
-    if(message.Resource != null && message.Resource.length > 0){
-        switch (message.Resource[0].FileType){
-            case ResourceTypeEnum.image:
-                content = "[图片]";
-                break;
-            case ResourceTypeEnum.audio:
-                content = "[音频]";
-                break;
-            case ResourceTypeEnum.video:
-                content = "[视频]";
-                break;
-        }
 
-    }else if(message.Resource == null){
-        if(message.data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
-            content = "[通知]"
-        }else {
-            content = message.Data.Data.Data
-        }
-    }else{
-        content = "[图片]";
+    switch (message.Resource[0].FileType){
+
+        case ResourceTypeEnum.image:
+            content = "[图片]";
+            break;
+
+        case ResourceTypeEnum.audio:
+            content = "[音频]";
+            break;
+
+        case ResourceTypeEnum.video:
+            content = "[视频]";
+            break;
     }
 
     return content;

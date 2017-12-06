@@ -18,6 +18,7 @@ import UpdateMessageSqliteType from './Common/dto/UpdateMessageSqliteType'
 import networkStatuesType from './Common/dto/networkStatuesType'
 import * as cacheMethods from './action/createCacheMessage'
 import {buildSendMessage} from './action/createMessage'
+import ManagementMessageDto from '../Common/dto/ManagementMessageDto'
 
 
 
@@ -266,7 +267,7 @@ export default class IM {
 
     //发送消息
     //外部接口，添加消息
-    addMessage(messageDto,callback=function(success,content){},onprogess="undefined") {
+    addMessage(messageDto = new ManagementMessageDto(),callback=function(success,content){},onprogess="undefined") {
 
         let message = buildSendMessage(messageDto);
 
@@ -274,6 +275,7 @@ export default class IM {
         UUIDGenerator.getRandomUUID().then((uuid) => {
             messageId = message.Data.Data.Receiver + "_" +uuid;
             message.MSGID = messageId;
+            messageDto.messageId = messageId;
 
             cacheMessage.push(cacheMethods.createCacheMessage(message,callback,onprogess));
             storeMessage.push({"MSGID":message.MSGID,"message":message});
@@ -281,6 +283,7 @@ export default class IM {
 
             //把消息存入消息sqlite中
             message.status = MessageStatus.WaitOpreator;
+            messageDto.status = MessageStatus.WaitOpreator;
 
             this.storeSendMessage(message);
 
@@ -305,7 +308,7 @@ export default class IM {
                 }
             }
 
-            return message;
+            return messageDto;
         });
     }
 

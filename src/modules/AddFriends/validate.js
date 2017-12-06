@@ -21,7 +21,7 @@ import * as relationActions from '../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
 import RelationModel from '../../Logic/Setting/dto/RelationDto'
-import ChatWayEnum from '../../Logic/Chat/dto/ChatWayEnum';
+import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
 import settingController from '../../Logic/Setting/settingController';
 
 
