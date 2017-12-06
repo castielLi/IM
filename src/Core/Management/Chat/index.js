@@ -143,6 +143,7 @@ export default class Chat {
            //缓存中添加
            currentObj.addOneChat(chatId,message);
        }
+       currentObj.addMessage(message);
     }
 
 
