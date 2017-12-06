@@ -2,8 +2,7 @@ export default function stringToContentArray(text) {
     //text = "wwww[微笑]eeee[鬼脸]asdfasfasd[大笑]w222";  
     var regex = new RegExp('\\[[a-zA-Z0-9\\/\\u4e00-\\u9fa5]+\\]', 'g');  
     var contentArray = [];  
-    var regArray = text.match(regex);  
-    console.log(regArray);  
+    var regArray = text.match(regex);
     if (regArray === null) {  
         contentArray.push({"Content" : text});  
         return contentArray;  

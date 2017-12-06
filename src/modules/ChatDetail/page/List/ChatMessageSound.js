@@ -74,7 +74,7 @@ export default class ChatMessageSound extends Component {
         return(
             <View style={[style,{width:soundObjConfig},styles.bubble]}>
                 <Thouch onPress={()=>this.playSound(localSource)}>
-                    <Text>{Time}"</Text>
+                    <Text>{time}"</Text>
                 </Thouch>
             </View>
         )
