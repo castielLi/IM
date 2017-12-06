@@ -56,7 +56,7 @@ export default class settingController {
     }
 
     //群设置（GroupInformationSetting）
-    addGroupToContact(enumerate,data,callback){
+    addGroupToContact(data,callback){
         //data:{enumerate,params,relation}
         // this.user.changeUserGroup(enumerate,data,function (result) {
         //     callback(result);
@@ -81,7 +81,7 @@ export default class settingController {
             callback(results);
         });
     }
-    removeGroupFromContact(enumerate,data,callback){
+    removeGroupFromContact(data,callback){
         //data:{enumerate,params,groupId}
         // this.user.changeUserGroup(enumerate,data,function (result) {
         //     callback(result);
@@ -145,6 +145,11 @@ export default class settingController {
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
+        //data:{params,value}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
         this.apiBridge.request.RemoveBlackMember(params,function(results){
             if(results.success){
                 currentObj.user.changeRelationBlackList(false, params.Account);
@@ -153,6 +158,11 @@ export default class settingController {
         })
     }
     addBlackMember(params,callback){
+        //data:{params,value}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result);
+        // });
+
         this.apiBridge.request.AddBlackMember(params,function(results){
             if(results.success){
                 currentObj.user.changeRelationBlackList(true, params.Account);
@@ -334,6 +344,11 @@ export default class settingController {
     //修改群组的名称
     //参数 群id，群名称，请求参数，回调
     updateGroupName(accountId,groupId,name,params,callback){
+        //data:{params,groupId,name}
+        // this.user.changeUserGroup(enumerate,data,function (result) {
+        //     callback(result)
+        // });
+
         this.apiBridge.request.ModifyGroupName(params,function(result){
             if(result.success){
                 if(result.data.Data){

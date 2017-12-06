@@ -515,6 +515,7 @@ export default class User {
                     }else{
                         console.log(result.errorMessage)
                     }
+                    callback(result);
                 });
                 break;
             case "BlackList":
@@ -526,6 +527,7 @@ export default class User {
                         }else{
                             console.log(result.errorMessage)
                         }
+                        callback(result);
                     })
                 }
                 else if(value == 'add'){
@@ -535,8 +537,15 @@ export default class User {
                         }else{
                             console.log(result.errorMessage)
                         }
+                        callback(result);
                     })
                 }
+                break;
+            case "Discription":
+                var {params} = data;
+                this.apiBridge.request.ModifyGroupDescription(params,function(result){
+                    callback(result);
+                });
                 break;
             default:
                 break;
