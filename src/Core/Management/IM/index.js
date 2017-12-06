@@ -276,6 +276,7 @@ export default class IM {
             messageId = message.Data.Data.Receiver + "_" +uuid;
             message.MSGID = messageId;
             messageDto.messageId = messageId;
+            messageDto.sendTime = message.Data.LocalTime;
 
             cacheMessage.push(cacheMethods.createCacheMessage(message,callback,onprogess));
             storeMessage.push({"MSGID":message.MSGID,"message":message});

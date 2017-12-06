@@ -160,24 +160,6 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
 
 //todo：想办法进行批量操作
 IMFMDB.InsertMessageWithCondition = function(message,client,callback){
-    // let localPath = "";
-    // let url = "";
-    // if(message.Resource!= null && message.Resource.length > 0) {
-    //     for (let item in message.Resource) {
-    //         localPath += message.Resource[item].LocalSource;
-    //         // + ",";
-    //         url += message.Resource[item].RemoteSource;
-    //     }
-    // }else{
-    //     localPath = "";
-    //     url = "";
-    // }
-    // let sourceTime = "";
-    // //音频视频才有时间
-    // if(message.type === 'audio'||message.type === 'video'){
-    //     //默认一条消息只能有一条音频或者视频
-    //     sourceTime = message.Resource[0].Time;
-    // }
 
     let messageBody = JSON.stringify(message);
 
