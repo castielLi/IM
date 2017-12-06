@@ -39,6 +39,8 @@ import LoginController from '../../../Logic/loginController'
 import SettingController from '../../../Logic/Setting/settingController'
 import formatOjbToneedArr from '../common/methods/formatOjbToneedArr';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
+// import imController from '../../../Logic/Im/imController'
+// let IMController = new imController();
 
 let chatController = new ChatController();
 let loginController = new LoginController();
@@ -136,24 +138,43 @@ class RecentChat extends ContainerComponent {
             sectionID: '',
             rowID: '',
             dataSource: ds,
-            relationStore:[]
-            //groupData:[],
+            relationStore:[],
+
+            ConverseList:[]
         };
         this.goToChatDetail = this.goToChatDetail.bind(this);
         this.deleteSomeRow = this.deleteSomeRow.bind(this);
         currentObj = this;
     }
     componentWillMount() {
-
-        styles = super.componentWillMount(styles)
-
-        chatController.reRenderRecentList((results)=>{
-            this.setState({
-                relationStore:formatOjbToneedArr(results)
-            })
-        })
-
-        chatController.initRecentChatList();
+        // let param = {
+        //     updateConverseList:this.updateConverseList,
+        // }
+        // IMController.init(param);
+        this.updateConverseList([
+            {
+                group: false,
+                chatId: "",//chatId={account/groupId}
+                name:"0",//好友名字或者群名字
+                HeadImageUrl: "",//头像地址, 本地地址
+                lastSender: null,
+                lastMessage: "00",
+                lastTime: '0',
+                unreadCount: 0, //未读条数
+                noSound: false,//禁音
+            },
+            {
+                group: true,
+                chatId: "",//chatId={account/groupId}
+                name:"2",//好友名字或者群名字
+                HeadImageUrl: "",//头像地址, 本地地址
+                lastSender: null,
+                lastMessage: "22",
+                lastTime: '2',
+                unreadCount: 2, //未读条数
+                noSound: false,//禁音
+            },
+        ])
     }
     componentDidMount() {
 
@@ -182,56 +203,40 @@ class RecentChat extends ContainerComponent {
         });
     }
 
-
+    updateConverseList(ConverseList){
+        this.setState({
+            ConverseList
+        })
+    };
 
 
     goToChatDetail(rowData) {
+        let type = rowData.group ? 'group' : 'private';
         this.route.push(this.props, {
             key: 'ChatDetail',
             routeId: 'ChatDetail',
             params: {
-                client: rowData.Client,
-                type: rowData.Type,
-                Nick: rowData.Nick
+                client: rowData.chatId,
+                type: type,
+                Nick: rowData.name
             }
         });
     }
     deleteSomeRow(rowID, rowData) {
         let oKCallback = () => {
-            //清空recentListStore中对应记录
-            this.props.deleteRecentItem(rowID);
-            //如果该row上有未读消息，减少unReadMessageStore记录
-            rowData.unReadMessageCount && this.props.cutUnReadMessageNumber(rowData.unReadMessageCount);
-            //清空chatRecordStore中对应记录
-            this.props.clearChatRecordFromId(rowData.Client)
-            chatController.deleteRecentChatList(rowData);
-
+            // IMController.removeConverse(rowID,rowData.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
     }
-    _renderAvator = (oneRealationObj) => {
-        if (oneRealationObj) {
-            if ((!oneRealationObj.localImage || oneRealationObj.localImage === '') && !oneRealationObj.avator) {
-                return <Image style = {styles.avatar} source = {require('../resource/avator.jpg')}></Image>
-
-            }
-            return <Image style = {styles.avatar} source = {{uri:(oneRealationObj.localImage&&oneRealationObj.localImage!=='')?oneRealationObj.localImage:oneRealationObj.avator}}></Image>
-
-        } else {
-            return null
+    _renderAvator = (HeadImageUrl) => {
+        if (!HeadImageUrl || HeadImageUrl === '') {
+            return <Image style = {styles.avatar} source = {require('../resource/avator.jpg')}/>
         }
+        return <Image style = {styles.avatar} source = {{uri:HeadImageUrl}}/>
     }
-    // formateRelationDataMethod = (arr) =>{
-    // 	let obj = {};
-    // 	arr.forEach((v,i)=>{
-    // 		obj[v.RelationId] = v;
-    // 	})
-    // 	return obj
-    // }
+
     _renderRow = (rowData, sectionID, rowID) => {
-        // let needData = this.formateRelationData;
-        // if((rowData.Type == 'chatroom')&&!this.formateRelationData[rowData.Client]) needData = this.formateGroupData;
         return (
 			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
 				<Swipeout
@@ -261,16 +266,16 @@ class RecentChat extends ContainerComponent {
 					<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 						<View style = {styles.ListContainer}>
 							<View style = {styles.userLogo}>
-                                {this._renderAvator(rowData)}
+                                {this._renderAvator(rowData.HeadImageUrl)}
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
-									<Text style = {styles.NickName}>{rowData.Nick}</Text>
-									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.LastMessage}</Text>
+									<Text style = {styles.NickName}>{rowData.name}</Text>
+									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>
-									<Text style ={styles.LastMessageTime}>{TimeHelper.formatSpecifiedDate('hh:mm:ss',rowData.Time)}</Text>
-                                    {rowData.unReadMessageCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unReadMessageCount}</Text></View>:null}
+									<Text style ={styles.LastMessageTime}>{TimeHelper.formatSpecifiedDate('hh:mm:ss',rowData.lastTime)}</Text>
+                                    {rowData.unreadCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unreadCount}</Text></View>:null}
 								</View>
 							</View>
 						</View>
@@ -281,9 +286,6 @@ class RecentChat extends ContainerComponent {
     }
 
     render() {
-        // this.formateRelationData = this.formateRelationDataMethod(this.props.relationStore);
-        // this.formateGroupData = this.formateRelationDataMethod(this.state.groupData);
-
         let Popup = this.PopContent;
         let Loading = this.Loading;
         let PopContent = this.PopContent;
@@ -296,10 +298,80 @@ class RecentChat extends ContainerComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
+                <TouchableOpacity style={{width:40,height:40,backgroundColor:'yellow'}} onPress={()=>{this.updateConverseList([
+                    {
+                        group: false,
+                        chatId: "",//chatId={account/groupId}
+                        name:"1",//好友名字或者群名字
+                        HeadImageUrl: "",//头像地址, 本地地址
+                        lastSender: null,
+                        lastMessage: "11",
+                        lastTime: '1',
+                        unreadCount: 1, //未读条数
+                        noSound: false,//禁音
+                    },
+                    {
+                        group: true,
+                        chatId: "",//chatId={account/groupId}
+                        name:"2",//好友名字或者群名字
+                        HeadImageUrl: "",//头像地址, 本地地址
+                        lastSender: null,
+                        lastMessage: "22",
+                        lastTime: '2',
+                        unreadCount: 2, //未读条数
+                        noSound: false,//禁音
+                    },
+                    {
+                        group: false,
+                        chatId: "",//chatId={account/groupId}
+                        name:"3",//好友名字或者群名字
+                        HeadImageUrl: "",//头像地址, 本地地址
+                        lastSender: null,
+                        lastMessage: "33",
+                        lastTime: '3',
+                        unreadCount: 3, //未读条数
+                        noSound: false,//禁音
+                    },
+                    {
+                        group: true,
+                        chatId: "",//chatId={account/groupId}
+                        name:"4",//好友名字或者群名字
+                        HeadImageUrl: "",//头像地址, 本地地址
+                        lastSender: null,
+                        lastMessage: "44",
+                        lastTime: '4',
+                        unreadCount: 4, //未读条数
+                        noSound: false,//禁音
+                    },
+                ])}}/>
+                <TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>{this.updateConverseList([
+                    {
+                        group: false,
+                        chatId: "",//chatId={account/groupId}
+                        name:"3",//好友名字或者群名字
+                        HeadImageUrl: "",//头像地址, 本地地址
+                        lastSender: null,
+                        lastMessage: "33",
+                        lastTime: '3',
+                        unreadCount: 3, //未读条数
+                        noSound: false,//禁音
+                    },
+                    {
+                        group: true,
+                        chatId: "",//chatId={account/groupId}
+                        name:"4",//好友名字或者群名字
+                        HeadImageUrl: "",//头像地址, 本地地址
+                        lastSender: null,
+                        lastMessage: "44",
+                        lastTime: '4',
+                        unreadCount: 4, //未读条数
+                        noSound: false,//禁音
+                    },
+                ])}}/>
 				<View style = {styles.content}>
 					<ListView
 						style = {{height:checkDeviceHeight(1110)}}
-						dataSource = {this.state.dataSource.cloneWithRows(this.state.relationStore)}
+						dataSource = {this.state.dataSource.cloneWithRows(this.state.ConverseList)}
 						renderRow = {this._renderRow}
 						enableEmptySections = {true}
 						removeClippedSubviews={false}
