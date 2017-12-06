@@ -56,6 +56,8 @@ class IMController {
 
     init(param) {
         // 登录之后调用的init，他就是为了初始化IM management的socket，和注入的回调
+
+        updateconverslisthandle = param.updateConverseList;
         this.updateConverseList()
     }
 
@@ -127,7 +129,7 @@ class IMController {
     }
 
     //获取历史聊天记录
-    getHistoryChatList(chatId, group, callback){
+    getHistoryChatList(chatId, group){
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
         if(messageList.length == 0){
@@ -208,8 +210,14 @@ class IMController {
     removeMessage(chatId,group,messageId){
         //如果删除的是最后一条消息，还需要改变cache.conversationCache[chatId]
         if(cache.messageCache[cache.messageCache.length-1].messageId == messageId){
-            if(cache.messageCache.length){}
-            updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
+            if(cache.messageCache.length == 1){
+                let recentObj = cache.conversationCache[chatId];
+                recentObj.lastSender = '';
+                recentObj.lastMessage = '';
+                itemChat.lastTime = '';
+            }else{
+                this.updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
+            }
         }
         //cache.messageCache删除
         deleteItemFromCacheByMessageId(cache.messageCache,messageId);
