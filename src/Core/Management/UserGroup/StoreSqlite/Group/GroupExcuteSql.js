@@ -32,6 +32,7 @@ export const ExcuteIMSql = {
     "GetGroupMembersByGroupId":"select * from ?",
     "RemoveGroupFromContact":"update GroupList set show='false' where RelationId=?",
     "FindGroupTable":"select count(*)  from sqlite_master where type='table' and name=?",
-    "removeGroupMember":"delete from ? where RelationId = ?"
+    "removeGroupMember":"delete from ? where RelationId = ?",
+    "GetRelationsByIds":"select * from Relation where RelationId in (?)"
 
 }

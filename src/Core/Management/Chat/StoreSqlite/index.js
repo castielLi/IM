@@ -37,6 +37,14 @@ export function addChatUnReadMessageNumber(name){
     CHATFMDB.addChatUnReadMessageaNumber(name);
 }
 
+export function clearAllData(){
+    CHATFMDB.clearAllDatabaseData();
+}
+
+export function UpdateMessage(message = new ManagementMessageDto()){
+    CHATFMDB.UpdateMessageBody(message);
+}
+
 
 //获取range范围的消息
 export function queryRecentMessage(account,way,range,callback){
@@ -99,6 +107,20 @@ CHATFMDB.initIMDataBase = function(AccountId,callback){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
+CHATFMDB.clearAllDatabaseData = function(){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(sqls.ExcuteIMSql.ClearChatRecode, [], (tx, results) => {
+                console.log('clear all chatrecode success');
+            }, (err)=>{errorDB('清空聊天列表',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
 
 
 //todo：想办法进行批量操作
@@ -244,7 +266,30 @@ CHATFMDB.getAllChatClientList = function(callback){
 }
 
 
+CHATFMDB.UpdateMessageBody = function(message = new ManagementMessageDto()){
 
+    let updateSql = sqls.ExcuteIMSql.UpdateMessage;
+
+    let tabName = !message.group?"Private_" + message.chatId:"Group_" + chatId;
+
+    let messageBody = JSON.stringify(message);
+
+    updateSql = commonMethods.sqlFormat(updateSql,[tabName,messageBody,message.messageId])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+
+                console.log("更新chat 数据库 messagebody 成功");
+
+            }, (err)=>{errorDB('更新messageBody',err)});
+
+        });
+    }, errorDB);
+}
 
 
 
@@ -252,7 +297,14 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
 
     let tabName = way  == ChatWayEnum.Private?"Private_" + account:"Group_" + account;
 
-    let querySql = sqls.ExcuteIMSql.QueryChatRecodeByChatId;
+    let querySql = "";
+
+    if(range.start == 0){
+        querySql = sqls.ExcuteIMSql.QueryChatRecodeByChatId;
+    }else{
+        querySql = sqls.ExcuteIMSql.QueryChatRecodeByChatIdAndMaxId;
+    }
+
 
     querySql = commonMethods.sqlFormat(querySql,[tabName,range.start,range.limit]);
 

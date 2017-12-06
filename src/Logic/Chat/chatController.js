@@ -10,8 +10,7 @@ import Chat from '../../Core/Management/Chat/index'
 let AppMessageResultHandle = undefined;
 //function(success:boolean,data:{})
 //返回修改消息状态回调
-let AppMessageChangeStatusHandle = undefined;
-//function(message:message);
+
 
 //返回收到消息回调
 let AppReceiveMessageHandle = undefined;
@@ -66,7 +65,6 @@ export default class chatController {
 
     connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         AppMessageResultHandle = getMessageResultHandle;
-        AppMessageChangeStatusHandle = changeMessageHandle;
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
     }
@@ -205,16 +203,12 @@ export default class chatController {
 }
 //私有方法,不允许外部调用
 function connectIM(){
-    currentObj.im.connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage)
+    currentObj.im.connectIM(getMessageResultHandle,receiveMessageHandle,kickOutMessage)
 }
 
 
 function getMessageResultHandle(status,MSGID){
     messageChange(MSGID);
-}
-
-function changeMessageHandle(message){
-    messageChange(message.MSGID);
 }
 
 function kickOutMessage(){

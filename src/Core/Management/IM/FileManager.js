@@ -94,9 +94,6 @@ FileManager.uploadResource = function(obj){
             //返回IM logic 添加message到发送队列中
             currentObj.addSendMessageQueue(message.MSGID);
 
-            //App上层修改message细节
-            currentObj.MessageChangeStatusHandle(message);
-
         }).catch(function (values) {
             console.log('上传失败的内容是',values);
         })

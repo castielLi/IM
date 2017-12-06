@@ -11,6 +11,7 @@ import formatArrToObjById from './Common/methods/formatArrToObjById';
 import getContentOfControllerMessageDto from './Common/methods/GetContentOfControllerMessageDto'
 import ChatWayEnum from '../Common/dto/ChatWayEnum'
 import ManagementChatRecordDto from './Common/dto/ManagementChatRecordDto'
+import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
 let currentObj = undefined;
 
 //会话缓存
@@ -82,28 +83,23 @@ export default class Chat {
 
             let cache = formatArrToObjById(records);
             callback(cache);
-            ChatCache = cache;
+            // ChatCache = cache;
         });
     }
     //初始化聊天记录,打开一个聊天窗口的时候
-    getChatList(chatId, group = false, length, callback){
+    getChatList(chatId, group = false, maxId, callback){
 
         //length改成maxid 并且仅仅maxid== 0 的时候才缓存， 不然直接把搜索的messages返回给上部
-
 
         if(ChatCache[chatId] == undefined){
             callback([])
         }else{
-            if(ChatCache[chatId]['Record'].length == 0 || ChatCache[chatId]['Record'].length < length - InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-                currentObj.getRecentChatRecode(chatId,group,{start:length,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
-                    let messages = ChatCache[chatId]['Record'];
-                    messages = results.reduce(function(prev, curr){ prev.push(curr); return prev; },messages);
-                    ChatCache[chatId]['Record'] = messages;
-                    callback(messages);
-                });
-            }else{
-                callback(ChatCache[chatId]['Record']);
-            }
+            currentObj.getRecentChatRecode(chatId,group,{start:maxId,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
+                callback(messages);
+                // if(maxId == 0){
+                //     ChatCache[chatId]['Record'] = messages;
+                // }
+            });
         }
     }
 
@@ -112,22 +108,22 @@ export default class Chat {
         switch(deleteType){
             //删除单条消息
             case DeleteChatEnum.UniqueMessage:
-                if(existIdInArray(ChatCache[chatId]['Record'],messageId)){
-                    let index = ChatCache[chatId]['Record'].indexOf(messageId);
-                    ChatCache[chatId]['Record'].splice(index,1)
-                }
+                // if(existIdInArray(ChatCache[chatId]['Record'],messageId)){
+                //     let index = ChatCache[chatId]['Record'].indexOf(messageId);
+                //     ChatCache[chatId]['Record'].splice(index,1)
+                // }
                 currentObj.deleteMessage({"MSGID":messageId},group,chatId);
                 break;
             //删除该用户最近消息和聊天记录
             case DeleteChatEnum.WholeMessages:
-                delete ChatCache[chatId];
+                // delete ChatCache[chatId];
                 currentObj.deleteCurrentChatMessage(chatId,group);
                 break;
         }
     }
 
 
-    clearUnRead(chatId="",group=false,callback){
+    clearUnRead(chatId="",group=false){
        switch (clearType){
            case ClearUnReadEnum.All:
                this.clearAllUnReadMsgNumber()
@@ -136,9 +132,6 @@ export default class Chat {
                this.clearUnReadMsgNumber(chatId)
                break;
        }
-
-        // this.clearUnReadMsgNumber(chatId)
-        // callback();
     }
 
 
@@ -153,9 +146,16 @@ export default class Chat {
     }
 
 
-    updateMessage(chatId,message,callback){
-        this.updateMessageByChatIdAndMessage(chatId,message);
+    updateMessage(message){
+        this.updateChatMessage(message);
     }
+
+    //清除数据
+    clearAll(){
+        ChatCache = {};
+
+    }
+
 
     //关闭数据库
     closeDB(){
@@ -172,50 +172,51 @@ export default class Chat {
 
 
     //修改message的status状态或者 message资源文件路径
-    updateMessageByChatIdAndMessage(chat,message){
-        let recentObj = ChatCache[chatId];
-        let messages = recentObj.Record;
-        for(let item in messages){
-            if(messages[item].messageId == message.messageId){
-                messages[item] = message;
-                break;
-            }
-        }
-    }
+    // updateMessageByChatIdAndMessage(chat,message){
+    //     let recentObj = ChatCache[chatId];
+    //     let messages = recentObj.Record;
+    //     for(let item in messages){
+    //         if(messages[item].messageId == message.messageId){
+    //             messages[item] = message;
+    //             break;
+    //         }
+    //     }
+    // }
 
-    updateOneChat(chatId,message){
-       let recentObj = ChatCache[chatId];
-        recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
-        recentObj.LastMessage = getContentOfControllerMessageDto(message);
-        recentObj.Time = message.sendTime;
-        recentObj.Record.unshift(message);
-    }
+    // updateOneChat(chatId,message){
+    //    let recentObj = ChatCache[chatId];
+    //     recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
+    //     recentObj.LastMessage = getContentOfControllerMessageDto(message);
+    //     recentObj.Time = message.sendTime;
+    //     recentObj.Record.unshift(message);
+    // }
 
     //添加一个会话
-    addOneChat(chatId,message){
-        let recentObj = new RecentRecordDto();
-        recentObj.Client = chatId;
-        recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
-        recentObj.LastMessage = getContentOfControllerMessageDto(message);
-        recentObj.Time = message.sendTime;
-        recentObj.Record.unshift(message);
-        ChatCache[chatId] = recentObj;
-    }
+    // addOneChat(chatId,message){
+    //     let recentObj = new RecentRecordDto();
+    //     recentObj.Client = chatId;
+    //     recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
+    //     recentObj.LastMessage = getContentOfControllerMessageDto(message);
+    //     recentObj.Time = message.sendTime;
+    //     recentObj.Record.unshift(message);
+    //     ChatCache[chatId] = recentObj;
+    // }
     //未读消息+1
+
     addUnReadMsgNumber(clientId,callback){
-        ChatCache[clientId]['unReadMessageCount'] +=1;
+        // ChatCache[clientId]['unReadMessageCount'] +=1;
         currentObj.addChatUnReadMessageaNumber(clientId);
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId){
-        if(ChatCache[clientId] == undefined) return;
-        ChatCache[clientId]['unReadMessageCount'] = 0;
+        // if(ChatCache[clientId] == undefined) return;
+        // ChatCache[clientId]['unReadMessageCount'] = 0;
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
 
     clearAllUnReadMsgNumber(){
         for(let item in ChatCache){
-            ChatCache[item]['unReadMessageCount'] = 0;
+            // ChatCache[item]['unReadMessageCount'] = 0;
             currentObj.updateUnReadMessageNumber(item,0);
         }
     }
@@ -270,10 +271,21 @@ export default class Chat {
         storeSqlite.addChatUnReadMessageNumber(name)
     }
     //获取当前用户或者群组的聊天记录
-    getRecentChatRecode(account,group,range = {start:0,limit:InitChatRecordConfig.INIT_CHAT_REDUX_NUMBER},callback){
+    getRecentChatRecode(account,group,range = {start:0,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},callback){
         let way = group?ChatWayEnum.Group:ChatWayEnum.Private;
         storeSqlite.queryRecentMessage(account,way,range,callback);
     }
+
+    //清除chat数据库中所有的数据
+    clearAllChatData(){
+        storeSqlite.clearAllData();
+    }
+
+    //修改message的status状态或者 message资源文件路径
+    updateChatMessage(message = new ManagementChatRecordDto()){
+        storeSqlite.UpdateMessage(message);
+    }
+
 
     //关闭数据库
     closeDB(){

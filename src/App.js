@@ -42,14 +42,14 @@ export default function App() {
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
     //初始化IM
     let im = new IM();
-    //改变消息状态 {state:这里变化,message:{}}
+
     let handleMessageResult = function(status,MSGID){
         IMHandle.handleMessageResult(status,MSGID);
     }
     //改变消息数据 {state: ,message:{这里变化}}
-    let handleMessageChange = function(message){
-       IMHandle.handleMessageChange(message);
-    }
+    // let handleMessageChange = function(message){
+    //    IMHandle.handleMessageChange(message);
+    // }
 
 
     let handleRecieveMessage = function(message,relation){
@@ -67,7 +67,7 @@ export default function App() {
         IMHandle.handleKickOutMessage()
     }
 
-    chatController.connectApp(handleMessageResult,handleMessageChange,handleRecieveMessage,handleKickOutMessage)
+    chatController.connectApp(handleMessageResult,handleRecieveMessage,handleKickOutMessage)
 
 
     class InitApp extends DisplayComponent {

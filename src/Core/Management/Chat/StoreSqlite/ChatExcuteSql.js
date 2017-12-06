@@ -11,7 +11,7 @@ export const ExcuteIMSql = {
     "GetChatList":"select * from ChatRecode",
     "InsertChatRecode":"insert into ChatRecode (ChatId,Type,LastMessage,Time,LastSender,unReadMessageCount) values (?,?,?,?,?,0)",
     "CreateChatTable"
-        : "CREATE TABLE IF NOT EXISTS ? (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255), message varchar(500))",
+        : "CREATE OR REPLACE TABLE ? (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255), message varchar(500))",
     "InsertMessageToTalk":"insert into ? (messageId,message) values (?,?)",
     "DeleteChatFromChatList":"delete from ChatRecode where ChatId = ?",
     "DeleteChatTableByName":"delete from ?",
@@ -21,6 +21,9 @@ export const ExcuteIMSql = {
     "UpdateChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = ? where ChatId = ?",
     "AddChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = unReadMessageCount+1 where ChatId = ?",
     "QueryChatRecodeByChatId":"select message from ? order by Id desc LIMIT ?,?",
+    "QueryChatRecodeByChatIdAndMaxId":"select * from ? where Id<? order by Id desc limit ?",
+    "ClearChatRecode":"Delete from ChatRecode",
+    "UpdateMessage":"update ? set message = ? where messageId = ?"
 
 }
 

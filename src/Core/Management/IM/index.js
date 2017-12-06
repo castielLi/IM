@@ -63,10 +63,7 @@ let currentObj = undefined;
 //上层应用IM的接口
 //返回消息结果回调
 let ControllerMessageResultHandle = undefined;
-//function(success:boolean,data:{})
-//返回修改消息状态回调
-let ControllerMessageChangeStatusHandle = undefined;
-//function(message:message);
+
 
 //返回收到消息回调
 let ControllerReceiveMessageHandle = undefined;
@@ -118,7 +115,6 @@ export default class IM {
     //赋值外部IM接口
     connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
         ControllerMessageResultHandle = getMessageResultHandle;
-        ControllerMessageChangeStatusHandle = changeMessageHandle;
         ControllerReceiveMessageHandle = receiveMessageHandle;
         ControllerKickOutHandle = kickOutMessage;
     }
@@ -413,7 +409,9 @@ export default class IM {
         for(let item in cacheMessage) {
             if (cacheMessage[item].MSGID == messageId) {
 
-                currentObj.MessageResultHandle(true, messageId);
+                let message = currentObj.getCacheFromCacheByMSGID(messageId)
+
+                currentObj.MessageResultHandle(true, message);
 
                 currentObj.popCurrentMessageSqlite(messageId)
 
@@ -503,10 +501,6 @@ export default class IM {
         ControllerMessageResultHandle(success,message)
     }
 
-
-    MessageChangeStatusHandle(message){
-        ControllerMessageChangeStatusHandle(message)
-    }
 
     // //操作好友管理模块,申请好友通过，设置关系显示状态
     // updateRelation(relationId){
