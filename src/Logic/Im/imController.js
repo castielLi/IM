@@ -19,7 +19,7 @@ let __instance = (function () {
 
 //标示当前正在聊天的对象
 let currentChat = undefined
-let  cache = [];
+let  cache = {messageCache:[],conversationCache:{}};
 // [{ group: false,
 // chatId: "",//chatId={account/groupId}
 // sender: { account: "", name: "", HeadImageUrl: "" },//发送者
@@ -31,7 +31,8 @@ let  cache = [];
 
 let currentObj = undefined;
 let updateconverslisthandle = undefined;
-
+let updateChatRecordhandle = undefined;
+let maxId = 0;
 class IMController {
     constructor() {
         if (__instance()) return __instance();
@@ -55,6 +56,7 @@ class IMController {
 
     init(param) {
         // 登录之后调用的init，他就是为了初始化IM management的socket，和注入的回调
+        this.updateConverseList()
     }
 
     //获取会话列表
@@ -62,7 +64,7 @@ class IMController {
         this.chat.getConverseList((recentListObj) => {
             let snapArr = formateDataFromChatManageCache(recentListObj);
             this.user.GetBaseInfosByList(snapArr, (relationObj) => {
-                let needArr = [];
+                let needObj = {};
                 for (let key in relationObj) {
                     let itemChat = new ControllerChatConversationDto();
                     itemChat.group = recentListObj[key].group;
@@ -72,10 +74,11 @@ class IMController {
                     itemChat.unreadCount = recentListObj[key].unreadCount;
                     itemChat.name = relationObj[key].Nick;
                     itemChat.HeadImageUrl = relationObj[key].avator;
-                    needArr.push = itemChat;
+                    needObj[recentListObj[key].chatId] = itemChat;
                 }
+                cache.conversationCache = needObj;
                 //渲染会话列表
-                updateconverslisthandle(needArr);
+                updateconverslisthandle(needObj);
             })
         })
     }
@@ -84,18 +87,26 @@ class IMController {
     setCurrentConverse(chatId, group, callback) {
         currentChat = chatId;
         updateChatRecordhandle = callback;
+        //未读消息清零
+        if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
+            this.clearUnReadMsgNumber(chatId);
+            this.chat.clearUnReadNumber(chatId, group);
+            updateconverslisthandle(cache.conversationCache);
+        }
         //初始化前10条聊天记录
-        this.chat.getChatList(chatId, group = false, cache.length, (messageList) => {
+        this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
             if(messageList.length == 0){
-                updateChatRecordhandle({});
+                updateChatRecordhandle([]);
                 return;
             }
 
             //todo : 黄昊东  把会话列表缓存住
 
+            maxId = messageList[messageList.length - 1].id;
+
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
-            this.user.GetBaseInfosByList(snapArr, (relationObj) => {
+            this.user.init(snapArr, (relationObj) => {
                 for (let i = 0, length = messageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
                     itemMessage.group = messageList[i].group;
@@ -107,27 +118,26 @@ class IMController {
 
                     let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
                     itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-                    cache.push(itemMessage);
+                    cache.messageCache.push(itemMessage);
                 }
                 //渲染聊天记录
-                updateChatRecordhandle(cache);
+                updateChatRecordhandle(cache.messageCache);
             })
         })
     }
 
     //获取历史聊天记录
     getHistoryChatList(chatId, group, callback){
-        this.chat.getChatList(chatId, group = false, cache.length, (messageList) => {
+        this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
         if(messageList.length == 0){
             updateChatRecordhandle({});
             return;
         }
 
-            //todo : 黄昊东  把会话列表缓存住
-
+        maxId = messageList[messageList.length - 1].id;
         let snapArr = formateDataFromChatManageCacheRecord(messageList);
-        this.user.GetBaseInfosByList(snapArr, (relationObj) => {
+        this.user.init(snapArr, (relationObj) => {
             for (let i = 0, length = messageList.length; i < length; i++) {
                 let itemMessage = new ControllerMessageDto();
                 itemMessage.group = messageList[i].group;
@@ -139,10 +149,10 @@ class IMController {
 
                 let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
                 itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-                cache.push(itemMessage);
+                cache.messageCache.push(itemMessage);
             }
             //渲染聊天记录
-            updateChatRecordhandle(cache);
+            updateChatRecordhandle(cache.messageCache);
         })
     })
     }
@@ -178,23 +188,44 @@ class IMController {
 
                 let {RelationId, Nick, avator} = relationObj[managementMessage.sender];
                 itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-                cache.push(itemMessage);
+
+                cache.messageCache.push(itemMessage);
+                //修改cache.conversationCache
+                if(cache.conversationCache[message.chatId]!=undefined){
+                    this.updateOneChat(itemMessage.chatId,itemMessage);
+                }else{
+                    this.addOneChat(itemMessage.chatId,itemMessage);
+                }
                 //渲染聊天记录
-                updateChatRecordhandle(cache);
+                updateChatRecordhandle(cache.messageCache);
+                //渲染会话列表
+                updateconverslisthandle(cache.conversationCache);
             })
         },onprogress);
     }
 
     //删除消息
     removeMessage(chatId,group,messageId){
-        //cache删除
-        deleteItemFromCacheByMessageId(cache,messageId);
+        //如果删除的是最后一条消息，还需要改变cache.conversationCache[chatId]
+        if(cache.messageCache[cache.messageCache.length-1].messageId == messageId){
+            if(cache.messageCache.length){}
+            updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
+        }
+        //cache.messageCache删除
+        deleteItemFromCacheByMessageId(cache.messageCache,messageId);
+        //渲染聊天记录
+        updateChatRecordhandle(cache.messageCache);
+
         this.chat.deleteChat(1,chatId,group,messageId);
     }
 
     //删除会话
     removeConverse(chatId,group){
-        this.chat.deleteChat(2,chatId,group)
+        delete cache.conversationCache[chatId];
+
+        //渲染会话列表
+        updateconverslisthandle(cache.conversationCache);
+        this.chat.deleteChat(2,chatId,group);
     }
 
     //清除未读数, 在会话列表处功能(标记为已读)
@@ -202,26 +233,8 @@ class IMController {
         //清空对应item未读消息
 
         //todo : 黄昊东  把会话列表缓存住. 直接把数据清0
-
-        currentObj.chat.clearUnRead(chatId, group, (recentListObj) => {
-            let snapArr = formateDataFromChatManageCache(recentListObj);
-            this.user.GetBaseInfosByList(snapArr, (relationObj) => {
-                let needArr = [];
-                for (let key in relationObj) {
-                    let itemChat = new ControllerChatConversationDto();
-                    itemChat.group = recentListObj[key].group;
-                    itemChat.chatId = recentListObj[key].chatId;
-                    itemChat.lastSender = recentListObj[key].lastSender;
-                    itemChat.lastMessage = recentListObj[key].lastMessage;
-                    itemChat.unreadCount = recentListObj[key].unreadCount;
-                    itemChat.name = relationObj[key].Nick;
-                    itemChat.HeadImageUrl = relationObj[key].avator;
-                    needArr.push = itemChat;
-                }
-                //渲染会话列表
-                updateconverslisthandle(needArr);
-            })
-        })
+        this.clearUnReadMsgNumber(chatId);
+        this.chat.clearUnReadNumber(chatId, group);
     }
     //清除所有数据(清除缓存数据)
     clearAll(){
@@ -230,49 +243,58 @@ class IMController {
 
 
 
-
-    //提取重复
-    //ManagementChatConversationDto到ControllerChatConversationDto，对象变数组， 再渲染最近聊天
-    updateChatCoversationList(recentListObj){
-        let snapArr = formateDataFromChatManageCache(recentListObj);
-        this.user.GetBaseInfosByList(snapArr, (relationObj) => {
-            let needArr = [];
-            for (let key in relationObj) {
-                let itemChat = new ControllerChatConversationDto();
-                itemChat.group = recentListObj[key].group;
-                itemChat.chatId = recentListObj[key].chatId;
-                itemChat.lastSender = recentListObj[key].lastSender;
-                itemChat.lastMessage = recentListObj[key].lastMessage;
-                itemChat.unreadCount = recentListObj[key].unreadCount;
-                itemChat.name = relationObj[key].Nick;
-                itemChat.HeadImageUrl = relationObj[key].avator;
-                needArr.push = itemChat;
+    //cache 操作方法
+    //修改message的status状态或者 message资源文件路径,这里message是完整的controllerMessageDto
+    updateMessageByChatIdAndMessage(message){
+        let tempArr = cache.messageCache;
+        for(let i=0,length = tempArr.length;i<length;i++){
+            if(tempArr[i].messageId == message.messageId){
+                tempArr[i] = message;
+                break;
             }
-            //渲染会话列表
-            updateconverslisthandle(needArr);
-        })
-    }
-    //ManagementMessageDto到ControllerMessageDto , 数组变数组 ,再渲染聊天记录
-    updateChatRecord(messageList){
-        let snapArr = formateDataFromChatManageCacheRecord(messageList);
-        this.user.GetBaseInfosByList(snapArr, (relationObj) => {
-            for (let i = 0, length = messageList.length; i < length; i++) {
-                let itemMessage = new ControllerMessageDto();
-                itemMessage.group = messageList[i].group;
-                itemMessage.chatId = messageList[i].chatId;
-                itemMessage.message = {...messageList[i].message};
-                itemMessage.type = messageList[i].type;
-                itemMessage.status = messageList[i].status;
-                itemMessage.sendTime = messageList[i].sendTime;
+        }
 
-                let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-                cache.push(itemMessage);
-            }
-            //渲染聊天记录
-            updateChatRecordhandle(cache);
-        })
     }
+    //修改一个会话
+    updateOneChat(chatId,message){
+        let recentObj = cache.conversationCache[chatId];
+        recentObj.lastSender = message.sender;
+        recentObj.lastMessage = getContentOfControllerMessageDto(message);
+        itemChat.lastTime = message.sendTime;
+
+    }
+
+    //添加一个会话,message是完整的controllerMessageDto
+    addOneChat(chatId,message){
+        let itemChat = new ControllerChatConversationDto();
+        itemChat.group = message.group;
+        itemChat.chatId = message.chatId;
+        itemChat.lastSender = message.sender.account;
+        itemChat.lastMessage = getContentOfControllerMessageDto(message);
+        itemChat.lastTime = message.sendTime;
+        itemChat.name = message.sender.name;
+        itemChat.HeadImageUrl = message.sender.HeadImageUrl;
+        cache.conversationCache[chatId] = itemChat;
+    }
+    //未读消息+1
+    addUnReadMsgNumber(clientId,callback){
+        cache.conversationCache[clientId]['unreadCount'] +=1;
+    }
+    //未读消息清0
+    clearUnReadMsgNumber(clientId){
+        if(cache.conversationCache[clientId] == undefined) return;
+        cache.conversationCache[clientId]['unreadCount'] = 0;
+    }
+
+    clearAllUnReadMsgNumber(){
+        for(let item in cache.conversationCache){
+            cache.conversationCache[item]['unReadMessageCount'] = 0;
+        }
+    }
+
+
+
+
 }
 
 
