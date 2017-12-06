@@ -32,7 +32,7 @@ import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/Sqlit
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/Setting/settingController'
-import imController from '../../../../Logic/Im/imController'
+//import imController from '../../../../Logic/Im/imController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -50,7 +50,7 @@ let recordData;
 
 let ChatController = new chatController();
 let settingController = new SettingController();
-let IMController = new imController();
+//let IMController = new imController();
 let currentObj;
 
 class Chat extends Component {
@@ -72,6 +72,7 @@ class Chat extends Component {
 
         this.data = [];
         this.data2 = [];
+        this.chatRecord = [];
 
         this.timestamp = 0;
         this.noMore = 0;
@@ -89,8 +90,10 @@ class Chat extends Component {
     }
 
     onUpdataChatRecord(chatRecord){
-        this.data = this.prepareMessages(chatRecord);
-        this.data2 = this.prepareMessages(chatRecord);
+        this.chatRecord = chatRecord;
+        this.chatRecord2 = chatRecord.concat([]).reverse();
+        this.data = this.prepareMessages(this.chatRecord);
+        this.data2 = this.prepareMessages(this.chatRecord2);
         currentObj.setState({
             dataSource:this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
             dataSourceO:this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
@@ -98,15 +101,56 @@ class Chat extends Component {
     }
 
     componentWillMount() {
-        IMController.init(param);
+        // IMController.init(param);
         let group;
         if(this.props.type === 'private'){
             group = false;
         }else{
             group = true;
         }
-        IMController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
-
+        //IMController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
+        this.onUpdataChatRecord([
+            {
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
+                messageId: "ZXCV123",//消息编号
+                message: '测试数据',//消息内容，
+                type:'text',//消息类型
+                status: '',
+                sendTime : "123456789"
+            },
+            {
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
+                messageId: "ZXCV124",//消息编号
+                message: '测试数据2',//消息内容，
+                type:'text',//消息类型
+                status: '',
+                sendTime : "123756789"
+            },
+            {
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
+                messageId: "ZXCV125",//消息编号
+                message: {localSource:'http://img2.ph.126.net/bkaOfRyDoyddXri0GjpWjA==/6630608169839463386.jpg',remoteSource:''},//消息内容，
+                type:'image',//消息类型
+                status: '',
+                sendTime : "223756789"
+            },
+            {
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
+                messageId: "ZXCV126",//消息编号
+                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
+                type:'image',//消息类型
+                status: '',
+                sendTime : "445756789"
+            },
+        ])
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
@@ -131,7 +175,7 @@ class Chat extends Component {
                 if(e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     //获取历史记录 回调修改页面 用到之前的setCurrentConverse方法中传过去的callback取数控逻辑也在 controller
-                    IMController.getHistoryChatList();
+                    //IMController.getHistoryChatList();
                 }
             },
         })
@@ -140,9 +184,9 @@ class Chat extends Component {
     prepareMessages(messages) {
         //console.log(messages)
         return {
-            keys: messages.map((m,i) => m.message.MSGID),
+            keys: messages.map((m,i) => m.messageId),
             blob: messages.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
-                o[m.message.MSGID] = {
+                o[m.messageId] = {
                     ...m,
                     index:i,
                 };
@@ -178,8 +222,8 @@ class Chat extends Component {
         if(this.state.showInvertible){
             let prevTime;
             let index = this.data2.blob[rowid].index;
-            this.shortData2[index+1] ?
-                prevTime = parseInt(this.shortData2[index+1].message.Data.LocalTime) : prevTime = 0;
+            this.chatRecord2[index+1] ?
+                prevTime = parseInt(this.chatRecord2[index+1].sendTime) : prevTime = 0;
             if((LocalTime - prevTime) > 180000){
                 timer = new Date(LocalTime);
             }
@@ -188,8 +232,9 @@ class Chat extends Component {
         else{
             let prevTime;
             let index = this.data.blob[rowid].index;
-            this.shortData[index-1] ?
-                prevTime = parseInt(this.shortData[index-1].message.Data.LocalTime) : prevTime = 0;
+            this.chatRecord[index-1] ?
+                prevTime = parseInt(this.chatRecord[index-1].sendTime) : prevTime = 0;
+            console.log(prevTime)
             if((LocalTime - prevTime) > 180000){
                 timer = new Date(LocalTime);
             }
@@ -339,7 +384,7 @@ class Chat extends Component {
         //         isMore : msgState.LOADING
         //     });
         // }
-        IMController.getHistoryChatList();
+        //IMController.getHistoryChatList();
 
     }
 
@@ -455,6 +500,65 @@ class Chat extends Component {
             return (
                     <View style={styles.chatListView}>
                         <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
+                            <TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>this.onUpdataChatRecord([{
+                                group: false,
+                                chatId: "wg003722",//chatId={account/groupId}
+                                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
+                                messageId: "ZXCV123",//消息编号
+                                message: '测试数据',//消息内容，
+                                type:'text',//消息类型
+                                status: '',
+                                sendTime : "123456789"
+                            },
+                                {
+                                    group: false,
+                                    chatId: "wg003722",//chatId={account/groupId}
+                                    sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
+                                    messageId: "ZXCV124",//消息编号
+                                    message: '测试数据2',//消息内容，
+                                    type:'text',//消息类型
+                                    status: '',
+                                    sendTime : "123756789"
+                                },
+                                {
+                                    group: false,
+                                    chatId: "wg003722",//chatId={account/groupId}
+                                    sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
+                                    messageId: "ZXCV125",//消息编号
+                                    message: {localSource:'http://img2.ph.126.net/bkaOfRyDoyddXri0GjpWjA==/6630608169839463386.jpg',remoteSource:''},//消息内容，
+                                    type:'image',//消息类型
+                                    status: '',
+                                    sendTime : "223756789"
+                                },
+                                {
+                                    group: false,
+                                    chatId: "wg003722",//chatId={account/groupId}
+                                    sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
+                                    messageId: "ZXCV126",//消息编号
+                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
+                                    type:'image',//消息类型
+                                    status: '',
+                                    sendTime : "445756789"
+                                },{
+                                    group: false,
+                                    chatId: "wg003722",//chatId={account/groupId}
+                                    sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
+                                    messageId: "ZXCV127",//消息编号
+                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
+                                    type:'image',//消息类型
+                                    status: '',
+                                    sendTime : "545756789"
+                                },
+                                {
+                                    group: false,
+                                    chatId: "wg003722",//chatId={account/groupId}
+                                    sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
+                                    messageId: "ZXCV128",//消息编号
+                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
+                                    type:'image',//消息类型
+                                    status: '',
+                                    sendTime : "645756789"
+                                }])}/>
                             <ListView
                                 ref={(lv) => this.listView = lv}
                                 dataSource={this.state.dataSource}

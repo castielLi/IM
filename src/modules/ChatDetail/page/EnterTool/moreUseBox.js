@@ -24,9 +24,9 @@ import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
-import imController from '../../../../Logic/Im/imController'
+// import imController from '../../../../Logic/Im/imController'
 import * as commonMethod from '../../common/commonMethod'
-var IMController = new imController();
+// var IMController = new imController();
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 const chatController = new ChatController();
@@ -85,9 +85,9 @@ imagePikerCallBack(response){
     // let message = addResourceMessage('image',this.props.type,[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
     //   chatController.addMessage(message,(result)=>{
     // },[(tips)=>{console.log(tips)}]);
-      let group = this.props.type == 'chatroom' ? true : false;
+      let group = this.props.type == 'group' ? true : false;
       let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'image')
-      IMController.sendMessage(message);
+      // IMController.sendMessage(message);
   }
 }
 
@@ -117,9 +117,9 @@ useCameraVideo(){
             // let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             // chatController.addMessage(message,(result)=>{
             // },[(tips)=>{console.log(tips)}]);
-            let group = this.props.type == 'chatroom' ? true : false;
+            let group = this.props.type == 'group' ? true : false;
             let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
-            IMController.sendMessage(message);
+            // IMController.sendMessage(message);
         }
     });
 }
@@ -141,9 +141,9 @@ useLocalVideo(){
             // let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
             // chatController.addMessage(message,(result)=>{
             // },[(tips)=>{console.log(tips)}]);
-            let group = this.props.type == 'chatroom' ? true : false;
+            let group = this.props.type == 'group' ? true : false;
             let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
-            IMController.sendMessage(message);
+            // IMController.sendMessage(message);
         }
     });
 }
