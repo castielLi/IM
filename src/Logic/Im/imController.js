@@ -176,8 +176,8 @@ class IMController {
             //managementMessage是带有status和消息id的完整ManagementMessageDto
             this.chat.addMessage(message.chatId,managementMessage);
             //cache添加
-    
-            this.user.getInformationByIdandType(message.sender,false,(relationObj) => {
+
+            this.user.getInformationByIdandType(message.sender,message.group,(relationObj) => {
                 let itemMessage = new ControllerMessageDto();
                 itemMessage.group = managementMessage.group;
                 itemMessage.chatId = managementMessage.chatId;
