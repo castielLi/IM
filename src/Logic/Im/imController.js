@@ -81,9 +81,9 @@ export default class IMController {
                 cache.conversationCache = needObj;
 
                 //渲染会话列表
+
                 let tempArr = formatOjbToneedArr(cache.conversationCache);
                 updateconverslisthandle(tempArr);
-
             })
         })
 
