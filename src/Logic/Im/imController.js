@@ -7,6 +7,7 @@ import ManagementChatConversationDto from './dto/ManagementChatConversationDto';
 import ManagementMessageDto from '../../Core/Management/Common/dto/ManagementMessageDto'
 import getContentOfControllerMessageDto from '../../Core/Management/Chat/Common/methods/GetContentOfControllerMessageDto'
 
+import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 
 let __instance = (function () {
     let instance;
@@ -93,7 +94,7 @@ export default class IMController {
 
     //设置当前会话
     setCurrentConverse(chatId, group, callback) {
-        currentChat = chatId;
+        currentChat = {chatId,group}
         updateChatRecordhandle = callback;
         //未读消息清零
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
@@ -139,7 +140,7 @@ export default class IMController {
     }
     //退出聊天窗口
     setOutCurrentConverse(){
-        currentChat = '';
+        currentChat = {};
         cache.messageCache = [];
         maxId = 0;
     }
@@ -195,9 +196,17 @@ export default class IMController {
         this.im.addMessage(itemManagementMessage,(managementMessage)=>{
             //managementMessage是带有status和消息id的完整ManagementMessageDto
             this.chat.addMessage(message.chatId,managementMessage);
+
+            //修改cache.conversationCache
+            if(cache.conversationCache[managementMessage.chatId]!=undefined){
+                this.updateOneChat(managementMessage.chatId,managementMessage);
+            }else{
+                this.addOneChat(managementMessage.chatId,managementMessage);
+            }
+
+
             maxId = maxId+1;
             //cache添加
-
             this.user.getInformationByIdandType(message.sender,message.group,(relationObj) => {
                 let itemMessage = new ControllerMessageDto();
                 itemMessage.group = managementMessage.group;
@@ -211,16 +220,9 @@ export default class IMController {
                 itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
 
                 cache.messageCache.push(itemMessage);
-                //修改cache.conversationCache
-                if(cache.conversationCache[itemMessage.chatId]!=undefined){
-                    this.updateOneChat(itemMessage.chatId,itemMessage);
-                }else{
-                    this.addOneChat(itemMessage.chatId,itemMessage);
-                }
+
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
-                let tempArr = formatOjbToneedArr(cache.conversationCache);
-                updateconverslisthandle(tempArr);
             })
         },onprogress);
 
@@ -229,16 +231,17 @@ export default class IMController {
     }
 
     //删除消息
-    removeMessage(chatId,group,messageId){
+    removeMessage(messageId){
+
         //如果删除的是最后一条消息，还需要改变cache.conversationCache[chatId]
         if(cache.messageCache[cache.messageCache.length-1].messageId == messageId){
             if(cache.messageCache.length == 1){
-                let recentObj = cache.conversationCache[chatId];
+                let recentObj = cache.conversationCache[currentChat.chatId];
                 recentObj.lastSender = '';
                 recentObj.lastMessage = '';
                 recentObj.lastTime = '';
             }else{
-                this.updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
+                this.updateOneChat(currentChat.chatId,cache.messageCache[cache.messageCache.length-2])
             }
         }
         maxId = maxId-1;
@@ -247,7 +250,7 @@ export default class IMController {
         //渲染聊天记录
         updateChatRecordhandle(cache.messageCache);
 
-        this.chat.deleteChat(1,chatId,group,messageId);
+        this.chat.deleteChat(1,currentChat.chatId,currentChat.group,messageId);
     }
 
     //删除会话
@@ -292,7 +295,8 @@ export default class IMController {
         recentObj.lastSender = message.sender;
         recentObj.lastMessage = getContentOfControllerMessageDto(message);
         recentObj.lastTime = message.sendTime;
-
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle(tempArr);
     }
 
     //message是完整的controllerMessageDto
@@ -319,10 +323,12 @@ export default class IMController {
             itemChat.name = Nick;
             itemChat.HeadImageUrl = avator;
             cache.conversationCache[chatId] = itemChat;
+            let tempArr = formatOjbToneedArr(cache.conversationCache);
+            updateconverslisthandle(tempArr);
         })
     }
     //未读消息+1
-    addUnReadMsgNumber(clientId,callback){
+    addUnReadMsgNumber(clientId){
         cache.conversationCache[clientId]['unreadCount'] +=1;
     }
     //未读消息清0
@@ -347,15 +353,54 @@ export default class IMController {
 function receivemessage(message){
 
     //1 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
-
-
-
+    let managementMessageObj = IMMessageToMessagementMessageDto(message);
+    this.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
     //2 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
+
+    let chatId;
+    if(!managementMessageObj.group){
+        chatId = managementMessageObj.sender;
+    }else{
+        chatId = managementMessageObj.chatId;
+    }
+    //修改或增加会话缓存
+    if(cache.conversationCache[chatId]!=undefined){
+        currentObj.updateOneChat(chatId,managementMessageObj)
+    }else{
+        currentObj.addOneChat(chatId,managementMessageObj);
+    }
+
+
+    //只有打开了聊天窗口并且收到来自该窗口的消息才会重新渲染聊天页面
+    if(chatId == currentChat.chatId){
+        maxId = maxId+1;
+        //cache添加
+        currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
+            let itemMessage = new ControllerMessageDto();
+            itemMessage.group = managementMessageObj.group;
+            itemMessage.chatId = managementMessageObj.chatId;
+            itemMessage.message = managementMessageObj.message;
+            itemMessage.type = managementMessageObj.type;
+            itemMessage.status = managementMessageObj.status;
+            itemMessage.sendTime = managementMessageObj.sendTime;
+
+            let {RelationId, Nick, avator} = relationObj;
+            itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+
+            cache.messageCache.push(itemMessage);
+            //渲染聊天记录
+            updateChatRecordhandle(cache.messageCache);
+        })
+    }else{
+        currentObj.addUnReadMsgNumber(chatId);
+    }
+
+
 
     //处理完成
 
     //[]
-    updateconverslisthandle(reults)
+
 }
 
 
