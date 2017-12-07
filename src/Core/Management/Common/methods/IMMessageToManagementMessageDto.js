@@ -2,12 +2,12 @@
  * Created by apple on 2017/12/7.
  */
 
-import ManagementMessageDto from '../../../Common/dto/ManagementMessageDto'
-import ChatCommandEnum from '../../../Common/dto/ChatCommandEnum'
-import MessageCommandEnum from '../../../Common/dto/MessageCommandEnum';
-import DtoMessageTypeEnum from '../../../Common/dto/DtoMessageTypeEnum'
-import MessageBodyTypeEnum from '../../../Common/dto/MessageBodyTypeEnum'
-import ResourceTypeEnum from '../../../Common/dto/ResourceTypeEnum'
+import ManagementMessageDto from '../dto/ManagementMessageDto'
+import ChatCommandEnum from '../dto/ChatCommandEnum'
+import MessageCommandEnum from '../dto/MessageCommandEnum';
+import DtoMessageTypeEnum from '../dto/DtoMessageTypeEnum'
+import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
+import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 
 export default function IMMessageToMessagementMessageDto(message){
     let messageDto = new ManagementMessageDto();
