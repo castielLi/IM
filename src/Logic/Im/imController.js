@@ -81,20 +81,12 @@ export default class IMController {
                 cache.conversationCache = needObj;
 
                 //渲染会话列表
-                //updateconverslisthandle(cache.conversationCache);
-                updateconverslisthandle([{
-                    group: false,
-                    chatId: "",//chatId={account/groupId}
-                    name:"0",//好友名字或者群名字
-                    HeadImageUrl: "",//头像地址, 本地地址
-                    lastSender: null,
-                    lastMessage: "00",
-                    lastTime: '0',
-                    unreadCount: 0, //未读条数
-                    noSound: false,//禁音
-                }]);
+                let tempArr = formatOjbToneedArr(cache.conversationCache);
+                updateconverslisthandle(tempArr);
+
             })
         })
+
     }
 
     //设置当前会话
@@ -105,10 +97,12 @@ export default class IMController {
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
             this.clearUnReadMsgNumber(chatId);
             this.chat.clearUnReadNumber(chatId, group);
-            updateconverslisthandle(cache.conversationCache);
+            //渲染会话列表
+            let tempArr = formatOjbToneedArr(cache.conversationCache);
+            updateconverslisthandle(tempArr);
         }
         //初始化前10条聊天记录
-        this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
+        this.chat.getChatList(chatId, group, maxId, (messageList) => {
 
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
@@ -135,30 +129,16 @@ export default class IMController {
                     cache.messageCache.push(itemMessage);
                 }
                 //渲染聊天记录
-                //updateChatRecordhandle(cache.messageCache);
-                updateChatRecordhandle([{
-                    group: false,
-                    chatId: "wg003722",//chatId={account/groupId}
-                    sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                    messageId: 'asd1',//消息编号
-                    message: '测试数据',//消息内容，
-                    type:'text',//消息类型
-                    status: statue, //WaitOpreator SendSuccess error
-                    sendTime : "123456789"
-                },{
-                    group: false,
-                    chatId: "wg003722",//chatId={account/groupId}
-                    sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                    messageId: 'asd2',//消息编号
-                    message: '测试数据',//消息内容，
-                    type:'text',//消息类型
-                    status: statue, //WaitOpreator SendSuccess error
-                    sendTime : "123456789"
-                }])
+                updateChatRecordhandle(cache.messageCache);
             })
         })
     }
-
+    //退出聊天窗口
+    setOutCurrentConverse(){
+        currentChat = '';
+        cache.messageCache = [];
+        maxId = 0;
+    }
     //获取历史聊天记录
     getHistoryChatList(chatId, group){
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
@@ -185,26 +165,8 @@ export default class IMController {
                 cache.messageCache.push(itemMessage);
             }
             //渲染聊天记录
-            //updateChatRecordhandle(cache.messageCache);
-            updateChatRecordhandle([{
-                group: false,
-                chatId: "wg003722",//chatId={account/groupId}
-                sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                messageId: 'asd3',//消息编号
-                message: '测试数据',//消息内容，
-                type:'text',//消息类型
-                status: statue, //WaitOpreator SendSuccess error
-                sendTime : "123456789"
-            },{
-                group: false,
-                chatId: "wg003722",//chatId={account/groupId}
-                sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                messageId: 'asd4',//消息编号
-                message: '测试数据',//消息内容，
-                type:'text',//消息类型
-                status: statue, //WaitOpreator SendSuccess error
-                sendTime : "123456789"
-            }]);
+            updateChatRecordhandle(cache.messageCache);
+
         })
     })
     }
@@ -251,8 +213,8 @@ export default class IMController {
                 }
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
-                //渲染会话列表
-                updateconverslisthandle(cache.conversationCache);
+                let tempArr = formatOjbToneedArr(cache.conversationCache);
+                updateconverslisthandle(tempArr);
             })
         },onprogress);
     }
@@ -284,7 +246,8 @@ export default class IMController {
         delete cache.conversationCache[chatId];
 
         //渲染会话列表
-        updateconverslisthandle(cache.conversationCache);
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle(tempArr);
         this.chat.deleteChat(2,chatId,group);
     }
 
