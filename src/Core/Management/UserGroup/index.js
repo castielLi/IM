@@ -103,7 +103,14 @@ export default class User {
         },true)
 
     }
-
+    //根据clientId ，判断是不是好友关系，是的话返回这条关系,否则返回null
+    getUserRelationById(clientId){
+        if(cache['user'][clientId] && cache['user'][clientId].show == 'true'){
+            return cache['user'][clientId];
+        } else{
+            return null;
+        }
+    }
     //先去对应表中找到成员ID 再去Account中找对应信息
     GetGroupMemberIdsByGroupId(groupId,callback){
         GroupManager.GetMembersByGroupId(groupId,function(results){
@@ -493,6 +500,7 @@ export default class User {
     removeFriend(userId){
         this.deleteRelationSQL(userId);
         cache['user'][userId].show = false;
+        return cache['user'];
     }
     //添加好友
     applyFriend(userObj){
@@ -505,6 +513,7 @@ export default class User {
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
+        return cache["user"];
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群

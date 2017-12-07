@@ -298,9 +298,9 @@ export default class settingController {
                 // //删除该与client的所以聊天记录
                 // currentObj.im.deleteCurrentChatMessage(userId,'private');
                 //删除account数据库
-                currentObj.user.removeFriend(userId);
+                let userCache= currentObj.user.removeFriend(userId);
                 //重新渲染通讯录
-                let tempArr = filterShowToArr(cache['user'])
+                let tempArr = filterShowToArr(userCache)
                 updateContact(tempArr);
             }
             callback(results);
@@ -326,12 +326,19 @@ export default class settingController {
                 //todo controller operate
                 let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                currentObj.user.acceptFriend(relationObj);
+                let userCache = currentObj.user.acceptFriend(relationObj);
+                //重新渲染通讯录
+                let tempArr = filterShowToArr(userCache)
+                updateContact(tempArr);
                 //修改好友申请消息状态
                 currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
             }
             callback(results);
         })
+    }
+    //根据clientId ，判断是不是好友关系，是的话返回这条关系,否则返回null
+    getUserRelationByIdFromCache(clientId){
+        return this.user.getUserRelationById(clientId);
     }
 }
 
