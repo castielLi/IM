@@ -507,6 +507,7 @@ export default class User {
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
+        return cache['user'];
     }
     //接受好友申请
     acceptFriend(userObj){

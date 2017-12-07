@@ -314,7 +314,10 @@ export default class settingController {
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                currentObj.user.applyFriend(relationObj);
+                let userCache= currentObj.user.applyFriend(relationObj);
+                //重新渲染通讯录
+                let tempArr = filterShowToArr(userCache)
+                updateContact(tempArr);
             }
             callback(result);
         })
