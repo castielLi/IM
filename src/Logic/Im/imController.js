@@ -56,6 +56,8 @@ class IMController {
 
     init(param) {
         // 登录之后调用的init，他就是为了初始化IM management的socket，和注入的回调
+
+        updateconverslisthandle = param.updateConverseList;
         this.updateConverseList()
     }
 
@@ -77,8 +79,20 @@ class IMController {
                     needObj[recentListObj[key].chatId] = itemChat;
                 }
                 cache.conversationCache = needObj;
+
                 //渲染会话列表
-                updateconverslisthandle(needObj);
+                //updateconverslisthandle(cache.conversationCache);
+                updateconverslisthandle([{
+                    group: false,
+                    chatId: "",//chatId={account/groupId}
+                    name:"0",//好友名字或者群名字
+                    HeadImageUrl: "",//头像地址, 本地地址
+                    lastSender: null,
+                    lastMessage: "00",
+                    lastTime: '0',
+                    unreadCount: 0, //未读条数
+                    noSound: false,//禁音
+                }]);
             })
         })
     }
@@ -121,13 +135,32 @@ class IMController {
                     cache.messageCache.push(itemMessage);
                 }
                 //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache);
+                //updateChatRecordhandle(cache.messageCache);
+                updateChatRecordhandle([{
+                    group: false,
+                    chatId: "wg003722",//chatId={account/groupId}
+                    sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+                    messageId: i,//消息编号
+                    message: '测试数据',//消息内容，
+                    type:'text',//消息类型
+                    status: statue, //WaitOpreator SendSuccess error
+                    sendTime : "123456789"
+                },{
+                    group: false,
+                    chatId: "wg003722",//chatId={account/groupId}
+                    sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+                    messageId: i,//消息编号
+                    message: '测试数据',//消息内容，
+                    type:'text',//消息类型
+                    status: statue, //WaitOpreator SendSuccess error
+                    sendTime : "123456789"
+                }])
             })
         })
     }
 
     //获取历史聊天记录
-    getHistoryChatList(chatId, group, callback){
+    getHistoryChatList(chatId, group){
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
         if(messageList.length == 0){
@@ -175,6 +208,7 @@ class IMController {
         this.im.addMessage(itemManagementMessage,(managementMessage)=>{
             //managementMessage是带有status和消息id的完整ManagementMessageDto
             this.chat.addMessage(message.chatId,managementMessage);
+            maxId = maxId+1;
             //cache添加
 
             this.user.getInformationByIdandType(message.sender,message.group,(relationObj) => {
@@ -208,9 +242,16 @@ class IMController {
     removeMessage(chatId,group,messageId){
         //如果删除的是最后一条消息，还需要改变cache.conversationCache[chatId]
         if(cache.messageCache[cache.messageCache.length-1].messageId == messageId){
-            if(cache.messageCache.length){}
-            updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
+            if(cache.messageCache.length == 1){
+                let recentObj = cache.conversationCache[chatId];
+                recentObj.lastSender = '';
+                recentObj.lastMessage = '';
+                itemChat.lastTime = '';
+            }else{
+                this.updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
+            }
         }
+        maxId = maxId-1;
         //cache.messageCache删除
         deleteItemFromCacheByMessageId(cache.messageCache,messageId);
         //渲染聊天记录
@@ -232,7 +273,6 @@ class IMController {
     clearUnReadNumber(chatId, group){
         //清空对应item未读消息
 
-        //todo : 黄昊东  把会话列表缓存住. 直接把数据清0
         this.clearUnReadMsgNumber(chatId);
         this.chat.clearUnReadNumber(chatId, group);
     }
@@ -345,4 +385,12 @@ function deleteItemFromCacheByMessageId(cache,messageId){
     }
     cache.splice(index,1);
     return cache;
+}
+
+export default function formatOjbToneedArr(obj){
+    let needArr = [];
+    for(let key in obj){
+        needArr.push(obj[key]);
+    }
+    return needArr;
 }
