@@ -145,6 +145,7 @@ export default class IMController {
     }
     //获取历史聊天记录
     getHistoryChatList(chatId, group){
+        //messageList 每个item 拿上来就是ManagementMessageDto
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
         if(messageList.length == 0){
