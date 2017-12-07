@@ -39,8 +39,8 @@ import LoginController from '../../../Logic/loginController'
 import SettingController from '../../../Logic/Setting/settingController'
 import formatOjbToneedArr from '../common/methods/formatOjbToneedArr';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
-import IMController from '../../../Logic/Im/IMController'
-let imController = new ImController();
+import IMController from '../../../Logic/Im/imController'
+let imController = new IMController();
 
 let chatController = new ChatController();
 let loginController = new LoginController();

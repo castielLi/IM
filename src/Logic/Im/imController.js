@@ -140,7 +140,7 @@ class IMController {
                     group: false,
                     chatId: "wg003722",//chatId={account/groupId}
                     sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                    messageId: i,//消息编号
+                    messageId: 'asd1',//消息编号
                     message: '测试数据',//消息内容，
                     type:'text',//消息类型
                     status: statue, //WaitOpreator SendSuccess error
@@ -149,7 +149,7 @@ class IMController {
                     group: false,
                     chatId: "wg003722",//chatId={account/groupId}
                     sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                    messageId: i,//消息编号
+                    messageId: 'asd2',//消息编号
                     message: '测试数据',//消息内容，
                     type:'text',//消息类型
                     status: statue, //WaitOpreator SendSuccess error
@@ -185,7 +185,26 @@ class IMController {
                 cache.messageCache.push(itemMessage);
             }
             //渲染聊天记录
-            updateChatRecordhandle(cache.messageCache);
+            //updateChatRecordhandle(cache.messageCache);
+            updateChatRecordhandle([{
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+                messageId: 'asd3',//消息编号
+                message: '测试数据',//消息内容，
+                type:'text',//消息类型
+                status: statue, //WaitOpreator SendSuccess error
+                sendTime : "123456789"
+            },{
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+                messageId: 'asd4',//消息编号
+                message: '测试数据',//消息内容，
+                type:'text',//消息类型
+                status: statue, //WaitOpreator SendSuccess error
+                sendTime : "123456789"
+            }]);
         })
     })
     }

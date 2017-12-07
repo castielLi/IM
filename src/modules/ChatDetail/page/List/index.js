@@ -32,7 +32,7 @@ import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/Sqlit
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/Setting/settingController'
-import IMController from '../../../../Logic/Im/IMController'
+import IMController from '../../../../Logic/Im/imController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
