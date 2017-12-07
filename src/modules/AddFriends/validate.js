@@ -25,7 +25,7 @@ import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
 import settingController from '../../Logic/Setting/settingController';
 
 
-
+let currentObj;
 let SettingController = new settingController();
 
 class Validate extends ContainerComponent {
