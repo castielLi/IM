@@ -27,6 +27,7 @@ import RNFS from 'react-native-fs';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/Setting/settingController';
+import RelationDto from '../../../Logic/Setting/dto/RelationDto'
 let settingController = new SettingController();
 var {height, width} = Dimensions.get('window');
 
@@ -302,7 +303,7 @@ class ChooseClient extends ContainerComponent {
                 currentObj.hideLoading();
                 if (result.success) {
                     if (result.data.Data == null) {
-                        alert("返回群数据出错")
+                        console.log("返回群数据出错")
                         return;
                     }
                     //currentObj.props.addRelation(result.data.relation);
