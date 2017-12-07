@@ -65,14 +65,12 @@ class GroupInformationSetting extends ContainerComponent {
 
     addOrRemoveTheContacts = () =>{
         let Save = !this.state.isSave;
-        let info = this.state.groupInformation;
+        let groupObj = this.state.groupInformation;
         let params = {"Account":this.props.accountId,"GroupId":this.props.groupId};
-        let data = {params,info};
         currentObj.showLoading();
         callback = (results)=>{
             currentObj.hideLoading();
             if(results.success && results.data.Result){
-                currentObj.props.changeRelationOfShow(info.ID);
                 currentObj.setState({
                     isSave:Save
                 })
@@ -82,59 +80,12 @@ class GroupInformationSetting extends ContainerComponent {
             }
         };
         if(Save){
-            SettingController.addGroupToContact(data,callback);
+            SettingController.addGroupToContact(params,groupObj,callback);
         }
         else{
-            SettingController.removeGroupFromContact(data,callback);
+            SettingController.removeGroupFromContact(params,groupObj.ID,callback);
         }
     }
-
-
-    // addToContacts = ()=>{
-    //     let Save = !this.state.isSave;
-    //     let info = this.state.groupInformation;
-    //     currentObj.showLoading();
-    //     if(Save){
-    //         this.fetchData('POST','Member/AddGroupToContact',function (result) {
-    //             currentObj.hideLoading();
-    //             if(result.success && result.data.Result){
-    //                 // alert('添加通讯录成功')
-    //                 let obj = {
-    //                     RelationId:info.ID,
-    //                     OtherComment:info.Description,
-    //                     Nick:info.Name,
-    //                     BlackList:false,
-    //                     Type:'chatroom',
-    //                     avator:info.ProfilePicture==null?"":info.ProfilePicture,
-    //                     owner:info.Owner,
-    //                     show:true}
-    //                 user.AddNewGroup(obj);
-    //                 // currentObj.props.addRelation(obj);
-    //                 currentObj.props.changeRelationOfShow(info.ID);
-    //                 currentObj.setState({
-    //                     isSave:Save
-    //                 })
-    //             }
-    //         },{"Account":this.props.accountId,"GroupId":this.props.groupId})
-    //     }
-    //     else{
-    //         this.fetchData('POST','Member/RemoveGroupFromContact',function (result) {
-    //             currentObj.hideLoading();
-    //             if(result.success && result.data.Result){
-    //                 // alert('移除通讯录成功')
-    //                 info.show = false;
-    //                 user.RemoveGroupFromContact(info.ID);
-    //                 //currentObj.props.deleteRelation(info.ID);
-    //                 currentObj.props.changeRelationOfShow(info.ID);
-    //
-    //                 currentObj.setState({
-    //                     isSave:Save
-    //                 })
-    //             }
-    //         },{"Account":this.props.accountId,"GroupId":this.props.groupId})
-    //     }
-    // }
-
 
     componentDidMount(){
         let params = {"GroupId":this.props.groupId};
@@ -176,46 +127,6 @@ class GroupInformationSetting extends ContainerComponent {
             }
         };
         SettingController.getGroupInfo(params,callback);
-
-        // currentObj.showLoading()
-        // currentObj.fetchData("POST","Member/GetGroupInfo",function(result){
-        //     currentObj.hideLoading();
-        //
-        //     if(!result.success){
-        //         alert(result.errorMessage)
-        //         return;
-        //     }else{
-        //         let Data = result.data.Data;
-        //         let groupInformation = {
-        //             ID:Data.ID,
-        //             LastUpdateTime:Data.LastUpdateTime,
-        //             Name:Data.Name,
-        //             Owner:Data.Owner,
-        //             ProfilePicture:Data.ProfilePicture,
-        //             Description:Data.Description,
-        //         };
-        //         let members;
-        //         if(Data.MemberList.length>13){
-        //             members = Data.MemberList.slice(0,13);
-        //         }else{
-        //             members = Data.MemberList.concat()
-        //         }
-        //         let save = false;
-        //         let relations = currentObj.props.relations;
-        //         for(let i=0;i<relations.length;i++){
-        //             if(relations[i].RelationId === groupInformation.ID && relations[i].show === 'true' ){
-        //                 save = true;
-        //             }
-        //         }
-        //         currentObj.setState({
-        //             members:members.concat([{},{}]),
-        //             realMemberList:Data.MemberList,
-        //             groupInformation,
-        //             isSave:save
-        //         })
-        //     }
-        //
-        // },{"GroupId":this.props.groupId})
     }
 
 
@@ -246,42 +157,6 @@ class GroupInformationSetting extends ContainerComponent {
                 }
             };
             SettingController.exitGroup(params,callback);
-            // currentObj.showLoading()
-            // this.fetchData("POST","Member/ExitGroup",function(result){
-            //     currentObj.hideLoading()
-            //     if(!result.success){
-            //         alert(result.errorMessage);
-            //         return;
-            //     }
-            //
-            //     if(result.data.Data){
-            //         //todo:添加删除group的redux
-            //         currentObj.props.deleteRelation(groupId);
-            //         //清空chatRecordStore中对应记录
-            //         currentObj.props.clearChatRecordFromId(groupId)
-            //         //删除ChatRecode表中记录
-            //         im.deleteChatRecode(groupId);
-            //         //删除该与client的所以聊天记录
-            //         im.deleteCurrentChatMessage(groupId,'chatroom');
-            //         //删除account数据库中数据
-            //         user.deleteFromGrroup(groupId);
-            //         currentObj.props.recentListStore.data.forEach((v,i)=>{
-            //             if(v.Client === groupId){
-            //                 //清空recentListStore中对应记录
-            //                 currentObj.props.deleteRecentItem(i);
-            //                 //如果该row上有未读消息，减少unReadMessageStore记录
-            //                 v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-            //             }
-            //         })
-            //         currentObj.route.toMain(currentObj.props);
-            //
-            //
-            //     }else{
-            //         alert("http请求出错")
-            //     }
-            //
-            //
-            // },{"GroupId":groupId,"Account":accountId})
         }
     }
 

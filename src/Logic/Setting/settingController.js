@@ -57,28 +57,24 @@ export default class settingController {
 
     //todo:群操作
     //群设置（GroupInformationSetting）
-    addGroupToContact(data,callback){
-        let params = data.params;
-        let info = data.info;
+    addGroupToContact(params,groupObj,callback){
         this.apiBridge.request.AddGroupToContact(params,function(results){
             if(results.success && results.data.Result){
                 let obj = {
-                    RelationId:info.ID,
-                    OtherComment:info.Description,
-                    Nick:info.Name,
+                    RelationId:groupObj.ID,
+                    OtherComment:groupObj.Description,
+                    Nick:groupObj.Name,
                     BlackList:false,
                     Type:'group',
-                    avator:info.ProfilePicture==null?"":info.ProfilePicture,
-                    owner:info.Owner,
+                    avator:groupObj.ProfilePicture==null?"":groupObj.ProfilePicture,
+                    owner:groupObj.Owner,
                     show:true}
                     currentObj.user.addGroupToContact(obj)
             }
             callback(results);
         });
     }
-    removeGroupFromContact(data,callback){
-        let params = data.params;
-        let groupId = data.groupId;
+    removeGroupFromContact(params,groupId,callback){
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
                 currentObj.user.removeGroupFromContact(groupId);
@@ -209,9 +205,7 @@ export default class settingController {
             callback(results);
         })
     }
-    removeGroupMember(data,callback){
-        let params = data.params;
-        let {close} = data.data;
+    removeGroupMember(params,close,callback){
         this.apiBridge.request.RemoveGroupMember(params,function(results){
             if(results.success && results.data.Data){
                 currentObj.user.removeGroupMember(params.GroupId,params.Accounts) //Accounts 字符串 a,b,c
@@ -339,5 +333,4 @@ export default class settingController {
             callback(results);
         })
     }
-
 }

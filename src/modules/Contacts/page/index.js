@@ -219,16 +219,10 @@ class Contacts extends ContainerComponent {
     }
 
     componentWillMount(){
-        //改变页面state的回调 注入到chatController
-        settingController.setContactListChangeCallback(function (contact) {
+        //通过回调改变页面显示
+        settingController.getLatestContactList('private',function (contacts) {
             currentObj.setState({
-                contacts:contact
-            })
-        })
-        //获取最新的列表
-        settingController.getLatestContactList('private',function (contact) {
-            currentObj.setState({
-                contacts:contact
+                contacts
             })
         });
 	}
