@@ -78,188 +78,7 @@ export default class User {
         this.getUserInfoByIdandType(groupId,"group",callback)
     }
 
-    ModifyGroupName(params,groupId,name,callback){
-        this.apiBridge.request.ModifyGroupName(params,function(result){
-            if(result.success){
-                if(result.data.Data){
-                    currentObj.updateGroupName(groupId,name);
-                    cache['group'][groupId].Nick = name;
-                }
-            }else{
-                console.log(result.errorMessage)
-            }
-            callback(result);
-        });
-    }
 
-    ModifyBlackList(params,value,callback){
-        if(value){
-            this.apiBridge.request.AddBlackMember(params,function(result){
-                if(result.success){
-                    currentObj.changeRelationBlackList(true, params.Account);
-                }else{
-                    console.log(result.errorMessage)
-                }
-                callback(result);
-            })
-        }else{
-            this.apiBridge.request.RemoveBlackMember(params,function(result){
-                if(result.success){
-                    currentObj.changeRelationBlackList(false, params.Account);
-                }else{
-                    console.log(result.errorMessage)
-                }
-                callback(result);
-            })
-        }
-    }
-
-    ModifyGroupDiscription(params,callback){
-        this.apiBridge.request.ModifyGroupDescription(params,function(result){
-            callback(result);
-        });
-    }
-
-    AddGroupToContact(params,callback){
-
-            this.apiBridge.request.AddGroupToContact(params,function(result){
-                if(result.success && result.data.Result){
-                    let obj = {
-                        RelationId:info.ID,
-                        OtherComment:info.Description,
-                        Nick:info.Name,
-                        BlackList:false,
-                        Type:'chatroom',
-                        avator:info.ProfilePicture==null?"":info.ProfilePicture,
-                        owner:info.Owner,
-                        show:true}
-                    currentObj.AddNewGroup(obj);
-                    cache[obj.Type][obj.RelationId].show = true;
-                }else{
-                    console.log(result.errorMessage)
-                }
-                callback(result);
-            });
-    }
-
-    RemoveGroupFromContact(params,groupId,callback){
-        this.apiBridge.request.RemoveGroupFromContact(params,function(result){
-            if(result.success && result.data.Result){
-                currentObj.RemoveGroupFromContact(groupId);
-                cache['group'][group.relationId].show = false;
-            }else{
-                console.log(result.errorMessage)
-            }
-            callback(result);
-        });
-    }
-
-    AddFriend(params,callback){
-        this.apiBridge.request.ApplyFriend(params,function(result){
-            if(result.success && result.data.Data instanceof Object){
-                var {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-                var IsInBlackList =result.data.Data.IsInBlackList;
-                var relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'user',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                currentObj.AddNewRelation(relationObj);
-                cache["user"][Account] = relationObj;
-            }else{
-                console.log(result.errorMessage)
-            }
-        });
-    }
-
-    AcceptFriend(params,callback){
-        this.apiBridge.request.AcceptFriend(params,function(result){
-            if(result.success){
-                var {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
-                var relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'user',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                currentObj.AddNewRelation(relationObj);
-                cache["user"][Account] = relationObj;
-            }else{
-                console.log(result.errorMessage)
-            }
-        });
-    }
-
-    CreateGroup(params,accountId,accountName,members,callback) {
-        this.apiBridge.request.CreateGroup(params,function(result) {
-            if (result.success) {
-                if (result.data.Data) {
-
-                    let group = new RelationModel();
-                    group.RelationId = result.data.Data;
-                    group.owner = accountId;
-                    group.Nick = accountName + "发起的群聊";
-                    group.Type = 'group';
-                    group.show = 'false';
-
-                    currentObj.AddGroupAndMember(group, members);
-                    cache["group"][group.RelationId] = group;
-                    for (let current of members) {
-                        cache['groupMember'][group.RelationId].push(current);
-                    }
-                }
-            } else {
-                console.log(result.errorMessage)
-            }
-        });
-    }
-
-    AddGroupMember(params,callback){
-        this.apiBridge.request.AddGroupMember(params,function(result){
-            if(result.success){
-                if(result.data.Data){
-
-                }
-            }else{
-                console.log(result.errorMessage)
-            }
-        });
-    }
-
-    RemoveFriend(params,userId,callback){
-        this.apiBridge.request.DeleteFriend(params,function(result){
-            if(result.success){
-                currentObj.deleteRelation(userId);
-                cache['user'][userId].show = false;
-            }else{
-                console.log(result.errorMessage)
-            }
-            callback(result);
-        });
-    }
-
-    RemoveGroupMember(params,members,groupId,close,callback){
-        this.apiBridge.request.RemoveGroupMember(params,function(result){
-            if(result.success && result.data.Data){
-                currentObj.removeGroupMember(groupId,members);
-                let array = cache['groupMember'][groupId];
-                for(let member of members){
-                    let index = array.indexOf(member);
-                    array.splice(index,1)
-                }
-                if(close){
-                    currentObj.deleteFromGrroup(groupId);
-                    delete cache['group'][groupId];
-                    delete cache['groupMember'][groupId];
-                }
-            }else{
-                console.log(result.errorMessage)
-            }
-        });
-    }
-
-    RemoveGroup(params,groupId){
-        this.apiBridge.request.ExitGroup(params,function(result){
-            if(result.success){
-                currentObj.deleteFromGrroup(groupId);
-                delete cache['group'][groupId];
-                delete cache['groupMember'][groupId];
-            }else{
-                console.log(result.errorMessage)
-            }
-        });
-    }
 
 
 
@@ -620,10 +439,188 @@ export default class User {
         GroupManager.closeDB();
     }
 
-
-
-
-
-
-
 }
+
+//
+// ModifyGroupName(params,groupId,name,callback){
+//     this.apiBridge.request.ModifyGroupName(params,function(result){
+//         if(result.success){
+//             if(result.data.Data){
+//                 currentObj.updateGroupName(groupId,name);
+//                 cache['group'][groupId].Nick = name;
+//             }
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//         callback(result);
+//     });
+// }
+//
+// ModifyBlackList(params,value,callback){
+//     if(value){
+//         this.apiBridge.request.AddBlackMember(params,function(result){
+//             if(result.success){
+//                 currentObj.changeRelationBlackList(true, params.Account);
+//             }else{
+//                 console.log(result.errorMessage)
+//             }
+//             callback(result);
+//         })
+//     }else{
+//         this.apiBridge.request.RemoveBlackMember(params,function(result){
+//             if(result.success){
+//                 currentObj.changeRelationBlackList(false, params.Account);
+//             }else{
+//                 console.log(result.errorMessage)
+//             }
+//             callback(result);
+//         })
+//     }
+// }
+//
+// ModifyGroupDiscription(params,callback){
+//     this.apiBridge.request.ModifyGroupDescription(params,function(result){
+//         callback(result);
+//     });
+// }
+//
+// AddGroupToContact(params,callback){
+//
+//     this.apiBridge.request.AddGroupToContact(params,function(result){
+//         if(result.success && result.data.Result){
+//             let obj = {
+//                 RelationId:info.ID,
+//                 OtherComment:info.Description,
+//                 Nick:info.Name,
+//                 BlackList:false,
+//                 Type:'chatroom',
+//                 avator:info.ProfilePicture==null?"":info.ProfilePicture,
+//                 owner:info.Owner,
+//                 show:true}
+//             currentObj.AddNewGroup(obj);
+//             cache[obj.Type][obj.RelationId].show = true;
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//         callback(result);
+//     });
+// }
+//
+// RemoveGroupFromContact(params,groupId,callback){
+//     this.apiBridge.request.RemoveGroupFromContact(params,function(result){
+//         if(result.success && result.data.Result){
+//             currentObj.RemoveGroupFromContact(groupId);
+//             cache['group'][group.relationId].show = false;
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//         callback(result);
+//     });
+// }
+//
+// AddFriend(params,callback){
+//     this.apiBridge.request.ApplyFriend(params,function(result){
+//         if(result.success && result.data.Data instanceof Object){
+//             var {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+//             var IsInBlackList =result.data.Data.IsInBlackList;
+//             var relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'user',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+//             currentObj.AddNewRelation(relationObj);
+//             cache["user"][Account] = relationObj;
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//     });
+// }
+//
+// AcceptFriend(params,callback){
+//     this.apiBridge.request.AcceptFriend(params,function(result){
+//         if(result.success){
+//             var {Account,HeadImageUrl,Nickname,Email} = result.data.Data;
+//             var relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'user',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+//             currentObj.AddNewRelation(relationObj);
+//             cache["user"][Account] = relationObj;
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//     });
+// }
+//
+// CreateGroup(params,accountId,accountName,members,callback) {
+//     this.apiBridge.request.CreateGroup(params,function(result) {
+//         if (result.success) {
+//             if (result.data.Data) {
+//
+//                 let group = new RelationModel();
+//                 group.RelationId = result.data.Data;
+//                 group.owner = accountId;
+//                 group.Nick = accountName + "发起的群聊";
+//                 group.Type = 'group';
+//                 group.show = 'false';
+//
+//                 currentObj.AddGroupAndMember(group, members);
+//                 cache["group"][group.RelationId] = group;
+//                 for (let current of members) {
+//                     cache['groupMember'][group.RelationId].push(current);
+//                 }
+//             }
+//         } else {
+//             console.log(result.errorMessage)
+//         }
+//     });
+// }
+//
+// AddGroupMember(params,callback){
+//     this.apiBridge.request.AddGroupMember(params,function(result){
+//         if(result.success){
+//             if(result.data.Data){
+//
+//             }
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//     });
+// }
+//
+// RemoveFriend(params,userId,callback){
+//     this.apiBridge.request.DeleteFriend(params,function(result){
+//         if(result.success){
+//             currentObj.deleteRelation(userId);
+//             cache['user'][userId].show = false;
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//         callback(result);
+//     });
+// }
+//
+// RemoveGroupMember(params,members,groupId,close,callback){
+//     this.apiBridge.request.RemoveGroupMember(params,function(result){
+//         if(result.success && result.data.Data){
+//             currentObj.removeGroupMember(groupId,members);
+//             let array = cache['groupMember'][groupId];
+//             for(let member of members){
+//                 let index = array.indexOf(member);
+//                 array.splice(index,1)
+//             }
+//             if(close){
+//                 currentObj.deleteFromGrroup(groupId);
+//                 delete cache['group'][groupId];
+//                 delete cache['groupMember'][groupId];
+//             }
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//     });
+// }
+//
+// RemoveGroup(params,groupId){
+//     this.apiBridge.request.ExitGroup(params,function(result){
+//         if(result.success){
+//             currentObj.deleteFromGrroup(groupId);
+//             delete cache['group'][groupId];
+//             delete cache['groupMember'][groupId];
+//         }else{
+//             console.log(result.errorMessage)
+//         }
+//     });
+// }
