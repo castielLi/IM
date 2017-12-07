@@ -53,6 +53,7 @@ export default class settingController {
                 group.owner = groupObj.Owner;
                 group.show = true;
                 currentObj.user.addGroupToContact(group);
+                //todo:执行contact中grouplist 的刷新回调
             }
             callback(results);
         });
@@ -61,6 +62,7 @@ export default class settingController {
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
                 currentObj.user.removeGroupFromContact(groupId);
+                //todo:执行contact中grouplist 的刷新回调
             }
             callback(results);
         })
