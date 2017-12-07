@@ -6,6 +6,11 @@ import ControllerMessageDto from  './dto/ControllerMessageDto';
 import ManagementChatConversationDto from './dto/ManagementChatConversationDto';
 import ManagementMessageDto from '../../Core/Management/Common/dto/ManagementMessageDto'
 import getContentOfControllerMessageDto from '../../Core/Management/Chat/Common/methods/GetContentOfControllerMessageDto'
+import MessageCommandEnum from '../../Core/Management/Common/dto/MessageCommandEnum'
+import MessageBodyTypeEnum from '../../Core/Management/Common/dto/MessageBodyTypeEnum'
+import CommandErrorCodeEnum from '../../Core/Management/Common/dto/CommandErrorCodeEnum'
+import AppCommandEnum from '../../Core/Management/Common/dto/AppCommandEnum'
+import MessageStatus from '../../Core/Management/Common/dto/MessageStatus'
 
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 
@@ -16,6 +21,12 @@ let __instance = (function () {
         return instance;
     }
 }());
+
+//返回收到消息回调
+let AppReceiveMessageHandle = undefined;
+
+//踢出消息回调
+let AppKickOutHandle = undefined;
 
 
 //标示当前正在聊天的对象
@@ -62,6 +73,14 @@ export default class IMController {
         updateconverslisthandle = param.updateConverseList;
         this.updateConverseList()
     }
+
+    connectApp(receiveMessageHandle,kickOutMessage){
+        AppReceiveMessageHandle = receiveMessageHandle;
+        AppKickOutHandle = kickOutMessage;
+        connectIM();
+    }
+
+
 
     //获取会话列表
     updateConverseList() {
@@ -207,23 +226,11 @@ export default class IMController {
 
             maxId = maxId+1;
             //cache添加
-            this.user.getInformationByIdandType(message.sender,message.group,(relationObj) => {
-                let itemMessage = new ControllerMessageDto();
-                itemMessage.group = managementMessage.group;
-                itemMessage.chatId = managementMessage.chatId;
-                itemMessage.message = managementMessage.message;
-                itemMessage.type = managementMessage.type;
-                itemMessage.status = managementMessage.status;
-                itemMessage.sendTime = managementMessage.sendTime;
 
-                let {RelationId, Nick, avator} = relationObj;
-                itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+            AddCache(managementMessage)
 
-                cache.messageCache.push(itemMessage);
+            updateChatRecordhandle(cache.messageCache);
 
-                //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache);
-            })
         },onprogress);
 
 
@@ -302,6 +309,14 @@ export default class IMController {
         updateconverslisthandle(tempArr);
     }
 
+    updateCacheMessage(message){
+        for(let item in cache.messageCache){
+            if(cache.messageCache[item].messageId == message.messageId){
+                cache.messageCache[item] = message;
+            }
+        }
+    }
+
     //message是完整的controllerMessageDto
     addOneChat(chatId,message){
         // let chatId;//会话id
@@ -351,14 +366,172 @@ export default class IMController {
 
 }
 
+function connectIM(){
+    currentObj.im.connectIM(controllerMessageResult,controllerReceiveMessage,controllerKickOutMessage)
+}
+
+function controllerKickOutMessage(){
+   AppKickOutHandle();
+}
+
+
+function controllerMessageResult(success,message){
+
+    let messageDto = IMMessageToMessagementMessageDto(message);
+    messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
+
+    currentObj.chat.updateChatMessage(messageDto)
+
+    if(chatId == currentChat.chatId){
+        currentObj.updateCacheMessage(messageDto)
+        updateChatRecordhandle(cache.messageCache);
+    }
+}
 
 //message 消息体 协议
-function receivemessage(message){
+function controllerReceiveMessage(message){
 
-    //1 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
+    //1 根据消息类型进行消息扩展及数据库和缓存扩展
+    if(message.Command == MessageCommandEnum.MSG_ERROR){
+
+        switch (message.Data.ErrorCode){
+            case CommandErrorCodeEnum.NotBelongToGroup:
+                message.Description = "您已经被管理员踢了群聊";
+                break;
+            case CommandErrorCodeEnum.AlreadyFriend:
+                message.Description = "你们已经是好友了";
+                break;
+            default:
+                message.Description = "你们已经不再是好友了,请重新添加";
+                break;
+        }
+
+        storeChatMessageAndCache(message);
+
+    }else if(message.Command == MessageCommandEnum.MSG_BODY){
+        if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
+            switch (message.Data.Data.Command){
+                case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:
+
+                    var senderId = message.Data.Data.Receiver;
+
+                    currentObj.user.forceUpdateRelation(senderId,true,function(){
+                        var accounts = message.Data.Data.Data.split(',');
+
+                        var name = currentObj.user.getUserInfoById(accounts[0])
+
+                        var inviter = currentObj.user.getUserInfoById(accounts[1]);
+
+                        message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
+
+                        storeChatMessageAndCache(message);
+                    })
+                    break;
+                // case AppCommandEnum.MSG_BODY_APP_ADDFRIEND:
+                //     break;
+                case AppCommandEnum.MSG_BODY_APP_APPLYFRIEND:
+
+                    var senderId = message.Data.Data.Sender;
+
+                    currentObj.user.forceUpdateRelation(senderId,false,function(){
+                        storeChatMessageAndCache(message);
+                    })
+
+                    break;
+                case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
+                    var accounts = message.Data.Data.Data.split(',');
+                    let Nicks = "";
+                    for(let i = 0; i<accounts.length;i++){
+                        if(accounts[i] == message.Data.Data.Receiver){
+                            accounts.splice(i,1);
+                        }
+                    }
+
+                    for(let i = 0; i<accounts.length;i++){
+                        if(i != accounts.length - 1){
+                            Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                        }else{
+                            Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                        }
+                    }
+
+                    var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                    message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+
+                    storeChatMessageAndCache(message);
+
+                    break;
+                case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
+                    var accounts = message.Data.Data.Data.split(',');
+                    //默认收到被踢消息的人不是被踢人
+                    let isKickedClient = false;
+                    for(let i = 0; i<accounts.length;i++){
+                        if(accounts[i] == myAccount.accountId){
+                            isKickedClient = true;
+                            break;
+                        }
+                    }
+                    if(isKickedClient){
+                        message.Data.Data.Data =  "你被群主踢出了该群聊";
+                        //处理来自界面的回调方法，隐藏群设置按钮
+                    }else{
+                        let Nicks = "";
+                        for(let i = 0; i<accounts.length;i++){
+                            if(i != accounts.length - 1){
+                                Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                            }else{
+                                Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                            }
+                        }
+
+                        var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
+                        var inviter = '';
+                        if(message.Data.Data.Receiver == myAccount.accountId){
+                            inviter = myAccount.accountId;
+                        }else{
+                            inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                        }
+                        message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
+                    }
+
+                    storeChatMessageAndCache(message);
+
+                    break;
+                case AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP:
+                    break;
+                case AppCommandEnum.MSG_BODY_APP_EXITGROUP:
+                    var accounts = message.Data.Data.Data.split(',');
+
+                    var name = currentObj.user.getUserInfoById(accounts[0])
+
+                    message.Data.Data.Data =  name + "退出了群聊";
+
+                    storeChatMessageAndCache(message);
+                    break;
+                case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
+                    var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+
+                    message.Data.Data.Data =  name+"修改了群昵称";
+
+                    let groupName = relation.Nick;
+
+                    let groupId = message.Data.Data.Sender;
+
+                    currentObj.user.updateGroupName(groupId,groupName);
+
+                    storeChatMessageAndCache(message);
+                    break;
+            }
+        }
+        // else if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_CHAT){}
+    }
+}
+
+function storeChatMessageAndCache(message){
+    //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message);
     this.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
-    //2 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
+    //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
     let chatId;
     if(!managementMessageObj.group){
@@ -373,12 +546,16 @@ function receivemessage(message){
         currentObj.addOneChat(chatId,managementMessageObj);
     }
 
+    AddCache(managementMessageObj);
 
-    //只有打开了聊天窗口并且收到来自该窗口的消息才会重新渲染聊天页面
-    if(chatId == currentChat.chatId){
-        maxId = maxId+1;
-        //cache添加
-        currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
+    PushNotificationToApp(managementMessageObj);
+
+}
+
+function AddCache(managementMessageObj){
+
+    if(currentChat.group){
+        this.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
             let itemMessage = new ControllerMessageDto();
             itemMessage.group = managementMessageObj.group;
             itemMessage.chatId = managementMessageObj.chatId;
@@ -391,19 +568,30 @@ function receivemessage(message){
             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
 
             cache.messageCache.push(itemMessage);
+
             //渲染聊天记录
             updateChatRecordhandle(cache.messageCache);
         })
     }else{
+        let itemMessage = new ControllerMessageDto();
+        itemMessage.group = managementMessageObj.group;
+        itemMessage.chatId = managementMessageObj.chatId;
+        itemMessage.message = managementMessageObj.message;
+        itemMessage.type = managementMessageObj.type;
+        itemMessage.status = managementMessageObj.status;
+        itemMessage.sendTime = managementMessageObj.sendTime;
+        cache.messageCache.push(itemMessage);
+    }
+}
+
+
+function PushNotificationToApp(managementMessageObj){
+    //只有打开了聊天窗口并且收到来自该窗口的消息才会重新渲染聊天页面
+    if(chatId == currentChat.chatId){
+        updateChatRecordhandle(cache.messageCache);
+    }else{
         currentObj.addUnReadMsgNumber(chatId);
     }
-
-
-
-    //处理完成
-
-    //[]
-
 }
 
 
