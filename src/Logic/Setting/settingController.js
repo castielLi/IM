@@ -3,6 +3,7 @@
  */
 import IM from '../../Core/Management/IM/index'
 import User from '../../Core/Management/UserGroup/index'
+import Chat from '../../Core/Management/Chat/index'
 import Network from '../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
@@ -20,11 +21,6 @@ let __instance = (function () {
 
 let currentObj = undefined;
 
-//标示当前群组聊天人员名单变动回调
-let currentGroupChatMemberChangesCallback = undefined;
-let setGroupListChangeCallback = undefined;
-let setContactListChangeCallback = undefined;
-
 export default class settingController {
     constructor() {
         if (__instance()) return __instance();
@@ -32,34 +28,19 @@ export default class settingController {
         __instance(this);
         this.im = new IM();
         this.user = new User();
+        this.chat = new Chat();
         this.network = new Network();
         this.apiBridge = new ApiBridge();
         currentObj = this;
     }
 
 
-    //todo:来之页面的注入回调
-    setGroupListChangeCallback(callback){
-        setGroupListChangeCallback = callback;
-    }
-    setContactListChangeCallback(callback){
-        setContactListChangeCallback = callback;
-    }
-
-    //todo：页面获取到信息的方法
-    getLatestContactList(type,callback){
-        let concat = this.user.getCacheInfo(type);
-        callback && callback(concat);
-    }
-    initUserGroupCache(relations){
-        this.user.initUserGroupCache(relations)
-    }
-
     //todo:群操作
     //群设置（GroupInformationSetting）
     addGroupToContact(params,groupObj,callback){
         this.apiBridge.request.AddGroupToContact(params,function(results){
             if(results.success && results.data.Result){
+                //todo：张彤 这个obj 在 settingController dto里面写一个RelationDto  let obj = new RelationDto()
                 let obj = {
                     RelationId:groupObj.ID,
                     OtherComment:groupObj.Description,
@@ -100,6 +81,8 @@ export default class settingController {
                     let messageId = uuidv1();
                     let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
                     currentObj.im.storeSendMessage(sendMessage);
+
+                    //todo 李宗骏 创建chatmessagedto 转换
                     let chatMessageDto = {};
                     currentObj.chat.addMessage(chatMessageDto);
                     result.data.sendMessage = sendMessage;
@@ -158,10 +141,6 @@ export default class settingController {
         })
     }
 
-    setCurrentGroupChatMemberChangeCallback(callback){
-        currentGroupChatMemberChangesCallback = callback;
-    }
-
     //添加群成员
     //参数：发起人id,“选中的nick1,选中的nick2,...”,[{"Account":选中的id1},{"Account":选中的id2},...]，群Id,,请求参数，回调函数
     addGroupMember(accountId,Nicks,splNeedArr,groupId,chooseArr,params,callback){
@@ -185,8 +164,8 @@ export default class settingController {
                         currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
                     })
                     //成员增加后，聊天室的groupMembers也要增加
-                    currentObj.user.getInformationByIdandType(groupId,'chatroom',function(relation,groupMembers){
-                        currentGroupChatMemberChangesCallback(groupMembers);
+                    currentObj.user.getInformationByIdandType(groupId,'group',function(relation,groupMembers){
+                        // currentGroupChatMemberChangesCallback(groupMembers);
                     })
                 }
 
@@ -218,8 +197,8 @@ export default class settingController {
     }
     //摧毁群
     destroyGroup(groupId){
-        this.im.deleteChatRecode(groupId);
-        this.im.deleteCurrentChatMessage(groupId,"chatroom");
+        this.chat.removeConverse(groupId,true);
+        this.im.deleteCurrentChatMessage(groupId,true);
         this.user.removeGroup(groupId);
     }
 
@@ -271,8 +250,8 @@ export default class settingController {
 
     //申请好友验证(validate)
     addNewRelation(relationObj){
-        this.user.AddNewRelation(relationObj);
-        this.user.addUserGroupCache(relationObj);
+        //todo 张彤 少了 向cache中添加这个人  而且这个relationobj 应该由controller来构造
+        this.user.AddNewRelationSQL(relationObj);
     }
     //私聊设置
     //用户设置页面（InformationSetting）
@@ -297,9 +276,9 @@ export default class settingController {
         this.apiBridge.request.DeleteFriend(params,function(results){
             if(results.success){
                 //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(userId);
-                //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(userId,'private');
+                currentObj.chat.removeConverse(userId);
+                // //删除该与client的所以聊天记录
+                // currentObj.im.deleteCurrentChatMessage(userId,'private');
                 //删除account数据库
                 currentObj.user.removeFriend(userId);
             }
