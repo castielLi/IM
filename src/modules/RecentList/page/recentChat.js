@@ -39,8 +39,8 @@ import LoginController from '../../../Logic/loginController'
 import SettingController from '../../../Logic/Setting/settingController'
 import formatOjbToneedArr from '../common/methods/formatOjbToneedArr';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
-// import imController from '../../../Logic/Im/imController'
-// let IMController = new imController();
+import IMController from '../../../Logic/Im/IMController'
+let imController = new ImController();
 
 let chatController = new ChatController();
 let loginController = new LoginController();
@@ -147,34 +147,34 @@ class RecentChat extends ContainerComponent {
         currentObj = this;
     }
     componentWillMount() {
-        // let param = {
-        //     updateConverseList:this.updateConverseList,
-        // }
-        // IMController.init(param);
-        this.updateConverseList([
-            {
-                group: false,
-                chatId: "",//chatId={account/groupId}
-                name:"0",//好友名字或者群名字
-                HeadImageUrl: "",//头像地址, 本地地址
-                lastSender: null,
-                lastMessage: "00",
-                lastTime: '0',
-                unreadCount: 0, //未读条数
-                noSound: false,//禁音
-            },
-            {
-                group: true,
-                chatId: "",//chatId={account/groupId}
-                name:"2",//好友名字或者群名字
-                HeadImageUrl: "",//头像地址, 本地地址
-                lastSender: null,
-                lastMessage: "22",
-                lastTime: '2',
-                unreadCount: 2, //未读条数
-                noSound: false,//禁音
-            },
-        ])
+        let param = {
+            updateConverseList:this.updateConverseList,
+        }
+        imController.init(param);
+        // this.updateConverseList([
+        //     {
+        //         group: false,
+        //         chatId: "",//chatId={account/groupId}
+        //         name:"0",//好友名字或者群名字
+        //         HeadImageUrl: "",//头像地址, 本地地址
+        //         lastSender: null,
+        //         lastMessage: "00",
+        //         lastTime: '0',
+        //         unreadCount: 0, //未读条数
+        //         noSound: false,//禁音
+        //     },
+        //     {
+        //         group: true,
+        //         chatId: "",//chatId={account/groupId}
+        //         name:"2",//好友名字或者群名字
+        //         HeadImageUrl: "",//头像地址, 本地地址
+        //         lastSender: null,
+        //         lastMessage: "22",
+        //         lastTime: '2',
+        //         unreadCount: 2, //未读条数
+        //         noSound: false,//禁音
+        //     },
+        // ])
     }
     componentDidMount() {
 
@@ -224,7 +224,7 @@ class RecentChat extends ContainerComponent {
     }
     deleteSomeRow(rowID, rowData) {
         let oKCallback = () => {
-            // IMController.removeConverse(rowID,rowData.group);
+            imController.removeConverse(rowID,rowData.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
@@ -344,30 +344,30 @@ class RecentChat extends ContainerComponent {
                         noSound: false,//禁音
                     },
                 ])}}/>
-                <TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>{this.updateConverseList([
-                    {
-                        group: false,
-                        chatId: "",//chatId={account/groupId}
-                        name:"3",//好友名字或者群名字
-                        HeadImageUrl: "",//头像地址, 本地地址
-                        lastSender: null,
-                        lastMessage: "33",
-                        lastTime: '3',
-                        unreadCount: 3, //未读条数
-                        noSound: false,//禁音
-                    },
-                    {
-                        group: true,
-                        chatId: "",//chatId={account/groupId}
-                        name:"4",//好友名字或者群名字
-                        HeadImageUrl: "",//头像地址, 本地地址
-                        lastSender: null,
-                        lastMessage: "44",
-                        lastTime: '4',
-                        unreadCount: 4, //未读条数
-                        noSound: false,//禁音
-                    },
-                ])}}/>
+                {/*<TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>{this.updateConverseList([*/}
+                    {/*{*/}
+                        {/*group: false,*/}
+                        {/*chatId: "",//chatId={account/groupId}*/}
+                        {/*name:"3",//好友名字或者群名字*/}
+                        {/*HeadImageUrl: "",//头像地址, 本地地址*/}
+                        {/*lastSender: null,*/}
+                        {/*lastMessage: "33",*/}
+                        {/*lastTime: '3',*/}
+                        {/*unreadCount: 3, //未读条数*/}
+                        {/*noSound: false,//禁音*/}
+                    {/*},*/}
+                    {/*{*/}
+                        {/*group: true,*/}
+                        {/*chatId: "",//chatId={account/groupId}*/}
+                        {/*name:"4",//好友名字或者群名字*/}
+                        {/*HeadImageUrl: "",//头像地址, 本地地址*/}
+                        {/*lastSender: null,*/}
+                        {/*lastMessage: "44",*/}
+                        {/*lastTime: '4',*/}
+                        {/*unreadCount: 4, //未读条数*/}
+                        {/*noSound: false,//禁音*/}
+                    {/*},*/}
+                {/*])}}/>*/}
 				<View style = {styles.content}>
 					<ListView
 						style = {{height:checkDeviceHeight(1110)}}
