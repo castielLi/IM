@@ -32,7 +32,7 @@ import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/Sqlit
 import User from '../../../../Core/Management/UserGroup'
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/Setting/settingController'
-//import imController from '../../../../Logic/Im/imController'
+import IMController from '../../../../Logic/Im/IMController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -50,7 +50,7 @@ let recordData;
 
 let ChatController = new chatController();
 let settingController = new SettingController();
-//let IMController = new imController();
+let imController = new IMController();
 let currentObj;
 let arr = [];
 
@@ -102,16 +102,17 @@ class Chat extends Component {
     }
 
     componentWillMount() {
-        // IMController.init(param);
+        // imController.init(param);
         let group;
         if(this.props.type === 'private'){
             group = false;
         }else{
             group = true;
         }
-        //IMController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
+        imController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
         for(let i=0;i<20;i++){
             let account = i%2 ? '' : '1';
+            let statue = i%3 ? 'WaitOpreator' : 'SendSuccess';
             arr.push({
                 group: false,
                 chatId: "wg003722",//chatId={account/groupId}
@@ -119,7 +120,7 @@ class Chat extends Component {
                 messageId: i,//消息编号
                 message: '测试数据',//消息内容，
                 type:'text',//消息类型
-                status: '',
+                status: statue,
                 sendTime : "123456789"
             })
         }
@@ -148,7 +149,7 @@ class Chat extends Component {
                 if(e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     //获取历史记录 回调修改页面 用到之前的setCurrentConverse方法中传过去的callback取数控逻辑也在 controller
-                    //IMController.getHistoryChatList();
+                    imController.getHistoryChatList();
                 }
             },
         })
@@ -356,7 +357,7 @@ class Chat extends Component {
         //         isMore : msgState.LOADING
         //     });
         // }
-        //IMController.getHistoryChatList();
+        imController.getHistoryChatList();
 
     }
 
