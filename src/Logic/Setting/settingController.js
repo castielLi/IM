@@ -344,18 +344,18 @@ export default class settingController {
     //修改群组的名称
     //参数 群id，群名称，请求参数，回调
     updateGroupName(accountId,groupId,name,params,callback){
-        //data:{params,groupId,name}
-        // this.user.changeUserGroup(enumerate,data,function (result) {
-        //     callback(result)
-        // });
 
-        this.apiBridge.request.ModifyGroupName(params,function(result){
+        this.user.ModifyGroupName(params,groupId,name,function(result){
             if(result.success){
                 if(result.data.Data){
                     //本地模拟消息
                     let messageId = uuidv1();
                     let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
                     currentObj.im.storeSendMessage(sendMessage);
+
+                    let chatMessageDto = {};
+
+                    currentObj.chat.addMessage(chatMessageDto)
                     result.data.sendMessage = sendMessage;
                     currentObj.user.updateGroupName(groupId,name);
                 }

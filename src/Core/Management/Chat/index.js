@@ -3,7 +3,6 @@
  */
 
 import * as storeSqlite from './StoreSqlite/index'
-import RecentRecordDto from './Common/dto/RecentRecordDto';
 import InitChatRecordConfig from './Common/dto/InitChatRecordConfig';
 import DeleteChatEnum from './Common/dto/DeleteChatEnum'
 import existIdInArray from './Common/methods/existIdInArray';
@@ -12,6 +11,7 @@ import getContentOfControllerMessageDto from './Common/methods/GetContentOfContr
 import ChatWayEnum from '../Common/dto/ChatWayEnum'
 import ManagementChatRecordDto from './Common/dto/ManagementChatRecordDto'
 import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
+import ManagementMessageDto from '../Common/dto/ManagementMessageDto'
 let currentObj = undefined;
 
 //会话缓存
@@ -135,14 +135,14 @@ export default class Chat {
     }
 
 
-    addMessage(chatId,message,callback){
+    addMessage(chatId,message = new ManagementMessageDto(),callback){
        if(ChatCache[chatId] != undefined){
            currentObj.updateOneChat(chatId,message);
        }else{
            //缓存中添加
            currentObj.addOneChat(chatId,message);
        }
-       currentObj.addMessage(message);
+       currentObj.addSqliteMessage(message);
     }
 
 
@@ -233,7 +233,7 @@ export default class Chat {
         });
     }
 
-    addMessage(message){
+    addSqliteMessage(message){
         storeSqlite.storeMessage(message)
     }
 
