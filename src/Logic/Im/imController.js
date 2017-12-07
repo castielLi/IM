@@ -250,7 +250,10 @@ export default class IMController {
         //渲染聊天记录
         updateChatRecordhandle(cache.messageCache);
 
-        this.chat.deleteChat(1,currentChat.chatId,currentChat.group,messageId);
+        
+
+        this.chat.removeMessage(currentChat.chatId,currentChat.group,messageId);
+
     }
 
     //删除会话
@@ -260,7 +263,7 @@ export default class IMController {
         //渲染会话列表
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
-        this.chat.deleteChat(2,chatId,group);
+        this.chat.removeConverse(chatId,group);
     }
 
     //清除未读数, 在会话列表处功能(标记为已读)

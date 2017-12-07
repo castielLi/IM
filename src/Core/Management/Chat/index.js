@@ -104,22 +104,12 @@ export default class Chat {
     }
 
 
-    deleteChat(deleteType,chatId,group = false,messageId=""){
-        switch(deleteType){
-            //删除单条消息
-            case DeleteChatEnum.UniqueMessage:
-                // if(existIdInArray(ChatCache[chatId]['Record'],messageId)){
-                //     let index = ChatCache[chatId]['Record'].indexOf(messageId);
-                //     ChatCache[chatId]['Record'].splice(index,1)
-                // }
-                currentObj.deleteMessage({"MSGID":messageId},group,chatId);
-                break;
-            //删除该用户最近消息和聊天记录
-            case DeleteChatEnum.WholeMessages:
-                // delete ChatCache[chatId];
-                currentObj.deleteCurrentChatMessage(chatId,group);
-                break;
-        }
+    removeMessage(chatId,group = false,messageId = "",callback){
+        currentObj.deleteMessage({"MSGID":messageId},group,chatId);
+    }
+
+    removeConverse(chatId, group = false, callback){
+        currentObj.deleteCurrentChatMessage(chatId,group);
     }
 
 
