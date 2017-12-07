@@ -5,7 +5,7 @@ import ControllerChatConversationDto from './dto/ControllerChatConversationDto';
 import ControllerMessageDto from  './dto/ControllerMessageDto';
 import ManagementChatConversationDto from './dto/ManagementChatConversationDto';
 import ManagementMessageDto from '../../Core/Management/Common/dto/ManagementMessageDto'
-
+import getContentOfControllerMessageDto from '../../Core/Management/Chat/Common/methods/GetContentOfControllerMessageDto'
 
 
 let __instance = (function () {
@@ -168,7 +168,7 @@ export default class IMController {
             updateChatRecordhandle(cache.messageCache);
 
         })
-    })
+     })
     }
     //发送消息
     // UI传过来的消息体

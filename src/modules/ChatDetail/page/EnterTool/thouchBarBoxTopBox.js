@@ -33,9 +33,9 @@ import {addResourceMessage} from '../../../../Core/Management/IM/action/createMe
 
 import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
-// import imController from '../../../../Logic/im/imController';
+import IMController from '../../../../Logic/Im/imController';
 import * as commonMethod from '../../common/commonMethod'
-// var IMController = new imController();
+var imController = new IMController();
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
@@ -225,7 +225,7 @@ class ThouchBarBoxTopBox extends Component {
             let time = counTime?counTime:1;
             let group = this.props.type == 'group' ? true : false;
             let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:Path,remoteSource:'',time},'audio');
-            // IMController.addMessage(message);
+            imController.sendMessage(message);
           //
           this.shouldPressSpeakBox = true;
         });
