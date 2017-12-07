@@ -181,8 +181,8 @@ export default class User {
                     groupMembersInfo.push(accountId)
                 }
                 callback(relation,groupMembers);
-                currentObj.AddGroupAndMember(relation,members);
-                currentObj.AddGroupMember(members);
+                currentObj.AddGroupAndMemberSQL(relation,members);
+                currentObj.AddGroupMemberSQL(members);
                 cache["groupMember"][Id] = groupMembersInfo;
             }else{
                 console.log(result.errorMessage)
@@ -317,81 +317,81 @@ export default class User {
     }
 
     //User:
-    getAllRelation(callback){
+    getAllRelationSQL(callback){
         return UserManager.getAllUsers(callback);
     }
 
     //添加group成员到account表中，便于group聊天时显示
-    AddGroupMember(members){
+    AddGroupMemberSQL(members){
         UserManager.addGroupMembers(members)
     }
 
     //初始化好友列表  根据http请求结果初始化account中的表 有改无加
-    initRelations(friendList,blackList,callback){
+    initRelationsSQL(friendList,blackList,callback){
         UserManager.initRelations(friendList,blackList,callback);
     }
 
     //更改好友黑名单设置
-    changeRelationBlackList(isBlackList,RelationId){
+    changeRelationBlackListSQL(isBlackList,RelationId){
         UserManager.changeRelationBliackList(isBlackList,RelationId);
     }
 
     //删除好友 将好友信息show设为false
-    deleteRelation(RelationId){
+    deleteRelationSQL(RelationId){
         UserManager.deleteRelation(RelationId)
     }
 
     //修改关系 发现关系信息更新时改变信息
-    updateRelation(Relation){
+    updateRelationSQL(Relation){
         UserManager.updateRelation(Relation)
     }
 
     //更新好友显示状态 show 目前用于接收到添加好友信息
-    updateDisplayOfRelation(relationId,bool){
+    updateDisplayOfRelationSQL(relationId,bool){
         UserManager.updateRelationDisplayStatus(relationId,bool);
     }
 
     //获取所有关系的名字和头像
-    getAllRelationNameAndAvator(callback){
+    getAllRelationNameAndAvatorSQL(callback){
         UserManager.getAllRelationAvatorAndName(callback);
     }
 
 
     //添加新关系 有改无加
-    AddNewRelation(Relation,callback){
+    AddNewRelationSQL(Relation,callback){
         UserManager.addNewRelation(Relation,callback)
     }
 
     //获取关系设置
-    GetRelationSetting(RelationId,callback){
+    GetRelationSettingSQL(RelationId,callback){
         UserManager.getRelationSetting(RelationId,callback);
     }
 
 
     //修改关系设置
-    ChangeRelationSetting(RelationSetting){
+    ChangeRelationSettingSQL(RelationSetting){
         UserManager.updateRelationSetting(RelationSetting);
     }
 
     //添加关系设置
-    AddNewRelationSetting(RelationSetting){
+    AddNewRelationSettingSQL(RelationSetting){
         UserManager.addNewRelationSetting(RelationSetting);
     }
 
     //通过id组成的数组从数据库批量查询user信息,返回数组
-    GetRelationsByRelationIds(ids,callback){
+    GetRelationsByRelationIdsSQL(ids,callback){
         UserManager.GetRelationsByRelationIds(ids,function(results){
             callback(results);
         })
     }
 
     //Group:
-    AddNewGroup(Relation){
+    AddNewGroupSQL(Relation){
         GroupManager.addNewRelation(Relation)
     }
 
     //添加Group到GourpList中去,添加group与user关系表GroupMember
-    AddGroupAndMember(Group,members){
+    AddGroupAndMemberSQL(Group,members){
 
         //添加群到grouplist中
         GroupManager.addNewRelation(Group);
@@ -402,35 +402,35 @@ export default class User {
     }
 
     //通过GroupId获取当前群的member信息
-    GetMembersByGroupId(groupId,callback){
+    GetMembersByGroupIdSQL(groupId,callback){
         GroupManager.GetMembersByGroupId(groupId,callback);
     }
 
     //删除群成员
-    removeGroupMember(groupId,members){
+    removeGroupMemberSQL(groupId,members){
         GroupManager.removeGroupMember(groupId,members)
     }
 
     //获取所有的group
-    getAllGroupFromGroup(callback,show=undefined){
+    getAllGroupFromGroupSQL(callback,show=undefined){
         return GroupManager.GetRelationList(callback,show)
     }
 
     //初始化群关系信息  有改无加
-    initGroup(GroupList,callback){
+    initGroupSQL(GroupList,callback){
         GroupManager.initRelations(GroupList,callback);
     }
     //更新群名
-    updateGroupName(relationId,name){
+    updateGroupNameSQL(relationId,name){
         GroupManager.UpdateGroupName(relationId,name);
     }
     //退群
-    deleteFromGrroup(RelationId){
+    deleteFromGrroupSQL(RelationId){
         GroupManager.deleteRelation(RelationId)
     }
 
     //将群移除通讯录
-    RemoveGroupFromContact(groupId){
+    RemoveGroupFromContactSQL(groupId){
         GroupManager.RemoveGroupFromContact(groupId);
     }
 
@@ -441,19 +441,36 @@ export default class User {
 
 
     //todo:controller调用方法
+    //controllerDto 转 managermentDto
+    dtoChange(Obj){
+        let contactObj = new RelationModel();
+        contactObj.OtherComment = Obj.OtherComment;
+        contactObj.RelationId = Obj.RelationId;
+        contactObj.Nick = Obj.Nick;
+        contactObj.Remark = Obj.Remark;
+        contactObj.BlackList = Obj.BlackList;
+        contactObj.avator = Obj.avator;
+        contactObj.Email = Obj.Email;
+        contactObj.localImage = Obj.localImage;
+        contactObj.Type = Obj.Type;
+        contactObj.owner = Obj.owner;
+        contactObj.show = Obj.show;
+        return contactObj;
+    }
     //添加群到通讯录
     addGroupToContact(groupObj){
-        currentObj.AddNewGroup(groupObj);
+        let groupObj = this.dtoChange(groupObj);
+        this.AddNewGroupSQL(groupObj);
         cache['group'][groupObj.RelationId] = groupObj;
     }
     //将群移除通讯录
     removeGroupFromContact(groupId){
-        currentObj.RemoveGroupFromContact(groupId);
+        this.RemoveGroupFromContactSQL(groupId);
         cache['group'][groupId].show = false;
     }
     //移除群成员
     removeGroupMember(groupId,members){
-        currentObj.removeGroupMember(groupId,members);
+        this.removeGroupMemberSQL(groupId,members);
             let array = cache['groupMember'][groupId];
             for(let member of members){
                 let index = array.indexOf(member);
@@ -462,28 +479,31 @@ export default class User {
     }
     //加入/移除黑名单 shield屏蔽（true/false）
     setBlackMember(shield,userId){
-        currentObj.changeRelationBlackList(shield, userId);
+        this.changeRelationBlackListSQL(shield, userId);
         cache['user'][userId].isBlackList = name;
     }
     //删除好友
     removeFriend(userId){
-        currentObj.deleteRelation(userId);
+        this.deleteRelationSQL(userId);
         cache['user'][userId].show = false;
     }
     //添加好友
     applyFriend(userObj){
-        currentObj.AddNewRelation(userObj);
+        let userObj = this.dtoChange(userObj);
+        this.AddNewRelationSQL(userObj);
         cache["user"][userObj.RelationId] = userObj;
     }
     //接受好友申请
     acceptFriend(userObj){
-        currentObj.AddNewRelation(userObj);
+        let userObj = this.dtoChange(userObj);
+        this.AddNewRelationSQL(userObj);
         cache["user"][userObj.RelationId] = userObj;
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群
     createGroup(groupObj,members){
-        currentObj.AddGroupAndMember(groupObj, members);
+        let groupObj = this.dtoChange(groupObj);
+        this.AddGroupAndMemberSQL(groupObj, members);
         cache["group"][groupObj.RelationId] = groupObj;
         for (let current of members) {
             cache['groupMember'][groupObj.RelationId].push(current);
@@ -491,7 +511,8 @@ export default class User {
     }
     //添加群成员
     addGroupMember(groupObj,members){
-        currentObj.AddGroupAndMember(groupObj, members);
+        let groupObj = this.dtoChange(groupObj);
+        this.AddGroupAndMemberSQL(groupObj, members);
         if(!cache["group"][groupObj.RelationId]){
             cache["group"][groupObj.RelationId] = groupObj;
         }
@@ -501,18 +522,24 @@ export default class User {
     }
     //修改群名称
     updateGroupName(groupId,name){
-        currentObj.updateGroupName(groupId,name);
+        this.updateGroupNameSQL(groupId,name);
         cache['group'][groupId].Nick = name;
     }
     //退群/解散群
     removeGroup(groupId){
-        currentObj.deleteFromGrroup(groupId);
+        this.deleteFromGrroupSQL(groupId);
         delete cache['group'][groupId];
         delete cache['groupMember'][groupId];
     }
     //修改群公告
     updataGroupDiscription(groupId,content){
         cache['group'][groupId].OtherComment = content;
+    }
+    //修改用户信息
+    updateUserInfo(userObj){
+        let userObj = this.dtoChange(userObj)
+        this.updateRelationSQL(userObj);
+        cache['user'][userObj.RelationId] = userObj;
     }
 
 }

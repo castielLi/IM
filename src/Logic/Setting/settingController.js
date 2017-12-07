@@ -55,6 +55,7 @@ export default class settingController {
         this.user.initUserGroupCache(relations)
     }
 
+    //todo:群操作
     //群设置（GroupInformationSetting）
     addGroupToContact(data,callback){
         let params = data.params;
@@ -90,149 +91,36 @@ export default class settingController {
             callback(results);
         })
     }
-    //todo:退群操作问题
-    exitGroup(params,callback){
-        let groupId = params.GroupId;
-        this.apiBridge.request.ExitGroup(params,function(results){
-            if(results.success){
-                // //删除ChatRecode表中记录
-                // currentObj.im.deleteChatRecode(groupId);
-                // //删除该与client的所以聊天记录
-                // currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
-                // //删除account数据库中数据
-                // currentObj.user.deleteFromGrroup(groupId);
-                currentObj.destroyGroup(groupId);
-            }
-            callback(results);
-        })
-    }
-    removeGroupMember(data,callback){
-        let params = data.params;
-        let {close} = data.data;
-        this.apiBridge.request.RemoveGroupMember(params,function(results){
-            if(results.success && results.data.Data){
-                currentObj.user.removeGroupMember(params.GroupId,params.Accounts) //Accounts 字符串 a,b,c
-                if(close){
-                    currentObj.destroyGroup(params.GroupId);
+
+    //修改群组的名称
+    //参数 群id，群名称，请求参数，回调
+    updateGroupName(accountId,groupId,name,params,callback){
+        this.apiBridge.request.ModifyGroupName(params,function(result){
+            if(result.success){
+                if(result.data.Data){
+                    currentObj.user.updateGroupName(params.GroupId,params.Name);
+
+                    //本地模拟消息
+                    let messageId = uuidv1();
+                    let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
+                    currentObj.im.storeSendMessage(sendMessage);
+                    let chatMessageDto = {};
+                    currentObj.chat.addMessage(chatMessageDto);
+                    result.data.sendMessage = sendMessage;
                 }
             }
-            callback(results)
-        })
+            callback(result);
+        });
     }
 
-    //搜索用户界面也用到了
-    searchUser(params,callback){
-        this.apiBridge.request.SearchUser(params,function(results){
-            callback(results);
-        })
-    }
-
-    //申请好友验证(validate)
-    addNewRelation(relationObj){
-        this.user.AddNewRelation(relationObj);
-        this.user.addUserGroupCache(relationObj);
-    }
-    //私聊设置
-    //用户设置页面（InformationSetting）
-    removeBlackMember(params,callback){
-        this.apiBridge.request.RemoveBlackMember(params,function(results){
-            if(results.success){
-                currentObj.user.setBlackMember(false, params.Account);
-            }
-            callback(results);
-        })
-    }
-    addBlackMember(params,callback){
-        this.apiBridge.request.AddBlackMember(params,function(results){
-            if(results.success){
-                currentObj.user.setBlackMember(true, params.Account);
-            }
-            callback(results);
-        })
-    }
-    removeFriend(params,callback){
-        let userId = params.Friend;
-        this.apiBridge.request.DeleteFriend(params,function(results){
-            if(results.success){
-                //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(userId);
-                //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(userId,'private');
-                //删除account数据库
-                currentObj.user.removeFriend(userId);
-            }
-            callback(results);
-        })
-    }
-    //用户页面（clientInformation.js）
-    getFriendUserInfo(params,callback){
-        this.apiBridge.request.GetFriendUserInfo(params,function(results){
-            callback(results);
-        })
-    }
-    applyFriend(params,callback){
-        this.apiBridge.request.ApplyFriend(params,function(result){
-            //单方面添加好友
-            if(result.success && result.data.Data instanceof Object){
-                let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-                let IsInBlackList =result.data.Data.IsInBlackList
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                currentObj.user.applyFriend(relationObj);
+    //修改群公告
+    toChangeDiscription(params,callback){
+        this.apiBridge.request.ModifyGroupDescription(params,function(result){
+            if(result.success){
+                currentObj.user.updataGroupDiscription(params.GroupId,params.Desc);
             }
             callback(result);
         })
-    }
-    acceptFriend(params,callback){
-        let {key} = params;
-        this.apiBridge.request.AcceptFriend(params,function(results){
-            if(results.success){
-                //todo controller operate
-                let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                currentObj.user.acceptFriend(relationObj);
-                //修改好友申请消息状态
-                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
-            }
-            callback(results);
-        })
-    }
-    //更新关系和头像 （clientInformation.js）
-    UpdateFriendInfo(accountId,UserInfo,propsRelation){
-        let isUpdate;
-        let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
-
-        if(propsRelation.Nick !== UserInfo.Nickname || propsRelation.OtherComment !== UserInfo.Gender || propsRelation.Email !== UserInfo.Email){
-            propsRelation.Nick = UserInfo.Nickname;
-            propsRelation.OtherComment = UserInfo.Gender;
-            propsRelation.Email = UserInfo.Email;
-            isUpdate = true;
-        }
-        updateImage = (result) => {
-            console.log('下载成功,对数据库进行更改')
-            //LocalImage = toFile;
-            if(propsRelation.LocalImage){
-                RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
-            }
-            //todo:缺少数据库操作
-        };
-        if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
-            propsRelation.avator = UserInfo.HeadImageUrl;
-            isUpdate = true;
-            this.network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
-        }
-
-        if(isUpdate){
-            this.user.updateRelation(propsRelation)
-        }
-    }
-
-
-
-    //摧毁群
-    destroyGroup(groupId){
-        this.im.deleteChatRecode(groupId);
-        this.im.deleteCurrentChatMessage(groupId,"chatroom");
-        this.user.removeGroup(groupId);
     }
 
     //创建群
@@ -311,34 +199,145 @@ export default class settingController {
         })
     }
 
-    //修改群组的名称
-    //参数 群id，群名称，请求参数，回调
-    updateGroupName(accountId,groupId,name,params,callback){
-        this.apiBridge.request.ModifyGroupName(params,function(result){
-            if(result.success){
-                if(result.data.Data){
-                    currentObj.user.updateGroupName(params.GroupId,params.Name);
-
-                    //本地模拟消息
-                    let messageId = uuidv1();
-                    let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
-                    currentObj.im.storeSendMessage(sendMessage);
-                    let chatMessageDto = {};
-                    currentObj.chat.addMessage(chatMessageDto);
-                    result.data.sendMessage = sendMessage;
+    //退群操作问题
+    exitGroup(params,callback){
+        let groupId = params.GroupId;
+        this.apiBridge.request.ExitGroup(params,function(results){
+            if(results.success){
+                currentObj.destroyGroup(groupId);
+            }
+            callback(results);
+        })
+    }
+    removeGroupMember(data,callback){
+        let params = data.params;
+        let {close} = data.data;
+        this.apiBridge.request.RemoveGroupMember(params,function(results){
+            if(results.success && results.data.Data){
+                currentObj.user.removeGroupMember(params.GroupId,params.Accounts) //Accounts 字符串 a,b,c
+                if(close){
+                    currentObj.destroyGroup(params.GroupId);
                 }
             }
-            callback(result);
-        });
+            callback(results)
+        })
+    }
+    //摧毁群
+    destroyGroup(groupId){
+        this.im.deleteChatRecode(groupId);
+        this.im.deleteCurrentChatMessage(groupId,"chatroom");
+        this.user.removeGroup(groupId);
     }
 
-    //修改群公告
-    toChangeDiscription(params,callback){
-        this.apiBridge.request.ModifyGroupDescription(params,function(result){
-            if(result.success){
-                currentObj.user.updataGroupDiscription(params.GroupId,params.Desc);
+
+    //todo:好友操作
+    //搜索用户界面也用到了
+    searchUser(params,callback){
+        this.apiBridge.request.SearchUser(params,function(results){
+            callback(results);
+        })
+    }
+
+    //用户页面（clientInformation.js）
+    getFriendUserInfo(params,callback){
+        this.apiBridge.request.GetFriendUserInfo(params,function(results){
+            callback(results);
+        })
+    }
+
+    //更新关系和头像 （clientInformation.js）
+    UpdateFriendInfo(accountId,UserInfo,propsRelation){
+        let isUpdate;
+        let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
+
+        if(propsRelation.Nick !== UserInfo.Nickname || propsRelation.OtherComment !== UserInfo.Gender || propsRelation.Email !== UserInfo.Email){
+            propsRelation.Nick = UserInfo.Nickname;
+            propsRelation.OtherComment = UserInfo.Gender;
+            propsRelation.Email = UserInfo.Email;
+            isUpdate = true;
+        }
+        updateImage = (result) => {
+            console.log('下载成功,对数据库进行更改')
+            //LocalImage = toFile;
+            if(propsRelation.LocalImage){
+                RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
+            }
+            //todo:缺少数据库操作
+        };
+        if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
+            propsRelation.avator = UserInfo.HeadImageUrl;
+            isUpdate = true;
+            this.network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
+        }
+
+        if(isUpdate){
+            this.user.updateUserInfo(propsRelation)
+        }
+    }
+
+    //申请好友验证(validate)
+    addNewRelation(relationObj){
+        this.user.AddNewRelation(relationObj);
+        this.user.addUserGroupCache(relationObj);
+    }
+    //私聊设置
+    //用户设置页面（InformationSetting）
+    removeBlackMember(params,callback){
+        this.apiBridge.request.RemoveBlackMember(params,function(results){
+            if(results.success){
+                currentObj.user.setBlackMember(false, params.Account);
+            }
+            callback(results);
+        })
+    }
+    addBlackMember(params,callback){
+        this.apiBridge.request.AddBlackMember(params,function(results){
+            if(results.success){
+                currentObj.user.setBlackMember(true, params.Account);
+            }
+            callback(results);
+        })
+    }
+    removeFriend(params,callback){
+        let userId = params.Friend;
+        this.apiBridge.request.DeleteFriend(params,function(results){
+            if(results.success){
+                //删除ChatRecode表中记录
+                currentObj.im.deleteChatRecode(userId);
+                //删除该与client的所以聊天记录
+                currentObj.im.deleteCurrentChatMessage(userId,'private');
+                //删除account数据库
+                currentObj.user.removeFriend(userId);
+            }
+            callback(results);
+        })
+    }
+
+    applyFriend(params,callback){
+        this.apiBridge.request.ApplyFriend(params,function(result){
+            //单方面添加好友
+            if(result.success && result.data.Data instanceof Object){
+                let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+                let IsInBlackList =result.data.Data.IsInBlackList
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+                currentObj.user.applyFriend(relationObj);
             }
             callback(result);
         })
     }
+    acceptFriend(params,callback){
+        let {key} = params;
+        this.apiBridge.request.AcceptFriend(params,function(results){
+            if(results.success){
+                //todo controller operate
+                let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
+                currentObj.user.acceptFriend(relationObj);
+                //修改好友申请消息状态
+                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
+            }
+            callback(results);
+        })
+    }
+
 }
