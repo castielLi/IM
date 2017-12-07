@@ -9,14 +9,6 @@ import DtoMessageTypeEnum from '../../../Common/dto/DtoMessageTypeEnum'
 import MessageBodyTypeEnum from '../../../Common/dto/MessageBodyTypeEnum'
 import ResourceTypeEnum from '../../../Common/dto/ResourceTypeEnum'
 
-// constructor(){
-//     this.group = false;
-
-//     this.status = 0;
-//     this.sendTime = "";
-// }
-
-
 export default function IMMessageToMessagementMessageDto(message){
     let messageDto = new ManagementMessageDto();
 

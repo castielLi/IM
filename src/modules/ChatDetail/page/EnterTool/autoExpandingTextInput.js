@@ -64,7 +64,7 @@ class AutoExpandingTextInput extends Component {
       //   this.props.setTextInputData('');
       // });
         let group = this.props.type == 'group' ? true : false;
-        let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,this.state.data,'audio');
+        let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,this.state.data,'text');
         imController.sendMessage(message);
         this.input.clear();
         if(isIos){

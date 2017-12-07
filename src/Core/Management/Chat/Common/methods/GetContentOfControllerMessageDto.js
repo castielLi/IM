@@ -6,7 +6,7 @@
 export default function getContentOfControllerMessageDto(messageDto){
     switch(messageDto.type){
         case "text":
-            return messageDto.message.data;
+            return messageDto.message;
         case "image":
             return "[图片]";
         case "video":

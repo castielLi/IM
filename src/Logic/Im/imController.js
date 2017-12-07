@@ -18,7 +18,8 @@ let __instance = (function () {
 
 
 //标示当前正在聊天的对象
-let currentChat = undefined
+let currentChat = undefined;
+let myAccount = undefined;
 let  cache = {messageCache:[],conversationCache:{}};
 // [{ group: false,
 // chatId: "",//chatId={account/groupId}
@@ -65,7 +66,7 @@ export default class IMController {
     updateConverseList() {
         this.chat.getConverseList((recentListObj) => {
             let snapArr = formateDataFromChatManageCache(recentListObj);
-            this.user.GetBaseInfosByList(snapArr, (relationObj) => {
+            this.user.init(snapArr, (relationObj) => {
                 let needObj = {};
                 for (let key in relationObj) {
                     let itemChat = new ControllerChatConversationDto();
@@ -86,6 +87,7 @@ export default class IMController {
                 updateconverslisthandle(tempArr);
             })
         })
+
 
     }
 
@@ -109,7 +111,7 @@ export default class IMController {
                 return;
             }
 
-            //todo : 黄昊东  把会话列表缓存住
+
 
             maxId = messageList[messageList.length - 1].id;
 
@@ -119,7 +121,7 @@ export default class IMController {
                     let itemMessage = new ControllerMessageDto();
                     itemMessage.group = messageList[i].group;
                     itemMessage.chatId = messageList[i].chatId;
-                    itemMessage.message = {...messageList[i].message};
+                    itemMessage.message = messageList[i].message;
                     itemMessage.type = messageList[i].type;
                     itemMessage.status = messageList[i].status;
                     itemMessage.sendTime = messageList[i].sendTime;
@@ -132,6 +134,8 @@ export default class IMController {
                 updateChatRecordhandle(cache.messageCache);
             })
         })
+
+
     }
     //退出聊天窗口
     setOutCurrentConverse(){
@@ -141,10 +145,10 @@ export default class IMController {
     }
     //获取历史聊天记录
     getHistoryChatList(chatId, group){
+        //messageList 每个item 拿上来就是ManagementMessageDto
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
         if(messageList.length == 0){
-            updateChatRecordhandle({});
             return;
         }
 
@@ -155,7 +159,7 @@ export default class IMController {
                 let itemMessage = new ControllerMessageDto();
                 itemMessage.group = messageList[i].group;
                 itemMessage.chatId = messageList[i].chatId;
-                itemMessage.message = {...messageList[i].message};
+                itemMessage.message = messageList[i].message;
                 itemMessage.type = messageList[i].type;
                 itemMessage.status = messageList[i].status;
                 itemMessage.sendTime = messageList[i].sendTime;
@@ -169,6 +173,8 @@ export default class IMController {
 
         })
      })
+
+
     }
     //发送消息
     // UI传过来的消息体
@@ -196,17 +202,17 @@ export default class IMController {
                 let itemMessage = new ControllerMessageDto();
                 itemMessage.group = managementMessage.group;
                 itemMessage.chatId = managementMessage.chatId;
-                itemMessage.message = {...managementMessage.message};
+                itemMessage.message = managementMessage.message;
                 itemMessage.type = managementMessage.type;
                 itemMessage.status = managementMessage.status;
                 itemMessage.sendTime = managementMessage.sendTime;
 
-                let {RelationId, Nick, avator} = relationObj[managementMessage.sender];
+                let {RelationId, Nick, avator} = relationObj;
                 itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
 
                 cache.messageCache.push(itemMessage);
                 //修改cache.conversationCache
-                if(cache.conversationCache[message.chatId]!=undefined){
+                if(cache.conversationCache[itemMessage.chatId]!=undefined){
                     this.updateOneChat(itemMessage.chatId,itemMessage);
                 }else{
                     this.addOneChat(itemMessage.chatId,itemMessage);
@@ -217,6 +223,9 @@ export default class IMController {
                 updateconverslisthandle(tempArr);
             })
         },onprogress);
+
+
+
     }
 
     //删除消息
@@ -227,7 +236,7 @@ export default class IMController {
                 let recentObj = cache.conversationCache[chatId];
                 recentObj.lastSender = '';
                 recentObj.lastMessage = '';
-                itemChat.lastTime = '';
+                recentObj.lastTime = '';
             }else{
                 this.updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
             }
@@ -282,21 +291,35 @@ export default class IMController {
         let recentObj = cache.conversationCache[chatId];
         recentObj.lastSender = message.sender;
         recentObj.lastMessage = getContentOfControllerMessageDto(message);
-        itemChat.lastTime = message.sendTime;
+        recentObj.lastTime = message.sendTime;
 
     }
 
-    //添加一个会话,message是完整的controllerMessageDto
+    //message是完整的controllerMessageDto
     addOneChat(chatId,message){
-        let itemChat = new ControllerChatConversationDto();
-        itemChat.group = message.group;
-        itemChat.chatId = message.chatId;
-        itemChat.lastSender = message.sender.account;
-        itemChat.lastMessage = getContentOfControllerMessageDto(message);
-        itemChat.lastTime = message.sendTime;
-        itemChat.name = message.sender.name;
-        itemChat.HeadImageUrl = message.sender.HeadImageUrl;
-        cache.conversationCache[chatId] = itemChat;
+        // let chatId;//会话id
+        // if(message.group){
+        //     chatId = message.chatId;
+        // }else{
+        //     if(message.sender.account == myAccount){
+        //         chatId = message.message.chatId;
+        //     }else{
+        //         chatId = message.sender.account;
+        //     }
+        // }
+
+        this.user.getInformationByIdandType(chatId,message.group,(relationObj) => {
+            let itemChat = new ControllerChatConversationDto();
+            itemChat.group = message.group;
+            itemChat.chatId = chatId;
+            itemChat.lastSender = message.sender.account;
+            itemChat.lastMessage = getContentOfControllerMessageDto(message);
+            itemChat.lastTime = message.sendTime;
+            let {Nick, avator} = relationObj;
+            itemChat.name = Nick;
+            itemChat.HeadImageUrl = avator;
+            cache.conversationCache[chatId] = itemChat;
+        })
     }
     //未读消息+1
     addUnReadMsgNumber(clientId,callback){
@@ -324,6 +347,9 @@ export default class IMController {
 function receivemessage(message){
 
     //1 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
+
+
+
     //2 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
     //处理完成
@@ -350,7 +376,7 @@ function formateDataFromChatManageCache(ChatManageCacheObj){
 function formateDataFromChatManageCacheRecord(ChatManageCacheRecordArr){
     let needArr = ChatManageCacheRecordArr.map((v,i)=>{
         let obj = {};
-        obj['chatId'] = v['chatId'];
+        obj['chatId'] = v['sender'];
         obj['group'] = v['group'];
         return obj;
     })

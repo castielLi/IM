@@ -9,6 +9,7 @@ import ChatWayEnum from '../../Common/dto/ChatWayEnum'
 import RNFS from 'react-native-fs';
 import ManagementMessageDto from '../../Common/dto/ManagementMessageDto'
 import {getContentOfControllerMessageDto} from './../Common/methods/GetContentOfControllerMessageDto'
+import chatSqliteMessageToManagementMessageDto from '../Common/methods/chatSqliteMessageToManagementMessageDto'
 
 export function storeMessage(message){
 
@@ -315,8 +316,16 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
 
             tx.executeSql(querySql, [], (tx, results) => {
 
-                callback(results.rows.raw());
-
+                if(results.rows.raw().length == 0){
+                    callback([]);
+                }else{
+                    let messages = results.rows.raw();
+                    let backMessages = [];
+                    for(let item in messages){
+                       backMessages.push(chatSqliteMessageToManagementMessageDto(messages[item]));
+                    }
+                    callback(backMessages);
+                }
             }, errorDB);
 
         });
