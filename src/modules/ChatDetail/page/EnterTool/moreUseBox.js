@@ -24,9 +24,9 @@ import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
-// import imController from '../../../../Logic/Im/imController'
+import IMController from '../../../../Logic/Im/imController'
 import * as commonMethod from '../../common/commonMethod'
-// var IMController = new imController();
+var imController = new IMController();
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 const chatController = new ChatController();
@@ -87,7 +87,7 @@ imagePikerCallBack(response){
     // },[(tips)=>{console.log(tips)}]);
       let group = this.props.type == 'group' ? true : false;
       let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'image')
-      // IMController.sendMessage(message);
+      imController.sendMessage(message);
   }
 }
 
@@ -119,7 +119,7 @@ useCameraVideo(){
             // },[(tips)=>{console.log(tips)}]);
             let group = this.props.type == 'group' ? true : false;
             let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
-            // IMController.sendMessage(message);
+            imController.sendMessage(message);
         }
     });
 }
@@ -143,7 +143,7 @@ useLocalVideo(){
             // },[(tips)=>{console.log(tips)}]);
             let group = this.props.type == 'group' ? true : false;
             let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
-            // IMController.sendMessage(message);
+            imController.sendMessage(message);
         }
     });
 }

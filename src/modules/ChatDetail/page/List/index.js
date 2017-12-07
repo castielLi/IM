@@ -91,13 +91,13 @@ class Chat extends Component {
     }
 
     onUpdataChatRecord(chatRecord){
-        this.chatRecord = chatRecord;
-        this.chatRecord2 = chatRecord.concat([]).reverse();
-        this.data = this.prepareMessages(this.chatRecord);
-        this.data2 = this.prepareMessages(this.chatRecord2);
+        currentObj.chatRecord = chatRecord;
+        currentObj.chatRecord2 = chatRecord.concat([]).reverse();
+        currentObj.data = currentObj.prepareMessages(currentObj.chatRecord);
+        currentObj.data2 = currentObj.prepareMessages(currentObj.chatRecord2);
         currentObj.setState({
-            dataSource:this.state.dataSource.cloneWithRows(this.data.blob, this.data.keys),
-            dataSourceO:this.state.dataSourceO.cloneWithRows(this.data2.blob, this.data2.keys)
+            dataSource:currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
+            dataSourceO:currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys)
         })
     }
 
@@ -110,21 +110,21 @@ class Chat extends Component {
             group = true;
         }
         imController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
-        for(let i=0;i<20;i++){
-            let account = i%2 ? '' : '1';
-            let statue = i%3 ? 'WaitOpreator' : 'SendSuccess';
-            arr.push({
-                group: false,
-                chatId: "wg003722",//chatId={account/groupId}
-                sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-                messageId: i,//消息编号
-                message: '测试数据',//消息内容，
-                type:'text',//消息类型
-                status: statue,
-                sendTime : "123456789"
-            })
-        }
-        this.onUpdataChatRecord(arr)
+        // for(let i=0;i<20;i++){
+        //     let account = i%2 ? '' : '1';
+        //     let statue = i%3 ? 'WaitOpreator' : 'SendSuccess';
+        //     arr.push({
+        //         group: false,
+        //         chatId: "wg003722",//chatId={account/groupId}
+        //         sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+        //         messageId: i,//消息编号
+        //         message: '测试数据',//消息内容，
+        //         type:'text',//消息类型
+        //         status: statue,
+        //         sendTime : "123456789"
+        //     })
+        // }
+        // this.onUpdataChatRecord(arr)
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
@@ -157,6 +157,7 @@ class Chat extends Component {
 
     prepareMessages(messages) {
         //console.log(messages)
+        if(!messages || !messages.length) return;
         return {
             keys: messages.map((m,i) => m.messageId),
             blob: messages.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
@@ -471,85 +472,6 @@ class Chat extends Component {
             return (
                     <View style={styles.chatListView}>
                         <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
-                            <TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>this.onUpdataChatRecord(arr.concat([{
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV123",//消息编号
-                                message: '测试数据',//消息内容，
-                                type:'text',//消息类型
-                                status: '',
-                                sendTime : "123456789"
-                            },
-                                {
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV124",//消息编号
-                                    message: '测试数据2',//消息内容，
-                                    type:'text',//消息类型
-                                    status: '',
-                                    sendTime : "123756789"
-                                },
-                                {
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV125",//消息编号
-                                    message: {localSource:'http://img2.ph.126.net/bkaOfRyDoyddXri0GjpWjA==/6630608169839463386.jpg',remoteSource:''},//消息内容，
-                                    type:'image',//消息类型
-                                    status: '',
-                                    sendTime : "223756789"
-                                },
-                                {
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV126",//消息编号
-                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                    type:'image',//消息类型
-                                    status: '',
-                                    sendTime : "445756789"
-                                },{
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV127",//消息编号
-                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                    type:'image',//消息类型
-                                    status: '',
-                                    sendTime : "545756789"
-                                },
-                                {
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV128",//消息编号
-                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                    type:'image',//消息类型
-                                    status: '',
-                                    sendTime : "645756789"
-                                },
-                                {
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV129",//消息编号
-                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                    type:'video',//消息类型
-                                    status: '',
-                                    sendTime : "645756789"
-                                },
-                                {
-                                    group: false,
-                                    chatId: "wg003722",//chatId={account/groupId}
-                                    sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                    messageId: "ZXCV130",//消息编号
-                                    message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                    type:'audio',//消息类型
-                                    status: '',
-                                    sendTime : "645756789"
-                                }]))}/>
                             <ListView
                                 ref={(lv) => this.listView = lv}
                                 dataSource={this.state.dataSource}
@@ -571,85 +493,6 @@ class Chat extends Component {
         }else{
             return(
                     <View style={styles.chatListView}>
-                        <TouchableOpacity style={{width:40,height:40,backgroundColor:'red'}} onPress={()=>this.onUpdataChatRecord(arr.concat([{
-                            group: false,
-                            chatId: "wg003722",//chatId={account/groupId}
-                            sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                            messageId: "ZXCV123",//消息编号
-                            message: '测试数据',//消息内容，
-                            type:'text',//消息类型
-                            status: '',
-                            sendTime : "123456789"
-                        },
-                            {
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV124",//消息编号
-                                message: '测试数据2',//消息内容，
-                                type:'text',//消息类型
-                                status: '',
-                                sendTime : "123756789"
-                            },
-                            {
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV125",//消息编号
-                                message: {localSource:'http://img2.ph.126.net/bkaOfRyDoyddXri0GjpWjA==/6630608169839463386.jpg',remoteSource:''},//消息内容，
-                                type:'image',//消息类型
-                                status: '',
-                                sendTime : "223756789"
-                            },
-                            {
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV126",//消息编号
-                                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                type:'image',//消息类型
-                                status: '',
-                                sendTime : "445756789"
-                            },{
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV127",//消息编号
-                                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                type:'image',//消息类型
-                                status: '',
-                                sendTime : "545756789"
-                            },
-                            {
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV128",//消息编号
-                                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                type:'image',//消息类型
-                                status: '',
-                                sendTime : "645756789"
-                            },
-                            {
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV129",//消息编号
-                                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
-                                type:'video',//消息类型
-                                status: '',
-                                sendTime : "645756789"
-                            },
-                            {
-                                group: false,
-                                chatId: "wg003722",//chatId={account/groupId}
-                                sender: { account: "wg003724", name: "立华", HeadImageUrl: "" },//发送者
-                                messageId: "ZXCV130",//消息编号
-                                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:'',time:20},//消息内容，
-                                type:'audio',//消息类型
-                                status: '',
-                                sendTime : "645756789"
-                            }]))}/>
                         <ListView
                             ref={(lv) => this.listView = lv}
                             dataSource={this.state.dataSourceO}

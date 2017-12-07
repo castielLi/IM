@@ -17,9 +17,9 @@ import * as commonActions from '../../../../Core/Redux/chat/action';
 import {createTextMessageObj} from './createMessageObj';
 import ChatController from '../../../../Logic/Chat/chatController';
 import {addTextMessage} from '../../../../Core/Management/IM/action/createMessage';
-// import imController from '../../../../Logic/im/imController';
+import IMController from '../../../../Logic/Im/imController';
 import * as commonMethod from '../../common/commonMethod'
-// var IMController = new imController();
+var imController = new IMController();
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
@@ -65,7 +65,7 @@ class AutoExpandingTextInput extends Component {
       // });
         let group = this.props.type == 'group' ? true : false;
         let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,this.state.data,'audio');
-        // IMController.addMessage(message);
+        imController.sendMessage(message);
         this.input.clear();
         if(isIos){
             //发送表情不会获得焦点
