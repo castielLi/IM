@@ -22,29 +22,19 @@ import {
     bindActionCreators
 } from 'redux';
 import Features from '../../Common/menu/features';
-import * as recentListActions from '../../../Core/Redux/RecentList/action';
-import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
-import * as relationActions from '../../../Core/Redux/contact/action';
 import * as navigationActions from '../../Common/NavigationBar/reducer/action'
-import * as applyFriendActions from '../../../Core/Redux/applyFriend/action'
 import {
     checkDeviceHeight,
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import ChatController from '../../../Logic/Chat/chatController';
 import LoginController from '../../../Logic/loginController'
-import SettingController from '../../../Logic/Setting/settingController'
-import formatOjbToneedArr from '../common/methods/formatOjbToneedArr';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
 import IMController from '../../../Logic/Im/imController'
 let imController = new IMController();
-
-let chatController = new ChatController();
 let loginController = new LoginController();
-let settingController = new SettingController();
 
 let currentObj= undefined;
 
@@ -146,36 +136,6 @@ class RecentChat extends ContainerComponent {
         this.deleteSomeRow = this.deleteSomeRow.bind(this);
         currentObj = this;
     }
-    componentWillMount() {
-        let param = {
-            updateConverseList:this.updateConverseList,
-        }
-        imController.init(param);
-        // this.updateConverseList([
-        //     {
-        //         group: false,
-        //         chatId: "",//chatId={account/groupId}
-        //         name:"0",//好友名字或者群名字
-        //         HeadImageUrl: "",//头像地址, 本地地址
-        //         lastSender: null,
-        //         lastMessage: "00",
-        //         lastTime: '0',
-        //         unreadCount: 0, //未读条数
-        //         noSound: false,//禁音
-        //     },
-        //     {
-        //         group: true,
-        //         chatId: "",//chatId={account/groupId}
-        //         name:"2",//好友名字或者群名字
-        //         HeadImageUrl: "",//头像地址, 本地地址
-        //         lastSender: null,
-        //         lastMessage: "22",
-        //         lastTime: '2',
-        //         unreadCount: 2, //未读条数
-        //         noSound: false,//禁音
-        //     },
-        // ])
-    }
     componentDidMount() {
 
         this.props.showNavigationBottom();
@@ -188,14 +148,18 @@ class RecentChat extends ContainerComponent {
                     alert("初始化account出错" + result.errorMessage);
                     return;
                 }
-                currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
+                let param = {
+                    updateConverseList:this.updateConverseList,
+                }
+                imController.init(param);
+                // currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
 
                 //currentObj.props.initRelation(result.data.relations);
-                settingController.initUserGroupCache(result.data.relations);
+                // settingController.initUserGroupCache(result.data.relations);
 
-                currentObj.props.initRecentList(result.data.chatListArr);
-                currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
-                currentObj.props.initFriendApplication(result.data.applyFriendMessage);
+                // currentObj.props.initRecentList(result.data.chatListArr);
+                // currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
+                // currentObj.props.initFriendApplication(result.data.applyFriendMessage);
 
                 currentObj.props.hideNavigationBottom();
 
@@ -320,21 +284,14 @@ class RecentChat extends ContainerComponent {
 }
 
 const mapStateToProps = state => ({
-    recentListStore: state.recentListStore,
     accountId: state.loginStore.accountMessage.accountId,
-    relationStore: state.relationStore,
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        ...bindActionCreators(recentListActions, dispatch),
-        ...bindActionCreators(chatRecordActions, dispatch),
         ...bindActionCreators(unReadMessageActions, dispatch),
         ...bindActionCreators(featuresAction, dispatch),
-        ...bindActionCreators(relationActions, dispatch),
         ...bindActionCreators(navigationActions,dispatch),
-        ...bindActionCreators(applyFriendActions,dispatch)
-
     }
 };
 
