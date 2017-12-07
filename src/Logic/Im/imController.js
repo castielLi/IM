@@ -79,8 +79,20 @@ class IMController {
                     needObj[recentListObj[key].chatId] = itemChat;
                 }
                 cache.conversationCache = needObj;
+
                 //渲染会话列表
-                updateconverslisthandle(needObj);
+                //updateconverslisthandle(cache.conversationCache);
+                updateconverslisthandle([{
+                    group: false,
+                    chatId: "",//chatId={account/groupId}
+                    name:"0",//好友名字或者群名字
+                    HeadImageUrl: "",//头像地址, 本地地址
+                    lastSender: null,
+                    lastMessage: "00",
+                    lastTime: '0',
+                    unreadCount: 0, //未读条数
+                    noSound: false,//禁音
+                }]);
             })
         })
     }
@@ -123,7 +135,26 @@ class IMController {
                     cache.messageCache.push(itemMessage);
                 }
                 //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache);
+                //updateChatRecordhandle(cache.messageCache);
+                updateChatRecordhandle([{
+                    group: false,
+                    chatId: "wg003722",//chatId={account/groupId}
+                    sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+                    messageId: i,//消息编号
+                    message: '测试数据',//消息内容，
+                    type:'text',//消息类型
+                    status: statue, //WaitOpreator SendSuccess error
+                    sendTime : "123456789"
+                },{
+                    group: false,
+                    chatId: "wg003722",//chatId={account/groupId}
+                    sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
+                    messageId: i,//消息编号
+                    message: '测试数据',//消息内容，
+                    type:'text',//消息类型
+                    status: statue, //WaitOpreator SendSuccess error
+                    sendTime : "123456789"
+                }])
             })
         })
     }
@@ -354,4 +385,12 @@ function deleteItemFromCacheByMessageId(cache,messageId){
     }
     cache.splice(index,1);
     return cache;
+}
+
+export default function formatOjbToneedArr(obj){
+    let needArr = [];
+    for(let key in obj){
+        needArr.push(obj[key]);
+    }
+    return needArr;
 }
