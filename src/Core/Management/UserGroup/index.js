@@ -84,6 +84,18 @@ export default class User {
         this.getUserInfoByIdandType(userId,"user",callback)
     }
 
+
+    //获取所有show = true的user
+    getUserRelationsOfShow(callback){
+            this.getAllRelationSQL((relations)=>{
+                callback(relations);
+                relations.forEach((v)=>{
+                    cache['user'][v.RelationId] = v;
+                })
+            })
+    }
+
+
     forceUpdateRelation(Id,group=false,callback){
        if(!group){
            this.getUserInfo(Id,callback);
@@ -93,9 +105,25 @@ export default class User {
     }
 
 
+    //获取所有show = true的Group
+    getGroupRelationsOfShow(callback){
 
+        this.getAllGroupFromGroupSQL((relations)=>{
+            callback(relations);
+            relations.forEach((v)=>{
+                cache['group'][v.RelationId] = v;
+            })
+        },true)
 
-
+    }
+    //根据clientId ，判断是不是好友关系，是的话返回这条关系,否则返回null
+    getUserRelationById(clientId){
+        if(cache['user'][clientId] && cache['user'][clientId].show == 'true'){
+            return cache['user'][clientId];
+        } else{
+            return null;
+        }
+    }
     //先去对应表中找到成员ID 再去Account中找对应信息
     GetGroupMemberIdsByGroupId(groupId,callback){
         GroupManager.GetMembersByGroupId(groupId,function(results){
@@ -155,6 +183,11 @@ export default class User {
                 callback(cache[type][Id])
                 break;
         }
+    }
+
+    //从缓存判断指定clientId是否是黑名单
+    getIsBlackListFromCache(clienId){
+        return cache.user[clientId].BlackList;
     }
 
     getHttpGroupInfo(Id,type,callback,Relation = undefined){
@@ -474,24 +507,27 @@ export default class User {
     //加入/移除黑名单 shield屏蔽（true/false）
     setBlackMember(shield,userId){
         this.changeRelationBlackListSQL(shield, userId);
-        cache['user'][userId].isBlackList = name;
+        cache['user'][userId].isBlackList = shield;
     }
     //删除好友
     removeFriend(userId){
         this.deleteRelationSQL(userId);
         cache['user'][userId].show = false;
+        return cache['user'];
     }
     //添加好友
     applyFriend(userObj){
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
+        return cache['user'];
     }
     //接受好友申请
     acceptFriend(userObj){
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
+        return cache["user"];
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群

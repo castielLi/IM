@@ -21,6 +21,8 @@ let __instance = (function () {
 
 let currentObj = undefined;
 
+let updateContact = undefined;
+let updateGroupContact = undefined;
 export default class settingController {
     constructor() {
         if (__instance()) return __instance();
@@ -207,9 +209,25 @@ export default class settingController {
         this.im.deleteCurrentChatMessage(groupId,true);
         this.user.removeGroup(groupId);
     }
-
+    getGroupContactList(callback){
+        updateGroupContact = callback;
+        this.user.getGroupRelationsOfShow((relations)=>{
+            updateGroupContact(relations);
+        })
+    }
 
     //todo:好友操作
+    //获取通讯录好友或者群列表
+    getLatestContactList(callback){
+        updateContact = callback;
+
+        this.user.getUserRelationsOfShow((relations)=>{
+            updateContact(relations);
+        })
+    }
+    getIsBlackList(relationId){
+        return this.user.getIsBlackListFromCache(relationId)
+    }
     //搜索用户界面也用到了
     searchUser(params,callback){
         this.apiBridge.request.SearchUser(params,function(results){
@@ -286,7 +304,10 @@ export default class settingController {
                 // //删除该与client的所以聊天记录
                 // currentObj.im.deleteCurrentChatMessage(userId,'private');
                 //删除account数据库
-                currentObj.user.removeFriend(userId);
+                let userCache= currentObj.user.removeFriend(userId);
+                //重新渲染通讯录
+                let tempArr = filterShowToArr(userCache)
+                updateContact(tempArr);
             }
             callback(results);
         })
@@ -299,7 +320,10 @@ export default class settingController {
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                currentObj.user.applyFriend(relationObj);
+                let userCache= currentObj.user.applyFriend(relationObj);
+                //重新渲染通讯录
+                let tempArr = filterShowToArr(userCache)
+                updateContact(tempArr);
             }
             callback(result);
         })
@@ -311,11 +335,28 @@ export default class settingController {
                 //todo controller operate
                 let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                currentObj.user.acceptFriend(relationObj);
+                let userCache = currentObj.user.acceptFriend(relationObj);
+                //重新渲染通讯录
+                let tempArr = filterShowToArr(userCache)
+                updateContact(tempArr);
                 //修改好友申请消息状态
                 currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
             }
             callback(results);
         })
     }
+    //根据clientId ，判断是不是好友关系，是的话返回这条关系,否则返回null
+    getUserRelationByIdFromCache(clientId){
+        return this.user.getUserRelationById(clientId);
+    }
+}
+
+function filterShowToArr(obj){
+    let tempArr = [];
+    for(let key in obj){
+        if(obj[key].show == true || obj[key].show == 'true'){
+            tempArr.push(obj[key])
+        }
+    }
+    return tempArr;
 }
