@@ -144,7 +144,6 @@ export default class IMController {
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
 
         if(messageList.length == 0){
-            updateChatRecordhandle({});
             return;
         }
 
