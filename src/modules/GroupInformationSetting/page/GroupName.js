@@ -72,16 +72,13 @@ class GroupName extends ContainerComponent {
         let {accountId,ID,navigator} = this.props;
         currentObj.showLoading();
         let params = {"Operater":accountId,"GroupId":ID,"Name":this.state.text};
-        settingController.updateGroupName(accountId,ID,currentObj.state.text,params,(result)=>{
+        settingController.updateGroupName(accountId,ID,params,(result)=>{
             currentObj.hideLoading();
             if(!result.success){
                 alert(result.errorMessage);
                 return;
             }
             if(result.data.Data){
-                currentObj.props.changeRelationOfNick(ID,currentObj.state.text);
-                currentObj.props.changeRecentListOfGropName(ID,currentObj.state.text)
-
                 //更新redux message
                 let copyMessage = Object.assign({},result.data.sendMessage);
                 currentObj.props.addMessage(copyMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
@@ -95,7 +92,6 @@ class GroupName extends ContainerComponent {
                         break;
                     }
                 }
-                currentObj.alert('修改成功');
                 //跳转到群设置
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
@@ -103,7 +99,7 @@ class GroupName extends ContainerComponent {
                     params:{"groupId":ID}
                 },index)
             }else{
-                alert("http请求出错")
+                console.log("http请求出错")
             }
         });
 

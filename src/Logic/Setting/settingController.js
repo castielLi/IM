@@ -8,7 +8,7 @@ import Network from '../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
-import RelationModel from '../../Core/Management/UserGroup/Common/dto/RelationModel'
+import RelationDto from '../../Logic/Setting/dto/RelationDto'
 import ApiBridge from '../ApiBridge/index'
 
 let __instance = (function () {
@@ -50,7 +50,6 @@ export default class settingController {
                     avator:groupObj.ProfilePicture==null?"":groupObj.ProfilePicture,
                     owner:groupObj.Owner,
                     show:true}
-                    currentObj.user.addGroupToContact(obj)
             }
             callback(results);
         });
@@ -71,11 +70,12 @@ export default class settingController {
 
     //修改群组的名称
     //参数 群id，群名称，请求参数，回调
-    updateGroupName(accountId,groupId,name,params,callback){
+    updateGroupName(accountId,groupId,params,callback){
         this.apiBridge.request.ModifyGroupName(params,function(result){
             if(result.success){
                 if(result.data.Data){
                     currentObj.user.updateGroupName(params.GroupId,params.Name);
+                    //todo:通知 RecentList和 chatDetali 改变名称   chatlist中还有新的消息通知
 
                     //本地模拟消息
                     let messageId = uuidv1();
@@ -108,7 +108,7 @@ export default class settingController {
         this.apiBridge.request.CreateGroup(params,function(result){
             if(result.success){
                 if(result.data.Data != null){
-                    let relation = new RelationModel();
+                    let relation = new RelationDto();
                     relation.RelationId = result.data.Data;
                     relation.owner = accountId;
                     relation.Nick = accountName + "发起的群聊";
@@ -249,9 +249,9 @@ export default class settingController {
     }
 
     //申请好友验证(validate)
-    addNewRelation(relationObj){
+    addNewRelation(userObj){
         //todo 张彤 少了 向cache中添加这个人  而且这个relationobj 应该由controller来构造
-        this.user.AddNewRelationSQL(relationObj);
+        this.user.applyFriend(userObj);
     }
     //私聊设置
     //用户设置页面（InformationSetting）

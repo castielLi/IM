@@ -29,6 +29,7 @@ import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import settingController from '../../../Logic/Setting/settingController'
+import RelationDto from '../../../Logic/Setting/dto/RelationDto'
 let SettingController = new settingController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -139,16 +140,6 @@ class GroupInformationSetting extends ContainerComponent {
             callback = (results)=>{
                 currentObj.hideLoading();
                 if(results.data.Data){
-                    currentObj.props.deleteRelation(groupId);
-                    currentObj.props.clearChatRecordFromId(groupId);
-                    currentObj.props.recentListStore.data.forEach((v,i)=>{
-                        if(v.Client === groupId){
-                            //清空recentListStore中对应记录
-                            currentObj.props.deleteRecentItem(i);
-                            //如果该row上有未读消息，减少unReadMessageStore记录
-                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-                        }
-                    });
                     currentObj.route.toMain(currentObj.props);
                 }
                 else{
@@ -202,40 +193,6 @@ class GroupInformationSetting extends ContainerComponent {
             }
         };
         SettingController.searchUser(params,callback);
-        // currentObj.showLoading()
-        // this.fetchData("POST","Member/SearchUser",function(result){
-        //     currentObj.hideLoading()
-        //     if(!result.success){
-        //         alert(result.errorMessage);
-        //         return;
-        //     }
-        //
-        //
-        //     if(result.data.Data){
-        //
-        //
-        //         let relations = currentObj.props.relations;
-        //         let needRelation = null;
-        //         let hasRelation = false;
-        //         for(let item in relations){
-        //             if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-        //                 hasRelation = !hasRelation;
-        //                 needRelation = relations[item];
-        //                 break;
-        //             }
-        //         }
-        //         if(hasRelation===false){
-        //             needRelation = result.data.Data;
-        //         }
-        //         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-        //
-        //
-        //     }else{
-        //         that.setState({
-        //             searchResult:false
-        //         })
-        //     }
-        // },{"Keyword":keyword})
     }
 
     goToChooseClient = ()=>{

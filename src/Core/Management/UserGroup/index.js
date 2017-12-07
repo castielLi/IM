@@ -7,6 +7,7 @@ import RelationModel from './Common/dto/RelationModel'
 import AppCommandEnum from '../Common/dto/AppCommandEnum'
 import UserManager from '../UserGroup/UserManager'
 import GroupManager from '../UserGroup/GroupManager'
+import dtoChange from './Common/mehod/method'
 
 let __instance = (function () {
     let instance;
@@ -441,30 +442,11 @@ export default class User {
 
 
     //todo:controller调用方法
-    //controllerDto 转 managermentDto
-    dtoChange(Obj){
-
-        //todo：张彤 这个方法单独写到 usermanagement commom／method 里面
-
-        let contactObj = new RelationModel();
-        contactObj.OtherComment = Obj.OtherComment;
-        contactObj.RelationId = Obj.RelationId;
-        contactObj.Nick = Obj.Nick;
-        contactObj.Remark = Obj.Remark;
-        contactObj.BlackList = Obj.BlackList;
-        contactObj.avator = Obj.avator;
-        contactObj.Email = Obj.Email;
-        contactObj.localImage = Obj.localImage;
-        contactObj.Type = Obj.Type;
-        contactObj.owner = Obj.owner;
-        contactObj.show = Obj.show;
-        return contactObj;
-    }
     //添加群到通讯录
     addGroupToContact(groupObj){
-        let groupObj = this.dtoChange(groupObj);
-        this.AddNewGroupSQL(groupObj);
-        cache['group'][groupObj.RelationId] = groupObj;
+        let group = dtoChange(groupObj);
+        this.AddNewGroupSQL(group);
+        cache['group'][group.RelationId] = group;
     }
     //将群移除通讯录
     removeGroupFromContact(groupId){
@@ -492,35 +474,35 @@ export default class User {
     }
     //添加好友
     applyFriend(userObj){
-        let userObj = this.dtoChange(userObj);
-        this.AddNewRelationSQL(userObj);
-        cache["user"][userObj.RelationId] = userObj;
+        let user = dtoChange(userObj);
+        this.AddNewRelationSQL(user);
+        cache["user"][user.RelationId] = user;
     }
     //接受好友申请
     acceptFriend(userObj){
-        let userObj = this.dtoChange(userObj);
-        this.AddNewRelationSQL(userObj);
-        cache["user"][userObj.RelationId] = userObj;
+        let user = dtoChange(userObj);
+        this.AddNewRelationSQL(user);
+        cache["user"][user.RelationId] = user;
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群
     createGroup(groupObj,members){
-        let groupObj = this.dtoChange(groupObj);
-        this.AddGroupAndMemberSQL(groupObj, members);
-        cache["group"][groupObj.RelationId] = groupObj;
+        let group = dtoChange(groupObj);
+        this.AddGroupAndMemberSQL(group, members);
+        cache["group"][group.RelationId] = group;
         for (let current of members) {
-            cache['groupMember'][groupObj.RelationId].push(current);
+            cache['groupMember'][group.RelationId].push(current);
         }
     }
     //添加群成员
     addGroupMember(groupObj,members){
-        let groupObj = this.dtoChange(groupObj);
-        this.AddGroupAndMemberSQL(groupObj, members);
-        if(!cache["group"][groupObj.RelationId]){
-            cache["group"][groupObj.RelationId] = groupObj;
+        let group = dtoChange(groupObj);
+        this.AddGroupAndMemberSQL(group, members);
+        if(!cache["group"][group.RelationId]){
+            cache["group"][group.RelationId] = group;
         }
         for (let current of members) {
-            cache['groupMember'][groupObj.RelationId].push(current);
+            cache['groupMember'][group.RelationId].push(current);
         }
     }
     //修改群名称
@@ -540,9 +522,9 @@ export default class User {
     }
     //修改用户信息
     updateUserInfo(userObj){
-        let userObj = this.dtoChange(userObj)
-        this.updateRelationSQL(userObj);
-        cache['user'][userObj.RelationId] = userObj;
+        let user = dtoChange(userObj)
+        this.updateRelationSQL(user);
+        cache['user'][user.RelationId] = user;
     }
 
 }
