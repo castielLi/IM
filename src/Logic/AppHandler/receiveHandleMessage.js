@@ -3,30 +3,12 @@
  */
 
 import Store from '../../store/index'
-import * as ActionForChatRecordStore from '../../Core/Redux/chat/action'
-import {changeRelationOfShow,addRelation} from '../../Core/Redux/contact/action';
 import * as ActionForLoginStore from '../../modules/Login/reducer/action'
 import {Alert} from 'react-native'
 let store = Store;
-let myAccountId = '';
 
-export function setMyAccoundId(id){
-    myAccountId = id;
-}
-export function handleRecieveMessage(message,relation){
+export function handleRecieveMessage(){
 
-    store.dispatch(addRelation(relation));
-
-    store.dispatch(ActionForChatRecordStore.receiveMessage(message))
-
-}
-
-export function handleMessageResult(status,MSGID){
-    store.dispatch(ActionForChatRecordStore.updateMessageStatus(status,MSGID))
-}
-
-export function handleMessageChange(message){
-    store.dispatch(ActionForChatRecordStore.updateMessage(message))
 }
 
 export function handleKickOutMessage(){
@@ -41,9 +23,4 @@ export function handleKickOutMessage(){
                 store.dispatch(ActionForLoginStore.signOut());
             }},
         ]);
-}
-
-export function handleRecieveAddFriendMessage(relation){
-    //修改relationStore
-    store.dispatch(changeRelationOfShow(relation))
 }

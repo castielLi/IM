@@ -6,20 +6,11 @@ import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
 
 //上层应用Controller的接口
-//返回消息结果回调
-let AppMessageResultHandle = undefined;
-//function(success:boolean,data:{})
-//返回修改消息状态回调
-
-
 //返回收到消息回调
 let AppReceiveMessageHandle = undefined;
 
 //踢出消息回调
 let AppKickOutHandle = undefined;
-
-let handleRecieveAddFriendMessage = undefined;
-
 let user = new User();
 
 let __instance = (function () {
@@ -63,8 +54,7 @@ export default class chatController {
     }
 
 
-    connectApp(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
-        AppMessageResultHandle = getMessageResultHandle;
+    connectApp(receiveMessageHandle,kickOutMessage){
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
     }
