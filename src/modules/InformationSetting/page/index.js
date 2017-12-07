@@ -61,7 +61,7 @@ class InformationSetting extends ContainerComponent {
     componentWillMount(){
         // this.props.changeTabBar(0)
 
-        let setting = this.settingController.getIsBlackList(this.props.client);
+        let setting = settingController.getIsBlackList(this.props.client);
         let value = setting.BlackList == "false"||setting.BlackList == false?false:true;
         this.setState({
             joinBlackList:value,
