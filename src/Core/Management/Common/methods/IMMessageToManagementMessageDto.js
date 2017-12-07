@@ -16,18 +16,19 @@ export default function IMMessageToMessagementMessageDto(message){
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         messageDto.type = DtoMessageTypeEnum.error;
 
-        switch (message.Data.ErrorCode){
-            case CommandErrorCodeEnum.NotBelongToGroup:
-                messageDto.message = "您已经被管理员踢了群聊";
-                break;
-            case CommandErrorCodeEnum.AlreadyFriend:
-                messageDto.message = "你们已经是好友了";
-                break;
-            default:
-                messageDto.message = "你们已经不再是好友了,请重新添加";
-                break;
-        }
+        // switch (message.Data.ErrorCode){
+        //     case CommandErrorCodeEnum.NotBelongToGroup:
+        //         messageDto.message = "您已经被管理员踢了群聊";
+        //         break;
+        //     case CommandErrorCodeEnum.AlreadyFriend:
+        //         messageDto.message = "你们已经是好友了";
+        //         break;
+        //     default:
+        //         messageDto.message = "你们已经不再是好友了,请重新添加";
+        //         break;
+        // }
 
+        messageDto.message = message.Data.ErrorCode;
         messageDto.chatId = message.Data.Data.Data.Receiver;
         messageDto.sender = messageDto.Data.Data.Data.Sender;
         messageDto.messageId = message.MSGID;
