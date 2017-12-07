@@ -52,7 +52,6 @@ let ChatController = new chatController();
 let settingController = new SettingController();
 let imController = new IMController();
 let currentObj;
-let arr = [];
 
 class Chat extends Component {
     constructor(props){
@@ -91,6 +90,7 @@ class Chat extends Component {
     }
 
     onUpdataChatRecord(chatRecord){
+        let {msgState} = ListConst;
         if(!chatRecord || !chatRecord.length) return;
         currentObj.chatRecord = chatRecord;
         currentObj.chatRecord2 = chatRecord.concat([]).reverse();
@@ -98,7 +98,8 @@ class Chat extends Component {
         currentObj.data2 = currentObj.prepareMessages(currentObj.chatRecord2);
         currentObj.setState({
             dataSource:currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
-            dataSourceO:currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys)
+            dataSourceO:currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys),
+            isMore:msgState.END
         })
     }
 
@@ -111,21 +112,6 @@ class Chat extends Component {
             group = true;
         }
         imController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
-        // for(let i=0;i<20;i++){
-        //     let account = i%2 ? '' : '1';
-        //     let statue = i%3 ? 'WaitOpreator' : 'SendSuccess';
-        //     arr.push({
-        //         group: false,
-        //         chatId: "wg003722",//chatId={account/groupId}
-        //         sender: { account: account, name: "立华", HeadImageUrl: "" },//发送者
-        //         messageId: i,//消息编号
-        //         message: '测试数据',//消息内容，
-        //         type:'text',//消息类型
-        //         status: statue,
-        //         sendTime : "123456789"
-        //     })
-        // }
-        // this.onUpdataChatRecord(arr)
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
@@ -146,10 +132,13 @@ class Chat extends Component {
             //移动时作出的动作
             onPanResponderMove: (e)=>{
                 let {msgState} = ListConst;
-
+                //todo:缺少无更多历史记录状态
                 if(e.nativeEvent.pageY-this.move<20 && this.noMore === msgState.END && !this.state.showInvertible)
                 {
                     //获取历史记录 回调修改页面 用到之前的setCurrentConverse方法中传过去的callback取数控逻辑也在 controller
+                    this.setState({
+                        isMore:msgState.LOADING,
+                    });
                     imController.getHistoryChatList();
                 }
             },
@@ -353,14 +342,12 @@ class Chat extends Component {
 
     oldMsg = () => {
         let {msgState} = ListConst;
-        // if(this.noMore === msgState.END){
-        //     this.noMore = msgState.LOADING;
-        //     this.setState({
-        //         isMore : msgState.LOADING
-        //     });
-        // }
-        imController.getHistoryChatList();
-
+        if(this.state.isMore === msgState.END){
+            this.setState({
+                isMore : msgState.LOADING
+            });
+            imController.getHistoryChatList();
+        }
     }
 
     myRenderFooter(){
