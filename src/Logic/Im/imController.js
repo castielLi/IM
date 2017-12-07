@@ -5,7 +5,7 @@ import ControllerChatConversationDto from './dto/ControllerChatConversationDto';
 import ControllerMessageDto from  './dto/ControllerMessageDto';
 import ManagementChatConversationDto from './dto/ManagementChatConversationDto';
 import ManagementMessageDto from '../../Core/Management/Common/dto/ManagementMessageDto'
-
+import getContentOfControllerMessageDto from '../../Core/Management/Chat/Common/methods/GetContentOfControllerMessageDto'
 
 
 let __instance = (function () {
@@ -81,9 +81,12 @@ export default class IMController {
                 cache.conversationCache = needObj;
 
                 //渲染会话列表
-                //updateconverslisthandle(cache.conversationCache);
+
+                let tempArr = formatOjbToneedArr(cache.conversationCache);
+                updateconverslisthandle(tempArr);
             })
         })
+
     }
 
     //设置当前会话
@@ -94,10 +97,12 @@ export default class IMController {
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
             this.clearUnReadMsgNumber(chatId);
             this.chat.clearUnReadNumber(chatId, group);
-            updateconverslisthandle(cache.conversationCache);
+            //渲染会话列表
+            let tempArr = formatOjbToneedArr(cache.conversationCache);
+            updateconverslisthandle(tempArr);
         }
         //初始化前10条聊天记录
-        this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
+        this.chat.getChatList(chatId, group, maxId, (messageList) => {
 
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
@@ -128,7 +133,12 @@ export default class IMController {
             })
         })
     }
-
+    //退出聊天窗口
+    setOutCurrentConverse(){
+        currentChat = '';
+        cache.messageCache = [];
+        maxId = 0;
+    }
     //获取历史聊天记录
     getHistoryChatList(chatId, group){
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
@@ -156,8 +166,9 @@ export default class IMController {
             }
             //渲染聊天记录
             updateChatRecordhandle(cache.messageCache);
+
         })
-    })
+     })
     }
     //发送消息
     // UI传过来的消息体
@@ -202,8 +213,8 @@ export default class IMController {
                 }
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
-                //渲染会话列表
-                updateconverslisthandle(cache.conversationCache);
+                let tempArr = formatOjbToneedArr(cache.conversationCache);
+                updateconverslisthandle(tempArr);
             })
         },onprogress);
     }
@@ -235,7 +246,8 @@ export default class IMController {
         delete cache.conversationCache[chatId];
 
         //渲染会话列表
-        updateconverslisthandle(cache.conversationCache);
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle(tempArr);
         this.chat.deleteChat(2,chatId,group);
     }
 
