@@ -113,7 +113,7 @@ export default class IM {
 
 
     //赋值外部IM接口
-    connectIM(getMessageResultHandle,changeMessageHandle,receiveMessageHandle,kickOutMessage){
+    connectIM(getMessageResultHandle,receiveMessageHandle,kickOutMessage){
         ControllerMessageResultHandle = getMessageResultHandle;
         ControllerReceiveMessageHandle = receiveMessageHandle;
         ControllerKickOutHandle = kickOutMessage;
@@ -360,7 +360,7 @@ export default class IM {
         let message = cache["message"];
 
         //回调App上层发送失败
-        currentObj.MessageResultHandle(false, messageId);
+        currentObj.MessageResultHandle(false, message);
 
         message.status = MessageStatus.SendFailed;
         currentObj.addUpdateSqliteQueue(message,UpdateMessageSqliteType.storeMessage)

@@ -23,14 +23,17 @@ import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ChatController from '../../../Logic/Chat/chatController';
+import IMController from '../../../Logic/Im/imController'
 
 
 let chatController = new ChatController();
+let imController = new IMController();
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
 			this.state = {
-                isDisabled:true
+                isDisabled:true,
+                name:props.client,
 			};
         currentObj = this;
         this.isDisabled = false
@@ -41,7 +44,7 @@ class ChatDetail extends ContainerComponent {
         if(type === 'private'){
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
 
-        }else if(type === 'chatroom'){
+        }else if(type === 'group'){
             this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client}});
 
         }
@@ -51,45 +54,16 @@ class ChatDetail extends ContainerComponent {
 	goBottom() {
 		this.chat.getWrappedInstance().scrollToEnd()
 	}
+    onUpdataChatDetail(name){
+        this.setState({
+            name
+        })
+    }
 	componentWillMount(){
 		let {client,type} = this.props;
-        if(!this.props.ChatRecord[client]){
-        	this.props.addClient(client);
-            //新建文件夹
-            let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
-            let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
-            let thumbnail = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client+'/thumbnail';
-            let videoPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/video/chat/' + type + '-' +client;
-            RNFS.mkdir(audioPath)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-            RNFS.mkdir(imagePath)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-            RNFS.mkdir(thumbnail)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-            RNFS.mkdir(videoPath)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-        }
-		let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
+        //imController.getChatDetailInfo(Id,this.onUpdataChatDetail)
+
+		//let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
         // if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
         //     //初始化chatRecordStore
         //     chatController.getRecentChatRecode(client,type,{start:chatRecordLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
@@ -134,17 +108,6 @@ class ChatDetail extends ContainerComponent {
             })
 		}
 	}
-	getNickByIdFromRelation(groupId){
-	    let relationStore = this.props.relationStore;
-	    let nick = '';
-	    for(let i=0;i<relationStore.length;i++){
-	        if(relationStore[i].RelationId == groupId){
-	            nick =  relationStore[i].Nick;
-	            break;
-            }
-        }
-        return nick;
-    }
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
@@ -157,7 +120,7 @@ class ChatDetail extends ContainerComponent {
                         chatController.emptyChangeCallback()
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
-					heading={this.getNickByIdFromRelation(this.props.client)} />
+					heading={this.state.name} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
 						<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>

@@ -30,6 +30,7 @@ import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConf
 import IM from '../../../../Core/Management/IM';
 import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/SqliteMessageToDtoMessage'
 import User from '../../../../Core/Management/UserGroup'
+import RNFS from 'react-native-fs';
 import chatController from '../../../../Logic/Chat/chatController'
 import SettingController from '../../../../Logic/Setting/settingController'
 import IMController from '../../../../Logic/Im/imController'
@@ -105,13 +106,52 @@ class Chat extends Component {
 
     componentWillMount() {
         // imController.init(param);
+        let {type,client} = this.props;
         let group;
-        if(this.props.type === 'private'){
+        if(type === 'private'){
             group = false;
         }else{
             group = true;
         }
-        imController.setCurrentConverse(this.props.client,group,this.onUpdataChatRecord);
+        imController.setCurrentConverse(client,group,this.onUpdataChatRecord);
+
+        if(!this.chatRecord.length){
+            //this.props.addClient(client);
+            //新建文件夹
+            let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
+            let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
+            let thumbnail = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client+'/thumbnail';
+            let videoPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/video/chat/' + type + '-' +client;
+            RNFS.mkdir(audioPath)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+            RNFS.mkdir(imagePath)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+            RNFS.mkdir(thumbnail)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+            RNFS.mkdir(videoPath)
+                .then((success) => {
+                    console.log('create new dir success!');
+                })
+                .catch((err) => {
+                    console.log(err.message);
+                });
+        }
+
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件

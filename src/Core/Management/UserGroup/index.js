@@ -49,10 +49,10 @@ export default class User {
         let userIds =[];
         let groupIds = [];
         for(let item in chatList){
-            if(!ChatList[item].group){
-                userIds.push(ChatList[item].chatId);
+            if(!chatList[item].group){
+                userIds.push(chatList[item].chatId);
             }else{
-                groupIds.push(ChatList[item].chatId);
+                groupIds.push(chatList[item].chatId);
             }
         }
 
@@ -80,6 +80,10 @@ export default class User {
     }
 
 
+    getUserInfo(userId,callback){
+        this.getUserInfoByIdandType(userId,"user",callback)
+    }
+
 
     //获取所有show = true的user
     getUserRelationsOfShow(callback){
@@ -89,6 +93,15 @@ export default class User {
                     cache['user'][v.RelationId] = v;
                 })
             })
+    }
+
+
+    forceUpdateRelation(Id,group=false,callback){
+       if(!group){
+           this.getUserInfo(Id,callback);
+       }else{
+           this.getHttpGroupInfo(Id,"group",callback);
+       }
     }
 
 

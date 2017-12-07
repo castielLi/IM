@@ -43,15 +43,16 @@ export default class settingController {
         this.apiBridge.request.AddGroupToContact(params,function(results){
             if(results.success && results.data.Result){
                 //todo：张彤 这个obj 在 settingController dto里面写一个RelationDto  let obj = new RelationDto()
-                let obj = {
-                    RelationId:groupObj.ID,
-                    OtherComment:groupObj.Description,
-                    Nick:groupObj.Name,
-                    BlackList:false,
-                    Type:'group',
-                    avator:groupObj.ProfilePicture==null?"":groupObj.ProfilePicture,
-                    owner:groupObj.Owner,
-                    show:true}
+                let group = new RelationDto();
+                group.RelationId = groupObj.ID;
+                group.OtherComment = groupObj.Description;
+                group.Nick = groupObj.Name;
+                group.BlackList = false;
+                group.Type = 'group';
+                group.avator = groupObj.ProfilePicture==null?"":groupObj.ProfilePicture;
+                group.owner = groupObj.Owner;
+                group.show = true;
+                currentObj.user.addGroupToContact(group);
             }
             callback(results);
         });
@@ -96,6 +97,7 @@ export default class settingController {
 
     //修改群公告
     toChangeDiscription(params,callback){
+        //todo：目前是返回设置页面 重新http请求刷新
         this.apiBridge.request.ModifyGroupDescription(params,function(result){
             if(result.success){
                 currentObj.user.updataGroupDiscription(params.GroupId,params.Desc);
@@ -110,16 +112,16 @@ export default class settingController {
         this.apiBridge.request.CreateGroup(params,function(result){
             if(result.success){
                 if(result.data.Data != null){
-                    let relation = new RelationDto();
-                    relation.RelationId = result.data.Data;
-                    relation.owner = accountId;
-                    relation.Nick = accountName + "发起的群聊";
-                    relation.Type = 'group';
-                    relation.show = 'false';
+                    let groupObj = new RelationDto();
+                    groupObj.RelationId = result.data.Data;
+                    groupObj.owner = accountId;
+                    groupObj.Nick = accountName + "发起的群聊";
+                    groupObj.Type = 'group';
+                    groupObj.show = 'false';
 
                     //添加关系到数据库
-                    currentObj.user.createGroup(relation,splNeedArr);
-                    result.data.relation = relation;
+                    currentObj.user.createGroup(groupObj,splNeedArr);
+                    result.data.relation = groupObj;
 
                     let messageId = uuidv1();
                     //创建群组消息
@@ -131,8 +133,8 @@ export default class settingController {
                     currentObj.im.storeSendMessage(sendMessage);
                     result.data.sendMessage = sendMessage;
                     //创建文件夹
-                    let audioPath = RNFS.DocumentDirectoryPath + '/' +accountId+'/audio/chat/' + 'chatroom' + '-' +result.data.Data;
-                    let imagePath = RNFS.DocumentDirectoryPath + '/' +accountId+'/image/chat/' + 'chatroom' + '-' +result.data.Data;
+                    let audioPath = RNFS.DocumentDirectoryPath + '/' +accountId+'/audio/chat/' + 'group' + '-' +result.data.Data;
+                    let imagePath = RNFS.DocumentDirectoryPath + '/' +accountId+'/image/chat/' + 'group' + '-' +result.data.Data;
                     RNFS.mkdir(audioPath)
                     RNFS.mkdir(imagePath)
                 }
@@ -161,16 +163,15 @@ export default class settingController {
 
                     //添加新人到缓存和数据库
                     currentObj.user.addGroupMember(groupId,splNeedArr);
-                    chooseArr.forEach((val,it)=>{
-                        currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
-                        currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
-                    })
+                    // chooseArr.forEach((val,it)=>{
+                    //     currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
+                    //     currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
+                    // })
                     //成员增加后，聊天室的groupMembers也要增加
                     currentObj.user.getInformationByIdandType(groupId,'group',function(relation,groupMembers){
                         // currentGroupChatMemberChangesCallback(groupMembers);
                     })
                 }
-
             }
             callback(result);
         })
@@ -186,10 +187,11 @@ export default class settingController {
             callback(results);
         })
     }
-    removeGroupMember(params,close,callback){
+    removeGroupMember(params,close = false,callback){
         this.apiBridge.request.RemoveGroupMember(params,function(results){
             if(results.success && results.data.Data){
-                currentObj.user.removeGroupMember(params.GroupId,params.Accounts) //Accounts 字符串 a,b,c
+                let members = params.Accounts.splice(",");//Accounts 字符串 a,b,c
+                currentObj.user.removeGroupMember(params.GroupId,members);
                 if(close){
                     currentObj.destroyGroup(params.GroupId);
                 }
@@ -199,6 +201,8 @@ export default class settingController {
     }
     //摧毁群
     destroyGroup(groupId){
+
+        //todo:删除会话,删除群及群成员信息,删除未读消息数
         this.chat.removeConverse(groupId,true);
         this.im.deleteCurrentChatMessage(groupId,true);
         this.user.removeGroup(groupId);
