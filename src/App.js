@@ -18,7 +18,6 @@ import IM from './Core/Management/IM'
 import User from './Core/Management/UserGroup'
 import DisplayComponent from './Core/Component'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
-import Network from './Core/Networking/Network'
 
 
 export default function App() {

@@ -41,7 +41,7 @@ class TabBarComponent extends DisplayComponent {
     }
 
     componentDidMount(){
-        imController.connectApp(handleMessageResult,handleRecieveMessage,handleKickOutMessage)
+        imController.connectApp(handleRecieveMessage,handleKickOutMessage)
     }
 
     render() {
