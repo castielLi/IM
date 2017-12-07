@@ -33,7 +33,7 @@ let currentObj = undefined;
 let updateconverslisthandle = undefined;
 let updateChatRecordhandle = undefined;
 let maxId = 0;
-class IMController {
+export default class IMController {
     constructor() {
         if (__instance()) return __instance();
 
@@ -405,8 +405,8 @@ function deleteItemFromCacheByMessageId(cache,messageId){
     cache.splice(index,1);
     return cache;
 }
-
-export default function formatOjbToneedArr(obj){
+//coversation对象转为ui所需数组
+function formatOjbToneedArr(obj){
     let needArr = [];
     for(let key in obj){
         needArr.push(obj[key]);
