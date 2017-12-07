@@ -134,7 +134,7 @@ class InformationSetting extends ContainerComponent {
         if(1 == i){
             currentObj.showLoading();
             let params = {"Applicant":accountId,"Friend":client};
-            settingController.deleteFriend(params,(results)=>{
+            settingController.removeFriend(params,(results)=>{
                 currentObj.hideLoading();
                 if(results.success){
                     //todo： 添加更改rudex 好友列表和消息列表

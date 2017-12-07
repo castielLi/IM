@@ -57,11 +57,6 @@ export default class settingController {
 
     //群设置（GroupInformationSetting）
     addGroupToContact(data,callback){
-        //data:{enumerate,params,relation}
-        // this.user.changeUserGroup(enumerate,data,function (result) {
-        //     callback(result);
-        // });
-
         let params = data.params;
         let info = data.info;
         this.apiBridge.request.AddGroupToContact(params,function(results){
@@ -71,28 +66,21 @@ export default class settingController {
                     OtherComment:info.Description,
                     Nick:info.Name,
                     BlackList:false,
-                    Type:'chatroom',
+                    Type:'group',
                     avator:info.ProfilePicture==null?"":info.ProfilePicture,
                     owner:info.Owner,
                     show:true}
-                currentObj.user.AddNewGroup(obj);
-                currentObj.user.addUserGroupCache(obj)
+                    currentObj.user.addGroupToContact(obj)
             }
             callback(results);
         });
     }
     removeGroupFromContact(data,callback){
-        //data:{enumerate,params,groupId}
-        // this.user.changeUserGroup(enumerate,data,function (result) {
-        //     callback(result);
-        // });
-
         let params = data.params;
-        let info = data.info;
+        let groupId = data.groupId;
         this.apiBridge.request.RemoveGroupFromContact(params,function(results){
             if(results.success && results.data.Result){
-                currentObj.user.RemoveGroupFromContact(info.ID);
-                currentObj.user.removeUserGroup(info.ID,'chatroom')
+                currentObj.user.removeGroupFromContact(groupId);
             }
             callback(results);
         })
@@ -102,8 +90,9 @@ export default class settingController {
             callback(results);
         })
     }
+    //todo:退群操作问题
     exitGroup(params,callback){
-        let {GroupId,Account} = params;
+        let groupId = params.GroupId;
         this.apiBridge.request.ExitGroup(params,function(results){
             if(results.success){
                 // //删除ChatRecode表中记录
@@ -112,18 +101,19 @@ export default class settingController {
                 // currentObj.im.deleteCurrentChatMessage(groupId,'chatroom');
                 // //删除account数据库中数据
                 // currentObj.user.deleteFromGrroup(groupId);
-                currentObj.destroyGroup(GroupId);
+                currentObj.destroyGroup(groupId);
             }
             callback(results);
         })
     }
     removeGroupMember(data,callback){
-        let {GroupId} = data.params;
-        let {close} = data.argument;
-        this.apiBridge.request.RemoveGroupMember(data.params,function(results){
+        let params = data.params;
+        let {close} = data.data;
+        this.apiBridge.request.RemoveGroupMember(params,function(results){
             if(results.success && results.data.Data){
+                currentObj.user.removeGroupMember(params.GroupId,params.Accounts) //Accounts 字符串 a,b,c
                 if(close){
-                    currentObj.destroyGroup(GroupId);
+                    currentObj.destroyGroup(params.GroupId);
                 }
             }
             callback(results)
@@ -145,48 +135,31 @@ export default class settingController {
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
-        //data:{params,value}
-        // this.user.changeUserGroup(enumerate,data,function (result) {
-        //     callback(result);
-        // });
-
         this.apiBridge.request.RemoveBlackMember(params,function(results){
             if(results.success){
-                currentObj.user.changeRelationBlackList(false, params.Account);
+                currentObj.user.setBlackMember(false, params.Account);
             }
             callback(results);
         })
     }
     addBlackMember(params,callback){
-        //data:{params,value}
-        // this.user.changeUserGroup(enumerate,data,function (result) {
-        //     callback(result);
-        // });
-
         this.apiBridge.request.AddBlackMember(params,function(results){
             if(results.success){
-                currentObj.user.changeRelationBlackList(true, params.Account);
+                currentObj.user.setBlackMember(true, params.Account);
             }
             callback(results);
         })
     }
-    deleteFriend(enumerate,params,callback){
-        //data:{enumerate,params}
-        // this.user.changeUserGroup(enumerate,data,function (result) {
-        //     callback(result);
-        // });
-
-
-        let {Friend,Applicant} = params;
+    removeFriend(params,callback){
+        let userId = params.Friend;
         this.apiBridge.request.DeleteFriend(params,function(results){
-
             if(results.success){
                 //删除ChatRecode表中记录
-                currentObj.im.deleteChatRecode(Friend);
+                currentObj.im.deleteChatRecode(userId);
                 //删除该与client的所以聊天记录
-                currentObj.im.deleteCurrentChatMessage(Friend,'private');
+                currentObj.im.deleteCurrentChatMessage(userId,'private');
                 //删除account数据库
-                currentObj.user.deleteRelation(Friend);
+                currentObj.user.removeFriend(userId);
             }
             callback(results);
         })
@@ -204,9 +177,7 @@ export default class settingController {
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                currentObj.user.AddNewRelation(relationObj)
-                currentObj.user.addUserGroupCache(relationObj)
-
+                currentObj.user.applyFriend(relationObj);
             }
             callback(result);
         })
@@ -218,10 +189,9 @@ export default class settingController {
                 //todo controller operate
                 let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                currentObj.user.AddNewRelation(relationObj);
+                currentObj.user.acceptFriend(relationObj);
                 //修改好友申请消息状态
                 currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
-                results.data.acceptFriend = {key,Account}
             }
             callback(results);
         })
@@ -262,7 +232,7 @@ export default class settingController {
     destroyGroup(groupId){
         this.im.deleteChatRecode(groupId);
         this.im.deleteCurrentChatMessage(groupId,"chatroom");
-        this.user.deleteFromGrroup(groupId);
+        this.user.removeGroup(groupId);
     }
 
     //创建群
@@ -275,18 +245,18 @@ export default class settingController {
                     relation.RelationId = result.data.Data;
                     relation.owner = accountId;
                     relation.Nick = accountName + "发起的群聊";
-                    relation.Type = 'chatroom';
+                    relation.Type = 'group';
                     relation.show = 'false';
 
                     //添加关系到数据库
-                    currentObj.user.AddGroupAndMember(relation,splNeedArr);
-                    currentObj.user.addUserGroupCache(relation,splNeedArr );
+                    currentObj.user.createGroup(relation,splNeedArr);
                     result.data.relation = relation;
+
                     let messageId = uuidv1();
                     //创建群组消息
                     let text = Nicks;
-
                     //todo：lizongjun 现在不需要自己发送消息，后台统一发送
+                    //todo： lizongjun im 存储消息变为chat存储消息
                     //向添加的用户发送邀请消息
                     let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
                     currentObj.im.storeSendMessage(sendMessage);
@@ -325,7 +295,7 @@ export default class settingController {
                     currentObj.im.storeSendMessage(sendMessage);
 
                     //添加新人到缓存和数据库
-                    currentObj.user.AddGroupAndMember(groupId,splNeedArr);
+                    currentObj.user.addGroupMember(groupId,splNeedArr);
                     chooseArr.forEach((val,it)=>{
                         currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
                         currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
@@ -344,29 +314,30 @@ export default class settingController {
     //修改群组的名称
     //参数 群id，群名称，请求参数，回调
     updateGroupName(accountId,groupId,name,params,callback){
-
-        this.user.ModifyGroupName(params,groupId,name,function(result){
+        this.apiBridge.request.ModifyGroupName(params,function(result){
             if(result.success){
                 if(result.data.Data){
+                    currentObj.user.updateGroupName(params.GroupId,params.Name);
+
                     //本地模拟消息
                     let messageId = uuidv1();
                     let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
                     currentObj.im.storeSendMessage(sendMessage);
-
                     let chatMessageDto = {};
-
-                    currentObj.chat.addMessage(chatMessageDto)
+                    currentObj.chat.addMessage(chatMessageDto);
                     result.data.sendMessage = sendMessage;
-                    currentObj.user.updateGroupName(groupId,name);
                 }
             }
             callback(result);
-        })
+        });
     }
 
     //修改群公告
     toChangeDiscription(params,callback){
         this.apiBridge.request.ModifyGroupDescription(params,function(result){
+            if(result.success){
+                currentObj.user.updataGroupDiscription(params.GroupId,params.Desc);
+            }
             callback(result);
         })
     }

@@ -439,6 +439,82 @@ export default class User {
         GroupManager.closeDB();
     }
 
+
+    //todo:controller调用方法
+    //添加群到通讯录
+    addGroupToContact(groupObj){
+        currentObj.AddNewGroup(groupObj);
+        cache['group'][groupObj.RelationId] = groupObj;
+    }
+    //将群移除通讯录
+    removeGroupFromContact(groupId){
+        currentObj.RemoveGroupFromContact(groupId);
+        cache['group'][groupId].show = false;
+    }
+    //移除群成员
+    removeGroupMember(groupId,members){
+        currentObj.removeGroupMember(groupId,members);
+            let array = cache['groupMember'][groupId];
+            for(let member of members){
+                let index = array.indexOf(member);
+                array.splice(index,1)
+            }
+    }
+    //加入/移除黑名单 shield屏蔽（true/false）
+    setBlackMember(shield,userId){
+        currentObj.changeRelationBlackList(shield, userId);
+        cache['user'][userId].isBlackList = name;
+    }
+    //删除好友
+    removeFriend(userId){
+        currentObj.deleteRelation(userId);
+        cache['user'][userId].show = false;
+    }
+    //添加好友
+    applyFriend(userObj){
+        currentObj.AddNewRelation(userObj);
+        cache["user"][userObj.RelationId] = userObj;
+    }
+    //接受好友申请
+    acceptFriend(userObj){
+        currentObj.AddNewRelation(userObj);
+        cache["user"][userObj.RelationId] = userObj;
+    }
+    //todo:好友详情页面的信息更新方法没写
+    //创建群
+    createGroup(groupObj,members){
+        currentObj.AddGroupAndMember(groupObj, members);
+        cache["group"][groupObj.RelationId] = groupObj;
+        for (let current of members) {
+            cache['groupMember'][groupObj.RelationId].push(current);
+        }
+    }
+    //添加群成员
+    addGroupMember(groupObj,members){
+        currentObj.AddGroupAndMember(groupObj, members);
+        if(!cache["group"][groupObj.RelationId]){
+            cache["group"][groupObj.RelationId] = groupObj;
+        }
+        for (let current of members) {
+            cache['groupMember'][groupObj.RelationId].push(current);
+        }
+    }
+    //修改群名称
+    updateGroupName(groupId,name){
+        currentObj.updateGroupName(groupId,name);
+        cache['group'][groupId].Nick = name;
+    }
+    //退群/解散群
+    removeGroup(groupId){
+        currentObj.deleteFromGrroup(groupId);
+        delete cache['group'][groupId];
+        delete cache['groupMember'][groupId];
+    }
+    //修改群公告
+    updataGroupDiscription(groupId,content){
+        cache['group'][groupId].OtherComment = content;
+    }
+
 }
 
 //
@@ -624,3 +700,4 @@ export default class User {
 //         }
 //     });
 // }
+
