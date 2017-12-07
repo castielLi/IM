@@ -49,8 +49,8 @@ export const MainPage = {
 
 
 export const InitialRoute = {
-    key: 'ChatDetail',
-    routeId: 'ChatDetail'
+    key: 'RecentList',
+    routeId: 'RecentList'
 }
 
 export const LoginRoute = {

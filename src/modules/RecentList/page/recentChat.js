@@ -204,7 +204,7 @@ class RecentChat extends ContainerComponent {
     }
 
     updateConverseList(ConverseList){
-        this.setState({
+        currentObj.setState({
             ConverseList
         })
     };

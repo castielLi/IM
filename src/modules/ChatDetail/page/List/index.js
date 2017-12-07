@@ -91,6 +91,7 @@ class Chat extends Component {
     }
 
     onUpdataChatRecord(chatRecord){
+        if(!chatRecord || !chatRecord.length) return;
         currentObj.chatRecord = chatRecord;
         currentObj.chatRecord2 = chatRecord.concat([]).reverse();
         currentObj.data = currentObj.prepareMessages(currentObj.chatRecord);

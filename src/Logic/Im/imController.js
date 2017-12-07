@@ -82,17 +82,6 @@ export default class IMController {
 
                 //渲染会话列表
                 //updateconverslisthandle(cache.conversationCache);
-                updateconverslisthandle([{
-                    group: false,
-                    chatId: "",//chatId={account/groupId}
-                    name:"0",//好友名字或者群名字
-                    HeadImageUrl: "",//头像地址, 本地地址
-                    lastSender: null,
-                    lastMessage: "00",
-                    lastTime: '0',
-                    unreadCount: 0, //未读条数
-                    noSound: false,//禁音
-                }]);
             })
         })
     }
