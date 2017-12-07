@@ -8,12 +8,32 @@ import MessageCommandEnum from '../dto/MessageCommandEnum';
 import DtoMessageTypeEnum from '../dto/DtoMessageTypeEnum'
 import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
+import CommandErrorCodeEnum from '../dto/CommandErrorCodeEnum'
 
 export default function IMMessageToMessagementMessageDto(message){
     let messageDto = new ManagementMessageDto();
 
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         messageDto.type = DtoMessageTypeEnum.error;
+
+        // switch (message.Data.ErrorCode){
+        //     case CommandErrorCodeEnum.NotBelongToGroup:
+        //         messageDto.message = "您已经被管理员踢了群聊";
+        //         break;
+        //     case CommandErrorCodeEnum.AlreadyFriend:
+        //         messageDto.message = "你们已经是好友了";
+        //         break;
+        //     default:
+        //         messageDto.message = "你们已经不再是好友了,请重新添加";
+        //         break;
+        // }
+
+        messageDto.message = message.Data.ErrorCode;
+        messageDto.chatId = message.Data.Data.Data.Receiver;
+        messageDto.sender = messageDto.Data.Data.Data.Sender;
+        messageDto.messageId = message.MSGID;
+        messageDto.sendTime = message.Data.Data.LocalTime;
+
     }else{
        if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
            messageDto.type = DtoMessageTypeEnum.info;
@@ -43,12 +63,11 @@ export default function IMMessageToMessagementMessageDto(message){
                }
            }
        }
+
+        messageDto.chatId = message.Data.Data.Receiver;
+        messageDto.sender = messageDto.Data.Data.Sender;
+        messageDto.messageId = message.MSGID;
+        messageDto.sendTime = message.Data.LocalTime;
     }
-
-    messageDto.chatId = message.Data.Data.Receiver;
-    messageDto.sender = messageDto.Data.Data.Sender;
-    messageDto.messageId = message.MSGID;
-    messageDto.sendTime = message.Data.LocalTime;
-
     return messageDto;
 }

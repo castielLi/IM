@@ -9,7 +9,7 @@ import ChatWayEnum from '../../Common/dto/ChatWayEnum'
 import RNFS from 'react-native-fs';
 import ManagementMessageDto from '../../Common/dto/ManagementMessageDto'
 import {getContentOfControllerMessageDto} from './../Common/methods/GetContentOfControllerMessageDto'
-import chatSqliteMessageToManagementMessageDto from '../Common/methods/chatSqliteMessageToManagementMessageDto'
+import chatSqliteMessageToManagementMessageDto from '../Common/methods/ChatSqliteMessageToManagementMessageDto'
 
 export function storeMessage(message){
 
