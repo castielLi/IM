@@ -15,7 +15,6 @@ import {
   connect
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as commonActions from '../../../Core/Redux/chat/action';
 import * as chatDetailActions from '../reducer/action';
 import RNFS from 'react-native-fs';
 import ContainerComponent from '../../../Core/Component/ContainerComponent'
@@ -196,7 +195,6 @@ const mapStateToProps = state => ({
 });
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(commonActions,dispatch),
     ...bindActionCreators(chatDetailActions,dispatch)
 }};
 

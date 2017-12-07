@@ -7,6 +7,10 @@ import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} from '../../modules/ChatDetail/reducer/index';
 import FeaturesStore from '../../modules/Common/menu/reducer'
 import NavigationBottomStore  from '../../modules/Common/NavigationBar/reducer/index'
+import relationStore from '../../Core/Redux/contact';
+import friendApplicationStore from '../../Core/Redux/applyFriend/index'
+import chatRecordStore from '../../Core/Redux/chat/index';
+import recentListStore from '../../Core/Redux/RecentList/index';
 export default combineReducers({
 	//登录状态
     loginStore,
