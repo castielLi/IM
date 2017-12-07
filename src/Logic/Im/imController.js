@@ -177,6 +177,7 @@ class IMController {
         this.im.addMessage(itemManagementMessage,(managementMessage)=>{
             //managementMessage是带有status和消息id的完整ManagementMessageDto
             this.chat.addMessage(message.chatId,managementMessage);
+            maxId = maxId+1;
             //cache添加
 
             this.user.getInformationByIdandType(message.sender,message.group,(relationObj) => {
@@ -219,6 +220,7 @@ class IMController {
                 this.updateOneChat(chatId,cache.messageCache[cache.messageCache.length-2])
             }
         }
+        maxId = maxId-1;
         //cache.messageCache删除
         deleteItemFromCacheByMessageId(cache.messageCache,messageId);
         //渲染聊天记录
@@ -240,7 +242,6 @@ class IMController {
     clearUnReadNumber(chatId, group){
         //清空对应item未读消息
 
-        //todo : 黄昊东  把会话列表缓存住. 直接把数据清0
         this.clearUnReadMsgNumber(chatId);
         this.chat.clearUnReadNumber(chatId, group);
     }
