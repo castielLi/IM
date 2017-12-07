@@ -17,11 +17,8 @@ import * as router from './modules/routerMap'
 import IM from './Core/Management/IM'
 import User from './Core/Management/UserGroup'
 import DisplayComponent from './Core/Component'
-import * as IMHandle from './Logic/AppHandler/receiveHandleMessage'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
-import Network from './Core/Networking/Network'
-import ChatController from './Logic/Chat/chatController'
-let chatController = new ChatController();
+
 
 export default function App() {
 
@@ -42,33 +39,6 @@ export default function App() {
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
     //初始化IM
     let im = new IM();
-
-    let handleMessageResult = function(status,MSGID){
-        IMHandle.handleMessageResult(status,MSGID);
-    }
-    //改变消息数据 {state: ,message:{这里变化}}
-    // let handleMessageChange = function(message){
-    //    IMHandle.handleMessageChange(message);
-    // }
-
-
-    let handleRecieveMessage = function(message,relation){
-       IMHandle.handleRecieveMessage(message,relation);
-    }
-
-
-    //收到群名修改通知
-    // let handleRecieveChangeGroupNameMessage = function(groupId,newGroupname){
-    //     IMHandle.handleRecieveChangeGroupNameMessage(groupId,newGroupname);
-    // }
-
-
-    let handleKickOutMessage = function(){
-        IMHandle.handleKickOutMessage()
-    }
-
-    chatController.connectApp(handleMessageResult,handleRecieveMessage,handleKickOutMessage)
-
 
     class InitApp extends DisplayComponent {
         constructor() {

@@ -11,6 +11,21 @@ import {bindActionCreators} from 'redux';
 import tabBarPageEnum from './tabBarPageEnum';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
+import * as IMHandle from '../../../Logic/AppHandler/receiveHandleMessage'
+import ImController from '../../../Logic/Im/imController'
+let imController = new ImController();
+
+
+let handleRecieveMessage = function(){
+    IMHandle.handleRecieveMessage();
+}
+
+let handleKickOutMessage = function(){
+    IMHandle.handleKickOutMessage()
+}
+
+
+
 
 class TabBarComponent extends DisplayComponent {
     constructor(props){
@@ -23,6 +38,10 @@ class TabBarComponent extends DisplayComponent {
         if(this.props.tabBarStore !== number && this.props.featuresStore){
             this.props.hideFeatures();
         }
+    }
+
+    componentDidMount(){
+        imController.connectApp(handleRecieveMessage,handleKickOutMessage)
     }
 
     render() {

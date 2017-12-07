@@ -1,6 +1,6 @@
 import ChatCommandEnum from '../../Common/dto/ChatCommandEnum';
 import MessageBodyTypeEnum from '../../Common/dto/MessageBodyTypeEnum';
-import MessageCommandEnum from '../Common/dto/MessageCommandEnum';
+import MessageCommandEnum from '../../Common/dto/MessageCommandEnum';
 import SendMessageBodyDto from '../Common/dto/SendMessageBodyDto';
 import SendMessageDto from '../Common/dto/SendMessageDto';
 import messageBodyChatDto from '../Common/dto/messageBodyChatDto';
@@ -72,9 +72,9 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
 //发送文本
  export function addTextMessage(way,text,Sender,Receiver) {
      if(way==='private'){
-         return createMessageObj(text,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
-     }else if(way === 'chatroom'){
-         return createMessageObj(text,null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+         return createMessageObj(text,undefined,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
+     }else if(way === 'group'){
+         return createMessageObj(text,undefined,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
 
      }
 };
@@ -82,7 +82,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
  export function addResourceMessage(way,Resource,Sender,Receiver){
      if(way==='private'){
          return createMessageObj('',Resource,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2C,MessageBodyTypeEnum.MSG_BODY_CHAT)
-     }else if(way === 'chatroom'){
+     }else if(way === 'group'){
          return createMessageObj('',Resource,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
 
      }
@@ -90,7 +90,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
 
 //本地存储群组邀请通知
 export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
-    let message = createMessageObj(text,"chatroom",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
+    let message = createMessageObj(text,"group",null,Sender,Receiver,ChatCommandEnum.MSG_BODY_CHAT_C2G,MessageBodyTypeEnum.MSG_BODY_CHAT)
     message.status = MessageStatus.SendSuccess
     message.MSGID = messageId;
     return message;
