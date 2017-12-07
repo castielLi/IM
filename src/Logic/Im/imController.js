@@ -591,6 +591,9 @@ function PushNotificationToApp(managementMessageObj){
         updateChatRecordhandle(cache.messageCache);
     }else{
         currentObj.addUnReadMsgNumber(chatId);
+
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle(tempArr);
     }
 }
 
