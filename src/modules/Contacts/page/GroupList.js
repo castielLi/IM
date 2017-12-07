@@ -97,7 +97,7 @@ class GroupList extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        settingController.getLatestContactList('group',function (contacts) {
+        settingController.getGroupContactList(function (contacts) {
             currentObj.setState({
                 contacts
             })

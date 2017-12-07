@@ -21,6 +21,8 @@ let __instance = (function () {
 
 let currentObj = undefined;
 
+let updateContact = undefined;
+let updateGroupContact = undefined;
 export default class settingController {
     constructor() {
         if (__instance()) return __instance();
@@ -201,9 +203,25 @@ export default class settingController {
         this.im.deleteCurrentChatMessage(groupId,true);
         this.user.removeGroup(groupId);
     }
-
+    getGroupContactList(callback){
+        updateGroupContact = callback;
+        this.user.getGroupRelationsOfShow((relations)=>{
+            updateGroupContact(relations);
+        })
+    }
 
     //todo:好友操作
+    //获取通讯录好友或者群列表
+    getLatestContactList(callback){
+        updateContact = callback;
+
+        this.user.getUserRelationsOfShow((relations)=>{
+            updateContact(relations);
+        })
+    }
+    getIsBlackList(relationId){
+        return this.user.getIsBlackListFromCache(relationId)
+    }
     //搜索用户界面也用到了
     searchUser(params,callback){
         this.apiBridge.request.SearchUser(params,function(results){
@@ -281,6 +299,9 @@ export default class settingController {
                 // currentObj.im.deleteCurrentChatMessage(userId,'private');
                 //删除account数据库
                 currentObj.user.removeFriend(userId);
+                //重新渲染通讯录
+                let tempArr = filterShowToArr(cache['user'])
+                updateContact(tempArr);
             }
             callback(results);
         })
@@ -312,4 +333,14 @@ export default class settingController {
             callback(results);
         })
     }
+}
+
+function filterShowToArr(obj){
+    let tempArr = [];
+    for(let key in obj){
+        if(obj[key].show == true || obj[key].show == 'true'){
+            tempArr.push(obj[key])
+        }
+    }
+    return tempArr;
 }

@@ -81,11 +81,28 @@ export default class User {
 
 
 
+    //获取所有show = true的user
+    getUserRelationsOfShow(callback){
+            this.getAllRelationSQL((relations)=>{
+                callback(relations);
+                relations.forEach((v)=>{
+                    cache['user'][v.RelationId] = v;
+                })
+            })
+    }
 
 
+    //获取所有show = true的Group
+    getGroupRelationsOfShow(callback){
 
+        this.getAllGroupFromGroupSQL((relations)=>{
+            callback(relations);
+            relations.forEach((v)=>{
+                cache['group'][v.RelationId] = v;
+            })
+        },true)
 
-
+    }
 
     //先去对应表中找到成员ID 再去Account中找对应信息
     GetGroupMemberIdsByGroupId(groupId,callback){
@@ -146,6 +163,11 @@ export default class User {
                 callback(cache[type][Id])
                 break;
         }
+    }
+
+    //从缓存判断指定clientId是否是黑名单
+    getIsBlackListFromCache(clienId){
+        return cache.user[clientId].BlackList;
     }
 
     getHttpGroupInfo(Id,type,callback,Relation = undefined){
@@ -465,7 +487,7 @@ export default class User {
     //加入/移除黑名单 shield屏蔽（true/false）
     setBlackMember(shield,userId){
         this.changeRelationBlackListSQL(shield, userId);
-        cache['user'][userId].isBlackList = name;
+        cache['user'][userId].isBlackList = shield;
     }
     //删除好友
     removeFriend(userId){

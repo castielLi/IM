@@ -36,8 +36,6 @@ class InformationSetting extends ContainerComponent {
             notSeeHisZoom:false,
             notSeeMyZoom:false,
             joinBlackList:false,
-            currentRelation:{},
-            relationSetting:{}
         }
         currentObj = this;
     }
@@ -63,32 +61,12 @@ class InformationSetting extends ContainerComponent {
     componentWillMount(){
         // this.props.changeTabBar(0)
 
+        let setting = this.settingController.getIsBlackList(this.props.client);
+        let value = setting.BlackList == "false"||setting.BlackList == false?false:true;
+        this.setState({
+            joinBlackList:value,
+        })
 
-        //获取当前setting
-        // user.GetRelationSetting(this.props.accountId,function(setting){
-        //     console.log(setting);
-        //     if(setting){
-        //         currentObj.setState({
-        //             relationSetting:setting
-        //         })
-        //     }
-        // })
-
-        let setting = undefined;
-        for(let item in this.props.relations){
-            if(this.props.relations[item].RelationId == this.props.client){
-                setting = this.props.relations[item];
-                break;
-            }
-        }
-
-        if(setting != undefined){
-            let value = setting.BlackList == "false"||setting.BlackList == false?false:true;
-            this.setState({
-                joinBlackList:value,
-                currentRelation:setting
-            })
-        }
     }
 
     changeNotSeeMyZoom = ()=>{
@@ -106,7 +84,6 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:value
         })
 
-        this.props.changeRelationOfBlackList(value+'',this.props.client)
 
         currentObj.showLoading()
         if(!value){
@@ -137,19 +114,6 @@ class InformationSetting extends ContainerComponent {
             settingController.removeFriend(params,(results)=>{
                 currentObj.hideLoading();
                 if(results.success){
-                    //todo： 添加更改rudex 好友列表和消息列表
-                    currentObj.props.deleteRelation(client);
-                    //清空chatRecordStore中对应记录
-                    currentObj.props.clearChatRecordFromId(client)
-
-                    currentObj.props.recentListStore.data.forEach((v,i)=>{
-                        if(v.Client === client){
-                            //清空recentListStore中对应记录
-                            currentObj.props.deleteRecentItem(i);
-                            //如果该row上有未读消息，减少unReadMessageStore记录
-                            v.unReadMessageCount&&currentObj.props.cutUnReadMessageNumber(v.unReadMessageCount);
-                        }
-                    })
 
                     let pages = currentObj.props.navigator.getCurrentRoutes();
                     let target = pages[pages.length - 3];

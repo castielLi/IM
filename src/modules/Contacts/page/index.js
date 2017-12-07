@@ -220,7 +220,7 @@ class Contacts extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        settingController.getLatestContactList('private',function (contacts) {
+        settingController.getLatestContactList(function (contacts) {
             currentObj.setState({
                 contacts
             })
