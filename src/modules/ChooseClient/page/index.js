@@ -26,8 +26,10 @@ import RNFS from 'react-native-fs';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/Setting/settingController';
+import contactController from '../../../Logic/Contact/contactController'
 import RelationDto from '../../../Logic/Setting/dto/RelationDto'
 let settingController = new SettingController();
+let ContactController = new contactController();
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -37,9 +39,6 @@ class ChooseClient extends ContainerComponent {
 
 	constructor(props) {
 		super(props);
-		let dataObj = initDataFormate('private',props.relationStore);
-		let relationStore = dataObj.needArr;
-		let sectionStore = dataObj.sectionArr;
 		this.state={
 			data:[
 				{key:'',
@@ -54,8 +53,10 @@ class ChooseClient extends ContainerComponent {
             chooseObj:[],//选择的好友的id
 			text:'',//输入框文字,
             isShowFlatList:false,
-            relationStore,
-            sectionStore,
+            relationStore:[],
+            sectionStore:[],
+
+            contacts:[]
 
         }
         this.splNeedArr = [];
@@ -113,6 +114,35 @@ class ChooseClient extends ContainerComponent {
 		else{
 			title = '发起群聊'
 		}
+
+        ContactController.getLatestContactList(function (contact) {
+        // let arr = [];
+        // for(let i=0;i<10;i++){
+        // 	arr.push({
+        //         OtherComment : "公告:"+i,
+        //         RelationId : 'Z-'+i,
+        //         Nick : "测试"+i,
+        //         Remark : "",
+        //         BlackList : false,
+        //         avator : "",
+        //         Email : "",
+        //         localImage : "",
+        //         Type : "private",
+        //         owner : "wg003724",
+        //         show : true
+        //     })
+        // }
+			// let contacts = arr;
+			let contacts = contact;
+            let data = initDataFormate('private',contact);
+            let relationStore = data.needArr;
+            let sectionStore = data.sectionArr;
+			currentObj.setState({
+                contacts,
+                sectionStore,
+                relationStore
+			})
+        })
 	}
     choose=(item,hasMember)=>{
     	if(hasMember) return;
@@ -125,7 +155,7 @@ class ChooseClient extends ContainerComponent {
 		//对象转为所需数组
 		let arr = Object.keys(obj);
 		let needArr = [];
-		let concatList = initFlatListData('private',this.props.relationStore,'');
+		let concatList = initFlatListData('private',this.state.contacts,'');
 		for(let i=0;i<arr.length;i++){
 			//已选中 选项
 			if(obj[arr[i]]){
@@ -326,7 +356,7 @@ class ChooseClient extends ContainerComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
 		let chooseArr = this.state.chooseArr;
-        this.relationFlatListStore = initFlatListData('private',this.props.relationStore,this.state.text);
+        this.relationFlatListStore = initFlatListData('private',this.state.contacts,this.state.text);
 
 
 		return (
@@ -494,7 +524,6 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    relationStore: state.relationStore,
 	accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId,
 });
