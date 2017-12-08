@@ -16,7 +16,7 @@ import ImController from '../../../Logic/Im/imController'
 let imController = new ImController();
 
 
-let handleRecieveMessage = function(){
+let handleRecieveMessage = function(count,){
     IMHandle.handleRecieveMessage();
 }
 
