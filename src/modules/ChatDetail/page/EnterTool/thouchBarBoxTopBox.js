@@ -28,7 +28,7 @@ import {
 import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 
 import ChatController from '../../../../Logic/Chat/chatController';
@@ -528,7 +528,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   ...bindActionCreators(Actions, dispatch),
-  ...bindActionCreators(commonActions, dispatch)
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {

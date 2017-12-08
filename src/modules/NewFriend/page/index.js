@@ -18,8 +18,8 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
-import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
-import * as relationActions from '../../../Core/Redux/contact/action';
+//import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
+
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import chatController from '../../../Logic/Chat/chatController';
 import ContactController from '../../../Logic/Contact/contactController';
@@ -362,8 +362,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(friendApplicationActions, dispatch),
-    ...bindActionCreators(relationActions, dispatch),
+    //...bindActionCreators(friendApplicationActions, dispatch),
     ...bindActionCreators(unReadMessageActions, dispatch),
 
 });

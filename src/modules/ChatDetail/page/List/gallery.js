@@ -22,7 +22,7 @@ let {width, height} = Dimensions.get('window');
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 // import IM from '../../../../Core/IM';
 import chatController from '../../../../Logic/Chat/chatController';
@@ -166,7 +166,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(Actions,dispatch),
-    ...bindActionCreators(commonActions,dispatch)
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Gallery);

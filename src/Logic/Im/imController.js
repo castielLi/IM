@@ -89,9 +89,81 @@ export default class IMController {
 
     //获取会话列表
     updateConverseList() {
-        this.chat.getConverseList((recentListObj) => {
+        // this.chat.getConverseList((recentListObj) => {
+        //     let snapArr = formateDataFromChatManageCache(recentListObj);
+        //     this.user.init(snapArr, (relationObj) => {
+        //         let needObj = {};
+        //         for (let key in relationObj) {
+        //             let itemChat = new ControllerChatConversationDto();
+        //             itemChat.group = recentListObj[key].group;
+        //             itemChat.chatId = recentListObj[key].chatId;
+        //             itemChat.lastSender = recentListObj[key].lastSender;
+        //             itemChat.lastMessage = recentListObj[key].lastMessage;
+        //             itemChat.unreadCount = recentListObj[key].unreadCount;
+        //
+        //             cache.allUnreadCount+=itemChat.unreadCount;
+        //
+        //             itemChat.name = relationObj[key].Nick;
+        //             itemChat.HeadImageUrl = relationObj[key].avator;
+        //             needObj[recentListObj[key].chatId] = itemChat;
+        //         }
+        //         cache.conversationCache = needObj;
+        //
+        //         //渲染会话列表
+        //
+        //         let tempArr = formatOjbToneedArr(cache.conversationCache);
+        //         AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
+        //         updateconverslisthandle(tempArr);
+        //     })
+        // })
+
+        //测试代码
+        //this.chat.getConverseList((recentListObj) => {
+        let recentListObj = {
+            'wg003722':{
+                group: false,
+                chatId: "wg003722",//chatId={account/groupId}
+                lastSender: null,
+                lastMessage: "11111",
+                lastTime: null,
+                unreadCount: 1, //未读条数
+            },
+            'wg003724':{
+                group: false,
+                chatId: "wg003724",//chatId={account/groupId}
+                lastSender: null,
+                lastMessage: "22222",
+                lastTime: null,
+                unreadCount: 2, //未读条数
+            },
+            'wesdgfdg':{
+                group: true,
+                chatId: "wesdgfdg",//chatId={account/groupId}
+                lastSender: null,
+                lastMessage: "3333",
+                lastTime: null,
+                unreadCount: 0, //未读条数
+            }
+        }
             let snapArr = formateDataFromChatManageCache(recentListObj);
-            this.user.init(snapArr, (relationObj) => {
+            //this.user.init(snapArr, (relationObj) => {
+                let relationObj = {
+                    'wg003722':{
+                        Nick:'李四',
+                        RelationId:'wg003722',
+                        avatotr:''
+                    },
+                    'wg003724':{
+                        Nick:'张三',
+                        RelationId:'wg003724',
+                        avatotr:''
+                    },
+                    'wesdgfdg':{
+                        Nick:'这是一个群聊',
+                        RelationId:'wesdgfdg',
+                        avatotr:''
+                    }
+                }
                 let needObj = {};
                 for (let key in relationObj) {
                     let itemChat = new ControllerChatConversationDto();
@@ -114,10 +186,8 @@ export default class IMController {
                 let tempArr = formatOjbToneedArr(cache.conversationCache);
                 AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
                 updateconverslisthandle(tempArr);
-            })
-        })
-
-
+            //})
+        //})
     }
 
     //设置当前会话

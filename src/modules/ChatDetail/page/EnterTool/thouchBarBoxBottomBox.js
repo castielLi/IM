@@ -17,7 +17,7 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
@@ -65,7 +65,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(Actions, dispatch),
-    ...bindActionCreators(commonActions,dispatch)
+
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(ThouchBarBoxBottomBox);

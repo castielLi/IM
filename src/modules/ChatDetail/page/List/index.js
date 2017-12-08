@@ -21,12 +21,12 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 import ChatMessage from './ChatMessage';
 
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-import InitChatRecordConfig from '../../../../Core/Redux/chat/InitChatRecordConfig';
+
 import IM from '../../../../Core/Management/IM';
 import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/SqliteMessageToDtoMessage'
 import User from '../../../../Core/Management/UserGroup'
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state,props) => ({
-    chatRecordStore: state.chatRecordStore.ChatRecord[props.client],
+
     accountId:state.loginStore.accountMessage.accountId,
     myAvator:state.loginStore.accountMessage.avator,
     accountName:state.loginStore.accountMessage.Nick
@@ -683,7 +683,7 @@ const mapStateToProps = (state,props) => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(Actions, dispatch),
-    ...bindActionCreators(commonActions,dispatch)
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps,null,{withRef : true})(Chat);

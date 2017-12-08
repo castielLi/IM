@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import ContainerComponent from '../../Core/Component/ContainerComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
-import * as relationActions from '../../Core/Redux/contact/action';
+
 import {bindActionCreators} from 'redux';
 
 import RelationModel from '../../Logic/Setting/dto/RelationDto'
@@ -177,6 +177,6 @@ const mapStateToProps = state => ({
     avator:state.loginStore.accountMessage.avator,
 });
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(relationActions, dispatch),
+
 });
 export default connect(mapStateToProps,mapDispatchToProps)(Validate);
