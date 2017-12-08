@@ -38,6 +38,8 @@ export default class contactController {
     getLatestContactList(callback){
         updateContact = callback;
 
+        connectManagement();
+
         this.user.getUserRelationsOfShow((relations)=>{
             updateContact(relations);
         })
@@ -100,39 +102,6 @@ export default class contactController {
             updateGroupContact(relations);
         })
     }
-
-    applyFriend(params,callback){
-        this.apiBridge.request.ApplyFriend(params,function(result){
-            //单方面添加好友
-            if(result.success && result.data.Data instanceof Object){
-                let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-                let IsInBlackList =result.data.Data.IsInBlackList
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                let userCache= currentObj.user.applyFriend(relationObj);
-                //重新渲染通讯录
-                let tempArr = filterShowToArr(userCache)
-                updateContact(tempArr);
-            }
-            callback(result);
-        })
-    }
-    acceptFriend(params,callback){
-        let {key} = params;
-        this.apiBridge.request.AcceptFriend(params,function(results){
-            if(results.success){
-                //todo controller operate
-                let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
-                let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                let userCache = currentObj.user.acceptFriend(relationObj);
-                //重新渲染通讯录
-                let tempArr = filterShowToArr(userCache)
-                updateContact(tempArr);
-                //修改好友申请消息状态
-                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
-            }
-            callback(results);
-        })
-    }
 }
 
 function filterShowToArr(obj){
@@ -143,4 +112,8 @@ function filterShowToArr(obj){
         }
     }
     return tempArr;
+}
+
+function connectManagement(){
+    currentObj.user.connectUser(updateContact)
 }

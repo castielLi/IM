@@ -17,7 +17,7 @@ let __instance = (function () {
     }
 }());
 
-
+let ControllerUpdateContactHandle = undefined;
 let _apiBridge = new ApiBridge();
 let currentObj = undefined;
 
@@ -44,6 +44,11 @@ export default class User {
 
         currentObj = this;
     }
+
+    connectUser(updateContactHandle){
+        ControllerUpdateContactHandle = updateContactHandle;
+    }
+
 
     init(chatList,callback){
         let userIds =[];
@@ -525,14 +530,13 @@ export default class User {
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
-        return cache['user'];
     }
     //接受好友申请
     acceptFriend(userObj){
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
-        return cache["user"];
+        ControllerUpdateContactHandle();
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群

@@ -17,11 +17,13 @@ import {bindActionCreators} from 'redux';
 
 import SettingController from '../../../Logic/Setting/settingController'
 import ContactController from '../../../Logic/Contact/contactController'
+import ApplyFriendController from '../../../Logic/ApplyFriend/ApplyFriendController';
 
 
 
 let contactController = new ContactController();
 let settingController = new SettingController();
+let applyFriendController = new ApplyFriendController();
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -152,7 +154,7 @@ class ClientInformation extends ContainerComponent {
 
 
         let params = {Applicant,Respondent};
-        contactController.applyFriend(params,(result)=>{
+        applyFriendController.applyFriend(params,(result)=>{
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);

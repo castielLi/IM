@@ -1,6 +1,7 @@
 import IM from '../../Core/Management/IM/index'
 import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
+import ApplyFriend from '../../Core/Management/ApplyFriend/index'
 import ControllerChatConversationDto from './dto/ControllerChatConversationDto';
 import ControllerMessageDto from  './dto/ControllerMessageDto';
 import ManagementChatConversationDto from './dto/ManagementChatConversationDto';
@@ -15,6 +16,7 @@ import TabTypeEnum from './dto/TabTypeEnum'
 import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeEnum'
 
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
+import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 
 let __instance = (function () {
     let instance;
@@ -57,6 +59,7 @@ export default class IMController {
         this.im = new IM();
         this.user = new User();
         this.chat = new Chat();
+        this.apply = new ApplyFriend();
         currentObj = this;
     }
 
@@ -722,6 +725,8 @@ function controllerReceiveMessage(message){
 
                     currentObj.user.getUserInfoByIdandType(senderId,"user",function(){
                         currentObj.user.acceptFriendInCache(senderId);
+                        let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
+                        currentObj.apply.AddApplyMessage(applyMessageDto);
                     });
 
                     break;

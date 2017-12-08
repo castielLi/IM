@@ -1,11 +1,9 @@
 import IM from '../../Core/Management/IM/index'
-import User from '../../Core/Management/UserGroup/index'
-import Chat from '../../Core/Management/Chat/index'
 import ApplyFriend from '../../Core/Management/ApplyFriend/index'
-import Network from '../../Core/Networking/Network'
+import User from '../../Core/Management/UserGroup/index'
 import applyFriendDto from './dto/applyFriendDto'
 import ApiBridge from '../ApiBridge/index'
-import ApplyFriendEnum from '../../Core/Management/ApplyFriend/Common/dto/ApplyFriendEnum'
+import ApplyFriendEnum from '../../Core/Management/Common/dto/ApplyFriendEnum'
 
 let __instance = (function () {
     let instance;
@@ -28,17 +26,18 @@ export default class ApplyFriendController {
         __instance(this);
         this.im = new IM();
         this.user = new User();
-        this.chat = new Chat();
-        this.network = new Network();
+        this.apply = new ApplyFriend();
         this.apiBridge = new ApiBridge();
-        this.applyFriend = new ApplyFriend();
         currentObj = this;
     }
 
     setApplyFriendRecord(callback){
         currentPage = true;
         updateApplyFriendHandle = callback;
-        this.applyFriend.GetAllApplyMessage(function (record) {
+
+        connectManagement();
+
+        this.apply.GetAllApplyMessage(function (record) {
             let sendArray = record.map(function (current,index,array) {
                 return {chatId:current.send,group:false};
             });
@@ -62,27 +61,7 @@ export default class ApplyFriendController {
 
             let Record = Object.values(cache);
             updateApplyFriendHandle(Record);
-
-            // for(let i=0; i<record.length;i++){
-            //     let applyFriendObj = new applyFriendDto();
-            //     applyFriendObj.time = record[i].time;
-            //     applyFriendObj.comment = record[i].comment;
-            //     applyFriendObj.key = record[i].key;
-            //     applyFriendObj.send = record[i].send;
-            //     applyFriendObj.status = record[i].status;
-            //
-            //     applyFriendObj.avator = record[i].avator;
-            //     applyFriendObj.nick = record[i].Nick;
-            //     applyFriendObj.rec = record[i].rec;
-            //     cache[applyFriendObj.send] = applyFriendObj;
-            // }
-            // let applyRecord = Object.values(cache);
-            // updateApplyFriendHandle(applyRecord)
         })
-    }
-
-    outApplyFriendPage(){
-        currentPage = false;
     }
 
     receiveApplyFriend(applyRecord){
@@ -105,20 +84,6 @@ export default class ApplyFriendController {
         });
         let Record = Object.values(cache);
         updateApplyFriendHandle(Record)
-        // this.user.getUserInfoByIdandType(userId,'private',function (userInfo) {
-        //     let applyFriendObj = new applyFriendDto();
-        //     applyFriendObj.time = userInfo.time;
-        //     applyFriendObj.avator = userInfo.avator;
-        //     applyFriendObj.comment = userInfo.comment;
-        //     applyFriendObj.key = userInfo.key;
-        //     applyFriendObj.nick = userInfo.Nick;
-        //     applyFriendObj.send = userId;
-        //     applyFriendObj.rec = userInfo.rec;
-        //     applyFriendObj.status = 'wait';
-        //     cache[applyFriendObj.send] = applyFriendObj;
-        //     let applyRecord = Object.values(cache);
-        //     updateApplyFriendHandle(applyRecord)
-        // });
     }
 
     acceptFriend(params,callback){
@@ -127,37 +92,56 @@ export default class ApplyFriendController {
                 //todo controller operate
                 let {Account,HeadImageUrl,Nickname,Email} = results.data.Data;
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
-                let userCache = currentObj.user.acceptFriend(relationObj);
+                currentObj.user.acceptFriend(relationObj);
 
                 //修改缓存好友申请消息状态
                 cache[Account].status = ApplyFriendEnum.ADDED;
                 //修改数据库好友申请消息状态
-                currentObj.applyFriend.UpdateApplyMessageStatus({"key":params.key,"status":ApplyFriendEnum.ADDED});
+                currentObj.apply.UpdateApplyMessageStatus({"key":params.key,"status":ApplyFriendEnum.ADDED});
 
                 let Record = Object.values(cache);
                 updateApplyFriendHandle(Record);
                 //todo: 数据库改变数据  通知contact页面刷新
 
-
-
-
-                //重新渲染通讯录
-                let tempArr = filterShowToArr(userCache)
-                updateContact(tempArr);
             }
             callback(results);
         })
     }
 
-    updataApplyFriendRecord(applyId){
+    applyFriend(params,callback){
+        this.apiBridge.request.ApplyFriend(params,function(result){
+            //单方面添加好友
+            if(result.success && result.data.Data instanceof Object){
+                let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
+                let IsInBlackList =result.data.Data.IsInBlackList
+                let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
+                currentObj.user.acceptFriend(relationObj);
+            }else if(result.success && typeof result.data.Data === 'string'){
 
+            }
+            callback(result);
+        })
     }
 
-    removeApplyFriendRecord(applyId){
-
+    //申请好友验证(validate)
+    tempApplyFriend(userObj){
+        this.user.applyFriend(userObj);
     }
 
 
+    outApplyFriendPage(){
+        currentPage = false;
+    }
 
+    // updataApplyFriendRecord(applyId){
+    //
+    // }
+    //
+    // removeApplyFriendRecord(applyId){
+    //
+    // }
+}
 
+function connectManagement(){
+   currentObj.applyFriend.connnectApplyFriend(updateApplyFriendHandle);
 }
