@@ -20,13 +20,13 @@ import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 
 import {bindActionCreators} from 'redux';
 
-import RelationModel from '../../Logic/Setting/dto/RelationDto'
+import RelationModel from '../../Logic/Common/dto/RelationDto'
 import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
-import settingController from '../../Logic/Setting/settingController';
+import ApplyFriendController from '../../Logic/ApplyFriend/applyFriendController';
 
 
 let currentObj;
-let SettingController = new settingController();
+let applyFriendController = new ApplyFriendController();
 
 class Validate extends ContainerComponent {
     constructor(props){
@@ -80,7 +80,7 @@ class Validate extends ContainerComponent {
             relation.Type = ChatWayEnum.Private;
             relation.show = 'false';
             // user.AddNewRelation(relation);
-            SettingController.addNewRelation(relation);
+            applyFriendController.tempApplyFriend(relation);
             //currentObj.props.addRelation(relation);
 
         // })

@@ -59,7 +59,7 @@ export default class IMController {
         this.im = new IM();
         this.user = new User();
         this.chat = new Chat();
-        this.applyFriend = new ApplyFriend();
+        this.apply = new ApplyFriend();
         currentObj = this;
     }
 
@@ -522,7 +522,7 @@ function controllerReceiveMessage(message){
                     currentObj.user.getUserInfoByIdandType(senderId,"user",function(){
                         currentObj.user.acceptFriendInCache(senderId);
                         let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
-                        currentObj.applyFriend.AddApplyMessage(applyMessageDto);
+                        currentObj.apply.AddApplyMessage(applyMessageDto);
                     });
 
                     break;

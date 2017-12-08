@@ -27,7 +27,7 @@ import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import settingController from '../../../Logic/Setting/settingController'
-import RelationDto from '../../../Logic/Setting/dto/RelationDto'
+import RelationDto from '../../../Logic/Common/dto/RelationDto'
 let SettingController = new settingController();
 let {height,width} = Dimensions.get('window');
 let currentObj;
