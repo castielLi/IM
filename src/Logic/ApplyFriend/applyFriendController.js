@@ -5,7 +5,7 @@ import ApplyFriend from '../../Core/Management/ApplyFriend/index'
 import Network from '../../Core/Networking/Network'
 import applyFriendDto from './dto/applyFriendDto'
 import ApiBridge from '../ApiBridge/index'
-import ApplyFriendEnum from '../../Core/Management/ApplyFriend/Common/dto/ApplyFriendEnum'
+import ApplyFriendEnum from '../../Core/Management/Common/dto/ApplyFriendEnum'
 
 let __instance = (function () {
     let instance;
