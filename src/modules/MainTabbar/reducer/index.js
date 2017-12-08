@@ -28,6 +28,16 @@ export  function unReadMessageStore(state=initialState, action){
                 ...state,
                 unDealRequestNumber:0
             };
+        case 'CHANGE_UNREADZOOMMESSAGE_NUMBER':
+            return {
+                ...state,
+                unReadZoomMessageNumber:action.number
+            };
+        case 'CHANGE_UNSETTING_NUMBER':
+            return {
+                ...state,
+                unSettingNumber:action.number
+            };
         case 'CLEAR_ALLTABBERMESSAGE_NUMBER':
             return {
                 ...initialState

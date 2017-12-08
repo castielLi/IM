@@ -112,6 +112,8 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
+                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unReadZoomMessageNumber)}
+
                     onPress={() => {this.props.changeTabBar(2);this.isShowFeature(2)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabThree",this.props.navigator)}
                 </TabNavigator.Item>
@@ -128,6 +130,8 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
+                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unSettingNumber)}
+
                     onPress={() => {this.props.changeTabBar(3);this.isShowFeature(3)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabFour",this.props.navigator)}
                 </TabNavigator.Item>
