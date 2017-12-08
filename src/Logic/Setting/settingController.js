@@ -1,10 +1,8 @@
 /**
  * Created by apple on 2017/11/21.
  */
-import IM from '../../Core/Management/IM/index'
 import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
-import Network from '../../Core/Networking/Network'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
@@ -26,10 +24,8 @@ export default class settingController {
         if (__instance()) return __instance();
 
         __instance(this);
-        this.im = new IM();
         this.user = new User();
         this.chat = new Chat();
-        this.network = new Network();
         this.apiBridge = new ApiBridge();
         currentObj = this;
     }
