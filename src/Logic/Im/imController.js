@@ -102,6 +102,7 @@ export default class IMController {
         //             itemChat.chatId = recentListObj[key].chatId;
         //             itemChat.lastSender = recentListObj[key].lastSender;
         //             itemChat.lastMessage = recentListObj[key].lastMessage;
+        //             itemChat.lastTime = recentListObj[key].lastTime;
         //             itemChat.unreadCount = recentListObj[key].unreadCount;
         //
         //             cache.allUnreadCount+=itemChat.unreadCount;
@@ -126,25 +127,25 @@ export default class IMController {
             'wg003722':{
                 group: false,
                 chatId: "wg003722",//chatId={account/groupId}
-                lastSender: null,
+                lastSender: "wg003722",
                 lastMessage: "11111",
-                lastTime: null,
+                lastTime: '1512726557145',
                 unreadCount: 1, //未读条数
             },
             'wg003724':{
                 group: false,
                 chatId: "wg003724",//chatId={account/groupId}
-                lastSender: null,
+                lastSender: "wg003724",
                 lastMessage: "22222",
-                lastTime: null,
+                lastTime: '1512726557145',
                 unreadCount: 2, //未读条数
             },
             'wesdgfdg':{
                 group: true,
                 chatId: "wesdgfdg",//chatId={account/groupId}
-                lastSender: null,
+                lastSender: "wg003724",
                 lastMessage: "3333",
-                lastTime: null,
+                lastTime: '1512726557145',
                 unreadCount: 0, //未读条数
             }
         }
@@ -174,6 +175,7 @@ export default class IMController {
                     itemChat.chatId = recentListObj[key].chatId;
                     itemChat.lastSender = recentListObj[key].lastSender;
                     itemChat.lastMessage = recentListObj[key].lastMessage;
+                    itemChat.lastTime = recentListObj[key].lastTime;
                     itemChat.unreadCount = recentListObj[key].unreadCount;
 
                     cache.allUnreadCount+=itemChat.unreadCount;
@@ -264,7 +266,7 @@ export default class IMController {
             message: '11111',//消息内容，
             type:'text',//消息类型
             status:'WaitOpreator',
-            sendTime : ""
+            sendTime : "1512726557145"
         },
             {group: false,
             chatId: "wg003722",//chatId={account/groupId},
@@ -274,7 +276,7 @@ export default class IMController {
             message: '22222',//消息内容，
             type:'text',//消息类型
             status:'WaitOpreator',
-            sendTime : ""
+            sendTime : "1512726557145"
         },
             {group: false,
             chatId: "wg003722",//chatId={account/groupId},
@@ -284,7 +286,7 @@ export default class IMController {
             message: '33333',//消息内容，
             type:'text',//消息类型
             status:'WaitOpreator',
-            sendTime : ""
+            sendTime : "1512726557145"
         }]
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
@@ -379,7 +381,7 @@ export default class IMController {
             message: '4444',//消息内容，
             type:'text',//消息类型
             status:'WaitOpreator',
-            sendTime : ""
+            sendTime : "1512726557145"
         },
             {group: false,
                 chatId: "wg003722",//chatId={account/groupId},
@@ -389,7 +391,7 @@ export default class IMController {
                 message: '55555',//消息内容，
                 type:'text',//消息类型
                 status:'WaitOpreator',
-                sendTime : ""
+                sendTime : "1512726557145"
             },
             {group: false,
                 chatId: "wg003722",//chatId={account/groupId},
@@ -399,7 +401,7 @@ export default class IMController {
                 message: '66666',//消息内容，
                 type:'text',//消息类型
                 status:'WaitOpreator',
-                sendTime : ""
+                sendTime : "1512726557145"
             }]
             if(messageList.length == 0){
                 return;
@@ -497,7 +499,7 @@ export default class IMController {
             message: 'eeeeeeeeee',//消息内容，
             type:'text',//消息类型
             status:'SendSuccess',
-            sendTime : ""
+            sendTime : Date.now()
         }
             //managementMessage是带有status和消息id的完整ManagementMessageDto
             //this.chat.addMessage(message.chatId,managementMessage);
@@ -863,7 +865,9 @@ function AddCache(managementMessageObj){
         //     itemMessage.group = managementMessageObj.group;
         //     itemMessage.chatId = managementMessageObj.chatId;
         //     itemMessage.message = managementMessageObj.message;
-        //     itemMessage.type = managementMessageObj.type;
+    //     itemMessage.messageId = managementMessageObj.messageId;
+
+    //     itemMessage.type = managementMessageObj.type;
         //     itemMessage.status = managementMessageObj.status;
         //     itemMessage.sendTime = managementMessageObj.sendTime;
         //
@@ -887,6 +891,7 @@ function AddCache(managementMessageObj){
         itemMessage.group = managementMessageObj.group;
         itemMessage.chatId = managementMessageObj.chatId;
         itemMessage.message = managementMessageObj.message;
+        itemMessage.messageId = managementMessageObj.messageId;
         itemMessage.type = managementMessageObj.type;
         itemMessage.status = managementMessageObj.status;
         itemMessage.sendTime = managementMessageObj.sendTime;
