@@ -13,10 +13,6 @@ import {
     connect
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
-
-import {createTextMessageObj} from './createMessageObj';
-import ChatController from '../../../../Logic/Chat/chatController';
-import {addTextMessage} from '../../../../Core/Management/IM/action/createMessage';
 import IMController from '../../../../Logic/Im/imController';
 import * as commonMethod from '../../common/commonMethod'
 var imController = new IMController();
@@ -24,7 +20,6 @@ const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 
 var {height, width} = Dimensions.get('window');
-const chatController = new ChatController();
 let isIos = (Platform.OS === 'ios') ? true : false;
 class AutoExpandingTextInput extends Component {  
   constructor(props) {  

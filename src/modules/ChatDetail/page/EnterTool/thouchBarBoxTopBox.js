@@ -28,18 +28,12 @@ import {
 import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
-
-import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
-
-import ChatController from '../../../../Logic/Chat/chatController';
-import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import IMController from '../../../../Logic/Im/imController';
 import * as commonMethod from '../../common/commonMethod'
 var imController = new IMController();
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
-const chatController = new ChatController();
 var {
   height,
   width

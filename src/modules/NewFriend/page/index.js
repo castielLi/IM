@@ -21,13 +21,11 @@ import {bindActionCreators} from 'redux';
 //import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
-import chatController from '../../../Logic/Chat/chatController';
 import ContactController from '../../../Logic/Contact/contactController';
 import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let ChatController = new chatController();
 let contactController = new ContactController();
 let applyFriendController = new ApplyFriendController();
 

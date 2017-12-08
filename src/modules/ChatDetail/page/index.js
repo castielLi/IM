@@ -21,12 +21,9 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import ChatController from '../../../Logic/Chat/chatController';
 import IMController from '../../../Logic/Im/imController'
 
 
-let chatController = new ChatController();
 let imController = new IMController();
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
@@ -59,42 +56,6 @@ class ChatDetail extends ContainerComponent {
             name
         })
     }
-	componentWillMount(){
-		let {client,type} = this.props;
-        //imController.getChatDetailInfo(Id,this.onUpdataChatDetail)
-
-		//let chatRecordLength = this.props.ChatRecord[client]?this.props.ChatRecord[client].length:0;
-        // if(chatRecordLength<InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-        //     //初始化chatRecordStore
-        //     chatController.getRecentChatRecode(client,type,{start:chatRecordLength,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},function (messages) {
-        //         let messageList = messages.map((message)=>{
-        //             return DtoMethods.sqlMessageToMessage(message);
-        //         })
-        //         currentObj.props.initChatRecord(client,messageList);
-        //     })
-        // }
-        //
-        //
-        //
-        // // if(type == 'chatroom'){
-        //  //    groupStoreSqlite.FindGroupTable(client,function (results) {
-        // // 		console.log(results)
-        // // 		if(results.length == 0){
-        // //
-        // //
-        // //
-        //  //            groupStoreSqlite.initGroupMemberByGroupId(client)
-        // // 			callback()
-        // // 		}
-        //  //    })
-        // // }
-        // //修改chatDetailPageStore
-        // this.props.changeChatDetailPageStatus(true,client,type)
-        // //清空未读消息计数红点
-        // this.props.updateRecentItemLastMessage(client,type,false);
-        // //通知controller正在与某人会话
-         //chatController.setCurrentChat(client);
-	}
 
 	componentWillReceiveProps(newProps){
         let {isRecordPage,isExpressionPage,isPlusPage,listScrollToEnd} = newProps.thouchBarStore;
@@ -116,7 +77,9 @@ class ChatDetail extends ContainerComponent {
 					left={{func:()=>{
 					    this.route.toMain(this.props);
 					    this.props.changeChatDetailPageStatus(false,'','');
+
                         imController.setOutCurrentConverse()
+
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
 					heading={this.state.name} />
