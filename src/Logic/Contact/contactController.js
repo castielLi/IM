@@ -18,6 +18,11 @@ let currentObj = undefined;
 let updateContact = undefined;
 let updateGroupContact = undefined;
 
+
+
+//todo：李宗骏 现在contact的部分是根据usercache中show 为true的数据来的，需要创建一个缓存用于专注存放contact只存userid和groupid去usercache中找
+
+
 export default class contactController {
     constructor() {
         if (__instance()) return __instance();
