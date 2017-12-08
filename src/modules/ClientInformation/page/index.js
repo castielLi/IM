@@ -16,12 +16,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
-import SettingController from '../../../Logic/Setting/settingController'
-import RelationModel from '../../../Logic/Setting/dto/RelationDto'
+import SettingController from '../../../Logic/Setting/SettingController'
+import ContactController from '../../../Logic/Contact/contactController'
 
 
 
-
+let contactController = new ContactController();
 let settingController = new SettingController();
 
 let {height,width} = Dimensions.get('window');
@@ -74,7 +74,7 @@ class ClientInformation extends ContainerComponent {
     // }
     isUpdateFriendInfo = (UserInfo,propsRelation) =>{
         let {accountId} = this.props.loginStore;
-        settingController.UpdateFriendInfo(accountId,UserInfo,propsRelation)
+        contactController.UpdateFriendInfo(accountId,UserInfo,propsRelation)
     }
     componentDidMount() {
 
@@ -153,7 +153,7 @@ class ClientInformation extends ContainerComponent {
 
 
         let params = {Applicant,Respondent};
-        settingController.applyFriend(params,(result)=>{
+        contactController.applyFriend(params,(result)=>{
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);

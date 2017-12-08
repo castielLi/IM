@@ -27,9 +27,9 @@ import * as contactsActions from '../../../Core/Redux/contact/action';
 import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
-import SettingController from '../../../Logic/Setting/settingController'
+import ContactController from '../../../Logic/Contact/contactController'
 
-let settingController = new SettingController();
+let contactController = new ContactController();
 var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 
@@ -97,7 +97,7 @@ class GroupList extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        settingController.getGroupContactList(function (contacts) {
+        contactController.getGroupContactList(function (contacts) {
             currentObj.setState({
                 contacts
             })

@@ -18,9 +18,11 @@ import * as chatRecordActions from '../../../Core/Redux/chat/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import SettingController from '../../../Logic/Setting/settingController';
+import ContactControlller from '../../../Logic/Setting/ContactControlller';
 
 
 let settingController = new SettingController();
+let contactControlller = new ContactControlller();
 
 let currentObj;
 
@@ -61,7 +63,7 @@ class InformationSetting extends ContainerComponent {
     componentWillMount(){
         // this.props.changeTabBar(0)
 
-        let setting = this.settingController.getIsBlackList(this.props.client);
+        let setting = settingController.getIsBlackList(this.props.client);
         let value = setting.BlackList == "false"||setting.BlackList == false?false:true;
         this.setState({
             joinBlackList:value,
@@ -111,7 +113,7 @@ class InformationSetting extends ContainerComponent {
         if(1 == i){
             currentObj.showLoading();
             let params = {"Applicant":accountId,"Friend":client};
-            settingController.removeFriend(params,(results)=>{
+            contactControlller.removeFriend(params,(results)=>{
                 currentObj.hideLoading();
                 if(results.success){
 

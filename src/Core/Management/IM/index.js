@@ -575,8 +575,8 @@ export default class IM {
     }
 
     //存储接收消息
-    storeRecMessage(message,callback){
-        storeSqlite.storeRecMessage(message,callback);
+    storeRecMessage(message){
+        storeSqlite.storeRecMessage(message);
     }
     //根据ids从IM批量获取message
     selectMessagesByIds(ids,callback){

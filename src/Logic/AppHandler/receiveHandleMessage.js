@@ -4,11 +4,19 @@
 
 import Store from '../../store/index'
 import * as ActionForLoginStore from '../../modules/Login/reducer/action'
+import {changeUnReadMessageNumber,changeUnDealRequestNumber} from '../../../src/modules/MainTabbar/reducer/action';
+import TabTypeEnum from '../Im/dto/TabTypeEnum'
 import {Alert} from 'react-native'
 let store = Store;
 
-export function handleRecieveMessage(){
-
+export function handleRecieveMessage(count,type = TabTypeEnum.RecentList){
+    switch (type){
+        case TabTypeEnum.RecentList:
+            store.dispatch(changeUnReadMessageNumber(count))
+            break;
+        case TabTypeEnum.Contact:
+            store.dispatch(changeUnDealRequestNumber(count))
+    }
 }
 
 export function handleKickOutMessage(){

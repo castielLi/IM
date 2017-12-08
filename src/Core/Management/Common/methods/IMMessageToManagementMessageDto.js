@@ -9,6 +9,7 @@ import DtoMessageTypeEnum from '../dto/DtoMessageTypeEnum'
 import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import CommandErrorCodeEnum from '../dto/CommandErrorCodeEnum'
+import AppCommandEnum from '../dto/AppCommandEnum'
 
 export default function IMMessageToMessagementMessageDto(message){
     let messageDto = new ManagementMessageDto();
@@ -24,7 +25,13 @@ export default function IMMessageToMessagementMessageDto(message){
 
     }else{
        if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
-           messageDto.type = DtoMessageTypeEnum.info;
+           if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ||
+           message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDFRIEND){
+               messageDto.type = DtoMessageTypeEnum.friend;
+           }else{
+               messageDto.type = DtoMessageTypeEnum.info;
+           }
+
        }else{
            if(message.Resource == undefined){
                messageDto.type = DtoMessageTypeEnum.text;

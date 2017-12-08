@@ -343,10 +343,9 @@ export default class User {
     }
 
 
-
-
-
-
+    acceptFriendInCache(userId){
+        cache["user"][userId].show = true;
+    }
 
 
 
@@ -570,6 +569,7 @@ export default class User {
         let user = dtoChange(userObj)
         this.updateRelationSQL(user);
         cache['user'][user.RelationId] = user;
+        return cache['user'];
     }
 
 }

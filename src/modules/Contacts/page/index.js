@@ -23,9 +23,9 @@ import * as contactsActions from '../../../Core/Redux/contact/action';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
-import SettingController from '../../../Logic/Setting/settingController'
+import ContactController from '../../../Logic/Contact/contactController'
 
-let settingController = new SettingController();
+let contactController = new ContactController();
 let currentObj = undefined;
 
 var {height, width} = Dimensions.get('window');
@@ -220,7 +220,7 @@ class Contacts extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        settingController.getLatestContactList(function (contacts) {
+        contactController.getLatestContactList(function (contacts) {
             currentObj.setState({
                 contacts
             })
