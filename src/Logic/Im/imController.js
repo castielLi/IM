@@ -121,6 +121,8 @@ export default class IMController {
 
         updateconverslisthandle = param.updateConverseList;
         this.updateConverseList()
+
+        connectChat();
     }
 
     connectApp(receiveMessageHandle,kickOutMessage){
@@ -740,6 +742,10 @@ export default class IMController {
 
 function connectIM(){
     currentObj.im.connectIM(controllerMessageResult,controllerReceiveMessage,controllerKickOutMessage)
+}
+
+function connectChat(){
+    currentObj.chat.connectChat(currentObj.updateConverseList)
 }
 
 function controllerKickOutMessage(){

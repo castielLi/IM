@@ -7,6 +7,7 @@ import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
 import RelationDto from '../Common/dto/RelationDto'
+import IMMessageToManagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto'
 import ApiBridge from '../ApiBridge/index'
 
 let __instance = (function () {
@@ -126,8 +127,12 @@ export default class settingController {
                     //todo： lizongjun im 存储消息变为chat存储消息
                     //向添加的用户发送邀请消息
                     let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
-                    currentObj.im.storeSendMessage(sendMessage);
-                    result.data.sendMessage = sendMessage;
+
+
+                    let messageDto = IMMessageToManagementMessageDto(sendMessage);
+                    currentObj.chat.addMessage(result.data.Data,messageDto,true);
+
+
                     //创建文件夹
                     let audioPath = RNFS.DocumentDirectoryPath + '/' +accountId+'/audio/chat/' + 'group' + '-' +result.data.Data;
                     let imagePath = RNFS.DocumentDirectoryPath + '/' +accountId+'/image/chat/' + 'group' + '-' +result.data.Data;
@@ -154,8 +159,9 @@ export default class settingController {
                     //todo：lizongjun 现在不需要自己发送消息，后台统一发送
                     //向添加的用户发送邀请消息
                     let sendMessage = buildInvationGroupMessage(accountId,groupId,text,messageId);
-                    result.data.sendMessage = sendMessage;
-                    currentObj.im.storeSendMessage(sendMessage);
+
+                    let messageDto = IMMessageToManagementMessageDto(sendMessage);
+                    currentObj.chat.addMessage(result.data.Data,messageDto,true);
 
                     //添加新人到缓存和数据库
                     currentObj.user.addGroupMember(groupId,splNeedArr);
