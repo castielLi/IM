@@ -15,17 +15,12 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import RNFS from 'react-native-fs';
-// import IM from '../../../../Core/IM';
-import chatController from '../../../../Logic/Chat/chatController';
 
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
-
-// let im = new IM();
-let ChatController = new chatController();
 
 let {width, height} = Dimensions.get('window');
 

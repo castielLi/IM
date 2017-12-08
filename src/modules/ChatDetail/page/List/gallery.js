@@ -24,8 +24,6 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
-// import IM from '../../../../Core/IM';
-import chatController from '../../../../Logic/Chat/chatController';
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'
@@ -37,7 +35,6 @@ const images = [{
 
 const uri = 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460';
 
-let ChatController = new chatController();
 
 class Gallery extends ContainerComponent {
     constructor(props) {

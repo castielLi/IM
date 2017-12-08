@@ -26,13 +26,7 @@ import ChatMessage from './ChatMessage';
 
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-
-import IM from '../../../../Core/Management/IM';
-import * as DtoMethods from '../../../../Core/Management/IM/Common/methods/SqliteMessageToDtoMessage'
-import User from '../../../../Core/Management/UserGroup'
 import RNFS from 'react-native-fs';
-import chatController from '../../../../Logic/Chat/chatController'
-import SettingController from '../../../../Logic/Setting/settingController'
 import IMController from '../../../../Logic/Im/imController'
 
 let _listHeight = 0; //list显示高度
@@ -47,10 +41,6 @@ let ListLayout = false;
 let {width, height} = Dimensions.get('window');
 let firstOldMsg;
 let recordData;
-
-
-let ChatController = new chatController();
-let settingController = new SettingController();
 let imController = new IMController();
 let currentObj;
 
