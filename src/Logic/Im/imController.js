@@ -83,7 +83,9 @@ export default class IMController {
         connectIM();
     }
 
-
+    setMyAccount(accountObj){
+        myAccount = accountObj;
+    }
 
     //获取会话列表
     updateConverseList() {
@@ -307,7 +309,7 @@ export default class IMController {
         }
 
     }
-    //修改一个会话
+    //修改一个会话 //message是完整的managementMessageDto
     updateOneChat(chatId,message){
         let recentObj = cache.conversationCache[chatId];
         recentObj.lastSender = message.sender;
@@ -325,7 +327,7 @@ export default class IMController {
         }
     }
 
-    //message是完整的controllerMessageDto
+    //message是完整的managementMessageDto
     addOneChat(chatId,message){
         // let chatId;//会话id
         // if(message.group){

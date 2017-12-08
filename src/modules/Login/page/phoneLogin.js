@@ -13,11 +13,11 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import UUIDGenerator from 'react-native-uuid-generator';
 import LoginController from '../../../Logic/loginController'
-import ChatController from '../../../Logic/Chat/chatController'
+import ImController from '../../../Logic/Im/imController'
 import Touch from '../../Common/Thouch/index';
 //import Touch from 'react-native-touch-once';
 let loginController = new LoginController();
-let chatController = new ChatController();
+let imController = new ImController();
 let currentObj = undefined;
 
 class PhoneLogin extends ContainerComponent {
@@ -96,7 +96,7 @@ class PhoneLogin extends ContainerComponent {
                         ,device:"Mobile",deviceId:"1"};
 
                     currentObj.props.signIn(account);
-                    chatController.setMyAccount(account);
+                    imController.setMyAccount(account);
                     currentObj.route.push(currentObj.props,{
                         key:'MainTabbar',
                         routeId: 'MainTabbar'
