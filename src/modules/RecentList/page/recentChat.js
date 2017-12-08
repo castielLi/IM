@@ -134,15 +134,15 @@ class RecentChat extends ContainerComponent {
         };
         this.goToChatDetail = this.goToChatDetail.bind(this);
         this.deleteSomeRow = this.deleteSomeRow.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
     }
     componentDidMount() {
 
         this.props.showNavigationBottom();
         let param = {
-            updateConverseList:this.updateConverseList,
+            updateConverseList:this._updateConverseList,
         }
-        imController.init(param);
         AsyncStorage.getItem('account').then((value) => {
             let account = JSON.parse(value);
 
@@ -151,26 +151,14 @@ class RecentChat extends ContainerComponent {
                     alert("初始化account出错" + result.errorMessage);
                     return;
                 }
-                let param = {
-                    updateConverseList:this.updateConverseList,
-                }
                 imController.init(param);
-                // currentObj.props.initUnDealRequestNumber(result.data.unUnDealRequestCount);
-
-                //currentObj.props.initRelation(result.data.relations);
-                // settingController.initUserGroupCache(result.data.relations);
-
-                // currentObj.props.initRecentList(result.data.chatListArr);
-                // currentObj.props.initUnReadMessageNumber(result.data.unReadMessageCount);
-                // currentObj.props.initFriendApplication(result.data.applyFriendMessage);
-
                 currentObj.props.hideNavigationBottom();
 
             }, {"Account": account.phone});
         });
     }
 
-    updateConverseList(ConverseList){
+    _updateConverseList(ConverseList){
         currentObj.setState({
             ConverseList
         })

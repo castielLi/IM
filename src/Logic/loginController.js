@@ -8,7 +8,6 @@ import Chat from '../Core/Management/Chat'
 import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';
 import RNFS from 'react-native-fs'
-import {setMyAccoundId} from './AppHandler/receiveHandleMessage';
 
 let __instance = (function () {
     let instance;
@@ -44,7 +43,6 @@ export default class loginController {
 
                 //存储登录状态
                 AsyncStorage.setItem('account',JSON.stringify(account));
-                setMyAccoundId(account.accountId);
 
                 if(Platform.OS === 'ios'){
                     //初始化im
@@ -127,7 +125,6 @@ export default class loginController {
                             deviceId: storage.deviceId
                         }
                     ));
-                    setMyAccoundId(storage.accountId);
 
                     //现在登录完，进入recentlist并且redux初始完成之后才开启IM
                     // currentObj.im.setSocket(storage.accountId, storage.device, storage.deviceId, storage.IMToken);
@@ -162,11 +159,11 @@ export default class loginController {
 
                     let account = JSON.parse(value);
 
-                    currentObj.user.initRelations(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
-                        currentObj.user.getAllRelation((data)=>{
-                            currentObj.user.initGroup(result.data.Data["GroupList"],function(){
+                    currentObj.user.initRelationsSQL(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
+                        currentObj.user.getAllRelationSQL((data)=>{
+                            currentObj.user.initGroupSQL(result.data.Data["GroupList"],function(){
 
-                                currentObj.user.getAllGroupFromGroup(function(results){
+                                currentObj.user.getAllGroupFromGroupSQL(function(results){
 
                                     data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
                                     result.data.relations = data;
@@ -184,35 +181,6 @@ export default class loginController {
                                         currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
 
                                         callback(result);
-                                        //初始化recentListStore
-                                        // currentObj.im.getChatList((chatListArr) => {
-                                        //     let needArr = [];
-                                        //     //初始化unReadMessageStore
-                                        //     let unReadMessageCount = 0;
-                                        //     chatListArr.forEach((v, i) => {
-                                        //         if (v.unReadMessageCount) {
-                                        //             unReadMessageCount += v.unReadMessageCount;
-                                        //         }
-                                        //         for (let m = 0; m < data.length; m++) {
-                                        //             if (v.Client == data[m].RelationId) {
-                                        //                 v.Nick = data[m].Nick;
-                                        //                 v.localImage = data[m].localImage;
-                                        //                 v.avator = data[m].avator;
-                                        //                 break;
-                                        //             }
-                                        //         }
-                                        //     })
-                                        //
-                                        //     needArr = chatListArr.concat();
-                                        //
-                                        //     result.data.unReadMessageCount = unReadMessageCount;
-                                        //     result.data.chatListArr = needArr;
-                                        //
-                                        //     currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-                                        //
-                                        //     callback(result);
-                                        // })
-
                                     })
                                 })
                             })
