@@ -40,8 +40,8 @@ class NewFriend extends ContainerComponent {
         })
         this.state = {
             dataSource: ds,
-            dataObj:{},
-            idS:this.getIdSfromApplyStore(props.friendApplicationStore.applicationRecord)
+            applyRecord:[],
+            //idS:this.getIdSfromApplyStore(props.friendApplicationStore.applicationRecord)
         };
         this.applyData = [];
         currentObj = this;
@@ -57,7 +57,11 @@ class NewFriend extends ContainerComponent {
         //     this.sqlData = result;
         //
         // })
-        
+        applyFriendController.setApplyFriendRecord(function(applyRecord) {
+            currentObj.setState({
+                applyRecord
+            })
+        })
     }
 
 
@@ -189,19 +193,19 @@ class NewFriend extends ContainerComponent {
             </View>
         )
     }
-    getIdSfromApplyStore = (applyList)=>{
-        let needArr = applyList.map((v,i)=>{
-            return v.send;
-        })
-        return needArr;
-    }
-    formateArrToObj = (arr)=>{
-        let needObj = {};
-        arr.forEach((v,i)=>{
-            needObj[v.RelationId] = v;
-        })
-        return needObj;
-    }
+    // getIdSfromApplyStore = (applyList)=>{
+    //     let needArr = applyList.map((v,i)=>{
+    //         return v.send;
+    //     })
+    //     return needArr;
+    // }
+    // formateArrToObj = (arr)=>{
+    //     let needObj = {};
+    //     arr.forEach((v,i)=>{
+    //         needObj[v.RelationId] = v;
+    //     })
+    //     return needObj;
+    // }
 
     // componentDidMount(){
     //
@@ -225,21 +229,21 @@ class NewFriend extends ContainerComponent {
 
     componentDidMount(){
 
-        ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
-            let needObj = this.formateArrToObj(realations);
-            this.setState({
-                dataObj:needObj
-            })
-        });
+        // ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
+        //     let needObj = this.formateArrToObj(realations);
+        //     this.setState({
+        //         dataObj:needObj
+        //     })
+        // });
     }
     componentWillReceiveProps(newProps){
-        this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
-        ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
-            let needObj = this.formateArrToObj(realations);
-            this.setState({
-                dataObj:needObj
-            })
-        });
+        // this.state.idS = this.getIdSfromApplyStore(newProps.friendApplicationStore.applicationRecord)
+        // ChatController.getApplicantsInfo(this.state.idS,(realations)=>{
+        //     let needObj = this.formateArrToObj(realations);
+        //     this.setState({
+        //         dataObj:needObj
+        //     })
+        // });
 
     }
     componentWillUnMount(){
@@ -263,7 +267,7 @@ class NewFriend extends ContainerComponent {
                         </TextInput>
                     </View>
                     <ListView
-                        dataSource = {this.state.dataSource.cloneWithRows(this.props.friendApplicationStore.applicationRecord)}
+                        dataSource = {this.state.dataSource.cloneWithRows(this.state.applyRecord)}
                         renderRow = {this._renderRow}
                         enableEmptySections = {true}
                         removeClippedSubviews={false}

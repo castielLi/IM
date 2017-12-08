@@ -33,7 +33,7 @@ export default class ApplyFriendController {
         currentObj = this;
     }
 
-    setApplyFriendRecord(userId,callback){
+    setApplyFriendRecord(callback){
         currentPage = true;
         updateApplyFriendHandle = callback;
         this.im.getAllApplyFriendMessage(function (record) {
@@ -130,7 +130,7 @@ export default class ApplyFriendController {
                 cache[Account].status = ApplyFriendEnum.ADDED;
                 let Record = Object.values(cache);
                 updateApplyFriendHandle(Record);
-                //todo: 数据库改变数据
+                //todo: 数据库改变数据  通知contact页面刷新
 
 
 
