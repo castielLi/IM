@@ -4,6 +4,7 @@ import Chat from '../../Core/Management/Chat/index'
 import Network from '../../Core/Networking/Network'
 import applyFriendDto from './dto/applyFriendDto'
 import ApiBridge from '../ApiBridge/index'
+import ApplyFriendEnum from '../../Core/Management/IM/Common/dto/ApplyFriendEnum'
 
 let __instance = (function () {
     let instance;
@@ -51,7 +52,7 @@ export default class ApplyFriendController {
 
                     applyFriendObj.avator = userArray[i].avator;
                     applyFriendObj.nick = userArray[i].Nick;
-                    applyFriendObj.rec = userId;
+                    applyFriendObj.localImage = userArray[i].localImage;
 
                     cache[applyFriendObj.send] = applyFriendObj;
                 }
@@ -95,7 +96,7 @@ export default class ApplyFriendController {
 
                 applyFriendObj.avator = userArray[i].avator;
                 applyFriendObj.nick = userArray[i].Nick;
-                applyFriendObj.rec = userId;
+                applyFriendObj.localImage = userArray[i].localImage;
 
                 cache[applyFriendObj.send] = applyFriendObj;
             }
