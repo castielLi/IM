@@ -1,10 +1,11 @@
 import IM from '../../Core/Management/IM/index'
 import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
+import ApplyFriend from '../../Core/Management/ApplyFriend/index'
 import Network from '../../Core/Networking/Network'
 import applyFriendDto from './dto/applyFriendDto'
 import ApiBridge from '../ApiBridge/index'
-import ApplyFriendEnum from '../../Core/Management/IM/Common/dto/ApplyFriendEnum'
+import ApplyFriendEnum from '../../Core/Management/ApplyFriend/Common/dto/ApplyFriendEnum'
 
 let __instance = (function () {
     let instance;
@@ -30,13 +31,14 @@ export default class ApplyFriendController {
         this.chat = new Chat();
         this.network = new Network();
         this.apiBridge = new ApiBridge();
+        this.applyFriend = new ApplyFriend();
         currentObj = this;
     }
 
     setApplyFriendRecord(callback){
         currentPage = true;
         updateApplyFriendHandle = callback;
-        this.im.getAllApplyFriendMessage(function (record) {
+        this.applyFriend.GetAllApplyMessage(function (record) {
             let sendArray = record.map(function (current,index,array) {
                 return {chatId:current.send,group:false};
             });
@@ -127,18 +129,21 @@ export default class ApplyFriendController {
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,localImage:'',Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:'false',show:'true'}
                 let userCache = currentObj.user.acceptFriend(relationObj);
 
+                //修改缓存好友申请消息状态
                 cache[Account].status = ApplyFriendEnum.ADDED;
+                //修改数据库好友申请消息状态
+                currentObj.applyFriend.UpdateApplyMessageStatus({"key":params.key,"status":ApplyFriendEnum.ADDED});
+
                 let Record = Object.values(cache);
                 updateApplyFriendHandle(Record);
                 //todo: 数据库改变数据  通知contact页面刷新
 
 
 
+
                 //重新渲染通讯录
                 let tempArr = filterShowToArr(userCache)
                 updateContact(tempArr);
-                //修改好友申请消息状态
-                currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":params.key});
             }
             callback(results);
         })
