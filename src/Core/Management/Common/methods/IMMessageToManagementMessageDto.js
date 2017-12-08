@@ -60,7 +60,7 @@ export default function IMMessageToMessagementMessageDto(message){
        }
 
         messageDto.chatId = message.Data.Data.Receiver;
-        messageDto.sender = messageDto.Data.Data.Sender;
+        messageDto.sender = message.Data.Data.Sender;
         messageDto.messageId = message.MSGID;
         messageDto.sendTime = message.Data.LocalTime;
     }

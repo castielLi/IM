@@ -275,7 +275,7 @@ export default class User {
                             relation.show = 'false';
                             relation.avator = data.HeadImageUrl == null?"":data.HeadImageUrl;
                             cache[type][Id] = relation;
-                            currentObj.AddNewRelation(relation,function(){
+                            currentObj.AddNewRelationSQL(relation,function(){
                                 callback(relation);
                             });
                         }else{
@@ -545,6 +545,11 @@ export default class User {
         let group = dtoChange(groupObj);
         this.AddGroupAndMemberSQL(group, members);
         cache["group"][group.RelationId] = group;
+
+        if(cache['groupMember'][group.RelationId] == undefined){
+            cache['groupMember'][group.RelationId] = [];
+        }
+
         for (let current of members) {
             cache['groupMember'][group.RelationId].push(current);
         }
