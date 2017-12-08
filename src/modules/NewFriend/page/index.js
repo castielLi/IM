@@ -70,7 +70,7 @@ class NewFriend extends ContainerComponent {
             }
         }
 
-        contactController.acceptFriend(params,callback)
+        applyFriendController.acceptFriend(params,callback)
 
     }
 

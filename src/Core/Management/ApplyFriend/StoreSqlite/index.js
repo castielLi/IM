@@ -22,7 +22,9 @@ export function updateApplyMessageStatus(key,status){
 }
 
 
-
+var databaseObj = {
+    name :"IM.db",
+}
 export function initIMDatabase(AccountId,callback){
     if(Platform.OS === 'ios'){
         databaseObj.name =  AccountId + "/database/ApplyFriend.db"

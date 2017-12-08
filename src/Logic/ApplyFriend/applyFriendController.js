@@ -143,5 +143,5 @@ export default class ApplyFriendController {
 }
 
 function connectManagement(){
-   currentObj.applyFriend.connnectApplyFriend(updateApplyFriendHandle);
+   currentObj.apply.connnectApplyFriend(updateApplyFriendHandle);
 }
