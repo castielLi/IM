@@ -18,8 +18,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../../Core/Redux/RecentList/action';
-import * as contactsActions from '../../../Core/Redux/contact/action';
+
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
@@ -405,8 +404,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    ...bindActionCreators(recentListActions, dispatch),
-      ...bindActionCreators(contactsActions, dispatch),
+
       ...bindActionCreators(featuresAction, dispatch)
 
   }};

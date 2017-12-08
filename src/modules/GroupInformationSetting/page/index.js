@@ -23,9 +23,7 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
-import * as relationActions from '../../../Core/Redux/contact/action';
-import * as recentListActions from '../../../Core/Redux/RecentList/action';
-import * as chatRecordActions from '../../../Core/Redux/chat/action';
+
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import settingController from '../../../Logic/Setting/settingController'
@@ -512,9 +510,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(relationActions, dispatch),
-    ...bindActionCreators(recentListActions, dispatch),
-    ...bindActionCreators(chatRecordActions, dispatch),
     ...bindActionCreators(unReadMessageActions, dispatch),
 });
 

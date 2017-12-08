@@ -17,7 +17,7 @@ import * as Actions from '../../reducer/action';
 import RNFS from 'react-native-fs';
 // import IM from '../../../../Core/IM';
 import chatController from '../../../../Logic/Chat/chatController';
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 import Thouch from '../../../Common/Thouch/index'
 import {
@@ -140,7 +140,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(Actions,dispatch),
-    ...bindActionCreators(commonActions,dispatch)
+
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatMessageVideo);

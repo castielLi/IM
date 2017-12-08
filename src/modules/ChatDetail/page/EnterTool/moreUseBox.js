@@ -19,7 +19,7 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
@@ -281,7 +281,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(Actions, dispatch),
-    ...bindActionCreators(commonActions,dispatch)
+
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(MoreUseBox);

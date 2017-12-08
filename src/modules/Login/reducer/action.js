@@ -6,10 +6,6 @@ import {
 } from 'react-native';
 import RNFS from 'react-native-fs';
 import * as TYPES from './actionTypes';
-import {clearChatRecord} from '../../../Core/Redux/chat/action';
-import {clearRelation} from '../../../Core/Redux/contact/action';
-import {clearRecentList} from '../../../Core/Redux/RecentList/action';
-import {clearFriendApplication} from '../../../Core/Redux/applyFriend/action'
 import {clearAllTabberMessageNumber,changeTabBar} from '../../MainTabbar/reducer/action';
 
 
@@ -37,10 +33,7 @@ export function signOut(){
         RNFS.moveFile('/data/data/com.im/databases/Chat.db', '/data/data/com.im/files/' + getState().loginStore.accountMessage.accountId + '/database/Chat.db');
 
         dispatch({type: TYPES.LOGGED_OUT});
-        dispatch(clearChatRecord());
-        dispatch(clearRelation());
-        dispatch(clearFriendApplication())
-        dispatch(clearRecentList());
+
         dispatch(clearAllTabberMessageNumber());
         dispatch(changeTabBar(0));
     }

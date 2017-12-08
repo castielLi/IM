@@ -13,7 +13,7 @@ import {
     connect
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
-import * as commonActions from '../../../../Core/Redux/chat/action';
+
 import {createTextMessageObj} from './createMessageObj';
 import ChatController from '../../../../Logic/Chat/chatController';
 import {addTextMessage} from '../../../../Core/Management/IM/action/createMessage';
@@ -160,7 +160,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
     ...bindActionCreators(Actions, dispatch),
-    ...bindActionCreators(commonActions,dispatch)
 }};
 
  export default connect(mapStateToProps, mapDispatchToProps,null,{withRef : true})(AutoExpandingTextInput);

@@ -13,10 +13,9 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import * as relationActions from '../../../Core/Redux/contact/action';
 import {bindActionCreators} from 'redux';
 
-import SettingController from '../../../Logic/Setting/SettingController'
+import SettingController from '../../../Logic/Setting/settingController'
 import ContactController from '../../../Logic/Contact/contactController'
 
 
@@ -374,7 +373,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(relationActions, dispatch),
+
 });
 
  export default connect(mapStateToProps, mapDispatchToProps)(ClientInformation);

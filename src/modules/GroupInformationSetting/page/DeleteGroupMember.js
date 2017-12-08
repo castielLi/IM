@@ -18,9 +18,7 @@ import {
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as recentListActions from '../../../Core/Redux/RecentList/action';
-import * as relationActions from '../../../Core/Redux/contact/action';
-import * as chatRecordActions from '../../../Core/Redux/chat/action';
+
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import SettingController from '../../../Logic/Setting/settingController'
@@ -310,17 +308,14 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    recentListStore:state.recentListStore,
-    relationStore: state.relationStore,
+
     accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId,
 });
 
 const mapDispatchToProps = (dispatch) => {
     return{
-        ...bindActionCreators(recentListActions,dispatch),
-        ...bindActionCreators(relationActions, dispatch),
-        ...bindActionCreators(chatRecordActions, dispatch),
+
         ...bindActionCreators(unReadMessageActions, dispatch),
     }};
 
