@@ -13,11 +13,12 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as IMHandle from '../../../Logic/AppHandler/receiveHandleMessage'
 import ImController from '../../../Logic/Im/imController'
+import TabTypeEnum from '../../../Logic/Im/dto/TabTypeEnum'
 let imController = new ImController();
 
 
-let handleRecieveMessage = function(count,){
-    IMHandle.handleRecieveMessage();
+let handleRecieveMessage = function(count,type = TabTypeEnum.RecentList){
+    IMHandle.handleRecieveMessage(count,type = TabTypeEnum.RecentList);
 }
 
 let handleKickOutMessage = function(){

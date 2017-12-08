@@ -4,10 +4,11 @@
 
 import Store from '../../store/index'
 import * as ActionForLoginStore from '../../modules/Login/reducer/action'
+import TabTypeEnum from '../Im/dto/TabTypeEnum'
 import {Alert} from 'react-native'
 let store = Store;
 
-export function handleRecieveMessage(){
+export function handleRecieveMessage(count,type = TabTypeEnum.RecentList){
 
 }
 

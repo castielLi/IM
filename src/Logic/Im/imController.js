@@ -455,7 +455,7 @@ function controllerReceiveMessage(message){
 
                     currentObj.user.forceUpdateRelation(senderId,false,function(){
 
-                        AppReceiveMessageHandle(1,TabTypeEnum.Contact)
+                        AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.Contact)
                     })
 
                     break;
@@ -602,15 +602,12 @@ function PushNotificationToApp(managementMessageObj){
     if(chatId == currentChat.chatId){
         updateChatRecordhandle(cache.messageCache);
     }else{
-        currentObj.addUnReadMsgNumber(chatId);
-        AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
+        if(managementMessageObj.type != DtoMessageTypeEnum.error){
+            currentObj.addUnReadMsgNumber(chatId);
+            AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
+        }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
-
-        if(managementMessageObj.type != DtoMessageTypeEnum.error){
-            AppReceiveMessageHandle(1,TabTypeEnum.RecentList)
-        }
-
     }
 }
 
