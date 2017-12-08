@@ -81,10 +81,6 @@ export default class ApplyFriendController {
         })
     }
 
-    outApplyFriendPage(){
-        currentPage = false;
-    }
-
     receiveApplyFriend(applyRecord){
         let sendArray = [].push(applyRecord)
         this.user.init(sendArray, (userArray) => {
@@ -147,6 +143,10 @@ export default class ApplyFriendController {
             }
             callback(results);
         })
+    }
+
+    outApplyFriendPage(){
+        currentPage = false;
     }
 
     updataApplyFriendRecord(applyId){
