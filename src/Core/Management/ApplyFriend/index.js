@@ -13,6 +13,8 @@ let __instance = (function () {
 
 let currentObj = undefined;
 
+let ControllerApplyMessageHandle = undefined;
+
 export default class ApplyFriend {
     constructor() {
         if (__instance()) return __instance();
@@ -22,6 +24,9 @@ export default class ApplyFriend {
         currentObj = this;
     }
 
+    connnectApplyFriend(updateApplyMessageHandle){
+        ControllerApplyMessageHandle = updateApplyMessageHandle;
+    }
 
     GetAllApplyMessage(callback){
        this.getSqlApplyMessage(callback);
@@ -34,11 +39,8 @@ export default class ApplyFriend {
 
     AddApplyMessage(message){
         this.addSqlApplyMessage(message);
+        ControllerApplyMessageHandle();
     }
-
-
-
-
 
 
 

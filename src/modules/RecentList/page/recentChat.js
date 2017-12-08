@@ -139,7 +139,10 @@ class RecentChat extends ContainerComponent {
     componentDidMount() {
 
         this.props.showNavigationBottom();
-
+        let param = {
+            updateConverseList:this.updateConverseList,
+        }
+        imController.init(param);
         AsyncStorage.getItem('account').then((value) => {
             let account = JSON.parse(value);
 
@@ -188,7 +191,7 @@ class RecentChat extends ContainerComponent {
     }
     deleteSomeRow(rowID, rowData) {
         let oKCallback = () => {
-            imController.removeConverse(rowID,rowData.group);
+            imController.removeConverse(rowData.chatId,rowData.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 

@@ -4,7 +4,7 @@ import MessageCommandEnum from '../../Common/dto/MessageCommandEnum';
 import SendMessageBodyDto from '../Common/dto/SendMessageBodyDto';
 import SendMessageDto from '../Common/dto/SendMessageDto';
 import messageBodyChatDto from '../Common/dto/messageBodyChatDto';
-import MessageType from '../../../../Logic/Chat/dto/MessageType'
+import MessageType from '../../../../Logic/Im/dto/MessageType'
 import MessageStatus from '../../Common/dto/MessageStatus'
 import ResourceTypeEnum from '../../Common/dto/ResourceTypeEnum'
 import uploadResourceDto from '../Common/dto/uploadResourceDto'

@@ -19,8 +19,6 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-
-import ChatController from '../../../../Logic/Chat/chatController';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
@@ -29,7 +27,6 @@ import * as commonMethod from '../../common/commonMethod'
 var imController = new IMController();
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-const chatController = new ChatController();
 var ImagePicker = require('react-native-image-picker');
 var {height, width} = Dimensions.get('window');
   
@@ -114,9 +111,6 @@ useCameraVideo(){
         }
         else{
             let responsePath = 'file://'+response.path;
-            // let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            // chatController.addMessage(message,(result)=>{
-            // },[(tips)=>{console.log(tips)}]);
             let group = this.props.type == 'group' ? true : false;
             let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
             imController.sendMessage(message);

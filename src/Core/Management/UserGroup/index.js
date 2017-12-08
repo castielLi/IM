@@ -17,7 +17,7 @@ let __instance = (function () {
     }
 }());
 
-
+let ControllerUpdateContactHandle = undefined;
 let _apiBridge = new ApiBridge();
 let currentObj = undefined;
 
@@ -44,6 +44,11 @@ export default class User {
 
         currentObj = this;
     }
+
+    connectUser(updateContactHandle){
+        ControllerUpdateContactHandle = updateContactHandle;
+    }
+
 
     init(chatList,callback){
         let userIds =[];
@@ -186,7 +191,7 @@ export default class User {
     }
 
     //从缓存判断指定clientId是否是黑名单
-    getIsBlackListFromCache(clienId){
+    getIsBlackListFromCache(clientId){
         return cache.user[clientId].BlackList;
     }
 
@@ -324,18 +329,24 @@ export default class User {
         }
     }
 
+    getInformationByIdandType(id,isGroup,callback){
+        if(isGroup){
+            this.getGroupInfoByIdandType(id,'group',(relations)=>{
+                callback(relations)
+            })
+        }else{
+            this.getUserInfoByIdandType(id,'user',(relations)=>{
+                callback(relations)
+            })
+        }
+    }
+
+
     getUserInfoById(accountId){
         return cache["user"][accountId]["Nick"]
     }
 
-    getNickAndAvatorById(accountId,type,callback){
-        let needObj = {};
-        this.getInformationByIdandType(accountId,type,(realtion)=>{
-            needObj.Nick =  realtion["Nick"];
-            needObj.avator = realtion["avator"];
-            callback(needObj);
-        })
-    }
+
 
     getCacheInfo(type){
         let concat = Object.values(cache[type]) //将对象的value 组成数组
@@ -519,14 +530,13 @@ export default class User {
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
-        return cache['user'];
     }
     //接受好友申请
     acceptFriend(userObj){
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
         cache["user"][user.RelationId] = user;
-        return cache["user"];
+        ControllerUpdateContactHandle();
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群

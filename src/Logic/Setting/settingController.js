@@ -6,7 +6,7 @@ import Chat from '../../Core/Management/Chat/index'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
-import RelationDto from '../../Logic/Setting/dto/RelationDto'
+import RelationDto from '../Common/dto/RelationDto'
 import ApiBridge from '../ApiBridge/index'
 
 let __instance = (function () {
@@ -223,11 +223,6 @@ export default class settingController {
         })
     }
 
-    //申请好友验证(validate)
-    addNewRelation(userObj){
-        //todo 张彤 少了 向cache中添加这个人  而且这个relationobj 应该由controller来构造
-        this.user.applyFriend(userObj);
-    }
     //私聊设置
     //用户设置页面（InformationSetting）
     removeBlackMember(params,callback){
