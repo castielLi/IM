@@ -27,7 +27,7 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/Setting/settingController';
 import contactController from '../../../Logic/Contact/contactController'
-import RelationDto from '../../../Logic/Setting/dto/RelationDto'
+import RelationDto from '../../../Logic/Common/dto/RelationDto'
 let settingController = new SettingController();
 let ContactController = new contactController();
 var {height, width} = Dimensions.get('window');
