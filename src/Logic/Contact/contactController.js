@@ -3,6 +3,7 @@
  */
 import User from '../../Core/Management/UserGroup/index'
 import ApiBridge from '../ApiBridge/index'
+import ApplyFriendEnum from '../../Core/Management/Common/dto/AppCommandEnum'
 
 let __instance = (function () {
     let instance;
