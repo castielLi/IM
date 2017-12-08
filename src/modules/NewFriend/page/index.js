@@ -61,10 +61,7 @@ class NewFriend extends ContainerComponent {
         callback = (results) => {
             currentObj.hideLoading();
             if(results.success){
-                let {key,Account} = results.data.acceptFriend;
-                currentObj.props.acceptFriendApplication(key);
-                currentObj.props.cutUnDealRequestNumber(1);
-                currentObj.props.changeRelationOfShow(Account);
+                console.log('接受好友申請成功')
             }else{
                 console.log('接受好友申請失败')
             }

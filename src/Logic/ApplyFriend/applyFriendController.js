@@ -115,7 +115,7 @@ export default class ApplyFriendController {
                 let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
-                currentObj.user.acceptFriend(relationObj);
+                currentObj.user.applyFriend(relationObj);
             }else if(result.success && typeof result.data.Data === 'string'){
 
             }

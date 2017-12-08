@@ -154,7 +154,7 @@ class ClientInformation extends ContainerComponent {
 
 
         let params = {Applicant,Respondent};
-        applyFriendController.applyFriend(params,(result)=>{
+        applyFriendController.applyFriend(params,function (result) {
             currentObj.hideLoading()
             if(!result.success){
                 alert(result.errorMessage);
