@@ -2,7 +2,8 @@
  * Created by apple on 2017/12/8.
  */
 import User from '../../Core/Management/UserGroup/index'
-
+import ApiBridge from '../ApiBridge/index'
+import ApplyFriendEnum from '../../Core/Management/Common/dto/AppCommandEnum'
 
 let __instance = (function () {
     let instance;
@@ -22,10 +23,7 @@ export default class contactController {
         if (__instance()) return __instance();
 
         __instance(this);
-        this.im = new IM();
         this.user = new User();
-        this.chat = new Chat();
-        this.network = new Network();
         this.apiBridge = new ApiBridge();
         currentObj = this;
     }
@@ -84,7 +82,10 @@ export default class contactController {
         }
 
         if(isUpdate){
-            this.user.updateUserInfo(propsRelation)
+            let userCache = this.user.updateUserInfo(propsRelation)
+            //重新渲染通讯录
+            let tempArr = filterShowToArr(userCache)
+            updateContact(tempArr);
         }
     }
 
@@ -105,7 +106,7 @@ export default class contactController {
                 let userCache= currentObj.user.applyFriend(relationObj);
                 //重新渲染通讯录
                 let tempArr = filterShowToArr(userCache)
-                // updateContact(tempArr);
+                updateContact(tempArr);
             }
             callback(result);
         })
@@ -120,7 +121,7 @@ export default class contactController {
                 let userCache = currentObj.user.acceptFriend(relationObj);
                 //重新渲染通讯录
                 let tempArr = filterShowToArr(userCache)
-                // updateContact(tempArr);
+                updateContact(tempArr);
                 //修改好友申请消息状态
                 currentObj.im.updateApplyFriendMessage({"status":ApplyFriendEnum.ADDED,"key":key});
             }
