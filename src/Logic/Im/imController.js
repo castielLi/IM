@@ -35,17 +35,60 @@ let AppKickOutHandle = undefined;
 
 //标示当前正在聊天的对象
 let currentChat = undefined;
+//currentChat={chatId:'wg003722',group:false}
 // todo 登录时修改myAccount
 let myAccount = undefined;
+//myAccount = {accountId:'wg00723',...}
 let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0};
-// [{ group: false,
-// chatId: "",//chatId={account/groupId}
-// sender: { account: "", name: "", HeadImageUrl: "" },//发送者
-// messageId: "",//消息编号
-// message: {data:"",time:""},//消息内容，
-// type:enum,//消息类型
-// status:enum,
-// sendTime : ""},...]
+// cache = {
+//     messageCache:[{
+//         group: false,
+//         chatId: "wg003722",//chatId={account/groupId},
+//         id:0 ,//自增
+//         sender: { account: 'wg003722', name: "立华", HeadImageUrl: "" } ,//"wg003722"
+//         messageId: "1",//消息编号
+//         message: '11111',//消息内容，
+//         type:'text',//消息类型
+//         status:'WaitOpreator',
+//         sendTime : "1512726557145"
+//         },
+//         {group: false,
+//             chatId: "wg003722",//chatId={account/groupId},
+//             id:1 ,//自增
+//             sender: { account: 'wg003722', name: "立华", HeadImageUrl: "" } ,//"wg003722"
+//             messageId: "2",//消息编号
+//             message: '22222',//消息内容，
+//             type:'text',//消息类型
+//             status:'WaitOpreator',
+//             sendTime : "1512726557145"
+//         },...],
+//     conversationCache:{
+//             'wg003722':{
+//                 group: false,
+//                 chatId: "wg003722",//chatId={account/groupId}
+//                 lastSender: "wg003722",
+//                 lastMessage: "11111",
+//                 lastTime: '1512726557145',
+//                 unreadCount: 1, //未读条数
+//                 name:"0",//好友名字或者群名字
+//                 HeadImageUrl: "",//头像地址, 本地地址
+//                 noSound: false,//禁音
+//             },
+//             'wesdgfdg':{
+//                 group: true,
+//                 chatId: "wesdgfdg",//chatId={account/groupId}
+//                 lastSender: "wg003724",
+//                 lastMessage: "3333",
+//                 lastTime: '1512726557145',
+//                 unreadCount: 0, //未读条数
+//                 name:"0",//好友名字或者群名字
+//                 HeadImageUrl: "",//头像地址, 本地地址
+//                 noSound: false,//禁音
+//             },...
+//         },
+//     allUnreadCount:0
+//     }
+
 
 let currentObj = undefined;
 let updateconverslisthandle = undefined;
@@ -635,7 +678,7 @@ export default class IMController {
         // if(message.group){
         //     chatId = message.chatId;
         // }else{
-        //     if(message.sender.account == myAccount){
+        //     if(message.sender.account == myAccount.accountId){
         //         chatId = message.message.chatId;
         //     }else{
         //         chatId = message.sender.account;
