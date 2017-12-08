@@ -40,7 +40,7 @@ let ChatCache = {}
 // sendTime : ""
 // }
 
-
+let ControllerUpdateConverseListHandlue = undefined;
 
 let __instance = (function () {
     let instance;
@@ -61,7 +61,9 @@ export default class Chat {
 
 
 
-
+    connectChat(updateConverseList){
+        ControllerUpdateConverseListHandlue = updateConverseList;
+    }
 
 
 
@@ -125,14 +127,18 @@ export default class Chat {
     }
 
 
-    addMessage(chatId,message = new ManagementMessageDto(),callback){
-       if(ChatCache[chatId] != undefined){
-           currentObj.updateOneChat(chatId,message);
-       }else{
-           //缓存中添加
-           currentObj.addOneChat(chatId,message);
-       }
+    addMessage(chatId,message = new ManagementMessageDto(),needUpdateConverseList = false){
+       // if(ChatCache[chatId] != undefined){
+       //     currentObj.updateOneChat(chatId,message);
+       // }else{
+       //     //缓存中添加
+       //     currentObj.addOneChat(chatId,message);
+       // }
        currentObj.addSqliteMessage(message);
+
+       if(needUpdateConverseList){
+           ControllerUpdateConverseListHandlue()
+       }
     }
 
 

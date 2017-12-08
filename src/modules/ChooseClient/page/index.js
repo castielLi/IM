@@ -291,11 +291,7 @@ class ChooseClient extends ContainerComponent {
                             alert("返回群数据出错")
                             return;
                         }
-                        //更新redux message
-                        let copyMessage = Object.assign({},result.data.sendMessage);
-                        let {groupName,groupAvator,groupId} = currentObj.props;
-                        currentObj.props.addMessage(copyMessage,{Nick:groupName,avator:groupAvator});
-                        //路由跳转
+
                         let routes = currentObj.props.navigator.getCurrentRoutes();
                         let index;
                         for (let i = 0; i < routes.length; i++) {
@@ -335,14 +331,9 @@ class ChooseClient extends ContainerComponent {
                         console.log("返回群数据出错")
                         return;
                     }
-                    //currentObj.props.addRelation(result.data.relation);
 
-                    //更新redux message
-                    let copyMessage = Object.assign({},result.data.sendMessage);
-                    let {Nick,LocalImage} = result.data.relation;
-                    currentObj.props.addMessage(copyMessage,{Nick,avator:LocalImage});
-                    //路由跳转
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,type:"chatroom",HeadImageUrl:LocalImage,Nick}});
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.relation.Nick,
+						type:"group",HeadImageUrl:result.data.relation.localImage,Nick:result.data.relation.Nick}});
 
                 }else{
                     alert(result.errorMessage);
