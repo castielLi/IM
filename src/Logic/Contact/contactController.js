@@ -4,9 +4,7 @@
 import User from '../../Core/Management/UserGroup/index'
 import ApiBridge from '../ApiBridge/index'
 import RNFS from 'react-native-fs'
-
 import ApplyFriendEnum from '../../Core/Management/Common/dto/AppCommandEnum'
-import RNFS from 'react-native-fs'
 
 let __instance = (function () {
     let instance;
