@@ -33,6 +33,7 @@ let AppKickOutHandle = undefined;
 
 //标示当前正在聊天的对象
 let currentChat = undefined;
+// todo 登录时修改myAccount
 let myAccount = undefined;
 let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0};
 // [{ group: false,
@@ -98,7 +99,7 @@ export default class IMController {
                     itemChat.lastMessage = recentListObj[key].lastMessage;
                     itemChat.unreadCount = recentListObj[key].unreadCount;
 
-                    allUnreadCount+=itemChat.unreadCount;
+                    cache.allUnreadCount+=itemChat.unreadCount;
 
                     itemChat.name = relationObj[key].Nick;
                     itemChat.HeadImageUrl = relationObj[key].avator;
@@ -109,6 +110,7 @@ export default class IMController {
                 //渲染会话列表
 
                 let tempArr = formatOjbToneedArr(cache.conversationCache);
+                AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
                 updateconverslisthandle(tempArr);
             })
         })
@@ -124,6 +126,7 @@ export default class IMController {
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
             this.clearUnReadMsgNumber(chatId);
             this.chat.clearUnReadNumber(chatId, group);
+            AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
             //渲染会话列表
             let tempArr = formatOjbToneedArr(cache.conversationCache);
             updateconverslisthandle(tempArr);
@@ -352,11 +355,13 @@ export default class IMController {
     }
     //未读消息+1
     addUnReadMsgNumber(clientId){
+        cache.allUnreadCount+=1;
         cache.conversationCache[clientId]['unreadCount'] +=1;
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId){
         if(cache.conversationCache[clientId] == undefined) return;
+        cache.allUnreadCount-=cache.conversationCache[clientId]['unreadCount'];
         cache.conversationCache[clientId]['unreadCount'] = 0;
     }
 
@@ -364,6 +369,7 @@ export default class IMController {
         for(let item in cache.conversationCache){
             cache.conversationCache[item]['unReadMessageCount'] = 0;
         }
+        cache.allUnreadCount = 0;
     }
 
 
@@ -597,6 +603,7 @@ function PushNotificationToApp(managementMessageObj){
         updateChatRecordhandle(cache.messageCache);
     }else{
         currentObj.addUnReadMsgNumber(chatId);
+        AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
 
