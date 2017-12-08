@@ -95,7 +95,7 @@ export default class User {
             this.getAllRelationSQL((relations)=>{
                 callback(relations);
                 relations.forEach((v)=>{
-                    v.Blacklist = v.Blacklist == "true"?true:false;
+                    v.BlackList = v.BlackList == "true"?true:false;
                     cache['user'][v.RelationId] = v;
                 })
             })
