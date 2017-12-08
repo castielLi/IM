@@ -41,7 +41,7 @@ class TabBarComponent extends DisplayComponent {
         }
     }
 
-    componentDidMount(){
+    componentWillMount(){
         imController.connectApp(handleRecieveMessage,handleKickOutMessage)
     }
     badgeComponent(title,count){

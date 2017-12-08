@@ -324,18 +324,24 @@ export default class User {
         }
     }
 
+    getInformationByIdandType(id,isGroup,callback){
+        if(isGroup){
+            this.getGroupInfoByIdandType(id,'group',(relations)=>{
+                callback(relations)
+            })
+        }else{
+            this.getUserInfoByIdandType(id,'user',(relations)=>{
+                callback(relations)
+            })
+        }
+    }
+
+
     getUserInfoById(accountId){
         return cache["user"][accountId]["Nick"]
     }
 
-    getNickAndAvatorById(accountId,type,callback){
-        let needObj = {};
-        this.getInformationByIdandType(accountId,type,(realtion)=>{
-            needObj.Nick =  realtion["Nick"];
-            needObj.avator = realtion["avator"];
-            callback(needObj);
-        })
-    }
+
 
     getCacheInfo(type){
         let concat = Object.values(cache[type]) //将对象的value 组成数组
