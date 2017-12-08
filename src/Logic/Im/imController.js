@@ -285,7 +285,27 @@ export default class IMController {
             type:'text',//消息类型
             status:'WaitOpreator',
             sendTime : ""
-        }]
+        },
+            {group: false,
+                chatId: "wg003722",//chatId={account/groupId},
+                id:3 ,//自增
+                sender: "wg003723" ,//"wg003722"
+                messageId: "4",//消息编号
+                message: {localSource:'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg',remoteSource:''},//消息内容，
+                type:'image',//消息类型
+                status:'WaitOpreator',
+                sendTime : ""
+            },
+            {group: false,
+                chatId: "wg003722",//chatId={account/groupId},
+                id:4 ,//自增
+                sender: "wg003723" ,//"wg003722"
+                messageId: "5",//消息编号
+                message: {localSource:'',remoteSource:'http://www.w3school.com.cn/i/movie.mp4'},//消息内容，
+                type:'video',//消息类型
+                status:'WaitOpreator',
+                sendTime : ""
+            }]
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
                 return;

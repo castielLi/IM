@@ -46,8 +46,8 @@ class Gallery extends ContainerComponent {
             // isShow : props.isShow,
             progress:0,
             download:false,
-            path:props.Path,
-            thumbnail:props.Path.indexOf('/thumbnail') !== -1 ? true : false
+            path:props.path,
+            thumbnail:props.path.indexOf('/thumbnail') !== -1 ? true : false
             //thumbnail:props.Remote.indexOf('#imageView2') !== -1 ? true : false
         }
     }
