@@ -654,6 +654,20 @@ export default class IMController {
     }
 
 
+    manualDownloadResource(messageId,url,path,callback,onprogress){
+        this.im.manualDownloadResource(url,path,function () {
+            //修改数据库路径
+            currentObj.im.updateMessageLocalSource(messageId,path);
+            //修改缓存路径
+            for(let current of cache.messageCache){
+                if(messageId == current.RelationId){
+                    current.message.localSource = path;
+                    break;
+                }
+            }
+            callback();
+        },onprogress)
+    }
 
 
 }

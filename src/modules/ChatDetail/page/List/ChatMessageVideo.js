@@ -21,6 +21,8 @@ import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
+import IMController from '../../../../Logic/Im/imController'
+let imController = new IMController();
 
 let {width, height} = Dimensions.get('window');
 
@@ -46,30 +48,25 @@ class ChatMessageVideo extends ContainerComponent {
             if(!success){
                 //todo:先下载视频，获取路径
                 let ME = this.props.loginStore;
-                let type = data.message.type;
+                let type = data.type;
                 let chatType = this.props.type;
-                let {Receiver,Sender} = data.message.Data.Data;
+                let Sender = data.sender.account;
+                let Receiver = data.chatId;
                 let otherID ="";
-                if(chatType == "chatroom"){
+                if(chatType == "group"){
                     otherID = Sender;
                 }else{
                     otherID = Receiver == ME ? Sender : Receiver;
                 }
 
                 let format = Remote.slice(Remote.lastIndexOf('.'));
-                let msgID = data.message.MSGID;
+                let messageId = data.messageId;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
 
-                ChatController.manualDownloadResource(Remote,filePath,function () {
-                    //alert('保存到本地：'+filePath)
-                    currentObj.props.updateMessagePath(msgID,filePath,Sender)
-                    //im.updateMessageLocalSource(msgID,filePath)
-                    ChatController.updateMessageLocalSource(msgID,filePath);
-
+                imController.manualDownloadResource(messageId,Remote,filePath,function () {
                     currentObj.setState({
                         download:false,
-                    })
-                    //currentObj.props.showMediaPlayer(filePath)
+                    });
                     currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
                 },function (percent) {
                     currentObj.setState({
@@ -79,7 +76,6 @@ class ChatMessageVideo extends ContainerComponent {
                 });
             }
             else{
-                //this.props.showMediaPlayer(Local)
                 this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
             }
         }).catch((err) => {
@@ -92,10 +88,10 @@ class ChatMessageVideo extends ContainerComponent {
     }
     render() {
         let {data, style} = this.props;
-        let {localSource,remoteSource} = data;
+        let {localSource,remoteSource} = data.message;
         return(
             <View style={[styles.bubble]}>
-                <Thouch onPress={()=>alert('播放视频')} disabled={this.state.download}>
+                <Thouch onPress={()=>this.playVideo(localSource,remoteSource,data)} disabled={this.state.download}>
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
