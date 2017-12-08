@@ -191,7 +191,7 @@ export default class User {
     }
 
     //从缓存判断指定clientId是否是黑名单
-    getIsBlackListFromCache(clienId){
+    getIsBlackListFromCache(clientId){
         return cache.user[clientId].BlackList;
     }
 

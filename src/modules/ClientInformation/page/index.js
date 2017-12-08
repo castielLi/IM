@@ -17,7 +17,7 @@ import {bindActionCreators} from 'redux';
 
 import SettingController from '../../../Logic/Setting/settingController'
 import ContactController from '../../../Logic/Contact/contactController'
-import ApplyFriendController from '../../../Logic/ApplyFriend/ApplyFriendController';
+import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
 
 
 
