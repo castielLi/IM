@@ -17,8 +17,9 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import SettingController from '../../../Logic/Setting/settingController';
 import ContactControlller from '../../../Logic/Contact/contactController';
+import IMController from '../../../Logic/Im/imController';
 
-
+let imController = new IMController();
 let settingController = new SettingController();
 let contactControlller = new ContactControlller();
 
@@ -62,7 +63,13 @@ class InformationSetting extends ContainerComponent {
         // this.props.changeTabBar(0)
 
         let setting = settingController.getIsBlackList(this.props.client);
-        let value = setting.BlackList == "false"||setting.BlackList == false?false:true;
+        let value ;
+        if(setting == "false"||setting == false){
+            value = false;
+        }else{
+            value = true;
+        }
+
         this.setState({
             joinBlackList:value,
         })
@@ -114,7 +121,7 @@ class InformationSetting extends ContainerComponent {
             contactControlller.removeFriend(params,(results)=>{
                 currentObj.hideLoading();
                 if(results.success){
-
+                    imController.removeConverse(client,false);
                     let pages = currentObj.props.navigator.getCurrentRoutes();
                     let target = pages[pages.length - 3];
 

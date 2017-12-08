@@ -553,6 +553,9 @@ export default class IMController {
 
     //删除会话
     removeConverse(chatId,group){
+        if(!cache.conversationCache[chatId]){
+            return;
+        }
         cache.allUnreadCount-=cache.conversationCache[chatId]['unreadCount'];
         delete cache.conversationCache[chatId];
         AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
