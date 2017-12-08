@@ -18,6 +18,22 @@ export function changeUnDealRequestNumber(number){
 
 }
 
+export function changeUnReadZoomMessageNumber(number){
+    return {
+        type: 'CHANGE_UNREADZOOMMESSAGE_NUMBER',
+        number
+    };
+
+}
+
+export function changeUnSettingNumber(number){
+    return {
+        type: 'CHANGE_UNSETTING_NUMBER',
+        number
+    };
+
+}
+
 export function clearUnDealRequestNumber(){
     return {
         type: 'CLEAR_UNDEALREQUEST_NUMBER',
