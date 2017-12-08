@@ -961,12 +961,8 @@ function AddCache(managementMessageObj){
         // })
 
     //测试代码
-    //this.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
-    let relationObj = {
-        RelationId:'wg003723',
-        Nick:'黄',
-        avator:''
-    }
+    currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
+
         let itemMessage = new ControllerMessageDto();
         itemMessage.group = managementMessageObj.group;
         itemMessage.chatId = managementMessageObj.chatId;
@@ -983,7 +979,7 @@ function AddCache(managementMessageObj){
 
         //渲染聊天记录
         updateChatRecordhandle(cache.messageCache);
-    //})
+    })
 }
 
 
