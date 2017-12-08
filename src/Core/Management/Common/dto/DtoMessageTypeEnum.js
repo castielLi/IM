@@ -9,5 +9,6 @@ export default DtoMessageTypeEnum = {
     video :3,
     audio:4,
     error:5,
-    info:6
+    info:6,
+    friend:7
 }
