@@ -570,7 +570,7 @@ function storeChatMessageAndCache(message){
     }else{
         currentObj.addOneChat(chatId,managementMessageObj);
     }
-
+    maxId = maxId+1;
     AddCache(managementMessageObj);
 
     PushNotificationToApp(managementMessageObj);
