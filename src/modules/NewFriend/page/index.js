@@ -78,7 +78,6 @@ class NewFriend extends ContainerComponent {
 
     deleteApply = (index)=>{
         alert('删除好友申请')
-        //this.props.deleteFriendApplication(index)
     };
 
     applyMsgStyle = (rowID,rowData)=>{
@@ -265,7 +264,6 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    friendApplicationStore : state.friendApplicationStore,
     accountName:state.loginStore.accountMessage.Nick,
     accountId:state.loginStore.accountMessage.accountId
 });

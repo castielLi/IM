@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    relationStore: state.relationStore
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -398,7 +398,6 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    relationStore: state.relationStore,
     unDealRequestNumber:state.unReadMessageStore.unDealRequestNumber,
 });
 
