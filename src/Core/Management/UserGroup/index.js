@@ -95,6 +95,7 @@ export default class User {
             this.getAllRelationSQL((relations)=>{
                 callback(relations);
                 relations.forEach((v)=>{
+                    v.Blacklist = v.Blacklist == "true"?true:false;
                     cache['user'][v.RelationId] = v;
                 })
             })
@@ -517,7 +518,7 @@ export default class User {
     //加入/移除黑名单 shield屏蔽（true/false）
     setBlackMember(shield,userId){
         this.changeRelationBlackListSQL(shield, userId);
-        cache['user'][userId].isBlackList = shield;
+        cache['user'][userId].BlackList = shield;
     }
     //删除好友
     removeFriend(userId){
