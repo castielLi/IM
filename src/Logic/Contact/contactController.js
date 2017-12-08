@@ -3,6 +3,8 @@
  */
 import User from '../../Core/Management/UserGroup/index'
 import ApiBridge from '../ApiBridge/index'
+import RNFS from 'react-native-fs'
+
 import ApplyFriendEnum from '../../Core/Management/Common/dto/AppCommandEnum'
 import RNFS from 'react-native-fs'
 
@@ -51,7 +53,7 @@ export default class contactController {
         this.apiBridge.request.DeleteFriend(params,function(results){
             if(results.success){
                 //删除ChatRecode表中记录
-                currentObj.chat.removeConverse(userId);
+                //currentObj.chat.removeConverse(userId);
                 // //删除该与client的所以聊天记录
                 // currentObj.im.deleteCurrentChatMessage(userId,'private');
                 //删除account数据库

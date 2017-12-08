@@ -17,8 +17,9 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import SettingController from '../../../Logic/Setting/settingController';
 import ContactControlller from '../../../Logic/Contact/contactController';
+import IMController from '../../../Logic/Im/imController';
 
-
+let imController = new IMController();
 let settingController = new SettingController();
 let contactControlller = new ContactControlller();
 
@@ -113,7 +114,7 @@ class InformationSetting extends ContainerComponent {
             contactControlller.removeFriend(params,(results)=>{
                 currentObj.hideLoading();
                 if(results.success){
-
+                    imController.removeConverse(client,false);
                     let pages = currentObj.props.navigator.getCurrentRoutes();
                     let target = pages[pages.length - 3];
 
