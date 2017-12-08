@@ -1,7 +1,7 @@
 /**
  * Created by apple on 2017/12/8.
  */
-
+import * as storeSqlite from './StoreSqlite'
 
 let __instance = (function () {
     let instance;
@@ -20,5 +20,41 @@ export default class ApplyFriend {
         __instance(this);
 
         currentObj = this;
+    }
+
+
+    GetAllApplyMessage(callback){
+       this.getSqlApplyMessage(callback);
+    }
+
+
+    UpdateApplyMessageStatus(key,status){
+       this.updateSqlApplyMessageStatus(key,status);
+    }
+
+    AddApplyMessage(message){
+        this.addSqlApplyMessage(message);
+    }
+
+
+
+
+
+
+
+
+
+
+    //数据库操作
+    getSqlApplyMessage(callback){
+        storeSqlite.getAllApplyMessage(callback);
+    }
+
+    updateSqlApplyMessageStatus(key,status){
+        storeSqlite.updateApplyMessageStatus(key,status);
+    }
+
+    addSqlApplyMessage(message){
+        storeSqlite.storeApplyMessage(message);
     }
 }
