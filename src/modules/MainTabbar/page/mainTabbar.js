@@ -3,7 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Image} from 'react-native';
+import {StyleSheet, Image,View,Text} from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import DisplayComponent from '../../../Core/Component/index';
 import {connect} from 'react-redux';
@@ -44,7 +44,21 @@ class TabBarComponent extends DisplayComponent {
     componentDidMount(){
         imController.connectApp(handleRecieveMessage,handleKickOutMessage)
     }
-
+    badgeComponent(title,count){
+        if(title == '云信'){
+            if(count>0){
+                return <View style={styles.badge}><Text style={styles.badgeText}>{count}</Text></View>
+            }else{
+                return null;
+            }
+        }else{
+            if(count>0){
+                return <View style={styles.badge}></View>
+            }else{
+                return null;
+            }
+        }
+    }
     render() {
         let selectedTab = tabBarPageEnum[this.props.tabBarStore];
         return (
@@ -62,7 +76,8 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    badgeText={this.props.unReadMessageStore.unReadMessageNumber}
+                    //badgeText={this.props.unReadMessageStore.unReadMessageNumber}
+                    renderBadge={this.badgeComponent.bind(this,'云信',this.props.unReadMessageStore.unReadMessageNumber)}
                     onPress={() => {this.props.changeTabBar(0);this.isShowFeature(0)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabOne",this.props.navigator)}
                 </TabNavigator.Item>
@@ -79,7 +94,8 @@ class TabBarComponent extends DisplayComponent {
                                                       style={[styles.icon]}
                                                       resizeMode={Image.resizeMode.contain}
                     />}
-                    badgeText={this.props.unReadMessageStore.unDealRequestNumber}
+                    //badgeText={this.props.unReadMessageStore.unDealRequestNumber}
+                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unDealRequestNumber)}
                     onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
@@ -124,6 +140,20 @@ const styles = StyleSheet.create({
     icon: {
         width: 24,
         height: 24
+    },
+    badge:{
+        width:16,
+        height:16,
+        borderColor:'#fff',
+        borderWidth:2,
+        borderRadius:8,
+        backgroundColor:'red',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    badgeText:{
+        fontSize:10,
+        color:'#fff'
     }
 });
 

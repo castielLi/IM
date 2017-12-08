@@ -12,32 +12,13 @@ export  function unReadMessageStore(state=initialState, action){
     switch(action.type){
 
 
-        case 'ADD_UNREADMESSAGE_NUMBER':
-            return {
-                ...state,
-                unReadMessageNumber:state.unReadMessageNumber+1
-            };
-        case 'CUT_UNREADMESSAGE_NUMBER':
-            return {
-                ...state,
-                unReadMessageNumber:state.unReadMessageNumber-action.cutNumber
-            };
-        case 'INIT_UNREADMESSAGE_NUMBER':
+
+        case 'CHANGE_UNREADMESSAGE_NUMBER':
             return {
                 ...state,
                 unReadMessageNumber:action.number
             };
-        case 'ADD_UNDEALREQUEST_NUMBER':
-            return {
-                ...state,
-                unDealRequestNumber:state.unDealRequestNumber+1
-            };
-        case 'CUT_UNDEALREQUEST_NUMBER':
-            return {
-                ...state,
-                unDealRequestNumber:state.unDealRequestNumber-action.cutNumber
-            };
-        case 'INIT_UNDEALREQUEST_NUMBER':
+        case 'CHANGE_UNDEALREQUEST_NUMBER':
             return {
                 ...state,
                 unDealRequestNumber:action.number

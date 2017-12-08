@@ -1,46 +1,18 @@
 
 
-export function addUnReadMessageNumber(){
+
+export function changeUnReadMessageNumber(number){
     return {
-        type: 'ADD_UNREADMESSAGE_NUMBER'
-    };
-
-}
-
-export function cutUnReadMessageNumber(cutNumber){
-    return {
-        type: 'CUT_UNREADMESSAGE_NUMBER',
-        cutNumber
-    };
-
-}
-
-export function initUnReadMessageNumber(number){
-    return {
-        type: 'INIT_UNREADMESSAGE_NUMBER',
+        type: 'CHANGE_UNREADMESSAGE_NUMBER',
         number
     };
 
 }
 
-export function addUnDealRequestNumber(){
+
+export function changeUnDealRequestNumber(number){
     return {
-        type: 'ADD_UNDEALREQUEST_NUMBER'
-    };
-
-}
-
-export function cutUnDealRequestNumber(cutNumber){
-    return {
-        type: 'CUT_UNDEALREQUEST_NUMBER',
-        cutNumber
-    };
-
-}
-
-export function initUnDealRequestNumber(number){
-    return {
-        type: 'INIT_UNDEALREQUEST_NUMBER',
+        type: 'CHANGE_UNDEALREQUEST_NUMBER',
         number
     };
 
