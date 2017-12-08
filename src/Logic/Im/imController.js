@@ -32,7 +32,7 @@ let AppKickOutHandle = undefined;
 //标示当前正在聊天的对象
 let currentChat = undefined;
 let myAccount = undefined;
-let  cache = {messageCache:[],conversationCache:{}};
+let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0};
 // [{ group: false,
 // chatId: "",//chatId={account/groupId}
 // sender: { account: "", name: "", HeadImageUrl: "" },//发送者
@@ -95,6 +95,9 @@ export default class IMController {
                     itemChat.lastSender = recentListObj[key].lastSender;
                     itemChat.lastMessage = recentListObj[key].lastMessage;
                     itemChat.unreadCount = recentListObj[key].unreadCount;
+
+                    allUnreadCount+=itemChat.unreadCount;
+
                     itemChat.name = relationObj[key].Nick;
                     itemChat.HeadImageUrl = relationObj[key].avator;
                     needObj[recentListObj[key].chatId] = itemChat;
@@ -241,16 +244,16 @@ export default class IMController {
     removeMessage(messageId){
 
         //如果删除的是最后一条消息，还需要改变cache.conversationCache[chatId]
-        if(cache.messageCache[cache.messageCache.length-1].messageId == messageId){
-            if(cache.messageCache.length == 1){
-                let recentObj = cache.conversationCache[currentChat.chatId];
-                recentObj.lastSender = '';
-                recentObj.lastMessage = '';
-                recentObj.lastTime = '';
-            }else{
-                this.updateOneChat(currentChat.chatId,cache.messageCache[cache.messageCache.length-2])
-            }
-        }
+        // if(cache.messageCache[cache.messageCache.length-1].messageId == messageId){
+        //     if(cache.messageCache.length == 1){
+        //         let recentObj = cache.conversationCache[currentChat.chatId];
+        //         recentObj.lastSender = '';
+        //         recentObj.lastMessage = '';
+        //         recentObj.lastTime = '';
+        //     }else{
+        //         this.updateOneChat(currentChat.chatId,cache.messageCache[cache.messageCache.length-2])
+        //     }
+        // }
         maxId = maxId-1;
         //cache.messageCache删除
         deleteItemFromCacheByMessageId(cache.messageCache,messageId);
@@ -334,7 +337,7 @@ export default class IMController {
             let itemChat = new ControllerChatConversationDto();
             itemChat.group = message.group;
             itemChat.chatId = chatId;
-            itemChat.lastSender = message.sender.account;
+            itemChat.lastSender = message.sender;
             itemChat.lastMessage = getContentOfControllerMessageDto(message);
             itemChat.lastTime = message.sendTime;
             let {Nick, avator} = relationObj;
@@ -591,7 +594,6 @@ function PushNotificationToApp(managementMessageObj){
         updateChatRecordhandle(cache.messageCache);
     }else{
         currentObj.addUnReadMsgNumber(chatId);
-
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
     }
