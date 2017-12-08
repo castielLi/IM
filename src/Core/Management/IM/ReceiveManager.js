@@ -47,10 +47,8 @@ ReceiveManager.receiveBodyMessage = function(message){
 
     if(!message.Resource || (message.Resource[0].FileType == ResourceTypeEnum.audio ))
     {
-        currentObj.storeRecMessage(message,()=>{
-            //回调App上层发送成功
-            currentObj.ReceiveMessageHandle(message);
-        })
+        currentObj.storeRecMessage(message)
+        currentObj.ReceiveMessageHandle(message);
 
     }
     else{

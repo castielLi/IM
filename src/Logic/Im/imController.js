@@ -445,7 +445,7 @@ function controllerReceiveMessage(message){
                     var senderId = message.Data.Data.Sender;
 
                     currentObj.user.getUserInfoByIdandType(senderId,"user",function(){
-                        currentObj.user.update
+                        currentObj.user.acceptFriendInCache(senderId);
                     });
 
                     break;
@@ -455,7 +455,7 @@ function controllerReceiveMessage(message){
 
                     currentObj.user.forceUpdateRelation(senderId,false,function(){
 
-                        AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.Contact)
+                        AppReceiveMessageHandle(1,TabTypeEnum.Contact)
                     })
 
                     break;
