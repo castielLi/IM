@@ -24,6 +24,8 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import IMController from '../../../../Logic/Im/imController'
+let imController = new IMController();
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'
@@ -73,7 +75,7 @@ class Gallery extends ContainerComponent {
 
     }
 
-    downOriginalImage = (Path,Remote,MSGID,Sender)=>{
+    downOriginalImage = (Path,Url,messageId,sender)=>{
         // let im = new IM();
         let currentObj = this;
         //let url = Remote.match(/([\s\S]*)#imageView2/)[1];
@@ -82,13 +84,7 @@ class Gallery extends ContainerComponent {
         let pathB = Path.slice(Path.lastIndexOf('/'));
         let path = pathA+pathB;
 
-        ChatController.manualDownloadResource(Remote,path,function () {
-
-            //todo:修改数据库和修改redux的Local保存原图地址
-            //todo:缩略图有自己的文件夹，目前下载原图后没有删除缩略图
-            ChatController.updateMessageLocalSource(MSGID,path);
-            currentObj.props.updateMessagePath(MSGID,path,Sender);
-            //todo:图片下载成功后会覆盖之前的缩略图，但是不会刷新需要重新开启APP，所以采用不同的路径
+        imController.manualDownloadResource(messageId,Url,path,function () {
             currentObj.setState({
                 path,
                 download:false,
@@ -102,7 +98,7 @@ class Gallery extends ContainerComponent {
         })
     }
     render() {
-        let {Path,Remote,MSGID,Sender} = this.props;
+        let {path,url,messageId,sender} = this.props;
         return (
             <View style={styles.container}>
                 {/*<ImageViewer*/}
@@ -125,7 +121,7 @@ class Gallery extends ContainerComponent {
                            source={{uri:this.state.path}}/>
                 </ImageZoom>
                 {this.state.thumbnail ?
-                    <TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(Path,Remote,MSGID,Sender)}>
+                    <TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(path,url,messageId,sender)}>
                         {this.state.download ?
                             <Text style={styles.downloadText}>{this.state.progress}</Text> :
                             <Text style={styles.downloadText}>下载原图</Text>}
