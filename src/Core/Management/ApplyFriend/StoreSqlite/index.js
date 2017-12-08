@@ -63,7 +63,9 @@ APPLYFRIENDFMDB.initIMDataBase = function(AccountId,callback){
 }
 
 APPLYFRIENDFMDB.storeMessage = function(message){
-    // let insertSql =
+    let insertSql = sqls.ExcuteIMSql.AddNewMessageToApplyFriend;
+
+
 }
 
 function errorDB(type,err) {

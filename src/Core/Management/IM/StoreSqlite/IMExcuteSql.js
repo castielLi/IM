@@ -6,7 +6,7 @@ export const InitIMTable = {
     "createMessageRecodeTable":"CREATE TABLE IF NOT EXISTS MessageRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255), messageBody varchar(500), sendTime varchar(255), status varchar(255))",
     "CreateSendMessageTable":"CREATE TABLE IF NOT EXISTS SendMessageRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255),status varchar(255),times varchar(255))",
     "CreateChatTableIndex":"CREATE INDEX index_id ON MessageRecode(messageId)",
-    "CreateApplyFriendTable":"CREATE TABLE IF NOT EXISTS ApplyFriend (Id INTEGER PRIMARY KEY AUTOINCREMENT,send varchar(255), rec varchar(255) , status varchar(255), comment varchar(255), time varchar(255),key varchar(255),Nick varchar(255),avator varchar(255))",
+    "CreateApplyFriendTable":"CREATE TABLE IF NOT EXISTS ApplyFriend (Id INTEGER PRIMARY KEY AUTOINCREMENT,send varchar(255), status varchar(255), comment varchar(255), time varchar(255),key varchar(255))",
     "CreateUploadFileResourceRecode":"CREATE TABLE IF NOT EXISTS ResourceRecode (Id INTEGER PRIMARY KEY AUTOINCREMENT, messageId varchar(255),localResource varchar(255))",
 }
 
@@ -22,7 +22,7 @@ export const ExcuteIMSql = {
     "InsertUploadFileRecode":"insert into ResourceRecode(messageId,localResource) values (?,?)",
     "DeleteUploadFileRecode":"Delete from ResourceRecode where messageId = ? and localResource = ?",
     "QueryMessageResourceExist":"select * from ResourceRecode where messageId = ? and localResource = ?",
-    "AddNewMessageToApplyFriend":"insert or replace into ApplyFriend (send,rec,status,comment,time,key,Nick,avator) values(?,?,?,?,?,?,?,?)",
+    "AddNewMessageToApplyFriend":"insert or replace into ApplyFriend (send,status,comment,time,key) values(?,?,?,?,?,?)",
     "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?",
     "UpdateMessageLocalSource":"update MessageRecode set messageBody=? where messageId=?",

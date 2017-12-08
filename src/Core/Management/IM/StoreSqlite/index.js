@@ -14,11 +14,11 @@ export function storeSendMessage(message){
     IMFMDB.InsertMessageWithCondition(message, message.Data.Data.Receiver)
 }
 
-export function storeRecMessage(message,callback){
+export function storeRecMessage(message){
 
-    if(message.Data.Command != MessageBodyTypeEnum.MSG_BODY_APP || message.Data.Data.Command != AppCommandEnum.MSG_BODY_APP_APPLYFRIEND) {
+    if(message.Data.Data.Command != AppCommandEnum.MSG_BODY_APP_APPLYFRIEND) {
         message.status = MessageStatus.SendSuccess;
-        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender,callback)
+        IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
     }else{
         IMFMDB.InsertFriendMessage(message);
     }
@@ -159,7 +159,7 @@ IMFMDB.initIMDataBase = function(AccountId,callback){
 
 
 //todo：想办法进行批量操作
-IMFMDB.InsertMessageWithCondition = function(message,client,callback){
+IMFMDB.InsertMessageWithCondition = function(message,client){
 
     let messageBody = JSON.stringify(message);
 
@@ -171,7 +171,7 @@ IMFMDB.InsertMessageWithCondition = function(message,client,callback){
     }, () => {
         db.transaction((tx) => {
 
-            insertChat(insertChatSql, tx, callback);
+            insertChat(insertChatSql, tx);
         });
 
     }, (err)=>{errorDB('初始化数据库',err)});
@@ -214,7 +214,7 @@ IMFMDB.InsertFriendMessage = function(message){
 
     let status = 'wait';
     let time = new Date().getTime();
-    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,message.Data.Data.Receiver,status,'',time,message.Data.Data.Data,'',''])
+    insertSql = commonMethods.sqlFormat(insertSql,[message.Data.Data.Sender,status,'',time,message.Data.Data.Data])
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -496,10 +496,9 @@ IMFMDB.closeImDb = function(){
 }
 
 //添加消息进总消息表
-function insertChat(insertSql,tx,callback){
+function insertChat(insertSql,tx){
 
     tx.executeSql(insertSql, [], (tx, results) => {
-        callback&&callback();
         console.log("insert meesage success");
 
     }, (err)=>{errorDB('向聊天对象插入详细聊天',err)});
