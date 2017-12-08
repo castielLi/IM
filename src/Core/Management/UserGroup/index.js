@@ -275,7 +275,7 @@ export default class User {
                             relation.show = 'false';
                             relation.avator = data.HeadImageUrl == null?"":data.HeadImageUrl;
                             cache[type][Id] = relation;
-                            currentObj.AddNewRelation(relation,function(){
+                            currentObj.AddNewRelationSQL(relation,function(){
                                 callback(relation);
                             });
                         }else{
