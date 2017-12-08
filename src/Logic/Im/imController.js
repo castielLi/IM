@@ -512,14 +512,14 @@ export default class IMController {
         itemManagementMessage.sendTime = Date.now();
         //this.im.addMessage(itemManagementMessage,(managementMessage)=>{
         let managementMessage = {
-            group: false,
-            chatId: "wg003722",//chatId={account/groupId}
-            sender: "",//发送者
+            group: itemManagementMessage.group,
+            chatId: itemManagementMessage.chatId,//chatId={account/groupId}
+            sender: itemManagementMessage.sender,//发送者
             messageId: Date.now(),//消息编号
-            message: 'eeeeeeeeee',//消息内容，
-            type:'text',//消息类型
+            message: itemManagementMessage.message,//消息内容，
+            type:itemManagementMessage.type,//消息类型
             status:'SendSuccess',
-            sendTime : Date.now()
+            sendTime : itemManagementMessage.sendTime
         }
             //managementMessage是带有status和消息id的完整ManagementMessageDto
             //this.chat.addMessage(message.chatId,managementMessage);
