@@ -101,9 +101,29 @@ class GroupList extends ContainerComponent {
                 contacts
             })
         });
+
+        // let arr = [];
+        // for(let i=0;i<10;i++){
+        //     arr.push({
+        //         OtherComment : "公告:"+i,
+        //         RelationId : 'Z-'+i,
+        //         Nick : "测试"+i,
+        //         Remark : "",
+        //         BlackList : false,
+        //         avator : "",
+        //         Email : "",
+        //         localImage : "",
+        //         Type : "group",
+        //         owner : "wg003724",
+        //         show : true
+        //     })
+        // }
+        // this.setState({
+        //     contacts:arr
+        // })
     }
     render() {
-        this.relationStore = initFlatListData('chatroom',this.state.contacts);
+        this.relationStore = initFlatListData('group',this.state.contacts);
         return (
             <View style={styles.container}>
                 <MyNavigationBar

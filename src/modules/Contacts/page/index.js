@@ -224,6 +224,25 @@ class Contacts extends ContainerComponent {
                 contacts
             })
         });
+        // let arr = [];
+        // for(let i=0;i<10;i++){
+        // 	arr.push({
+        //         OtherComment : "公告:"+i,
+        //         RelationId : 'Z-'+i,
+        //         Nick : "测试"+i,
+        //         Remark : "",
+        //         BlackList : false,
+        //         avator : "",
+        //         Email : "",
+        //         localImage : "",
+        //         Type : "private",
+        //         owner : "wg003724",
+        //         show : true
+        //     })
+        // }
+        // this.setState({
+			// contacts:arr
+        // })
 	}
 	render() {
 		let objData = initDataFormate('private',this.state.contacts,this.state.text);

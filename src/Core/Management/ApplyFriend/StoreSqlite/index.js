@@ -6,17 +6,19 @@ import { Platform, StyleSheet } from 'react-native';
 let SQLite = require('react-native-sqlite-storage')
 import * as sqls from './ApplyFriendExcuteSql'
 import RNFS from 'react-native-fs';
+import ManagementApplyMessageDto from '../Common/dto/ManagementApplyMessageDto'
+import * as commonMethods from '../../../Helper/formatQuerySql'
 
-export function storeApplyMessage(message){
-
+export function storeApplyMessage(message = new ManagementApplyMessageDto()){
+    APPLYFRIENDFMDB.storeMessage(message);
 }
 
-export function getAllApplyMessage(){
-
+export function getAllApplyMessage(callback){
+    APPLYFRIENDFMDB.getAllApplyMessages(callback);
 }
 
-export function updateApplyMessageStatus(messageId,status){
-
+export function updateApplyMessageStatus(key,status){
+    APPLYFRIENDFMDB.updateMessageStatus(key,status);
 }
 
 
@@ -45,7 +47,6 @@ export function closeImDb(){
 let APPLYFRIENDFMDB = {};
 APPLYFRIENDFMDB.initIMDataBase = function(AccountId,callback){
 
-
     var db = SQLite.openDatabase({
         ...databaseObj
 
@@ -62,10 +63,64 @@ APPLYFRIENDFMDB.initIMDataBase = function(AccountId,callback){
     }, (err)=>{errorDB('初始化数据库',err)});
 }
 
-APPLYFRIENDFMDB.storeMessage = function(message){
+APPLYFRIENDFMDB.storeMessage = function(message = new ManagementApplyMessageDto()){
     let insertSql = sqls.ExcuteIMSql.AddNewMessageToApplyFriend;
+    // comment,key,sender,status,time
+    insertSql = commonMethods.sqlFormat(insertSql,[message.comment,message.key,message.sender,message.status,message.time]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(insertSql, [], (tx, results) => {
+
+                console.log("添加applymessage success")
+            }, (err)=>{errorDB('添加applymessage',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
 
 
+APPLYFRIENDFMDB.getAllApplyMessages = function(callback){
+    let sql = sqls.ExcuteIMSql.QueryApplyFriend
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                callback(results.rows.raw());
+            }, (err)=>{errorDB('获取数据表',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+
+APPLYFRIENDFMDB.updateMessageStatus = function(key,status){
+    let sql = sqls.ExcuteIMSql.UpdateApplyFriend
+
+    sql = commonMethods.sqlFormat(sql,[key,status]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("修改 applymessage status success")
+            }, (err)=>{errorDB('修改数据表',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
 }
 
 function errorDB(type,err) {
