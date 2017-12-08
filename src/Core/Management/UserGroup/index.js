@@ -265,7 +265,7 @@ export default class User {
                             let relation = new RelationModel();
                             relation.RelationId = data.Account;
                             relation.Nick = data.Nickname;
-                            relation.Type = 'user';
+                            relation.Type = 'private';
                             relation.show = 'false';
                             relation.avator = data.HeadImageUrl == null?"":data.HeadImageUrl;
                             cache[type][Id] = relation;
