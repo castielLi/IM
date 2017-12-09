@@ -240,15 +240,33 @@ export default class IMController {
         // //})
     }
 
-    updateConverseListByChatManagement(newConverse){
+    updateConverseListByChatManagement(newConverse,message){
 
-        let caches = formatOjbToneedArr(cache.conversationCache);
+        if(cache.conversationCache[newConverse.chatId]){
 
-        caches.splice(0, 0, newConverse)
+            let oldConverse = cache.conversationCache[newConverse.chatId];
 
-        cache.conversationCache[newConverse.chatId] = (newConverse);
+            newConverse.name = oldConverse.name;
 
-        updateconverslisthandle(caches);
+            cache.conversationCache[newConverse.chatId] = newConverse;
+
+            let caches = formatOjbToneedArr(cache.conversationCache);
+
+            updateconverslisthandle(caches)
+            
+            cache.messageCache.push(message);
+            updateChatRecordhandle(cache.messageCache);
+
+        }else{
+            let caches = formatOjbToneedArr(cache.conversationCache);
+
+            caches.splice(0, 0, newConverse)
+
+            cache.conversationCache[newConverse.chatId] = newConverse;
+
+            updateconverslisthandle(caches);
+
+        }
     }
 
 
