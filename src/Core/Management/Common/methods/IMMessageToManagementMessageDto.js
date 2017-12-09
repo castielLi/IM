@@ -30,6 +30,11 @@ export default function IMMessageToMessagementMessageDto(message){
                messageDto.type = DtoMessageTypeEnum.friend;
            }else{
                messageDto.type = DtoMessageTypeEnum.info;
+               if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP){
+                   messageDto.group = true;
+                   messageDto.chatId = message.Data.Data.Receiver;
+                   messageDto.sender = message.Data.Data.Receiver;
+               }
            }
 
        }else{
@@ -57,10 +62,10 @@ export default function IMMessageToMessagementMessageDto(message){
                        break;
                }
            }
+           messageDto.chatId = message.Data.Data.Receiver;
+           messageDto.sender = message.Data.Data.Sender;
        }
 
-        messageDto.chatId = message.Data.Data.Receiver;
-        messageDto.sender = message.Data.Data.Sender;
         messageDto.messageId = message.MSGID;
         messageDto.sendTime = message.Data.LocalTime;
     }
