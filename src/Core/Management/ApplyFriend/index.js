@@ -37,9 +37,9 @@ export default class ApplyFriend {
        this.updateSqlApplyMessageStatus(key,status);
     }
 
-    AddApplyMessage(message){
+    AddApplyMessage(message,user){
         this.addSqlApplyMessage(message);
-        ControllerApplyMessageHandle();
+        ControllerApplyMessageHandle(message,user);
     }
 
 

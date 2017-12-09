@@ -53,35 +53,41 @@ export default class ApplyFriendController {
         // }
         // updateApplyFriendHandle(arr)
 
-
-
         connectManagement();
 
-        this.apply.GetAllApplyMessage(function (record) {
-            let sendArray = record.map(function (current,index,array) {
-                return {chatId:current.send,group:false};
-            });
-            this.user.init(sendArray, (userArray) => {
+        if(cache=={}){
 
-                for(let i=0; i<userArray.length;i++){
-                    let applyFriendObj = new applyFriendDto();
-                    applyFriendObj.time = record[i].time;
-                    applyFriendObj.comment = record[i].comment;
-                    applyFriendObj.key = record[i].key;
-                    applyFriendObj.send = record[i].send;
-                    applyFriendObj.status = record[i].status;
+            this.apply.GetAllApplyMessage(function (record) {
+                let sendArray = record.map(function (current,index,array) {
+                    return {chatId:current.send,group:false};
+                });
+                this.user.init(sendArray, (userArray) => {
 
-                    applyFriendObj.avator = userArray[i].avator;
-                    applyFriendObj.nick = userArray[i].Nick;
-                    applyFriendObj.localImage = userArray[i].localImage;
+                    for(let i=0; i<userArray.length;i++){
+                        let applyFriendObj = new applyFriendDto();
+                        applyFriendObj.time = record[i].time;
+                        applyFriendObj.comment = record[i].comment;
+                        applyFriendObj.key = record[i].key;
+                        applyFriendObj.send = record[i].send;
+                        applyFriendObj.status = record[i].status;
 
-                    cache[applyFriendObj.send] = applyFriendObj;
-                }
-            });
+                        applyFriendObj.avator = userArray[i].avator;
+                        applyFriendObj.nick = userArray[i].Nick;
+                        applyFriendObj.localImage = userArray[i].localImage;
 
+                        cache[applyFriendObj.send] = applyFriendObj;
+                    }
+                    let Record = Object.values(cache);
+                    updateApplyFriendHandle(Record);
+                });
+            })
+        }else{
             let Record = Object.values(cache);
             updateApplyFriendHandle(Record);
-        })
+        }
+
+
+
     }
 
     receiveApplyFriend(applyRecord){
@@ -167,6 +173,23 @@ export default class ApplyFriendController {
     // }
 }
 
+function managementApplyFriendHandle(message,user){
+    //先把message存进缓存，然后再让界面刷新
+    let applyFriendObj = new applyFriendDto();
+    applyFriendObj.time = message.time;
+    applyFriendObj.comment = message.comment;
+    applyFriendObj.key = message.key;
+    applyFriendObj.send = message.send;
+    applyFriendObj.status = message.status;
+    applyFriendObj.avator = user.avator;
+    applyFriendObj.nick = user.Nick;
+    applyFriendObj.localImage = user.avator;
+    cache[applyFriendObj.send] = applyFriendObj;
+
+
+    updateApplyFriendHandle()
+}
+
 function connectManagement(){
-   currentObj.apply.connnectApplyFriend(updateApplyFriendHandle);
+   currentObj.apply.connnectApplyFriend(managementApplyFriendHandle);
 }
