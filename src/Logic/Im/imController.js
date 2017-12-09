@@ -463,35 +463,10 @@ export default class IMController {
         //messageList 每个item 拿上来就是ManagementMessageDto
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
             messageList.reverse();
-            if(messageList.length == 0){
-<<<<<<< HEAD
-                return;
-=======
-            return;
-        }
-
-        maxId = messageList[messageList.length - 1].id;
-        let snapArr = formateDataFromChatManageCacheRecord(messageList);
-        this.user.getRelationsByList(snapArr, (relationObj) => {
-            for (let i = 0, length = messageList.length; i < length; i++) {
-                let itemMessage = new ControllerMessageDto();
-                itemMessage.group = messageList[i].group;
-                itemMessage.chatId = messageList[i].chatId;
-                itemMessage.message = messageList[i].message;
-                  itemMessage.messageId = messageList[i].messageId;
-                itemMessage.type = messageList[i].type;
-                itemMessage.status = messageList[i].status;
-                itemMessage.sendTime = messageList[i].sendTime;
-
-
-                if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
-                    let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-
-                }
-                cache.messageCache.unshift(itemMessage);
->>>>>>> e400c2f421bfeaf6b8757582c98898d39649f120
+            if(messageList.length == 0) {
+              return ;
             }
+
 
             maxId = messageList[messageList.length - 1].id;
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
@@ -501,17 +476,24 @@ export default class IMController {
                     itemMessage.group = messageList[i].group;
                     itemMessage.chatId = messageList[i].chatId;
                     itemMessage.message = messageList[i].message;
-                    itemMessage.messageId = messageList[i].messageId;
+                      itemMessage.messageId = messageList[i].messageId;
                     itemMessage.type = messageList[i].type;
                     itemMessage.status = messageList[i].status;
                     itemMessage.sendTime = messageList[i].sendTime;
 
 
-                    let {RelationId, Nick, avator,localImage} = relationObj[messageList[i].sender];
-                    let HeadImageUrl = localImage != ''?localImage:avator;
-                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+                    if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
+                        let {RelationId, Nick, avator,localImage} = relationObj[messageList[i].sender];
+                        let HeadImageUrl = localImage != ''?localImage:avator;
+                        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+
+                    }
                     cache.messageCache.unshift(itemMessage);
+
                 }
+
+
+
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
 
