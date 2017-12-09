@@ -52,7 +52,7 @@ class Chat extends Component {
         }
         currentObj = this;
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            if(r1.message.type === 'image' || r1.message.type === 'video')
+            if(r1.type === 'image' || r1.type === 'video')
             {
                 let r1Local = r1.message.Resource[0].LocalSource;
                 let r2Local = r2.message.Resource[0].LocalSource;

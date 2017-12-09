@@ -132,7 +132,7 @@ GROUPFMDB.addGroupMembersByGroupId = function(groupId,members){
 
     for(let item in members){
         let sql = sqls.ExcuteIMSql.InsertGroupMember;
-        sql = commonMethods.sqlFormat(sql,[groupId,members[item]]);
+        sql = commonMethods.sqlFormat(sql,[groupId,members[item].Account]);
         executeSqls.push(sql);
     }
 
