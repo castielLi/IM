@@ -77,6 +77,7 @@ SendManager.handleSendMessageQueue = function(){
                 if(sendMessageQueue[item].info.times == configs.Max_Send_Times){
                     currentObj.sendOverMaxTimesHandle(sendMessageQueue[item].MSGID)
                     sendMessageQueue.splice(item,1);
+                    continue;
                 }else{
                     let now = new Date().getTime();
                     if(now - sendMessageQueue[item].info.sendTime > configs.timeOutResend) {
@@ -88,6 +89,7 @@ SendManager.handleSendMessageQueue = function(){
             //当needACK等于false说明这条消息不需要接收ack
             if(!sendMessageQueue[item].needACK){
                 sendMessageQueue.splice(item,1);
+                continue;
             }
 
         }

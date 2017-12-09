@@ -830,7 +830,7 @@ function controllerMessageResult(success,message){
 
     currentObj.chat.updateChatMessage(messageDto)
 
-    if(chatId == currentChat.chatId){
+    if(messageDto.chatId == currentChat.chatId){
         currentObj.updateCacheMessage(messageDto)
         updateChatRecordhandle(cache.messageCache);
     }
