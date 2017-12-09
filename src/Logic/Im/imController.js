@@ -258,7 +258,7 @@ export default class IMController {
             let caches = formatOjbToneedArr(cache.conversationCache);
 
             updateconverslisthandle(caches)
-            
+
             cache.messageCache.push(message);
             updateChatRecordhandle(cache.messageCache);
 
@@ -312,15 +312,6 @@ export default class IMController {
 
 
 
-
-                // relationObj = {'wg003723':{
-                //     Account: "wg003723",
-                //     NickName: "wg003723",
-                //     Remark: "",
-                //     avator: "",
-                //     localImage: ""},
-                // }
-
             this.user.getRelationsByList(snapArr, (relationObj) => {
 
                 for (let i = 0, length = messageList.length; i < length; i++) {
@@ -333,12 +324,18 @@ export default class IMController {
                     itemMessage.status = messageList[i].status;
                     itemMessage.sendTime = messageList[i].sendTime;
 
+
+
+
+
                     if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
-                        let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+                        let {RelationId, Nick, avator,localImage} = relationObj[messageList[i].sender];
+                        let HeadImageUrl = localImage != ''?localImage:avator;
+                        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
 
                     }
                     cache.messageCache.unshift(itemMessage);
+
                 }
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
@@ -467,6 +464,9 @@ export default class IMController {
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
             messageList.reverse();
             if(messageList.length == 0){
+<<<<<<< HEAD
+                return;
+=======
             return;
         }
 
@@ -490,85 +490,106 @@ export default class IMController {
 
                 }
                 cache.messageCache.unshift(itemMessage);
+>>>>>>> e400c2f421bfeaf6b8757582c98898d39649f120
             }
-            //渲染聊天记录
-            updateChatRecordhandle(cache.messageCache);
 
+            maxId = messageList[messageList.length - 1].id;
+            let snapArr = formateDataFromChatManageCacheRecord(messageList);
+            this.user.getRelationsByList(snapArr, (relationObj) => {
+                for (let i = 0, length = messageList.length; i < length; i++) {
+                    let itemMessage = new ControllerMessageDto();
+                    itemMessage.group = messageList[i].group;
+                    itemMessage.chatId = messageList[i].chatId;
+                    itemMessage.message = messageList[i].message;
+                    itemMessage.messageId = messageList[i].messageId;
+                    itemMessage.type = messageList[i].type;
+                    itemMessage.status = messageList[i].status;
+                    itemMessage.sendTime = messageList[i].sendTime;
+
+
+                    let {RelationId, Nick, avator,localImage} = relationObj[messageList[i].sender];
+                    let HeadImageUrl = localImage != ''?localImage:avator;
+                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+                    cache.messageCache.unshift(itemMessage);
+                }
+                //渲染聊天记录
+                updateChatRecordhandle(cache.messageCache);
+
+            })
         })
-     })
 
-    // //测试代码
-    //     //messageList 每个item 拿上来就是ManagementMessageDto
-    //     //this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
-    //     let messageList = [{
-    //         group: false,
-    //         chatId: "wg003722",//chatId={account/groupId},
-    //         id:3 ,//自增
-    //         sender: "wg003722" ,//"wg003722"
-    //         messageId: "4",//消息编号
-    //         message: '4444',//消息内容，
-    //         type:'text',//消息类型
-    //         status:'WaitOpreator',
-    //         sendTime : "1512726557145"
-    //     },
-    //         {group: false,
-    //             chatId: "wg003722",//chatId={account/groupId},
-    //             id:4 ,//自增
-    //             sender: "wg003722" ,//"wg003722"
-    //             messageId: "5",//消息编号
-    //             message: '55555',//消息内容，
-    //             type:'text',//消息类型
-    //             status:'WaitOpreator',
-    //             sendTime : "1512726557145"
-    //         },
-    //         {group: false,
-    //             chatId: "wg003722",//chatId={account/groupId},
-    //             id:5 ,//自增
-    //             sender: "wg003723" ,//"wg003722"
-    //             messageId: "6",//消息编号
-    //             message: '66666',//消息内容，
-    //             type:'text',//消息类型
-    //             status:'WaitOpreator',
-    //             sendTime : "1512726557145"
-    //         }]
-    //         if(messageList.length == 0){
-    //             return;
-    //         }
-    //
-    //         maxId = messageList[messageList.length - 1].id;
-    //         let snapArr = formateDataFromChatManageCacheRecord(messageList);
-    //         //this.user.init(snapArr, (relationObj) => {
-    //         let relationObj = {
-    //             'wg003722':{
-    //                 Nick:'李四',
-    //                 RelationId:'wg003722',
-    //                 avator:''
-    //             },
-    //             'wg003723':{
-    //                 Nick:'黄',
-    //                 RelationId:'wg003723',
-    //                 avator:''
-    //             }
-    //         }
-    //             for (let i = 0, length = messageList.length; i < length; i++) {
-    //                 let itemMessage = new ControllerMessageDto();
-    //                 itemMessage.group = messageList[i].group;
-    //                 itemMessage.chatId = messageList[i].chatId;
-    //                 itemMessage.message = messageList[i].message;
-    //                 itemMessage.messageId = messageList[i].messageId;
-    //                 itemMessage.type = messageList[i].type;
-    //                 itemMessage.status = messageList[i].status;
-    //                 itemMessage.sendTime = messageList[i].sendTime;
-    //
-    //                 let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-    //                 itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-    //                 cache.messageCache.unshift(itemMessage);
-    //             }
-    //             //渲染聊天记录
-    //             updateChatRecordhandle(cache.messageCache);
-    //
-    //         //})
-    //     //})
+        // //测试代码
+        //     //messageList 每个item 拿上来就是ManagementMessageDto
+        //     //this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
+        //     let messageList = [{
+        //         group: false,
+        //         chatId: "wg003722",//chatId={account/groupId},
+        //         id:3 ,//自增
+        //         sender: "wg003722" ,//"wg003722"
+        //         messageId: "4",//消息编号
+        //         message: '4444',//消息内容，
+        //         type:'text',//消息类型
+        //         status:'WaitOpreator',
+        //         sendTime : "1512726557145"
+        //     },
+        //         {group: false,
+        //             chatId: "wg003722",//chatId={account/groupId},
+        //             id:4 ,//自增
+        //             sender: "wg003722" ,//"wg003722"
+        //             messageId: "5",//消息编号
+        //             message: '55555',//消息内容，
+        //             type:'text',//消息类型
+        //             status:'WaitOpreator',
+        //             sendTime : "1512726557145"
+        //         },
+        //         {group: false,
+        //             chatId: "wg003722",//chatId={account/groupId},
+        //             id:5 ,//自增
+        //             sender: "wg003723" ,//"wg003722"
+        //             messageId: "6",//消息编号
+        //             message: '66666',//消息内容，
+        //             type:'text',//消息类型
+        //             status:'WaitOpreator',
+        //             sendTime : "1512726557145"
+        //         }]
+        //         if(messageList.length == 0){
+        //             return;
+        //         }
+        //
+        //         maxId = messageList[messageList.length - 1].id;
+        //         let snapArr = formateDataFromChatManageCacheRecord(messageList);
+        //         //this.user.init(snapArr, (relationObj) => {
+        //         let relationObj = {
+        //             'wg003722':{
+        //                 Nick:'李四',
+        //                 RelationId:'wg003722',
+        //                 avator:''
+        //             },
+        //             'wg003723':{
+        //                 Nick:'黄',
+        //                 RelationId:'wg003723',
+        //                 avator:''
+        //             }
+        //         }
+        //             for (let i = 0, length = messageList.length; i < length; i++) {
+        //                 let itemMessage = new ControllerMessageDto();
+        //                 itemMessage.group = messageList[i].group;
+        //                 itemMessage.chatId = messageList[i].chatId;
+        //                 itemMessage.message = messageList[i].message;
+        //                 itemMessage.messageId = messageList[i].messageId;
+        //                 itemMessage.type = messageList[i].type;
+        //                 itemMessage.status = messageList[i].status;
+        //                 itemMessage.sendTime = messageList[i].sendTime;
+        //
+        //                 let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
+        //                 itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+        //                 cache.messageCache.unshift(itemMessage);
+        //             }
+        //             //渲染聊天记录
+        //             updateChatRecordhandle(cache.messageCache);
+        //
+        //         //})
+        //     //})
     }
     //发送消息
     // UI传过来的消息体
@@ -588,7 +609,7 @@ export default class IMController {
         itemManagementMessage.sendTime = Date.now();
         this.im.addMessage(itemManagementMessage,(status,messageId)=>{
 
-        //managementMessage是带有status和消息id的完整ManagementMessageDto
+            //managementMessage是带有status和消息id的完整ManagementMessageDto
             //向IM发送队列中添加消息成功
             if(status){
                 itemManagementMessage.messageId = messageId;
@@ -679,7 +700,7 @@ export default class IMController {
         //渲染聊天记录
         updateChatRecordhandle(cache.messageCache);
 
-        
+
 
         this.chat.removeMessage(currentChat.chatId,currentChat.group,messageId);
 
@@ -763,9 +784,9 @@ export default class IMController {
             itemChat.lastSender = message.sender;
             itemChat.lastMessage = getContentOfControllerMessageDto(message);
             itemChat.lastTime = message.sendTime;
-            let {Nick, avator} = relationObj;
+            let {Nick, avator,localImage} = relationObj;
             itemChat.name = Nick;
-            itemChat.HeadImageUrl = avator;
+            itemChat.HeadImageUrl = localImage != '' ? localImage : avator;
             cache.conversationCache[chatId] = itemChat;
             let tempArr = formatOjbToneedArr(cache.conversationCache);
             updateconverslisthandle(tempArr);
@@ -821,7 +842,7 @@ function connectChat(){
 }
 
 function controllerKickOutMessage(){
-   AppKickOutHandle();
+    AppKickOutHandle();
 }
 
 
@@ -1018,24 +1039,25 @@ function storeChatMessageAndCache(message){
 function AddCache(managementMessageObj){
 
     currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
-            let itemMessage = new ControllerMessageDto();
-            itemMessage.group = managementMessageObj.group;
-            itemMessage.chatId = managementMessageObj.chatId;
-            itemMessage.message = managementMessageObj.message;
+        let itemMessage = new ControllerMessageDto();
+        itemMessage.group = managementMessageObj.group;
+        itemMessage.chatId = managementMessageObj.chatId;
+        itemMessage.message = managementMessageObj.message;
         itemMessage.messageId = managementMessageObj.messageId;
 
         itemMessage.type = managementMessageObj.type;
-            itemMessage.status = managementMessageObj.status;
-            itemMessage.sendTime = managementMessageObj.sendTime;
+        itemMessage.status = managementMessageObj.status;
+        itemMessage.sendTime = managementMessageObj.sendTime;
 
-            let {RelationId, Nick, avator} = relationObj;
-            itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+        let {RelationId, Nick, avator,localImage} = relationObj;
+        let HeadImageUrl = localImage !='' ?localImage:avator;
+        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
 
-            cache.messageCache.push(itemMessage);
+        cache.messageCache.push(itemMessage);
 
-            //渲染聊天记录
-            updateChatRecordhandle(cache.messageCache);
-        })
+        //渲染聊天记录
+        updateChatRecordhandle(cache.messageCache);
+    })
 
     // //测试代码
     // currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
