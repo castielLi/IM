@@ -243,7 +243,13 @@ export default class User {
     }
 
     getGroupIsInContactFromCache(groupId){
-        return cache.group[groupId].show;
+        let show = cache.group[groupId].show;
+        if(show || show == 'true'){
+            show = true;
+        }else {
+            show = false;
+        }
+        return show;
     }
 
 
@@ -267,7 +273,7 @@ export default class User {
                 else{
                     relation = Relation;
                 }
-                let members = relation.MemberList;
+                let members = data.MemberList;
                 for(let i = 0;i<members.length;i++){
                     let accountId = members[i].Account;
                     let model = new RelationModel();
@@ -295,7 +301,7 @@ export default class User {
         let groupMembersInfo = [];
         currentObj.GetGroupMemberIdsByGroupId(Id,function(results){
             if(results.length == 0){
-                currentObj.getHttpGroupInfo(Id,type,callback,relations[0]);
+                currentObj.getHttpGroupInfo(Id,type,callback,relation);
             }else{
                 //todo:考虑要是private里面没有对应 d 的信息
                 for(let i = 0;i<results.length;i++){
