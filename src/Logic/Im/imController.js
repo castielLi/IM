@@ -154,7 +154,7 @@ export default class IMController {
 
                     cache.allUnreadCount+=itemChat.unreadCount;
 
-                    itemChat.name = relationObj[itemChat.chatId].NickName;
+                    itemChat.name = relationObj[itemChat.chatId].Nick;
                     itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
                         relationObj[itemChat.chatId].avator;
                     needArr.push(itemChat);
@@ -333,8 +333,8 @@ export default class IMController {
                     itemMessage.status = messageList[i].status;
                     itemMessage.sendTime = messageList[i].sendTime;
 
-                    let {Account, NickName, avator} = relationObj[messageList[i].sender];
-                    itemMessage.sender = {account: Account, name: NickName, HeadImageUrl: avator};
+                    let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
+                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
                     cache.messageCache.push(itemMessage);
                 }
                 //渲染聊天记录
@@ -481,8 +481,8 @@ export default class IMController {
                 itemMessage.sendTime = messageList[i].sendTime;
 
 
-                let {Account, NickName, avator} = relationObj[messageList[i].sender];
-                itemMessage.sender = {account: Account, name: NickName, HeadImageUrl: avator};
+                let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
+                itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
                 cache.messageCache.unshift(itemMessage);
             }
             //渲染聊天记录
