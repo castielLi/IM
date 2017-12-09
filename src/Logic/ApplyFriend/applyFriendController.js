@@ -61,7 +61,7 @@ export default class ApplyFriendController {
                 let sendArray = record.map(function (current,index,array) {
                     return {chatId:current.send,group:false};
                 });
-                this.user.init(sendArray, (userArray) => {
+                this.user.getRelationsByList(sendArray, (userArray) => {
 
                     for(let i=0; i<userArray.length;i++){
                         let applyFriendObj = new applyFriendDto();

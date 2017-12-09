@@ -24,6 +24,10 @@ GroupManager.initGroupMemberByGroupId = function(GroupId,members){
     groupStoreSqlite.initGroupMemberByGroupId(GroupId,members)
 }
 
+GroupManager.addGroupMembersByGroupId =  function(groupId,members){
+    groupStoreSqlite.AddGroupMembersByGroupId(groupId,members);
+}
+
 GroupManager.GetMembersByGroupId = function(groupId,callback){
     groupStoreSqlite.GetMembersByGroupId(groupId,callback);
 }

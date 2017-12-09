@@ -139,8 +139,10 @@ export default class IMController {
     updateConverseList() {
         this.chat.getConverseList((recentListObj) => {
             let snapArr = formateDataFromChatManageCache(recentListObj);
-            this.user.init(snapArr, (relationObj) => {
+
+            this.user.getRelationsByList(snapArr, (relationObj) => {
                 let needArr = [];
+
                 for (let key in recentListObj) {
                     let itemChat = new ControllerChatConversationDto();
                     itemChat.group = recentListObj[key].group;
@@ -257,6 +259,10 @@ export default class IMController {
     setCurrentConverse(chatId, group, callback) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
+
+        //初始化缓存
+        this.user.init(chatId,group);
+
         //未读消息清零
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
             this.clearUnReadMsgNumber(chatId);
@@ -279,7 +285,7 @@ export default class IMController {
             maxId = messageList[messageList.length - 1].id;
 
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
-            this.user.init(snapArr, (relationObj) => {
+
                 // relationObj = {'wg003723':{
                 //     Account: "wg003723",
                 //     NickName: "wg003723",
@@ -287,6 +293,9 @@ export default class IMController {
                 //     avator: "",
                 //     localImage: ""},
                 // }
+
+            this.user.getRelationsByList(snapArr, (relationObj) => {
+
                 for (let i = 0, length = messageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
                     itemMessage.group = messageList[i].group;
@@ -433,7 +442,7 @@ export default class IMController {
 
         maxId = messageList[messageList.length - 1].id;
         let snapArr = formateDataFromChatManageCacheRecord(messageList);
-        this.user.init(snapArr, (relationObj) => {
+        this.user.getRelationsByList(snapArr, (relationObj) => {
             for (let i = 0, length = messageList.length; i < length; i++) {
                 let itemMessage = new ControllerMessageDto();
                 itemMessage.group = messageList[i].group;
@@ -552,7 +561,7 @@ export default class IMController {
                 itemManagementMessage.messageId = messageId;
                 itemManagementMessage.status = 'WaitOpreator';
 
-                this.chat.addMessage(message.chatId,itemManagementMessage);
+                this.chat.addMessage(itemManagementMessage);
 
                 //修改cache.conversationCache
                 if(cache.conversationCache[itemManagementMessage.chatId]!=undefined){
