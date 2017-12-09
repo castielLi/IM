@@ -523,25 +523,31 @@ export default class IMController {
         itemManagementMessage.message = message.message;
         itemManagementMessage.type = message.type;
         itemManagementMessage.sendTime = Date.now();
-        this.im.addMessage(itemManagementMessage,(managementMessage)=>{
+        this.im.addMessage(itemManagementMessage,(status,messageId)=>{
 
         //managementMessage是带有status和消息id的完整ManagementMessageDto
-            this.chat.addMessage(message.chatId,managementMessage);
+            //向IM发送队列中添加消息成功
+            if(status){
+                itemManagementMessage.messageId = messageId;
+                itemManagementMessage.status = 'WaitOpreator';
 
-            //修改cache.conversationCache
-            if(cache.conversationCache[managementMessage.chatId]!=undefined){
-                this.updateOneChat(managementMessage.chatId,managementMessage);
-            }else{
-                this.addOneChat(managementMessage.chatId,managementMessage);
+                this.chat.addMessage(message.chatId,itemManagementMessage);
+
+                //修改cache.conversationCache
+                if(cache.conversationCache[itemManagementMessage.chatId]!=undefined){
+                    this.updateOneChat(itemManagementMessage.chatId,itemManagementMessage);
+                }else{
+                    this.addOneChat(itemManagementMessage.chatId,itemManagementMessage);
+                }
+
+
+                maxId = maxId+1;
+                //cache添加
+
+                AddCache(itemManagementMessage)
+
+                updateChatRecordhandle(cache.messageCache);
             }
-
-
-            maxId = maxId+1;
-            //cache添加
-
-            AddCache(managementMessage)
-
-            updateChatRecordhandle(cache.messageCache);
 
         });
 
@@ -921,7 +927,7 @@ function controllerReceiveMessage(message){
 function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message);
-    this.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
+    currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
     let chatId;
@@ -945,46 +951,46 @@ function storeChatMessageAndCache(message){
 
 function AddCache(managementMessageObj){
 
-        // this.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
-        //     let itemMessage = new ControllerMessageDto();
-        //     itemMessage.group = managementMessageObj.group;
-        //     itemMessage.chatId = managementMessageObj.chatId;
-        //     itemMessage.message = managementMessageObj.message;
-    //     itemMessage.messageId = managementMessageObj.messageId;
-
-    //     itemMessage.type = managementMessageObj.type;
-        //     itemMessage.status = managementMessageObj.status;
-        //     itemMessage.sendTime = managementMessageObj.sendTime;
-        //
-        //     let {RelationId, Nick, avator} = relationObj;
-        //     itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-        //
-        //     cache.messageCache.push(itemMessage);
-        //
-        //     //渲染聊天记录
-        //     updateChatRecordhandle(cache.messageCache);
-        // })
-
-    //测试代码
     currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
-
-        let itemMessage = new ControllerMessageDto();
-        itemMessage.group = managementMessageObj.group;
-        itemMessage.chatId = managementMessageObj.chatId;
-        itemMessage.message = managementMessageObj.message;
+            let itemMessage = new ControllerMessageDto();
+            itemMessage.group = managementMessageObj.group;
+            itemMessage.chatId = managementMessageObj.chatId;
+            itemMessage.message = managementMessageObj.message;
         itemMessage.messageId = managementMessageObj.messageId;
+
         itemMessage.type = managementMessageObj.type;
-        itemMessage.status = managementMessageObj.status;
-        itemMessage.sendTime = managementMessageObj.sendTime;
+            itemMessage.status = managementMessageObj.status;
+            itemMessage.sendTime = managementMessageObj.sendTime;
 
-        let {RelationId, Nick, avator} = relationObj;
-        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+            let {RelationId, Nick, avator} = relationObj;
+            itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
 
-        cache.messageCache.push(itemMessage);
+            cache.messageCache.push(itemMessage);
 
-        //渲染聊天记录
-        updateChatRecordhandle(cache.messageCache);
-    })
+            //渲染聊天记录
+            updateChatRecordhandle(cache.messageCache);
+        })
+
+    // //测试代码
+    // currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
+    //
+    //     let itemMessage = new ControllerMessageDto();
+    //     itemMessage.group = managementMessageObj.group;
+    //     itemMessage.chatId = managementMessageObj.chatId;
+    //     itemMessage.message = managementMessageObj.message;
+    //     itemMessage.messageId = managementMessageObj.messageId;
+    //     itemMessage.type = managementMessageObj.type;
+    //     itemMessage.status = managementMessageObj.status;
+    //     itemMessage.sendTime = managementMessageObj.sendTime;
+    //
+    //     let {RelationId, Nick, avator} = relationObj;
+    //     itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+    //
+    //     cache.messageCache.push(itemMessage);
+    //
+    //     //渲染聊天记录
+    //     updateChatRecordhandle(cache.messageCache);
+    // })
 }
 
 
