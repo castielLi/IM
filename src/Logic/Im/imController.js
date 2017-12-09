@@ -302,7 +302,16 @@ export default class IMController {
 
             maxId = messageList[messageList.length - 1].id;
 
+
+
+
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
+            console.log(snapArr)
+            console.log(snapArr)
+            console.log(snapArr)
+            console.log(snapArr)
+
+
 
                 // relationObj = {'wg003723':{
                 //     Account: "wg003723",
