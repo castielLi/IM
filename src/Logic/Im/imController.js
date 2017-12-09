@@ -14,7 +14,6 @@ import AppCommandEnum from '../../Core/Management/Common/dto/AppCommandEnum'
 import MessageStatus from '../../Core/Management/Common/dto/MessageStatus'
 import TabTypeEnum from './dto/TabTypeEnum'
 import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeEnum'
-
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 
@@ -310,10 +309,7 @@ export default class IMController {
 
 
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
-            console.log(snapArr)
-            console.log(snapArr)
-            console.log(snapArr)
-            console.log(snapArr)
+
 
 
 
@@ -337,9 +333,12 @@ export default class IMController {
                     itemMessage.status = messageList[i].status;
                     itemMessage.sendTime = messageList[i].sendTime;
 
-                    let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-                    cache.messageCache.push(itemMessage);
+                    if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
+                        let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
+                        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+
+                    }
+                    cache.messageCache.unshift(itemMessage);
                 }
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
@@ -485,8 +484,11 @@ export default class IMController {
                 itemMessage.sendTime = messageList[i].sendTime;
 
 
-                let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+                if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
+                    let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
+                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+
+                }
                 cache.messageCache.unshift(itemMessage);
             }
             //渲染聊天记录
@@ -1091,11 +1093,13 @@ function formateDataFromChatManageCacheRecord(ChatManageCacheRecordArr){
     let needArr = ChatManageCacheRecordArr.map((v,i)=>{
         let obj = {};
         obj['chatId'] = v['sender'];
-        obj['group'] = v['group'];
+        // v['group']
+        obj['group'] = false
         return obj;
     })
     return needArr;
 }
+
 //从cache删除指定id的message
 function deleteItemFromCacheByMessageId(cache,messageId){
     let index;
