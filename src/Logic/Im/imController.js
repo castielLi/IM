@@ -141,7 +141,7 @@ export default class IMController {
             let snapArr = formateDataFromChatManageCache(recentListObj);
             this.user.init(snapArr, (relationObj) => {
                 let needObj = {};
-                for (let key in relationObj) {
+                for (let key in recentListObj) {
                     let itemChat = new ControllerChatConversationDto();
                     itemChat.group = recentListObj[key].group;
                     itemChat.chatId = recentListObj[key].chatId;
@@ -152,8 +152,9 @@ export default class IMController {
 
                     cache.allUnreadCount+=itemChat.unreadCount;
 
-                    itemChat.name = relationObj[key].Nick;
-                    itemChat.HeadImageUrl = relationObj[key].avator;
+                    itemChat.name = relationObj[itemChat.chatId].NickName;
+                    itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
+                        relationObj[itemChat.chatId].avator;
                     needObj[recentListObj[key].chatId] = itemChat;
                 }
                 cache.conversationCache = needObj;

@@ -136,7 +136,7 @@ export default class Chat {
            let record = new ManagementChatRecordDto();
            record.group = true;
            record.chatId = message.chatId;
-           record.lastMessage = message.message;
+           record.lastMessage = "[通知]";
            record.lastSender = "";
            record.lastTime = message.sendTime;
            record.unreadCount = 0;
