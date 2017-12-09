@@ -18,7 +18,7 @@ export default class TimeHelper{
 }
 
 function dateFtt(fmt, timenumber) { //author: meizz
-    let date = timenumber?new Date():new Date(parseInt(timenumber));
+    let date = timenumber?new Date(parseInt(timenumber)):new Date();
     var o = {
         "M+": date.getMonth() + 1, //月份
         "d+": date.getDate(), //日
