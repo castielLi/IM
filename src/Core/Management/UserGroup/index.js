@@ -52,23 +52,7 @@ export default class User {
 
     init(chatId,group = false){
         if(group){
-            let groupMembers = [];
-            this.GetGroupMemberIdsByGroupId(chatId,function(results){
-                if(results.length == 0){
-                   currentObj.getGroupInfoByIdandType(chatId,"group",function(){});
-                   return;
-                }else{
-                    //todo:考虑要是private里面没有对应 d 的信息
-                    for(let i = 0;i<results.length;i++){
-                        //因为数据库的结构就是relationModel的结构
-                        if(cache["user"][results[i].RelationId] == undefined){
-                            cache["user"][results[i].RelationId] = results[i];
-                        }
-                        groupMembers.push(results[i].RelationId)
-                    }
-                    cache["groupMember"][Id] = groupMembers;
-                }
-            });
+           this.getInformationByIdandType(chatId,true,function(){})
         }
     }
 
@@ -138,6 +122,17 @@ export default class User {
     //     this.getUserInfoByIdandType(userId,"user",callback)
     // }
 
+    getInformationByIdandType(id,isGroup,callback){
+        if(isGroup){
+            this.getGroupInfoByIdandType(id,'group',(relations)=>{
+                callback(relations)
+            })
+        }else{
+            this.getUserInfoByIdandType(id,'private',(relations)=>{
+                callback(relations)
+            })
+        }
+    }
 
     //获取所有show = true的user
     getUserRelationsOfShow(callback){
@@ -385,19 +380,7 @@ export default class User {
             }
         }
     }
-
-    getInformationByIdandType(id,isGroup,callback){
-        if(isGroup){
-            this.getGroupInfoByIdandType(id,'group',(relations)=>{
-                callback(relations)
-            })
-        }else{
-            this.getUserInfoByIdandType(id,'user',(relations)=>{
-                callback(relations)
-            })
-        }
-    }
-
+  
 
     getUserInfoById(accountId){
         return cache["user"][accountId]["Nick"]

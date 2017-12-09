@@ -141,8 +141,10 @@ export default class Chat {
            record.lastTime = message.sendTime;
            record.unreadCount = 0;
            record.name = groupName;
-           record.Record = [];
-           ControllerUpdateConverseListHandlue(record)
+           record.HeadImageUrl = "";
+           record.noSound = false;
+
+           ControllerUpdateConverseListHandlue(record,message)
        }
     }
 
