@@ -4,11 +4,11 @@
 
 
 export default DtoMessageTypeEnum = {
-    text : 1,
-    image : 2,
-    video :3,
-    audio:4,
-    error:5,
-    info:6,
-    friend:7
+    text : "text",
+    image : "image",
+    video :"video",
+    audio:"audio",
+    error:"error",
+    info:"info",
+    friend:"friend"
 }

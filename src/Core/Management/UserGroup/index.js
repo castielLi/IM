@@ -95,7 +95,7 @@ export default class User {
                     cache['user'][user.RelationId] = user;
 
                     let relationId= users[item].RelationId;
-                    backData[relationId] = { "Account":relationId,"NickName":user.Nick,"Remark":user.Remark,"avator":user.avator,"localImage":user.localImage}
+                    backData[relationId] = user;
                 }
 
                 for(let item in groups){
@@ -105,7 +105,7 @@ export default class User {
                     cache['group'][group.RelationId] = group;
 
                     let relationId= groups[item].RelationId;
-                    backData[relationId] = {"Account":relationId,"NickName":group.Nick,"Remark":group.Remark,"avator":group.avator,"localImage":group.localImage}
+                    backData[relationId] = group;
                 }
 
                 callback(backData);
