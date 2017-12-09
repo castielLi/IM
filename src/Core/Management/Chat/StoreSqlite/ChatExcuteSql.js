@@ -8,7 +8,7 @@ export const InitIMTable = {
 
 export const ExcuteIMSql = {
     "QueryChatIsExist":"select * from ChatRecode where ChatId = ?",
-    "GetChatList":"select * from ChatRecode",
+    "GetChatList":"select * from ChatRecode order by Time desc",
     "InsertChatRecode":"insert into ChatRecode (ChatId,Type,LastMessage,Time,LastSender,unReadMessageCount) values (?,?,?,?,?,0)",
     "CreateChatTable"
         : "CREATE TABLE ? (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255), message varchar(500),status varchar(255))",
@@ -17,7 +17,7 @@ export const ExcuteIMSql = {
     "DeleteChatTableByName":"delete from ?",
     "QueryChatTypeFromChatList":"select Type from ChatRecode where ChatId = ?",
     "DeleteMessageById":"delete from ? where Id = ?",
-    "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ? where ChatId = ? ,LastSender = ?",
+    "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ?,LastSender = ? where ChatId = ?",
     "UpdateChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = ? where ChatId = ?",
     "AddChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = unReadMessageCount+1 where ChatId = ?",
     "QueryChatRecodeByChatId":"select message from ? order by Id desc LIMIT ?,?",

@@ -140,7 +140,7 @@ export default class IMController {
         this.chat.getConverseList((recentListObj) => {
             let snapArr = formateDataFromChatManageCache(recentListObj);
             this.user.init(snapArr, (relationObj) => {
-                let needObj = {};
+                let needObj = [];
                 for (let key in recentListObj) {
                     let itemChat = new ControllerChatConversationDto();
                     itemChat.group = recentListObj[key].group;
@@ -155,15 +155,14 @@ export default class IMController {
                     itemChat.name = relationObj[itemChat.chatId].NickName;
                     itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
                         relationObj[itemChat.chatId].avator;
-                    needObj[recentListObj[key].chatId] = itemChat;
+                    needObj.push(itemChat);
                 }
-                cache.conversationCache = needObj;
+                cache.conversationCache = formatOjbToneedArr(needObj);
 
                 //渲染会话列表
 
-                let tempArr = formatOjbToneedArr(cache.conversationCache);
                 AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
-                updateconverslisthandle(tempArr);
+                updateconverslisthandle(needObj);
             })
         })
 
@@ -243,9 +242,13 @@ export default class IMController {
 
     updateConverseListByChatManagement(newConverse){
 
+        let caches = formatOjbToneedArr(cache.conversationCache);
+
+        caches.splice(0, 0, newConverse)
+
         cache.conversationCache[newConverse.chatId] = (newConverse);
-        let tempArr = formatOjbToneedArr(cache.conversationCache);
-        updateconverslisthandle(tempArr);
+
+        updateconverslisthandle(caches);
     }
 
 
