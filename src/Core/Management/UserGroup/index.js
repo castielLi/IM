@@ -380,9 +380,7 @@ export default class User {
             }
         }
     }
-
-
-
+  
 
     getUserInfoById(accountId){
         return cache["user"][accountId]["Nick"]
