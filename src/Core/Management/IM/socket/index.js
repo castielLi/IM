@@ -107,6 +107,7 @@ export default class Connect extends Component{
             }
         }
 
+        let url = configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+Device+"&Token="+ IMToken + "&DeviceId="+DeviceId;
         this.webSocket = new WebSocket(configs.serverUrl + "/?AppId=1&account=" + _token+"&Device="+Device+"&Token="+ IMToken + "&DeviceId="+DeviceId);
         this.addEventListenner(callback);
     }

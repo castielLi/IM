@@ -47,8 +47,8 @@ SendManager.changeSendInfoByMSGID = function(messageId){
                 obj.info.sendTime = new Date().getTime();
                 obj.info.times = 1;
             }else{
-                obj.sendTime = new Date().getTime();
-                obj.times += 1;
+                obj.info.sendTime = new Date().getTime();
+                obj.info.times += 1;
             }
             break;
         }
