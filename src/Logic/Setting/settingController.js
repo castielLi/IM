@@ -128,9 +128,8 @@ export default class settingController {
                     //向添加的用户发送邀请消息
                     let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
 
-
                     let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                    currentObj.chat.addMessage(result.data.Data,messageDto,true);
+                    currentObj.chat.addMessage(result.data.Data,messageDto,groupObj.Nick,true);
 
 
                     //创建文件夹

@@ -91,6 +91,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
 
 //本地存储群组邀请通知
 export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
+    text = "你邀请" + text + "进入群聊";
     let message = createMessageObj(text,undefined,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_CREATEGROUP,MessageBodyTypeEnum.MSG_BODY_APP)
     message.status = MessageStatus.SendSuccess
     message.MSGID = messageId;
