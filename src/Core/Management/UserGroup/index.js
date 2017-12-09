@@ -62,17 +62,26 @@ export default class User {
         }
 
         UserManager.GetRelationsByRelationIds(userIds,function(users){
-            let backData = [];
+            let backData = {};
             GroupManager.GetRelationsByRelationIds(groupIds,function(groups){
 
                 for(let item in users){
+                    let user = users[item];
+                    user.show = Boolean(user.show)
+                    cache['user'][user.RelationId] = user;
+
                     let relationId= users[item].RelationId;
-                    backData.push( { relationId:{ "Account":relationId,"NickName":users[item].Nick,"Remark":users[item].Remark,"Friend":users[item].show } } )
+                    backData[relationId] = { "Account":relationId,"NickName":user.Nick,"Remark":user.Remark,"avator":user.avator,"localImage":user.localImage}
                 }
 
                 for(let item in groups){
+
+                    let group = groups[item];
+                    group.show = Boolean(group.show)
+                    cache['group'][group.RelationId] = group;
+
                     let relationId= groups[item].RelationId;
-                    backData.push( { relationId:{ "Account":relationId,"NickName":groups[item].Nick,"Remark":groups[item].Remark,"Friend":groups[item].show } } )
+                    backData[relationId] = {"Account":relationId,"NickName":group.Nick,"Remark":group.Remark,"avator":group.avator,"localImage":group.localImage}
                 }
 
                 callback(backData);
