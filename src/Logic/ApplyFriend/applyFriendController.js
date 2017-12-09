@@ -16,6 +16,8 @@ let currentObj = undefined;
 let cache = {}; //{{key:{}},{key:{}}
 let currentPage = false;
 
+let arr = [];//测试数据
+
 //todo:注入回调
 let updateApplyFriendHandle = undefined;
 
@@ -34,6 +36,24 @@ export default class ApplyFriendController {
     setApplyFriendRecord(callback){
         currentPage = true;
         updateApplyFriendHandle = callback;
+
+
+        // for(let i=0;i<10;i++){
+        //     let status = i%2 ? 'wait' : 'added';
+        //     arr.push({
+        //         send : "wg003735",
+        //         status,
+        //         comment : "验证信息"+i,
+        //         time : null,
+        //         key : "sssss",
+        //         nick : "麻木洛克"+i,
+        //         avator : "",
+        //         localImage : ""
+        //     })
+        // }
+        // updateApplyFriendHandle(arr)
+
+
 
         connectManagement();
 
@@ -87,6 +107,11 @@ export default class ApplyFriendController {
     }
 
     acceptFriend(params,callback){
+
+        // arr[3].status = 'added';
+        // updateApplyFriendHandle(arr);
+        // return;
+
         this.apiBridge.request.AcceptFriend(params,function(results){
             if(results.success){
                 //todo controller operate

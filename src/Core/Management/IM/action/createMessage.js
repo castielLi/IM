@@ -91,7 +91,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
 
 //本地存储群组邀请通知
 export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
-    let message = createMessageObj(text,"group",null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_CREATEGROUP,MessageBodyTypeEnum.MSG_BODY_APP)
+    let message = createMessageObj(text,undefined,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_CREATEGROUP,MessageBodyTypeEnum.MSG_BODY_APP)
     message.status = MessageStatus.SendSuccess
     message.MSGID = messageId;
     return message;
@@ -100,7 +100,7 @@ export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
 
 //本地存储群组昵称修改通知
 export function buildChangeGroupNickMessage(Sender,Receiver,text,messageId){
-    let message = createMessageObj(text,null,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO,MessageBodyTypeEnum.MSG_BODY_APP)
+    let message = createMessageObj(text,undefined,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO,MessageBodyTypeEnum.MSG_BODY_APP)
     message.status = MessageStatus.SendSuccess
     message.MSGID = messageId;
     return message;

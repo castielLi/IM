@@ -137,7 +137,7 @@ CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDt
     tableName = way == ChatWayEnum.Private ? "Private_" + chatId : "Group_" + chatId;
 
 
-    let conetnt = getContentOfControllerMessageDto(message);
+    var conetnt = getContentOfControllerMessageDto(message);
     let time = message.sendTime;
 
 
@@ -169,7 +169,7 @@ CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDt
 
                         console.log("create chat table success");
 
-                        insertClientRecode(chatId,way,content,message.sendTime,message.sender);
+                        insertClientRecode(chatId,way,conetnt,message.sendTime,message.sender,tx);
 
                         insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
