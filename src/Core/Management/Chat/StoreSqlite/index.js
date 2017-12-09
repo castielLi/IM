@@ -143,7 +143,7 @@ CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDt
 
     let insertChatToSpecialRecodeSqlSql = sqls.ExcuteIMSql.InsertMessageToTalk;
     let messageString = JSON.stringify(message);
-    insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.messageId,messageString]);
+    insertChatToSpecialRecodeSqlSql = commonMethods.sqlFormat(insertChatToSpecialRecodeSqlSql,[tableName,message.messageId,messageString,message.status]);
 
     let createTableSql = sqls.ExcuteIMSql.CreateChatTable;
     createTableSql = commonMethods.sqlFormat(createTableSql,[tableName]);
