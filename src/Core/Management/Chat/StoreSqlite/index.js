@@ -163,6 +163,7 @@ CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDt
 
                     insertChatToSpecialRecode(insertChatToSpecialRecodeSqlSql,tx);
 
+
                 }else{
                     //如果当前聊天是新的聊天对象
                     tx.executeSql(createTableSql, [], (tx, results) => {
@@ -399,6 +400,7 @@ function insertChatToSpecialRecode(insertSql,tx){
 
         console.log("insert meesage success");
 
+
     }, (err)=>{errorDB('向聊天对象插入详细聊天',err)});
 }
 
@@ -408,13 +410,13 @@ function updateChat(content,time,chatId,sender,tx){
 
     let updateSql = sqls.ExcuteIMSql.UpdateChatLastContent;
 
-    updateSql = commonMethods.sqlFormat(updateSql,[content,time,chatId,sender]);
+    updateSql = commonMethods.sqlFormat(updateSql,[content,time,sender,chatId]);
 
     tx.executeSql(updateSql, [], (tx, results) => {
 
         console.log("更改最近一条消息记录为");
 
-    }, (err)=>{errorDB('为'+client+"在会话列表中更新了最新的聊天记录",err)
+    }, (err)=>{errorDB('为'+chatId+"在会话列表中更新了最新的聊天记录",err)
     });
 }
 

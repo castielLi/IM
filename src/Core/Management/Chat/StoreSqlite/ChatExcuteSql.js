@@ -17,7 +17,7 @@ export const ExcuteIMSql = {
     "DeleteChatTableByName":"delete from ?",
     "QueryChatTypeFromChatList":"select Type from ChatRecode where ChatId = ?",
     "DeleteMessageById":"delete from ? where Id = ?",
-    "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ? where ChatId = ? ,LastSender = ?",
+    "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ?,LastSender = ? where ChatId = ?",
     "UpdateChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = ? where ChatId = ?",
     "AddChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = unReadMessageCount+1 where ChatId = ?",
     "QueryChatRecodeByChatId":"select message from ? order by Id desc LIMIT ?,?",
