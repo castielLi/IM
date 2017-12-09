@@ -211,6 +211,9 @@ export default class settingController {
     }
 
 
+    getGroupIsInContact(groupId){
+        return this.user.getGroupIsInContactFromCache(groupId);
+    }
 
     getIsBlackList(relationId){
         return this.user.getIsBlackListFromCache(relationId)

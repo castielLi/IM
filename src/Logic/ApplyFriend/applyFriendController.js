@@ -90,27 +90,27 @@ export default class ApplyFriendController {
 
     }
 
-    receiveApplyFriend(applyRecord){
-        let sendArray = [].push(applyRecord)
-        this.user.init(sendArray, (userArray) => {
-            for(let i=0; i<userArray.length;i++){
-                let applyFriendObj = new applyFriendDto();
-                applyFriendObj.time = applyRecord[i].time;
-                applyFriendObj.comment = applyRecord[i].comment;
-                applyFriendObj.key = applyRecord[i].key;
-                applyFriendObj.send = applyRecord[i].send;
-                applyFriendObj.status = applyRecord[i].status;
-
-                applyFriendObj.avator = userArray[i].avator;
-                applyFriendObj.nick = userArray[i].Nick;
-                applyFriendObj.localImage = userArray[i].localImage;
-
-                cache[applyFriendObj.send] = applyFriendObj;
-            }
-        });
-        let Record = Object.values(cache);
-        updateApplyFriendHandle(Record)
-    }
+    // receiveApplyFriend(applyRecord){
+    //     let sendArray = [].push(applyRecord)
+    //     this.user.init(sendArray, (userArray) => {
+    //         for(let i=0; i<userArray.length;i++){
+    //             let applyFriendObj = new applyFriendDto();
+    //             applyFriendObj.time = applyRecord[i].time;
+    //             applyFriendObj.comment = applyRecord[i].comment;
+    //             applyFriendObj.key = applyRecord[i].key;
+    //             applyFriendObj.send = applyRecord[i].send;
+    //             applyFriendObj.status = applyRecord[i].status;
+    //
+    //             applyFriendObj.avator = userArray[i].avator;
+    //             applyFriendObj.nick = userArray[i].Nick;
+    //             applyFriendObj.localImage = userArray[i].localImage;
+    //
+    //             cache[applyFriendObj.send] = applyFriendObj;
+    //         }
+    //     });
+    //     let Record = Object.values(cache);
+    //     updateApplyFriendHandle(Record)
+    // }
 
     acceptFriend(params,callback){
 

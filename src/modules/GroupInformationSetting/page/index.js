@@ -107,13 +107,7 @@ class GroupInformationSetting extends ContainerComponent {
                 }else{
                     members = Data.MemberList.concat()
                 }
-                let save = false;
-                let relations = currentObj.props.relations;
-                for(let i=0;i<relations.length;i++){
-                    if(relations[i].RelationId === groupInformation.ID && relations[i].show === 'true' ){
-                        save = true;
-                    }
-                }
+                let save = SettingController.getGroupIsInContact(this.props.groupId)
                 currentObj.setState({
                     members:members.concat([{},{}]),
                     realMemberList:Data.MemberList,

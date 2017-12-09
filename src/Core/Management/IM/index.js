@@ -304,8 +304,6 @@ export default class IM {
                         break;
                 }
             }
-
-            return messageDto;
         });
     }
 
