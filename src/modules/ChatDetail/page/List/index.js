@@ -169,7 +169,7 @@ class Chat extends Component {
                     this.setState({
                         isMore:msgState.LOADING,
                     });
-                    imController.getHistoryChatList();
+                    imController.getHistoryChatList(client,group);
                 }
             },
         })
@@ -371,12 +371,19 @@ class Chat extends Component {
     }
 
     oldMsg = () => {
+        let {type,client} = this.props;
+        let group;
+        if(type === 'private'){
+            group = false;
+        }else{
+            group = true;
+        }
         let {msgState} = ListConst;
         if(this.state.isMore === msgState.END){
             this.setState({
                 isMore : msgState.LOADING
             });
-            imController.getHistoryChatList();
+            imController.getHistoryChatList(client,group);
         }
     }
 
