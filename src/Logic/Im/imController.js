@@ -813,8 +813,8 @@ function controllerReceiveMessage(message){
 
                     currentObj.user.getUserInfoByIdandType(senderId,"user",function(){
                         currentObj.user.acceptFriendInCache(senderId);
-                        let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
-                        currentObj.apply.AddApplyMessage(applyMessageDto);
+
+
                     });
 
                     break;
@@ -823,7 +823,8 @@ function controllerReceiveMessage(message){
                     var senderId = message.Data.Data.Sender;
 
                     currentObj.user.forceUpdateRelation(senderId,false,function(){
-
+                        let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
+                        currentObj.apply.AddApplyMessage(applyMessageDto);
                         AppReceiveMessageHandle(1,TabTypeEnum.Contact)
                     })
 
