@@ -292,7 +292,7 @@ export default class IMController {
         }
         //初始化前10条聊天记录
         this.chat.getChatList(chatId, group, maxId, (messageList) => {
-
+            messageList.reverse();
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
                 return;
@@ -453,8 +453,8 @@ export default class IMController {
 
         //messageList 每个item 拿上来就是ManagementMessageDto
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
-
-        if(messageList.length == 0){
+            messageList.reverse();
+            if(messageList.length == 0){
             return;
         }
 
