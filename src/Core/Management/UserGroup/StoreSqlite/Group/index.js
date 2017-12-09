@@ -52,7 +52,7 @@ export function RemoveGroupFromContact(groupId){
 }
 
 export function getRelationsByIds(Ids,callback){
-
+  GROUPFMDB.getRelationsByRelationIds(Ids,callback);
 }
 
 //删除群成员
@@ -351,7 +351,7 @@ GROUPFMDB.InitRelations = function(GroupList,callback){
         group.Description = group.Description == null?"":group.Description;
         group.ProfilePicture = group.ProfilePicture == null?"":group.ProfilePicture;
 
-        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name,"",false,"chatroom",group.ProfilePicture,"",group.Owner,true]);
+        sql = commonMethods.sqlFormat(sql,[group.GroupId,group.Description,group.Name,"",false,"group",group.ProfilePicture,"",group.Owner,true]);
         relationsSqls.push({"sql":sql,"Id":group.GroupId});
     }
 

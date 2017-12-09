@@ -129,7 +129,7 @@ CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDt
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
 
-    let way = message.group?ChatWayEnum.ChatRoom:ChatWayEnum.Private;
+    let way = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
 
 
     let tableName;

@@ -93,16 +93,16 @@ export default class Chat {
 
         //length改成maxid 并且仅仅maxid== 0 的时候才缓存， 不然直接把搜索的messages返回给上部
 
-        if(ChatCache[chatId] == undefined){
-            callback([])
-        }else{
+        // if(ChatCache[chatId] == undefined){
+        //     callback([])
+        // }else{
             currentObj.getRecentChatRecode(chatId,group,{start:maxId,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
-                callback(messages);
+                callback(results);
                 // if(maxId == 0){
                 //     ChatCache[chatId]['Record'] = messages;
                 // }
             });
-        }
+        // }
     }
 
 
@@ -127,17 +127,22 @@ export default class Chat {
     }
 
 
-    addMessage(chatId,message = new ManagementMessageDto(),needUpdateConverseList = false){
-       // if(ChatCache[chatId] != undefined){
-       //     currentObj.updateOneChat(chatId,message);
-       // }else{
-       //     //缓存中添加
-       //     currentObj.addOneChat(chatId,message);
-       // }
+    addMessage(chatId,message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false){
+
        currentObj.addSqliteMessage(message);
 
        if(needUpdateConverseList){
-           ControllerUpdateConverseListHandlue()
+           //构建未读消息
+           let record = new ManagementChatRecordDto();
+           record.group = true;
+           record.chatId = message.chatId;
+           record.lastMessage = "[通知]";
+           record.lastSender = "";
+           record.lastTime = message.sendTime;
+           record.unreadCount = 0;
+           record.name = groupName;
+           record.Record = [];
+           ControllerUpdateConverseListHandlue(record)
        }
     }
 

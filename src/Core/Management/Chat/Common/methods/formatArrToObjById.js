@@ -2,7 +2,7 @@
 export default function formatArrToObjById(arr){
     return arr.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
 
-        o[m.ChatId] = {
+        o[m.chatId] = {
             ...m,
             Record:[]
         };

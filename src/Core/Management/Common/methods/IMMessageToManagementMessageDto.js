@@ -34,6 +34,7 @@ export default function IMMessageToMessagementMessageDto(message){
                    messageDto.group = true;
                    messageDto.chatId = message.Data.Data.Receiver;
                    messageDto.sender = message.Data.Data.Receiver;
+                   messageDto.message = message.Data.Data.Data;
                }
            }
 

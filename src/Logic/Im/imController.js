@@ -141,7 +141,7 @@ export default class IMController {
             let snapArr = formateDataFromChatManageCache(recentListObj);
             this.user.init(snapArr, (relationObj) => {
                 let needObj = {};
-                for (let key in relationObj) {
+                for (let key in recentListObj) {
                     let itemChat = new ControllerChatConversationDto();
                     itemChat.group = recentListObj[key].group;
                     itemChat.chatId = recentListObj[key].chatId;
@@ -152,8 +152,9 @@ export default class IMController {
 
                     cache.allUnreadCount+=itemChat.unreadCount;
 
-                    itemChat.name = relationObj[key].Nick;
-                    itemChat.HeadImageUrl = relationObj[key].avator;
+                    itemChat.name = relationObj[itemChat.chatId].NickName;
+                    itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
+                        relationObj[itemChat.chatId].avator;
                     needObj[recentListObj[key].chatId] = itemChat;
                 }
                 cache.conversationCache = needObj;
@@ -239,6 +240,15 @@ export default class IMController {
         //     //})
         // //})
     }
+
+    updateConverseListByChatManagement(newConverse){
+
+        cache.conversationCache[newConverse.chatId] = (newConverse);
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle(tempArr);
+    }
+
+
 
     //设置当前会话
     setCurrentConverse(chatId, group, callback) {
@@ -712,12 +722,14 @@ export default class IMController {
     addUnReadMsgNumber(clientId){
         cache.allUnreadCount+=1;
         cache.conversationCache[clientId]['unreadCount'] +=1;
+        //todo:李宗骏 缺少数据库操作
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId){
         if(cache.conversationCache[clientId] == undefined) return;
         cache.allUnreadCount-=cache.conversationCache[clientId]['unreadCount'];
         cache.conversationCache[clientId]['unreadCount'] = 0;
+        //todo:李宗骏 缺少数据库操作
     }
 
     clearAllUnReadMsgNumber(){
@@ -725,6 +737,7 @@ export default class IMController {
             cache.conversationCache[item]['unReadMessageCount'] = 0;
         }
         cache.allUnreadCount = 0;
+        //todo:李宗骏 缺少数据库操作
     }
 
 
@@ -751,7 +764,7 @@ function connectIM(){
 }
 
 function connectChat(){
-    currentObj.chat.connectChat(currentObj.updateConverseList)
+    currentObj.chat.connectChat(currentObj.updateConverseListByChatManagement)
 }
 
 function controllerKickOutMessage(){
