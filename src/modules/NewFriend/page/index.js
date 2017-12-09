@@ -19,6 +19,7 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
 //import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
+import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
 
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import ContactController from '../../../Logic/Contact/contactController';
@@ -105,7 +106,6 @@ class NewFriend extends ContainerComponent {
         }
     }
     _renderRow = (rowData, sectionID, rowID)=>{
-        let {dataObj} = this.state;
         return(
             <View>
                 {/*<Swipeout*/}
@@ -131,9 +131,9 @@ class NewFriend extends ContainerComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
-                                {this._renderAvator(dataObj[rowData.send]?dataObj[rowData.send].avator:'')}
+                                {this._renderAvator(rowData.avator)}
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{dataObj[rowData.send]?dataObj[rowData.send].Nick:''}</Text>
+                                    <Text style={styles.name}>{rowData.nick}</Text>
                                     <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
                                 </View>
                             </View>
