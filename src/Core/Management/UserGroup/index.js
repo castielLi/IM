@@ -80,14 +80,14 @@ export default class User {
         })
     }
 
-    getUserGroupInfo(groupId,callback){
-        this.getUserInfoByIdandType(groupId,"group",callback)
-    }
-
-
-    getUserInfo(userId,callback){
-        this.getUserInfoByIdandType(userId,"user",callback)
-    }
+    // getUserGroupInfo(groupId,callback){
+    //     this.getUserInfoByIdandType(groupId,"group",callback)
+    // }
+    //
+    //
+    // getUserInfo(userId,callback){
+    //     this.getUserInfoByIdandType(userId,"user",callback)
+    // }
 
 
     //获取所有show = true的user
@@ -105,7 +105,7 @@ export default class User {
 
     forceUpdateRelation(Id,group=false,callback){
        if(!group){
-           this.getUserInfo(Id,callback);
+           this.getInformationByIdandType(Id,false,callback);
        }else{
            this.getHttpGroupInfo(Id,"group",callback);
        }
@@ -343,7 +343,7 @@ export default class User {
                 callback(relations)
             })
         }else{
-            this.getUserInfoByIdandType(id,'user',(relations)=>{
+            this.getUserInfoByIdandType(id,'private',(relations)=>{
                 callback(relations)
             })
         }

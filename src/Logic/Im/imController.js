@@ -829,7 +829,7 @@ function controllerReceiveMessage(message){
 
                     var senderId = message.Data.Data.Sender;
 
-                    currentObj.user.getUserInfoByIdandType(senderId,"user",function(){
+                    currentObj.user.getInformationByIdandType(senderId,false,function(){
                         currentObj.user.acceptFriendInCache(senderId);
                     });
 

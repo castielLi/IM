@@ -52,7 +52,7 @@ export function RemoveGroupFromContact(groupId){
 }
 
 export function getRelationsByIds(Ids,callback){
-
+    GROUPFMDB.getRelationsByRelationIds(Ids,callback)
 }
 
 //删除群成员
