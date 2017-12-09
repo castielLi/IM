@@ -139,8 +139,10 @@ export default class IMController {
     updateConverseList() {
         this.chat.getConverseList((recentListObj) => {
             let snapArr = formateDataFromChatManageCache(recentListObj);
+
             this.user.getRelationsByList(snapArr, (relationObj) => {
-                let needObj = [];
+                let needArr = [];
+
                 for (let key in recentListObj) {
                     let itemChat = new ControllerChatConversationDto();
                     itemChat.group = recentListObj[key].group;
@@ -155,14 +157,14 @@ export default class IMController {
                     itemChat.name = relationObj[itemChat.chatId].NickName;
                     itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
                         relationObj[itemChat.chatId].avator;
-                    needObj.push(itemChat);
+                    needArr.push(itemChat);
                 }
-                cache.conversationCache = formatOjbToneedArr(needObj);
+                cache.conversationCache = formatArrToConversationObj(needArr);
 
                 //渲染会话列表
 
                 AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
-                updateconverslisthandle(needObj);
+                updateconverslisthandle(needArr);
             })
         })
 
@@ -283,7 +285,17 @@ export default class IMController {
             maxId = messageList[messageList.length - 1].id;
 
             let snapArr = formateDataFromChatManageCacheRecord(messageList);
+
+                // relationObj = {'wg003723':{
+                //     Account: "wg003723",
+                //     NickName: "wg003723",
+                //     Remark: "",
+                //     avator: "",
+                //     localImage: ""},
+                // }
+
             this.user.getRelationsByList(snapArr, (relationObj) => {
+
                 for (let i = 0, length = messageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
                     itemMessage.group = messageList[i].group;
@@ -294,8 +306,8 @@ export default class IMController {
                     itemMessage.status = messageList[i].status;
                     itemMessage.sendTime = messageList[i].sendTime;
 
-                    let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                    itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+                    let {Account, NickName, avator} = relationObj[messageList[i].sender];
+                    itemMessage.sender = {account: Account, name: NickName, HeadImageUrl: avator};
                     cache.messageCache.push(itemMessage);
                 }
                 //渲染聊天记录
@@ -441,8 +453,9 @@ export default class IMController {
                 itemMessage.status = messageList[i].status;
                 itemMessage.sendTime = messageList[i].sendTime;
 
-                let {RelationId, Nick, avator} = relationObj[messageList[i].sender];
-                itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
+
+                let {Account, NickName, avator} = relationObj[messageList[i].sender];
+                itemMessage.sender = {account: Account, name: NickName, HeadImageUrl: avator};
                 cache.messageCache.unshift(itemMessage);
             }
             //渲染聊天记录
@@ -1071,4 +1084,14 @@ function formatOjbToneedArr(obj){
         needArr.push(obj[key]);
     }
     return needArr;
+}
+//rencentList数组转为对象缓存
+function formatArrToConversationObj(arr){
+    return arr.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
+
+        o[m.chatId] = {
+            ...m
+        };
+        return o;
+    }, {})
 }

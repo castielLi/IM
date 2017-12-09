@@ -392,7 +392,7 @@ export default class User {
                 callback(relations)
             })
         }else{
-            this.getUserInfoByIdandType(id,'private',(relations)=>{
+            this.getUserInfoByIdandType(id,'user',(relations)=>{
                 callback(relations)
             })
         }
