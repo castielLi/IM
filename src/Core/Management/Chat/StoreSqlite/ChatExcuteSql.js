@@ -8,7 +8,7 @@ export const InitIMTable = {
 
 export const ExcuteIMSql = {
     "QueryChatIsExist":"select * from ChatRecode where ChatId = ?",
-    "GetChatList":"select * from ChatRecode",
+    "GetChatList":"select * from ChatRecode order by Time desc",
     "InsertChatRecode":"insert into ChatRecode (ChatId,Type,LastMessage,Time,LastSender,unReadMessageCount) values (?,?,?,?,?,0)",
     "CreateChatTable"
         : "CREATE TABLE ? (Id INTEGER PRIMARY KEY AUTOINCREMENT,messageId varchar(255), message varchar(500),status varchar(255))",
