@@ -80,14 +80,12 @@ export default class settingController {
                     //todo:通知 RecentList和 chatDetali 改变名称   chatlist中还有新的消息通知
 
                     //本地模拟消息
+                    //todo 李宗骏 创建chatmessagedto 转换
                     let messageId = uuidv1();
                     let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
                     currentObj.im.storeSendMessage(sendMessage);
-
-                    //todo 李宗骏 创建chatmessagedto 转换
-                    let chatMessageDto = {};
-                    currentObj.chat.addMessage(chatMessageDto);
-                    result.data.sendMessage = sendMessage;
+                    let messageDto = IMMessageToManagementMessageDto(sendMessage);
+                    currentObj.chat.addMessage(result.data.Data,messageDto,"",true);
                 }
             }
             callback(result);
