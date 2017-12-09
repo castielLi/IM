@@ -77,10 +77,6 @@ class GroupName extends ContainerComponent {
                 return;
             }
             if(result.data.Data){
-                //更新redux message
-                let copyMessage = Object.assign({},result.data.sendMessage);
-                currentObj.props.addMessage(copyMessage,{Nick:currentObj.state.text,avator:currentObj.props.ProfilePicture});
-
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
                 let index;

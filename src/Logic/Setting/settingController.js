@@ -3,6 +3,7 @@
  */
 import User from '../../Core/Management/UserGroup/index'
 import Chat from '../../Core/Management/Chat/index'
+import IM from '../../Core/Management/IM/index'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
 import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
@@ -27,6 +28,7 @@ export default class settingController {
         __instance(this);
         this.user = new User();
         this.chat = new Chat();
+        this.im = new IM();
         this.apiBridge = new ApiBridge();
         currentObj = this;
     }
