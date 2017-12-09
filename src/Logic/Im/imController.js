@@ -639,9 +639,9 @@ export default class IMController {
     }
     //清除所有数据(清除缓存数据)
     clearAll(){
-        cache = [];
+        cache = null;
+        myAccount = null;
     }
-
 
 
     //cache 操作方法
