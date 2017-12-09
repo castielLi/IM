@@ -45,7 +45,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
 
    switch (messageDto.type){
        case MessageType.text:
-           return addTextMessage(messageDto.message.data,way,messageDto.sender,messageDto.chatId)
+           return addTextMessage(way,messageDto.message,messageDto.sender,messageDto.chatId)
        case MessageType.image:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.image;
