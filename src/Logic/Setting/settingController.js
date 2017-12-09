@@ -162,18 +162,10 @@ export default class settingController {
                     let sendMessage = buildInvationGroupMessage(accountId,groupId,text,messageId);
 
                     let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                    currentObj.chat.addMessage(result.data.Data,messageDto,true);
+                    currentObj.chat.addMessage(result.data.Data,messageDto,"",true);
 
                     //添加新人到缓存和数据库
                     currentObj.user.addGroupMember(groupId,splNeedArr);
-                    // chooseArr.forEach((val,it)=>{
-                    //     currentObj.user.groupAddMemberChangeCash(groupId,val.RelationId);
-                    //     currentObj.user.privateAddMemberChangeCash(val.RelationId,val)
-                    // })
-                    //成员增加后，聊天室的groupMembers也要增加
-                    currentObj.user.getInformationByIdandType(groupId,'group',function(relation,groupMembers){
-                        // currentGroupChatMemberChangesCallback(groupMembers);
-                    })
                 }
             }
             callback(result);

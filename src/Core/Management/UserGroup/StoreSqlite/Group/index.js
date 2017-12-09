@@ -31,6 +31,11 @@ export function initIMDatabase(AccountId,callback){
 export function GetRelationList(callback,show){
     GROUPFMDB.GetRelationList(callback,show);
 }
+
+export function AddGroupMembersByGroupId(groupId,members){
+    GROUPFMDB.addGroupMembersByGroupId(groupId,members);
+}
+
 //获取指定群
 export function GetRelationByIdAndType(Id,type,callback){
     GROUPFMDB.GetRelationByIdAndType(Id,type,callback);
@@ -120,6 +125,32 @@ GROUPFMDB.initIMDataBase = function(){
             }
         });
     }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+GROUPFMDB.addGroupMembersByGroupId = function(groupId,members){
+    let executeSqls = [];
+
+    for(let item in members){
+        let sql = sqls.ExcuteIMSql.InsertGroupMember;
+        sql = commonMethods.sqlFormat(sql,[groupId,members[item]]);
+        executeSqls.push(sql);
+    }
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+            for(let item in executeSqls){
+                tx.executeSql(executeSqls[item], [], (tx, results) => {
+
+                    console.log("向" + groupId + "添加member成功")
+
+                }, errorDB);
+            }
+
+        }, errorDB);
+    }, errorDB);
 }
 
 GROUPFMDB.removeGroupMember = function (groupId,members) {
