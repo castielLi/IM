@@ -127,7 +127,7 @@ export default class Chat {
     }
 
 
-    addMessage(chatId,message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false){
+    addMessage(message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false){
 
        currentObj.addSqliteMessage(message);
 

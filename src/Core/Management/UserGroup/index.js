@@ -50,7 +50,29 @@ export default class User {
     }
 
 
-    init(chatList,callback){
+    init(chatId,group = false){
+        if(group){
+            let groupMembers = [];
+            this.GetGroupMemberIdsByGroupId(chatId,function(results){
+                if(results.length == 0){
+                   currentObj.getGroupInfoByIdandType(chatId,"group",function(){});
+                   return;
+                }else{
+                    //todo:考虑要是private里面没有对应 d 的信息
+                    for(let i = 0;i<results.length;i++){
+                        //因为数据库的结构就是relationModel的结构
+                        if(cache["user"][results[i].RelationId] == undefined){
+                            cache["user"][results[i].RelationId] = results[i];
+                        }
+                        groupMembers.push(results[i].RelationId)
+                    }
+                    cache["groupMember"][Id] = groupMembers;
+                }
+            });
+        }
+    }
+
+    getRelationsByList(chatList,callback){
         let userIds =[];
         let groupIds = [];
         let backData = {};
