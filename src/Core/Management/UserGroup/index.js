@@ -53,16 +53,34 @@ export default class User {
     init(chatList,callback){
         let userIds =[];
         let groupIds = [];
+        let backData = {};
         for(let item in chatList){
             if(!chatList[item].group){
-                userIds.push(chatList[item].chatId);
+
+                //先查看cache里面有没有这个缓存
+                if(cache["user"][chatList[item].chatId]){
+                    backData[chatList[item].chatId] = cache["user"][chatList[item].chatId];
+                }else{
+                    userIds.push(chatList[item].chatId);
+                }
+
+
             }else{
-                groupIds.push(chatList[item].chatId);
+
+                if(cache["group"][chatList[item].chatId]){
+                    backData[chatList[item].chatId] = cache["group"][chatList[item].chatId];
+                }else{
+                    groupIds.push(chatList[item].chatId);
+                }
+
             }
         }
 
+
+
+
         UserManager.GetRelationsByRelationIds(userIds,function(users){
-            let backData = {};
+
             GroupManager.GetRelationsByRelationIds(groupIds,function(groups){
 
                 for(let item in users){
@@ -471,6 +489,10 @@ export default class User {
 
     }
 
+    AddGroupMembersByGroupId(groupId,members){
+        GroupManager.addGroupMembersByGroupId(groupId,members)
+    }
+
     //通过GroupId获取当前群的member信息
     GetMembersByGroupIdSQL(groupId,callback){
         GroupManager.GetMembersByGroupId(groupId,callback);
@@ -571,14 +593,13 @@ export default class User {
         }
     }
     //添加群成员
-    addGroupMember(groupObj,members){
-        let group = dtoChange(groupObj);
-        this.AddGroupAndMemberSQL(group, members);
-        if(!cache["group"][group.RelationId]){
-            cache["group"][group.RelationId] = group;
-        }
+    addGroupMember(groupId,members){
+        this.AddGroupMembersByGroupId(groupId, members);
+
         for (let current of members) {
-            cache['groupMember'][group.RelationId].push(current);
+            let memberCache = cache['groupMember'][groupId];
+            memberCache.push(current);
+            cache['groupMember'][groupId] = memberCache;
         }
     }
     //修改群名称
