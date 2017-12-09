@@ -93,16 +93,16 @@ export default class Chat {
 
         //length改成maxid 并且仅仅maxid== 0 的时候才缓存， 不然直接把搜索的messages返回给上部
 
-        if(ChatCache[chatId] == undefined){
-            callback([])
-        }else{
+        // if(ChatCache[chatId] == undefined){
+        //     callback([])
+        // }else{
             currentObj.getRecentChatRecode(chatId,group,{start:maxId,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
-                callback(messages);
+                callback(results);
                 // if(maxId == 0){
                 //     ChatCache[chatId]['Record'] = messages;
                 // }
             });
-        }
+        // }
     }
 
 
