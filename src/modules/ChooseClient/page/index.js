@@ -332,7 +332,7 @@ class ChooseClient extends ContainerComponent {
                         return;
                     }
 
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.relation.Nick,
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,
 						type:"group",HeadImageUrl:result.data.relation.localImage,Nick:result.data.relation.Nick}});
 
                 }else{

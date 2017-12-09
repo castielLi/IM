@@ -95,7 +95,8 @@ export default class User {
             this.getAllRelationSQL((relations)=>{
                 callback(relations);
                 relations.forEach((v)=>{
-                    v.BlackList = v.BlackList == "true"?true:false;
+                    v.BlackList = Boolean(v.BlackList)
+                    v.show = Boolean(v.show)
                     cache['user'][v.RelationId] = v;
                 })
             })
@@ -117,6 +118,7 @@ export default class User {
         this.getAllGroupFromGroupSQL((relations)=>{
             callback(relations);
             relations.forEach((v)=>{
+                v.show = Boolean(v.show)
                 cache['group'][v.RelationId] = v;
             })
         },true)
@@ -124,7 +126,7 @@ export default class User {
     }
     //根据clientId ，判断是不是好友关系，是的话返回这条关系,否则返回null
     getUserRelationById(clientId){
-        if(cache['user'][clientId] && cache['user'][clientId].show == 'true'){
+        if(cache['user'][clientId] && cache['user'][clientId].show){
             return cache['user'][clientId];
         } else{
             return null;
@@ -196,6 +198,11 @@ export default class User {
         return cache.user[clientId].BlackList;
     }
 
+    getGroupIsInContactFromCache(groupId){
+        return cache.group[groupId].show;
+    }
+
+
     getHttpGroupInfo(Id,type,callback,Relation = undefined){
         let groupMembers = [];
         let groupMembersInfo = [];
@@ -208,7 +215,7 @@ export default class User {
                     relation.owner = data.Owner;
                     relation.Nick = data.Name;
                     relation.Type = 'group';
-                    relation.show = 'false';
+                    relation.show = false;
                     relation.avator = data.ProfilePicture == null?"":data.ProfilePicture;
                     relation.MemberList = data.MemberList;
                     cache[type][Id] = relation;
@@ -272,7 +279,7 @@ export default class User {
                             relation.RelationId = data.Account;
                             relation.Nick = data.Nickname;
                             relation.Type = 'private';
-                            relation.show = 'false';
+                            relation.show = false;
                             relation.avator = data.HeadImageUrl == null?"":data.HeadImageUrl;
                             cache[type][Id] = relation;
                             currentObj.AddNewRelationSQL(relation,function(){
