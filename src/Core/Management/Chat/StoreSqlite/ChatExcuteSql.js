@@ -20,7 +20,7 @@ export const ExcuteIMSql = {
     "UpdateChatLastContent":"update ChatRecode set LastMessage = ?,Time = ?,LastSender = ? where ChatId = ?",
     "UpdateChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = ? where ChatId = ?",
     "AddChatUnReadMessageaNumber":"update ChatRecode set unReadMessageCount = unReadMessageCount+1 where ChatId = ?",
-    "QueryChatRecodeByChatId":"select message from ? order by Id desc LIMIT ?,?",
+    "QueryChatRecodeByChatId":"select * from ? order by Id desc LIMIT ?,?",
     "QueryChatRecodeByChatIdAndMaxId":"select * from ? where Id<? order by Id desc limit ?",
     "ClearChatRecode":"Delete from ChatRecode",
     "UpdateMessage":"update ? set message = ? where messageId = ?",
