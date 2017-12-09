@@ -242,15 +242,19 @@ export default class IMController {
         // //})
     }
 
-    updateConverseListByChatManagement(newConverse,message){
+    updateConverseListByChatManagement(newConverse,message,type){
 
         if(cache.conversationCache[newConverse.chatId]){
-
             let oldConverse = cache.conversationCache[newConverse.chatId];
 
-            newConverse.name = oldConverse.name;
+            if(type == 'updateName'){
+                oldConverse.name = newConverse.name;
+                oldConverse.lastTime = newConverse.lastTime;
+            }
 
-            cache.conversationCache[newConverse.chatId] = newConverse;
+            //newConverse.name = oldConverse.name;
+
+            //cache.conversationCache[newConverse.chatId] = newConverse;
 
             let caches = formatOjbToneedArr(cache.conversationCache);
 

@@ -127,7 +127,7 @@ export default class Chat {
     }
 
 
-    addMessage(message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false){
+    addMessage(message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false,type){
 
        currentObj.addSqliteMessage(message);
 
@@ -144,7 +144,7 @@ export default class Chat {
            record.HeadImageUrl = "";
            record.noSound = false;
 
-           ControllerUpdateConverseListHandlue(record,message)
+           ControllerUpdateConverseListHandlue(record,message,type)
        }
     }
 
