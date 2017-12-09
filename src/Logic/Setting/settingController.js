@@ -85,7 +85,7 @@ export default class settingController {
                     let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
                     currentObj.im.storeSendMessage(sendMessage);
                     let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                    currentObj.chat.addMessage(result.data.Data,messageDto,"",true);
+                    currentObj.chat.addMessage(messageDto,"",true);
                 }
             }
             callback(result);
