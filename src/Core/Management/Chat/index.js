@@ -127,17 +127,22 @@ export default class Chat {
     }
 
 
-    addMessage(chatId,message = new ManagementMessageDto(),needUpdateConverseList = false){
-       // if(ChatCache[chatId] != undefined){
-       //     currentObj.updateOneChat(chatId,message);
-       // }else{
-       //     //缓存中添加
-       //     currentObj.addOneChat(chatId,message);
-       // }
+    addMessage(chatId,message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false){
+
        currentObj.addSqliteMessage(message);
 
        if(needUpdateConverseList){
-           ControllerUpdateConverseListHandlue()
+           //构建未读消息
+           let record = new ManagementChatRecordDto();
+           record.group = true;
+           record.chatId = message.chatId;
+           record.lastMessage = message.message;
+           record.lastSender = "";
+           record.lastTime = message.sendTime;
+           record.unreadCount = 0;
+           record.name = groupName;
+           record.Record = [];
+           ControllerUpdateConverseListHandlue(record)
        }
     }
 

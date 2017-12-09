@@ -30,7 +30,7 @@ class ChatDetail extends ContainerComponent {
 			super(props);
 			this.state = {
                 isDisabled:true,
-                name:props.client,
+                name:props.Nick,
 			};
         currentObj = this;
         this.isDisabled = false
