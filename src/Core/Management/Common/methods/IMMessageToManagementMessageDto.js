@@ -64,8 +64,12 @@ export default function IMMessageToMessagementMessageDto(message){
                        break;
                }
            }
+
            messageDto.group = message.Data.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2G?true:false;
            messageDto.chatId = message.Data.Data.Receiver;
+
+           //messageDto.chatId = message.Data.Data.Sender;
+
            messageDto.sender = message.Data.Data.Sender;
        }
 

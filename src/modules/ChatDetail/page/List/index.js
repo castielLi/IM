@@ -56,9 +56,9 @@ class Chat extends Component {
             {
                 let r1Local = r1.message.Resource[0].LocalSource;
                 let r2Local = r2.message.Resource[0].LocalSource;
-                return r1Local !== r2Local || r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
+                return r1Local !== r2Local || r1.message.messageId !== r2.message.messageId || r1.status !== r2.status;
             }
-            return r1.message.MSGID !== r2.message.MSGID || r1.status !== r2.status;
+            return r1.message.messageId !== r2.message.messageId || r1.status !== r2.status;
         }});
 
         this.data = [];
