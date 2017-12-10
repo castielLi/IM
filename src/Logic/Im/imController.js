@@ -16,6 +16,7 @@ import TabTypeEnum from './dto/TabTypeEnum'
 import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeEnum'
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
+import * as buildMessage from '../../Core/Management/IM/action/createMessage';
 
 let __instance = (function () {
     let instance;
@@ -284,10 +285,15 @@ export default class IMController {
         //初始化缓存
         this.user.init(chatId,group);
 
+        // let message = buildMessage.addTextMessage("private","1","wg003723","wg003722");
+
+        // controllerReceiveMessage(message);
+
         //未读消息清零
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
             this.clearUnReadMsgNumber(chatId);
-            this.chat.clearUnReadNumber(chatId, group);
+            this.clearUnReadNumber(chatId, group);
+            this.chat.clearUnReadMsgNumber(chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
             //渲染会话列表
             let tempArr = formatOjbToneedArr(cache.conversationCache);
@@ -707,7 +713,7 @@ export default class IMController {
         //清空对应item未读消息
 
         this.clearUnReadMsgNumber(chatId);
-        this.chat.clearUnReadNumber(chatId, group);
+        this.chat.clearUnReadMsgNumber(chatId);
     }
     //清除所有数据(清除缓存数据)
     clearAll(){
@@ -778,14 +784,15 @@ export default class IMController {
     addUnReadMsgNumber(clientId){
         cache.allUnreadCount+=1;
         cache.conversationCache[clientId]['unreadCount'] +=1;
-        //todo:李宗骏 缺少数据库操作
+        let unreadNumber = cache.conversationCache[clientId]['unreadCount'];
+        this.chat.updateUnReadMessageNumber(clientId,unreadNumber);
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId){
         if(cache.conversationCache[clientId] == undefined) return;
         cache.allUnreadCount-=cache.conversationCache[clientId]['unreadCount'];
         cache.conversationCache[clientId]['unreadCount'] = 0;
-        //todo:李宗骏 缺少数据库操作
+        this.chat.updateUnReadMessageNumber(clientId,0);
     }
 
     clearAllUnReadMsgNumber(){
@@ -989,14 +996,16 @@ function controllerReceiveMessage(message){
                     break;
             }
         }
-        // else if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_CHAT){}
+        else if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_CHAT){
+            storeChatMessageAndCache(message);
+        }
     }
 }
 
 function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message);
-    currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
+    currentObj.chat.addMessage(managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
     let chatId;
@@ -1035,10 +1044,10 @@ function AddCache(managementMessageObj){
         let HeadImageUrl = localImage !='' ?localImage:avator;
         itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
 
-        cache.messageCache.push(itemMessage);
+        let messageRecordCache = cache.messageCache;
+        messageRecordCache.push(itemMessage);
+        cache.messageCache = messageRecordCache;
 
-        //渲染聊天记录
-        updateChatRecordhandle(cache.messageCache);
     })
 
     // //测试代码
@@ -1066,11 +1075,11 @@ function AddCache(managementMessageObj){
 
 function PushNotificationToApp(managementMessageObj){
     //只有打开了聊天窗口并且收到来自该窗口的消息才会重新渲染聊天页面
-    if(chatId == currentChat.chatId){
+    if(managementMessageObj.chatId == currentChat.chatId){
         updateChatRecordhandle(cache.messageCache);
     }else{
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
-            currentObj.addUnReadMsgNumber(chatId);
+            currentObj.addUnReadMsgNumber(managementMessageObj.sender);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);

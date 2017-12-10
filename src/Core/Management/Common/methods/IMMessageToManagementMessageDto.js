@@ -64,7 +64,7 @@ export default function IMMessageToMessagementMessageDto(message){
                        break;
                }
            }
-           messageDto.chatId = message.Data.Data.Receiver;
+           messageDto.chatId = message.Data.Data.Sender;
            messageDto.sender = message.Data.Data.Sender;
        }
 
