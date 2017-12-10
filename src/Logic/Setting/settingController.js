@@ -6,7 +6,7 @@ import Chat from '../../Core/Management/Chat/index'
 import IM from '../../Core/Management/IM/index'
 import RNFS from 'react-native-fs'
 import uuidv1 from 'uuid/v1';
-import {buildInvationGroupMessage,buildChangeGroupNickMessage} from '../../Core/Management/IM/action/createMessage';
+import {buildInvationGroupMessage,buildChangeGroupNickMessage,buildRemoveGroupMessage} from '../../Core/Management/IM/action/createMessage';
 import RelationDto from '../Common/dto/RelationDto'
 import IMMessageToManagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto'
 import ApiBridge from '../ApiBridge/index'
@@ -183,8 +183,15 @@ export default class settingController {
     removeGroupMember(params,close = false,callback){
         this.apiBridge.request.RemoveGroupMember(params,function(results){
             if(results.success && results.data.Data){
-                let members = params.Accounts.splice(",");//Accounts 字符串 a,b,c
+                let members = params.Accounts.split(',');//Accounts 字符串 a,b,c
                 currentObj.user.removeGroupMember(params.GroupId,members);
+
+                let text = params.Accounts;
+                let messageId = uuidv1();
+                let sendMessage = buildRemoveGroupMessage(params.Operater,params.GroupId,text,messageId);
+                let messageDto = IMMessageToManagementMessageDto(sendMessage);
+                currentObj.chat.addMessage(messageDto,"",true);
+
                 if(close){
                     currentObj.destroyGroup(params.GroupId);
                 }

@@ -160,6 +160,8 @@ GROUPFMDB.removeGroupMember = function (groupId,members) {
         deleteSql = commonMethods.sqlFormat(deleteSql,[groupId,current]);
         deleteSqls.push(deleteSql)
     }
+    // let deleteSql = sqls.ExcuteIMSql.removeGroupMember;
+    // deleteSql = commonMethods.sqlFormat(deleteSql,[groupId,members]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
