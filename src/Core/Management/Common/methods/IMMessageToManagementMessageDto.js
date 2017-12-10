@@ -40,12 +40,12 @@ export default function IMMessageToMessagementMessageDto(message){
            }
 
        }else{
-           if(message.Resource == undefined){
+           if(message.Resource == null){
                messageDto.type = DtoMessageTypeEnum.text;
                messageDto.message = message.Data.Data.Data;
            }else{
 
-               messageDto.group = message.Data.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2G?true:false;
+
 
                switch(message.Resource[0].FileType){
                    case ResourceTypeEnum.video:
@@ -64,6 +64,7 @@ export default function IMMessageToMessagementMessageDto(message){
                        break;
                }
            }
+           messageDto.group = message.Data.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2G?true:false;
            messageDto.chatId = message.Data.Data.Receiver;
            messageDto.sender = message.Data.Data.Sender;
        }

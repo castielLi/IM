@@ -272,11 +272,11 @@ CHATFMDB.UpdateMessageBody = function(message = new ManagementMessageDto()){
 
     let updateSql = sqls.ExcuteIMSql.UpdateMessage;
 
-    let tabName = !message.group?"Private_" + message.chatId:"Group_" + chatId;
+    let tabName = !message.group?"Private_" + message.chatId:"Group_" + message.chatId;
 
     let messageBody = JSON.stringify(message);
 
-    updateSql = commonMethods.sqlFormat(updateSql,[tabName,messageBody,message.messageId])
+    updateSql = commonMethods.sqlFormat(updateSql,[tabName,messageBody,message.status,message.messageId])
 
     var db = SQLite.openDatabase({
         ...databaseObj
@@ -285,6 +285,8 @@ CHATFMDB.UpdateMessageBody = function(message = new ManagementMessageDto()){
 
             tx.executeSql(updateSql, [], (tx, results) => {
 
+                console.log("更新chat 数据库 messagebody 成功");
+                console.log("更新chat 数据库 messagebody 成功");
                 console.log("更新chat 数据库 messagebody 成功");
 
             }, (err)=>{errorDB('更新messageBody',err)});

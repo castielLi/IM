@@ -33,7 +33,7 @@ let AppKickOutHandle = undefined;
 
 
 //标示当前正在聊天的对象
-let currentChat = undefined;
+let currentChat = {chatId:'',group:false};
 //currentChat={chatId:'wg003722',group:false}
 // todo 登录时修改myAccount
 let myAccount = undefined;
@@ -453,7 +453,7 @@ export default class IMController {
     }
     //退出聊天窗口
     setOutCurrentConverse(){
-        currentChat = {};
+        currentChat = {chatId:'',group:false};
         cache.messageCache = [];
         maxId = 0;
     }
@@ -606,13 +606,13 @@ export default class IMController {
                     this.addOneChat(itemManagementMessage.chatId,itemManagementMessage);
                 }
 
-
-                maxId = maxId+1;
                 //cache添加
 
-                AddCache(itemManagementMessage)
-
-                updateChatRecordhandle(cache.messageCache);
+                formateManagementMessageToControllerMessage(itemManagementMessage,(controllerMessage)=>{
+                    cache.messageCache.push(controllerMessage);
+                    maxId = maxId+1;
+                    updateChatRecordhandle(cache.messageCache);
+                })
             }
 
         });
@@ -738,26 +738,10 @@ export default class IMController {
         updateconverslisthandle(tempArr);
     }
 
-    updateCacheMessage(message){
-        for(let item in cache.messageCache){
-            if(cache.messageCache[item].messageId == message.messageId){
-                cache.messageCache[item] = message;
-            }
-        }
-    }
+
 
     //message是完整的managementMessageDto
     addOneChat(chatId,message){
-        // let chatId;//会话id
-        // if(message.group){
-        //     chatId = message.chatId;
-        // }else{
-        //     if(message.sender.account == myAccount.accountId){
-        //         chatId = message.message.chatId;
-        //     }else{
-        //         chatId = message.sender.account;
-        //     }
-        // }
 
         this.user.getInformationByIdandType(chatId,message.group,(relationObj) => {
             let itemChat = new ControllerChatConversationDto();
@@ -833,11 +817,13 @@ function controllerMessageResult(success,message){
     let messageDto = IMMessageToMessagementMessageDto(message);
     messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
 
-    currentObj.chat.updateChatMessage(messageDto)
+    currentObj.chat.updateChatMessage(messageDto);
 
     if(messageDto.chatId == currentChat.chatId){
-        currentObj.updateCacheMessage(messageDto)
-        updateChatRecordhandle(cache.messageCache);
+        //AddCache(messageDto);
+        formateManagementMessageToControllerMessage(messageDto,(controllerMessage)=>{
+            addOrUpdateMessageCache(controllerMessage);
+        })
     }
 }
 
@@ -1011,16 +997,41 @@ function storeChatMessageAndCache(message){
     }else{
         currentObj.addOneChat(chatId,managementMessageObj);
     }
-    maxId = maxId+1;
-    AddCache(managementMessageObj);
-
     PushNotificationToApp(managementMessageObj);
+
+    if(managementMessageObj.chatId == currentChat.chatId){
+        //AddCache(managementMessageObj);
+        formateManagementMessageToControllerMessage(managementMessageObj,(controllerMessage)=>{
+            addOrUpdateMessageCache(controllerMessage);
+        })
+
+    }
+
+
 
 }
 
-function AddCache(managementMessageObj){
+function addOrUpdateMessageCache(itemMessage){
+    //缓存有则更新，没有则push到缓存
+    let exsit = false;
+    for(let i=0,length = cache.messageCache.length;i<length;i++){
+        if(cache.messageCache[i].messageId == itemMessage.messageId){
+            cache.messageCache[i] = itemMessage;
+            exsit = true;
+            break;
+        }
+    }
+    if(!exsit){
+        cache.messageCache.push(itemMessage);
+        maxId = maxId+1;
+    }
+    updateChatRecordhandle(cache.messageCache);
+}
 
-    currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
+function formateManagementMessageToControllerMessage(managementMessageObj,callback){
+    //我向群里发送一条正常的群消息，该条message.sender为wg003723，message.group为true，这时调用getInformationByIdandType(sender,group)会报错
+    //调用formateManagementMessageToControllerMessage方法时，只需要获取sender信息，而sender不可能是群,所以写死为false
+    currentObj.user.getInformationByIdandType(managementMessageObj.sender,false,(relationObj) => {
         let itemMessage = new ControllerMessageDto();
         itemMessage.group = managementMessageObj.group;
         itemMessage.chatId = managementMessageObj.chatId;
@@ -1035,10 +1046,7 @@ function AddCache(managementMessageObj){
         let HeadImageUrl = localImage !='' ?localImage:avator;
         itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
 
-        cache.messageCache.push(itemMessage);
-
-        //渲染聊天记录
-        updateChatRecordhandle(cache.messageCache);
+        callback(itemMessage);
     })
 
     // //测试代码
@@ -1065,17 +1073,14 @@ function AddCache(managementMessageObj){
 
 
 function PushNotificationToApp(managementMessageObj){
-    //只有打开了聊天窗口并且收到来自该窗口的消息才会重新渲染聊天页面
-    if(chatId == currentChat.chatId){
-        updateChatRecordhandle(cache.messageCache);
-    }else{
+
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
             currentObj.addUnReadMsgNumber(chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
-    }
+
 }
 
 
