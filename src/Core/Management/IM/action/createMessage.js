@@ -100,6 +100,15 @@ export function buildInvationGroupMessage(Sender,Receiver,text,messageId){
     return message;
 }
 
+//本地存储群组移除通知
+export function buildRemoveGroupMessage(Sender,Receiver,text,messageId){
+    text = "你将" + text + "移除了群聊";
+    let message = createMessageObj(text,undefined,Sender,Receiver,AppCommandEnum.MSG_BODY_APP_CREATEGROUP,MessageBodyTypeEnum.MSG_BODY_APP)
+    message.status = MessageStatus.SendSuccess
+    message.MSGID = messageId;
+    return message;
+}
+
 
 //本地存储群组昵称修改通知
 export function buildChangeGroupNickMessage(Sender,Receiver,text,messageId){
