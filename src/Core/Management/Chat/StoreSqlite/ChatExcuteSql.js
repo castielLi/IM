@@ -23,7 +23,7 @@ export const ExcuteIMSql = {
     "QueryChatRecodeByChatId":"select * from ? LIMIT ?,?",
     "QueryChatRecodeByChatIdAndMaxId":"select * from ? where Id<? order by id desc limit ?",
     "ClearChatRecode":"Delete from ChatRecode",
-    "UpdateMessage":"update ? set message = ? where messageId = ?",
+    "UpdateMessage":"update ? set message = ?,status = ? where messageId = ?",
     "UpdateMessageStatusByMessageId":"update ? set status = ? where messageId = ?",
 
 }
