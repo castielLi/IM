@@ -91,7 +91,7 @@ export default class User {
 
                 for(let item in users){
                     let user = users[item];
-                    user.show = this.stringToBoolean(user.show)
+                    user.show = stringToBoolean(user.show)
                     cache['user'][user.RelationId] = user;
 
                     let relationId= users[item].RelationId;
@@ -101,7 +101,7 @@ export default class User {
                 for(let item in groups){
 
                     let group = groups[item];
-                    group.show = this.stringToBoolean(group.show)
+                    group.show = stringToBoolean(group.show)
                     cache['group'][group.RelationId] = group;
 
                     let relationId= groups[item].RelationId;
@@ -139,8 +139,8 @@ export default class User {
             this.getAllRelationSQL((relations)=>{
                 callback(relations);
                 relations.forEach((v)=>{
-                    v.BlackList = this.stringToBoolean(v.BlackList)
-                    v.show = this.stringToBoolean(v.show)
+                    v.BlackList = stringToBoolean(v.BlackList)
+                    v.show = stringToBoolean(v.show)
                     cache['user'][v.RelationId] = v;
                 })
             })
@@ -162,7 +162,7 @@ export default class User {
         this.getAllGroupFromGroupSQL((relations)=>{
             callback(relations);
             relations.forEach((v)=>{
-                v.show = this.stringToBoolean(v.show)
+                v.show = stringToBoolean(v.show)
                 cache['group'][v.RelationId] = v;
             })
         },true)
@@ -581,14 +581,21 @@ export default class User {
     applyFriend(userObj){
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
+
         cache["user"][user.RelationId] = user;
+
+        let contacts = filterShowToArr(cache["user"]);
+        ControllerUpdateContactHandle(contacts);
     }
     //接受好友申请
     acceptFriend(userObj){
         let user = dtoChange(userObj);
         this.AddNewRelationSQL(user);
+
         cache["user"][user.RelationId] = user;
-        ControllerUpdateContactHandle();
+
+        let contacts = filterShowToArr(cache["user"]);
+        ControllerUpdateContactHandle(contacts);
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群
@@ -638,13 +645,24 @@ export default class User {
         return cache['user'];
     }
 
-    //todo:字符串转布尔型方法
-    stringToBoolean(str){
-        if(str == 'true' || str == true){
-            return true;
-        }else{
-            return false;
+}
+
+//todo:字符串转布尔型方法
+function stringToBoolean(str){
+    if(str == 'true' || str == true){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+//找出缓存中show为true的用户
+function filterShowToArr(obj){
+    let tempArr = [];
+    for(let current of obj){
+        if(current.show == true || current.show == 'true'){
+            tempArr.push(current)
         }
     }
-
+    return tempArr;
 }
