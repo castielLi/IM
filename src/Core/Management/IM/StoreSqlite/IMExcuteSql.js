@@ -22,7 +22,7 @@ export const ExcuteIMSql = {
     "InsertUploadFileRecode":"insert into ResourceRecode(messageId,localResource) values (?,?)",
     "DeleteUploadFileRecode":"Delete from ResourceRecode where messageId = ? and localResource = ?",
     "QueryMessageResourceExist":"select * from ResourceRecode where messageId = ? and localResource = ?",
-    "AddNewMessageToApplyFriend":"insert or replace into ApplyFriend (send,status,comment,time,key) values(?,?,?,?,?,?)",
+    "AddNewMessageToApplyFriend":"insert or replace into ApplyFriend (send,status,comment,time,key) values(?,?,?,?,?)",
     "QueryApplyFriend":"SELECT * FROM (SELECT * FROM ApplyFriend ORDER BY time) GROUP BY send",
     "UpdateApplyFriend":"update ApplyFriend set status = ? where key = ?",
     "UpdateMessageLocalSource":"update MessageRecode set messageBody=? where messageId=?",

@@ -28,7 +28,7 @@ export const ExcuteIMSql = {
     "UpdateMessageStatusByMessageId":"update ? set status = ? where messageId = ?",
     "InsertMessageIntoOfflineTable":"insert into OffLineRecode (messageId,message) values(?,?)",
     "DeleteAllOfflineMessage":"delete from OffLineRecode",
-    "GetAllOfflineMessage":"select * from OffLineRecode"
+    "GetAllOfflineMessage":"select message from OffLineRecode"
 
 }
 
