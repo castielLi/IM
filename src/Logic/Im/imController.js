@@ -1016,7 +1016,7 @@ function controllerReceiveMessage(message){
 function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
-    currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
+    currentObj.chat.addMessage(managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
     let chatId;
