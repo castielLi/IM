@@ -66,7 +66,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
            file.RemoteSource = messageDto.remoteSource;
            file.LocalSource = messageDto.localSource;
            file.Time = messageDto.sourceTime;
-           return addResourceMessage(way,file,messageDto.sender,messageDto.receiver);
+           return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
    }
 }
 
