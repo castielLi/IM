@@ -23,9 +23,15 @@ export function updateApplyMessageStatus(key,status){
 
 
 var databaseObj = {
-    name :"IM.db",
+    name :"ApplyFriend.db",
 }
-export function initIMDatabase(AccountId,callback){
+
+if(Platform.OS === 'ios'){
+    databaseObj.createFromLocation='1'
+    databaseObj.location = "Documents"
+}
+
+export function initApplyFriendDatabase(AccountId,callback){
     if(Platform.OS === 'ios'){
         databaseObj.name =  AccountId + "/database/ApplyFriend.db"
     }
@@ -57,7 +63,7 @@ APPLYFRIENDFMDB.initIMDataBase = function(AccountId,callback){
             for (key in sqls.InitIMTable) {
                 let sql = sqls.InitIMTable[key];
                 tx.executeSql(sql, [], (tx, results) => {
-                    console.log('create Chat database success');
+                    console.log('create apply database success');
                     callback();
                 }, (err)=>{errorDB('创建数据表',err)});
             }
