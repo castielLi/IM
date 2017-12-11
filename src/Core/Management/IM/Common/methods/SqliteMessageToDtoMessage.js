@@ -20,6 +20,7 @@ export function sqliteMessageToMessage(sqliteMessage){
 
     messageData.Sender = sqliteMessageDto.Data.Data.Sender;
     messageData.Receiver = sqliteMessageDto.Data.Data.Receiver;
+    messageData.Data = sqliteMessageDto.Data.Data.Data;
 
     messageBody.LocalTime = sqliteMessageDto.Data.LocalTime;
     messageBody.Command = sqliteMessageDto.Data.Command;

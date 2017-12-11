@@ -17,11 +17,13 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
     if(message.Command == MessageCommandEnum.MSG_ERROR){
         messageDto.type = DtoMessageTypeEnum.error;
 
+        let errorMessageBody = JSON.parse(message.Data.Data);
+
         messageDto.message = message.Description;
-        messageDto.chatId = message.Data.Data.Data.Receiver;
-        messageDto.sender = messageDto.Data.Data.Data.Sender;
-        messageDto.messageId = message.MSGID;
-        messageDto.sendTime = message.Data.Data.LocalTime;
+        messageDto.chatId = errorMessageBody.Data.Data.Receiver;
+        messageDto.sender = errorMessageBody.Data.Data.Sender;
+        messageDto.messageId = errorMessageBody.MSGID;
+        messageDto.sendTime = errorMessageBody.Data.LocalTime;
 
     }else{
        if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
