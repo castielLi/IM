@@ -91,7 +91,7 @@ export default class User {
 
                 for(let item in users){
                     let user = users[item];
-                    user.show = Boolean(user.show)
+                    user.show = this.stringToBoolean(user.show)
                     cache['user'][user.RelationId] = user;
 
                     let relationId= users[item].RelationId;
@@ -101,7 +101,7 @@ export default class User {
                 for(let item in groups){
 
                     let group = groups[item];
-                    group.show = Boolean(group.show)
+                    group.show = this.stringToBoolean(group.show)
                     cache['group'][group.RelationId] = group;
 
                     let relationId= groups[item].RelationId;
@@ -139,8 +139,8 @@ export default class User {
             this.getAllRelationSQL((relations)=>{
                 callback(relations);
                 relations.forEach((v)=>{
-                    v.BlackList = Boolean(v.BlackList)
-                    v.show = Boolean(v.show)
+                    v.BlackList = this.stringToBoolean(v.BlackList)
+                    v.show = this.stringToBoolean(v.show)
                     cache['user'][v.RelationId] = v;
                 })
             })
@@ -162,7 +162,7 @@ export default class User {
         this.getAllGroupFromGroupSQL((relations)=>{
             callback(relations);
             relations.forEach((v)=>{
-                v.show = Boolean(v.show)
+                v.show = this.stringToBoolean(v.show)
                 cache['group'][v.RelationId] = v;
             })
         },true)
@@ -635,6 +635,15 @@ export default class User {
         this.updateRelationSQL(user);
         cache['user'][user.RelationId] = user;
         return cache['user'];
+    }
+
+    //todo:字符串转布尔型方法
+    stringToBoolean(str){
+        if(str == 'true' || str == true){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

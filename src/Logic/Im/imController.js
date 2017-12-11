@@ -248,24 +248,23 @@ export default class IMController {
 
         if(cache.conversationCache[newConverse.chatId]){
             let oldConverse = cache.conversationCache[newConverse.chatId];
+                if(type == 'updateName'){
+                    oldConverse.name = newConverse.name;
+                    oldConverse.lastTime = newConverse.lastTime;
+                }else if(type == 'removeRecord'){
+                    delete cache.conversationCache[newConverse.chatId]
+                }else{
+                    oldConverse.lastTime = newConverse.lastTime;
+                }
+                let caches = formatOjbToneedArr(cache.conversationCache);
+                updateconverslisthandle(caches)
 
-            if(type == 'updateName'){
-                oldConverse.name = newConverse.name;
-                oldConverse.lastTime = newConverse.lastTime;
+            if(message){
+                cache.messageCache.push(message);
+                updateChatRecordhandle(cache.messageCache);
             }
-
-            //newConverse.name = oldConverse.name;
-
-            //cache.conversationCache[newConverse.chatId] = newConverse;
-
-            let caches = formatOjbToneedArr(cache.conversationCache);
-
-            updateconverslisthandle(caches)
-
-            cache.messageCache.push(message);
-            updateChatRecordhandle(cache.messageCache);
-
         }else{
+            if(type == 'removeRecord') return;
             let caches = formatOjbToneedArr(cache.conversationCache);
 
             caches.splice(0, 0, newConverse)
