@@ -1040,12 +1040,6 @@ function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
 
-<<<<<<< Updated upstream
-    currentObj.chat.addMessage(managementMessageObj)
-    //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
-
-=======
->>>>>>> Stashed changes
     let chatId;
     if(!managementMessageObj.group){
         chatId = managementMessageObj.sender;
