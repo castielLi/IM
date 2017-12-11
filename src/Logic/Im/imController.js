@@ -295,7 +295,7 @@ export default class IMController {
         }
         //初始化前10条聊天记录
         this.chat.getChatList(chatId, group, maxId, (messageList) => {
-            messageList.reverse();
+            //messageList.reverse();
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
                 return;
@@ -462,7 +462,7 @@ export default class IMController {
 
         //messageList 每个item 拿上来就是ManagementMessageDto
         this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
-            messageList.reverse();
+            //messageList.reverse();
             if(messageList.length == 0) {
               return ;
             }
@@ -609,9 +609,7 @@ export default class IMController {
                 //cache添加
 
                 formateManagementMessageToControllerMessage(itemManagementMessage,(controllerMessage)=>{
-                    cache.messageCache.push(controllerMessage);
-                    maxId = maxId+1;
-                    updateChatRecordhandle(cache.messageCache);
+                    onlyAddMessageCache(controllerMessage)
                 })
             }
 
@@ -822,7 +820,7 @@ function controllerMessageResult(success,message){
     if(messageDto.chatId == currentChat.chatId){
         //AddCache(messageDto);
         formateManagementMessageToControllerMessage(messageDto,(controllerMessage)=>{
-            addOrUpdateMessageCache(controllerMessage);
+            onlyUpdateMessageCache(controllerMessage);
         })
     }
 }
@@ -1002,7 +1000,8 @@ function storeChatMessageAndCache(message){
     if(managementMessageObj.chatId == currentChat.chatId){
         //AddCache(managementMessageObj);
         formateManagementMessageToControllerMessage(managementMessageObj,(controllerMessage)=>{
-            addOrUpdateMessageCache(controllerMessage);
+            //addOrUpdateMessageCache(controllerMessage);
+            onlyAddMessageCache(controllerMessage)
         })
 
     }
@@ -1025,6 +1024,22 @@ function addOrUpdateMessageCache(itemMessage){
         cache.messageCache.push(itemMessage);
         maxId = maxId+1;
     }
+    updateChatRecordhandle(cache.messageCache);
+}
+
+function onlyUpdateMessageCache(itemMessage){
+    for(let i=0,length = cache.messageCache.length;i<length;i++){
+        if(cache.messageCache[i].messageId == itemMessage.messageId){
+            cache.messageCache[i] = itemMessage;
+            updateChatRecordhandle(cache.messageCache);
+            break;
+        }
+    }
+}
+
+function onlyAddMessageCache(itemMessage){
+    cache.messageCache.push(itemMessage);
+    maxId = maxId+1;
     updateChatRecordhandle(cache.messageCache);
 }
 
