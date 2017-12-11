@@ -1024,10 +1024,6 @@ function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
 
-    //判断当前缓存里面是否有当前会话
-    if(cache.conversationCache[managementMessageObj.chatId] == undefined){
-
-    }
     currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
@@ -1037,6 +1033,13 @@ function storeChatMessageAndCache(message){
     }else{
         chatId = managementMessageObj.chatId;
     }
+
+    //判断当前缓存里面是否有当前会话
+    if(cache.conversationCache[managementMessageObj.chatId] == undefined){
+
+    }
+
+
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
         currentObj.updateOneChat(chatId,managementMessageObj)
