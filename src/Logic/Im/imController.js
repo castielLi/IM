@@ -756,7 +756,7 @@ export default class IMController {
 
 
     //message是完整的managementMessageDto
-    addOneChat(chatId,message){
+    addOneChat(chatId,message,callback){
 
         this.user.getInformationByIdandType(chatId,message.group,(relationObj) => {
             let itemChat = new ControllerChatConversationDto();
@@ -771,11 +771,13 @@ export default class IMController {
             cache.conversationCache[chatId] = itemChat;
             let tempArr = formatOjbToneedArr(cache.conversationCache);
             updateconverslisthandle(tempArr);
+            callback&&callback();
         })
     }
     //未读消息+1
     addUnReadMsgNumber(clientId){
         cache.allUnreadCount+=1;
+
         cache.conversationCache[clientId]['unreadCount'] +=1;
         //todo:李宗骏 缺少数据库操作
     }
@@ -1025,26 +1027,39 @@ function storeChatMessageAndCache(message){
     }
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
-        currentObj.updateOneChat(chatId,managementMessageObj)
+        currentObj.updateOneChat(chatId,managementMessageObj);
+        if(managementMessageObj.chatId == currentChat.chatId){
+            //AddCache(managementMessageObj);
+            formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
+                //addOrUpdateMessageCache(controllerMessage);
+                onlyAddMessageCache(controllerMessage)
+            })
+
+        }else{
+            PushNotificationToApp(managementMessageObj);
+        }
     }else{
-        currentObj.addOneChat(chatId,managementMessageObj);
+        currentObj.addOneChat(chatId,managementMessageObj,()=>{
+            if(managementMessageObj.chatId == currentChat.chatId){
+                //AddCache(managementMessageObj);
+                formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
+                    //addOrUpdateMessageCache(controllerMessage);
+                    onlyAddMessageCache(controllerMessage)
+                })
+
+            }else{
+                PushNotificationToApp(managementMessageObj);
+            }
+        });
     }
 
 
-    if(managementMessageObj.chatId == currentChat.chatId){
-        //AddCache(managementMessageObj);
-        formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
-            //addOrUpdateMessageCache(controllerMessage);
-            onlyAddMessageCache(controllerMessage)
-        })
 
-    }else{
-        PushNotificationToApp(managementMessageObj);
-    }
 
 
 
 }
+
 
 function addOrUpdateMessageCache(itemMessage){
     //缓存有则更新，没有则push到缓存
