@@ -328,18 +328,29 @@ export default class IMController {
 
                     //1 如果是私聊不需要显示名字
                     //2 如果是error 和 info类型不需要显示名字
-                    if(itemMessage.group &&
-                        itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
-                        if(itemMessage.sender != myAccount.accountId) {
+                    // if(itemMessage.group &&
+                    //     itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
+                    //     if(itemMessage.sender != myAccount.accountId) {
+                    //         let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
+                    //         let HeadImageUrl = localImage != '' ? localImage : avator;
+                    //         itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+                    //     }else{
+                    //         itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
+                    //     }
+                    // }else{
+                    //     itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
+                    // }
+
+                    if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
+                        if(messageList[i].sender == myAccount.accountId){
+                            itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
+                        }else{
                             let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
-                        }else{
-                            itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }
-                    }else{
-                        itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                     }
+
 
                     cache.messageCache.unshift(itemMessage);
 
@@ -489,27 +500,20 @@ export default class IMController {
                     itemMessage.sendTime = messageList[i].sendTime;
 
 
-                    //1 如果是私聊不需要显示名字
-                    //2 如果是error 和 info类型不需要显示名字
-                    if(itemMessage.group &&
-                        itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
-                        if(itemMessage.sender != myAccount.accountId) {
+                    if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
+                        if(messageList[i].sender == myAccount.accountId){
+                            itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
+                        }else{
                             let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
-                        }else{
-                            itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }
-
-                    }else{
-                        itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                     }
+
 
                     cache.messageCache.unshift(itemMessage);
 
                 }
-
-
 
                 //渲染聊天记录
                 updateChatRecordhandle(cache.messageCache);
@@ -1055,7 +1059,6 @@ function storeChatMessageAndCache(message){
 }
 
 
-
 function addOrUpdateMessageCache(itemMessage){
     //缓存有则更新，没有则push到缓存
     let exsit = false;
@@ -1181,13 +1184,18 @@ function formateDataFromChatManageCache(ChatManageCacheObj){
 }
 //ChatManageCache的record消息数组--->[{chatId:'',group:false},{}]
 function formateDataFromChatManageCacheRecord(ChatManageCacheRecordArr){
-    let needArr = ChatManageCacheRecordArr.map((v,i)=>{
-        let obj = {};
-        obj['chatId'] = v['sender'];
-        // v['group']
-        obj['group'] = false
-        return obj;
-    })
+    let tempArr = [];
+    let needArr = [];
+    for(let i=0,length=ChatManageCacheRecordArr.length;i<length;i++){
+        let sender = ChatManageCacheRecordArr[i].sender;
+        if(tempArr.indexOf(sender)<0&&sender!=myAccount.accountId){
+            tempArr.push(sender);
+            let obj = {};
+            obj['chatId'] = sender;
+            obj['group'] = false;
+            needArr.push(obj);
+        }
+    }
     return needArr;
 }
 
