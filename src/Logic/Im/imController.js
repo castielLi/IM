@@ -38,6 +38,8 @@ let currentChat = {chatId:'',group:false};
 //currentChat={chatId:'wg003722',group:false}
 // todo 登录时修改myAccount
 let myAccount = undefined;
+//myAccount = {IMToken,Nick,SessionToken,accountId,avator,device,deviceId,gender,phone}
+
 //myAccount = {accountId:'wg00723',...}
 let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0};
 // cache = {
@@ -608,7 +610,7 @@ export default class IMController {
 
                 //cache添加
 
-                formateManagementMessageToControllerMessage(itemManagementMessage,(controllerMessage)=>{
+                formateManagementMessageToControllerMessage(itemManagementMessage,false,(controllerMessage)=>{
                     onlyAddMessageCache(controllerMessage)
                 })
             }
@@ -819,7 +821,7 @@ function controllerMessageResult(success,message){
 
     if(messageDto.chatId == currentChat.chatId){
         //AddCache(messageDto);
-        formateManagementMessageToControllerMessage(messageDto,(controllerMessage)=>{
+        formateManagementMessageToControllerMessage(messageDto,true,(controllerMessage)=>{
             onlyUpdateMessageCache(controllerMessage);
         })
     }
@@ -1016,7 +1018,7 @@ function storeChatMessageAndCache(message){
 
     if(managementMessageObj.chatId == currentChat.chatId){
         //AddCache(managementMessageObj);
-        formateManagementMessageToControllerMessage(managementMessageObj,(controllerMessage)=>{
+        formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
             //addOrUpdateMessageCache(controllerMessage);
             onlyAddMessageCache(controllerMessage)
         })
@@ -1060,10 +1062,31 @@ function onlyAddMessageCache(itemMessage){
     updateChatRecordhandle(cache.messageCache);
 }
 
-function formateManagementMessageToControllerMessage(managementMessageObj,callback){
+function formateManagementMessageToControllerMessage(managementMessageObj,isReceive,callback){
     //我向群里发送一条正常的群消息，该条message.sender为wg003723，message.group为true，这时调用getInformationByIdandType(sender,group)会报错
     //调用formateManagementMessageToControllerMessage方法时，只需要获取sender信息，而sender不可能是群,所以写死为false
-    currentObj.user.getInformationByIdandType(managementMessageObj.sender,false,(relationObj) => {
+    if(isReceive){
+        currentObj.user.getInformationByIdandType(managementMessageObj.sender,false,(relationObj) => {
+            let itemMessage = new ControllerMessageDto();
+            itemMessage.group = managementMessageObj.group;
+            itemMessage.chatId = managementMessageObj.chatId;
+            itemMessage.message = managementMessageObj.message;
+            itemMessage.messageId = managementMessageObj.messageId;
+
+            itemMessage.type = managementMessageObj.type;
+            itemMessage.status = managementMessageObj.status;
+            itemMessage.sendTime = managementMessageObj.sendTime;
+
+            let {RelationId, Nick, avator,localImage} = relationObj;
+            let HeadImageUrl = localImage !='' ?localImage:avator;
+            itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+
+            callback(itemMessage);
+        })
+    }else{
+        //myAccount = {IMToken,Nick,SessionToken,accountId,avator,device,deviceId,gender,phone}
+
+        let relationObj = myAccount;
         let itemMessage = new ControllerMessageDto();
         itemMessage.group = managementMessageObj.group;
         itemMessage.chatId = managementMessageObj.chatId;
@@ -1074,12 +1097,12 @@ function formateManagementMessageToControllerMessage(managementMessageObj,callba
         itemMessage.status = managementMessageObj.status;
         itemMessage.sendTime = managementMessageObj.sendTime;
 
-        let {RelationId, Nick, avator,localImage} = relationObj;
-        let HeadImageUrl = localImage !='' ?localImage:avator;
-        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+        let {accountId, Nick, avator} = relationObj;
+        itemMessage.sender = {account: accountId, name: Nick, avator};
 
         callback(itemMessage);
-    })
+    }
+
 
     // //测试代码
     // currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {

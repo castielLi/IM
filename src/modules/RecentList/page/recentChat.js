@@ -152,6 +152,7 @@ class RecentChat extends ContainerComponent {
                     return;
                 }
                 imController.init(param);
+                currentObj.props.changeUnReadMessageNumber(result.data.unUnDealRequestCount)
                 currentObj.props.hideNavigationBottom();
 
             }, {"Account": account.phone});
