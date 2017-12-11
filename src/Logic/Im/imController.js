@@ -842,7 +842,7 @@ function controllerKickOutMessage(){
 
 function controllerMessageResult(success,message){
 
-    let messageDto = IMMessageToMessagementMessageDto(message,true);
+    let messageDto = IMMessageToMessagementMessageDto(message,false);
     messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
 
     currentObj.chat.updateChatMessage(messageDto);
