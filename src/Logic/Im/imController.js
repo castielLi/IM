@@ -326,15 +326,21 @@ export default class IMController {
                     itemMessage.sendTime = messageList[i].sendTime;
 
 
-
-
-
-                    if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
-                        let {RelationId, Nick, avator,localImage} = relationObj[messageList[i].sender];
-                        let HeadImageUrl = localImage != ''?localImage:avator;
-                        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
-
+                    //1 如果是私聊不需要显示名字
+                    //2 如果是error 和 info类型不需要显示名字
+                    if(itemMessage.group &&
+                        itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
+                        if(itemMessage.sender != myAccount.accountId) {
+                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
+                            let HeadImageUrl = localImage != '' ? localImage : avator;
+                            itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+                        }else{
+                            itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
+                        }
+                    }else{
+                        itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                     }
+
                     cache.messageCache.unshift(itemMessage);
 
                 }
@@ -483,12 +489,22 @@ export default class IMController {
                     itemMessage.sendTime = messageList[i].sendTime;
 
 
-                    if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
-                        let {RelationId, Nick, avator,localImage} = relationObj[messageList[i].sender];
-                        let HeadImageUrl = localImage != ''?localImage:avator;
-                        itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+                    //1 如果是私聊不需要显示名字
+                    //2 如果是error 和 info类型不需要显示名字
+                    if(itemMessage.group &&
+                        itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info) {
+                        if(itemMessage.sender != myAccount.accountId) {
+                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
+                            let HeadImageUrl = localImage != '' ? localImage : avator;
+                            itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
+                        }else{
+                            itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
+                        }
 
+                    }else{
+                        itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                     }
+
                     cache.messageCache.unshift(itemMessage);
 
                 }
