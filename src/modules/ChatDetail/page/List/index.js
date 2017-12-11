@@ -52,13 +52,13 @@ class Chat extends Component {
         }
         currentObj = this;
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            if(r1.type === 'image' || r1.type === 'video')
+            if(r1.type === 'image' || r1.type === 'video'||r1.type === 'audio')
             {
-                let r1Local = r1.message.Resource[0].LocalSource;
-                let r2Local = r2.message.Resource[0].LocalSource;
-                return r1Local !== r2Local || r1.message.messageId !== r2.message.messageId || r1.status !== r2.status;
+                let r1Local = r1.message.localSource;
+                let r2Local = r2.message.localSource;
+                return r1Local !== r2Local || r1.messageId !== r2.messageId || r1.status !== r2.status;
             }
-            return r1.message.messageId !== r2.message.messageId || r1.status !== r2.status;
+            return r1.messageId !== r2.messageId || r1.status !== r2.status;
         }});
 
         this.data = [];

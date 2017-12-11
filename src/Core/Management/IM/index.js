@@ -409,7 +409,7 @@ export default class IM {
 
                 let message = currentObj.getCacheFromCacheByMSGID(messageId)
 
-                currentObj.MessageResultHandle(true, message);
+                currentObj.MessageResultHandle(true, message.message);
 
                 currentObj.popCurrentMessageSqlite(messageId)
 
