@@ -148,6 +148,12 @@ export default class Chat {
        }
     }
 
+    removeConverseListRecord(Id){
+        let record = new ManagementChatRecordDto();
+        record.chatId = Id;
+        ControllerUpdateConverseListHandlue(record,null,'removeRecord')
+    }
+
 
     updateMessage(message){
         this.updateChatMessage(message);

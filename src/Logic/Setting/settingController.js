@@ -205,6 +205,7 @@ export default class settingController {
         //todo:删除会话,删除群及群成员信息,删除未读消息数
         this.chat.removeConverse(groupId,true); //删除chatRecord 和对应表
         this.user.removeGroup(groupId);//删除groupList记录 和对应成员表
+        this.chat.removeConverseListRecord(groupId); //触使页面刷新
     }
 
 
