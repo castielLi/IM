@@ -659,9 +659,9 @@ function stringToBoolean(str){
 //找出缓存中show为true的用户
 function filterShowToArr(obj){
     let tempArr = [];
-    for(let current of obj){
-        if(current.show == true || current.show == 'true'){
-            tempArr.push(current)
+    for(let key in obj){
+        if(obj[key].show == true || obj[key].show == 'true'){
+            tempArr.push(obj[key])
         }
     }
     return tempArr;
