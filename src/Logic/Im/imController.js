@@ -1013,7 +1013,7 @@ function storeChatMessageAndCache(message){
     }else{
         currentObj.addOneChat(chatId,managementMessageObj);
     }
-    PushNotificationToApp(managementMessageObj);
+
 
     if(managementMessageObj.chatId == currentChat.chatId){
         //AddCache(managementMessageObj);
@@ -1022,6 +1022,8 @@ function storeChatMessageAndCache(message){
             onlyAddMessageCache(controllerMessage)
         })
 
+    }else{
+        PushNotificationToApp(managementMessageObj);
     }
 
 
@@ -1129,7 +1131,7 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
 function PushNotificationToApp(managementMessageObj){
 
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
-            currentObj.addUnReadMsgNumber(chatId);
+            currentObj.addUnReadMsgNumber(managementMessageObj.chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);

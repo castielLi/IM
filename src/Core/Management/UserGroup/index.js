@@ -402,6 +402,7 @@ export default class User {
 
     acceptFriendInCache(userId){
         cache["user"][userId].show = true;
+        ControllerUpdateContactHandle(getCacheInfo('user'))
     }
 
 

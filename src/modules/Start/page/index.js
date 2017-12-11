@@ -30,6 +30,7 @@ class Start extends ContainerComponent {
         AsyncStorage.getItem('account')
             .then((value) => {
                 let account = JSON.parse(value);
+                imController.setMyAccount(account);
                 //已经登录
                 if(account){
                     loginController.loginWithToken(function(result){
