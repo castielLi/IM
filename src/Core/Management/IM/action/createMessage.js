@@ -57,7 +57,7 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
            file.FileType = ResourceTypeEnum.audio;
            file.RemoteSource = messageDto.message.remoteSource;
            file.LocalSource = messageDto.message.localSource;
-           file.Time = messageDto.time;
+           file.Time = messageDto.message.time;
 
            return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
        case MessageType.video:
