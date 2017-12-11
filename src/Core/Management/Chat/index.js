@@ -295,6 +295,18 @@ export default class Chat {
         storeSqlite.UpdateMessage(message);
     }
 
+    insertOfflineMessage(message = new ManagementMessageDto()){
+        storeSqlite.addOfflineMessage(message);
+    }
+
+    getAllOfflineMessage(callback){
+        storeSqlite.getOfflineMessages(callback);
+    }
+
+    deleteAllOfflineMessage(){
+        storeSqlite.deleteOfflineMessages();
+    }
+
 
     //关闭数据库
     closeDB(){

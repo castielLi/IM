@@ -41,6 +41,9 @@ let currentChat = {chatId:'',group:false};
 let myAccount = undefined;
 //myAccount = {IMToken,Nick,SessionToken,accountId,avator,device,deviceId,gender,phone}
 
+//存储IM离线后，首次登录服务器发送的所有message消息
+let offlineMessage = [];
+
 //myAccount = {accountId:'wg00723',...}
 let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0,initConversationStatus:InitConversationListStatusEnum.Uninit};
 // cache = {
@@ -148,36 +151,45 @@ export default class IMController {
 
     //获取会话列表
     updateConverseList() {
-        this.chat.getConverseList((recentListObj) => {
-            let snapArr = formateDataFromChatManageCache(recentListObj);
 
-            this.user.getRelationsByList(snapArr, (relationObj) => {
-                let needArr = [];
+        if(cache.initConversationStatus == InitConversationListStatusEnum.Uninit) {
+            this.setCacheInitConversationListStatus(InitConversationListStatusEnum.Executing)
 
-                for (let key in recentListObj) {
-                    let itemChat = new ControllerChatConversationDto();
-                    itemChat.group = recentListObj[key].group;
-                    itemChat.chatId = recentListObj[key].chatId;
-                    itemChat.lastSender = recentListObj[key].lastSender;
-                    itemChat.lastMessage = recentListObj[key].lastMessage;
-                    itemChat.lastTime = recentListObj[key].lastTime;
-                    itemChat.unreadCount = recentListObj[key].unreadCount;
+            this.chat.getConverseList((recentListObj) => {
+                let snapArr = formateDataFromChatManageCache(recentListObj);
 
-                    cache.allUnreadCount+=itemChat.unreadCount;
+                this.user.getRelationsByList(snapArr, (relationObj) => {
+                    let needArr = [];
 
-                    itemChat.name = relationObj[itemChat.chatId].Nick;
-                    itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
-                        relationObj[itemChat.chatId].avator;
-                    needArr.push(itemChat);
-                }
-                cache.conversationCache = formatArrToConversationObj(needArr);
+                    for (let key in recentListObj) {
+                        let itemChat = new ControllerChatConversationDto();
+                        itemChat.group = recentListObj[key].group;
+                        itemChat.chatId = recentListObj[key].chatId;
+                        itemChat.lastSender = recentListObj[key].lastSender;
+                        itemChat.lastMessage = recentListObj[key].lastMessage;
+                        itemChat.lastTime = recentListObj[key].lastTime;
+                        itemChat.unreadCount = recentListObj[key].unreadCount;
 
-                //渲染会话列表
+                        cache.allUnreadCount+=itemChat.unreadCount;
 
-                AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
-                updateconverslisthandle(needArr);
+                        itemChat.name = relationObj[itemChat.chatId].Nick;
+                        itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
+                            relationObj[itemChat.chatId].avator;
+                        needArr.push(itemChat);
+                    }
+                    cache.conversationCache = formatArrToConversationObj(needArr);
+
+                    //渲染会话列表
+
+                    this.setCacheInitConversationListStatus(InitConversationListStatusEnum.Finish);
+
+                    AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
+                    updateconverslisthandle(needArr);
+                })
             })
-        })
+        }
+
+
 
         // //测试代码
         // //this.chat.getConverseList((recentListObj) => {
@@ -1028,9 +1040,12 @@ function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
 
+<<<<<<< Updated upstream
     currentObj.chat.addMessage(managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
+=======
+>>>>>>> Stashed changes
     let chatId;
     if(!managementMessageObj.group){
         chatId = managementMessageObj.sender;
@@ -1038,17 +1053,30 @@ function storeChatMessageAndCache(message){
         chatId = managementMessageObj.chatId;
     }
 
-    //判断当前缓存里面是否有当前会话
-    if(cache.conversationCache[managementMessageObj.chatId] == undefined){
-
-    }
-
-
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
         currentObj.updateOneChat(chatId,managementMessageObj)
     }else{
-        currentObj.addOneChat(chatId,managementMessageObj);
+
+        if(cache.initConversationStatus == InitConversationListStatusEnum.Uninit) {
+
+            currentObj.updateConverseList()
+
+            offlineMessage.push(managementMessageObj);
+
+            currentObj.chat.insertOfflineMessage(message);
+
+        }else if(cache.initConversationStatus == InitConversationListStatusEnum.Executing){
+
+            offlineMessage.push(managementMessageObj);
+
+            currentObj.chat.insertOfflineMessage(message);
+
+        }else{
+            currentObj.addOneChat(chatId,managementMessageObj);
+            currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
+            //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
+        }
     }
     PushNotificationToApp(managementMessageObj);
 
@@ -1173,6 +1201,10 @@ function PushNotificationToApp(managementMessageObj){
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
+
+}
+
+function waitUIConversationListCacheFinish(){
 
 }
 

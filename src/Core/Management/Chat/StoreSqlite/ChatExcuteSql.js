@@ -4,6 +4,7 @@
 
 export const InitIMTable = {
     "createChatRecodeTable":"CREATE TABLE IF NOT EXISTS ChatRecode (ChatId varchar(255), Type varchar(255), LastMessage varchar(255),Time varchar(255),unReadMessageCount int , LastSender varchar(255))",
+    "createOfflineChatTable":"CREATE TABLE IF NOT EXISTS OffLineRecode (messageId varchar(255), message varchar(500))"
 }
 
 export const ExcuteIMSql = {
@@ -25,6 +26,9 @@ export const ExcuteIMSql = {
     "ClearChatRecode":"Delete from ChatRecode",
     "UpdateMessage":"update ? set message = ?,status = ? where messageId = ?",
     "UpdateMessageStatusByMessageId":"update ? set status = ? where messageId = ?",
+    "InsertMessageIntoOfflineTable":"insert into OffLineRecode (messageId,message) values(?,?)",
+    "DeleteAllOfflineMessage":"delete from OffLineRecode",
+    "GetAllOfflineMessage":"select * from OffLineRecode"
 
 }
 

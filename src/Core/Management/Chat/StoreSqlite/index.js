@@ -46,6 +46,18 @@ export function UpdateMessage(message = new ManagementMessageDto()){
     CHATFMDB.UpdateMessageBody(message);
 }
 
+export function addOfflineMessage(message = new ManagementMessageDto()){
+   CHATFMDB.insertOfflineMessageByMessage(message);
+}
+
+export function getOfflineMessages(callback){
+    CHATFMDB.getAllOfflineMessages(callback);
+}
+
+export function deleteOfflineMessages(){
+   CHATFMDB.deleteAllOfflineMessages();
+}
+
 
 //获取range范围的消息
 export function queryRecentMessage(account,way,range,callback){
@@ -104,6 +116,64 @@ CHATFMDB.initIMDataBase = function(AccountId,callback){
                     callback();
                 }, (err)=>{errorDB('创建数据表',err)});
             }
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+CHATFMDB.getAllOfflineMessages = function(callback){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(sqls.ExcuteIMSql.GetAllOfflineMessage, [], (tx, results) => {
+
+                callback(results.rows.raw());
+
+            }, (err)=>{errorDB('获取所有offline消息',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+CHATFMDB.deleteAllOfflineMessages = function(){
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(sqls.ExcuteIMSql.DeleteAllOfflineMessage, [], (tx, results) => {
+
+                console.log("删除所有offline消息成功")
+
+            }, (err)=>{errorDB('删除所有offline消息',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+CHATFMDB.insertOfflineMessageByMessage = function(message = new ManagementMessageDto()){
+
+    let sql = sqls.ExcuteIMSql.InsertMessageIntoOfflineTable;
+
+    let messageBody = JSON.stringify(message);
+
+    sql = commonMethods.sqlFormat(sql,[message.messageId,messageBody])
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+
+    }, () => {
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log("添加offline消息成功")
+
+            }, (err)=>{errorDB('添加offline消息',err)});
+
         });
     }, (err)=>{errorDB('初始化数据库',err)});
 }
