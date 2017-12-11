@@ -1058,7 +1058,7 @@ function storeChatMessageAndCache(message){
 
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
-        if(message.sendTime * 1 > cache.conversationCache[chatId].sendTime * 1) {
+        if(managementMessageObj.sendTime * 1 > cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
 
             currentObj.chat.addMessage(managementMessageObj)

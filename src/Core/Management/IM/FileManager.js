@@ -106,6 +106,8 @@ FileManager.uploadResource = function(obj){
 
 FileManager.downloadResource = function(message,callback){
 
+    //todo:张彤 需要先去判断这个文件夹是否存在，不存在需要提前进行创建
+
     let fromUrl = message.Resource[0].RemoteSource,
         sender = message.Data.Data.Sender,
         type = message.Resource[0].FileType,
