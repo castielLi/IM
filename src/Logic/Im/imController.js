@@ -158,7 +158,7 @@ export default class IMController {
             this.chat.getConverseList((recentListObj) => {
                 let snapArr = formateDataFromChatManageCache(recentListObj);
 
-                this.user.getRelationsByList(snapArr, (relationObj) => {
+                currentObj.user.getRelationsByList(snapArr, (relationObj) => {
                     let needArr = [];
 
                     for (let key in recentListObj) {
@@ -177,14 +177,22 @@ export default class IMController {
                             relationObj[itemChat.chatId].avator;
                         needArr.push(itemChat);
                     }
-                    cache.conversationCache = formatArrToConversationObj(needArr);
 
-                    //渲染会话列表
+                    currentObj.chat.getAllOfflineMessage(function(offlineMessages){
 
-                    this.setCacheInitConversationListStatus(InitConversationListStatusEnum.Finish);
+                        cache.conversationCache = formatArrToConversationObj(needArr);
 
-                    AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
-                    updateconverslisthandle(needArr);
+                        //渲染会话列表
+
+                        this.setCacheInitConversationListStatus(InitConversationListStatusEnum.Finish);
+
+                        waitUIConversationListCacheFinish(offlineMessages);
+
+                        AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
+                        updateconverslisthandle(needArr);
+
+                        currentObj.chat.deleteAllOfflineMessage();
+                    })
                 })
             })
         }
@@ -1049,7 +1057,11 @@ function storeChatMessageAndCache(message){
 
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
-        currentObj.updateOneChat(chatId,managementMessageObj)
+        if(message.sendTime * 1 > cache.conversationCache[chatId].sendTime * 1) {
+            currentObj.updateOneChat(chatId, managementMessageObj)
+
+            currentObj.chat.addMessage(managementMessageObj)
+        }
     }else{
 
         if(cache.initConversationStatus == InitConversationListStatusEnum.Uninit) {
@@ -1060,11 +1072,15 @@ function storeChatMessageAndCache(message){
 
             currentObj.chat.insertOfflineMessage(message);
 
+            currentObj.chat.addMessage(managementMessageObj)
+
         }else if(cache.initConversationStatus == InitConversationListStatusEnum.Executing){
 
             offlineMessage.push(managementMessageObj);
 
             currentObj.chat.insertOfflineMessage(message);
+
+            currentObj.chat.addMessage(managementMessageObj)
 
         }else{
             currentObj.addOneChat(chatId,managementMessageObj);
@@ -1198,14 +1214,37 @@ function PushNotificationToApp(managementMessageObj){
 
 }
 
-function waitUIConversationListCacheFinish(){
+function waitUIConversationListCacheFinish(messages = []){
 
     let converse = {};
 
-    for(let item in offlineMessage){
-        let message = offlineMessage[item];
-        if(converse[message.chatId] == undefined){
-            converse[message.chatId]
+    if(messages.length > 0){
+        let tempMessages = [];
+        for(let item in messages){
+           tempMessages.push(JSON.parse(messages[item]));
+        }
+
+        offlineMessage = messages.reduce(function (prev, curr) {
+            prev.push(curr);
+            return prev;
+        }, offlineMessage);
+    }
+
+    if(offlineMessage.length > 0){
+
+        for(let item in offlineMessage){
+            let message = offlineMessage[item];
+            converse[message.chatId] = message;
+        }
+
+        for(let item in converse){
+            let message = converse[item];
+
+            if(cache.conversationCache[message.chatId] == undefined){
+                currentObj.addOneChat(message.chatId,message);
+            }else{
+                currentObj.updateOneChat(message.chatId,message);
+            }
         }
     }
 }
