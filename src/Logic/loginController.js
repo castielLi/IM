@@ -5,6 +5,7 @@
 import IM from '../Core/Management/IM'
 import User from '../Core/Management/UserGroup'
 import Chat from '../Core/Management/Chat'
+import Apply from '../Core/Management/ApplyFriend'
 import ApiBridge from './ApiBridge'
 import {Platform,AsyncStorage}from 'react-native';
 import RNFS from 'react-native-fs'
@@ -29,6 +30,7 @@ export default class loginController {
         this.user = new User();
         this.im = new IM();
         this.chat = new Chat();
+        this.apply = new Apply();
         this.apiBridge = new ApiBridge();
     }
 
@@ -52,6 +54,7 @@ export default class loginController {
                     currentObj.im.initIMDatabase(account.accountId)
                     currentObj.user.initIMDatabase(account.accountId);
                     currentObj.chat.initChatDatabase(account.accountId);
+                    currentObj.apply.initApplyFriendDatabase(account.accountId);
 
                     callback(result)
 
@@ -60,6 +63,7 @@ export default class loginController {
                     let AccountDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Account.db';
                     let GroupDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Group.db';
                     let ChatDbPath = '/data/data/com.im/files/'+account.accountId +'/database/Chat.db';
+                    let ApplyFriendDbPath = '/data/data/com.im/files/'+account.accountId +'/database/ApplyFriend.db';
 
                     //文件夹判断是否是第一次登录
                     RNFS.exists(ImDbPath).then((bool)=>{
@@ -70,12 +74,17 @@ export default class loginController {
                                 RNFS.copyFile(AccountDbPath,'/data/data/com.im/databases/Account.db').then(()=>{
                                     RNFS.copyFile(GroupDbPath,'/data/data/com.im/databases/Group.db').then(()=>{
                                         RNFS.copyFile(ChatDbPath,'/data/data/com.im/databases/Chat.db').then(()=>{
-                                            //初始化im
-                                            currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-                                            currentObj.user.initIMDatabase(account.accountId);
-                                            currentObj.chat.initChatDatabase(account.accountId);
+                                            RNFS.copyFile(ApplyFriendDbPath,'/data/data/com.im/databases/ApplyFriend.db').then(()=>{
 
-                                            callback(result)
+
+
+                                                //初始化im
+                                                currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                                                currentObj.user.initIMDatabase(account.accountId);
+                                                currentObj.chat.initChatDatabase(account.accountId);
+                                                currentObj.apply.initApplyFriendDatabase(account.accountId);
+                                                callback(result)
+                                            });
                                         })
 
                                     })
@@ -89,7 +98,7 @@ export default class loginController {
                             currentObj.im.initIMDatabase(account.accountId);
                             currentObj.user.initIMDatabase(account.accountId);
                             currentObj.chat.initChatDatabase(account.accountId);
-
+                            currentObj.apply.initApplyFriendDatabase(account.accountId);
                             callback(result)
                         }
                     })
@@ -135,7 +144,7 @@ export default class loginController {
                         currentObj.im.initIMDatabase(storage.accountId)
                         currentObj.user.initIMDatabase(storage.accountId)
                         currentObj.chat.initChatDatabase(storage.accountId);
-
+                        currentObj.apply.initApplyFriendDatabase(account.accountId);
                     }
                     callback(result);
                 }
