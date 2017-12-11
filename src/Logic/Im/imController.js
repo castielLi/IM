@@ -280,7 +280,6 @@ export default class IMController {
     setCurrentConverse(chatId, group, callback) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
-
         //初始化缓存
         this.user.init(chatId,group);
 
@@ -461,7 +460,7 @@ export default class IMController {
     getHistoryChatList(chatId, group){
 
         //messageList 每个item 拿上来就是ManagementMessageDto
-        this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
+        this.chat.getChatList(chatId, group, maxId, (messageList) => {
             //messageList.reverse();
             if(messageList.length == 0) {
               return ;
