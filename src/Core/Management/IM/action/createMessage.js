@@ -49,23 +49,23 @@ export function buildSendMessage(messageDto = new ManagementMessageDto()){
        case MessageType.image:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.image;
-           file.RemoteSource = messageDto.remoteSource;
-           file.LocalSource = messageDto.localSource;
+           file.RemoteSource = messageDto.message.remoteSource;
+           file.LocalSource = messageDto.message.localSource;
            return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
        case MessageType.audio:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.audio;
-           file.RemoteSource = messageDto.remoteSource;
-           file.LocalSource = messageDto.localSource;
+           file.RemoteSource = messageDto.message.remoteSource;
+           file.LocalSource = messageDto.message.localSource;
            file.Time = messageDto.time;
 
            return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
        case MessageType.video:
            var file = new uploadResourceDto();
            file.FileType = ResourceTypeEnum.video;
-           file.RemoteSource = messageDto.remoteSource;
-           file.LocalSource = messageDto.localSource;
-           file.Time = messageDto.sourceTime;
+           file.RemoteSource = messageDto.message.remoteSource;
+           file.LocalSource = messageDto.message.localSource;
+           file.Time = messageDto.message.time;
            return addResourceMessage(way,file,messageDto.sender,messageDto.chatId);
    }
 }
