@@ -17,6 +17,7 @@ import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeE
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 
+
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -811,7 +812,7 @@ function controllerKickOutMessage(){
 
 function controllerMessageResult(success,message){
 
-    let messageDto = IMMessageToMessagementMessageDto(message);
+    let messageDto = IMMessageToMessagementMessageDto(message,true);
     messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
 
     currentObj.chat.updateChatMessage(messageDto);
@@ -978,7 +979,7 @@ function controllerReceiveMessage(message){
 
 function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
-    let managementMessageObj = IMMessageToMessagementMessageDto(message);
+    let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
     currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
