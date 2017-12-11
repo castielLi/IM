@@ -263,7 +263,7 @@ export default class IM {
 
     //发送消息
     //外部接口，添加消息
-    addMessage(messageDto = new ManagementMessageDto(),callback=function(success,content){},onprogess="undefined") {
+    addMessage(messageDto = new ManagementMessageDto(),callback=function(success,content){},onprogess=null) {
 
         let message = buildSendMessage(messageDto);
 
