@@ -70,13 +70,13 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
            messageDto.group = message.Data.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2G?true:false;
 
            if(messageDto.group){
-               messageDto.sender = message.Data.Data.Receiver;
+               messageDto.sender = message.Data.Data.Sender;
                messageDto.chatId = message.Data.Data.Receiver;
            }else{
                if(isReceive){
-                   messageDto.chatId = message.Data.Data.Receiver;
-               }else{
                    messageDto.chatId = message.Data.Data.Sender;
+               }else{
+                   messageDto.chatId = message.Data.Data.Receiver;
                }
                messageDto.sender = message.Data.Data.Sender;
            }

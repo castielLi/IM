@@ -1052,13 +1052,8 @@ function storeChatMessageAndCache(message){
             }
         });
     }
-
-
-
-
-
-
 }
+
 
 
 function addOrUpdateMessageCache(itemMessage){
