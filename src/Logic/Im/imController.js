@@ -825,13 +825,14 @@ export default class IMController {
         this.im.manualDownloadResource(url,path,function () {
             //修改数据库路径
             currentObj.im.updateMessageLocalSource(messageId,path);
-            //修改缓存路径
+
             for(let current of cache.messageCache){
-                if(messageId == current.RelationId){
+                if(current.messageId == messageId){
                     current.message.localSource = path;
-                    break;
                 }
             }
+            updateChatRecordhandle(cache.messageCache);
+
             callback();
         },onprogress)
     }

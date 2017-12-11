@@ -7,6 +7,7 @@ import UpdateMessageSqliteType from './Common/dto/UpdateMessageSqliteType'
 import networkStatuesType from './Common/dto/networkStatuesType'
 import * as methods from './Common/methods'
 import netWorking from '../../Networking/Network'
+import ChatCommandEnum from '../../Management/Common/dto/ChatCommandEnum'
 
 
 let FileManager = {};
@@ -107,8 +108,8 @@ FileManager.downloadResource = function(message,callback){
 
     let fromUrl = message.Resource[0].RemoteSource,
         sender = message.Data.Data.Sender,
-        type = message.type,
-        way = message.way,
+        type = message.Resource[0].FileType,
+        way = message.Data.Data.Command == ChatCommandEnum.MSG_BODY_CHAT_C2G ? 'group':'private',
         toFile;
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('/'));
