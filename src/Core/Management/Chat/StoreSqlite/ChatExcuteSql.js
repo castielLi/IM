@@ -26,6 +26,7 @@ export const ExcuteIMSql = {
     "ClearChatRecode":"Delete from ChatRecode",
     "UpdateMessage":"update ? set message = ?,status = ? where messageId = ?",
     "UpdateMessageStatusByMessageId":"update ? set status = ? where messageId = ?",
+    "GetMessageById":"select message from ? where messageId = ?",
     "InsertMessageIntoOfflineTable":"insert into OffLineRecode (messageId,message) values(?,?)",
     "DeleteAllOfflineMessage":"delete from OffLineRecode",
     "GetAllOfflineMessage":"select message from OffLineRecode"

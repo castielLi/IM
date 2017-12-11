@@ -365,7 +365,21 @@ CHATFMDB.UpdateMessageBody = function(message = new ManagementMessageDto()){
     }, errorDB);
 }
 
-
+// CHATFMDB.getMessageById = function(messageId,callback){
+//     let getSql = sqls.ExcuteIMSql.GetMessageById;
+//     getSql = commonMethods.sqlFormat(getSql,[tabName,messageId])
+//     var db = SQLite.openDatabase({
+//         ...databaseObj
+//     }, () => {
+//         db.transaction((tx) => {
+//             tx.executeSql(getSql, [], (tx, results) => {
+//
+//                 callback(results.rows.raw())
+//
+//             }, (err)=>{errorDB('获取消息体',err)});
+//         });
+//     }, errorDB);
+// }
 
 CHATFMDB.getRangeMessages = function(account,way,range,callback){
 
