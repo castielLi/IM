@@ -789,7 +789,7 @@ export default class IMController {
     //未读消息+1
     addUnReadMsgNumber(clientId){
         cache.allUnreadCount+=1;
-        cache.conversationCache[clientId]['unreadCount'] +=1;
+        //cache.conversationCache[clientId]['unreadCount'] +=1;
         //todo:李宗骏 缺少数据库操作
     }
     //未读消息清0
@@ -1168,7 +1168,7 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
 function PushNotificationToApp(managementMessageObj){
 
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
-            currentObj.addUnReadMsgNumber(chatId);
+            currentObj.addUnReadMsgNumber(managementMessageObj.chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
