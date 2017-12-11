@@ -153,7 +153,7 @@ export default class IMController {
     updateConverseList() {
 
         if(cache.initConversationStatus == InitConversationListStatusEnum.Uninit) {
-            this.setCacheInitConversationListStatus(InitConversationListStatusEnum.Executing)
+            currentObj.setCacheInitConversationListStatus(InitConversationListStatusEnum.Executing)
 
             this.chat.getConverseList((recentListObj) => {
                 let snapArr = formateDataFromChatManageCache(recentListObj);
@@ -184,7 +184,7 @@ export default class IMController {
 
                         //渲染会话列表
 
-                        this.setCacheInitConversationListStatus(InitConversationListStatusEnum.Finish);
+                        currentObj.setCacheInitConversationListStatus(InitConversationListStatusEnum.Finish);
 
                         waitUIConversationListCacheFinish(offlineMessages);
 
