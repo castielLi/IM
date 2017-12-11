@@ -17,6 +17,7 @@ import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeE
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 
+
 let __instance = (function () {
     let instance;
     return (newInstance) => {
@@ -280,7 +281,6 @@ export default class IMController {
     setCurrentConverse(chatId, group, callback) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
-
         //初始化缓存
         this.user.init(chatId,group);
 
@@ -295,7 +295,7 @@ export default class IMController {
         }
         //初始化前10条聊天记录
         this.chat.getChatList(chatId, group, maxId, (messageList) => {
-            messageList.reverse();
+            //messageList.reverse();
             if(messageList.length == 0){
                 updateChatRecordhandle([]);
                 return;
@@ -461,8 +461,8 @@ export default class IMController {
     getHistoryChatList(chatId, group){
 
         //messageList 每个item 拿上来就是ManagementMessageDto
-        this.chat.getChatList(chatId, group = false, maxId, (messageList) => {
-            messageList.reverse();
+        this.chat.getChatList(chatId, group, maxId, (messageList) => {
+            //messageList.reverse();
             if(messageList.length == 0) {
               return ;
             }
@@ -609,9 +609,7 @@ export default class IMController {
                 //cache添加
 
                 formateManagementMessageToControllerMessage(itemManagementMessage,(controllerMessage)=>{
-                    cache.messageCache.push(controllerMessage);
-                    maxId = maxId+1;
-                    updateChatRecordhandle(cache.messageCache);
+                    onlyAddMessageCache(controllerMessage)
                 })
             }
 
@@ -814,7 +812,7 @@ function controllerKickOutMessage(){
 
 function controllerMessageResult(success,message){
 
-    let messageDto = IMMessageToMessagementMessageDto(message);
+    let messageDto = IMMessageToMessagementMessageDto(message,true);
     messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
 
     currentObj.chat.updateChatMessage(messageDto);
@@ -822,7 +820,7 @@ function controllerMessageResult(success,message){
     if(messageDto.chatId == currentChat.chatId){
         //AddCache(messageDto);
         formateManagementMessageToControllerMessage(messageDto,(controllerMessage)=>{
-            addOrUpdateMessageCache(controllerMessage);
+            onlyUpdateMessageCache(controllerMessage);
         })
     }
 }
@@ -849,139 +847,156 @@ function controllerReceiveMessage(message){
 
     }else if(message.Command == MessageCommandEnum.MSG_BODY){
         if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
-            switch (message.Data.Data.Command){
-                case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:
 
-                    var senderId = message.Data.Data.Receiver;
+            if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
 
-                    currentObj.user.forceUpdateRelation(senderId,true,function(){
-                        var accounts = message.Data.Data.Data.split(',');
+                var senderId = AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
 
-                        var name = currentObj.user.getUserInfoById(accounts[0])
+                currentObj.user.forceUpdateRelation(senderId,true,function(result){
+                   switch (message.Data.Data.Command){
+                       case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:
+                           var accounts = message.Data.Data.Data.split(',');
 
-                        var inviter = currentObj.user.getUserInfoById(accounts[1]);
+                           var name = currentObj.user.getUserInfoById(accounts[0])
 
-                        message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
+                           var inviter = currentObj.user.getUserInfoById(accounts[1]);
 
-                        storeChatMessageAndCache(message);
-                    })
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_ADDFRIEND:
+                           message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
 
-                    //更新contact
+                           storeChatMessageAndCache(message);
+                           break;
+                       case AppCommandEnum.MSG_BODY_APP_APPLYFRIEND:
 
-                    var senderId = message.Data.Data.Sender;
+                           let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
 
-                    currentObj.user.getInformationByIdandType(senderId,false,function(){
-                        currentObj.user.acceptFriendInCache(senderId);
-                    });
+                           currentObj.apply.AddApplyMessage(applyMessageDto,result);
 
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_APPLYFRIEND:
+                           AppReceiveMessageHandle(1,TabTypeEnum.Contact)
 
-                    var senderId = message.Data.Data.Sender;
+                           break;
+                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP: var accounts = message.Data.Data.Data.split(',');
+                           let Nicks = "";
+                           for(let i = 0; i<accounts.length;i++){
+                               if(accounts[i] == message.Data.Data.Receiver){
+                                   accounts.splice(i,1);
+                               }
+                           }
 
-                    currentObj.user.forceUpdateRelation(senderId,false,function(user){
-                        let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
-                        currentObj.apply.AddApplyMessage(applyMessageDto,user);
-                        AppReceiveMessageHandle(1,TabTypeEnum.Contact)
-                    })
+                           for(let i = 0; i<accounts.length;i++){
+                               if(i != accounts.length - 1){
+                                   Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                               }else{
+                                   Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                               }
+                           }
 
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
-                    currentObj.user.forceUpdateRelation(senderId,true,function(){
-                        var accounts = message.Data.Data.Data.split(',');
-                        let Nicks = "";
-                        for(let i = 0; i<accounts.length;i++){
-                            if(accounts[i] == message.Data.Data.Receiver){
-                                accounts.splice(i,1);
+                           var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                           message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+
+                           storeChatMessageAndCache(message);
+                           break;
+                       case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
+                           var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+
+                           message.Data.Data.Data =  name+"修改了群昵称";
+
+                           let groupName = result.Nick;
+
+                           let groupId = message.Data.Data.Sender;
+
+                           currentObj.user.updateGroupName(groupId,groupName);
+
+                           storeChatMessageAndCache(message);
+                   }
+                })
+
+            }else{
+
+                switch (message.Data.Data.Command){
+                    case AppCommandEnum.MSG_BODY_APP_ADDFRIEND:
+
+                        //更新contact
+
+                        var senderId = message.Data.Data.Sender;
+
+                        currentObj.user.getInformationByIdandType(senderId,false,function(){
+                            currentObj.user.acceptFriendInCache(senderId);
+                        });
+
+                        break;
+                    case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
+
+                        var senderId = message.Data.Data.Receiver;
+
+                        currentObj.user.getInformationByIdandType(senderId,true,function(){
+                            var accounts = message.Data.Data.Data.split(',');
+                            //默认收到被踢消息的人不是被踢人
+                            let isKickedClient = false;
+                            for(let i = 0; i<accounts.length;i++){
+                                if(accounts[i] == myAccount.accountId){
+                                    isKickedClient = true;
+                                    break;
+                                }
                             }
-                        }
-
-                        for(let i = 0; i<accounts.length;i++){
-                            if(i != accounts.length - 1){
-                                Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                            if(isKickedClient){
+                                message.Data.Data.Data =  "你被群主踢出了该群聊";
+                                //处理来自界面的回调方法，隐藏群设置按钮
                             }else{
-                                Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                                let Nicks = "";
+                                for(let i = 0; i<accounts.length;i++){
+                                    if(i != accounts.length - 1){
+                                        Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                                    }else{
+                                        Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                                    }
+                                }
+
+                                var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
+                                var inviter = '';
+                                if(message.Data.Data.Receiver == myAccount.accountId){
+                                    inviter = myAccount.accountId;
+                                }else{
+                                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                                }
+                                message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
                             }
-                        }
 
-                        var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                        message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+                            storeChatMessageAndCache(message);
 
-                        storeChatMessageAndCache(message);
-                    });
+                        });
 
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
-                    var accounts = message.Data.Data.Data.split(',');
-                    //默认收到被踢消息的人不是被踢人
-                    let isKickedClient = false;
-                    for(let i = 0; i<accounts.length;i++){
-                        if(accounts[i] == myAccount.accountId){
-                            isKickedClient = true;
-                            break;
-                        }
-                    }
-                    if(isKickedClient){
-                        message.Data.Data.Data =  "你被群主踢出了该群聊";
-                        //处理来自界面的回调方法，隐藏群设置按钮
-                    }else{
-                        let Nicks = "";
-                        for(let i = 0; i<accounts.length;i++){
-                            if(i != accounts.length - 1){
-                                Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                            }else{
-                                Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                            }
-                        }
+                        break;
+                    case AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP:
+                        break;
+                    case AppCommandEnum.MSG_BODY_APP_EXITGROUP:
 
-                        var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
-                        var inviter = '';
-                        if(message.Data.Data.Receiver == myAccount.accountId){
-                            inviter = myAccount.accountId;
-                        }else{
-                            inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                        }
-                        message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
-                    }
+                        var senderId = message.Data.Data.Receiver;
 
-                    storeChatMessageAndCache(message);
+                        currentObj.user.getInformationByIdandType(senderId,true,function(){
+                            var accounts = message.Data.Data.Data.split(',');
 
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP:
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_EXITGROUP:
-                    var accounts = message.Data.Data.Data.split(',');
+                            var name = currentObj.user.getUserInfoById(accounts[0])
 
-                    var name = currentObj.user.getUserInfoById(accounts[0])
+                            message.Data.Data.Data =  name + "退出了群聊";
 
-                    message.Data.Data.Data =  name + "退出了群聊";
-
-                    storeChatMessageAndCache(message);
-                    break;
-                case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
-                    var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-
-                    message.Data.Data.Data =  name+"修改了群昵称";
-
-                    let groupName = relation.Nick;
-
-                    let groupId = message.Data.Data.Sender;
-
-                    currentObj.user.updateGroupName(groupId,groupName);
-
-                    storeChatMessageAndCache(message);
-                    break;
+                            storeChatMessageAndCache(message);
+                        });
+                        break;
+                }
             }
         }
-        // else if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_CHAT){}
+        else if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_CHAT){
+            storeChatMessageAndCache(message);
+        }
     }
 }
 
 function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
-    let managementMessageObj = IMMessageToMessagementMessageDto(message);
+    let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
     currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
@@ -1002,7 +1017,8 @@ function storeChatMessageAndCache(message){
     if(managementMessageObj.chatId == currentChat.chatId){
         //AddCache(managementMessageObj);
         formateManagementMessageToControllerMessage(managementMessageObj,(controllerMessage)=>{
-            addOrUpdateMessageCache(controllerMessage);
+            //addOrUpdateMessageCache(controllerMessage);
+            onlyAddMessageCache(controllerMessage)
         })
 
     }
@@ -1025,6 +1041,22 @@ function addOrUpdateMessageCache(itemMessage){
         cache.messageCache.push(itemMessage);
         maxId = maxId+1;
     }
+    updateChatRecordhandle(cache.messageCache);
+}
+
+function onlyUpdateMessageCache(itemMessage){
+    for(let i=0,length = cache.messageCache.length;i<length;i++){
+        if(cache.messageCache[i].messageId == itemMessage.messageId){
+            cache.messageCache[i] = itemMessage;
+            updateChatRecordhandle(cache.messageCache);
+            break;
+        }
+    }
+}
+
+function onlyAddMessageCache(itemMessage){
+    cache.messageCache.push(itemMessage);
+    maxId = maxId+1;
     updateChatRecordhandle(cache.messageCache);
 }
 
