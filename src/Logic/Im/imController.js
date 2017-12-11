@@ -16,6 +16,7 @@ import TabTypeEnum from './dto/TabTypeEnum'
 import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeEnum'
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
+import InitConversationListStatusEnum from './dto/InitConversationListStatusEnum'
 
 
 let __instance = (function () {
@@ -41,7 +42,7 @@ let myAccount = undefined;
 //myAccount = {IMToken,Nick,SessionToken,accountId,avator,device,deviceId,gender,phone}
 
 //myAccount = {accountId:'wg00723',...}
-let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0};
+let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0,initConversationStatus:InitConversationListStatusEnum.Uninit};
 // cache = {
 //     messageCache:[{
 //         group: false,
@@ -135,6 +136,14 @@ export default class IMController {
 
     setMyAccount(accountObj){
         myAccount = accountObj;
+    }
+
+    setCacheInitConversationListStatus(status){
+        cache.initConversationStatus = status;
+    }
+
+    getCacheInitConversationListStatus(){
+        return cache.initConversationStatus;
     }
 
     //获取会话列表
@@ -760,7 +769,7 @@ export default class IMController {
 
 
     //message是完整的managementMessageDto
-    addOneChat(chatId,message,callback){
+    addOneChat(chatId,message){
 
         this.user.getInformationByIdandType(chatId,message.group,(relationObj) => {
             let itemChat = new ControllerChatConversationDto();
@@ -775,13 +784,11 @@ export default class IMController {
             cache.conversationCache[chatId] = itemChat;
             let tempArr = formatOjbToneedArr(cache.conversationCache);
             updateconverslisthandle(tempArr);
-            callback&&callback();
         })
     }
     //未读消息+1
     addUnReadMsgNumber(clientId){
         cache.allUnreadCount+=1;
-
         cache.conversationCache[clientId]['unreadCount'] +=1;
         //todo:李宗骏 缺少数据库操作
     }
@@ -1020,7 +1027,8 @@ function controllerReceiveMessage(message){
 function storeChatMessageAndCache(message){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
-    currentObj.chat.addMessage(managementMessageObj)
+
+    currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
     //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
 
     let chatId;
@@ -1029,33 +1037,33 @@ function storeChatMessageAndCache(message){
     }else{
         chatId = managementMessageObj.chatId;
     }
+
+    //判断当前缓存里面是否有当前会话
+    if(cache.conversationCache[managementMessageObj.chatId] == undefined){
+
+    }
+
+
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
-        currentObj.updateOneChat(chatId,managementMessageObj);
-        if(managementMessageObj.chatId == currentChat.chatId){
-            //AddCache(managementMessageObj);
-            formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
-                //addOrUpdateMessageCache(controllerMessage);
-                onlyAddMessageCache(controllerMessage)
-            })
-
-        }else{
-            PushNotificationToApp(managementMessageObj);
-        }
+        currentObj.updateOneChat(chatId,managementMessageObj)
     }else{
-        currentObj.addOneChat(chatId,managementMessageObj,()=>{
-            if(managementMessageObj.chatId == currentChat.chatId){
-                //AddCache(managementMessageObj);
-                formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
-                    //addOrUpdateMessageCache(controllerMessage);
-                    onlyAddMessageCache(controllerMessage)
-                })
-
-            }else{
-                PushNotificationToApp(managementMessageObj);
-            }
-        });
+        currentObj.addOneChat(chatId,managementMessageObj);
     }
+    PushNotificationToApp(managementMessageObj);
+
+    if(managementMessageObj.chatId == currentChat.chatId){
+        //AddCache(managementMessageObj);
+        formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
+            //addOrUpdateMessageCache(controllerMessage);
+            onlyAddMessageCache(controllerMessage)
+        })
+
+    }
+
+
+
+
 }
 
 
@@ -1160,7 +1168,7 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
 function PushNotificationToApp(managementMessageObj){
 
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
-            currentObj.addUnReadMsgNumber(managementMessageObj.chatId);
+            currentObj.addUnReadMsgNumber(chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);

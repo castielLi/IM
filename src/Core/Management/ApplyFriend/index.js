@@ -24,6 +24,14 @@ export default class ApplyFriend {
         currentObj = this;
     }
 
+    //初始化IM的数据库
+    initApplyFriendDatabase(AccountId){
+        storeSqlite.initApplyFriendDatabase(AccountId,function(){
+            //获取之前没有发送出去的消息重新加入消息队列
+        });
+    }
+
+
     connnectApplyFriend(updateApplyMessageHandle){
         ControllerApplyMessageHandle = updateApplyMessageHandle;
     }
