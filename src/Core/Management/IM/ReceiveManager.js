@@ -45,7 +45,7 @@ ReceiveManager.receiveBodyMessage = function(message){
     //todo:lizongjun  这里收到了消息之后，如果是错误消息，需要数据库查询之前发送消息的msgid 获取到isack属性，如果需要ack则进行发送
 
 
-    if(!message.Resource || (message.Resource[0].FileType == ResourceTypeEnum.audio ))
+    if(!message.Resource || (message.Resource[0].FileType == ResourceTypeEnum.video ))
     {
         currentObj.storeRecMessage(message)
         currentObj.ReceiveMessageHandle(message);

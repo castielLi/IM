@@ -828,7 +828,7 @@ export default class IMController {
         //todo:李宗骏 缺少数据库操作
     }
 
-
+    //todo:预计是拷贝的问题 张彤
     manualDownloadResource(messageId,url,path,callback,onprogress){
         this.im.manualDownloadResource(url,path,function () {
             //修改数据库路径

@@ -52,9 +52,7 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
                switch(message.Resource[0].FileType){
                    case ResourceTypeEnum.video:
                        messageDto.type = DtoMessageTypeEnum.video;
-                       messageDto.message = {"Data":{"localSource":message.Resource[0].LocalSource,
-                           "remoteSource":message.Resource[0].RemoteSource},
-                       "time":message.Resource[0].Time}
+                       messageDto.message = {"localSource":message.Resource[0].LocalSource,"remoteSource":message.Resource[0].RemoteSource,'time':message.Resource[0].Time}
                        break;
                    case ResourceTypeEnum.audio:
                        messageDto.type = DtoMessageTypeEnum.audio;
