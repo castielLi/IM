@@ -244,7 +244,7 @@ export default class User {
 
     getGroupIsInContactFromCache(groupId){
         let show = cache.group[groupId].show;
-        if(show || show == 'true'){
+        if(show == true || show == 'true'){
             show = true;
         }else {
             show = false;
@@ -529,7 +529,8 @@ export default class User {
     }
     //退群
     deleteFromGrroupSQL(RelationId){
-        GroupManager.deleteRelation(RelationId)
+        GroupManager.deleteRelation(RelationId);
+        GroupManager.deleteGroupMemberTable(RelationId)
     }
 
     //将群移除通讯录

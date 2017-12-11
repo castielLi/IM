@@ -81,7 +81,10 @@ export function deleteRelation(RelationId){
     GROUPFMDB.DeleteRelation(RelationId)
 }
 
-
+//删除群成员表
+export function deleteGroupMemberTable(groupId) {
+    GROUPFMDB.deleteGroupMemberTable(groupId)
+}
 
 //修改关系
 export function updateRelation(Relation) {
@@ -500,6 +503,27 @@ GROUPFMDB.DeleteRelation = function(RelationId){
             tx.executeSql(deleteSql, [], (tx, results) => {
 
                 console.log("删除关系成功")
+
+            }, errorDB);
+
+        }, errorDB);
+    }, errorDB);
+}
+
+GROUPFMDB.deleteGroupMemberTable = function (groupId) {
+    let deleteSql = sqls.ExcuteIMSql.RemoveGroupMemberTable;
+
+    deleteSql = commonMethods.sqlFormat(deleteSql,[groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(deleteSql, [], (tx, results) => {
+
+                console.log("删除成员表成功")
 
             }, errorDB);
 

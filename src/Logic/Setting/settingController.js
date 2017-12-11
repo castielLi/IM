@@ -203,9 +203,8 @@ export default class settingController {
     destroyGroup(groupId){
 
         //todo:删除会话,删除群及群成员信息,删除未读消息数
-        this.chat.removeConverse(groupId,true);
-        this.im.deleteCurrentChatMessage(groupId,true);
-        this.user.removeGroup(groupId);
+        this.chat.removeConverse(groupId,true); //删除chatRecord 和对应表
+        this.user.removeGroup(groupId);//删除groupList记录 和对应成员表
     }
 
 

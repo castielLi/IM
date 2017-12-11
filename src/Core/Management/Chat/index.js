@@ -249,7 +249,7 @@ export default class Chat {
     //删除当前聊天所有消息
     deleteCurrentChatMessage(name,group){
 
-        let chatType = group?"chatroom":"private";
+        let chatType = group?"group":"private";
 
         //删除该用户聊天列表中的消息
         storeSqlite.deleteClientRecode(name,chatType);
