@@ -1200,6 +1200,14 @@ function PushNotificationToApp(managementMessageObj){
 
 function waitUIConversationListCacheFinish(){
 
+    let converse = {};
+
+    for(let item in offlineMessage){
+        let message = offlineMessage[item];
+        if(converse[message.chatId] == undefined){
+            converse[message.chatId]
+        }
+    }
 }
 
 
