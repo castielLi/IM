@@ -51,6 +51,10 @@ GroupManager.deleteRelation = function(RelationId){
     groupStoreSqlite.deleteRelation(RelationId)
 }
 
+GroupManager.deleteGroupMemberTable = function(groupId) {
+    groupStoreSqlite.deleteGroupMemberTable(groupId)
+}
+
 GroupManager.RemoveGroupFromContact = function(groupId){
     groupStoreSqlite.RemoveGroupFromContact(groupId);
 }
