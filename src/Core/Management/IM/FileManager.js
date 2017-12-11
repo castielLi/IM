@@ -116,10 +116,13 @@ FileManager.downloadResource = function(message,callback){
 
     let format = fromUrl.slice(fromUrl.lastIndexOf('/'));
 
-    type === 'image' ? toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/thumbnail${format}`
-        : toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}${format}`;
+    // type === 'image' ? toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/thumbnail${format}`
+    //     : toFile = `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}${format}`;
 
+    let path = type === 'image' ? `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}/thumbnail`
+        : `${RNFS.DocumentDirectoryPath}/${window.ME}/${type}/chat/${way}-${sender}`;
 
+    toFile = path + format;
 
     console.log('下载前=============================:  ',message,toFile)
     message.Resource[0].LocalSource = null;
@@ -133,7 +136,18 @@ FileManager.downloadResource = function(message,callback){
         callback(message)
     }
     let url = type === 'image' ? fromUrl + '?imageView2/0/w/200/h/200' : fromUrl;
-    _network.methodDownload(url,toFile,updateMessage)
+
+    RNFS.exists(path).then((bool)=>{
+        if(bool){
+            _network.methodDownload(url,toFile,updateMessage)
+
+        }else{
+            RNFS.mkdir(path).then(()=>{
+                _network.methodDownload(url,toFile,updateMessage)
+
+            })
+        }
+    })
 
     console.log('receiveMessageOpreator:  ',message)
 }
