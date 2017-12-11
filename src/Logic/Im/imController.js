@@ -1068,7 +1068,7 @@ function storeChatMessageAndCache(message){
 
         }else{
             currentObj.addOneChat(chatId,managementMessageObj);
-            currentObj.chat.addMessage(managementMessageObj.chatId,managementMessageObj)
+            currentObj.chat.addMessage(managementMessageObj)
             //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
         }
     }
