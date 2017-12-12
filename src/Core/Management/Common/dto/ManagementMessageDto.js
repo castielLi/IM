@@ -15,6 +15,9 @@ export default class ManagementMessageDto{
         this.type = 0;//消息类型
         this.status = 0;
         this.sendTime = "";
+
+        //错误消息中存放原发送消息的messageId
+        this.errorMessageId = "";
     }
 }
 

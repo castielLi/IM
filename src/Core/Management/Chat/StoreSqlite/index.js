@@ -17,8 +17,8 @@ export function storeMessage(message){
 
 }
 
-export function updateMessageStatusById(messageId,status){
-    CHATFMDB.UpdateMessageStatues(messageId,status);
+export function updateMessageStatusById(message){
+    CHATFMDB.UpdateMessageStatues(message);
 }
 
 
@@ -460,10 +460,12 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
 }
 
 
-CHATFMDB.UpdateMessageStatues = function(messageId,status){
+CHATFMDB.UpdateMessageStatues = function(message){
+
+    let tabName = message.group?"Group_"+message.chatId:"Private_"+message.chatId;
 
     let updateSql = sqls.ExcuteIMSql.UpdateMessageStatusByMessageId;
-    updateSql = commonMethods.sqlFormat(updateSql,[status,messageId]);
+    updateSql = commonMethods.sqlFormat(updateSql,[tabName,message.status,message.errorMessageId]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
