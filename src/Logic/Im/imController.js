@@ -225,7 +225,7 @@ export default class IMController {
 
             cache.conversationCache[newConverse.chatId] = newConverse;
         }
-        // PushNotificationToApp(message)
+        updateconverslisthandle(cache.conversationCache);
     }
 
     //更新当前会话注入方法
