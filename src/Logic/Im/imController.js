@@ -682,27 +682,29 @@ function controllerReceiveMessage(message){
                        case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
                            var members = message.Data.Data.Data.split(',');
                            var groupId = message.Data.Data.Receiver;
-                           members = members.map(function (current,index) {
-                               return {Account:current}
-                           });
+                           currentObj.user.getInformationByIdandType(groupId,true,function () {
+                               members = members.map(function (current,index) {
+                                   return {Account:current}
+                               });
 
-                           //创建群和成员表
-                           currentObj.user.createGroup(groupObj,members);
+                               //创建群和成员表
+                               currentObj.user.createGroup(groupObj,members);
 
-                           //构建消息
-                           let Nicks = "";
-                           for(let i = 0; i<accounts.length;i++){
-                               if(i != accounts.length - 1){
-                                   Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                               }else{
-                                   Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                               //构建消息
+                               let Nicks = "";
+                               for(let i = 0; i<accounts.length;i++){
+                                   if(i != accounts.length - 1){
+                                       Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                                   }else{
+                                       Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                                   }
                                }
-                           }
 
-                           var inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
-                           message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+                               var inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
+                               message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
-                           storeChatMessageAndCache(message);
+                               storeChatMessageAndCache(message);
+                           });
                            // var accounts = message.Data.Data.Data.split(',');
                            // let Nicks = "";
                            // for(let i = 0; i<accounts.length;i++){

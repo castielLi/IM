@@ -564,7 +564,9 @@ export default class User {
             let array = cache['groupMember'][groupId];
             for(let member of members){
                 let index = array.indexOf(member);
-                array.splice(index,1)
+                if(index !== -1){
+                    array.splice(index,1)
+                }
             }
     }
     //加入/移除黑名单 shield屏蔽（true/false）
