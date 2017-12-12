@@ -81,7 +81,7 @@ class Chat extends Component {
         this.renderRow = this.renderRow.bind(this);
     }
 
-    onUpdataChatRecord(chatRecord){
+    onUpdataChatRecord(chatRecord,isMore){
         let {msgState} = ListConst;
         if(!chatRecord || !chatRecord.length) return;
         currentObj.chatRecord = chatRecord;
@@ -91,7 +91,7 @@ class Chat extends Component {
         currentObj.setState({
             dataSource:currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
             dataSourceO:currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys),
-            isMore:msgState.END
+            isMore: isMore ? msgState.END : msgState.NOMORE
         })
     }
 

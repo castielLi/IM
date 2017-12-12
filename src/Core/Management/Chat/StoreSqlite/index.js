@@ -391,8 +391,8 @@ CHATFMDB.UpdateMessagePath = function(message = new ManagementMessageDto(),path)
                     messageBody = JSON.stringify(messageBody);
                     updateSql = commonMethods.sqlFormat(updateSql,[tabName,messageBody,message.status,message.messageId])
                     tx.executeSql(updateSql, [], (tx, results) => {
-
-                    })
+                        console.log("更新chat 数据库 messagebody 成功");
+                    }, (err)=>{errorDB('更新messageBody',err)})
                 }
 
             }, (err)=>{errorDB('获取消息体',err)});

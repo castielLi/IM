@@ -262,6 +262,8 @@ export default class IMController {
 
             if(messageList.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                 dropable = true;
+            }else{
+                dropable = false;
             }
 
             //将取出来的message正序排列
@@ -342,6 +344,8 @@ export default class IMController {
 
             if(messageList.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
                 dropable = true;
+            }else{
+                dropable = false;
             }
 
             //将取出来的message正序排列
