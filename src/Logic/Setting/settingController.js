@@ -10,7 +10,7 @@ import {buildInvationGroupMessage,buildChangeGroupNickMessage,buildRemoveGroupMe
 import RelationDto from '../Common/dto/RelationDto'
 import IMMessageToManagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto'
 import ApiBridge from '../ApiBridge/index'
-import UpdateConversationTypeEnum from '../../Core/Management/Common/dto/UpdateConversationTypeEnum'
+import UpdateConversationTypeEnum from '../Common/dto/UpdateConversationTypeEnum'
 
 let __instance = (function () {
     let instance;
