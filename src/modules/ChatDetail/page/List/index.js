@@ -301,11 +301,14 @@ class Chat extends Component {
          //显示邀请群组人员消息
          if(type == 'info'){
             return(
-                <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                        <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ message +"进入群聊"}</Text>
+                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        </View>
+                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ message +"进入群聊"}</Text>
+                        </View>
                     </View>
-                </View>
             )
          }
          else{
@@ -333,16 +336,22 @@ class Chat extends Component {
         else{
             if(type == "info"){
                 return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+                        <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                            <View style={styles.timestampView}>
+                                {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                            </View>
+                            <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                                <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+                            </View>
                         </View>
-                    </View>
                 )
             }
             else if(type == 'error'){
                 return(
                     <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        </View>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
                             <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>消息已经发出，但被对方拒收，</Text>
                             <TouchableOpacity onPress={()=>{this.applyFriend()}}>
