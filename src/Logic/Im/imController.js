@@ -101,6 +101,8 @@ let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0,initConversa
 let currentObj = undefined;
 let updateconverslisthandle = undefined;
 let updateChatRecordhandle = undefined;
+let updateHeadNameHandle = undefined;
+
 let maxId = 0;
 //是否还有其他的记录可提界面下拉加载更多
 let dropable = false;
@@ -252,9 +254,10 @@ export default class IMController {
 
 
     //设置当前会话
-    setCurrentConverse(chatId, group, callback) {
+    setCurrentConverse(chatId, group, callback,updateHeadNameHandle) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
+        updateHeadNameHandle = updateHeadNameHandle;
         //初始化缓存
         this.user.init(chatId,group);
 
@@ -610,7 +613,7 @@ function controllerMessageResult(success,message){
 
     if(messageDto.chatId == currentChat.chatId){
         //AddCache(messageDto);
-        formateManagementMessageToControllerMessage(messageDto,true,(controllerMessage)=>{
+        formateManagementMessageToControllerMessage(messageDto,false,(controllerMessage)=>{
             onlyUpdateMessageCache(controllerMessage);
         })
     }
@@ -646,7 +649,11 @@ function controllerReceiveMessage(message){
                     //张彤
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP
                     //黄昊东
-                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO
+
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER
+
+            ){
 
                 var senderId = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
                 let group = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
@@ -678,26 +685,35 @@ function controllerReceiveMessage(message){
                            }
 
                            break;
-                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP: var accounts = message.Data.Data.Data.split(',');
-                           var Nicks = "";
-                           for(let i = 0; i<accounts.length;i++){
-                               if(accounts[i] == message.Data.Data.Receiver){
-                                   accounts.splice(i,1);
+
+                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
+                           var members = message.Data.Data.Data.split(',');
+                           var group = result;
+                           //var groupId = message.Data.Data.Receiver;
+                           //currentObj.user.getInformationByIdandType(groupId,true,function (group) {
+                               members = members.map(function (current,index) {
+                                   return {Account:current}
+                               });
+
+                               //创建群和成员表
+                               currentObj.user.createGroup(group,members);
+
+                               //构建消息
+                               let Nicks = "";
+                               for(let i = 0; i<members.length;i++){
+                                   if(i != members.length - 1){
+                                       Nicks += currentObj.user.getUserInfoById(members[i].Account) + ",";
+                                   }else{
+                                       Nicks += currentObj.user.getUserInfoById(members[i].Account);
+                                   }
                                }
-                           }
 
-                           for(let i = 0; i<accounts.length;i++){
-                               if(i != accounts.length - 1){
-                                   Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                               }else{
-                                   Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                               }
-                           }
+                               var inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
+                               message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
-                           var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                           message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+                               storeChatMessageAndCache(message);
+                          // });
 
-                           storeChatMessageAndCache(message);
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
                            var name = currentObj.user.getUserInfoById(message.Data.Data.Sender);
@@ -711,6 +727,59 @@ function controllerReceiveMessage(message){
                            currentObj.user.updateGroupName(groupId,groupName);
 
                            storeChatMessageAndCache(message);
+
+                           break;
+                       //李宗骏
+                       case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
+
+                           var senderId = message.Data.Data.Receiver;
+
+                           currentObj.user.getInformationByIdandType(senderId,true,function(){
+                               var accounts = message.Data.Data.Data.split(',');
+
+                               let Nicks = "";
+                               for(let i = 0; i<accounts.length;i++){
+                                   if(i != accounts.length - 1){
+                                       Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                                   }else{
+                                       Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                                   }
+                               }
+
+
+                               if(message.Data.Data.Sender == myAccount.accountId){
+
+                                   message.Data.Data.Data =  "你将"+Nicks+"移除了该群聊";
+                               }else{
+                                   //默认收到被踢消息的人不是被踢人
+                                   let isKickedClient = false;
+                                   for(let i = 0; i<accounts.length;i++){
+                                       if(accounts[i] == myAccount.accountId){
+                                           isKickedClient = true;
+                                           break;
+                                       }
+                                   }
+                                   if(isKickedClient){
+                                       message.Data.Data.Data =  "你被群主踢出了该群聊";
+                                       //处理来自界面的回调方法，隐藏群设置按钮
+                                   }else{
+                                       var inviter = '';
+                                       if(message.Data.Data.Sender == myAccount.accountId){
+                                           inviter = myAccount.accountId;
+                                       }else{
+                                           inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
+                                       }
+                                       message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
+                                   }
+                               }
+
+
+                               storeChatMessageAndCache(message);
+
+                           });
+
+                           break;
+
                    }
                 })
 
@@ -730,73 +799,27 @@ function controllerReceiveMessage(message){
                         });
 
                         break;
-                    //李宗骏
-                    case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
 
-                        var senderId = message.Data.Data.Receiver;
-
-                        currentObj.user.getInformationByIdandType(senderId,true,function(){
-                            var accounts = message.Data.Data.Data.split(',');
-
-                            let Nicks = "";
-                            for(let i = 0; i<accounts.length;i++){
-                                if(i != accounts.length - 1){
-                                    Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                                }else{
-                                    Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                                }
-                            }
-
-
-                            if(message.Data.Data.Sender == myAccount.accountId){
-
-                                message.Data.Data.Data =  "你将"+Nicks+"移除了该群聊";
-                            }else{
-                                //默认收到被踢消息的人不是被踢人
-                                let isKickedClient = false;
-                                for(let i = 0; i<accounts.length;i++){
-                                    if(accounts[i] == myAccount.accountId){
-                                        isKickedClient = true;
-                                        break;
-                                    }
-                                }
-                                if(isKickedClient){
-                                    message.Data.Data.Data =  "你被群主踢出了该群聊";
-                                    //处理来自界面的回调方法，隐藏群设置按钮
-                                }else{
-                                    var inviter = '';
-                                    if(message.Data.Data.Receiver == myAccount.accountId){
-                                        inviter = myAccount.accountId;
-                                    }else{
-                                        inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                                    }
-                                    message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
-                                }
-                            }
-
-
-                            storeChatMessageAndCache(message);
-
-                        });
-
-                        break;
 
                     case AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP:
                         break;
                     //张彤
                     case AppCommandEnum.MSG_BODY_APP_EXITGROUP:
 
-                        var senderId = message.Data.Data.Receiver;
+                        var members = message.Data.Data.Data.split(',');
+                        var groupId = message.Data.Data.Receiver;
 
-                        currentObj.user.getInformationByIdandType(senderId,true,function(){
-                            var accounts = message.Data.Data.Data.split(',');
+                        currentObj.user.getInformationByIdandType(groupId,true,function() {
+                            //修改成员表
+                            currentObj.user.removeGroupMember(groupId, members);
 
-                            var name = currentObj.user.getUserInfoById(accounts[0])
-
-                            message.Data.Data.Data =  name + "退出了群聊";
-
+                            //发送消息并刷新页面
+                            var name = currentObj.user.getUserInfoById(members[0]);
+                            message.Data.Data.Data = name + "退出了群聊";
                             storeChatMessageAndCache(message);
                         });
+
+
                         break;
                 }
             }
@@ -956,7 +979,12 @@ function PushNotificationToApp(managementMessageObj){
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
+
     }
+}
+
+function UpdateCurrentChatHeadName(){
+
 }
 
 function waitUIConversationListCacheFinish(messages = []){

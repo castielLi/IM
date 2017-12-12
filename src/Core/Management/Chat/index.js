@@ -126,7 +126,7 @@ export default class Chat {
            ControllerUpdateConverseListHandlue(record,message,type)
        }
 
-       if(UpdateConversationTypeEnum.ModifyGroupName){
+       if(type == UpdateConversationTypeEnum.ModifyGroupName){
            ControllerUpdateCurrentConverseHandle(message);
        }
 
