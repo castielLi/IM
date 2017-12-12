@@ -834,9 +834,10 @@ export default class IMController {
             //修改数据库路径
             currentObj.im.updateMessageLocalSource(messageId,path);
 
-            for(let current of cache.messageCache){
+            for(let [i,current] of cache.messageCache.entries()){
                 if(current.messageId == messageId){
-                    current.message.localSource = path;
+                    cache.messageCache[i] = JSON.parse(JSON.stringify(current))
+                    cache.messageCache[i].message.localSource = path;
                 }
             }
             updateChatRecordhandle(cache.messageCache);

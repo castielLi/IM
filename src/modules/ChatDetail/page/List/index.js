@@ -64,6 +64,7 @@ class Chat extends Component {
         this.data = [];
         this.data2 = [];
         this.chatRecord = [];
+        this.chatRecord2 = [];
 
         this.timestamp = 0;
         this.noMore = 0;
