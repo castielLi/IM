@@ -10,6 +10,7 @@ import {buildInvationGroupMessage,buildChangeGroupNickMessage,buildRemoveGroupMe
 import RelationDto from '../Common/dto/RelationDto'
 import IMMessageToManagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto'
 import ApiBridge from '../ApiBridge/index'
+import UpdateConversationTypeEnum from '../../Core/Management/Common/dto/UpdateConversationTypeEnum'
 
 let __instance = (function () {
     let instance;
@@ -85,7 +86,7 @@ export default class settingController {
                     let sendMessage = buildChangeGroupNickMessage(accountId,groupId,"你修改了群昵称",messageId);
                     currentObj.im.storeSendMessage(sendMessage);
                     let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                    currentObj.chat.addMessage(messageDto,params.Name,true,'updateName');
+                    currentObj.chat.addMessage(messageDto,params.Name,true,UpdateConversationTypeEnum.ModifyGroupName);
                 }
             }
             callback(result);

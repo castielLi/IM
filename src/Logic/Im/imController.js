@@ -18,6 +18,7 @@ import IMMessageToMessagementMessageDto from '../../Core/Management/Common/metho
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 import InitConversationListStatusEnum from './dto/InitConversationListStatusEnum'
 import InitChatRecordConfig from '../../Core/Management/Chat/Common/dto/InitChatRecordConfig';
+import UpdateConversationTypeEnum from '../Common/dto/UpdateConversationTypeEnum'
 
 
 let __instance = (function () {
@@ -201,14 +202,14 @@ export default class IMController {
         }
     }
 
-    updateConverseListByChatManagement(newConverse,message,type){
+    updateConverseListByChatManagement(newConverse,message,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
         if(cache.conversationCache[newConverse.chatId]){
             let oldConverse = cache.conversationCache[newConverse.chatId];
-                if(type == 'updateName'){
+                if(type == UpdateConversationTypeEnum.ModifyGroupName){
                     oldConverse.name = newConverse.name;
                     oldConverse.lastTime = newConverse.lastTime;
-                }else if(type == 'removeRecord'){
+                }else if(type == UpdateConversationTypeEnum.RemoveConversation){
                     delete cache.conversationCache[newConverse.chatId]
                 }else{
                     oldConverse.lastTime = newConverse.lastTime;
@@ -221,7 +222,7 @@ export default class IMController {
                 updateChatRecordhandle(cache.messageCache,dropable);
             }
         }else{
-            if(type == 'removeRecord') return;
+            if(type ==UpdateConversationTypeEnum.RemoveConversation) return;
             let caches = formatOjbToneedArr(cache.conversationCache);
 
             caches.splice(0, 0, newConverse)
@@ -231,6 +232,10 @@ export default class IMController {
             updateconverslisthandle(caches);
 
         }
+    }
+
+    updateCurrentConverseByChatManagement(message){
+
     }
 
 
@@ -573,7 +578,7 @@ function connectIM(){
 }
 
 function connectChat(){
-    currentObj.chat.connectChat(currentObj.updateConverseListByChatManagement)
+    currentObj.chat.connectChat(currentObj.updateConverseListByChatManagement,currentObj.updateCurrentConverseByChatManagement)
 }
 
 function controllerKickOutMessage(){

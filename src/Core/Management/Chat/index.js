@@ -12,6 +12,7 @@ import ChatWayEnum from '../Common/dto/ChatWayEnum'
 import ManagementChatRecordDto from './Common/dto/ManagementChatRecordDto'
 import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
 import ManagementMessageDto from '../Common/dto/ManagementMessageDto'
+import UpdateConversationTypeEnum from '../../../Logic/Common/dto/UpdateConversationTypeEnum'
 let currentObj = undefined;
 
 // var ManagementMessageDto={
@@ -27,6 +28,7 @@ let currentObj = undefined;
 // }
 
 let ControllerUpdateConverseListHandlue = undefined;
+let ControllerUpdateCurrentConverseHandle = undefined;
 
 let __instance = (function () {
     let instance;
@@ -47,8 +49,9 @@ export default class Chat {
 
 
 
-    connectChat(updateConverseList){
+    connectChat(updateConverseList,updateCurrentConverse){
         ControllerUpdateConverseListHandlue = updateConverseList;
+        ControllerUpdateCurrentConverseHandle = updateConverseList;
     }
 
 
@@ -103,16 +106,17 @@ export default class Chat {
     }
 
 
-    addMessage(message = new ManagementMessageDto(),groupName = "",needUpdateConverseList = false,type){
+    addMessage(message = new ManagementMessageDto(),groupName = ""
+        ,isReceiveMessage = false,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
        currentObj.addSqliteMessage(message);
 
-       if(needUpdateConverseList){
+       if(isReceiveMessage){
            //构建未读消息
            let record = new ManagementChatRecordDto();
            record.group = true;
            record.chatId = message.chatId;
-           record.lastMessage = "[通知]";
+           record.lastMessage = getContentOfControllerMessageDto(message)
            record.lastSender = "";
            record.lastTime = message.sendTime;
            record.unreadCount = 0;
@@ -121,13 +125,14 @@ export default class Chat {
            record.noSound = false;
 
            ControllerUpdateConverseListHandlue(record,message,type)
+           ControllerUpdateCurrentConverseHandle(message);
        }
     }
 
     removeConverseListRecord(Id){
         let record = new ManagementChatRecordDto();
         record.chatId = Id;
-        ControllerUpdateConverseListHandlue(record,null,'removeRecord')
+        ControllerUpdateConverseListHandlue(record,null,UpdateConversationTypeEnum.RemoveConversation)
     }
 
 
