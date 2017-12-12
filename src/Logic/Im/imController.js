@@ -17,6 +17,7 @@ import DtoMessageTypeEnum from '../../Core/Management/Common/dto/DtoMessageTypeE
 import IMMessageToMessagementMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementMessageDto';
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 import InitConversationListStatusEnum from './dto/InitConversationListStatusEnum'
+import InitChatRecordConfig from '../../Core/Management/Chat/Common/dto/InitChatRecordConfig';
 
 
 let __instance = (function () {
@@ -100,6 +101,8 @@ let currentObj = undefined;
 let updateconverslisthandle = undefined;
 let updateChatRecordhandle = undefined;
 let maxId = 0;
+//是否还有其他的记录可提界面下拉加载更多
+let dropable = false;
 export default class IMController {
     constructor() {
         if (__instance()) return __instance();
@@ -215,7 +218,7 @@ export default class IMController {
 
             if(message){
                 cache.messageCache.push(message);
-                updateChatRecordhandle(cache.messageCache);
+                updateChatRecordhandle(cache.messageCache,dropable);
             }
         }else{
             if(type == 'removeRecord') return;
@@ -251,32 +254,38 @@ export default class IMController {
         this.chat.getChatList(chatId, group, maxId, (messageList) => {
             //messageList.reverse();
             if(messageList.length == 0){
-                updateChatRecordhandle([]);
+                updateChatRecordhandle([],dropable);
                 return;
             }
 
 
 
-            maxId = messageList[messageList.length - 1].id;
+            if(messageList.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                dropable = true;
+            }
+
+            //将取出来的message正序排列
+            let newMessageList = positiveArray(messageList);
+            maxId = newMessageList[0].id;
 
 
 
 
-            let snapArr = formateDataFromChatManageCacheRecord(messageList);
+            let snapArr = formateDataFromChatManageCacheRecord(newMessageList);
 
 
 
             this.user.getRelationsByList(snapArr, (relationObj) => {
 
-                for (let i = 0, length = messageList.length; i < length; i++) {
+                for (let i = 0, length = newMessageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
-                    itemMessage.group = messageList[i].group;
-                    itemMessage.chatId = messageList[i].chatId;
-                    itemMessage.message = messageList[i].message;
-                    itemMessage.messageId = messageList[i].messageId;
-                    itemMessage.type = messageList[i].type;
-                    itemMessage.status = messageList[i].status;
-                    itemMessage.sendTime = messageList[i].sendTime;
+                    itemMessage.group = newMessageList[i].group;
+                    itemMessage.chatId = newMessageList[i].chatId;
+                    itemMessage.message = newMessageList[i].message;
+                    itemMessage.messageId = newMessageList[i].messageId;
+                    itemMessage.type = newMessageList[i].type;
+                    itemMessage.status = newMessageList[i].status;
+                    itemMessage.sendTime = newMessageList[i].sendTime;
 
 
                     //1 如果是私聊不需要显示名字
@@ -295,10 +304,10 @@ export default class IMController {
                     // }
 
                     if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
-                        if(messageList[i].sender == myAccount.accountId){
+                        if(newMessageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
+                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
@@ -309,7 +318,7 @@ export default class IMController {
 
                 }
                 //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache);
+                updateChatRecordhandle(cache.messageCache,dropable);
             })
         })
     }
@@ -318,6 +327,7 @@ export default class IMController {
         currentChat = {chatId:'',group:false};
         cache.messageCache = [];
         maxId = 0;
+        dropable = false;
     }
     //获取历史聊天记录
     getHistoryChatList(chatId, group){
@@ -330,25 +340,33 @@ export default class IMController {
             }
 
 
-            maxId = messageList[messageList.length - 1].id;
-            let snapArr = formateDataFromChatManageCacheRecord(messageList);
+            if(messageList.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+                dropable = true;
+            }
+
+            //将取出来的message正序排列
+            let newMessageList = positiveArray(messageList);
+            maxId = newMessageList[0].id;
+
+
+            let snapArr = formateDataFromChatManageCacheRecord(newMessageList);
             this.user.getRelationsByList(snapArr, (relationObj) => {
-                for (let i = 0, length = messageList.length; i < length; i++) {
+                for (let i = 0, length = newMessageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
-                    itemMessage.group = messageList[i].group;
-                    itemMessage.chatId = messageList[i].chatId;
-                    itemMessage.message = messageList[i].message;
-                      itemMessage.messageId = messageList[i].messageId;
-                    itemMessage.type = messageList[i].type;
-                    itemMessage.status = messageList[i].status;
-                    itemMessage.sendTime = messageList[i].sendTime;
+                    itemMessage.group = newMessageList[i].group;
+                    itemMessage.chatId = newMessageList[i].chatId;
+                    itemMessage.message = newMessageList[i].message;
+                      itemMessage.messageId = newMessageList[i].messageId;
+                    itemMessage.type = newMessageList[i].type;
+                    itemMessage.status = newMessageList[i].status;
+                    itemMessage.sendTime = newMessageList[i].sendTime;
 
 
                     if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
-                        if(messageList[i].sender == myAccount.accountId){
+                        if(newMessageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
+                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
@@ -360,7 +378,7 @@ export default class IMController {
                 }
 
                 //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache);
+                updateChatRecordhandle(cache.messageCache,dropable);
 
             })
         })
@@ -426,7 +444,7 @@ export default class IMController {
         //cache.messageCache删除
         deleteItemFromCacheByMessageId(cache.messageCache,messageId);
         //渲染聊天记录
-        updateChatRecordhandle(cache.messageCache);
+        updateChatRecordhandle(cache.messageCache,dropable);
 
 
 
@@ -537,7 +555,7 @@ export default class IMController {
                     current.message.localSource = path;
                 }
             }
-            updateChatRecordhandle(cache.messageCache);
+            updateChatRecordhandle(cache.messageCache,dropable);
 
             callback();
         },onprogress)
@@ -816,14 +834,14 @@ function addOrUpdateMessageCache(itemMessage){
         cache.messageCache.push(itemMessage);
         maxId = maxId+1;
     }
-    updateChatRecordhandle(cache.messageCache);
+    updateChatRecordhandle(cache.messageCache,dropable);
 }
 
 function onlyUpdateMessageCache(itemMessage){
     for(let i=0,length = cache.messageCache.length;i<length;i++){
         if(cache.messageCache[i].messageId == itemMessage.messageId){
             cache.messageCache[i] = itemMessage;
-            updateChatRecordhandle(cache.messageCache);
+            updateChatRecordhandle(cache.messageCache,dropable);
             break;
         }
     }
@@ -832,7 +850,7 @@ function onlyUpdateMessageCache(itemMessage){
 function onlyAddMessageCache(itemMessage){
     cache.messageCache.push(itemMessage);
     maxId = maxId+1;
-    updateChatRecordhandle(cache.messageCache);
+    updateChatRecordhandle(cache.messageCache,dropable);
 }
 
 function formateManagementMessageToControllerMessage(managementMessageObj,isReceive,callback){
@@ -876,27 +894,6 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
         callback(itemMessage);
     }
 
-
-    // //测试代码
-    // currentObj.user.getInformationByIdandType(managementMessageObj.sender,managementMessageObj.group,(relationObj) => {
-    //
-    //     let itemMessage = new ControllerMessageDto();
-    //     itemMessage.group = managementMessageObj.group;
-    //     itemMessage.chatId = managementMessageObj.chatId;
-    //     itemMessage.message = managementMessageObj.message;
-    //     itemMessage.messageId = managementMessageObj.messageId;
-    //     itemMessage.type = managementMessageObj.type;
-    //     itemMessage.status = managementMessageObj.status;
-    //     itemMessage.sendTime = managementMessageObj.sendTime;
-    //
-    //     let {RelationId, Nick, avator} = relationObj;
-    //     itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl: avator};
-    //
-    //     cache.messageCache.push(itemMessage);
-    //
-    //     //渲染聊天记录
-    //     updateChatRecordhandle(cache.messageCache);
-    // })
 }
 
 
@@ -988,6 +985,19 @@ function formateDataFromChatManageCacheRecord(ChatManageCacheRecordArr){
         }
     }
     return needArr;
+}
+
+function positiveArray(array){
+    let positiveArray = [];
+
+    if(array.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+        array.splice(0,1,array[0]);
+    }
+
+    for(let i = array.length - 1;i>=0; i--){
+        positiveArray.push(array[i]);
+    }
+    return positiveArray;
 }
 
 //从cache删除指定id的message
