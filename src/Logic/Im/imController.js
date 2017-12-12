@@ -712,11 +712,12 @@ function controllerReceiveMessage(message){
                     case AppCommandEnum.MSG_BODY_APP_ADDFRIEND:
 
                         //更新contact
-
                         var senderId = message.Data.Data.Sender;
 
-                        currentObj.user.getInformationByIdandType(senderId,false,function(){
-                            currentObj.user.acceptFriendInCache(senderId);
+                        currentObj.user.getInformationByIdandType(senderId,false,function(contact){
+                            //currentObj.user.acceptFriendInCache(senderId);
+                            contact.show = true;
+                            currentObj.user.applyFriend(contact)
                         });
 
                         break;
