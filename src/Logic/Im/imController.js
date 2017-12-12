@@ -656,13 +656,23 @@ function controllerReceiveMessage(message){
                 currentObj.user.forceUpdateRelation(senderId,group,function(result){
                    switch (message.Data.Data.Command){
                        case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:
-                           var accounts = message.Data.Data.Data.split(',');
 
-                           var name = currentObj.user.getUserInfoById(accounts[0])
+                           var groupId = message.Data.Data.Receiver;
+                           var members = message.Data.Data.Data.split(',');
+                           var inviter = members.splice(-1,1)[0];
+                           currentObj.user.addGroupMember(groupId,members)
 
-                           var inviter = currentObj.user.getUserInfoById(accounts[1]);
+                           var Nicks = '';
+                           for(let i = 0; i<members.length;i++){
+                               if(i != members.length - 1){
+                                   Nicks += currentObj.user.getUserInfoById(members[i]) + ",";
+                               }else{
+                                   Nicks += currentObj.user.getUserInfoById(members[i]);
+                               }
+                           }
+                           inviter = currentObj.user.getUserInfoById(inviter);
 
-                           message.Data.Data.Data = inviter + "邀请" + name + "加入群聊";
+                           message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
                            storeChatMessageAndCache(message);
                            break;
