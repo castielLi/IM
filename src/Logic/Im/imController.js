@@ -1018,6 +1018,7 @@ function formatOjbToneedArr(obj){
     for(let key in obj){
         needArr.push(obj[key]);
     }
+    needArr.sort((a,b)=>{return parseInt(b['lastTime'])-parseInt(a['lastTime'])})
     return needArr;
 }
 //rencentList数组转为对象缓存
