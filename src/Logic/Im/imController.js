@@ -901,14 +901,14 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
 
 
 function PushNotificationToApp(managementMessageObj){
-
+    if(managementMessageObj.chatId != currentChat.chatId){
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
             currentObj.addUnReadMsgNumber(managementMessageObj.chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
-
+    }
 }
 
 function waitUIConversationListCacheFinish(messages = []){
