@@ -641,9 +641,13 @@ function controllerReceiveMessage(message){
     }else if(message.Command == MessageCommandEnum.MSG_BODY){
         if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){
 
+            //李宗骏
             if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER
+                    //已做
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND
+                    //张彤
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP
+                    //黄昊东
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
 
                 var senderId = AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
@@ -715,6 +719,7 @@ function controllerReceiveMessage(message){
             }else{
 
                 switch (message.Data.Data.Command){
+                    //已做
                     case AppCommandEnum.MSG_BODY_APP_ADDFRIEND:
 
                         //更新contact
@@ -727,6 +732,7 @@ function controllerReceiveMessage(message){
                         });
 
                         break;
+                    //李宗骏
                     case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
 
                         var senderId = message.Data.Data.Receiver;
@@ -769,8 +775,10 @@ function controllerReceiveMessage(message){
                         });
 
                         break;
+
                     case AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP:
                         break;
+                    //张彤
                     case AppCommandEnum.MSG_BODY_APP_EXITGROUP:
 
                         var senderId = message.Data.Data.Receiver;

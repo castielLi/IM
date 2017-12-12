@@ -139,6 +139,11 @@ export default class Chat {
 
         currentObj.addSqliteMessage(message);
         //todo 李宗骏 修改会话列表数据
+
+        //1 addmessage 要多一个参数，来判断 是否是当前会话
+        //2 不是当前会话需要添加未读条数进数据库
+        //3 回到IMcontroller 去判断是否添加缓存的未读条数，并且刷新界面
+
     }
 
     removeConverseListRecord(Id){
