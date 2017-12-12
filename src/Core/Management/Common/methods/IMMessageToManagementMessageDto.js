@@ -21,7 +21,7 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
 
         messageDto.message = message.Description;
         messageDto.chatId = errorMessageBody.Data.Data.Receiver;
-        messageDto.sender = errorMessageBody.Data.Data.Sender;
+        messageDto.sender = errorMessageBody.Data.Data.Receiver;
         messageDto.messageId = errorMessageBody.MSGID;
         messageDto.sendTime = errorMessageBody.Data.LocalTime;
 

@@ -314,7 +314,7 @@ export default class IMController {
                     }
 
 
-                    cache.messageCache.unshift(itemMessage);
+                    cache.messageCache.push(itemMessage);
 
                 }
                 //渲染聊天记录
@@ -373,7 +373,7 @@ export default class IMController {
                     }
 
 
-                    cache.messageCache.unshift(itemMessage);
+                    cache.messageCache.push(itemMessage);
 
                 }
 
@@ -776,7 +776,7 @@ function storeChatMessageAndCache(message){
 
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
-        if(managementMessageObj.sendTime * 1 > cache.conversationCache[chatId].lastTime * 1) {
+        if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
             PushNotificationToApp(managementMessageObj);
             currentObj.chat.addMessage(managementMessageObj)
