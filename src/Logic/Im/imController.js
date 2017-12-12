@@ -267,7 +267,7 @@ export default class IMController {
             }
 
             //将取出来的message正序排列
-            let newMessageList = positiveArray(messageList);
+            let newMessageList = positiveArray(messageList,true );
             maxId = newMessageList[0].id;
 
 
@@ -995,16 +995,23 @@ function formateDataFromChatManageCacheRecord(ChatManageCacheRecordArr){
     return needArr;
 }
 
-function positiveArray(array){
+function positiveArray(array,first = false){
     let positiveArray = [];
 
     if(array.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
-        array.splice(0,1,array[0]);
+        array.pop();
+    }
+    if(first){
+        positiveArray = array.reverse()
     }
 
-    for(let i = array.length - 1;i>=0; i--){
-        positiveArray.push(array[i]);
-    }
+    // if(array.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
+    //     array.splice(0,1,array[0]);
+    // }
+    //
+    // for(let i = array.length - 1;i>=0; i--){
+    //     positiveArray.push(array[i]);
+    // }
     return positiveArray;
 }
 
