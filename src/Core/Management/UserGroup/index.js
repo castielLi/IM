@@ -281,6 +281,7 @@ export default class User {
                     model.Nick = members[i].Nickname;
                     model.RelationId = members[i].Account;
                     if(cache["user"][accountId] == undefined){
+                        model.show = false;
                         cache["user"][accountId] = model;
                     }
                     groupMembers.push(model);

@@ -109,9 +109,9 @@ export default class Chat {
 
 
     addMessage(message = new ManagementMessageDto(),groupName = ""
-        ,isReceiveMessage = false,type = UpdateConversationTypeEnum.UpdateConversationRecord){
+        ,needUpdate = false,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
-       if(isReceiveMessage){
+       if(needUpdate){
            //构建未读消息
            let record = new ManagementChatRecordDto();
            record.group = true;
@@ -123,26 +123,14 @@ export default class Chat {
            record.name = groupName;
            record.HeadImageUrl = "";
            record.noSound = false;
-
-
-
-           if(message.type == DtoMessageTypeEnum.error){
-               currentObj.updateMessageStatus(message,function(){
-                   ControllerUpdateConverseListHandlue(record,message,type)
-                   ControllerUpdateCurrentConverseHandle(message);
-               });
-           }else{
-               ControllerUpdateConverseListHandlue(record,message,type)
-               ControllerUpdateCurrentConverseHandle(message);
-           }
+           ControllerUpdateConverseListHandlue(record,message,type)
        }
 
         currentObj.addSqliteMessage(message);
-        //todo 李宗骏 修改会话列表数据
+        if(message.type == DtoMessageTypeEnum.error){
+            currentObj.updateMessageStatus(message,function(){});
+        }
 
-        //1 addmessage 要多一个参数，来判断 是否是当前会话
-        //2 不是当前会话需要添加未读条数进数据库
-        //3 回到IMcontroller 去判断是否添加缓存的未读条数，并且刷新界面
 
     }
 
