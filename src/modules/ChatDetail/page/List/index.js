@@ -306,7 +306,7 @@ class Chat extends Component {
                             {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                         </View>
                         <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{"你邀请"+ message +"进入群聊"}</Text>
+                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{message}</Text>
                         </View>
                     </View>
             )
