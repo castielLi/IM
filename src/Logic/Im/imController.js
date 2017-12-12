@@ -242,7 +242,6 @@ export default class IMController {
         //未读消息清零
         if(cache.conversationCache[chatId]!=undefined&&cache.conversationCache[chatId]['unreadCount']>0){
             this.clearUnReadMsgNumber(chatId);
-            this.chat.clearUnReadNumber(chatId, group);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
             //渲染会话列表
             let tempArr = formatOjbToneedArr(cache.conversationCache);
@@ -452,9 +451,7 @@ export default class IMController {
     //清除未读数, 在会话列表处功能(标记为已读)
     clearUnReadNumber(chatId, group){
         //清空对应item未读消息
-
         this.clearUnReadMsgNumber(chatId);
-        this.chat.clearUnReadNumber(chatId, group);
     }
     //清除所有数据(清除缓存数据)
     clearAll(){
@@ -488,7 +485,7 @@ export default class IMController {
 
 
     //message是完整的managementMessageDto
-    addOneChat(chatId,message){
+    addOneChat(chatId,message,callback){
 
         this.user.getInformationByIdandType(chatId,message.group,(relationObj) => {
             let itemChat = new ControllerChatConversationDto();
@@ -503,6 +500,7 @@ export default class IMController {
             cache.conversationCache[chatId] = itemChat;
             let tempArr = formatOjbToneedArr(cache.conversationCache);
             updateconverslisthandle(tempArr);
+            callback&&callback();
         })
     }
     //未读消息+1
@@ -760,7 +758,7 @@ function storeChatMessageAndCache(message){
     if(cache.conversationCache[chatId]!=undefined){
         if(managementMessageObj.sendTime * 1 > cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
-
+            PushNotificationToApp(managementMessageObj);
             currentObj.chat.addMessage(managementMessageObj)
         }
     }else{
@@ -784,12 +782,14 @@ function storeChatMessageAndCache(message){
             currentObj.chat.addMessage(managementMessageObj)
 
         }else{
-            currentObj.addOneChat(chatId,managementMessageObj);
+            currentObj.addOneChat(chatId,managementMessageObj,()=>{
+                PushNotificationToApp(managementMessageObj);
+            });
             currentObj.chat.addMessage(managementMessageObj)
             //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
         }
     }
-    PushNotificationToApp(managementMessageObj);
+    //PushNotificationToApp(managementMessageObj);
 
     if(managementMessageObj.chatId == currentChat.chatId){
         //AddCache(managementMessageObj);

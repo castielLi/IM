@@ -146,7 +146,7 @@ FileManager.downloadResource = function(message,callback){
             RNFS.mkdir(path).then(()=>{
 
                 _network.methodDownload(url,toFile,updateMessage)
-                
+
             })
         }
     })
