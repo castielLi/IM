@@ -17,8 +17,8 @@ export function storeMessage(message){
 
 }
 
-export function updateMessageStatusById(message){
-    CHATFMDB.UpdateMessageStatues(message);
+export function updateMessageStatusById(message,callback){
+    CHATFMDB.UpdateMessageStatues(message,callback);
 }
 
 
@@ -460,7 +460,7 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
 }
 
 
-CHATFMDB.UpdateMessageStatues = function(message){
+CHATFMDB.UpdateMessageStatues = function(message,callback){
 
     let tabName = message.group?"Group_"+message.chatId:"Private_"+message.chatId;
 
@@ -474,7 +474,7 @@ CHATFMDB.UpdateMessageStatues = function(message){
 
 
             tx.executeSql(updateSql, [], (tx, results) => {
-                console.log("update message sqlite " + messageId + "is send statues:" + status);
+                callback();
             }, (err)=>{errorDB('更新消息状态',err)});
 
         });

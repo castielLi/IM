@@ -124,15 +124,21 @@ export default class Chat {
            record.HeadImageUrl = "";
            record.noSound = false;
 
-           ControllerUpdateConverseListHandlue(record,message,type)
-           ControllerUpdateCurrentConverseHandle(message);
+
 
            if(message.type == DtoMessageTypeEnum.error){
-               currentObj.updateMessageStatus(message);
+               currentObj.updateMessageStatus(message,function(){
+                   ControllerUpdateConverseListHandlue(record,message,type)
+                   ControllerUpdateCurrentConverseHandle(message);
+               });
+           }else{
+               ControllerUpdateConverseListHandlue(record,message,type)
+               ControllerUpdateCurrentConverseHandle(message);
            }
        }
 
         currentObj.addSqliteMessage(message);
+        //todo 李宗骏 修改会话列表数据
     }
 
     removeConverseListRecord(Id){
@@ -172,9 +178,9 @@ export default class Chat {
     }
 
     clearAllUnReadMsgNumber(){
-        for(let item in ChatCache){
-            currentObj.updateUnReadMessageNumber(item,0);
-        }
+        // for(let item in ChatCache){
+        //     currentObj.updateUnReadMessageNumber(item,0);
+        // }
     }
 
 
@@ -198,8 +204,8 @@ export default class Chat {
         storeSqlite.getChatList(callback);
     }
 
-    updateMessageStatus(message){
-        storeSqlite.updateMessageStatusById(message);
+    updateMessageStatus(message,callback){
+        storeSqlite.updateMessageStatusById(message,callback);
     }
 
 
