@@ -207,6 +207,8 @@ export default class IMController {
 
     updateConverseListByChatManagement(newConverse,message,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
+        let cachesConversationList = [];
+
         if(cache.conversationCache[newConverse.chatId]){
             let oldConverse = cache.conversationCache[newConverse.chatId];
                 if(type == UpdateConversationTypeEnum.ModifyGroupName){
@@ -217,18 +219,18 @@ export default class IMController {
                 }else{
                     oldConverse.lastTime = newConverse.lastTime;
                 }
-                let caches = formatOjbToneedArr(cache.conversationCache);
+            cachesConversationList = formatOjbToneedArr(cache.conversationCache);
 
         }else{
             if(type ==UpdateConversationTypeEnum.RemoveConversation) return;
-            let cachesConversationList = formatOjbToneedArr(cache.conversationCache);
+            cachesConversationList = formatOjbToneedArr(cache.conversationCache);
 
             cachesConversationList.splice(0, 0, newConverse)
 
             cache.conversationCache = formatArrToConversationObj(cachesConversationList)
         }
 
-        updateconverslisthandle(cache.conversationCache);
+        updateconverslisthandle(cachesConversationList);
     }
 
     //更新当前会话注入方法
