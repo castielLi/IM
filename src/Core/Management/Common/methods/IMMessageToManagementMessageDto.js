@@ -9,6 +9,7 @@ import DtoMessageTypeEnum from '../dto/DtoMessageTypeEnum'
 import MessageBodyTypeEnum from '../dto/MessageBodyTypeEnum'
 import ResourceTypeEnum from '../dto/ResourceTypeEnum'
 import CommandErrorCodeEnum from '../dto/CommandErrorCodeEnum'
+import MessageStatus from '../dto/MessageStatus'
 import AppCommandEnum from '../dto/AppCommandEnum'
 
 export default function IMMessageToMessagementMessageDto(message,isReceive = false){
@@ -22,7 +23,9 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
         messageDto.message = message.Description;
         messageDto.chatId = errorMessageBody.Data.Data.Receiver;
         messageDto.sender = errorMessageBody.Data.Data.Receiver;
-        messageDto.messageId = errorMessageBody.MSGID;
+        messageDto.errorMessageId = errorMessageBody.MSGID;
+        messageDto.messageId = message.MSGID;
+        messageDto.status = MessageStatus.SendFailed;
         messageDto.sendTime = errorMessageBody.Data.LocalTime;
 
     }else{

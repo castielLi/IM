@@ -128,7 +128,7 @@ export default class Chat {
            ControllerUpdateCurrentConverseHandle(message);
 
            if(message.type == DtoMessageTypeEnum.error){
-               currentObj.updateMessageStatus(message.messageId,MessageStatus.SendFailed);
+               currentObj.updateMessageStatus(message);
            }
        }
 
@@ -198,8 +198,8 @@ export default class Chat {
         storeSqlite.getChatList(callback);
     }
 
-    updateMessageStatus(messageId,status){
-        storeSqlite.updateMessageStatusById(messageId,status);
+    updateMessageStatus(message){
+        storeSqlite.updateMessageStatusById(message);
     }
 
 

@@ -236,9 +236,9 @@ export default class IMController {
 
             //如果是error消息需要把当前聊天的消息里面的制定消息设置为发送失败
             if(message.type == DtoMessageTypeEnum.error){
-                for(let item in cache.conversationCache){
-                    if(cache.conversationCache[item].messageId == message.messageId){
-                        cache.conversationCache[item].status = MessageStatus.SendFailed;
+                for(let item in cache.messageCache){
+                    if(cache.messageCache[item].messageId == message.errorMessageId){
+                        cache.messageCache[item].status = MessageStatus.SendFailed;
                     }
                 }
             }
@@ -429,7 +429,7 @@ export default class IMController {
             //向IM发送队列中添加消息成功
             if(status){
                 itemManagementMessage.messageId = messageId;
-                itemManagementMessage.status = 'WaitOpreator';
+                itemManagementMessage.status = MessageStatus.WaitOpreator;
 
                 this.chat.addMessage(itemManagementMessage);
 
@@ -718,11 +718,12 @@ function controllerReceiveMessage(message){
                     case AppCommandEnum.MSG_BODY_APP_ADDFRIEND:
 
                         //更新contact
-
                         var senderId = message.Data.Data.Sender;
 
-                        currentObj.user.getInformationByIdandType(senderId,false,function(){
-                            currentObj.user.acceptFriendInCache(senderId);
+                        currentObj.user.getInformationByIdandType(senderId,false,function(contact){
+                            //currentObj.user.acceptFriendInCache(senderId);
+                            contact.show = true;
+                            currentObj.user.applyFriend(contact)
                         });
 
                         break;
@@ -841,7 +842,7 @@ function storeChatMessageAndCache(message){
     }
 
     currentObj.chat.addMessage(managementMessageObj,"",true);
-    
+
 
     //这个方法放到chat addMessage中了，保持一致
     // if(managementMessageObj.chatId == currentChat.chatId){
