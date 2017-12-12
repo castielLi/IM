@@ -17,6 +17,10 @@ export function storeMessage(message){
 
 }
 
+export function updateMessageStatusById(messageId,status){
+    CHATFMDB.UpdateMessageStatues(messageId,status);
+}
+
 
 export function deleteClientRecode(name,chatType){
     CHATFMDB.DeleteChatByClientId(name,chatType);
@@ -456,7 +460,24 @@ CHATFMDB.getRangeMessages = function(account,way,range,callback){
 }
 
 
+CHATFMDB.UpdateMessageStatues = function(messageId,status){
 
+    let updateSql = sqls.ExcuteIMSql.UpdateMessageStatusByMessageId;
+    updateSql = commonMethods.sqlFormat(updateSql,[status,messageId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+
+
+            tx.executeSql(updateSql, [], (tx, results) => {
+                console.log("update message sqlite " + messageId + "is send statues:" + status);
+            }, (err)=>{errorDB('更新消息状态',err)});
+
+        });
+    }, (err)=>{errorDB('初始化数据库',err)});
+}
 
 
 CHATFMDB.DeleteClientRecodeByName = function(name){

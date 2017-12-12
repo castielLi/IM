@@ -233,6 +233,16 @@ export default class IMController {
     //更新当前会话注入方法
     updateCurrentConverseByChatManagement(message){
         if(message.chatId == currentChat.chatId){
+
+            //如果是error消息需要把当前聊天的消息里面的制定消息设置为发送失败
+            if(message.type == DtoMessageTypeEnum.error){
+                for(let item in cache.conversationCache){
+                    if(cache.conversationCache[item].messageId == message.messageId){
+                        cache.conversationCache[item].status = MessageStatus.SendFailed;
+                    }
+                }
+            }
+
             formateManagementMessageToControllerMessage(message,true,(controllerMessage)=>{
                 onlyAddMessageCache(controllerMessage)
             })

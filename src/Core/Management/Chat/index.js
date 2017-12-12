@@ -13,6 +13,8 @@ import ManagementChatRecordDto from './Common/dto/ManagementChatRecordDto'
 import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
 import ManagementMessageDto from '../Common/dto/ManagementMessageDto'
 import UpdateConversationTypeEnum from '../../../Logic/Common/dto/UpdateConversationTypeEnum'
+import DtoMessageTypeEnum from '../Common/dto/DtoMessageTypeEnum'
+import MessageStatus from '../Common/dto/MessageStatus';
 let currentObj = undefined;
 
 // var ManagementMessageDto={
@@ -124,6 +126,10 @@ export default class Chat {
 
            ControllerUpdateConverseListHandlue(record,message,type)
            ControllerUpdateCurrentConverseHandle(message);
+
+           if(message.type == DtoMessageTypeEnum.error){
+               currentObj.updateMessageStatus(message.messageId,MessageStatus.SendFailed);
+           }
        }
 
         currentObj.addSqliteMessage(message);
@@ -138,12 +144,6 @@ export default class Chat {
 
     updateMessage(message){
         this.updateChatMessage(message);
-    }
-
-    //清除数据
-    clearAll(){
-        ChatCache = {};
-
     }
 
 
@@ -196,6 +196,10 @@ export default class Chat {
     //获取聊天列表
     getRecentChatList(callback){
         storeSqlite.getChatList(callback);
+    }
+
+    updateMessageStatus(messageId,status){
+        storeSqlite.updateMessageStatusById(messageId,status);
     }
 
 
