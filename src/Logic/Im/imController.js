@@ -681,8 +681,9 @@ function controllerReceiveMessage(message){
 
                        case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
                            var members = message.Data.Data.Data.split(',');
-                           var groupId = message.Data.Data.Receiver;
-                           currentObj.user.getInformationByIdandType(groupId,true,function (group) {
+                           var group = result;
+                           //var groupId = message.Data.Data.Receiver;
+                           //currentObj.user.getInformationByIdandType(groupId,true,function (group) {
                                members = members.map(function (current,index) {
                                    return {Account:current}
                                });
@@ -704,8 +705,8 @@ function controllerReceiveMessage(message){
                                message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
                                storeChatMessageAndCache(message);
-                           });
-                           
+                          // });
+
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
                            var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
