@@ -216,7 +216,7 @@ export default class IMController {
                     oldConverse.lastTime = newConverse.lastTime;
                 }
                 let caches = formatOjbToneedArr(cache.conversationCache);
-                updateconverslisthandle(caches)
+
         }else{
             if(type ==UpdateConversationTypeEnum.RemoveConversation) return;
             let caches = formatOjbToneedArr(cache.conversationCache);
@@ -224,10 +224,8 @@ export default class IMController {
             caches.splice(0, 0, newConverse)
 
             cache.conversationCache[newConverse.chatId] = newConverse;
-
-            updateconverslisthandle(caches);
-
         }
+        updateconverslisthandle(cache.conversationCache);
     }
 
     //更新当前会话注入方法
@@ -650,8 +648,8 @@ function controllerReceiveMessage(message){
                     //黄昊东
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
 
-                var senderId = AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
-                let group = AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
+                var senderId = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
+                let group = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
                 currentObj.user.forceUpdateRelation(senderId,group,function(result){
                    switch (message.Data.Data.Command){
                        case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:
@@ -667,11 +665,11 @@ function controllerReceiveMessage(message){
                            break;
                        case AppCommandEnum.MSG_BODY_APP_APPLYFRIEND:
 
-                           let applyMessageDto = IMMessageToManagementApplyMessageDto(message);
+                           var applyMessageDto = IMMessageToManagementApplyMessageDto(message);
 
                            currentObj.apply.AddApplyMessage(applyMessageDto,result);
 
-                            let getNewFriendPageState = currentObj.apply.getCurrentPage();
+                            var getNewFriendPageState = currentObj.apply.getCurrentPage();
                             
                            if(!getNewFriendPageState){
 
@@ -680,8 +678,8 @@ function controllerReceiveMessage(message){
                            }
 
                            break;
-                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
 
+                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
                            var members = message.Data.Data.Data.split(',');
                            var groupId = message.Data.Data.Receiver;
                            members = members.map(function (current,index) {
@@ -858,7 +856,7 @@ function storeChatMessageAndCache(message){
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
             PushNotificationToApp(managementMessageObj);
-
+            currentObj.chat.addMessage(managementMessageObj);
         }
     }else{
 
@@ -870,6 +868,7 @@ function storeChatMessageAndCache(message){
 
             currentObj.chat.insertOfflineMessage(message);
 
+            currentObj.chat.addMessage(managementMessageObj);
 
 
         }else if(cache.initConversationStatus == InitConversationListStatusEnum.Executing){
@@ -879,17 +878,18 @@ function storeChatMessageAndCache(message){
             currentObj.chat.insertOfflineMessage(message);
 
 
+            currentObj.chat.addMessage(managementMessageObj);
 
         }else{
             currentObj.addOneChat(chatId,managementMessageObj,()=>{
                 PushNotificationToApp(managementMessageObj);
             });
 
-            //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
+            currentObj.chat.addMessage(managementMessageObj);
         }
     }
 
-    currentObj.chat.addMessage(managementMessageObj,"",true);
+
 
 
     //这个方法放到chat addMessage中了，保持一致
