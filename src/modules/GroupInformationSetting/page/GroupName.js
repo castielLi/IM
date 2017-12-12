@@ -77,6 +77,7 @@ class GroupName extends ContainerComponent {
                 return;
             }
             if(result.data.Data){
+                currentObj.props.onUpdataGroupNick(currentObj.state.text);
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
                 let index;

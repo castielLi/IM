@@ -700,13 +700,13 @@ function controllerReceiveMessage(message){
                            storeChatMessageAndCache(message);
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
-                           var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                           var name = currentObj.user.getUserInfoById(message.Data.Data.Sender);
 
                            message.Data.Data.Data =  name+"修改了群昵称";
 
                            let groupName = result.Nick;
 
-                           let groupId = message.Data.Data.Sender;
+                           let groupId = message.Data.Data.Receiver;
 
                            currentObj.user.updateGroupName(groupId,groupName);
 
