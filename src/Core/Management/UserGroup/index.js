@@ -8,6 +8,7 @@ import AppCommandEnum from '../Common/dto/AppCommandEnum'
 import UserManager from '../UserGroup/UserManager'
 import GroupManager from '../UserGroup/GroupManager'
 import dtoChange from './Common/mehod/method'
+import InitUserStatusTypeEnum from '../../../Logic/Im/dto/InitUserStatusTypeEnum'
 
 let __instance = (function () {
     let instance;
@@ -136,14 +137,15 @@ export default class User {
 
     //获取所有show = true的user
     getUserRelationsOfShow(callback){
-            this.getAllRelationSQL((relations)=>{
-                callback(relations);
-                relations.forEach((v)=>{
-                    v.BlackList = stringToBoolean(v.BlackList)
-                    v.show = stringToBoolean(v.show)
-                    cache['user'][v.RelationId] = v;
-                })
+        this.getAllRelationSQL((relations)=>{
+
+            callback(relations);
+            relations.forEach((v)=>{
+                v.BlackList = stringToBoolean(v.BlackList)
+                v.show = stringToBoolean(v.show)
+                cache['user'][v.RelationId] = v;
             })
+        })
     }
 
 
@@ -158,6 +160,10 @@ export default class User {
 
     //获取所有show = true的Group
     getGroupRelationsOfShow(callback){
+
+        if(cache["group"]!= undefined){
+            callback(formatOjbToneedArr(cache["group"]));
+        }
 
         this.getAllGroupFromGroupSQL((relations)=>{
             callback(relations);
@@ -251,7 +257,6 @@ export default class User {
         }
         return show;
     }
-
 
     getHttpGroupInfo(Id,type,callback,Relation = undefined){
         let groupMembers = [];
@@ -669,4 +674,12 @@ function filterShowToArr(obj){
         }
     }
     return tempArr;
+}
+
+function formatOjbToneedArr(obj){
+    let needArr = [];
+    for(let key in obj){
+        needArr.push(obj[key]);
+    }
+    return needArr;
 }

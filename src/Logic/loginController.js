@@ -48,9 +48,6 @@ export default class loginController {
                 AsyncStorage.setItem('account',JSON.stringify(account));
 
                 if(Platform.OS === 'ios'){
-                    //初始化im
-                    //现在登录完，进入recentlist并且redux初始完成之后才开启IM
-                    // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                     currentObj.im.initIMDatabase(account.accountId)
                     currentObj.user.initIMDatabase(account.accountId);
                     currentObj.chat.initChatDatabase(account.accountId);
@@ -76,10 +73,6 @@ export default class loginController {
                                         RNFS.copyFile(ChatDbPath,'/data/data/com.im/databases/Chat.db').then(()=>{
                                             RNFS.copyFile(ApplyFriendDbPath,'/data/data/com.im/databases/ApplyFriend.db').then(()=>{
 
-
-
-                                                //初始化im
-                                                currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                                                 currentObj.user.initIMDatabase(account.accountId);
                                                 currentObj.chat.initChatDatabase(account.accountId);
                                                 currentObj.apply.initApplyFriendDatabase(account.accountId);
@@ -92,9 +85,6 @@ export default class loginController {
                             });
                             //若是第一次登陆
                         }else{
-                            //初始化im
-                            //现在登录完，进入recentlist并且redux初始完成之后才开启IM
-                            // currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
                             currentObj.im.initIMDatabase(account.accountId);
                             currentObj.user.initIMDatabase(account.accountId);
                             currentObj.chat.initChatDatabase(account.accountId);
@@ -170,29 +160,10 @@ export default class loginController {
                     let account = JSON.parse(value);
 
                     currentObj.user.initRelationsSQL(result.data.Data["FriendList"],result.data.Data["BlackList"],function(){
-                        currentObj.user.getAllRelationSQL((data)=>{
+                        currentObj.user.getUserRelationsOfShow(()=>{
                             currentObj.user.initGroupSQL(result.data.Data["GroupList"],function(){
-
-                                currentObj.user.getAllGroupFromGroupSQL(function(results){
-
-                                    data = results.reduce(function(prev, curr){ prev.push(curr); return prev; },data);
-                                    result.data.relations = data;
-
-                                    currentObj.im.getAllApplyFriendMessage(function(results){
-
-                                        result.data.applyFriendMessage = results;
-                                        let unUnDealRequestCount = 0;
-                                        results.forEach((v,i)=>{
-                                            if(v.status == "wait"){
-                                                unUnDealRequestCount++
-                                            }
-                                        })
-                                        result.data.unUnDealRequestCount = unUnDealRequestCount;
-                                        currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
-
-                                        callback(result);
-                                    })
-                                })
+                                currentObj.im.setSocket(account.accountId,account.device,account.deviceId,account.IMToken);
+                                callback(result);
                             })
                         })
                     })
