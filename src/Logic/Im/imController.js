@@ -803,7 +803,7 @@ function storeChatMessageAndCache(message){
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
             PushNotificationToApp(managementMessageObj);
-            currentObj.chat.addMessage(managementMessageObj)
+
         }
     }else{
 
@@ -815,7 +815,7 @@ function storeChatMessageAndCache(message){
 
             currentObj.chat.insertOfflineMessage(message);
 
-            currentObj.chat.addMessage(managementMessageObj)
+
 
         }else if(cache.initConversationStatus == InitConversationListStatusEnum.Executing){
 
@@ -823,18 +823,19 @@ function storeChatMessageAndCache(message){
 
             currentObj.chat.insertOfflineMessage(message);
 
-            currentObj.chat.addMessage(managementMessageObj)
+
 
         }else{
             currentObj.addOneChat(chatId,managementMessageObj,()=>{
                 PushNotificationToApp(managementMessageObj);
             });
-            currentObj.chat.addMessage(managementMessageObj)
+
             //3 把dto + usermanagment 的dto 构建成 IMcontoller的 dto 返回给界面
         }
     }
-    //PushNotificationToApp(managementMessageObj);
 
+    currentObj.chat.addMessage(managementMessageObj,"",true);
+    
 
     //这个方法放到chat addMessage中了，保持一致
     // if(managementMessageObj.chatId == currentChat.chatId){
