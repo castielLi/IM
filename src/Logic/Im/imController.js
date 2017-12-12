@@ -221,12 +221,13 @@ export default class IMController {
 
         }else{
             if(type ==UpdateConversationTypeEnum.RemoveConversation) return;
-            let caches = formatOjbToneedArr(cache.conversationCache);
+            let cachesConversationList = formatOjbToneedArr(cache.conversationCache);
 
-            caches.splice(0, 0, newConverse)
+            cachesConversationList.splice(0, 0, newConverse)
 
-            cache.conversationCache[newConverse.chatId] = newConverse;
+            cache.conversationCache = formatArrToConversationObj(cachesConversationList)
         }
+
         updateconverslisthandle(cache.conversationCache);
     }
 
@@ -1070,6 +1071,7 @@ function formatOjbToneedArr(obj){
     needArr.sort((a,b)=>{return parseInt(b['lastTime'])-parseInt(a['lastTime'])})
     return needArr;
 }
+
 //rencentList数组转为对象缓存
 function formatArrToConversationObj(arr){
     return arr.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
