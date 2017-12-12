@@ -316,7 +316,7 @@ export default class IMController {
                     }
 
 
-                    cache.messageCache.unshift(itemMessage);
+                    cache.messageCache.push(itemMessage);
 
                 }
                 //渲染聊天记录
@@ -349,28 +349,30 @@ export default class IMController {
             }
 
             //将取出来的message正序排列
-            let newMessageList = positiveArray(messageList);
-            maxId = newMessageList[0].id;
+            //let newMessageList = positiveArray(messageList);
+            let newMessageList = messageList;
+
+            maxId = messageList[0].id;
 
 
-            let snapArr = formateDataFromChatManageCacheRecord(newMessageList);
+            let snapArr = formateDataFromChatManageCacheRecord(messageList);
             this.user.getRelationsByList(snapArr, (relationObj) => {
-                for (let i = 0, length = newMessageList.length; i < length; i++) {
+                for (let i = 0, length = messageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
-                    itemMessage.group = newMessageList[i].group;
-                    itemMessage.chatId = newMessageList[i].chatId;
-                    itemMessage.message = newMessageList[i].message;
-                      itemMessage.messageId = newMessageList[i].messageId;
-                    itemMessage.type = newMessageList[i].type;
-                    itemMessage.status = newMessageList[i].status;
-                    itemMessage.sendTime = newMessageList[i].sendTime;
+                    itemMessage.group = messageList[i].group;
+                    itemMessage.chatId = messageList[i].chatId;
+                    itemMessage.message = messageList[i].message;
+                      itemMessage.messageId = messageList[i].messageId;
+                    itemMessage.type = messageList[i].type;
+                    itemMessage.status = messageList[i].status;
+                    itemMessage.sendTime = messageList[i].sendTime;
 
 
                     if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
-                        if(newMessageList[i].sender == myAccount.accountId){
+                        if(messageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
+                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
@@ -780,7 +782,7 @@ function storeChatMessageAndCache(message){
 
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
-        if(managementMessageObj.sendTime * 1 > cache.conversationCache[chatId].lastTime * 1) {
+        if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
             PushNotificationToApp(managementMessageObj);
             currentObj.chat.addMessage(managementMessageObj)
@@ -904,14 +906,14 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
 
 
 function PushNotificationToApp(managementMessageObj){
-
+    if(managementMessageObj.chatId != currentChat.chatId){
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
             currentObj.addUnReadMsgNumber(managementMessageObj.chatId);
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
-
+    }
 }
 
 function waitUIConversationListCacheFinish(messages = []){
@@ -1024,6 +1026,7 @@ function formatOjbToneedArr(obj){
     for(let key in obj){
         needArr.push(obj[key]);
     }
+    needArr.sort((a,b)=>{return parseInt(b['lastTime'])-parseInt(a['lastTime'])})
     return needArr;
 }
 //rencentList数组转为对象缓存
