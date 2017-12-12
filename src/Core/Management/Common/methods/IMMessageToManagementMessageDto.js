@@ -47,8 +47,6 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
                messageDto.message = message.Data.Data.Data;
            }else{
 
-
-
                switch(message.Resource[0].FileType){
                    case ResourceTypeEnum.video:
                        messageDto.type = DtoMessageTypeEnum.video;

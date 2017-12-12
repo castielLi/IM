@@ -16,7 +16,7 @@ export function storeSendMessage(message){
 
 export function storeRecMessage(message){
 
-    if(message.Data.Data.Command != AppCommandEnum.MSG_BODY_APP_APPLYFRIEND) {
+    if(message.Data.Command != MessageBodyTypeEnum.MSG_BODY_APP && message.Data.Data.Command != AppCommandEnum.MSG_BODY_APP_APPLYFRIEND) {
         message.status = MessageStatus.SendSuccess;
         IMFMDB.InsertMessageWithCondition(message,message.Data.Data.Sender)
     }else{
