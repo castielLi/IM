@@ -829,13 +829,14 @@ export default class IMController {
     }
 
     //todo:预计是拷贝的问题 张彤
-    manualDownloadResource(messageId,url,path,callback,onprogress){
+    manualDownloadResource(message,url,path,callback,onprogress){
         this.im.manualDownloadResource(url,path,function () {
             //修改数据库路径
-            currentObj.im.updateMessageLocalSource(messageId,path);
+            //currentObj.im.updateMessageLocalSource(messageId,path);
+            currentObj.chat.updateMessagePath(message,path);
 
             for(let [i,current] of cache.messageCache.entries()){
-                if(current.messageId == messageId){
+                if(current.messageId == message.messageId){
                     cache.messageCache[i] = JSON.parse(JSON.stringify(current))
                     cache.messageCache[i].message.localSource = path;
                 }

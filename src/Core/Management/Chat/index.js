@@ -291,8 +291,13 @@ export default class Chat {
     }
 
     //修改message的status状态或者 message资源文件路径
-    updateChatMessage(message = new ManagementChatRecordDto()){
+    updateChatMessage(message = new ManagementMessageDto()){
         storeSqlite.UpdateMessage(message);
+    }
+
+    //修改资源路径
+    updateMessagePath(message = new ManagementMessageDto(),path){
+        storeSqlite.updateMessagePath(message,path);
     }
 
     insertOfflineMessage(message = new ManagementMessageDto()){

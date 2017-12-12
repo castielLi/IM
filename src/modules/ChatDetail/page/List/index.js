@@ -292,6 +292,7 @@ class Chat extends Component {
     }
 
     renderRow = (row,sid,rowid) => {
+        console.log('renderRow')
         let {sender,message,sendTime,type,status} = row;
         sendTime = parseInt(sendTime);
 

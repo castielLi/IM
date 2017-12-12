@@ -46,6 +46,11 @@ export function UpdateMessage(message = new ManagementMessageDto()){
     CHATFMDB.UpdateMessageBody(message);
 }
 
+export function updateMessagePath(message = new ManagementMessageDto(),path){
+    CHATFMDB.UpdateMessagePath(message,path);
+}
+
+
 export function addOfflineMessage(message = new ManagementMessageDto()){
    CHATFMDB.insertOfflineMessageByMessage(message);
 }
@@ -363,6 +368,37 @@ CHATFMDB.UpdateMessageBody = function(message = new ManagementMessageDto()){
 
         });
     }, errorDB);
+}
+
+CHATFMDB.UpdateMessagePath = function(message = new ManagementMessageDto(),path){
+
+    let updateSql = sqls.ExcuteIMSql.UpdateMessage;
+    let getSql = sqls.ExcuteIMSql.GetMessageById;
+    let tabName = !message.group?"Private_" + message.chatId:"Group_" + message.chatId;
+
+    getSql = commonMethods.sqlFormat(getSql,[tabName,message.messageId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+        db.transaction((tx) => {
+            tx.executeSql(getSql, [], (tx, results) => {
+
+                //callback(results.rows.raw())
+                if(results.rows.length){
+                    let messageBody = JSON.parse(results.rows.raw()[0].message);
+                    messageBody.message.localSource = path;
+                    messageBody = JSON.stringify(messageBody);
+                    updateSql = commonMethods.sqlFormat(updateSql,[tabName,messageBody,message.status,message.messageId])
+                    tx.executeSql(updateSql, [], (tx, results) => {
+
+                    })
+                }
+
+            }, (err)=>{errorDB('获取消息体',err)});
+        });
+    }, errorDB);
+
 }
 
 // CHATFMDB.getMessageById = function(messageId,callback){

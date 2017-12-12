@@ -60,8 +60,8 @@ class ChatMessageImage extends ContainerComponent {
         return {uri:Source}
     }
 
-    goToGallery = (path,url,messageId,sender)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"url":url,"messageId":messageId,"sender":sender},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    goToGallery = (path,url,data)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"url":url,"message":data},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;
@@ -69,7 +69,7 @@ class ChatMessageImage extends ContainerComponent {
 
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToGallery(localSource,remoteSource,data.messageId,data.sender.account)}>
+                <Thouch onPress={()=>this.goToGallery(localSource,remoteSource,data)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
                         source={this.localSourceObj(localSource)}
