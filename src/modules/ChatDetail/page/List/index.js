@@ -81,7 +81,12 @@ class Chat extends Component {
         this.renderRow = this.renderRow.bind(this);
     }
 
-    onUpdataChatRecord(chatRecord,isMore){
+    onUpdataChatRecord(chatRecord,isMore,needUpdateHeadName=false){
+
+        if(needUpdateHeadName){
+            this.props.updateHeadName();
+        }
+
         let {msgState} = ListConst;
         if(!chatRecord || !chatRecord.length) return;
         currentObj.chatRecord = chatRecord;

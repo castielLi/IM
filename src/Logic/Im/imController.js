@@ -101,6 +101,8 @@ let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0,initConversa
 let currentObj = undefined;
 let updateconverslisthandle = undefined;
 let updateChatRecordhandle = undefined;
+let updateHeadNameHandle = undefined;
+
 let maxId = 0;
 //是否还有其他的记录可提界面下拉加载更多
 let dropable = false;
@@ -252,9 +254,10 @@ export default class IMController {
 
 
     //设置当前会话
-    setCurrentConverse(chatId, group, callback) {
+    setCurrentConverse(chatId, group, callback,updateHeadNameHandle) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
+        updateHeadNameHandle = updateHeadNameHandle;
         //初始化缓存
         this.user.init(chatId,group);
 
@@ -610,7 +613,7 @@ function controllerMessageResult(success,message){
 
     if(messageDto.chatId == currentChat.chatId){
         //AddCache(messageDto);
-        formateManagementMessageToControllerMessage(messageDto,true,(controllerMessage)=>{
+        formateManagementMessageToControllerMessage(messageDto,false,(controllerMessage)=>{
             onlyUpdateMessageCache(controllerMessage);
         })
     }
@@ -961,7 +964,12 @@ function PushNotificationToApp(managementMessageObj){
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
+
     }
+}
+
+function UpdateCurrentChatHeadName(){
+
 }
 
 function waitUIConversationListCacheFinish(messages = []){
