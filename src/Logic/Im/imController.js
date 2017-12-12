@@ -682,21 +682,21 @@ function controllerReceiveMessage(message){
                        case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
                            var members = message.Data.Data.Data.split(',');
                            var groupId = message.Data.Data.Receiver;
-                           currentObj.user.getInformationByIdandType(groupId,true,function () {
+                           currentObj.user.getInformationByIdandType(groupId,true,function (group) {
                                members = members.map(function (current,index) {
                                    return {Account:current}
                                });
 
                                //创建群和成员表
-                               currentObj.user.createGroup(groupObj,members);
+                               currentObj.user.createGroup(group,members);
 
                                //构建消息
                                let Nicks = "";
-                               for(let i = 0; i<accounts.length;i++){
-                                   if(i != accounts.length - 1){
-                                       Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                               for(let i = 0; i<members.length;i++){
+                                   if(i != members.length - 1){
+                                       Nicks += currentObj.user.getUserInfoById(members[i].Account) + ",";
                                    }else{
-                                       Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                                       Nicks += currentObj.user.getUserInfoById(members[i].Account);
                                    }
                                }
 
