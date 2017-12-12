@@ -609,7 +609,7 @@ export default class User {
         }
 
         for (let current of members) {
-            cache['groupMember'][group.RelationId].push(current);
+            cache['groupMember'][group.RelationId].push(current.Account);
         }
     }
     //添加群成员

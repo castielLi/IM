@@ -680,14 +680,19 @@ function controllerReceiveMessage(message){
                            }
 
                            break;
-                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP: var accounts = message.Data.Data.Data.split(',');
-                           let Nicks = "";
-                           for(let i = 0; i<accounts.length;i++){
-                               if(accounts[i] == message.Data.Data.Receiver){
-                                   accounts.splice(i,1);
-                               }
-                           }
+                       case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
 
+                           var members = message.Data.Data.Data.split(',');
+                           var groupId = message.Data.Data.Receiver;
+                           members = members.map(function (current,index) {
+                               return {Account:current}
+                           });
+
+                           //创建群和成员表
+                           currentObj.user.createGroup(groupObj,members);
+
+                           //构建消息
+                           let Nicks = "";
                            for(let i = 0; i<accounts.length;i++){
                                if(i != accounts.length - 1){
                                    Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
@@ -696,10 +701,30 @@ function controllerReceiveMessage(message){
                                }
                            }
 
-                           var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                           var inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
                            message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
                            storeChatMessageAndCache(message);
+                           // var accounts = message.Data.Data.Data.split(',');
+                           // let Nicks = "";
+                           // for(let i = 0; i<accounts.length;i++){
+                           //     if(accounts[i] == message.Data.Data.Receiver){
+                           //         accounts.splice(i,1);
+                           //     }
+                           // }
+                           //
+                           // for(let i = 0; i<accounts.length;i++){
+                           //     if(i != accounts.length - 1){
+                           //         Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                           //     }else{
+                           //         Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                           //     }
+                           // }
+                           //
+                           // var inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                           // message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+                           //
+                           // storeChatMessageAndCache(message);
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
                            var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
@@ -781,17 +806,32 @@ function controllerReceiveMessage(message){
                     //张彤
                     case AppCommandEnum.MSG_BODY_APP_EXITGROUP:
 
-                        var senderId = message.Data.Data.Receiver;
+                        var members = message.Data.Data.Data.split(',');
+                        var groupId = message.Data.Data.Receiver;
 
-                        currentObj.user.getInformationByIdandType(senderId,true,function(){
-                            var accounts = message.Data.Data.Data.split(',');
+                        currentObj.user.getInformationByIdandType(groupId,true,function() {
+                            //修改成员表
+                            currentObj.user.removeGroupMember(groupId, members);
 
-                            var name = currentObj.user.getUserInfoById(accounts[0])
-
-                            message.Data.Data.Data =  name + "退出了群聊";
-
+                            //发送消息并刷新页面
+                            var name = currentObj.user.getUserInfoById(members[0]);
+                            message.Data.Data.Data = name + "退出了群聊";
                             storeChatMessageAndCache(message);
                         });
+
+
+
+                        // var senderId = message.Data.Data.Receiver;
+                        //
+                        // currentObj.user.getInformationByIdandType(senderId,true,function(){
+                        //     var accounts = message.Data.Data.Data.split(',');
+                        //
+                        //     var name = currentObj.user.getUserInfoById(accounts[0])
+                        //
+                        //     message.Data.Data.Data =  name + "退出了群聊";
+                        //
+                        //     storeChatMessageAndCache(message);
+                        // });
                         break;
                 }
             }
