@@ -187,11 +187,11 @@ export default class settingController {
                 let members = params.Accounts.split(',');//Accounts 字符串 a,b,c
                 currentObj.user.removeGroupMember(params.GroupId,members);
 
-                let text = params.Accounts;
-                let messageId = uuidv1();
-                let sendMessage = buildRemoveGroupMessage(params.Operater,params.GroupId,text,messageId);
-                let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                currentObj.chat.addMessage(messageDto,"",true);
+                // let text = params.Accounts;
+                // let messageId = uuidv1();
+                // let sendMessage = buildRemoveGroupMessage(params.Operater,params.GroupId,text,messageId);
+                // let messageDto = IMMessageToManagementMessageDto(sendMessage);
+                // currentObj.chat.addMessage(messageDto,"",true);
 
                 if(close){
                     currentObj.destroyGroup(params.GroupId);

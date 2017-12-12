@@ -254,10 +254,10 @@ export default class IMController {
 
 
     //设置当前会话
-    setCurrentConverse(chatId, group, callback,updateHeadNameHandle) {
+    setCurrentConverse(chatId, group, callback,onupdateHeadNameHandle) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
-        updateHeadNameHandle = updateHeadNameHandle;
+        updateHeadNameHandle = onupdateHeadNameHandle;
         //初始化缓存
         this.user.init(chatId,group);
 
@@ -683,7 +683,7 @@ function controllerReceiveMessage(message){
                            currentObj.apply.AddApplyMessage(applyMessageDto,result);
 
                             var getNewFriendPageState = currentObj.apply.getCurrentPage();
-                            
+
                            if(!getNewFriendPageState){
 
                                AppReceiveMessageHandle(1,TabTypeEnum.Contact)
@@ -722,17 +722,19 @@ function controllerReceiveMessage(message){
 
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
-                           var name = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
+                           var name = currentObj.user.getUserInfoById(message.Data.Data.Sender);
 
                            message.Data.Data.Data =  name+"修改了群昵称";
 
-                           let groupName = result.Nick;
+                           let groupId = message.Data.Data.Receiver;
 
-                           let groupId = message.Data.Data.Sender;
+                           var groupName = currentObj.user.getGroupInfoById(groupId)
 
                            currentObj.user.updateGroupName(groupId,groupName);
 
                            storeChatMessageAndCache(message);
+
+                           UpdateCurrentChatHeadName(message,groupName)
                    }
                 })
 
@@ -754,45 +756,6 @@ function controllerReceiveMessage(message){
                         break;
                     //李宗骏
                     case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
-
-                        var senderId = message.Data.Data.Receiver;
-
-                        currentObj.user.getInformationByIdandType(senderId,true,function(){
-                            var accounts = message.Data.Data.Data.split(',');
-                            //默认收到被踢消息的人不是被踢人
-                            let isKickedClient = false;
-                            for(let i = 0; i<accounts.length;i++){
-                                if(accounts[i] == myAccount.accountId){
-                                    isKickedClient = true;
-                                    break;
-                                }
-                            }
-                            if(isKickedClient){
-                                message.Data.Data.Data =  "你被群主踢出了该群聊";
-                                //处理来自界面的回调方法，隐藏群设置按钮
-                            }else{
-                                let Nicks = "";
-                                for(let i = 0; i<accounts.length;i++){
-                                    if(i != accounts.length - 1){
-                                        Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                                    }else{
-                                        Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                                    }
-                                }
-
-                                var name = currentObj.user.getUserInfoById(message.Data.Data.Data);
-                                var inviter = '';
-                                if(message.Data.Data.Receiver == myAccount.accountId){
-                                    inviter = myAccount.accountId;
-                                }else{
-                                    inviter = currentObj.user.getUserInfoById(message.Data.Data.Receiver);
-                                }
-                                message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
-                            }
-
-                            storeChatMessageAndCache(message);
-
-                        });
 
                         break;
 
@@ -978,8 +941,11 @@ function PushNotificationToApp(managementMessageObj){
     }
 }
 
-function UpdateCurrentChatHeadName(){
-
+function UpdateCurrentChatHeadName(message,groupName){
+    let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
+    if(managementMessageObj.chatId != currentChat.chatId){
+       updateHeadNameHandle(groupName)
+    }
 }
 
 function waitUIConversationListCacheFinish(messages = []){

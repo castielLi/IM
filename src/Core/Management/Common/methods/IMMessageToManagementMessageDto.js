@@ -36,9 +36,10 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
            }else{
                messageDto.type = DtoMessageTypeEnum.info;
                if(message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP ||
+                   message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER ||
+                   message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER||
                    message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO ||
-                   message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP ||
-                   message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER){
+           message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_EXITGROUP){
                    messageDto.group = true;
                    messageDto.chatId = message.Data.Data.Receiver;
                    messageDto.sender = message.Data.Data.Receiver;

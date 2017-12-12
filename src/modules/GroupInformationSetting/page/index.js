@@ -251,13 +251,14 @@ class GroupInformationSetting extends ContainerComponent {
     }
     gotoGroupName = ()=>{
         let groupAvator = this.state.groupInformation.ProfilePicture;
-            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation}});
+            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"onUpdataGroupNick":this.props.onUpdataGroupNick}});
 
     }
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         let {ID,LastUpdateTime,Name,Owner,ProfilePicture,Description} = this.state.groupInformation;
+
         return (
             <View style={styles.container}>
                 <MyNavigationBar

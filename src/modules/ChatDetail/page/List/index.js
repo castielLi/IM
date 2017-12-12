@@ -81,12 +81,7 @@ class Chat extends Component {
         this.renderRow = this.renderRow.bind(this);
     }
 
-    onUpdataChatRecord(chatRecord,isMore,needUpdateHeadName=false){
-
-        if(needUpdateHeadName){
-            this.props.updateHeadName();
-        }
-
+    onUpdataChatRecord(chatRecord,isMore){
         let {msgState} = ListConst;
         if(!chatRecord || !chatRecord.length) return;
         currentObj.chatRecord = chatRecord;
@@ -109,7 +104,7 @@ class Chat extends Component {
         }else{
             group = true;
         }
-        imController.setCurrentConverse(client,group,this.onUpdataChatRecord);
+        imController.setCurrentConverse(client,group,this.onUpdataChatRecord,this.props.updateHeadName);
 
         if(!this.chatRecord.length){
             //this.props.addClient(client);
