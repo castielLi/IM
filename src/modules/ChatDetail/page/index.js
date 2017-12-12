@@ -34,7 +34,8 @@ class ChatDetail extends ContainerComponent {
 			};
         currentObj = this;
         this.isDisabled = false
-		}
+		this._updateHeadName = this._updateHeadName.bind(this);
+	}
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
 
@@ -42,7 +43,7 @@ class ChatDetail extends ContainerComponent {
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
 
         }else if(type === 'group'){
-            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client}});
+            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client,"updateHeadName":this._updateHeadName}});
 
         }
     }
@@ -69,6 +70,11 @@ class ChatDetail extends ContainerComponent {
             })
 		}
 	}
+
+	_updateHeadName(){
+
+	}
+
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (

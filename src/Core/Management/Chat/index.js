@@ -126,6 +126,10 @@ export default class Chat {
            ControllerUpdateConverseListHandlue(record,message,type)
        }
 
+       if(UpdateConversationTypeEnum.ModifyGroupName){
+           ControllerUpdateCurrentConverseHandle(message);
+       }
+
         currentObj.addSqliteMessage(message);
         if(message.type == DtoMessageTypeEnum.error){
             currentObj.updateMessageStatus(message,function(){});
