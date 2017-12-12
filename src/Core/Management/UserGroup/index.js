@@ -287,10 +287,11 @@ export default class User {
                     groupMembers.push(model);
                     groupMembersInfo.push(accountId)
                 }
+                cache["groupMember"][Id] = groupMembersInfo;
                 callback(relation,groupMembers);
                 currentObj.AddGroupAndMemberSQL(relation,members);
                 currentObj.AddGroupMemberSQL(members);
-                cache["groupMember"][Id] = groupMembersInfo;
+
             }else{
                 console.log(result.errorMessage)
             }
