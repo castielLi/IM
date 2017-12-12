@@ -345,35 +345,37 @@ export default class IMController {
             }
 
             //将取出来的message正序排列
-            let newMessageList = positiveArray(messageList);
-            maxId = newMessageList[0].id;
+            //let newMessageList = positiveArray(messageList);
+            let newMessageList = messageList;
+
+            maxId = messageList[0].id;
 
 
-            let snapArr = formateDataFromChatManageCacheRecord(newMessageList);
+            let snapArr = formateDataFromChatManageCacheRecord(messageList);
             this.user.getRelationsByList(snapArr, (relationObj) => {
-                for (let i = 0, length = newMessageList.length; i < length; i++) {
+                for (let i = 0, length = messageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
-                    itemMessage.group = newMessageList[i].group;
-                    itemMessage.chatId = newMessageList[i].chatId;
-                    itemMessage.message = newMessageList[i].message;
-                      itemMessage.messageId = newMessageList[i].messageId;
-                    itemMessage.type = newMessageList[i].type;
-                    itemMessage.status = newMessageList[i].status;
-                    itemMessage.sendTime = newMessageList[i].sendTime;
+                    itemMessage.group = messageList[i].group;
+                    itemMessage.chatId = messageList[i].chatId;
+                    itemMessage.message = messageList[i].message;
+                      itemMessage.messageId = messageList[i].messageId;
+                    itemMessage.type = messageList[i].type;
+                    itemMessage.status = messageList[i].status;
+                    itemMessage.sendTime = messageList[i].sendTime;
 
 
                     if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
-                        if(newMessageList[i].sender == myAccount.accountId){
+                        if(messageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
+                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
                     }
 
 
-                    cache.messageCache.push(itemMessage);
+                    cache.messageCache.unshift(itemMessage);
 
                 }
 
