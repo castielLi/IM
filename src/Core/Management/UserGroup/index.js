@@ -399,6 +399,9 @@ export default class User {
         return cache["user"][accountId]["Nick"]
     }
 
+    getGroupInfoById(groupId){
+        return cache["group"][groupId]["Nick"]
+    }
 
 
     getCacheInfo(type){
