@@ -14,20 +14,6 @@ import ClearUnReadEnum from './Common/dto/ClearUnReadEnum'
 import ManagementMessageDto from '../Common/dto/ManagementMessageDto'
 let currentObj = undefined;
 
-//会话缓存
-//格式 []
-let ChatCache = {}
-// var ManagementchatRecordDto={
-//     group: false,
-//     chatId: "",//chatId={account/groupId}
-//     lastSender: null,
-//     lastMessage: "",
-//     lastTime: null,
-//     unreadCount: 0, //未读条数
-// }
-
-
-
 // var ManagementMessageDto={
 //     group: false,
 //     chatId: "",//chatId={account/groupId},
@@ -90,19 +76,9 @@ export default class Chat {
     }
     //初始化聊天记录,打开一个聊天窗口的时候
     getChatList(chatId, group = false, maxId, callback){
-
-        //length改成maxid 并且仅仅maxid== 0 的时候才缓存， 不然直接把搜索的messages返回给上部
-
-        // if(ChatCache[chatId] == undefined){
-        //     callback([])
-        // }else{
-            currentObj.getRecentChatRecode(chatId,group,{start:maxId,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
-                callback(results);
-                // if(maxId == 0){
-                //     ChatCache[chatId]['Record'] = messages;
-                // }
-            });
-        // }
+        currentObj.getRecentChatRecode(chatId,group,{start:maxId,limit:InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER},(results)=>{
+            callback(results);
+        });
     }
 
 
@@ -180,52 +156,18 @@ export default class Chat {
 
 
 
-    //修改message的status状态或者 message资源文件路径
-    // updateMessageByChatIdAndMessage(chat,message){
-    //     let recentObj = ChatCache[chatId];
-    //     let messages = recentObj.Record;
-    //     for(let item in messages){
-    //         if(messages[item].messageId == message.messageId){
-    //             messages[item] = message;
-    //             break;
-    //         }
-    //     }
-    // }
 
-    // updateOneChat(chatId,message){
-    //    let recentObj = ChatCache[chatId];
-    //     recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
-    //     recentObj.LastMessage = getContentOfControllerMessageDto(message);
-    //     recentObj.Time = message.sendTime;
-    //     recentObj.Record.unshift(message);
-    // }
-
-    //添加一个会话
-    // addOneChat(chatId,message){
-    //     let recentObj = new RecentRecordDto();
-    //     recentObj.Client = chatId;
-    //     recentObj.Type = message.group?ChatWayEnum.Group:ChatWayEnum.Private;
-    //     recentObj.LastMessage = getContentOfControllerMessageDto(message);
-    //     recentObj.Time = message.sendTime;
-    //     recentObj.Record.unshift(message);
-    //     ChatCache[chatId] = recentObj;
-    // }
     //未读消息+1
-
     addUnReadMsgNumber(clientId,callback){
-        // ChatCache[clientId]['unReadMessageCount'] +=1;
         currentObj.addChatUnReadMessageaNumber(clientId);
     }
     //未读消息清0
     clearUnReadMsgNumber(clientId){
-        // if(ChatCache[clientId] == undefined) return;
-        // ChatCache[clientId]['unReadMessageCount'] = 0;
         currentObj.updateUnReadMessageNumber(clientId,0);
     }
 
     clearAllUnReadMsgNumber(){
         for(let item in ChatCache){
-            // ChatCache[item]['unReadMessageCount'] = 0;
             currentObj.updateUnReadMessageNumber(item,0);
         }
     }

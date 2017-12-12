@@ -139,10 +139,12 @@ FileManager.downloadResource = function(message,callback){
 
     RNFS.exists(path).then((bool)=>{
         if(bool){
+
             _network.methodDownload(url,toFile,updateMessage)
 
         }else{
             RNFS.mkdir(path).then(()=>{
+
                 _network.methodDownload(url,toFile,updateMessage)
 
             })

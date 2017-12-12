@@ -144,7 +144,7 @@ export default class loginController {
                         currentObj.im.initIMDatabase(storage.accountId)
                         currentObj.user.initIMDatabase(storage.accountId)
                         currentObj.chat.initChatDatabase(storage.accountId);
-                        currentObj.apply.initApplyFriendDatabase(account.accountId);
+                        currentObj.apply.initApplyFriendDatabase(storage.accountId);
                     }
                     callback(result);
                 }
