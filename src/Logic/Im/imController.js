@@ -650,7 +650,9 @@ function controllerReceiveMessage(message){
                     //张彤
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_CREATEGROUP
                     //黄昊东
-                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO
+
+                || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
 
                 var senderId = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
                 let group = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
@@ -692,7 +694,6 @@ function controllerReceiveMessage(message){
                            }
 
                            break;
-
                        case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
                            var members = message.Data.Data.Data.split(',');
                            var group = result;
@@ -736,6 +737,53 @@ function controllerReceiveMessage(message){
                            storeChatMessageAndCache(message);
 
                            UpdateCurrentChatHeadName(message,groupName)
+                       case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
+
+                           var senderId = message.Data.Data.Receiver;
+
+                           currentObj.user.getInformationByIdandType(senderId,true,function(){
+                               var accounts = message.Data.Data.Data.split(',');
+
+                               let Nicks = "";
+                               for(let i = 0; i<accounts.length;i++){
+                                   if(i != accounts.length - 1){
+                                       Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
+                                   }else{
+                                       Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                                   }
+                               }
+
+
+                               if(message.Data.Data.Sender == myAccount.accountId){
+
+                                   message.Data.Data.Data =  "你将"+Nicks+"移除了该群聊";
+                               }else{
+                                   //默认收到被踢消息的人不是被踢人
+                                   let isKickedClient = false;
+                                   for(let i = 0; i<accounts.length;i++){
+                                       if(accounts[i] == myAccount.accountId){
+                                           isKickedClient = true;
+                                           break;
+                                       }
+                                   }
+                                   if(isKickedClient){
+                                       message.Data.Data.Data =  "你被群主踢出了该群聊";
+                                       //处理来自界面的回调方法，隐藏群设置按钮
+                                   }else{
+                                       var inviter = '';
+                                       if(message.Data.Data.Sender == myAccount.accountId){
+                                           inviter = myAccount.accountId;
+                                       }else{
+                                           inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
+                                       }
+                                       message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
+                                   }
+                               }
+
+                               storeChatMessageAndCache(message);
+
+                           });
+                           break;
                    }
                 })
 
@@ -755,11 +803,6 @@ function controllerReceiveMessage(message){
                         });
 
                         break;
-                    //李宗骏
-                    case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
-
-                        break;
-
                     case AppCommandEnum.MSG_BODY_APP_DISSOLUTIONGROUP:
                         break;
                     //张彤
