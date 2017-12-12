@@ -9,7 +9,7 @@ import TabTypeEnum from '../Im/dto/TabTypeEnum'
 import {Alert} from 'react-native'
 let store = Store;
 
-export function handleRecieveMessage(count,type = TabTypeEnum.RecentList){
+export function handleRecieveMessage(count,type){
     switch (type){
         case TabTypeEnum.RecentList:
             store.dispatch(changeUnReadMessageNumber(count))

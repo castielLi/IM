@@ -22,6 +22,7 @@ import {bindActionCreators} from 'redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
+import * as tabBarActions from '../../MainTabbar/reducer/action';
 import ContactController from '../../../Logic/Contact/contactController'
 
 let contactController = new ContactController();
@@ -118,6 +119,7 @@ class Contacts extends ContainerComponent {
 				</View>
 	}
     goToNewFriend = () =>{
+		this.props.changeUnDealRequestNumber(0);
         this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
 
     }
@@ -404,7 +406,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch) => {
   return{
 
-      ...bindActionCreators(featuresAction, dispatch)
+      ...bindActionCreators(featuresAction, dispatch),
+      ...bindActionCreators(tabBarActions, dispatch)
 
   }};
 

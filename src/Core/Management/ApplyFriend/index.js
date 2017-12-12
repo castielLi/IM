@@ -13,6 +13,8 @@ let __instance = (function () {
 
 let currentObj = undefined;
 
+let currentPage = undefined;
+
 let ControllerApplyMessageHandle = undefined;
 
 export default class ApplyFriend {
@@ -32,8 +34,9 @@ export default class ApplyFriend {
     }
 
 
-    connnectApplyFriend(updateApplyMessageHandle){
+    connnectApplyFriend(updateApplyMessageHandle,currentPageState){
         ControllerApplyMessageHandle = updateApplyMessageHandle;
+        currentPage = currentPageState;
     }
 
     GetAllApplyMessage(callback){
@@ -47,7 +50,7 @@ export default class ApplyFriend {
 
     AddApplyMessage(message,user){
         this.addSqlApplyMessage(message);
-        ControllerApplyMessageHandle(message,user);
+        ControllerApplyMessageHandle&&ControllerApplyMessageHandle(message,user);
     }
 
 
@@ -66,5 +69,9 @@ export default class ApplyFriend {
 
     addSqlApplyMessage(message){
         storeSqlite.storeApplyMessage(message);
+    }
+
+    getCurrentPage(){
+        return currentPage;
     }
 }

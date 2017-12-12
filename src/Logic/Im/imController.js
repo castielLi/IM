@@ -647,8 +647,8 @@ function controllerReceiveMessage(message){
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO){
 
                 var senderId = AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
-
-                currentObj.user.forceUpdateRelation(senderId,true,function(result){
+                let group = AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
+                currentObj.user.forceUpdateRelation(senderId,group,function(result){
                    switch (message.Data.Data.Command){
                        case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:
                            var accounts = message.Data.Data.Data.split(',');
@@ -667,7 +667,13 @@ function controllerReceiveMessage(message){
 
                            currentObj.apply.AddApplyMessage(applyMessageDto,result);
 
-                           AppReceiveMessageHandle(1,TabTypeEnum.Contact)
+                            let getNewFriendPageState = currentObj.apply.getCurrentPage();
+                            
+                           if(!getNewFriendPageState){
+
+                               AppReceiveMessageHandle(1,TabTypeEnum.Contact)
+
+                           }
 
                            break;
                        case AppCommandEnum.MSG_BODY_APP_CREATEGROUP: var accounts = message.Data.Data.Data.split(',');

@@ -17,8 +17,8 @@ import TabTypeEnum from '../../../Logic/Im/dto/TabTypeEnum'
 let imController = new ImController();
 
 
-let handleRecieveMessage = function(count,type = TabTypeEnum.RecentList){
-    IMHandle.handleRecieveMessage(count,type = TabTypeEnum.RecentList);
+let handleRecieveMessage = function(count,type){
+    IMHandle.handleRecieveMessage(count,type);
 }
 
 let handleKickOutMessage = function(){

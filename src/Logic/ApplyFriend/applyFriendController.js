@@ -55,25 +55,28 @@ export default class ApplyFriendController {
 
         connectManagement();
 
-        if(cache=={}){
+        if(Object.keys(cache).length == 0){
 
             this.apply.GetAllApplyMessage(function (record) {
                 let sendArray = record.map(function (current,index,array) {
-                    return {chatId:current.send,group:false};
+                    return {chatId:current.sender,group:false};
                 });
-                this.user.getRelationsByList(sendArray, (userArray) => {
+                currentObj.user.getRelationsByList(sendArray, (userObj) => {
 
-                    for(let i=0; i<userArray.length;i++){
+
+
+
+                    for(let i=0; i<record.length;i++){
                         let applyFriendObj = new applyFriendDto();
                         applyFriendObj.time = record[i].time;
                         applyFriendObj.comment = record[i].comment;
                         applyFriendObj.key = record[i].key;
-                        applyFriendObj.send = record[i].send;
+                        applyFriendObj.send = record[i].sender;
                         applyFriendObj.status = record[i].status;
 
-                        applyFriendObj.avator = userArray[i].avator;
-                        applyFriendObj.nick = userArray[i].Nick;
-                        applyFriendObj.localImage = userArray[i].localImage;
+                        applyFriendObj.avator = userObj[record[i].sender].avator;
+                        applyFriendObj.nick = userObj[record[i].sender].Nick;
+                        applyFriendObj.localImage = userObj[record[i].sender].localImage;
 
                         cache[applyFriendObj.send] = applyFriendObj;
                     }
@@ -128,7 +131,7 @@ export default class ApplyFriendController {
                 //修改缓存好友申请消息状态
                 cache[Account].status = ApplyFriendEnum.ADDED;
                 //修改数据库好友申请消息状态
-                currentObj.apply.UpdateApplyMessageStatus({"key":params.key,"status":ApplyFriendEnum.ADDED});
+                currentObj.apply.UpdateApplyMessageStatus(params.key,ApplyFriendEnum.ADDED);
 
                 let Record = Object.values(cache);
                 updateApplyFriendHandle(Record);
@@ -171,6 +174,9 @@ export default class ApplyFriendController {
     // removeApplyFriendRecord(applyId){
     //
     // }
+
+
+
 }
 
 function managementApplyFriendHandle(message,user){
@@ -179,17 +185,18 @@ function managementApplyFriendHandle(message,user){
     applyFriendObj.time = message.time;
     applyFriendObj.comment = message.comment;
     applyFriendObj.key = message.key;
-    applyFriendObj.send = message.send;
+    applyFriendObj.send = message.sender;
     applyFriendObj.status = message.status;
     applyFriendObj.avator = user.avator;
     applyFriendObj.nick = user.Nick;
     applyFriendObj.localImage = user.avator;
     cache[applyFriendObj.send] = applyFriendObj;
+    let Record = Object.values(cache);
+    updateApplyFriendHandle(Record);
 
 
-    updateApplyFriendHandle()
 }
 
 function connectManagement(){
-   currentObj.apply.connnectApplyFriend(managementApplyFriendHandle);
+   currentObj.apply.connnectApplyFriend(managementApplyFriendHandle,currentPage);
 }

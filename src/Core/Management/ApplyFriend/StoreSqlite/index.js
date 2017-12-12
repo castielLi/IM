@@ -114,7 +114,7 @@ APPLYFRIENDFMDB.getAllApplyMessages = function(callback){
 APPLYFRIENDFMDB.updateMessageStatus = function(key,status){
     let sql = sqls.ExcuteIMSql.UpdateApplyFriend
 
-    sql = commonMethods.sqlFormat(sql,[key,status]);
+    sql = commonMethods.sqlFormat(sql,[status,key]);
 
     var db = SQLite.openDatabase({
         ...databaseObj
