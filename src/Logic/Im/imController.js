@@ -357,7 +357,7 @@ export default class IMController {
             //let newMessageList = positiveArray(messageList);
             let newMessageList = positiveArray(messageList);
 
-            maxId = newMessageList[0].id;
+            maxId = newMessageList[newMessageList.length-1].id;
 
 
             let snapArr = formateDataFromChatManageCacheRecord(newMessageList);
@@ -1008,6 +1008,8 @@ function positiveArray(array,first = false){
     }
     if(first){
         positiveArray = array.reverse()
+    }else{
+        positiveArray = array
     }
 
     // if(array.length == InitChatRecordConfig.INIT_CHAT_RECORD_NUMBER){
