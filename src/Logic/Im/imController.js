@@ -202,6 +202,7 @@ export default class IMController {
         }
     }
 
+
     updateConverseListByChatManagement(newConverse,message,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
         if(cache.conversationCache[newConverse.chatId]){
@@ -216,11 +217,6 @@ export default class IMController {
                 }
                 let caches = formatOjbToneedArr(cache.conversationCache);
                 updateconverslisthandle(caches)
-
-            if(message){
-                cache.messageCache.push(message);
-                updateChatRecordhandle(cache.messageCache,dropable);
-            }
         }else{
             if(type ==UpdateConversationTypeEnum.RemoveConversation) return;
             let caches = formatOjbToneedArr(cache.conversationCache);
@@ -234,9 +230,16 @@ export default class IMController {
         }
     }
 
+    //更新当前会话注入方法
     updateCurrentConverseByChatManagement(message){
-
+        if(message.chatId == currentChat.chatId){
+            formateManagementMessageToControllerMessage(message,true,(controllerMessage)=>{
+                onlyAddMessageCache(controllerMessage)
+            })
+        }
+       return;
     }
+
 
 
 
@@ -822,14 +825,16 @@ function storeChatMessageAndCache(message){
     }
     //PushNotificationToApp(managementMessageObj);
 
-    if(managementMessageObj.chatId == currentChat.chatId){
-        //AddCache(managementMessageObj);
-        formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
-            //addOrUpdateMessageCache(controllerMessage);
-            onlyAddMessageCache(controllerMessage)
-        })
 
-    }
+    //这个方法放到chat addMessage中了，保持一致
+    // if(managementMessageObj.chatId == currentChat.chatId){
+    //     //AddCache(managementMessageObj);
+    //     formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
+    //         //addOrUpdateMessageCache(controllerMessage);
+    //         onlyAddMessageCache(controllerMessage)
+    //     })
+    //
+    // }
 }
 
 

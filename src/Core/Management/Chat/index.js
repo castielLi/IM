@@ -51,7 +51,7 @@ export default class Chat {
 
     connectChat(updateConverseList,updateCurrentConverse){
         ControllerUpdateConverseListHandlue = updateConverseList;
-        ControllerUpdateCurrentConverseHandle = updateConverseList;
+        ControllerUpdateCurrentConverseHandle = updateCurrentConverse;
     }
 
 
@@ -109,8 +109,6 @@ export default class Chat {
     addMessage(message = new ManagementMessageDto(),groupName = ""
         ,isReceiveMessage = false,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
-       currentObj.addSqliteMessage(message);
-
        if(isReceiveMessage){
            //构建未读消息
            let record = new ManagementChatRecordDto();
@@ -127,6 +125,8 @@ export default class Chat {
            ControllerUpdateConverseListHandlue(record,message,type)
            ControllerUpdateCurrentConverseHandle(message);
        }
+
+        currentObj.addSqliteMessage(message);
     }
 
     removeConverseListRecord(Id){
