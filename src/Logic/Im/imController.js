@@ -18,6 +18,7 @@ import IMMessageToMessagementMessageDto from '../../Core/Management/Common/metho
 import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/methods/IMMessageToManagementApplyMessageDto'
 import InitConversationListStatusEnum from './dto/InitConversationListStatusEnum'
 import InitChatRecordConfig from '../../Core/Management/Chat/Common/dto/InitChatRecordConfig';
+import UpdateConversationTypeEnum from '../Common/dto/UpdateConversationTypeEnum'
 
 
 let __instance = (function () {
@@ -201,14 +202,14 @@ export default class IMController {
         }
     }
 
-    updateConverseListByChatManagement(newConverse,message,type){
+    updateConverseListByChatManagement(newConverse,message,type = UpdateConversationTypeEnum.UpdateConversationRecord){
 
         if(cache.conversationCache[newConverse.chatId]){
             let oldConverse = cache.conversationCache[newConverse.chatId];
-                if(type == 'updateName'){
+                if(type == UpdateConversationTypeEnum.ModifyGroupName){
                     oldConverse.name = newConverse.name;
                     oldConverse.lastTime = newConverse.lastTime;
-                }else if(type == 'removeRecord'){
+                }else if(type == UpdateConversationTypeEnum.RemoveConversation){
                     delete cache.conversationCache[newConverse.chatId]
                 }else{
                     oldConverse.lastTime = newConverse.lastTime;
@@ -221,7 +222,7 @@ export default class IMController {
                 updateChatRecordhandle(cache.messageCache,dropable);
             }
         }else{
-            if(type == 'removeRecord') return;
+            if(type ==UpdateConversationTypeEnum.RemoveConversation) return;
             let caches = formatOjbToneedArr(cache.conversationCache);
 
             caches.splice(0, 0, newConverse)
@@ -231,6 +232,10 @@ export default class IMController {
             updateconverslisthandle(caches);
 
         }
+    }
+
+    updateCurrentConverseByChatManagement(message){
+
     }
 
 
@@ -350,29 +355,29 @@ export default class IMController {
 
             //将取出来的message正序排列
             //let newMessageList = positiveArray(messageList);
-            let newMessageList = messageList;
+            let newMessageList = positiveArray(messageList);
 
-            maxId = messageList[0].id;
+            maxId = newMessageList[0].id;
 
 
-            let snapArr = formateDataFromChatManageCacheRecord(messageList);
+            let snapArr = formateDataFromChatManageCacheRecord(newMessageList);
             this.user.getRelationsByList(snapArr, (relationObj) => {
-                for (let i = 0, length = messageList.length; i < length; i++) {
+                for (let i = 0, length = newMessageList.length; i < length; i++) {
                     let itemMessage = new ControllerMessageDto();
-                    itemMessage.group = messageList[i].group;
-                    itemMessage.chatId = messageList[i].chatId;
-                    itemMessage.message = messageList[i].message;
-                      itemMessage.messageId = messageList[i].messageId;
-                    itemMessage.type = messageList[i].type;
-                    itemMessage.status = messageList[i].status;
-                    itemMessage.sendTime = messageList[i].sendTime;
+                    itemMessage.group = newMessageList[i].group;
+                    itemMessage.chatId = newMessageList[i].chatId;
+                    itemMessage.message = newMessageList[i].message;
+                      itemMessage.messageId = newMessageList[i].messageId;
+                    itemMessage.type = newMessageList[i].type;
+                    itemMessage.status = newMessageList[i].status;
+                    itemMessage.sendTime = newMessageList[i].sendTime;
 
 
                     if(itemMessage.type != DtoMessageTypeEnum.error && itemMessage.type != DtoMessageTypeEnum.info){
-                        if(messageList[i].sender == myAccount.accountId){
+                        if(newMessageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[messageList[i].sender];
+                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
@@ -577,7 +582,7 @@ function connectIM(){
 }
 
 function connectChat(){
-    currentObj.chat.connectChat(currentObj.updateConverseListByChatManagement)
+    currentObj.chat.connectChat(currentObj.updateConverseListByChatManagement,currentObj.updateCurrentConverseByChatManagement)
 }
 
 function controllerKickOutMessage(){
