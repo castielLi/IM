@@ -164,7 +164,7 @@ class Chat extends Component {
             onPanResponderMove: (e)=>{
                 let {msgState} = ListConst;
                 //todo:缺少无更多历史记录状态
-                if(e.nativeEvent.pageY-this.move<20 && this.state.isMore === msgState.END && !this.state.showInvertible)
+                if(e.nativeEvent.pageY-this.move>20 && this.state.isMore === msgState.END && !this.state.showInvertible)
                 {
                     //获取历史记录 回调修改页面 用到之前的setCurrentConverse方法中传过去的callback取数控逻辑也在 controller
                     this.setState({
