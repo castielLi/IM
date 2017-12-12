@@ -241,7 +241,7 @@ export default class IMController {
                 }
             }
 
-            formateManagementMessageToControllerMessage(message,true,(controllerMessage)=>{
+            formateManagementMessageToControllerMessage(message,false,(controllerMessage)=>{
                 onlyAddMessageCache(controllerMessage)
             })
         }
