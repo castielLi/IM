@@ -60,10 +60,10 @@ class ChatMessageVideo extends ContainerComponent {
                 }
 
                 let format = Remote.slice(Remote.lastIndexOf('.'));
-                let messageId = data.messageId;
+                //let messageId = data.messageId;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
 
-                imController.manualDownloadResource(messageId,Remote,filePath,function () {
+                imController.manualDownloadResource(data,Remote,filePath,function () {
                     currentObj.setState({
                         download:false,
                     });

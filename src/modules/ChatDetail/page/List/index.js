@@ -64,6 +64,7 @@ class Chat extends Component {
         this.data = [];
         this.data2 = [];
         this.chatRecord = [];
+        this.chatRecord2 = [];
 
         this.timestamp = 0;
         this.noMore = 0;
@@ -291,6 +292,7 @@ class Chat extends Component {
     }
 
     renderRow = (row,sid,rowid) => {
+        console.log('renderRow')
         let {sender,message,sendTime,type,status} = row;
         sendTime = parseInt(sendTime);
 

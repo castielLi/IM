@@ -75,7 +75,7 @@ class Gallery extends ContainerComponent {
 
     }
 
-    downOriginalImage = (Path,Url,messageId,sender)=>{
+    downOriginalImage = (Path,Url,message)=>{
         // let im = new IM();
         let currentObj = this;
         //let url = Remote.match(/([\s\S]*)#imageView2/)[1];
@@ -84,7 +84,7 @@ class Gallery extends ContainerComponent {
         let pathB = Path.slice(Path.lastIndexOf('/'));
         let path = pathA+pathB;
 
-        imController.manualDownloadResource(messageId,Url,path,function () {
+        imController.manualDownloadResource(message,Url,path,function () {
             currentObj.setState({
                 path,
                 download:false,
@@ -98,7 +98,7 @@ class Gallery extends ContainerComponent {
         })
     }
     render() {
-        let {path,url,messageId,sender} = this.props;
+        let {path,url,message} = this.props;
         return (
             <View style={styles.container}>
                 {/*<ImageViewer*/}
@@ -121,7 +121,7 @@ class Gallery extends ContainerComponent {
                            source={{uri:this.state.path}}/>
                 </ImageZoom>
                 {this.state.thumbnail ?
-                    <TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(path,url,messageId,sender)}>
+                    <TouchableOpacity style={styles.download} onPress={()=>this.downOriginalImage(path,url,message)}>
                         {this.state.download ?
                             <Text style={styles.downloadText}>{this.state.progress}</Text> :
                             <Text style={styles.downloadText}>下载原图</Text>}
