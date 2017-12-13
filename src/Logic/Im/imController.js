@@ -247,7 +247,7 @@ export default class IMController {
             }
 
             formateManagementMessageToControllerMessage(message,false,(controllerMessage)=>{
-                onlyAddMessageCache(controllerMessage)
+                addMessageCache(controllerMessage)
             })
         }
        return;
@@ -447,7 +447,7 @@ export default class IMController {
                 //cache添加
 
                 formateManagementMessageToControllerMessage(itemManagementMessage,false,(controllerMessage)=>{
-                    onlyAddMessageCache(controllerMessage)
+                    addMessageCache(controllerMessage)
                 })
             }
 
@@ -860,6 +860,18 @@ function storeChatMessageAndCache(message,groupName=""){
 
             PushNotificationToApp(managementMessageObj,groupName);
             currentObj.chat.addMessage(managementMessageObj);
+
+            if(managementMessageObj.chatId == currentChat.chatId){
+                if(managementMessageObj.type == DtoMessageTypeEnum.info || managementMessageObj.type == DtoMessageTypeEnum.error){
+                    pureFormateManagementMessageToControllerMessage(managementMessageObj,function(controllerMessage){
+                        addMessageCache(controllerMessage);
+                    })
+                }else{
+                    formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
+                        addMessageCache(controllerMessage);
+                    })
+                }
+            }
         }
     }else{
 
@@ -891,23 +903,10 @@ function storeChatMessageAndCache(message,groupName=""){
             currentObj.chat.addMessage(managementMessageObj);
         }
     }
-
-
-
-
-    //这个方法放到chat addMessage中了，保持一致
-    // if(managementMessageObj.chatId == currentChat.chatId){
-    //     //AddCache(managementMessageObj);
-    //     formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
-    //         //addOrUpdateMessageCache(controllerMessage);
-    //         onlyAddMessageCache(controllerMessage)
-    //     })
-    //
-    // }
 }
 
 
-function addOrUpdateMessageCache(itemMessage){
+function addMessageCache(itemMessage){
     //缓存有则更新，没有则push到缓存
     let exsit = false;
     for(let i=0,length = cache.messageCache.length;i<length;i++){
@@ -934,10 +933,18 @@ function onlyUpdateMessageCache(itemMessage){
     }
 }
 
-function onlyAddMessageCache(itemMessage){
-    cache.messageCache.push(itemMessage);
-    maxId = maxId+1;
-    updateChatRecordhandle(cache.messageCache,dropable);
+function pureFormateManagementMessageToControllerMessage(managementMessageObj,callback){
+    let itemMessage = new ControllerMessageDto();
+    itemMessage.group = managementMessageObj.group;
+    itemMessage.chatId = managementMessageObj.chatId;
+    itemMessage.message = managementMessageObj.message;
+    itemMessage.messageId = managementMessageObj.messageId;
+
+    itemMessage.type = managementMessageObj.type;
+    itemMessage.status = managementMessageObj.status;
+    itemMessage.sendTime = managementMessageObj.sendTime;
+
+    callback(itemMessage);
 }
 
 function formateManagementMessageToControllerMessage(managementMessageObj,isReceive,callback){
