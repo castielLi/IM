@@ -109,7 +109,7 @@ export default class Chat {
 
 
     addMessage(message = new ManagementMessageDto(),groupName = ""
-        ,needUpdate = false,type = UpdateConversationTypeEnum.UpdateConversationRecord){
+        ,needUpdate = false,type = ''){
 
        if(needUpdate){
            //构建未读消息
@@ -126,7 +126,7 @@ export default class Chat {
            ControllerUpdateConverseListHandlue(record,message,type)
        }
 
-       if(type == UpdateConversationTypeEnum.ModifyGroupName){
+       if(type !== ''){
            ControllerUpdateCurrentConverseHandle(message);
        }
 

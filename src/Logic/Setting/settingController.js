@@ -130,7 +130,7 @@ export default class settingController {
                     let sendMessage = buildInvationGroupMessage(accountId,result.data.Data,text,messageId);
 
                     let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                    currentObj.chat.addMessage(messageDto,groupObj.Nick,true);
+                    currentObj.chat.addMessage(messageDto,groupObj.Nick,true,UpdateConversationTypeEnum.UpdateConversationRecord);
 
 
                     //创建文件夹
@@ -161,7 +161,7 @@ export default class settingController {
                     let sendMessage = buildInvationGroupMessage(accountId,groupId,text,messageId);
 
                     let messageDto = IMMessageToManagementMessageDto(sendMessage);
-                    currentObj.chat.addMessage(messageDto,"",true);
+                    currentObj.chat.addMessage(messageDto,"",true,UpdateConversationTypeEnum.UpdateConversationRecord);
 
                     //添加新人到缓存和数据库
                     currentObj.user.addGroupMember(groupId,splNeedArr);
