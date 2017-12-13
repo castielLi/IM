@@ -662,8 +662,8 @@ function controllerReceiveMessage(message){
 
                 || message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER){
 
-                var senderId = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
-                let group = message.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
+                var senderId = message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?message.Data.Data.Sender:message.Data.Data.Receiver;
+                let group = message.Data.Data.Command == AppCommandEnum.MSG_BODY_APP_APPLYFRIEND ?false:true;
                 currentObj.user.forceUpdateRelation(senderId,group,function(result){
                    switch (message.Data.Data.Command){
                        case AppCommandEnum.MSG_BODY_APP_ADDGROUPMEMBER:

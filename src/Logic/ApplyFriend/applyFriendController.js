@@ -150,9 +150,10 @@ export default class ApplyFriendController {
                 let IsInBlackList =result.data.Data.IsInBlackList
                 let relationObj = {RelationId:Account,avator:HeadImageUrl,Nick:Nickname,Type:'private',OtherComment:'',Remark:'',Email,owner:'',BlackList:IsInBlackList,show:'true'}
                 currentObj.user.applyFriend(relationObj);
-            }else if(result.success && typeof result.data.Data === 'string'){
-
             }
+            // else if(result.success && typeof result.data.Data === 'string'){
+            //
+            // }
             callback(result);
         })
     }
