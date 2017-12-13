@@ -263,7 +263,7 @@ export default class IMController {
         updateHeadNameHandle = onupdateHeadNameHandle;
 
 
-        //如果cache.conversationCache中没有该会话，我们就去给他添加一条
+        //如果cache.conversationCache中没有该会话，我们就去给他添加一条假会话，标识为lastTime == 0;
         if(!cache.conversationCache[chatId]){
             let itemChat = new ControllerChatConversationDto();
             itemChat.chatId = chatId;
@@ -455,7 +455,7 @@ export default class IMController {
 
                 //修改cache.conversationCache
 
-
+                //判断该会话是否为假会话
                 if(cache.conversationCache[itemManagementMessage.chatId]['lastTime'] == 0){
                     currentObj.addOneChat(itemManagementMessage.chatId,itemManagementMessage);
                 }else{
@@ -522,6 +522,7 @@ export default class IMController {
     //清除未读数, 在会话列表处功能(标记为已读)
     clearUnReadNumber(chatId, group){
         //清空对应item未读消息
+
         this.clearUnReadMsgNumber(chatId);
     }
     //清除所有数据(清除缓存数据)
@@ -892,7 +893,9 @@ function storeChatMessageAndCache(message,groupName=""){
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
+
             if(cache.conversationCache[chatId]['lastTime'] == 0){
+                //针对打开一个新的聊天详情页面,添加一条假会话的情况
                 currentObj.addOneChat(chatId,managementMessageObj,()=>{
                     PushNotificationToApp(managementMessageObj);
                 });

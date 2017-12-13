@@ -354,7 +354,7 @@ class Chat extends Component {
                     <View style={styles.infoView}>
                         {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                         <View>
-                            {type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
+                            {type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
                             <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
                         </View>
                     </View>
