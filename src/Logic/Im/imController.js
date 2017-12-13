@@ -264,7 +264,11 @@ export default class IMController {
 
 
         //如果cache.conversationCache中没有该会话，我们就去给他添加一条
-
+        if(!cache.conversationCache[chatId]){
+            let itemChat = new ControllerChatConversationDto();
+            itemChat.lastTime = 0;
+            cache.conversationCache[chatId] = itemChat;
+        }
 
         //初始化缓存
         this.user.init(chatId,group);
@@ -353,9 +357,12 @@ export default class IMController {
     }
     //退出聊天窗口
     setOutCurrentConverse(){
+        //如果当前cache.messageCache的条数为0 那么我们就把cache.conversationCache中 当前会话的内容删除
+        if(cache.messageCache.length == 0){
+            delete cache.conversationCache[currentChat.chatId];
+        }
         currentChat = {chatId:'',group:false};
 
-        //如果当前cache.messageCache的条数为0 那么我们就把cache.conversationCache中 当前会话的内容删除
 
         cache.messageCache = [];
         maxId = 0;
@@ -883,13 +890,21 @@ function storeChatMessageAndCache(message,groupName=""){
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
-            currentObj.updateOneChat(chatId, managementMessageObj)
+            if(cache.conversationCache[chatId]['lastTime'] == 0){
+                currentObj.addOneChat(chatId,managementMessageObj,()=>{
+                    PushNotificationToApp(managementMessageObj);
+                });
+            }else{
+                currentObj.updateOneChat(chatId, managementMessageObj)
+                PushNotificationToApp(managementMessageObj);
+            }
+
 
             if(groupName != ""){
                 currentObj.updateConversationName(managementMessageObj.chatId,groupName);
             }
 
-            PushNotificationToApp(managementMessageObj);
+
             currentObj.chat.addMessage(managementMessageObj);
 
             if(managementMessageObj.chatId == currentChat.chatId){
