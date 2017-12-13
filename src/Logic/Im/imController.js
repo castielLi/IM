@@ -509,6 +509,14 @@ export default class IMController {
         this.chat.removeConverse(chatId,group);
     }
 
+
+    logout(){
+        this.clearAll();
+    }
+
+
+
+
     //清除未读数, 在会话列表处功能(标记为已读)
     clearUnReadNumber(chatId, group){
         //清空对应item未读消息
@@ -516,8 +524,13 @@ export default class IMController {
     }
     //清除所有数据(清除缓存数据)
     clearAll(){
-        cache = null;
-        myAccount = null;
+        cache = cache = {messageCache:[],conversationCache:{},allUnreadCount:0,initConversationStatus:InitConversationListStatusEnum.Uninit};;
+        myAccount = undefined;
+        currentChat = {chatId:'',group:false};
+        maxId = 0;
+        dropable = false;
+        this.user.clearCache();
+        this.apply.clearCache();
     }
 
 
@@ -1055,7 +1068,7 @@ function waitUIConversationListCacheFinish(messages = []){
     if(messages.length > 0){
         let tempMessages = [];
         for(let item in messages){
-           tempMessages.push(JSON.parse(messages[item]));
+           tempMessages.push(JSON.parse(messages[item].message));
         }
 
         offlineMessage = messages.reduce(function (prev, curr) {

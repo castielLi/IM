@@ -16,8 +16,6 @@ let currentObj = undefined;
 let cache = {}; //{{key:{}},{key:{}}
 let currentPage = false;
 
-let arr = [];//测试数据
-
 //todo:注入回调
 let updateApplyFriendHandle = undefined;
 
@@ -31,6 +29,12 @@ export default class ApplyFriendController {
         this.apply = new ApplyFriend();
         this.apiBridge = new ApiBridge();
         currentObj = this;
+    }
+
+    clearCache(){
+        cache = {};
+        currentPage = false;
+        updateApplyFriendHandle = undefined;
     }
 
     setApplyFriendRecord(callback){
