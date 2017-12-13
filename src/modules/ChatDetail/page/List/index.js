@@ -301,14 +301,14 @@ class Chat extends Component {
          //显示邀请群组人员消息
          if(type == 'info'){
             return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                        </View>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                            <Text style={[styles.informText,{fontSize:12,textAlign:'left',color:"white"}]}>{message}</Text>
-                        </View>
+                <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                    <View style={styles.timestampView}>
+                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                     </View>
+                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+                    </View>
+                </View>
             )
          }
          else{
