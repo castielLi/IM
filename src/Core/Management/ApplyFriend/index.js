@@ -71,6 +71,12 @@ export default class ApplyFriend {
         storeSqlite.storeApplyMessage(message);
     }
 
+    closeApplyDb(){
+        storeSqlite.closeApplyDb();
+    }
+
+
+
     getCurrentPage(){
         return currentPage;
     }

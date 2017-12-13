@@ -48,8 +48,8 @@ export function initApplyFriendDatabase(AccountId,callback){
     APPLYFRIENDFMDB.initIMDataBase(AccountId,callback);
 }
 
-export function closeImDb(){
-    APPLYFRIENDFMDB.closeImDb()
+export function closeApplyDb(){
+    APPLYFRIENDFMDB.closeApplyDb()
 }
 
 let APPLYFRIENDFMDB = {};
@@ -129,6 +129,16 @@ APPLYFRIENDFMDB.updateMessageStatus = function(key,status){
 
         });
     }, (err)=>{errorDB('初始化数据库',err)});
+}
+
+APPLYFRIENDFMDB.closeApplyDb = function () {
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.close();
+
+    });
 }
 
 function errorDB(type,err) {

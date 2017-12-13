@@ -158,6 +158,8 @@ export default class ApplyFriendController {
         })
     }
 
+
+
     //申请好友验证(validate)
     tempApplyFriend(userObj){
         this.user.applyFriend(userObj);

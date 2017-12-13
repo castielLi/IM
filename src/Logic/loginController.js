@@ -148,6 +148,7 @@ export default class loginController {
         this.im.closeImDb();
         this.user.closeDB();
         this.chat.closeDB();
+        this.apply.closeApplyDb();
         this.im.logout();
     }
     
