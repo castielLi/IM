@@ -566,7 +566,7 @@ export default class IMController {
 
     updateConversationName(chatId,groupName){
         if(cache.conversationCache[chatId] == undefined) return;
-        cache.conversationCache[chatId]['unreadCount'] = groupName;
+        cache.conversationCache[chatId]['name'] = groupName;
         currentObj.user.updateGroupName(chatId,groupName);
     }
 
@@ -866,7 +866,7 @@ function storeChatMessageAndCache(message,groupName=""){
                 currentObj.updateConversationName(managementMessageObj.chatId,groupName);
             }
 
-            PushNotificationToApp(managementMessageObj,groupName);
+            PushNotificationToApp(managementMessageObj);
             currentObj.chat.addMessage(managementMessageObj);
 
             if(managementMessageObj.chatId == currentChat.chatId){
