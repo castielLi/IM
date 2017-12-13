@@ -51,6 +51,11 @@ export default class User {
     }
 
 
+    clearCache(){
+        cache = {"user":{},"group":{},"groupMember":{}};
+    }
+
+
     init(chatId,group = false){
         if(group){
            this.getInformationByIdandType(chatId,true,function(){})

@@ -150,6 +150,8 @@ export default class loginController {
         this.chat.closeDB();
         this.apply.closeApplyDb();
         this.im.logout();
+
+
     }
     
     getContactList(callback,params){
