@@ -266,6 +266,7 @@ export default class IMController {
         //如果cache.conversationCache中没有该会话，我们就去给他添加一条
         if(!cache.conversationCache[chatId]){
             let itemChat = new ControllerChatConversationDto();
+            itemChat.chatId = chatId;
             itemChat.lastTime = 0;
             cache.conversationCache[chatId] = itemChat;
         }
@@ -453,12 +454,13 @@ export default class IMController {
                 this.chat.addMessage(itemManagementMessage);
 
                 //修改cache.conversationCache
-                if(cache.conversationCache[itemManagementMessage.chatId]!=undefined){
-                    this.updateOneChat(itemManagementMessage.chatId,itemManagementMessage);
-                }else{
-                    this.addOneChat(itemManagementMessage.chatId,itemManagementMessage);
-                }
 
+
+                if(cache.conversationCache[itemManagementMessage.chatId]['lastTime'] == 0){
+                    currentObj.addOneChat(itemManagementMessage.chatId,itemManagementMessage);
+                }else{
+                    currentObj.updateOneChat(itemManagementMessage.chatId, itemManagementMessage)
+                }
                 //cache添加
 
                 formateManagementMessageToControllerMessage(itemManagementMessage,false,(controllerMessage)=>{
