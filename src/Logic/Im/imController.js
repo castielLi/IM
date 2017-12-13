@@ -564,6 +564,12 @@ export default class IMController {
         currentObj.chat.updateUnReadMessageNumber(clientId,0);
     }
 
+    updateConversationName(chatId,groupName){
+        if(cache.conversationCache[chatId] == undefined) return;
+        cache.conversationCache[chatId]['unreadCount'] = groupName;
+        currentObj.user.updateGroupName(chatId,groupName);
+    }
+
     clearAllUnReadMsgNumber(){
         for(let item in cache.conversationCache){
             cache.conversationCache[item]['unReadMessageCount'] = 0;
@@ -734,9 +740,7 @@ function controllerReceiveMessage(message){
 
                            var groupName = currentObj.user.getGroupInfoById(groupId)
 
-                           currentObj.user.updateGroupName(groupId,groupName);
-
-                           storeChatMessageAndCache(message);
+                           storeChatMessageAndCache(message,groupName);
 
                            UpdateCurrentChatHeadName(message,groupName)
                        case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
@@ -834,7 +838,7 @@ function controllerReceiveMessage(message){
     }
 }
 
-function storeChatMessageAndCache(message){
+function storeChatMessageAndCache(message,groupName=""){
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
 
@@ -849,7 +853,12 @@ function storeChatMessageAndCache(message){
     if(cache.conversationCache[chatId]!=undefined){
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
             currentObj.updateOneChat(chatId, managementMessageObj)
-            PushNotificationToApp(managementMessageObj);
+
+            if(groupName != ""){
+                currentObj.updateConversationName(managementMessageObj.chatId,groupName);
+            }
+
+            PushNotificationToApp(managementMessageObj,groupName);
             currentObj.chat.addMessage(managementMessageObj);
         }
     }else{
@@ -976,6 +985,7 @@ function formateManagementMessageToControllerMessage(managementMessageObj,isRece
 
 
 function PushNotificationToApp(managementMessageObj){
+
     if(managementMessageObj.chatId != currentChat.chatId){
         if(managementMessageObj.type != DtoMessageTypeEnum.error){
             currentObj.addUnReadMsgNumber(managementMessageObj.chatId);
