@@ -97,6 +97,8 @@ FileManager.uploadResource = function(obj){
 
         }).catch(function (values) {
             console.log('上传失败的内容是',values);
+
+            currentObj.addResource(messageId)
         })
     }else{
         message.status = SendStatus.PrepareToUpload;
@@ -126,7 +128,7 @@ FileManager.downloadResource = function(message,callback){
 
     console.log('下载前=============================:  ',message,toFile)
     message.Resource[0].LocalSource = null;
-    updateMessage = (result) => {
+    let updateMessage = (result) => {
         if(type === 'image'){
             toFile = 'file://'+toFile;
             //message.Resource[0].RemoteSource = fromUrl + '#imageView2/0/w/200/h/200';
