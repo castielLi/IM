@@ -1040,7 +1040,7 @@ function waitUIConversationListCacheFinish(messages = []){
     if(messages.length > 0){
         let tempMessages = [];
         for(let item in messages){
-           tempMessages.push(JSON.parse(messages[item]));
+           tempMessages.push(JSON.parse(messages[item].message));
         }
 
         offlineMessage = messages.reduce(function (prev, curr) {
