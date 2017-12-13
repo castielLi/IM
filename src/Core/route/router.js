@@ -102,9 +102,9 @@ class Route {
     }
 
     static push(props, route) {
-        InteractionManager.runAfterInteractions(() => {
+        // InteractionManager.runAfterInteractions(() => {
             props.navigator.push(route)
-        })
+        // })
     }
 
 
@@ -125,9 +125,9 @@ class Route {
                 return;
             }
         }
-        InteractionManager.runAfterInteractions(() => {
+        // InteractionManager.runAfterInteractions(() => {
             props.navigator.jumpTo(route);
-        })
+        // })
         assignMainTabBarPage&&assignMainTabBarPage();
     }
 
@@ -187,9 +187,9 @@ class Route {
 
     static popToSpecialRoute(props,specialRoute){
 
-        InteractionManager.runAfterInteractions(() => {
+        // InteractionManager.runAfterInteractions(() => {
             props.navigator.jumpTo(specialRoute)
-        })
+        // })
     }
 
     static ToLogin() {
