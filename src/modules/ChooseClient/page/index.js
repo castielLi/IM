@@ -114,34 +114,18 @@ class ChooseClient extends ContainerComponent {
 		else{
 			title = '发起群聊'
 		}
-
+	}
+	componentDidMount(){
         ContactController.getLatestContactList(function (contact) {
-        // let arr = [];
-        // for(let i=0;i<10;i++){
-        // 	arr.push({
-        //         OtherComment : "公告:"+i,
-        //         RelationId : 'Z-'+i,
-        //         Nick : "测试"+i,
-        //         Remark : "",
-        //         BlackList : false,
-        //         avator : "",
-        //         Email : "",
-        //         localImage : "",
-        //         Type : "private",
-        //         owner : "wg003724",
-        //         show : true
-        //     })
-        // }
-			// let contacts = arr;
-			let contacts = contact;
+            let contacts = contact;
             let data = initDataFormate('private',contact);
             let relationStore = data.needArr;
             let sectionStore = data.sectionArr;
-			currentObj.setState({
+            currentObj.setState({
                 contacts,
                 sectionStore,
                 relationStore
-			})
+            })
         })
 	}
     choose=(item,hasMember)=>{
