@@ -47,16 +47,17 @@ ReceiveManager.receiveBodyMessage = function(message){
 
     if(!message.Resource || (message.Resource[0].FileType == ResourceTypeEnum.video ))
     {
-        currentObj.storeRecMessage(message)
+
         currentObj.ReceiveMessageHandle(message);
+        currentObj.storeRecMessage(message)
 
     }
     else{
 
         currentObj.addDownloadResource(message,function (message) {
-            currentObj.storeRecMessage(message)
-
             currentObj.ReceiveMessageHandle(message);
+
+            currentObj.storeRecMessage(message)
         })
     }
 

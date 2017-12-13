@@ -615,6 +615,8 @@ function controllerKickOutMessage(){
 
 function controllerMessageResult(success,message){
 
+    console.log("=========================收到消息返回到Controller层了=================================")
+
     let messageDto = IMMessageToMessagementMessageDto(message,false);
     messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
 
@@ -870,6 +872,10 @@ function storeChatMessageAndCache(message,groupName=""){
             currentObj.chat.addMessage(managementMessageObj);
 
             if(managementMessageObj.chatId == currentChat.chatId){
+
+
+                console.log("=========================开始刷新聊天详情=================================")
+
                 if(managementMessageObj.type == DtoMessageTypeEnum.info || managementMessageObj.type == DtoMessageTypeEnum.error){
                     pureFormateManagementMessageToControllerMessage(managementMessageObj,function(controllerMessage){
                         addMessageCache(controllerMessage);
