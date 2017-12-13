@@ -297,10 +297,8 @@ class Chat extends Component {
         sendTime = parseInt(sendTime);
 
         let timer = this.getTimestamp(sendTime,rowid);
-        if(sender.account == this.props.accountId){
-         //显示邀请群组人员消息
-         if(type == 'info'){
-            return(
+        if(type == 'info'){
+            return (
                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={styles.timestampView}>
                         {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
@@ -310,74 +308,58 @@ class Chat extends Component {
                     </View>
                 </View>
             )
-         }
-         else{
-             return(
-                 <View key={rowid} style={styles.itemViewRight}>
-                     <View style={styles.timestampView}>
-                         {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                     </View>
-                     <View style={styles.infoViewRight}>
-                         <View style={styles.msgStatus}>
-                             <TouchableOpacity>
-                                 {
-                                     this.messagesStatus(status)
-                                 }
-                             </TouchableOpacity>
-                         </View>
-                         <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
-                         {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
-
-                     </View>
-                 </View>
-             )
-         }
         }
-        else{
-            if(type == "info"){
-                return(
-                        <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                            <View style={styles.timestampView}>
-                                {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                            </View>
-                            <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                                <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
-                            </View>
-                        </View>
-                )
-            }
-            else if(type == 'error'){
-                return(
-                    <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                        </View>
-                        <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                            <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>消息已经发出，但被对方拒收，</Text>
-                            <TouchableOpacity onPress={()=>{this.applyFriend()}}>
-                                <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
+        else if(type == 'error'){
+            return(
+                <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
+                    <View style={styles.timestampView}>
+                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                    </View>
+                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
+                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>消息已经发出，但被对方拒收，</Text>
+                        <TouchableOpacity onPress={()=>{this.applyFriend()}}>
+                            <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            )
+        }
+        else if (sender.account == this.props.accountId){
+            return(
+                <View key={rowid} style={styles.itemViewRight}>
+                    <View style={styles.timestampView}>
+                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                    </View>
+                    <View style={styles.infoViewRight}>
+                        <View style={styles.msgStatus}>
+                            <TouchableOpacity>
+                                {
+                                    this.messagesStatus(status)
+                                }
                             </TouchableOpacity>
                         </View>
-                    </View>
-                )
-            }
-            else{
-                return(
-                    <View key={rowid} style={styles.itemView}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
-                        </View>
-                        <View style={styles.infoView}>
-                            {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
-                            <View>
-                                {type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
-                                <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
-                            </View>
-                        </View>
-                    </View>
-                )
-            }
+                        <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
+                        {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
+                    </View>
+                </View>
+            )
+        }
+        else{
+            return(
+                <View key={rowid} style={styles.itemView}>
+                    <View style={styles.timestampView}>
+                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                    </View>
+                    <View style={styles.infoView}>
+                        {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+                        <View>
+                            {type === 'chatroom' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
+                            <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
+                        </View>
+                    </View>
+                </View>
+            )
         }
     }
 
