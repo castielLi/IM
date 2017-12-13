@@ -403,6 +403,13 @@ export default class User {
         return cache["group"][groupId]["Nick"]
     }
 
+    isUserExistById(userId){
+        if(cache["user"][userId] != undefined){
+            return true;
+        }
+        return false;
+    }
+
 
     getCacheInfo(type){
         let concat = Object.values(cache[type]) //将对象的value 组成数组

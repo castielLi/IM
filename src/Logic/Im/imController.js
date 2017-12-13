@@ -705,38 +705,34 @@ function controllerReceiveMessage(message){
                        case AppCommandEnum.MSG_BODY_APP_CREATEGROUP:
                            var members = message.Data.Data.Data.split(',');
                            var group = result;
-                           //var groupId = message.Data.Data.Receiver;
-                           //currentObj.user.getInformationByIdandType(groupId,true,function (group) {
-                               members = members.map(function (current,index) {
-                                   return {Account:current}
-                               });
+                           members = members.map(function (current,index) {
+                               return {Account:current}
+                           });
 
-                               //创建群和成员表
-                               currentObj.user.createGroup(group,members);
+                           //创建群和成员表
+                           currentObj.user.createGroup(group,members);
 
-                               //构建消息
-                               let Nicks = "";
-                               for(let i = 0; i<members.length;i++){
-                                   if(i != members.length - 1){
-                                       Nicks += currentObj.user.getUserInfoById(members[i].Account) + ",";
-                                   }else{
-                                       Nicks += currentObj.user.getUserInfoById(members[i].Account);
-                                   }
+                           //构建消息
+                           var Nicks = "";
+                           for(let i = 0; i<members.length;i++){
+                               if(i != members.length - 1){
+                                   Nicks += currentObj.user.getUserInfoById(members[i].Account) + ",";
+                               }else{
+                                   Nicks += currentObj.user.getUserInfoById(members[i].Account);
                                }
+                           }
 
-                               var inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
-                               message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+                           var inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
+                           message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
 
-                               storeChatMessageAndCache(message);
-                          // });
-
+                           storeChatMessageAndCache(message);
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
                            var name = currentObj.user.getUserInfoById(message.Data.Data.Sender);
 
                            message.Data.Data.Data =  name+"修改了群昵称";
 
-                           let groupId = message.Data.Data.Receiver;
+                           var groupId = message.Data.Data.Receiver;
 
                            var groupName = currentObj.user.getGroupInfoById(groupId)
 
@@ -747,48 +743,60 @@ function controllerReceiveMessage(message){
 
                            var senderId = message.Data.Data.Receiver;
 
-                           currentObj.user.getInformationByIdandType(senderId,true,function(){
-                               var accounts = message.Data.Data.Data.split(',');
+                           var accounts = message.Data.Data.Data.split(',');
 
-                               let Nicks = "";
-                               for(let i = 0; i<accounts.length;i++){
-                                   if(i != accounts.length - 1){
-                                       Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
-                                   }else{
-                                       Nicks += currentObj.user.getUserInfoById(accounts[i]);
-                                   }
+                           //判断accounts的用户是否都在缓存中（forcuupdate方法已经把当前group所有的member都存入的缓存），若
+                           //不存在，则直接抛出消息，不进行展示
+                           let exist = true;
+                           for(let item in accounts){
+                               if(!currentObj.user.isUserExistById(accounts[item])){
+                                   exist = false;
                                }
+                           }
 
+                           //如果不存在 则直接终止
+                           if(!exist){
+                               return;
+                           }
 
-                               if(message.Data.Data.Sender == myAccount.accountId){
-
-                                   message.Data.Data.Data =  "你将"+Nicks+"移除了该群聊";
+                           var Nicks = "";
+                           for(let i = 0; i<accounts.length;i++){
+                               if(i != accounts.length - 1){
+                                   Nicks += currentObj.user.getUserInfoById(accounts[i]) + ",";
                                }else{
-                                   //默认收到被踢消息的人不是被踢人
-                                   let isKickedClient = false;
-                                   for(let i = 0; i<accounts.length;i++){
-                                       if(accounts[i] == myAccount.accountId){
-                                           isKickedClient = true;
-                                           break;
-                                       }
-                                   }
-                                   if(isKickedClient){
-                                       message.Data.Data.Data =  "你被群主踢出了该群聊";
-                                       //处理来自界面的回调方法，隐藏群设置按钮
-                                   }else{
-                                       var inviter = '';
-                                       if(message.Data.Data.Sender == myAccount.accountId){
-                                           inviter = myAccount.accountId;
-                                       }else{
-                                           inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
-                                       }
-                                       message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
+                                   Nicks += currentObj.user.getUserInfoById(accounts[i]);
+                               }
+                           }
+
+
+                           if(message.Data.Data.Sender == myAccount.accountId){
+
+                               message.Data.Data.Data =  "你将"+Nicks+"移除了该群聊";
+                           }else{
+                               //默认收到被踢消息的人不是被踢人
+                               var isKickedClient = false;
+                               for(let i = 0; i<accounts.length;i++){
+                                   if(accounts[i] == myAccount.accountId){
+                                       isKickedClient = true;
+                                       break;
                                    }
                                }
+                               if(isKickedClient){
+                                   message.Data.Data.Data =  "你被群主踢出了该群聊";
+                                   //处理来自界面的回调方法，隐藏群设置按钮
+                               }else{
+                                   var inviter = '';
+                                   if(message.Data.Data.Sender == myAccount.accountId){
+                                       inviter = myAccount.accountId;
+                                   }else{
+                                       inviter = currentObj.user.getUserInfoById(message.Data.Data.Sender);
+                                   }
+                                   message.Data.Data.Data =  Nicks + "被"+ inviter+"踢出了群聊";
+                               }
+                           }
 
-                               storeChatMessageAndCache(message);
+                           storeChatMessageAndCache(message);
 
-                           });
                            break;
                    }
                 })
@@ -803,7 +811,6 @@ function controllerReceiveMessage(message){
                         var senderId = message.Data.Data.Sender;
 
                         currentObj.user.getInformationByIdandType(senderId,false,function(contact){
-                            //currentObj.user.acceptFriendInCache(senderId);
                             contact.show = true;
                             currentObj.user.applyFriend(contact)
                         });
