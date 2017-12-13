@@ -26,6 +26,11 @@ import LoginController from '../../../Logic/loginController';
 import Route from '../../../Core/route/router';
 let {height,width} = Dimensions.get('window');
 let loginController = new LoginController();
+
+import IMController from '../../../Logic/Im/imController'
+let imController = new IMController();
+
+
 var originData = [
     {
         'key':'1',
@@ -141,6 +146,7 @@ class Me extends ContainerComponent {
     loginOut = ()=>{
         this.props.signOut();
         loginController.loginOut();
+        imController.logout();
         Route.ToLogin();
     }
 
