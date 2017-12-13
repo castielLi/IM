@@ -42,7 +42,7 @@ class ChatDetail extends ContainerComponent {
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
 
         }else if(type === 'group'){
-            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client,"onUpdataGroupNick":this.onUpdateHeadName.bind(this)}});
+            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client,"onUpdateHeadName":this.onUpdateHeadName.bind(this)}});
 
         }
     }
