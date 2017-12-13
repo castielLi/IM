@@ -82,10 +82,9 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
                }
                messageDto.sender = message.Data.Data.Sender;
            }
-
-
-
-
+       }
+       if(isReceive){
+           messageDto.status = MessageStatus.SendSuccess;
        }
 
         messageDto.messageId = message.MSGID;

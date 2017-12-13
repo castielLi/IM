@@ -840,6 +840,7 @@ function controllerReceiveMessage(message){
             }
         }
         else if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_CHAT){
+
             storeChatMessageAndCache(message);
         }
     }
