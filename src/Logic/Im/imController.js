@@ -261,6 +261,11 @@ export default class IMController {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
         updateHeadNameHandle = onupdateHeadNameHandle;
+
+
+        //如果cache.conversationCache中没有该会话，我们就去给他添加一条
+
+
         //初始化缓存
         this.user.init(chatId,group);
 
@@ -349,6 +354,9 @@ export default class IMController {
     //退出聊天窗口
     setOutCurrentConverse(){
         currentChat = {chatId:'',group:false};
+
+        //如果当前cache.messageCache的条数为0 那么我们就把cache.conversationCache中 当前会话的内容删除
+
         cache.messageCache = [];
         maxId = 0;
         dropable = false;
