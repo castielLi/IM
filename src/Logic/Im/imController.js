@@ -1014,7 +1014,7 @@ function PushNotificationToApp(managementMessageObj){
 
 function UpdateCurrentChatHeadName(message,groupName){
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
-    if(managementMessageObj.chatId != currentChat.chatId){
+    if(managementMessageObj.chatId == currentChat.chatId){
        updateHeadNameHandle(groupName)
     }
 }
