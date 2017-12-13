@@ -523,7 +523,7 @@ export default class IMController {
         maxId = 0;
         dropable = false;
         this.user.clearCache();
-        this.apply.clearCache();
+        //this.apply.clearCache();
     }
 
 

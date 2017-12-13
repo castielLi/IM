@@ -31,7 +31,7 @@ export default class ApplyFriendController {
         currentObj = this;
     }
 
-    clearCache(){
+    logout(){
         cache = {};
         currentPage = false;
         updateApplyFriendHandle = undefined;
