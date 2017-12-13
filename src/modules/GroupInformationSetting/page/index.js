@@ -251,7 +251,7 @@ class GroupInformationSetting extends ContainerComponent {
     }
     gotoGroupName = ()=>{
         let groupAvator = this.state.groupInformation.ProfilePicture;
-            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"onUpdataGroupNick":this.props.onUpdataGroupNick}});
+            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
 
     }
     render() {
