@@ -23,9 +23,11 @@ import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../Logic/loginController';
+import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
 import Route from '../../../Core/route/router';
 let {height,width} = Dimensions.get('window');
 let loginController = new LoginController();
+let applyContriller = new ApplyFriendController();
 
 import IMController from '../../../Logic/Im/imController'
 let imController = new IMController();
@@ -148,6 +150,7 @@ class Me extends ContainerComponent {
         loginController.loginOut();
         imController.logout();
         Route.ToLogin();
+        applyContriller.logout();
     }
 
     changeShowFeature=(newState)=>{
