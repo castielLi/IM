@@ -9,7 +9,8 @@ import {
     Dimensions,
     TouchableOpacity,
     Image,
-    Alert
+    Alert,
+    Platform
 } from 'react-native';
 
 import Sound from 'react-native-sound';
@@ -30,6 +31,11 @@ export default class ChatMessageSound extends Component {
     };
 
     playSound = (SoundUrl) => {
+
+        if (Platform.OS === 'ios') {
+            Sound.enable(true);
+        }
+
         const callback = (error, sound) => {
             if (error) {
                 Alert.alert('error', error.message);

@@ -32,12 +32,12 @@ export default class Audio {
 
   prepareRecordingPath(audioPath) {
     AudioRecorder.prepareRecordingAtPath(audioPath, {
-      SampleRate: 22050,
-      Channels: 1,
-      AudioQuality: "Low",
-      AudioEncoding: "aac",
-      AudioEncodingBitRate: 32000,
-        OutputFormat: 'aac_adts'
+        SampleRate: 22050,
+        Channels: 1,
+        AudioQuality: "Low",
+        AudioEncoding: "aac",
+        OutputFormat: 'aac_adts',
+        AudioEncodingBitRate: 32000
     });
   }
 
