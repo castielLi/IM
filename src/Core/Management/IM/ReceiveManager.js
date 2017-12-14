@@ -53,11 +53,9 @@ ReceiveManager.receiveBodyMessage = function(message){
 
     }
     else{
-
+        currentObj.storeRecMessage(message)
         currentObj.addDownloadResource(message,function (message) {
             currentObj.ReceiveMessageHandle(message);
-
-            currentObj.storeRecMessage(message)
         })
     }
 

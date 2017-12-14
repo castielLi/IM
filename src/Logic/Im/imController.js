@@ -646,8 +646,6 @@ function controllerKickOutMessage(){
 
 function controllerMessageResult(success,message){
 
-    console.log("=========================收到消息返回到Controller层了=================================")
-
     let messageDto = IMMessageToMessagementMessageDto(message,false);
     messageDto.status = success?MessageStatus.SendSuccess:MessageStatus.SendFailed;
 
@@ -663,6 +661,8 @@ function controllerMessageResult(success,message){
 
 //message 消息体 协议
 function controllerReceiveMessage(message){
+
+    console.log("=========================收到消息返回到Controller层了=================================" + message.MSGID)
 
     //1 根据消息类型进行消息扩展及数据库和缓存扩展
     if(message.Command == MessageCommandEnum.MSG_ERROR){
@@ -888,18 +888,38 @@ function controllerReceiveMessage(message){
 }
 
 function storeChatMessageAndCache(message,groupName=""){
+
     //2 把message协议 转换成chatmanager的dto 存放到 chatmanager 的db中
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
 
     let chatId;
+
     if(!managementMessageObj.group){
         chatId = managementMessageObj.sender;
     }else{
         chatId = managementMessageObj.chatId;
     }
 
+
     //修改或增加会话缓存
     if(cache.conversationCache[chatId]!=undefined){
+
+        //判断是否需要刷新会话详情界面
+        if(managementMessageObj.chatId == currentChat.chatId){
+
+
+            if(managementMessageObj.type == DtoMessageTypeEnum.info || managementMessageObj.type == DtoMessageTypeEnum.error){
+                pureFormateManagementMessageToControllerMessage(managementMessageObj,function(controllerMessage){
+                    addMessageCache(controllerMessage);
+                })
+            }else{
+                formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
+                    addMessageCache(controllerMessage);
+                })
+            }
+        }
+
+        //判断是否需要刷新会话列表界面
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
 
             if(cache.conversationCache[chatId]['lastTime'] == 0){
@@ -909,6 +929,7 @@ function storeChatMessageAndCache(message,groupName=""){
                 });
             }else{
                 currentObj.updateOneChat(chatId, managementMessageObj)
+
                 PushNotificationToApp(managementMessageObj);
             }
 
@@ -917,26 +938,10 @@ function storeChatMessageAndCache(message,groupName=""){
                 currentObj.updateConversationName(managementMessageObj.chatId,groupName);
             }
 
-
             currentObj.chat.addMessage(managementMessageObj);
-
-            if(managementMessageObj.chatId == currentChat.chatId){
-
-
-                console.log("=========================开始刷新聊天详情=================================")
-
-                if(managementMessageObj.type == DtoMessageTypeEnum.info || managementMessageObj.type == DtoMessageTypeEnum.error){
-                    pureFormateManagementMessageToControllerMessage(managementMessageObj,function(controllerMessage){
-                        addMessageCache(controllerMessage);
-                    })
-                }else{
-                    formateManagementMessageToControllerMessage(managementMessageObj,true,(controllerMessage)=>{
-                        addMessageCache(controllerMessage);
-                    })
-                }
-            }
         }
     }else{
+
 
         if(cache.initConversationStatus == InitConversationListStatusEnum.Uninit) {
 
