@@ -761,17 +761,25 @@ function controllerReceiveMessage(message){
                            storeChatMessageAndCache(message);
                            break;
                        case AppCommandEnum.MSG_BODY_APP_MODIFYGROUPINFO:
+
+
+
                            var name = currentObj.user.getUserInfoById(message.Data.Data.Sender);
 
                            message.Data.Data.Data =  name+"修改了群昵称";
 
                            var groupId = message.Data.Data.Receiver;
 
+
+
                            var groupName = currentObj.user.getGroupInfoById(groupId)
+
+                           //更新数据库与usermanager缓存
+                           currentObj.user.updateGroupName(groupId,groupName)
 
                            storeChatMessageAndCache(message,groupName);
 
-                           UpdateCurrentChatHeadName(message,groupName)
+                           UpdateCurrentChatHeadName(message,groupName);
                        case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
 
                            var senderId = message.Data.Data.Receiver;
