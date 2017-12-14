@@ -67,9 +67,6 @@ export default class ApplyFriendController {
                 });
                 currentObj.user.getRelationsByList(sendArray, (userObj) => {
 
-
-
-
                     for(let i=0; i<record.length;i++){
                         let applyFriendObj = new applyFriendDto();
                         applyFriendObj.time = record[i].time;
@@ -78,9 +75,11 @@ export default class ApplyFriendController {
                         applyFriendObj.send = record[i].sender;
                         applyFriendObj.status = record[i].status;
 
-                        applyFriendObj.avator = userObj[record[i].sender].avator;
-                        applyFriendObj.nick = userObj[record[i].sender].Nick;
-                        applyFriendObj.localImage = userObj[record[i].sender].localImage;
+                        let userInfo = userObj[record[i].sender];
+                        if(!userInfo) continue;
+                        applyFriendObj.avator = userInfo.avator;
+                        applyFriendObj.nick = userInfo.Nick;
+                        applyFriendObj.localImage = userInfo.localImage;
 
                         cache[applyFriendObj.send] = applyFriendObj;
                     }
