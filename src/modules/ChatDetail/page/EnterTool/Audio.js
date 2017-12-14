@@ -36,7 +36,8 @@ export default class Audio {
       Channels: 1,
       AudioQuality: "Low",
       AudioEncoding: "aac",
-      AudioEncodingBitRate: 32000
+      AudioEncodingBitRate: 32000,
+        OutputFormat: 'aac_adts'
     });
   }
 
