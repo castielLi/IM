@@ -178,9 +178,11 @@ export default class IMController {
 
                         cache.allUnreadCount+=itemChat.unreadCount;
 
-                        itemChat.name = relationObj[itemChat.chatId].Nick;
-                        itemChat.HeadImageUrl = relationObj[itemChat.chatId].localImage!=""?relationObj[itemChat.chatId].localImage:
-                            relationObj[itemChat.chatId].avator;
+                        let converseInfo = relationObj[itemChat.chatId];
+                        if(!converseInfo) continue;
+                        itemChat.name = converseInfo.Nick;
+                        itemChat.HeadImageUrl = converseInfo.localImage!=""?converseInfo.localImage:
+                            converseInfo.avator;
                         needArr.push(itemChat);
                     }
 
@@ -341,7 +343,9 @@ export default class IMController {
                         if(newMessageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
+                            let senderInfo = relationObj[newMessageList[i].sender];
+                            if(!senderInfo) continue;
+                            let {RelationId, Nick, avator, localImage} = senderInfo;
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
@@ -410,7 +414,9 @@ export default class IMController {
                         if(newMessageList[i].sender == myAccount.accountId){
                             itemMessage.sender = {account: myAccount.accountId, name: myAccount.Nick, HeadImageUrl :myAccount.avator};
                         }else{
-                            let {RelationId, Nick, avator, localImage} = relationObj[newMessageList[i].sender];
+                            let senderInfo = relationObj[newMessageList[i].sender];
+                            if(!senderInfo) continue;
+                            let {RelationId, Nick, avator, localImage} = senderInfo;
                             let HeadImageUrl = localImage != '' ? localImage : avator;
                             itemMessage.sender = {account: RelationId, name: Nick, HeadImageUrl};
                         }
