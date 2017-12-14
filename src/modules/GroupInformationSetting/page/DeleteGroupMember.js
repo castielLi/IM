@@ -147,7 +147,8 @@ class DeleteGroupMember extends ContainerComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":ID}
+                    params:{"groupId":ID,onUpdateHeadName:currentObj.props.UpdateHeadName},
+
                 },index)
             }
             else{

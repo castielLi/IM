@@ -194,10 +194,10 @@ class GroupInformationSetting extends ContainerComponent {
         let groupId = this.props.groupId;
         let groupNick = this.state.groupInformation.Name;
         let groupAvator = this.state.groupInformation.ProfilePicture;
-        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,groupNick,groupAvator}})
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,groupNick,groupAvator,"UpdateHeadName":this.props.onUpdateHeadName}})
     }
     goToDeleteClient = ()=>{
-        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{ID:this.state.groupInformation.ID,realMemberList:this.state.realMemberList}})
+        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{ID:this.state.groupInformation.ID,realMemberList:this.state.realMemberList,"UpdateHeadName":this.props.onUpdateHeadName}})
     }
     _renderItem = (item) => {
         //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
@@ -251,7 +251,14 @@ class GroupInformationSetting extends ContainerComponent {
     }
     gotoGroupName = ()=>{
         let groupAvator = this.state.groupInformation.ProfilePicture;
+
+
+
+
             this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
+
+
+
 
     }
     render() {

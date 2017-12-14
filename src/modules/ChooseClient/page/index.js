@@ -289,7 +289,8 @@ class ChooseClient extends ContainerComponent {
                         currentObj.route.replaceAtIndex(currentObj.props,{
                             key:'GroupInformationSetting',
                             routeId: 'GroupInformationSetting',
-                            params:{"groupId":this.props.groupId}
+                            params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+
                         },index)
                     }else{
                         alert(result.errorMessage);
