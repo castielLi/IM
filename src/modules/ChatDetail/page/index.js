@@ -78,7 +78,7 @@ class ChatDetail extends ContainerComponent {
 					    this.route.toMain(this.props);
 					    // this.props.changeChatDetailPageStatus(false,'','');
 
-                        imController.setOutCurrentConverse()
+                        //imController.setOutCurrentConverse()
 
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
@@ -94,7 +94,12 @@ class ChatDetail extends ContainerComponent {
 
 		);
 	}
+
+    componentWillUnmount(){
+        imController.setOutCurrentConverse()
+	}
 }
+
 
 const styles = StyleSheet.create({
 	container: {

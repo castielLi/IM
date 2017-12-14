@@ -37,6 +37,10 @@ export default class ApplyFriendController {
         updateApplyFriendHandle = undefined;
     }
 
+    outApplyFriendPage(){
+        currentPage = false;
+    }
+
     setApplyFriendRecord(callback){
         currentPage = true;
         updateApplyFriendHandle = callback;

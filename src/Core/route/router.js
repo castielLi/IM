@@ -126,7 +126,8 @@ class Route {
             }
         }
         // InteractionManager.runAfterInteractions(() => {
-            props.navigator.jumpTo(route);
+            //props.navigator.jumpTo(route);
+            props.navigator.popToRoute(route)
         // })
         assignMainTabBarPage&&assignMainTabBarPage();
     }
