@@ -203,7 +203,6 @@ CHATFMDB.clearAllDatabaseData = function(){
 }
 
 
-//todo：想办法进行批量操作
 CHATFMDB.InsertMessageWithCondition = function(message = new ManagementMessageDto(),chatId,callback){
 
     let checkChatExist = sqls.ExcuteIMSql.QueryChatIsExist;
