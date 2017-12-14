@@ -54,7 +54,7 @@ class ChatMessageVideo extends ContainerComponent {
                 let Receiver = data.chatId;
                 let otherID ="";
                 if(chatType == "group"){
-                    otherID = Sender;
+                    otherID = Receiver;
                 }else{
                     otherID = Receiver == ME ? Sender : Receiver;
                 }
