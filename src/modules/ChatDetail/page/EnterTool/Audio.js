@@ -37,7 +37,7 @@ export default class Audio {
       AudioQuality: "Low",
       AudioEncoding: "aac",
       AudioEncodingBitRate: 32000,
-        OutputFormat: 'mpeg_4'
+        OutputFormat: 'aac_adts'
     });
   }
 
