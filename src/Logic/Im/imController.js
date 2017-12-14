@@ -599,6 +599,8 @@ export default class IMController {
         if(cache.conversationCache[chatId] == undefined) return;
         cache.conversationCache[chatId]['name'] = groupName;
         currentObj.user.updateGroupName(chatId,groupName);
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle(tempArr);
     }
 
     clearAllUnReadMsgNumber(){
@@ -774,8 +776,6 @@ function controllerReceiveMessage(message){
 
                            var groupName = currentObj.user.getGroupInfoById(groupId)
 
-                           //更新数据库与usermanager缓存
-                           currentObj.user.updateGroupName(groupId,groupName)
 
                            storeChatMessageAndCache(message,groupName);
 
@@ -925,18 +925,25 @@ function storeChatMessageAndCache(message,groupName=""){
             if(cache.conversationCache[chatId]['lastTime'] == 0){
                 //针对打开一个新的聊天详情页面,添加一条假会话的情况
                 currentObj.addOneChat(chatId,managementMessageObj,()=>{
+                    if(groupName != ""){
+                        currentObj.updateConversationName(managementMessageObj.chatId,groupName);
+                    }
                     PushNotificationToApp(managementMessageObj);
+
                 });
             }else{
                 currentObj.updateOneChat(chatId, managementMessageObj)
+                if(groupName != ""){
+                    currentObj.updateConversationName(managementMessageObj.chatId,groupName);
+                }
 
                 PushNotificationToApp(managementMessageObj);
+
+
             }
 
 
-            if(groupName != ""){
-                currentObj.updateConversationName(managementMessageObj.chatId,groupName);
-            }
+
 
             currentObj.chat.addMessage(managementMessageObj);
         }
