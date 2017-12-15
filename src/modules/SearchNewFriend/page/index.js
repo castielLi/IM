@@ -43,7 +43,7 @@ class SearchNewFriend extends ContainerComponent {
 
     searchUser = (keyword)=>{
         if(keyword == this.props.loginStore.accountId||keyword == this.props.loginStore.phone){
-            currentObj.alert("不能自己加自己","错误");
+            currentObj.alert("添加好友不允许添加自己","错误");
             return;
         }
 
