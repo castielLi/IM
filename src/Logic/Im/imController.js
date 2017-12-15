@@ -559,6 +559,7 @@ export default class IMController {
     }
     //修改一个会话 //message是完整的managementMessageDto
     updateOneChat(chatId,message){
+        if(cache.conversationCache[chatId] == undefined) return ;
         let recentObj = cache.conversationCache[chatId];
         recentObj.lastSender = message.sender;
         recentObj.lastMessage = getContentOfControllerMessageDto(message);
