@@ -158,7 +158,6 @@ export default class IMController {
 
     //获取会话列表
     updateConverseList() {
-
         if(cache.initConversationStatus == InitConversationListStatusEnum.Uninit) {
             currentObj.setCacheInitConversationListStatus(InitConversationListStatusEnum.Executing)
 
@@ -204,6 +203,10 @@ export default class IMController {
                     })
                 })
             })
+        }
+        else if(cache.initConversationStatus == InitConversationListStatusEnum.Finish){
+            let tempArr = formatOjbToneedArr(cache.conversationCache);
+            updateconverslisthandle && updateconverslisthandle(tempArr);
         }
     }
 
