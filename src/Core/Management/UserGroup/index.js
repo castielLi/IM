@@ -251,17 +251,25 @@ export default class User {
 
     //从缓存判断指定clientId是否是黑名单
     getIsBlackListFromCache(clientId){
-        return cache.user[clientId].BlackList;
+        if(cache.user[clientId] != undefined) {
+            return cache.user[clientId].BlackList;
+        }
+        return false;
     }
 
     getGroupIsInContactFromCache(groupId){
-        let show = cache.group[groupId].show;
-        if(show == true || show == 'true'){
-            show = true;
-        }else {
-            show = false;
+
+        if(cache.group[groupId] != undefined){
+            let show = cache.group[groupId].show;
+            if(show == true || show == 'true'){
+                show = true;
+            }else {
+                show = false;
+            }
+            return show;
+        }else{
+            return false;
         }
-        return show;
     }
 
     getHttpGroupInfo(Id,type,callback,Relation = undefined){
@@ -402,11 +410,17 @@ export default class User {
   
 
     getUserInfoById(accountId){
-        return cache["user"][accountId]["Nick"]
+        if(cache["user"][accountId] != undefined) {
+            return cache["user"][accountId]["Nick"]
+        }
+        return "";
     }
 
     getGroupInfoById(groupId){
-        return cache["group"][groupId]["Nick"]
+        if(cache["group"][groupId] != undefined) {
+            return cache["group"][groupId]["Nick"]
+        }
+        return "";
     }
 
     isUserExistById(userId){
@@ -422,11 +436,6 @@ export default class User {
         return concat;
     }
 
-
-    acceptFriendInCache(userId){
-        cache["user"][userId].show = true;
-        ControllerUpdateContactHandle(getCacheInfo('user'))
-    }
 
 
 
