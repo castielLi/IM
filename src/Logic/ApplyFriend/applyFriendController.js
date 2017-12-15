@@ -88,12 +88,12 @@ export default class ApplyFriendController {
                         cache[applyFriendObj.send] = applyFriendObj;
                     }
                     let Record = Object.values(cache);
-                    updateApplyFriendHandle(Record);
+                    updateApplyFriendHandle && updateApplyFriendHandle(Record);
                 });
             })
         }else{
             let Record = Object.values(cache);
-            updateApplyFriendHandle(Record);
+            updateApplyFriendHandle && updateApplyFriendHandle(Record);
         }
 
 
@@ -141,7 +141,7 @@ export default class ApplyFriendController {
                 currentObj.apply.UpdateApplyMessageStatus(params.key,ApplyFriendEnum.ADDED);
 
                 let Record = Object.values(cache);
-                updateApplyFriendHandle(Record);
+                updateApplyFriendHandle && updateApplyFriendHandle(Record);
                 //todo: 数据库改变数据  通知contact页面刷新
 
             }
@@ -202,7 +202,7 @@ function managementApplyFriendHandle(message,user){
     applyFriendObj.localImage = user.avator;
     cache[applyFriendObj.send] = applyFriendObj;
     let Record = Object.values(cache);
-    updateApplyFriendHandle(Record);
+    updateApplyFriendHandle && updateApplyFriendHandle(Record);
 
 
 }

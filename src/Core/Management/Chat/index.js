@@ -123,11 +123,11 @@ export default class Chat {
            record.name = groupName;
            record.HeadImageUrl = "";
            record.noSound = false;
-           ControllerUpdateConverseListHandlue(record,message,type)
+           ControllerUpdateConverseListHandlue && ControllerUpdateConverseListHandlue(record,message,type)
        }
 
        if(type !== ''){
-           ControllerUpdateCurrentConverseHandle(message);
+           ControllerUpdateCurrentConverseHandle && ControllerUpdateCurrentConverseHandle(message);
        }
 
         currentObj.addSqliteMessage(message);

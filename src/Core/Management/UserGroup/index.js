@@ -637,7 +637,7 @@ export default class User {
         cache["user"][user.RelationId] = user;
 
         let contacts = filterShowToArr(cache["user"]);
-        ControllerUpdateContactHandle(contacts);
+        ControllerUpdateContactHandle && ControllerUpdateContactHandle(contacts);
     }
     //接受好友申请
     acceptFriend(userObj){
@@ -647,7 +647,7 @@ export default class User {
         cache["user"][user.RelationId] = user;
 
         let contacts = filterShowToArr(cache["user"]);
-        ControllerUpdateContactHandle(contacts);
+        ControllerUpdateContactHandle && ControllerUpdateContactHandle(contacts);
     }
     //todo:好友详情页面的信息更新方法没写
     //创建群

@@ -42,7 +42,7 @@ export default class contactController {
         connectManagement();
 
         this.user.getUserRelationsOfShow((relations)=>{
-            updateContact(relations);
+            updateContact && updateContact(relations);
         })
     }
 
@@ -58,7 +58,7 @@ export default class contactController {
                 let userCache= currentObj.user.removeFriend(userId);
                 //重新渲染通讯录
                 let tempArr = filterShowToArr(userCache)
-                updateContact(tempArr);
+                updateContact && updateContact(tempArr);
             }
             callback(results);
         })
@@ -93,14 +93,14 @@ export default class contactController {
             let userCache = this.user.updateUserInfo(propsRelation)
             //重新渲染通讯录
             let tempArr = filterShowToArr(userCache)
-            updateContact(tempArr);
+            updateContact && updateContact(tempArr);
         }
     }
 
     getGroupContactList(callback){
         updateGroupContact = callback;
         this.user.getGroupRelationsOfShow((relations)=>{
-            updateGroupContact(relations);
+            updateGroupContact && updateGroupContact(relations);
         })
     }
 

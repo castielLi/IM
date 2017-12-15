@@ -198,7 +198,7 @@ export default class IMController {
                         waitUIConversationListCacheFinish(offlineMessages);
 
                         AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
-                        updateconverslisthandle(needArr);
+                        updateconverslisthandle && updateconverslisthandle(needArr);
 
                         currentObj.chat.deleteAllOfflineMessage();
                     })
@@ -233,7 +233,7 @@ export default class IMController {
             cache.conversationCache = formatArrToConversationObj(cachesConversationList)
         }
 
-        updateconverslisthandle(cachesConversationList);
+        updateconverslisthandle && updateconverslisthandle(cachesConversationList);
     }
 
     //更新当前会话注入方法
@@ -284,13 +284,13 @@ export default class IMController {
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
             //渲染会话列表
             let tempArr = formatOjbToneedArr(cache.conversationCache);
-            updateconverslisthandle(tempArr);
+            updateconverslisthandle && updateconverslisthandle(tempArr);
         }
         //初始化前10条聊天记录
         this.chat.getChatList(chatId, group, maxId, (messageList) => {
             //messageList.reverse();
             if(messageList.length == 0){
-                updateChatRecordhandle([],dropable);
+                updateChatRecordhandle && updateChatRecordhandle([],dropable);
                 return;
             }
 
@@ -358,7 +358,7 @@ export default class IMController {
 
                 }
                 //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache,dropable);
+                updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
             })
         })
     }
@@ -430,7 +430,7 @@ export default class IMController {
                 }
 
                 //渲染聊天记录
-                updateChatRecordhandle(cache.messageCache,dropable);
+                updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
 
             })
         })
@@ -497,7 +497,7 @@ export default class IMController {
         //cache.messageCache删除
         deleteItemFromCacheByMessageId(cache.messageCache,messageId);
         //渲染聊天记录
-        updateChatRecordhandle(cache.messageCache,dropable);
+        updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
 
 
 
@@ -515,7 +515,7 @@ export default class IMController {
         AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         //渲染会话列表
         let tempArr = formatOjbToneedArr(cache.conversationCache);
-        updateconverslisthandle(tempArr);
+        updateconverslisthandle && updateconverslisthandle(tempArr);
         this.chat.removeConverse(chatId,group);
     }
 
@@ -565,7 +565,7 @@ export default class IMController {
         recentObj.lastMessage = getContentOfControllerMessageDto(message);
         recentObj.lastTime = message.sendTime;
         let tempArr = formatOjbToneedArr(cache.conversationCache);
-        updateconverslisthandle(tempArr);
+        updateconverslisthandle && updateconverslisthandle(tempArr);
     }
 
 
@@ -585,7 +585,7 @@ export default class IMController {
             itemChat.HeadImageUrl = localImage != '' ? localImage : avator;
             cache.conversationCache[chatId] = itemChat;
             let tempArr = formatOjbToneedArr(cache.conversationCache);
-            updateconverslisthandle(tempArr);
+            updateconverslisthandle && updateconverslisthandle(tempArr);
             callback&&callback();
         })
     }
@@ -609,7 +609,7 @@ export default class IMController {
         cache.conversationCache[chatId]['name'] = groupName;
         currentObj.user.updateGroupName(chatId,groupName);
         let tempArr = formatOjbToneedArr(cache.conversationCache);
-        updateconverslisthandle(tempArr);
+        updateconverslisthandle && updateconverslisthandle(tempArr);
     }
 
     clearAllUnReadMsgNumber(){
@@ -633,7 +633,7 @@ export default class IMController {
                     cache.messageCache[i].message.localSource = path;
                 }
             }
-            updateChatRecordhandle(cache.messageCache,dropable);
+            updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
 
             callback();
         },onprogress)
@@ -681,7 +681,7 @@ function controllerReceiveMessage(message){
         switch (message.Data.ErrorCode){
             case CommandErrorCodeEnum.NotBelongToGroup:
                 message.Description = "您已经被管理员踢了群聊";
-                updateChatDisplaySetting(message);
+                UpdateCurrentChatDisplaySetting(message,false);
                 break;
             case CommandErrorCodeEnum.AlreadyFriend:
                 message.Description = "你们已经是好友了";
@@ -1029,14 +1029,14 @@ function addMessageCache(itemMessage){
         cache.messageCache.push(itemMessage);
         maxId = maxId+1;
     }
-    updateChatRecordhandle(cache.messageCache,dropable);
+    updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
 }
 
 function onlyUpdateMessageCache(itemMessage){
     for(let i=0,length = cache.messageCache.length;i<length;i++){
         if(cache.messageCache[i].messageId == itemMessage.messageId){
             cache.messageCache[i] = itemMessage;
-            updateChatRecordhandle(cache.messageCache,dropable);
+            updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
             break;
         }
     }
@@ -1108,7 +1108,7 @@ function PushNotificationToApp(managementMessageObj){
             AppReceiveMessageHandle(cache.allUnreadCount,TabTypeEnum.RecentList)
         }
         let tempArr = formatOjbToneedArr(cache.conversationCache);
-        updateconverslisthandle(tempArr);
+        updateconverslisthandle && updateconverslisthandle(tempArr);
 
     }
 }
@@ -1116,14 +1116,14 @@ function PushNotificationToApp(managementMessageObj){
 function UpdateCurrentChatDisplaySetting(message,value){
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
     if(managementMessageObj.chatId == currentChat.chatId){
-        updateChatDisplaySetting(value)
+        updateChatDisplaySetting && updateChatDisplaySetting(value)
     }
 }
 
 function UpdateCurrentChatHeadName(message,groupName){
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
     if(managementMessageObj.chatId == currentChat.chatId){
-       updateHeadNameHandle(groupName)
+        updateHeadNameHandle && updateHeadNameHandle(groupName)
     }
 }
 

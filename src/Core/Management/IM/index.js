@@ -390,7 +390,7 @@ export default class IM {
             case MessageCommandEnum.MSG_KICKOUT:
                 console.log("设备被踢出消息")
                 currentObj.socket.logout();
-                ControllerKickOutHandle();
+                ControllerKickOutHandle && ControllerKickOutHandle();
                 break;
             case MessageCommandEnum.MSG_SEND_ACK:
                 currentObj.ackBackMessageHandle(message.Data);
@@ -492,11 +492,11 @@ export default class IM {
 
     //上层注入的MessageHandler
     ReceiveMessageHandle(message){
-        ControllerReceiveMessageHandle(message);
+        ControllerReceiveMessageHandle && ControllerReceiveMessageHandle(message);
     }
 
     MessageResultHandle(success,message){
-        ControllerMessageResultHandle(success,message)
+        ControllerMessageResultHandle && ControllerMessageResultHandle(success,message)
     }
 
 
