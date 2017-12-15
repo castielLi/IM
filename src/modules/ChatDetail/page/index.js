@@ -65,9 +65,9 @@ class ChatDetail extends ContainerComponent {
         })
     }
 
-    onUpdateDisplaySetting = (bool)=>{
+    onUpdateDisplaySetting = ()=>{
         this.setState({
-            settingButtonDisplay:bool
+            settingButtonDisplay:true
         })
 	}
 
@@ -95,7 +95,7 @@ class ChatDetail extends ContainerComponent {
                         //imController.setOutCurrentConverse()
 
 					}}}
-					right={{func:()=>{this.goToChatSeeting()},text:'设置',disabled:this.state.settingButtonDisplay}}
+					right={{func:()=>{this.goToChatSeeting()},text:this.state.settingButtonDisplay?'':'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
