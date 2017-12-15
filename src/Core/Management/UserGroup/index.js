@@ -98,6 +98,7 @@ export default class User {
                 for(let item in users){
                     let user = users[item];
                     user.show = stringToBoolean(user.show)
+                    user.BlackList = stringToBoolean(user.BlackList)
                     cache['user'][user.RelationId] = user;
 
                     let relationId= users[item].RelationId;
@@ -108,6 +109,7 @@ export default class User {
 
                     let group = groups[item];
                     group.show = stringToBoolean(group.show)
+                    group.BlackList = stringToBoolean(group.BlackList)
                     cache['group'][group.RelationId] = group;
 
                     let relationId= groups[item].RelationId;
