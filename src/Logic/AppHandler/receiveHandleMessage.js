@@ -6,6 +6,7 @@ import Store from '../../store/index'
 import * as ActionForLoginStore from '../../modules/Login/reducer/action'
 import {changeUnReadMessageNumber,changeUnDealRequestNumber,changeUnReadZoomMessageNumber,changeUnSettingNumber} from '../../../src/modules/MainTabbar/reducer/action';
 import TabTypeEnum from '../Im/dto/TabTypeEnum'
+import Route from '../../Core/route/router'
 import {Alert} from 'react-native'
 let store = Store;
 
@@ -33,9 +34,11 @@ export function handleKickOutMessage(){
         [
             {text: '确定', onPress: () => {
                 store.dispatch(ActionForLoginStore.signOut());
+                Route.ToLogin();
             }},
             {text: '不是本人操作',style:{color:"red"}, onPress: () => {
                 store.dispatch(ActionForLoginStore.signOut());
+                Route.ToLogin();
             }},
         ]);
 }
