@@ -54,7 +54,12 @@ class Root extends DisplayComponent {
         if (route.sceneConfig) {
              return route.sceneConfig;
          }
-        return Navigator.SceneConfigs.FloatFromRight;
+        //return Navigator.SceneConfigs.FloatFromRight;
+        return ({
+            ...Navigator.SceneConfigs.FloatFromRight,
+            //禁止手势
+            gestures: null
+        });
     }
     
     render() {
