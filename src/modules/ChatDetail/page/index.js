@@ -22,15 +22,23 @@ import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../Logic/Im/imController'
-
+import ContactController from '../../../Logic/Contact/contactController'
 
 let imController = new IMController();
+let contactController = new ContactController();
 class ChatDetail extends ContainerComponent {
 	constructor(props) {
 			super(props);
+			let BlackList;
+			if(props.type == 'group'){
+                BlackList = contactController.getIfBlackInGroupById(props.client);
+			}else{
+                BlackList = false;
+			}
 			this.state = {
                 isDisabled:true,
                 name:props.Nick,
+				settingButtonDisplay:BlackList
 			};
         currentObj = this;
         this.isDisabled = false
@@ -57,6 +65,12 @@ class ChatDetail extends ContainerComponent {
         })
     }
 
+    onUpdateDisplaySetting = (bool)=>{
+        this.setState({
+            settingButtonDisplay:bool
+        })
+	}
+
 	componentWillReceiveProps(newProps){
         let {isRecordPage,isExpressionPage,isPlusPage,listScrollToEnd} = newProps.thouchBarStore;
         if(isRecordPage||(!isExpressionPage&&!isPlusPage&&!listScrollToEnd)){
@@ -81,11 +95,11 @@ class ChatDetail extends ContainerComponent {
                         //imController.setOutCurrentConverse()
 
 					}}}
-					right={{func:()=>{this.goToChatSeeting()},text:'设置'}}
+					right={{func:()=>{this.goToChatSeeting()},text:'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
-						<Chat ref={e => this.chat = e} client={this.props.client} updateHeadName = {this.onUpdateHeadName}  type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>
+						<Chat ref={e => this.chat = e} client={this.props.client} updateHeadName = {this.onUpdateHeadName} updateDisplaySetting={this.onUpdateDisplaySetting} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>
 					</View>
 				</TouchableWithoutFeedback>
 				{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}

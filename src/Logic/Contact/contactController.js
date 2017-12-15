@@ -103,6 +103,10 @@ export default class contactController {
             updateGroupContact(relations);
         })
     }
+
+    getIfBlackInGroupById(groupId){
+        return this.user.getIfBlackInGroupById(groupId);
+    }
 }
 
 function filterShowToArr(obj){

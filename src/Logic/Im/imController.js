@@ -714,6 +714,21 @@ function controllerReceiveMessage(message){
 
                            var groupId = message.Data.Data.Receiver;
                            var members = message.Data.Data.Data.split(',');
+
+
+
+                           var isKickedClient = false;
+                           for(let i = 0; i<members.length;i++){
+                               if(members[i] == myAccount.accountId){
+                                   isKickedClient = true;
+                                   break;
+                               }
+                           }
+                           if(isKickedClient){
+                               currentObj.user.setGroupBlackList(false,groupId);
+                           }
+
+
                            var inviter = members.splice(-1,1)[0];
                            currentObj.user.addGroupMember(groupId,members)
 
@@ -728,6 +743,8 @@ function controllerReceiveMessage(message){
                            inviter = currentObj.user.getUserInfoById(inviter);
 
                            message.Data.Data.Data = inviter + "邀请" + Nicks + "加入群聊";
+
+
 
                            storeChatMessageAndCache(message);
                            break;

@@ -104,7 +104,7 @@ class Chat extends Component {
         }else{
             group = true;
         }
-        imController.setCurrentConverse(client,group,this.onUpdataChatRecord,this.props.updateHeadName);
+        imController.setCurrentConverse(client,group,this.onUpdataChatRecord,this.props.updateHeadName,this.props.updateDisplaySetting);
 
         if(!this.chatRecord.length){
             //this.props.addClient(client);

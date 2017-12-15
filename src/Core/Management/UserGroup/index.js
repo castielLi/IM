@@ -409,6 +409,11 @@ export default class User {
         return cache["group"][groupId]["Nick"]
     }
 
+    getIfBlackInGroupById(groupId){
+        return cache["group"][groupId]["BlackList"]
+    }
+
+
     isUserExistById(userId){
         if(cache["user"][userId] != undefined){
             return true;
