@@ -60,6 +60,10 @@ export function getRelationsByIds(Ids,callback){
   GROUPFMDB.getRelationsByRelationIds(Ids,callback);
 }
 
+export function setGroupBlackList(value,groupId){
+   GROUPFMDB.setGroupBlackListByGroupId(value,groupId)
+}
+
 //删除群成员
 export function removeGroupMember(groupId,members){
     GROUPFMDB.removeGroupMember(groupId,members)
@@ -152,6 +156,27 @@ GROUPFMDB.addGroupMembersByGroupId = function(groupId,members){
                 }, errorDB);
             }
 
+        }, errorDB);
+    }, errorDB);
+}
+
+GROUPFMDB.setGroupBlackListByGroupId = function(value,groupId){
+
+    let sql = sqls.ExcuteIMSql.SetBlackList;
+
+    sql = commonMethods.sqlFormat(sql,[value,groupId]);
+
+    var db = SQLite.openDatabase({
+        ...databaseObj
+    }, () => {
+
+        db.transaction((tx) => {
+
+            tx.executeSql(sql, [], (tx, results) => {
+
+                console.log(results);
+
+            }, (err)=>{errorDB('删除群成员',err)});
         }, errorDB);
     }, errorDB);
 }

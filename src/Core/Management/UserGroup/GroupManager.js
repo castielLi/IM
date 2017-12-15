@@ -64,6 +64,11 @@ GroupManager.GetRelationsByRelationIds = function(Ids,callback){
     groupStoreSqlite.getRelationsByIds(Ids,callback);
 }
 
+GroupManager.setGroupBlackList = function(value,groupId){
+   groupStoreSqlite.setGroupBlackList(value,groupId);
+}
+
+
 GroupManager.closeDB = function(){
     groupStoreSqlite.closeAccountDb()
 }
