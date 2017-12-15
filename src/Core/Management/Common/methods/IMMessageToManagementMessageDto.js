@@ -27,6 +27,11 @@ export default function IMMessageToMessagementMessageDto(message,isReceive = fal
         messageDto.messageId = message.MSGID;
         messageDto.status = MessageStatus.SendFailed;
         messageDto.sendTime = errorMessageBody.Data.LocalTime;
+        if(message.Data.ErrorCode == CommandErrorCodeEnum.NotBelongToGroup){
+            messageDto.group = true;
+        }else{
+            messageDto.group = false;
+        }
 
     }else{
        if(message.Data.Command == MessageBodyTypeEnum.MSG_BODY_APP){

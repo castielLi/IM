@@ -316,10 +316,10 @@ class Chat extends Component {
                         {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
                     </View>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>消息已经发出，但被对方拒收，</Text>
-                        <TouchableOpacity onPress={()=>{this.applyFriend()}}>
-                            <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
-                        </TouchableOpacity>
+                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+                        {/*<TouchableOpacity onPress={()=>{this.applyFriend()}}>*/}
+                            {/*<Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>*/}
+                        {/*</TouchableOpacity>*/}
                     </View>
                 </View>
             )
