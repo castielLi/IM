@@ -226,7 +226,7 @@ class RecentChat extends ContainerComponent {
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
-									<Text style = {styles.NickName}>{rowData.name}</Text>
+									<Text numberOfLines = {1} style = {styles.NickName}>{rowData.name}</Text>
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>

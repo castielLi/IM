@@ -126,7 +126,7 @@ class GroupName extends ContainerComponent {
                                 underlineColorAndroid = {'transparent'}
                                 autoFocus = {true}
                                 defaultValue={this.state.text}
-                                maxLength = {30}
+                                maxLength = {20}
                                 onChangeText={(v)=>{this._onChangeText(v)}}
                                 style={styles.input}
                             >
