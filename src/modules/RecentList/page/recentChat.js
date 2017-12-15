@@ -103,7 +103,7 @@ let styles = StyleSheet.create({
     },
     MessageNumberBox: {
         height: checkDeviceHeight(25),
-        width: checkDeviceWidth(35),
+        width: checkDeviceWidth(40),
         borderRadius: 12,
         backgroundColor: '#e64545',
         justifyContent: 'center',
@@ -231,7 +231,7 @@ class RecentChat extends ContainerComponent {
 								</View>
 								<View style = {styles.userTime}>
 									<Text style ={styles.LastMessageTime}>{TimeHelper.formatSpecifiedDate('hh:mm:ss',rowData.lastTime)}</Text>
-                                    {rowData.unreadCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unreadCount}</Text></View>:null}
+                                    {rowData.unreadCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text></View>:null}
 								</View>
 							</View>
 						</View>

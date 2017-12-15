@@ -4,6 +4,10 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, Image,View,Text} from 'react-native';
+import {
+    checkDeviceHeight,
+    checkDeviceWidth
+} from '../../../Core/Helper/UIAdapter';
 import TabNavigator from 'react-native-tab-navigator';
 import DisplayComponent from '../../../Core/Component/index';
 import {connect} from 'react-redux';
@@ -46,14 +50,14 @@ class TabBarComponent extends DisplayComponent {
     }
     badgeComponent(title,count){
         if(title == '云信'){
-            if(count>0){
+            if(count>0||count == '99+'){
                 return <View style={styles.badge}><Text style={styles.badgeText}>{count}</Text></View>
             }else{
                 return null;
             }
         }else{
             if(count>0){
-                return <View style={styles.badge}></View>
+                return <View style={styles.otherBadge}></View>
             }else{
                 return null;
             }
@@ -146,17 +150,27 @@ const styles = StyleSheet.create({
         height: 24
     },
     badge:{
-        width:16,
-        height:16,
+        width:checkDeviceHeight(40),
+        height:checkDeviceWidth(30),
         borderColor:'#fff',
         borderWidth:2,
-        borderRadius:8,
+        borderRadius:checkDeviceHeight(15),
+        backgroundColor:'red',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    otherBadge:{
+        width:checkDeviceHeight(20),
+        height:checkDeviceWidth(20),
+        borderColor:'#fff',
+        borderWidth:2,
+        borderRadius:checkDeviceHeight(10),
         backgroundColor:'red',
         justifyContent:'center',
         alignItems:'center'
     },
     badgeText:{
-        fontSize:10,
+        fontSize:checkDeviceHeight(16),
         color:'#fff'
     }
 });

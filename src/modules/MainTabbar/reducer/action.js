@@ -2,9 +2,10 @@
 
 
 export function changeUnReadMessageNumber(number){
+    let needNumber = number>99?'99+':number;
     return {
         type: 'CHANGE_UNREADMESSAGE_NUMBER',
-        number
+        number:needNumber
     };
 
 }
