@@ -854,7 +854,7 @@ function controllerReceiveMessage(message){
                                if(isKickedClient){
                                    message.Data.Data.Data =  "你被群主踢出了该群聊";
                                    //处理来自界面的回调方法，隐藏群设置按钮
-                                   updateChatDisplaySetting(message,false);
+                                   UpdateCurrentChatDisplaySetting(message,false);
                                    //把数据库group 当前group的blacklist 设置为true；
                                    currentObj.user.setGroupBlackList(true,groupId);
                                }else{
