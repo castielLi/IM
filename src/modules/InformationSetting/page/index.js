@@ -87,9 +87,7 @@ class InformationSetting extends ContainerComponent {
         })
     }
     changeJoinBlackList = (value)=>{
-        this.setState({
-            joinBlackList:value
-        })
+
 
 
         currentObj.showLoading()
@@ -97,14 +95,28 @@ class InformationSetting extends ContainerComponent {
             let params = {  "Applicant":currentObj.props.accountId,
                             "Account":currentObj.props.client,
                             "IsDelete":false}
-            settingController.removeBlackMember(params,()=>{
+            settingController.removeBlackMember(params,(results)=>{
                 currentObj.hideLoading()
+                if(results.success){
+                    this.setState({
+                        joinBlackList:value
+                    })
+                }else{
+                    currentObj.alert(result.errorMessage,"错误");
+                }
             })
 
         }else{
             let params = {"Applicant":currentObj.props.accountId,"Account":currentObj.props.client}
-            settingController.addBlackMember(params,()=>{
+            settingController.addBlackMember(params,(results)=>{
                 currentObj.hideLoading()
+                if(results.success){
+                    this.setState({
+                        joinBlackList:value
+                    })
+                }else{
+                    currentObj.alert(result.errorMessage,"错误");
+                }
             })
         }
 
