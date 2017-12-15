@@ -317,9 +317,9 @@ class Chat extends Component {
                     </View>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
                         <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
-                        {/*<TouchableOpacity onPress={()=>{this.applyFriend()}}>*/}
-                            {/*<Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>*/}
-                        {/*</TouchableOpacity>*/}
+                        {this.props.type === 'group'?null: <TouchableOpacity onPress={()=>{this.applyFriend()}}>
+                            <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
+                        </TouchableOpacity>}
                     </View>
                 </View>
             )
