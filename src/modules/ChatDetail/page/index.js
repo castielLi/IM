@@ -65,9 +65,9 @@ class ChatDetail extends ContainerComponent {
         })
     }
 
-    onUpdateDisplaySetting = ()=>{
+    onUpdateDisplaySetting = (bool)=>{
         this.setState({
-            settingButtonDisplay:true
+            settingButtonDisplay:bool
         })
 	}
 
