@@ -951,6 +951,13 @@ function storeChatMessageAndCache(message,groupName=""){
             }
         }
 
+        //添加chat数据库
+        if(managementMessageObj.type == DtoMessageTypeEnum.error){
+            currentObj.chat.addMessage(managementMessageObj,"",true,UpdateConversationTypeEnum.UpdateConversationRecord);
+        }else{
+            currentObj.chat.addMessage(managementMessageObj);
+        }
+
         //判断是否需要刷新会话列表界面
         if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
 
@@ -973,16 +980,6 @@ function storeChatMessageAndCache(message,groupName=""){
 
 
             }
-
-
-
-            if(managementMessageObj.type == DtoMessageTypeEnum.error){
-                currentObj.chat.addMessage(managementMessageObj,"",true,UpdateConversationTypeEnum.UpdateConversationRecord);
-            }else{
-                currentObj.chat.addMessage(managementMessageObj,"",true,UpdateConversationTypeEnum.UpdateConversationRecord);
-
-            }
-            currentObj.chat.addMessage(managementMessageObj);
         }
     }else{
 
