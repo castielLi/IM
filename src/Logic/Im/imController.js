@@ -100,6 +100,7 @@ let  cache = {messageCache:[],conversationCache:{},allUnreadCount:0,initConversa
 
 let currentObj = undefined;
 let updateconverslisthandle = undefined;
+let updateChatDisplaySetting = undefined;
 let updateChatRecordhandle = undefined;
 let updateHeadNameHandle = undefined;
 
@@ -259,10 +260,11 @@ export default class IMController {
 
 
     //设置当前会话
-    setCurrentConverse(chatId, group, callback,onupdateHeadNameHandle) {
+    setCurrentConverse(chatId, group, callback,onupdateHeadNameHandle=undefined,onupdateDisplaySetting=undefined) {
         currentChat = {chatId,group}
         updateChatRecordhandle = callback;
         updateHeadNameHandle = onupdateHeadNameHandle;
+        updateChatDisplaySetting = onupdateDisplaySetting;
 
 
         //如果cache.conversationCache中没有该会话，我们就去给他添加一条假会话，标识为lastTime == 0;
@@ -678,6 +680,7 @@ function controllerReceiveMessage(message){
         switch (message.Data.ErrorCode){
             case CommandErrorCodeEnum.NotBelongToGroup:
                 message.Description = "您已经被管理员踢了群聊";
+                updateChatDisplaySetting(message);
                 break;
             case CommandErrorCodeEnum.AlreadyFriend:
                 message.Description = "你们已经是好友了";
@@ -788,7 +791,7 @@ function controllerReceiveMessage(message){
                            UpdateCurrentChatHeadName(message,groupName);
                        case AppCommandEnum.MSG_BODY_APP_DELETEGROUPMEMBER:
 
-                           var senderId = message.Data.Data.Receiver;
+                           var groupId = message.Data.Data.Receiver;
 
                            var accounts = message.Data.Data.Data.split(',');
 
@@ -815,6 +818,7 @@ function controllerReceiveMessage(message){
                                }
                            }
 
+                           currentObj.user.removeGroupMember(groupId,accounts);
 
                            if(message.Data.Data.Sender == myAccount.accountId){
 
@@ -831,6 +835,9 @@ function controllerReceiveMessage(message){
                                if(isKickedClient){
                                    message.Data.Data.Data =  "你被群主踢出了该群聊";
                                    //处理来自界面的回调方法，隐藏群设置按钮
+                                   updateChatDisplaySetting(message);
+                                   //把数据库group 当前group的blacklist 设置为true；
+                                   currentObj.user.setGroupBlackList(true,groupId);
                                }else{
                                    var inviter = '';
                                    if(message.Data.Data.Sender == myAccount.accountId){
@@ -1087,6 +1094,13 @@ function PushNotificationToApp(managementMessageObj){
         let tempArr = formatOjbToneedArr(cache.conversationCache);
         updateconverslisthandle(tempArr);
 
+    }
+}
+
+function UpdateCurrentChatDisplaySetting(message){
+    let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
+    if(managementMessageObj.chatId == currentChat.chatId){
+        updateChatDisplaySetting()
     }
 }
 

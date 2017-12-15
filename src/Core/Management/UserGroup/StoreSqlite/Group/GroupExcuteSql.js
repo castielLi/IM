@@ -34,6 +34,6 @@ export const ExcuteIMSql = {
     "FindGroupTable":"select count(*)  from sqlite_master where type='table' and name=?",
     "removeGroupMember":"delete from ? where RelationId = ?",
     "GetRelationsByIds":"select * from GroupList where RelationId in (?)",
-    "RemoveGroupMemberTable":"drop table ?"
+    "RemoveGroupMemberTable":"drop table ?",
 
 }

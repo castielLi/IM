@@ -174,6 +174,7 @@ export default class User {
             callback(relations);
             relations.forEach((v)=>{
                 v.show = stringToBoolean(v.show)
+                v.BlackList = stringToBoolean(v.BlackList)
                 cache['group'][v.RelationId] = v;
             })
         },true)
@@ -542,6 +543,10 @@ export default class User {
         return GroupManager.GetRelationList(callback,show)
     }
 
+    setGroupBlackListSQL(value,groupId){
+        GroupManager.setGroupBlackList(value,groupId);
+    }
+
     //初始化群关系信息  有改无加
     initGroupSQL(GroupList,callback){
         GroupManager.initRelations(GroupList,callback);
@@ -595,6 +600,13 @@ export default class User {
         this.changeRelationBlackListSQL(shield, userId);
         cache['user'][userId].BlackList = shield;
     }
+
+    setGroupBlackList(value,groupId){
+        this.setGroupBlackListSQL(value,groupId);
+        cache["group"][groupId].BlackList = value;
+    }
+
+
     //删除好友
     removeFriend(userId){
         this.deleteRelationSQL(userId);
