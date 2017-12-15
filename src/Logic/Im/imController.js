@@ -727,6 +727,7 @@ function controllerReceiveMessage(message){
                            }
                            if(isKickedClient){
                                currentObj.user.setGroupBlackList(false,groupId);
+                               UpdateCurrentChatDisplaySetting(message,true)
                            }
 
 
@@ -853,7 +854,7 @@ function controllerReceiveMessage(message){
                                if(isKickedClient){
                                    message.Data.Data.Data =  "你被群主踢出了该群聊";
                                    //处理来自界面的回调方法，隐藏群设置按钮
-                                   updateChatDisplaySetting(message);
+                                   updateChatDisplaySetting(message,false);
                                    //把数据库group 当前group的blacklist 设置为true；
                                    currentObj.user.setGroupBlackList(true,groupId);
                                }else{
@@ -1115,10 +1116,10 @@ function PushNotificationToApp(managementMessageObj){
     }
 }
 
-function UpdateCurrentChatDisplaySetting(message){
+function UpdateCurrentChatDisplaySetting(message,value){
     let managementMessageObj = IMMessageToMessagementMessageDto(message,true);
     if(managementMessageObj.chatId == currentChat.chatId){
-        updateChatDisplaySetting()
+        updateChatDisplaySetting(value)
     }
 }
 
