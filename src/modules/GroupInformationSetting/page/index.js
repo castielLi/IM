@@ -293,7 +293,7 @@ class GroupInformationSetting extends ContainerComponent {
                             <View  style={styles.remarksBox}>
                                 <Text style={styles.remarks}>群聊名称</Text>
                                 <View style={{flexDirection:'row',alignItems:'center'}}>
-                                    <Text style={styles.arrowText}>{Name}</Text>
+                                    <Text numberOfLines = {1} style={styles.arrowText}>{Name}</Text>
                                     <Icon name="angle-right" size={35} color="#aaa" />
                                 </View>
 
