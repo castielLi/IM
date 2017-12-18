@@ -39,6 +39,10 @@ export default class ApplyFriend {
         currentPage = currentPageState;
     }
 
+    outCurrebtPage(){
+        currentPage = false;
+    }
+
     GetAllApplyMessage(callback){
        this.getSqlApplyMessage(callback);
     }

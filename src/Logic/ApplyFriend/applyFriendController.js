@@ -175,6 +175,7 @@ export default class ApplyFriendController {
 
     outApplyFriendPage(){
         currentPage = false;
+        outCurrebtPage()
     }
 
     // updataApplyFriendRecord(applyId){
@@ -209,4 +210,8 @@ function managementApplyFriendHandle(message,user){
 
 function connectManagement(){
    currentObj.apply.connnectApplyFriend(managementApplyFriendHandle,currentPage);
+}
+
+function outCurrebtPage(){
+    currentObj.apply.outCurrebtPage();
 }
