@@ -175,10 +175,11 @@ export default class netWorking {
             if (request.readyState === 4 && request.status === 200) {
                 RNFS.writeFile(filePath,request._response,"base64")
                     .then((success) => {
-                        callback&&callback()
+                        callback&&callback(true)
                     })
                     .catch((err) => {
                         console.log(err.message);
+                        callback&&callback(false)
                     });
             }
         };

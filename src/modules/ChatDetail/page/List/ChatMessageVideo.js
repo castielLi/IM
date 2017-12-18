@@ -63,11 +63,13 @@ class ChatMessageVideo extends ContainerComponent {
                 //let messageId = data.messageId;
                 let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
 
-                imController.manualDownloadResource(data,Remote,filePath,function () {
+                imController.manualDownloadResource(data,Remote,filePath,function (result) {
                     currentObj.setState({
                         download:false,
                     });
-                    currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+                    if(result){
+                        currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+                    }
                 },function (percent) {
                     currentObj.setState({
                         progress:Math.ceil(percent * 100),

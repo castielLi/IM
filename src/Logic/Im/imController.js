@@ -625,20 +625,19 @@ export default class IMController {
 
     //todo:预计是拷贝的问题 张彤
     manualDownloadResource(message,url,path,callback,onprogress){
-        this.im.manualDownloadResource(url,path,function () {
+        this.im.manualDownloadResource(url,path,function (result) {
             //修改数据库路径
             //currentObj.im.updateMessageLocalSource(messageId,path);
             currentObj.chat.updateMessagePath(message,path);
-
-            for(let [i,current] of cache.messageCache.entries()){
-                if(current.messageId == message.messageId){
-                    cache.messageCache[i] = JSON.parse(JSON.stringify(current))
-                    cache.messageCache[i].message.localSource = path;
+            let cacheList = cache.messageCache;
+            for(let i=0;i<cacheList.length;i++){
+                if(cacheList[i].messageId == message.messageId){d
+                    cacheList[i] = JSON.parse(JSON.stringify(cacheList[i]))
+                    cacheList[i].message.localSource = path;
                 }
             }
             updateChatRecordhandle && updateChatRecordhandle(cache.messageCache,dropable);
-
-            callback();
+            callback(result);
         },onprogress)
     }
 
