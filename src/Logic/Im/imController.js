@@ -571,7 +571,14 @@ export default class IMController {
         updateconverslisthandle && updateconverslisthandle(tempArr);
     }
 
-
+    updateOneChatWithOutLastTime(chatId,message){
+        if(cache.conversationCache[chatId] == undefined) return ;
+        let recentObj = cache.conversationCache[chatId];
+        recentObj.lastSender = message.sender;
+        recentObj.lastMessage = getContentOfControllerMessageDto(message);
+        let tempArr = formatOjbToneedArr(cache.conversationCache);
+        updateconverslisthandle && updateconverslisthandle(tempArr);
+    }
 
     //message是完整的managementMessageDto
     addOneChat(chatId,message,callback){
@@ -961,7 +968,31 @@ function storeChatMessageAndCache(message,groupName=""){
         }
 
         //判断是否需要刷新会话列表界面
-        if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
+
+
+
+        // if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
+        //
+        //
+        //
+        //
+        //
+        //     if(cache.conversationCache[chatId]['lastTime'] == 0){
+        //         //针对打开一个新的聊天详情页面,添加一条假会话的情况
+        //         currentObj.addOneChat(chatId,managementMessageObj,()=>{
+        //             if(groupName != ""){
+        //                 currentObj.updateConversationName(managementMessageObj.chatId,groupName);
+        //             }
+        //             PushNotificationToApp(managementMessageObj);
+        //         });
+        //     }else{
+        //         currentObj.updateOneChat(chatId, managementMessageObj)
+        //         if(groupName != ""){
+        //             currentObj.updateConversationName(managementMessageObj.chatId,groupName);
+        //         }
+        //         PushNotificationToApp(managementMessageObj);
+        //     }
+        // }
 
             if(cache.conversationCache[chatId]['lastTime'] == 0){
                 //针对打开一个新的聊天详情页面,添加一条假会话的情况
@@ -970,19 +1001,21 @@ function storeChatMessageAndCache(message,groupName=""){
                         currentObj.updateConversationName(managementMessageObj.chatId,groupName);
                     }
                     PushNotificationToApp(managementMessageObj);
-
                 });
             }else{
-                currentObj.updateOneChat(chatId, managementMessageObj)
+                if(managementMessageObj.sendTime * 1 >= cache.conversationCache[chatId].lastTime * 1) {
+                    currentObj.updateOneChat(chatId, managementMessageObj)
+                }else{
+                    currentObj.updateOneChatWithOutLastTime(chatId, managementMessageObj)
+                }
+
                 if(groupName != ""){
                     currentObj.updateConversationName(managementMessageObj.chatId,groupName);
                 }
-
                 PushNotificationToApp(managementMessageObj);
-
-
             }
-        }
+
+
     }else{
 
 
