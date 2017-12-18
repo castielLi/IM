@@ -631,7 +631,7 @@ export default class IMController {
             currentObj.chat.updateMessagePath(message,path);
             let cacheList = cache.messageCache;
             for(let i=0;i<cacheList.length;i++){
-                if(cacheList[i].messageId == message.messageId){d
+                if(cacheList[i].messageId == message.messageId){
                     cacheList[i] = JSON.parse(JSON.stringify(cacheList[i]))
                     cacheList[i].message.localSource = path;
                 }
