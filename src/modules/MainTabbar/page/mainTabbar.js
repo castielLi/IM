@@ -18,8 +18,10 @@ import * as featuresAction from '../../Common/menu/reducer/action';
 import * as IMHandle from '../../../Logic/AppHandler/receiveHandleMessage'
 import ImController from '../../../Logic/Im/imController'
 import TabTypeEnum from '../../../Logic/Im/dto/TabTypeEnum'
+import AppManagement from '../../../Core/Component/AppManagement'
 let imController = new ImController();
 
+let pageDictionary = {};
 
 let handleRecieveMessage = function(count,type){
     IMHandle.handleRecieveMessage(count,type);
@@ -29,7 +31,9 @@ let handleKickOutMessage = function(){
     IMHandle.handleKickOutMessage()
 }
 
-
+let handleRefreshUI = function(type,params){
+    AppManagement.dispatchMessageToMarkPage(type,params)
+}
 
 
 class TabBarComponent extends DisplayComponent {
@@ -46,7 +50,7 @@ class TabBarComponent extends DisplayComponent {
     }
 
     componentWillMount(){
-        imController.connectApp(handleRecieveMessage,handleKickOutMessage)
+        imController.connectApp(handleRecieveMessage,handleKickOutMessage,handleRefreshUI)
     }
     badgeComponent(title,count){
         if(title == '云信'){

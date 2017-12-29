@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
+import AppManagement from '../Component/AppManagement'
 
 let rootNavigator;
+
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
 class Route {
@@ -33,7 +35,8 @@ class Route {
             RouteMap,
             MainPage,
             InitialRoute,
-            LoginRoute
+            LoginRoute,
+            RootRoute
         } = router;
         this.routerMap = Object.assign(this.routerMap, RouteMap);
         this.mainPage = MainPage;
@@ -53,19 +56,22 @@ class Route {
         let id = route.key,
             params = route.params || {},
             routeObj = this.routerMap[id],
+            markType = undefined,
             Component;
         if (routeObj) {
             let ComponentInfo = routeObj[route.routeId]
             Component = ComponentInfo.component;
             //合并默认参数
             Object.assign(params, ComponentInfo.params);
+            if(ComponentInfo.markType) {
+                markType = ComponentInfo.markType;
+            }
         } else {
             // Component = Error;
             // params = {message: '当前页面没有找到：' + id};
         }
 
-        return <Component navigator={navigator} {...params} />
-
+        return <Component navigator={navigator} {...params} MarkType={markType} />
     }
 
 
@@ -89,16 +95,20 @@ class Route {
         let id = key,
             routeObj = this.routerMap[id],
             params = {},
+            markType = undefined,
             Component;
         if (routeObj) {
             let ComponentInfo = routeObj[routeId];
             Component = ComponentInfo.component;
             Object.assign(params, ComponentInfo.params);
+            if(ComponentInfo.markType) {
+                markType = ComponentInfo.markType;
+            }
         } else {
             // Component = Error;
             // params = {message: '当前页面没有找到：' + id};
         }
-        return <Component {...params} navigator={navigator}/>;
+        return <Component {...params} navigator={navigator} MarkType={markType}/>;
     }
 
     static push(props, route) {

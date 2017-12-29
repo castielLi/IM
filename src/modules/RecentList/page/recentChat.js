@@ -14,7 +14,7 @@ import {
     AsyncStorage
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {
     connect
 } from 'react-redux';
@@ -117,7 +117,7 @@ let styles = StyleSheet.create({
 });
 
 
-class RecentChat extends ContainerComponent {
+class RecentChat extends AppComponent {
     constructor(props) {
         super(props);
         var ds = new ListView.DataSource({
@@ -137,6 +137,11 @@ class RecentChat extends ContainerComponent {
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
     }
+
+    _refreshUI(params){
+        alert(params.content)
+    }
+
     componentDidMount() {
 
         this.props.showNavigationBottom();

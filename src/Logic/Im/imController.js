@@ -19,6 +19,7 @@ import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/m
 import InitConversationListStatusEnum from './dto/InitConversationListStatusEnum'
 import InitChatRecordConfig from '../../Core/Management/Chat/Common/dto/InitChatRecordConfig';
 import UpdateConversationTypeEnum from '../Common/dto/UpdateConversationTypeEnum'
+import Mark from '../../Core/Component/AppPageMarkEnum'
 
 
 let __instance = (function () {
@@ -34,6 +35,8 @@ let AppReceiveMessageHandle = undefined;
 
 //踢出消息回调
 let AppKickOutHandle = undefined;
+
+let AppHandleRefreshUI = undefined;
 
 
 //标示当前正在聊天的对象
@@ -138,10 +141,23 @@ export default class IMController {
         connectChat();
     }
 
-    connectApp(receiveMessageHandle,kickOutMessage){
+    connectApp(receiveMessageHandle,kickOutMessage,handleRefreshUI){
         AppReceiveMessageHandle = receiveMessageHandle;
         AppKickOutHandle = kickOutMessage;
+        AppHandleRefreshUI =handleRefreshUI;
         connectIM();
+
+        setInterval(function () {
+
+            AppHandleRefreshUI(Mark.ConversationDetail,{"content":"消息详情需要更新了"})
+
+        }, 10000)
+
+        setInterval(function () {
+
+            AppHandleRefreshUI(Mark.ConversationList,{"content":"会话列表需要更新了"})
+
+        }, 7000)
     }
 
     setMyAccount(accountObj){
@@ -683,6 +699,8 @@ function controllerMessageResult(success,message){
 function controllerReceiveMessage(message){
 
     console.log("=========================收到消息返回到Controller层了=================================" + message.MSGID)
+
+
 
     //1 根据消息类型进行消息扩展及数据库和缓存扩展
     if(message.Command == MessageCommandEnum.MSG_ERROR){

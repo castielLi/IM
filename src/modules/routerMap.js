@@ -11,6 +11,8 @@
  * 路由配置项
  * 可配置默认参数 props: params
  */
+import Mark from '../Core/Component/AppPageMarkEnum'
+import Root from './Root/root'
 import Login from './Login/page/main'
 import PhoneLogin from './Login/page/phoneLogin'
 import EmailLogin from './Login/page/emailLogin'
@@ -52,6 +54,11 @@ export const InitialRoute = {
     routeId: 'Start'
 }
 
+export const RootRoute = {
+    key : 'Root',
+    routeId : 'Root'
+}
+
 export const LoginRoute = {
     key: 'Login',
     routeId: 'Login'
@@ -60,7 +67,7 @@ export const LoginRoute = {
 export const RouteMap = {
     'Root': {
         'Root': {
-            component: ChatDetail,
+            component: Root,
             params: {}
         }
     },
@@ -77,7 +84,8 @@ export const RouteMap = {
         },
         'TabOne': {
             component: RecentList,
-            params: {}
+            params: {},
+            markType:Mark.ConversationList
         },
         'TabTwo': {
             component: Contacts,
@@ -127,13 +135,15 @@ export const RouteMap = {
     'ChatDetail': {
         'ChatDetail': {
             component: ChatDetail,
-            params: {}
+            params: {},
+            markType:Mark.ConversationDetail
         }
     },
     'RecentList': {
         'RecentList': {
             component: RecentList,
-            params: {}
+            params: {},
+            markType:Mark.ConversationList
         }
     },
     'Contacts': {

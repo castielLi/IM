@@ -26,7 +26,7 @@ class PhoneLogin extends ContainerComponent {
 
 	}
 	constructor(props) {
-	  super(props);
+	  super(props,"PhoneLogin");
 
 	  this.state = {
 	  	phoneText:'',//账号框的内容

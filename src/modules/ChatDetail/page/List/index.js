@@ -81,6 +81,12 @@ class Chat extends Component {
         this.renderRow = this.renderRow.bind(this);
     }
 
+    _refreshUI(params){
+        console.log(params.content);
+        alert("component" + params.content);
+    }
+
+
     onUpdataChatRecord(chatRecord,isMore){
         let {msgState} = ListConst;
         if(!chatRecord || !chatRecord.length) return;
@@ -174,6 +180,10 @@ class Chat extends Component {
                 }
             },
         })
+    }
+
+    componentDidMount(){
+        this.props.onRef(this)
     }
 
     prepareMessages(messages) {

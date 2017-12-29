@@ -24,12 +24,12 @@ export default class ContainerComponent extends Component {
         this.PopContent = Popup;
         this.Loading = Loading;
         this.route = Route;
+
         this.viewModel = {};
         this.style = style;
         this.Localization = Localization;
         this._handleBack = this._handleBack.bind(this);
     }
-
 
     componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress', this._handleBack)
@@ -40,9 +40,8 @@ export default class ContainerComponent extends Component {
         return styles;
     }
 
-
     alert(content,title="",clickCallback=undefined) {
-        if(title == ""){
+        if(ttle == ""){
 
             this.popup.alert(content);
         }else{
