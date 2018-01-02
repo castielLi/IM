@@ -1,19 +1,19 @@
 import HanZi_PinYin from './getFirestLetter';
-export function initDataFormate(type='private',arr,filterStr){
+export function initDataFormate(arr,filterStr){
     let dataObj = {
         needArr : [],
         sectionArr : [],
     };
     let snapArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&(v.show === true || v.show === 'true')&&HanZi_PinYin.get(v.Nick).indexOf(filterStr.toUpperCase()) >= 0){
+        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.Nickname).indexOf(filterStr.toUpperCase()) >= 0){
             snapArr.push(v)
         }
     })
 
 
     snapArr.forEach((value,index)=>{
-        let firstLetter = HanZi_PinYin.get(value.Nick.slice(0,1)).slice(0,1);
+        let firstLetter = HanZi_PinYin.get(value.Nickname.slice(0,1)).slice(0,1);
         let exist = false;
 
 
@@ -43,8 +43,8 @@ export function initDataFormate(type='private',arr,filterStr){
     return dataObj;
 }
 
-export function initFlatListData(type='private',arr){
+export function initFlatListData(arr){
     return arr.filter((v,i)=>{
-        return v.Type === type&&(v.show === true || v.show === 'true')
+        return (v.show === true || v.show === 'true')
     })
 }

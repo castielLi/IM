@@ -12,19 +12,21 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
-
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import SettingController from '../../../Logic/Setting/settingController';
-import ContactControlller from '../../../Logic/Contact/contactController';
-import IMController from '../../../Logic/Im/imController';
 
-let imController = new IMController();
-let settingController = new SettingController();
-let contactControlller = new ContactControlller();
 
-let currentObj;
+// import SettingController from '../../../Logic/Setting/settingController';
+// import ContactControlller from '../../../Logic/Contact/contactController';
+// import IMController from '../../../Logic/Im/imController';
+// let imController = new IMController();
+// let settingController = new SettingController();
+// let contactControlller = new ContactControlller();
 
+import UserController from '../../../TSController/UserController';
+let userController = new UserController();
+
+let currentObj = undefined;
 const options = ['取消','确认删除']
 const title = '你确定要删除这位好友么'
 
@@ -60,19 +62,17 @@ class InformationSetting extends ContainerComponent {
     }
 
     componentWillMount(){
-        // this.props.changeTabBar(0)
-
-        let setting = settingController.getIsBlackList(this.props.client);
-        let value ;
-        if(setting == "false"||setting == false){
-            value = false;
-        }else{
-            value = true;
-        }
-
-        this.setState({
-            joinBlackList:value,
-        })
+        userController.getInfo(this.props.client,false,(result)=>{
+            let BlackList = result.BlackList;
+            if(BlackList == 'true'){
+                BlackList = true;
+            }else if (BlackList == 'false'){
+                BlackList = false;
+            }
+            this.setState({
+                joinBlackList:BlackList,
+            })
+        });
 
     }
 
@@ -87,41 +87,19 @@ class InformationSetting extends ContainerComponent {
         })
     }
     changeJoinBlackList = (value)=>{
+        currentObj.showLoading();
 
-
-
-        currentObj.showLoading()
-        if(!value){
-            let params = {  "Applicant":currentObj.props.accountId,
-                            "Account":currentObj.props.client,
-                            "IsDelete":false}
-            settingController.removeBlackMember(params,(results)=>{
-                currentObj.hideLoading()
-                if(results.success){
-                    this.setState({
-                        joinBlackList:value
-                    })
-                }else{
-                    currentObj.alert(result.errorMessage,"错误");
-                }
-            })
-
-        }else{
-            let params = {"Applicant":currentObj.props.accountId,"Account":currentObj.props.client}
-            settingController.addBlackMember(params,(results)=>{
-                currentObj.hideLoading()
-                if(results.success){
-                    this.setState({
-                        joinBlackList:value
-                    })
-                }else{
-                    currentObj.alert(result.errorMessage,"错误");
-                }
-            })
-        }
-
-
-    }
+        userController.setBlackList(this.props.client,value,(result)=>{
+            currentObj.hideLoading();
+            if(result.success && result.data.Data){
+                this.setState({
+                    joinBlackList:value
+                })
+            }else{
+                currentObj.alert(result.errorMessage,"错误");
+            }
+        });
+    };
 
 
     handlePress(i){
@@ -129,21 +107,14 @@ class InformationSetting extends ContainerComponent {
         //删除好友
         if(1 == i){
             currentObj.showLoading();
-            let params = {"Applicant":accountId,"Friend":client};
-            contactControlller.removeFriend(params,(results)=>{
+            userController.removeFriend(this.props.client,(result)=>{
                 currentObj.hideLoading();
-                if(results.success){
-                    imController.removeConverse(client,false);
-                    let pages = currentObj.props.navigator.getCurrentRoutes();
-                    let target = pages[pages.length - 3];
-
-                    currentObj.route.popToSpecialRoute(currentObj.props,target);
-                }else{
-                    alert("http请求出错")
-                }
-            })
-
+                let pages = currentObj.props.navigator.getCurrentRoutes();
+                let target = pages[pages.length - 3];
+                currentObj.route.popToSpecialRoute(currentObj.props,target);
+            });
         }
+
     }
 
     showActionSheet() {

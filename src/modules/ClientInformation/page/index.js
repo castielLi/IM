@@ -18,12 +18,14 @@ import {bindActionCreators} from 'redux';
 import SettingController from '../../../Logic/Setting/settingController'
 import ContactController from '../../../Logic/Contact/contactController'
 import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
-
-
-
 let contactController = new ContactController();
 let settingController = new SettingController();
 let applyFriendController = new ApplyFriendController();
+
+import UserController from '../../../TSController/UserController';
+let userController = new UserController();
+
+
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -41,44 +43,20 @@ class ClientInformation extends ContainerComponent {
         }
         currentObj = this;
     }
-
-    // isUpdateFriendInfo = (UserInfo,propsRelation) =>{
-    //     let isUpdate;
-    //     let _network = new netWorking();
-    //     let {accountId} = this.props.loginStore;
-    //     let avatorName = HeadImageUrl.substr(HeadImageUrl.lastIndexOf('/')+1);
-    //     let toFile = `${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${new Date().getTime()}.jpg`;
-    //
-    //     if(propsRelation.Nick !== UserInfo.Nickname || _Relation.OtherComment !== UserInfo.Gender || _Relation.Email !== UserInfo.Email){
-    //         propsRelation.Nick = UserInfo.Nickname;
-    //         propsRelation.OtherComment = UserInfo.Gender;
-    //         propsRelation.Email = UserInfo.Email;
-    //         isUpdate = true;
-    //     }
-    //     updateImage = (result) => {
-    //         console.log('下载成功,对数据库进行更改')
-    //         //LocalImage = toFile;
-    //         if(propsRelation.LocalImage){
-    //             RNFS.unlink(`${RNFS.DocumentDirectoryPath}/${accountId}/image/avator/${propsRelation.LocalImage}`).then(()=>{console.log('旧头像删除成功')}).catch(()=>{console.log('旧图片删除失败')})
-    //         }
-    //         //todo:缺少数据库操作
-    //     };
-    //     if(UserInfo.HeadImageUrl&&propsRelation.avator !== UserInfo.HeadImageUrl){
-    //         propsRelation.avator = UserInfo.HeadImageUrl;
-    //         isUpdate = true;
-    //         _network.methodDownload(UserInfo.HeadImageUrl,toFile,updateImage)
-    //     }
-    //
-    //     if(isUpdate){
-    //         user.updateRelation(_Relation)
-    //     }
-    // }
     isUpdateFriendInfo = (UserInfo,propsRelation) =>{
         let {accountId} = this.props.loginStore;
         contactController.UpdateFriendInfo(accountId,UserInfo,propsRelation)
     }
     componentDidMount() {
 
+        // userController.getInfo(this.props.clientId,false,(result)=>{
+        //     if(result.Friend){
+        //
+        //     }else{
+        //
+        //     }
+        // });
+        //-----------------
         if(this.props.hasRelation){
             let needRelation = currentObj.props.Relation;
 

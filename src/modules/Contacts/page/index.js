@@ -18,16 +18,17 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
-import ContactController from '../../../Logic/Contact/contactController'
 
-let contactController = new ContactController();
+// import ContactController from '../../../Logic/Contact/contactController'
+// let contactController = new ContactController();
+import UserController from '../../../TSController/UserController';
+let userController = new UserController();
+
 let currentObj = undefined;
-
 var {height, width} = Dimensions.get('window');
 import Features from '../../Common/menu/features';
 
@@ -96,17 +97,19 @@ class Contacts extends ContainerComponent {
 		}
     }
 
-	goToChat = (item)=>{
+    goToClientInfo = (Account)=>{
 		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
 
     }
+
+    //todo:头像应该还有本地地址
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.Nick;
+		var txt = '  ' + info.item.Nickname;
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						{info.item.avator?<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
+						{info.item.HeadImageUrl?<Image source={{uri:info.item.HeadImageUrl}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -221,33 +224,19 @@ class Contacts extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        contactController.getLatestContactList(function (contacts) {
+        // contactController.getLatestContactList(function (contacts) {
+        //     currentObj.setState({
+        //         contacts
+        //     })
+        // });
+        userController.getContactList(false,false,(contacts)=>{
             currentObj.setState({
                 contacts
             })
-        });
-        // let arr = [];
-        // for(let i=0;i<10;i++){
-        // 	arr.push({
-        //         OtherComment : "公告:"+i,
-        //         RelationId : 'Z-'+i,
-        //         Nick : "测试"+i,
-        //         Remark : "",
-        //         BlackList : false,
-        //         avator : "",
-        //         Email : "",
-        //         localImage : "",
-        //         Type : "private",
-        //         owner : "wg003724",
-        //         show : true
-        //     })
-        // }
-        // this.setState({
-			// contacts:arr
-        // })
+		})
 	}
 	render() {
-		let objData = initDataFormate('private',this.state.contacts,this.state.text);
+		let objData = initDataFormate(this.state.contacts,this.state.text);
 		this.relationStore = objData.needArr;
 		this.sectionStore = objData.sectionArr;
 		return (

@@ -52,7 +52,7 @@ export default function App() {
             if(Platform.OS === 'android'){
                 NetInfo.isConnected.fetch().done((isConnected) => {
                     console.log('First, is ' + (isConnected ? 'online' : 'offline'));
-                    im.setNetEnvironment(isConnected);
+                    //im.setNetEnvironment(isConnected);
                 });
             }
 

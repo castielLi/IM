@@ -38,7 +38,7 @@ import LoginController from '../../../Logic/loginController'
 let imController = new IMController();
 let loginController = new LoginController();
 
-import {UserController} from '../../../TSController/UserController'
+import UserController from '../../../TSController/UserController'
 let userController = new UserController();
 
 let currentObj= undefined;
