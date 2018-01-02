@@ -11,11 +11,8 @@ import {
 import { AppState , NetInfo,Platform,Alert} from 'react-native'
 import Root from './modules/Root/root'
 import Store from './store'
-import configureNetwork from './Core/Networking/configureNetwork'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
-import IM from './Core/Management/IM'
-import User from './Core/Management/UserGroup'
 import DisplayComponent from './Core/Component'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 
@@ -27,18 +24,9 @@ export default function App() {
 
     let store = Store;
 
-    let user = new User();
-
-    //初始化app的http组件
-    configureNetwork({
-        "Content-Type": "application/json"
-    }, 'fetch', false)
-
     //初始化路由表
     Route.initRouteMap(router);
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
-    //初始化IM
-    let im = new IM();
 
     class InitApp extends DisplayComponent {
         constructor() {
@@ -85,9 +73,9 @@ export default function App() {
             });
 
             if(appState == 'background'){
-                 im.stopIM();
+                 // im.stopIM();
             }else if(appState == "active"){
-                im.startIM();
+                // im.startIM();
             }
         }
 
@@ -99,7 +87,7 @@ export default function App() {
                       });
 
             // if(connectionInfo == "NONE" || connectionInfo == "none"){
-                im.handleNetEnvironment(connectionInfo);
+            //     im.handleNetEnvironment(connectionInfo);
             // }
 
         }

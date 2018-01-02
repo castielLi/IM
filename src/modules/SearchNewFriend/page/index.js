@@ -210,10 +210,11 @@ const styles = StyleSheet.create({
     },
     search:{
         flex:1,
+        height:30,
         backgroundColor:'#fff',
         color:'#000',
         padding:0,
-        fontSize:12
+        fontSize:10
     },
     itemBox:{
         height:60,

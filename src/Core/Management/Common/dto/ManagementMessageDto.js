@@ -10,8 +10,8 @@ export default class ManagementMessageDto{
         this.sender = "" ;//"wg003722"
         this.messageId = "";//消息编号
         this.message = {};//消息内容，
-        //如果是 resource消息 {data:{localSource:"",remoteSource:""},Time:""};
-        //如果是 非resource消息  {data:""}
+        //如果是 resource消息 {localSource:"",remoteSource:"",time:""};
+        //如果是 非resource消息  字符串
         this.type = 0;//消息类型
         this.status = 0;
         this.sendTime = "";

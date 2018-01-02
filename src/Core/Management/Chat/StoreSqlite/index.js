@@ -364,8 +364,6 @@ CHATFMDB.UpdateMessageBody = function(message = new ManagementMessageDto()){
             tx.executeSql(updateSql, [], (tx, results) => {
 
                 console.log("更新chat 数据库 messagebody 成功");
-                console.log("更新chat 数据库 messagebody 成功");
-                console.log("更新chat 数据库 messagebody 成功");
 
             }, (err)=>{errorDB('更新messageBody',err)});
 
