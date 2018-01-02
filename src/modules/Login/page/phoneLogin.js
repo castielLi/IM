@@ -74,10 +74,10 @@ class PhoneLogin extends ContainerComponent {
         Keyboard.dismiss();//关闭软键盘
 
         LoginController.login(currentObj.state.phoneText,currentObj.state.passWordText,function(response){
-            if(!response.Result){
+            if(response.Result !== 1){
                 currentObj.hideLoading()
 
-                if(response.errorCode == 1003){
+                if(response.Result == 1003){
                     currentObj.alert("账号或者密码错误","错误");
                 }else{
                     alert(response.errorMessage);

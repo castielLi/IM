@@ -30,92 +30,18 @@ import {
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import LoginController from '../../../Logic/loginController'
 import TimeHelper from '../../../Core/Helper/TimeHelper';
+
+
 import IMController from '../../../Logic/Im/imController'
+import LoginController from '../../../Logic/loginController'
 let imController = new IMController();
 let loginController = new LoginController();
 
+import {UserController} from '../../../TSController/UserController'
+let userController = new UserController();
+
 let currentObj= undefined;
-
-let styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#f2f2f2"
-    },
-    content:{
-      flex:1
-    },
-    ListContainer: {
-        flexDirection: 'row',
-        height: checkDeviceHeight(130),
-        backgroundColor: '#ffffff',
-        paddingLeft: checkDeviceWidth(20),
-    },
-    userLogo: {
-        height: checkDeviceHeight(130),
-        width: checkDeviceWidth(125),
-        justifyContent: 'center',
-    },
-    avatar: {
-        height: checkDeviceHeight(100),
-        width: checkDeviceHeight(100),
-        borderRadius: checkDeviceHeight(50),
-        resizeMode: 'cover',
-    },
-    ChatContent: {
-        flex: 1,
-        height: checkDeviceHeight(130),
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-    },
-    Message: {
-        flex: 1,
-        justifyContent: 'center',
-    },
-    NickName: {
-        fontSize: checkDeviceHeight(30),
-        color: '#373737',
-        marginBottom: checkDeviceHeight(10),
-        ...Platform.select({
-            ios: {
-                lineHeight: checkDeviceHeight(34),
-            },
-            android: {},
-        }),
-    },
-    ChatMessage: {
-        fontSize: checkDeviceHeight(30),
-        lineHeight: checkDeviceHeight(35),
-        color: '#999999',
-    },
-    userTime: {
-        height: checkDeviceHeight(130),
-        width: checkDeviceWidth(110),
-        justifyContent: 'center',
-        alignItems: "flex-end",
-        marginRight: checkDeviceWidth(20),
-    },
-    LastMessageTime: {
-        fontSize: checkDeviceHeight(24),
-        color: '#999999',
-        marginBottom: checkDeviceHeight(20),
-    },
-    MessageNumberBox: {
-        height: checkDeviceHeight(25),
-        width: checkDeviceWidth(40),
-        borderRadius: 12,
-        backgroundColor: '#e64545',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    MessageNumber: {
-        color: '#ffffff',
-        textAlign: 'center',
-        fontSize: checkDeviceHeight(20),
-    },
-});
-
 
 class RecentChat extends AppComponent {
     constructor(props) {
@@ -148,20 +74,26 @@ class RecentChat extends AppComponent {
         let param = {
             updateConverseList:this._updateConverseList,
         }
-        AsyncStorage.getItem('account').then((value) => {
-            let account = JSON.parse(value);
+        // AsyncStorage.getItem('account').then((value) => {
+        //     let account = JSON.parse(value);
+        //
+        //     loginController.getContactList(function (result) {
+        //         if (!result.success) {
+        //             alert("初始化account出错" + result.errorMessage);
+        //             return;
+        //         }
+        //         imController.init(param);
+        //         currentObj.props.changeUnReadMessageNumber(result.data.unUnDealRequestCount)
+        //         currentObj.props.hideNavigationBottom();
+        //
+        //     }, {"Account": account.phone});
+        // });
 
-            loginController.getContactList(function (result) {
-                if (!result.success) {
-                    alert("初始化account出错" + result.errorMessage);
-                    return;
-                }
-                imController.init(param);
-                currentObj.props.changeUnReadMessageNumber(result.data.unUnDealRequestCount)
-                currentObj.props.hideNavigationBottom();
 
-            }, {"Account": account.phone});
-        });
+        userController.getContactList(false,true,(result)=>{
+            console.log(result);
+            currentObj.props.hideNavigationBottom();
+        })
     }
 
     _updateConverseList(ConverseList){
@@ -279,6 +211,84 @@ class RecentChat extends AppComponent {
         )
     }
 }
+
+let styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#f2f2f2"
+    },
+    content:{
+        flex:1
+    },
+    ListContainer: {
+        flexDirection: 'row',
+        height: checkDeviceHeight(130),
+        backgroundColor: '#ffffff',
+        paddingLeft: checkDeviceWidth(20),
+    },
+    userLogo: {
+        height: checkDeviceHeight(130),
+        width: checkDeviceWidth(125),
+        justifyContent: 'center',
+    },
+    avatar: {
+        height: checkDeviceHeight(100),
+        width: checkDeviceHeight(100),
+        borderRadius: checkDeviceHeight(50),
+        resizeMode: 'cover',
+    },
+    ChatContent: {
+        flex: 1,
+        height: checkDeviceHeight(130),
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+    },
+    Message: {
+        flex: 1,
+        justifyContent: 'center',
+    },
+    NickName: {
+        fontSize: checkDeviceHeight(30),
+        color: '#373737',
+        marginBottom: checkDeviceHeight(10),
+        ...Platform.select({
+            ios: {
+                lineHeight: checkDeviceHeight(34),
+            },
+            android: {},
+        }),
+    },
+    ChatMessage: {
+        fontSize: checkDeviceHeight(30),
+        lineHeight: checkDeviceHeight(35),
+        color: '#999999',
+    },
+    userTime: {
+        height: checkDeviceHeight(130),
+        width: checkDeviceWidth(110),
+        justifyContent: 'center',
+        alignItems: "flex-end",
+        marginRight: checkDeviceWidth(20),
+    },
+    LastMessageTime: {
+        fontSize: checkDeviceHeight(24),
+        color: '#999999',
+        marginBottom: checkDeviceHeight(20),
+    },
+    MessageNumberBox: {
+        height: checkDeviceHeight(25),
+        width: checkDeviceWidth(40),
+        borderRadius: 12,
+        backgroundColor: '#e64545',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    MessageNumber: {
+        color: '#ffffff',
+        textAlign: 'center',
+        fontSize: checkDeviceHeight(20),
+    },
+});
 
 const mapStateToProps = state => ({
     accountId: state.loginStore.accountMessage.accountId,
