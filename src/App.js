@@ -9,6 +9,7 @@ import {
     Provider
 } from 'react-redux';
 import { AppState , NetInfo,Platform,Alert} from 'react-native'
+import Config from './Config';
 import Root from './modules/Root/root'
 import Store from './store'
 import Route from './Core/route/router'
@@ -16,14 +17,14 @@ import * as router from './modules/routerMap'
 import DisplayComponent from './Core/Component'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 
-
 export default function App() {
 
     //关闭yellowbox
     console.disableYellowBox = true
 
-    let store = Store;
+    let config = new Config();
 
+    let store = Store;
     //初始化路由表
     Route.initRouteMap(router);
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});

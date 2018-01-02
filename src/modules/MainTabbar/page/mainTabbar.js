@@ -19,7 +19,7 @@ import * as IMHandle from '../../../Logic/AppHandler/receiveHandleMessage'
 import ImController from '../../../Logic/Im/imController'
 import TabTypeEnum from '../../../Logic/Im/dto/TabTypeEnum'
 import AppManagement from '../../../Core/Component/AppManagement'
-let imController = new ImController();
+let imController = undefined;
 
 let pageDictionary = {};
 
@@ -50,6 +50,7 @@ class TabBarComponent extends DisplayComponent {
     }
 
     componentWillMount(){
+        imController = new ImController();
         imController.connectApp(handleRecieveMessage,handleKickOutMessage,handleRefreshUI)
     }
     badgeComponent(title,count){

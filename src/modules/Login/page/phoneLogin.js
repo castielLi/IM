@@ -15,7 +15,7 @@ import * as Actions from '../reducer/action';
 import Touch from '../../Common/Thouch/index';
 
 import loginController from '../../../TSController/loginController';
-let LoginController = new loginController();
+let LoginController = undefined;
 
 let currentObj = undefined;
 class PhoneLogin extends ContainerComponent {
@@ -72,6 +72,8 @@ class PhoneLogin extends ContainerComponent {
         //登录api
         currentObj.showLoading();
         Keyboard.dismiss();//关闭软键盘
+
+        LoginController = new loginController();
 
         LoginController.login(currentObj.state.phoneText,currentObj.state.passWordText,function(response){
             if(response.Result !== 1){
