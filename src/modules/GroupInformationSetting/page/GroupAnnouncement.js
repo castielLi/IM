@@ -18,7 +18,7 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import SettingController from '../../../Logic/Setting/settingController';
-let settingController = new SettingController();
+let settingController = undefined;
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -34,6 +34,7 @@ class GroupAnnouncement extends ContainerComponent {
         };
 
         currentObj = this;
+        settingController = new SettingController();
     }
 
 

@@ -27,7 +27,7 @@ var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let title = null;
-let settingController = new SettingController();
+let settingController = undefined;
 
 class DeleteGroupMember extends ContainerComponent {
 
@@ -41,6 +41,7 @@ class DeleteGroupMember extends ContainerComponent {
         this.relationStore = []
         this._rightButton = this._rightButton.bind(this);
         currentObj = this;
+        settingController = new SettingController()
     }
 
 

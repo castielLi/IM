@@ -26,11 +26,12 @@ import LoginController from '../../../Logic/loginController';
 import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
 import Route from '../../../Core/route/router';
 let {height,width} = Dimensions.get('window');
-let loginController = new LoginController();
-let applyContriller = new ApplyFriendController();
+
 
 import IMController from '../../../Logic/Im/imController'
-let imController = new IMController();
+let imController = undefined;
+let loginController = undefined;
+let applyContriller = undefined;
 
 
 var originData = [
@@ -142,6 +143,10 @@ class Me extends ContainerComponent {
             showFeatures:false,//显示功能块组件
 
         };
+
+        imController = new IMController();
+        loginController = new LoginController();
+        applyContriller = new ApplyFriendController();
     }
 
 

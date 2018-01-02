@@ -39,7 +39,7 @@ let imController = new IMController();
 let loginController = new LoginController();
 
 import {UserController} from '../../../TSController/UserController'
-let userController = new UserController();
+let userController = undefined;
 
 let currentObj= undefined;
 
@@ -62,6 +62,7 @@ class RecentChat extends AppComponent {
         this.deleteSomeRow = this.deleteSomeRow.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
+        userController = new UserController();
     }
 
     _refreshUI(params){
@@ -88,6 +89,7 @@ class RecentChat extends AppComponent {
         //
         //     }, {"Account": account.phone});
         // });
+
 
 
         userController.getContactList(false,true,(result)=>{

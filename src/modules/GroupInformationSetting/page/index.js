@@ -28,7 +28,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import settingController from '../../../Logic/Setting/settingController'
 import RelationDto from '../../../Logic/Common/dto/RelationDto'
-let SettingController = new settingController();
+let SettingController = undefined;
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
@@ -50,6 +50,7 @@ class GroupInformationSetting extends ContainerComponent {
             groupInformation:{}
         }
         currentObj = this;
+        SettingController = new settingController();
     }
     changeIsStickyChat = ()=>{
         this.setState({

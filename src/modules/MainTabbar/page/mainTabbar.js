@@ -41,6 +41,7 @@ class TabBarComponent extends DisplayComponent {
         super(props)
         this.render = this.render.bind(this);
 
+        imController = new ImController();
     }
 
     isShowFeature = (number)=>{
@@ -50,7 +51,7 @@ class TabBarComponent extends DisplayComponent {
     }
 
     componentWillMount(){
-        imController = new ImController();
+
         imController.connectApp(handleRecieveMessage,handleKickOutMessage,handleRefreshUI)
     }
     badgeComponent(title,count){

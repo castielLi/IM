@@ -25,7 +25,7 @@ import * as Actions from '../../reducer/action'
 
 import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 import IMController from '../../../../Logic/Im/imController'
-let imController = new IMController();
+let imController = undefined;
 
 const images = [{
     url: 'http://img1.ph.126.net/u1dVCkMgF8qSqqQLXlBFQg==/6631395420169075600.jpg'
@@ -50,6 +50,7 @@ class Gallery extends ContainerComponent {
             thumbnail:props.path.indexOf('/thumbnail') !== -1 ? true : false
             //thumbnail:props.Remote.indexOf('#imageView2') !== -1 ? true : false
         }
+        imController = new IMController();
     }
     // componentWillReceiveProps(newProps){
     //     this.setState({

@@ -27,8 +27,8 @@ import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendControl
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let contactController = new ContactController();
-let applyFriendController = new ApplyFriendController();
+let contactController = undefined;
+let applyFriendController = undefined;
 
 class NewFriend extends ContainerComponent {
     constructor(props){
@@ -42,6 +42,8 @@ class NewFriend extends ContainerComponent {
             applyRecord:[],
         };
         currentObj = this;
+        contactController = new ContactController();
+        applyFriendController = new ApplyFriendController();
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});

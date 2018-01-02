@@ -19,9 +19,9 @@ import SettingController from '../../../Logic/Setting/settingController';
 import ContactControlller from '../../../Logic/Contact/contactController';
 import IMController from '../../../Logic/Im/imController';
 
-let imController = new IMController();
-let settingController = new SettingController();
-let contactControlller = new ContactControlller();
+let imController = undefined;
+let settingController = undefined;
+let contactControlller = undefined;
 
 let currentObj;
 
@@ -39,6 +39,9 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:false,
         }
         currentObj = this;
+        imController = new IMController();
+        settingController = new SettingController();
+        contactControlller = new ContactControlller();
     }
     //定义上导航的左按钮
     _leftButton() {

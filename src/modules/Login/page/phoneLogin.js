@@ -33,6 +33,8 @@ class PhoneLogin extends ContainerComponent {
         };
         this.addUser = this.addUser.bind(this)
         currentObj = this;
+
+        LoginController = new loginController();
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{
@@ -73,7 +75,7 @@ class PhoneLogin extends ContainerComponent {
         currentObj.showLoading();
         Keyboard.dismiss();//关闭软键盘
 
-        LoginController = new loginController();
+
 
         LoginController.login(currentObj.state.phoneText,currentObj.state.passWordText,function(response){
             if(response.Result !== 1){

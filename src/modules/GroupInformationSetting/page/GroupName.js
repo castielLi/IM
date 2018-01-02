@@ -25,7 +25,7 @@ import {bindActionCreators} from 'redux';
 import SettingController from '../../../Logic/Setting/settingController'
 
 
-let settingController = new SettingController();
+let settingController = undefined;
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -42,6 +42,7 @@ class GroupName extends ContainerComponent {
         };
 
         currentObj = this;
+        settingController = new SettingController()
     }
 
 

@@ -44,6 +44,8 @@ class ChatDetail extends AppComponent {
         currentObj = this;
         this.isDisabled = false
 
+        imController = new IMController();
+        contactController = new ContactController();
     }
 
     _refreshUI(params){
@@ -117,7 +119,7 @@ class ChatDetail extends AppComponent {
 	}
 
     componentWillUnmount(){
-        imController.setOutCurrentConverse()
+        // imController.setOutCurrentConverse()
 	}
 }
 

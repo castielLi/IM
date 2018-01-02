@@ -21,9 +21,9 @@ import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendControl
 
 
 
-let contactController = new ContactController();
-let settingController = new SettingController();
-let applyFriendController = new ApplyFriendController();
+let contactController = undefined;
+let settingController = undefined;
+let applyFriendController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -40,6 +40,10 @@ class ClientInformation extends ContainerComponent {
                 isRenderSendMessage:false//针对单方面添加好友，直接显示发送消息
         }
         currentObj = this;
+
+        contactController = new ContactController();
+        settingController = new SettingController();
+        applyFriendController = new ApplyFriendController();
     }
 
     // isUpdateFriendInfo = (UserInfo,propsRelation) =>{

@@ -23,11 +23,12 @@ class Start extends ContainerComponent {
             isLogged: false
         }
         currentObj = this;
+        LoginController = new loginController();
     }
 
 
     componentWillMount(){
-        LoginController = new loginController();
+
         LoginController.loginWithToken(account,function(result){
             if(result == null){
                 currentObj.route.push(currentObj.props,{
