@@ -109,7 +109,7 @@ class GroupInformationSetting extends ContainerComponent {
         SettingController.getGroupInfo(params,callback);
 
         currentObj.showLoading();
-        userController.getInfo(this.props.groupId,true,(result)=>{
+        userController.getGroupInfo(this.props.groupId,(result)=>{
             currentObj.hideLoading();
         })
     }

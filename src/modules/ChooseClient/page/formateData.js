@@ -1,5 +1,5 @@
 import HanZi_PinYin from './getFirestLetter';
-export function initDataFormate(type='private',arr){
+export function initDataFormate(arr){
 
     let dataObj = {
         needArr : [],
@@ -7,14 +7,14 @@ export function initDataFormate(type='private',arr){
     };
     let snapArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&(v.show === true || v.show === 'true')){
+        if((v.Friend === true || v.Friend === 'true')){
             snapArr.push(v)
         }
 
     })
 
     snapArr.forEach((value,index)=>{
-        let firstLetter = HanZi_PinYin.get(value.Nick.slice(0,1)).slice(0,1);
+        let firstLetter = HanZi_PinYin.get(value.NickName.slice(0,1)).slice(0,1);
         let exist = false;
         if(dataObj.needArr.length === 0){
             dataObj.needArr.push({'key':firstLetter,'data':[value]})
@@ -50,10 +50,10 @@ export function initDataFormate(type='private',arr){
 //     return needArr;
 // }
 
-export function initFlatListData(type,arr=[],filterStr){
+export function initFlatListData(arr=[],filterStr){
     let needArr = [];
     arr.forEach((v,i)=>{
-        if(v.Type === type&&(v.show === true || v.show === 'true')&&HanZi_PinYin.get(v.Nick).indexOf(filterStr.toUpperCase()) >= 0){
+        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.NickName).indexOf(filterStr.toUpperCase()) >= 0){
             needArr.push(v)
         }
     })

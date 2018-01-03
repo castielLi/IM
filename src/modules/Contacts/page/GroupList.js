@@ -26,9 +26,12 @@ import {bindActionCreators} from 'redux';
 import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
-import ContactController from '../../../Logic/Contact/contactController'
 
-let contactController = undefined;
+
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
+
+
 var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 
@@ -47,7 +50,7 @@ class GroupList extends ContainerComponent {
         }
         this.relationStore = [];
         currentObj = this;
-        contactController = new ContactController()
+        userController = new UserController();
     }
 
     goToChat = (item)=>{
@@ -97,34 +100,14 @@ class GroupList extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        contactController.getGroupContactList(function (contacts) {
+        userController.getContactList(true,false,(contacts)=>{
             currentObj.setState({
                 contacts
             })
         });
-
-        // let arr = [];
-        // for(let i=0;i<10;i++){
-        //     arr.push({
-        //         OtherComment : "公告:"+i,
-        //         RelationId : 'Z-'+i,
-        //         Nick : "测试"+i,
-        //         Remark : "",
-        //         BlackList : false,
-        //         avator : "",
-        //         Email : "",
-        //         localImage : "",
-        //         Type : "group",
-        //         owner : "wg003724",
-        //         show : true
-        //     })
-        // }
-        // this.setState({
-        //     contacts:arr
-        // })
     }
     render() {
-        this.relationStore = initFlatListData('group',this.state.contacts);
+        this.relationStore = initFlatListData(this.state.contacts);
         return (
             <View style={styles.container}>
                 <MyNavigationBar

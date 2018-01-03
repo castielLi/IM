@@ -89,8 +89,10 @@ class RecentChat extends AppComponent {
 
 
         userController.getContactList(false,true,(result)=>{
-            console.log(result);
-            currentObj.props.hideNavigationBottom();
+            userController.getContactList(true,true,(result)=>{
+
+                currentObj.props.hideNavigationBottom();
+            })
         })
     }
 

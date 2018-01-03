@@ -6,14 +6,14 @@ export function initDataFormate(arr,filterStr){
     };
     let snapArr = [];
     arr.forEach((v,i)=>{
-        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.Nickname).indexOf(filterStr.toUpperCase()) >= 0){
+        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.NickName).indexOf(filterStr.toUpperCase()) >= 0){
             snapArr.push(v)
         }
     })
 
 
     snapArr.forEach((value,index)=>{
-        let firstLetter = HanZi_PinYin.get(value.Nickname.slice(0,1)).slice(0,1);
+        let firstLetter = HanZi_PinYin.get(value.NickName.slice(0,1)).slice(0,1);
         let exist = false;
 
 
@@ -45,6 +45,6 @@ export function initDataFormate(arr,filterStr){
 
 export function initFlatListData(arr){
     return arr.filter((v,i)=>{
-        return (v.show === true || v.show === 'true')
+        return (v.Save === true || v.Save === 'true')
     })
 }

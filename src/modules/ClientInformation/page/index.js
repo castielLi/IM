@@ -39,7 +39,7 @@ class ClientInformation extends ContainerComponent {
 
     componentDidMount() {
         //todo:更新问题  什么时候更新用户信息
-        userController.getInfo(this.props.clientId,false,(result)=>{
+        userController.getUserInfo(this.props.clientId,(result)=>{
             let isFriend = false;
             if(result.Friend === true || result.Friend === 'true'){
                 isFriend = true;
@@ -84,6 +84,8 @@ class ClientInformation extends ContainerComponent {
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.userInfo.Account,type:'private',HeadImageUrl:this.state.userInfo.HeadImageUrl,Nick:this.state.userInfo.Nickname}});
     }
 
+
+    //todo:双方添加好友 验证页面
     addFriend = (Applicant,Respondent)=>{
         applyController.applyFriend(Applicant,Respondent,(response)=>{
             if(response.success){
@@ -100,7 +102,7 @@ class ClientInformation extends ContainerComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let {Nickname,Account,HeadImageUrl} = this.state.userInfo;
+        let {NickName,Account,HeadImageUrl} = this.state.userInfo;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -112,7 +114,7 @@ class ClientInformation extends ContainerComponent {
                     <View style={styles.basicBox}>
                         {HeadImageUrl!=''?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
                         <View style={styles.basicBoxRight}>
-                            <Text style={styles.name}>{Nickname}</Text>
+                            <Text style={styles.name}>{NickName}</Text>
                             <Text style={styles.id}>{'微信号：'+Account}</Text>
                         </View>
                     </View>

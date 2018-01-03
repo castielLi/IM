@@ -25,16 +25,21 @@ import RNFS from 'react-native-fs';
 
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import SettingController from '../../../Logic/Setting/settingController';
-import contactController from '../../../Logic/Contact/contactController'
 import RelationDto from '../../../Logic/Common/dto/RelationDto'
 
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let title = null;
+
+
+import SettingController from '../../../Logic/Setting/settingController';
+import contactController from '../../../Logic/Contact/contactController'
 let settingController = undefined;
 let ContactController = undefined;
+
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
 
 class ChooseClient extends ContainerComponent {
 
@@ -65,6 +70,8 @@ class ChooseClient extends ContainerComponent {
 		currentObj = this;
         settingController = new SettingController();
         ContactController = new contactController();
+
+        userController = new UserController();
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -119,9 +126,21 @@ class ChooseClient extends ContainerComponent {
 		}
 	}
 	componentDidMount(){
-        ContactController.getLatestContactList(function (contact) {
+        // ContactController.getLatestContactList(function (contact) {
+        //     let contacts = contact;
+        //     let data = initDataFormate('private',contact);
+        //     let relationStore = data.needArr;
+        //     let sectionStore = data.sectionArr;
+        //     currentObj.setState({
+        //         contacts,
+        //         sectionStore,
+        //         relationStore
+        //     })
+        // })
+
+		userController.getContactList(false,false,(contact)=>{
             let contacts = contact;
-            let data = initDataFormate('private',contact);
+            let data = initDataFormate(contact);
             let relationStore = data.needArr;
             let sectionStore = data.sectionArr;
             currentObj.setState({
@@ -129,7 +148,7 @@ class ChooseClient extends ContainerComponent {
                 sectionStore,
                 relationStore
             })
-        })
+		});
 	}
     choose=(item,hasMember)=>{
     	if(hasMember) return;
@@ -142,7 +161,7 @@ class ChooseClient extends ContainerComponent {
 		//对象转为所需数组
 		let arr = Object.keys(obj);
 		let needArr = [];
-		let concatList = initFlatListData('private',this.state.contacts,'');
+		let concatList = initFlatListData(this.state.contacts,'');
 		for(let i=0;i<arr.length;i++){
 			//已选中 选项
 			if(obj[arr[i]]){
@@ -254,7 +273,8 @@ class ChooseClient extends ContainerComponent {
 		//拼接选中用户id
 		for(let item in chooseArr){
 			accounts+= chooseArr[item].RelationId+",";
-            splNeedArr.push({Account:chooseArr[item].RelationId});
+            //splNeedArr.push({Account:chooseArr[item].RelationId});
+            splNeedArr.push(chooseArr[item].RelationId);
 			if(item < chooseArr.length - 1){
 				Nicks += chooseArr[item].Nick+",";
 			}else{
@@ -270,6 +290,15 @@ class ChooseClient extends ContainerComponent {
 
 		if(this.hasGroup) {
             currentObj.showLoading()
+
+			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
+			userController.addGroupMember(this.props.accountId,this.props.groupId,Nicks,accounts,(response)=>{
+                currentObj.hideLoading();
+                if(response.success){
+                	
+				}
+			});
+
 			let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
             settingController.addGroupMember(this.props.accountId,Nicks,this.splNeedArr,this.props.groupId,this.state.chooseArr,params,(result)=>{
                     currentObj.hideLoading();

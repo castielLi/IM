@@ -55,7 +55,7 @@ class InformationSetting extends ContainerComponent {
     }
 
     componentWillMount(){
-        userController.getInfo(this.props.clientId,false,(result)=>{
+        userController.getUserInfo(this.props.clientId,(result)=>{
             let BlackList = result.BlackList;
             if(BlackList == 'true'){
                 BlackList = true;
