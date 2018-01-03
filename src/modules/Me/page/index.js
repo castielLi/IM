@@ -142,7 +142,7 @@ class Me extends ContainerComponent {
 
     loginOut = ()=>{
         this.props.signOut();
-        loginController.logOut(this.props.accountId);
+        loginController.logOut();
         this.route.ToLogin();
 
     }
