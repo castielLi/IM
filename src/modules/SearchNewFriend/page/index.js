@@ -15,12 +15,12 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import settingController from '../../../Logic/Setting/settingController';
 
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
-let SettingController = undefined;
 
 class SearchNewFriend extends ContainerComponent {
     constructor(){
@@ -31,7 +31,7 @@ class SearchNewFriend extends ContainerComponent {
             searchResult:true
         }
         currentObj = this;
-        SettingController = new settingController();
+        userController = new UserController();
     }
 
 
@@ -47,6 +47,7 @@ class SearchNewFriend extends ContainerComponent {
             currentObj.alert("添加好友不允许添加自己","错误");
             return;
         }
+
 
         let params = {"Keyword":keyword};
         currentObj.showLoading();

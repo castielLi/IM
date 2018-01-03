@@ -20,16 +20,18 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
 //import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
+import  * as unReadMessageActions from '../../MainTabbar/reducer/action';
 
-import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
-import ContactController from '../../../Logic/Contact/contactController';
 import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
-let {height,width} = Dimensions.get('window');
-
-let currentObj = undefined;
-let contactController = undefined;
 let applyFriendController = undefined;
 
+import UserController from '../../../TSController/UserController';
+import ApplyController from '../../../TSController/ApplyController';
+let userController = undefined;
+let applyController = undefined;
+
+let {height,width} = Dimensions.get('window');
+let currentObj = undefined;
 class NewFriend extends ContainerComponent {
     constructor(props){
         super(props)
@@ -42,35 +44,31 @@ class NewFriend extends ContainerComponent {
             applyRecord:[],
         };
         currentObj = this;
-        contactController = new ContactController();
-        applyFriendController = new ApplyFriendController();
+        userController = new UserController();
+        applyController = new ApplyController();
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
     }
 
     componentWillMount(){
-        applyFriendController.setApplyFriendRecord(function(applyRecord) {
+        applyController.setApplyFriendRecord((applyRecord)=>{
             currentObj.setState({
                 applyRecord
             })
-        })
+        });
     }
 
-    acceptFriend = (data)=>{
-        let {key} = data;
-        let params = {key};
+    acceptFriend = (key)=>{
         this.showLoading();
-        callback = (results) => {
+        applyController.acceptFriend(key,(result)=>{
             currentObj.hideLoading();
-            if(results.success){
-                console.log('接受好友申請成功')
+            if(result.Result == 1){
+                alert('接受好友申請成功')
             }else{
-                console.log('接受好友申請失败')
+                alert('接受好友申請失败')
             }
-        }
-
-        applyFriendController.acceptFriend(params,callback)
+        })
 
     }
 
@@ -84,7 +82,7 @@ class NewFriend extends ContainerComponent {
             return (
                 <TouchableHighlight
                     underlayColor="#1FB579"
-                    onPress={()=>{this.acceptFriend(rowData)}}
+                    onPress={()=>{this.acceptFriend(rowData.key)}}
                     style={styles.btnBox}>
                     <View style={styles.btnView}>
                         <Text style={styles.btnText}>接受</Text>
@@ -180,7 +178,7 @@ class NewFriend extends ContainerComponent {
     }
 
     componentWillUnmount(){
-        applyFriendController.outApplyFriendPage()
+         //applyFriendController.outApplyFriendPage()
     }
 }
 

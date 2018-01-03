@@ -18,16 +18,16 @@ import {
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import SettingController from '../../../Logic/Setting/settingController'
+
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
 
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let title = null;
-let settingController = undefined;
 
 class DeleteGroupMember extends ContainerComponent {
 
@@ -41,7 +41,7 @@ class DeleteGroupMember extends ContainerComponent {
         this.relationStore = []
         this._rightButton = this._rightButton.bind(this);
         currentObj = this;
-        settingController = new SettingController()
+        userController = new UserController();
     }
 
 
@@ -128,14 +128,15 @@ class DeleteGroupMember extends ContainerComponent {
         let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
         let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
         currentObj.showLoading();
-        callback = (result)=>{
-            if(result.success && result.data.Data){
-                if(close){
+        userController.removeGroupMember(ID,close,this.needStr,(result)=>{
+            currentObj.hideLoading();
+            if(result.Result == 1){
+                if(close)
+                {
                     currentObj.alert('群解散了');
                     currentObj.route.toMain(currentObj.props);
                     return;
                 }
-
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -151,12 +152,11 @@ class DeleteGroupMember extends ContainerComponent {
                     params:{"groupId":ID,onUpdateHeadName:currentObj.props.UpdateHeadName},
 
                 },index)
+            }else{
+                alert('移除群成员失败');
             }
-            else{
-                console.log("http请求出错")
-            }
-        }
-        settingController.removeGroupMember(params,close,callback);
+
+        });
     }
 
 
