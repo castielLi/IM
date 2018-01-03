@@ -14,17 +14,15 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-
 import UserController from '../../../TSController/UserController';
-let userController = undefined;
-
 let {height,width} = Dimensions.get('window');
 
+let userController = undefined;
 let currentObj = undefined;
-class GroupAnnouncement extends ContainerComponent {
+class GroupAnnouncement extends AppComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);

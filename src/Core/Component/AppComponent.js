@@ -6,7 +6,7 @@ import ContainerComponent from './ContainerComponent'
 import AppManagement from './AppManagement'
 
 let currentObj = undefined;
-export default class AppComponent extends ContainerComponent{
+export default class AppComponent extends AppComponent{
     constructor(props) {
         super(props);
         if(props && props.MarkType) {
@@ -14,6 +14,11 @@ export default class AppComponent extends ContainerComponent{
         }
         this._refreshUI = this._refreshUI.bind(this);
         currentObj = this;
+    }
+
+
+    componentWillUnmount(){
+       AppManagement.removePageManagement(props.MarkType,this.constructor.name)
     }
 
     _refreshUI(params){

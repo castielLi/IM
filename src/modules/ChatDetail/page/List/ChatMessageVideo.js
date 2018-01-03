@@ -26,7 +26,7 @@ let imController = new IMController();
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageVideo extends ContainerComponent {
+class ChatMessageVideo extends AppComponent {
     constructor(props){
         super(props)
         this.state = {

@@ -12,13 +12,13 @@ import {Text,
     Dimensions,
     Switch
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 
 let {height,width} = Dimensions.get('window');
 
-class ChatSetting extends ContainerComponent {
+class ChatSetting extends AppComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);

@@ -38,7 +38,7 @@ const images = [{
 const uri = 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460';
 
 
-class Gallery extends ContainerComponent {
+class Gallery extends AppComponent {
     constructor(props) {
         super(props);
         this.state = {

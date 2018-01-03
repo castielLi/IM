@@ -14,22 +14,19 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import uuidv1 from 'uuid/v1';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {bindActionCreators} from 'redux';
-
-
 import UserController from '../../../TSController/UserController';
+
 let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
 
-class GroupName extends ContainerComponent {
+class GroupName extends AppComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);

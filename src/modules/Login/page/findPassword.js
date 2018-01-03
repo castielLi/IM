@@ -14,7 +14,7 @@ import changePassword from './changePassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 
 
-export default class Login extends ContainerComponent {
+export default class Login extends AppComponent {
 	constructor(props) {
 	  super(props);
 	

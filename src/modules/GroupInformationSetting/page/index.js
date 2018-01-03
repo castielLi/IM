@@ -18,25 +18,21 @@ import {Text,
     TouchableWithoutFeedback,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import RelationDto from '../../../Logic/Common/dto/RelationDto'
-
-
 import UserController from '../../../TSController/UserController';
-let userController = undefined;
-
 let {height,width} = Dimensions.get('window');
+let userController = undefined;
 let currentObj;
 const options = ['取消','确认']
 const title = '退出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
-class GroupInformationSetting extends ContainerComponent {
+class GroupInformationSetting extends AppComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);

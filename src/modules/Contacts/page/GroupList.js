@@ -18,24 +18,17 @@ import {
     FlatList,
     TouchableOpacity
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-
-import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
-
-
 import UserController from '../../../TSController/UserController';
-let userController = undefined;
-
-
 var {height, width} = Dimensions.get('window');
+
+let userController = undefined;
 let currentObj = undefined;
 
-class GroupList extends ContainerComponent {
+class GroupList extends AppComponent {
 
     constructor(props) {
         super(props);

@@ -14,13 +14,11 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
-//import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
-
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import ContactController from '../../../Logic/Contact/contactController';
 import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
@@ -30,7 +28,7 @@ let currentObj = undefined;
 let contactController = undefined;
 let applyFriendController = undefined;
 
-class NewFriend extends ContainerComponent {
+class NewFriend extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);

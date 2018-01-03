@@ -22,7 +22,7 @@ import ContainerComponent from '../../../../Core/Component/ContainerComponent'
 
 let {width, height} = Dimensions.get('window');
 
-class Player extends ContainerComponent {
+class Player extends AppComponent {
     constructor(props){
         super(props)
         this.state = {

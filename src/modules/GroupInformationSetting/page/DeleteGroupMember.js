@@ -15,7 +15,7 @@ import {
     TouchableOpacity,
     FlatList
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
@@ -29,7 +29,7 @@ let currentObj = undefined;
 let title = null;
 let settingController = undefined;
 
-class DeleteGroupMember extends ContainerComponent {
+class DeleteGroupMember extends AppComponent {
 
     constructor(props) {
         super(props);

@@ -8,7 +8,7 @@ import {Text,
     TouchableHighlight,
     Dimensions
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,7 +23,7 @@ let applyController = undefined;
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
-class ClientInformation extends ContainerComponent {
+class ClientInformation extends AppComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);

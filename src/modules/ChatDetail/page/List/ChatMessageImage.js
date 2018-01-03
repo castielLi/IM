@@ -22,7 +22,7 @@ import {
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageImage extends ContainerComponent {
+class ChatMessageImage extends AppComponent {
     constructor(props){
         super(props)
 

@@ -9,7 +9,7 @@ import {
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import TabNavigator from 'react-native-tab-navigator';
-import DisplayComponent from '../../../Core/Component/index';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import tabBarPageEnum from './tabBarPageEnum';
@@ -17,7 +17,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 
 
-class TabBarComponent extends DisplayComponent {
+class TabBarComponent extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);

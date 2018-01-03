@@ -14,7 +14,7 @@ import {
 	Dimensions,
     TouchableOpacity
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -22,19 +22,12 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
-
-
 import UserController from '../../../TSController/UserController';
+import Features from '../../Common/menu/features';
+let currentObj = undefined;
 let userController = undefined;
 
-
-
-
-let currentObj = undefined;
-var {height, width} = Dimensions.get('window');
-import Features from '../../Common/menu/features';
-
-class Contacts extends ContainerComponent {
+class Contacts extends AppComponent {
 
 	constructor(props) {
 		super(props);

@@ -7,7 +7,7 @@ import {Text,
     TouchableHighlight,
     Switch
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -22,7 +22,7 @@ let currentObj = undefined;
 const options = ['取消','确认删除']
 const title = '你确定要删除这位好友么'
 
-class InformationSetting extends ContainerComponent {
+class InformationSetting extends AppComponent {
     constructor(){
         super()
         this.render = this.render.bind(this);
