@@ -28,15 +28,8 @@ import {bindActionCreators} from 'redux';
 import RelationDto from '../../../Logic/Common/dto/RelationDto'
 
 
-// import settingController from '../../../Logic/Setting/settingController'
-// let SettingController = undefined;
-
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
-
-
-
-
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -123,23 +116,8 @@ class GroupInformationSetting extends ContainerComponent {
 
 
     handlePress(i){
-        // let {groupId,accountId} = this.props;
-        // let params = {"GroupId":groupId,"Account":accountId};
         //退出群组
         if(1 == i){
-            // currentObj.showLoading();
-            // callback = (results)=>{
-            //     currentObj.hideLoading();
-            //     if(results.data.Data){
-            //         currentObj.route.toMain(currentObj.props);
-            //     }
-            //     else{
-            //         alert(results.errorMessage);
-            //         console.log('退出群组出错')
-            //     }
-            // };
-            // SettingController.exitGroup(params,callback);
-
             currentObj.showLoading();
             userController.removeGroup(this.props.groupId,()=>{
                 currentObj.hideLoading();
@@ -164,34 +142,8 @@ class GroupInformationSetting extends ContainerComponent {
 
 
     searchUser = (Account)=>{
-        // let params = {"Keyword":keyword};
-        // currentObj.showLoading();
-        // callback = (results) =>{
-        //     currentObj.hideLoading();
-        //     if(results.success && results.data.Data){
-        //         let relations = currentObj.props.relations;
-        //         let needRelation = null;
-        //         let hasRelation = false;
-        //         for(let item in relations){
-        //             if(relations[item].RelationId == results.data.Data.Account && relations[item].show === 'true'){
-        //                 hasRelation = !hasRelation;
-        //                 needRelation = relations[item];
-        //                 break;
-        //             }
-        //         }
-        //         if(hasRelation===false){
-        //             needRelation = results.data.Data;
-        //         }
-                //currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-
-        //     }
-        //     else{
-        //         console.log('查询用户信息出错');
-        //     }
-        // };
-        // SettingController.searchUser(params,callback);
         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
-    }
+    };
 
     goToChooseClient = ()=>{
         let members = this.state.members.map((item,index)=>{

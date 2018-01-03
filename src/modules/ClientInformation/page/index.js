@@ -36,12 +36,9 @@ class ClientInformation extends ContainerComponent {
         userController = new UserController();
         applyController = new ApplyController();
     }
-    // isUpdateFriendInfo = (UserInfo,propsRelation) =>{
-    //     let {accountId} = this.props.loginStore;
-    //     contactController.UpdateFriendInfo(accountId,UserInfo,propsRelation)
-    // }
+
     componentDidMount() {
-        //todo:更新问题
+        //todo:更新问题  什么时候更新用户信息
         userController.getInfo(this.props.clientId,false,(result)=>{
             let isFriend = false;
             if(result.Friend === true || result.Friend === 'true'){
@@ -52,41 +49,6 @@ class ClientInformation extends ContainerComponent {
                 isFriend,
             })
         });
-        //-----------------
-        // if(this.props.hasRelation){
-        //     let needRelation = currentObj.props.Relation;
-        //
-        //     let accountId = currentObj.props.Relation.RelationId;
-        //     this.showLoading()
-        //
-        //     let params = {"Account":accountId}
-        //     settingController.getFriendUserInfo(params,(results)=>{
-        //         currentObj.hideLoading();
-        //         if(!results.success){
-        //             alert(result.errorMessage);
-        //             return;
-        //         }
-        //         if(results.data.Data){
-        //             let {Account,Nickname,PhoneNumber,HeadImageUrl} = results.data.Data;
-        //             currentObj.setState({
-        //                 Account,
-        //                 Nickname,
-        //                 PhoneNumber,
-        //                 HeadImageUrl
-        //             })
-        //             currentObj.isUpdateFriendInfo(results.data.Data,needRelation);
-        //         }
-        //     })
-        // }else{
-        //
-        //     let {Account,Nickname,PhoneNumber,HeadImageUrl} = currentObj.props.Relation;
-        //     currentObj.setState({
-        //         Account,
-        //         Nickname,
-        //         PhoneNumber,
-        //         HeadImageUrl
-        //     })
-        // }
     }
 
 
@@ -130,48 +92,10 @@ class ClientInformation extends ContainerComponent {
                         isFriend:true
                     })
                 }else if(response.data.Result === 1 && typeof response.data.Data === 'string'){
-                    currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{}})
+                    currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo}})
                 }
             }
         });
-
-
-
-        // let Applicant = this.props.loginStore.accountId;
-        // currentObj.showLoading()
-        //
-        //
-        // let params = {Applicant,Respondent};
-        // applyFriendController.applyFriend(params,function (result) {
-        //     currentObj.hideLoading()
-        //     if(!result.success){
-        //         alert(result.errorMessage);
-        //         return;
-        //     }
-        //     //单方面添加好友
-        //     if(result.success && result.data.Data instanceof Object){
-        //         currentObj.setState({
-        //             isRenderSendMessage:true
-        //         })
-        //         //relationStore里面添加该好友(或者重新初始化)
-        //         // let {Account,HeadImageUrl,Nickname,Email} = result.data.Data.MemberInfo;
-        //         // let IsInBlackList =result.data.Data.IsInBlackList;
-        //         // let relationObj = new RelationModel();
-        //         // relationObj.RelationId = Account;
-        //         // relationObj.avator = HeadImageUrl;
-        //         // relationObj.Nick = Nickname;
-        //         // relationObj.Type = 'private';
-        //         // relationObj.Email = Email;
-        //         // relationObj.BlackList = IsInBlackList;
-        //         // relationObj.show = 'true';
-        //
-        //         //currentObj.props.addRelation(relationObj);
-        //     }
-        //     //双方互不为好友
-        //     else if(result.success && typeof result.data.Data === 'string'){
-        //         currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{validateID:result.data.Data,"relation":currentObj.props.Relation,Applicant,Respondent}})
-        //     }
-        // })
     }
     render() {
         let Popup = this.PopContent;
@@ -229,7 +153,7 @@ class ClientInformation extends ContainerComponent {
                     {this.state.isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
                     </TouchableHighlight>: null}
-                    {<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(this.props.loginStore.accountId,Account)}} style={styles.sendMessageBox}>
+                    {this.state.isFriend ? null : <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(this.props.loginStore.accountId,Account)}} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>添加到通讯录</Text>
                     </TouchableHighlight>}
 
