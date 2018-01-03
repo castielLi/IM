@@ -295,51 +295,68 @@ class ChooseClient extends ContainerComponent {
 			userController.addGroupMember(this.props.accountId,this.props.groupId,Nicks,accounts,(response)=>{
                 currentObj.hideLoading();
                 if(response.success){
-                	
-				}
+                    let routes = currentObj.props.navigator.getCurrentRoutes();
+                    let index;
+                    for (let i = 0; i < routes.length; i++) {
+                        if (routes[i]["key"] == "GroupInformationSetting") {
+                            index = i;
+                            break;
+                        }
+                    }
+                    currentObj.route.replaceAtIndex(currentObj.props,{
+                        key:'GroupInformationSetting',
+                        routeId: 'GroupInformationSetting',
+                        params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+
+                    },index)
+				}else{
+                    alert(response.errorMessage);
+                    return;
+                }
 			});
 
-			let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
-            settingController.addGroupMember(this.props.accountId,Nicks,this.splNeedArr,this.props.groupId,this.state.chooseArr,params,(result)=>{
-                    currentObj.hideLoading();
-                    if (result.success) {
-                        if (result.data.Data == null) {
-                            alert("返回群数据出错")
-                            return;
-                        }
-
-                        let routes = currentObj.props.navigator.getCurrentRoutes();
-                        let index;
-                        for (let i = 0; i < routes.length; i++) {
-                            if (routes[i]["key"] == "GroupInformationSetting") {
-                                index = i;
-                                break;
-                            }
-                        }
-                        alert('添加成功');
-                        //跳转到群设置
-                        currentObj.route.replaceAtIndex(currentObj.props,{
-                            key:'GroupInformationSetting',
-                            routeId: 'GroupInformationSetting',
-                            params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
-
-                        },index)
-                    }else{
-                        alert(result.errorMessage);
-                        return;
-                    }
-            })
+            // let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
+            // settingController.addGroupMember(this.props.accountId,Nicks,this.splNeedArr,this.props.groupId,this.state.chooseArr,params,(result)=>{
+            //         currentObj.hideLoading();
+            //         if (result.success) {
+            //             if (result.data.Data == null) {
+            //                 alert("返回群数据出错")
+            //                 return;
+            //             }
+            //
+            //             let routes = currentObj.props.navigator.getCurrentRoutes();
+            //             let index;
+            //             for (let i = 0; i < routes.length; i++) {
+            //                 if (routes[i]["key"] == "GroupInformationSetting") {
+            //                     index = i;
+            //                     break;
+            //                 }
+            //             }
+            //             alert('添加成功');
+            //             //跳转到群设置
+            //             currentObj.route.replaceAtIndex(currentObj.props,{
+            //                 key:'GroupInformationSetting',
+            //                 routeId: 'GroupInformationSetting',
+            //                 params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+            //
+            //             },index)
+            //         }else{
+            //             alert(result.errorMessage);
+            //             return;
+            //         }
+            // })
 
         }
         //未有群 创建群
         else{
-
         	if(chooseArr.length == 1){
                 this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',Nick:chooseArr[0].Nick}});
                 return;
 			}
-
             currentObj.showLoading()
+
+			userController.createGroup()
+
             let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
         	settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
                 currentObj.hideLoading();
