@@ -39,33 +39,22 @@ class Start extends ContainerComponent {
             }
 
 
-            if(!result.success){
-                //2003代码是token失效
-                if(result.errorCode == 2003){
-                    currentObj.route.push(currentObj.props,{
-                        key:'Login',
-                        routeId: 'Login'
-                    });
-                    return;
-                }
-                alert(result.errorMessage)
-                return;
-            }
-
-            if(result.data.Data == null){
+            if(!result.Success){
                 currentObj.route.push(currentObj.props,{
                     key:'Login',
                     routeId: 'Login'
                 });
-            }else{
-                account = result.data.account;
-                currentObj.props.signIn(account);
-
-                currentObj.route.push(currentObj.props,{
-                    key:'MainTabbar',
-                    routeId: 'MainTabbar'
-                });
+                return;
             }
+
+            let account = result.Data;
+            currentObj.props.signIn(account);
+
+            currentObj.route.push(currentObj.props,{
+                key:'MainTabbar',
+                routeId: 'MainTabbar'
+            });
+
 
         });
     }

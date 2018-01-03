@@ -2,18 +2,13 @@ import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,
     StyleSheet,Dimensions,Alert,Keyboard,KeyboardAvoidingView}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import Main from './main';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
-import ContentPage from './contentPage';
-import emailLogin from './emailLogin';
-import findPassword from './findPassword';
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import Touch from '../../Common/Thouch/index';
-
 import loginController from '../../../TSController/loginController';
 let LoginController = undefined;
 
