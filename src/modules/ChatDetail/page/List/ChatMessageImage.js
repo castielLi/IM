@@ -14,7 +14,7 @@ import {
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
-import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import AppComponent from '../../../../Core/Component/AppComponent'
 import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
@@ -22,7 +22,7 @@ import {
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageImage extends ContainerComponent {
+class ChatMessageImage extends AppComponent {
     constructor(props){
         super(props)
 

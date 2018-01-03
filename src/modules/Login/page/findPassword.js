@@ -4,17 +4,11 @@ import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
-import Main from './main';
-import {connect} from 'react-redux';
-import checkReg from './regExp';
 import Confirm from './confirm';
-import emailLogin from './emailLogin';
-import PhoneLogin from './phoneLogin';
-import changePassword from './changePassword';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 
 
-export default class Login extends ContainerComponent {
+export default class Login extends AppComponent {
 	constructor(props) {
 	  super(props);
 	

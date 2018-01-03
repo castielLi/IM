@@ -12,7 +12,7 @@ import {Text,
     Dimensions,
     Switch
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -22,9 +22,9 @@ let userController = undefined;
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
-class SearchNewFriend extends ContainerComponent {
-    constructor(){
-        super()
+class SearchNewFriend extends AppComponent {
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             text:'',
@@ -32,6 +32,10 @@ class SearchNewFriend extends ContainerComponent {
         }
         currentObj = this;
         userController = new UserController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
 

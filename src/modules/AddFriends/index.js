@@ -13,14 +13,18 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 
-import ContainerComponent from '../../Core/Component/ContainerComponent';
+import AppComponent from '../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 
 
-export default class AddFriends extends ContainerComponent {
+export default class AddFriends extends AppComponent {
     constructor(props){
         super(props)
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     static defaultProps = {

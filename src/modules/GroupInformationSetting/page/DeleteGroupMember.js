@@ -15,7 +15,7 @@ import {
     TouchableOpacity,
     FlatList
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
@@ -29,7 +29,7 @@ var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
 
-class DeleteGroupMember extends ContainerComponent {
+class DeleteGroupMember extends AppComponent {
 
     constructor(props) {
         super(props);
@@ -44,10 +44,8 @@ class DeleteGroupMember extends ContainerComponent {
         userController = new UserController();
     }
 
-
-
-    componentWillMount(){
-
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     circleStyle = (isChoose)=>{

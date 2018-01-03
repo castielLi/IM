@@ -5,7 +5,7 @@ import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter
 import {connect} from 'react-redux';
 import checkReg from './regExp';
 import Confirm from './confirm';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import Touch from '../../Common/Thouch/index';
@@ -13,7 +13,7 @@ import loginController from '../../../TSController/loginController';
 let LoginController = undefined;
 
 let currentObj = undefined;
-class PhoneLogin extends ContainerComponent {
+class PhoneLogin extends AppComponent {
     componentWillUnmount() {
         // sqLite.close();
     }
@@ -55,7 +55,10 @@ class PhoneLogin extends ContainerComponent {
         }else if(this.state.textMessage){
             this._textInput.setNativeProps({maxLength:16})
         }
+    }
 
+    componentWillUnmount(){
+       super.componentWillUnmount();
     }
 
 

@@ -12,7 +12,7 @@ import {
 	StyleSheet,
 	SectionList
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
@@ -103,13 +103,14 @@ let styles = StyleSheet.create({
 });
 
 
-class Zoom extends ContainerComponent {
+class Zoom extends AppComponent {
 	constructor(props) {
 		super(props);
-		this.state = {
-			
-		};
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 	componentWillMount(){
         styles = super.componentWillMount(styles)

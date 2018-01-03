@@ -16,15 +16,18 @@ import {
     Dimensions,
     TouchableOpacity
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 
-class GroupNotice extends ContainerComponent {
+class GroupNotice extends AppComponent {
 
     constructor(props) {
         super(props);
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     render() {

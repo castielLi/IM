@@ -27,7 +27,6 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import RNFS from 'react-native-fs';
-import IMController from '../../../../Logic/Im/imController'
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -37,11 +36,6 @@ let _MaxListHeight = 0; //记录最大list高度
 
 let FooterLayout = false;
 let ListLayout = false;
-
-let {width, height} = Dimensions.get('window');
-let firstOldMsg;
-let recordData;
-let imController = new IMController();
 let currentObj;
 
 class Chat extends Component {

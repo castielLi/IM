@@ -13,7 +13,7 @@ import {Text,
     StatusBar,
     SectionList
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import * as loginStoreAction from '../../Login/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         color:'#aaa'
     },
 });
-class Me extends ContainerComponent {
+class Me extends AppComponent {
     constructor(props){
         super(props);
 
@@ -137,6 +137,10 @@ class Me extends ContainerComponent {
         };
 
         loginController = new LoginController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
 

@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, Image,AsyncStorage,Platform} from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
@@ -14,9 +14,9 @@ let LoginController = undefined;
 let currentObj = undefined;
 
 
-class Start extends ContainerComponent {
-    constructor(){
-        super()
+class Start extends AppComponent {
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             selectedTab: 'home',
@@ -24,6 +24,10 @@ class Start extends ContainerComponent {
         }
         currentObj = this;
         LoginController = new loginController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
 

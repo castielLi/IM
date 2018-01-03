@@ -16,7 +16,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import RNFS from 'react-native-fs';
 
-import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import AppComponent from '../../../../Core/Component/AppComponent'
 import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
@@ -26,7 +26,7 @@ let imController = new IMController();
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageVideo extends ContainerComponent {
+class ChatMessageVideo extends AppComponent {
     constructor(props){
         super(props)
         this.state = {

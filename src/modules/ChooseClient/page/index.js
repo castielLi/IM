@@ -15,33 +15,22 @@ import {
     FlatList,
     TouchableOpacity
 } from 'react-native';
-import uuidv1 from 'uuid/v1';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-
-import RNFS from 'react-native-fs';
-
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import RelationDto from '../../../Logic/Common/dto/RelationDto'
-
-var {height, width} = Dimensions.get('window');
-
-let currentObj = undefined;
-let title = null;
-
-
 import SettingController from '../../../Logic/Setting/settingController';
 import contactController from '../../../Logic/Contact/contactController'
+var {height, width} = Dimensions.get('window');
+let currentObj = undefined;
+let title = null;
 let settingController = undefined;
 let ContactController = undefined;
 
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
 
-class ChooseClient extends ContainerComponent {
+class ChooseClient extends AppComponent {
 
 	constructor(props) {
 		super(props);
@@ -73,6 +62,10 @@ class ChooseClient extends ContainerComponent {
 
         userController = new UserController();
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 	onPressRightSectionItemIn = (index) =>{
 		this.refs.mySectionList.scrollToLocation({

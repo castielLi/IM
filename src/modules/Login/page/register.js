@@ -1,18 +1,15 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import {
-    Navigator
-} from 'react-native-deprecated-custom-components';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import Confirm from './confirm';
+import AppComponent from '../../../Core/Component/AppComponent';
+
 
 let currentObj = undefined;
 
-export default class Register extends ContainerComponent {
+export default class Register extends AppComponent {
 
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 
         this.state = {
             NicknameText:'',
@@ -24,6 +21,10 @@ export default class Register extends ContainerComponent {
 
         currentObj = this;
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 
 

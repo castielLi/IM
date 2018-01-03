@@ -12,20 +12,24 @@ import {Text,
     Dimensions,
     Switch
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 
 let {height,width} = Dimensions.get('window');
 
-class ChatSetting extends ContainerComponent {
-    constructor(){
-        super()
+class ChatSetting extends AppComponent {
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
         }
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     changeIsStickyChat = ()=>{

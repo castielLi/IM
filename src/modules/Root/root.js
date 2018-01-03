@@ -20,14 +20,18 @@ import {
     connect
 } from 'react-redux';
 import * as router from '../routerMap'
-import DisplayComponent from '../../Core/Component'
+import AppComponent from '../../Core/Component/AppComponent'
 
 let initRootNavigation = false;
 
-class Root extends DisplayComponent {
+class Root extends AppComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     renderScene(Route, navigator) {

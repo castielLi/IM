@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
-import ContainerComponent from '../../Core/Component/ContainerComponent';
+import AppComponent from '../../Core/Component/AppComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 
 import {bindActionCreators} from 'redux';
@@ -28,7 +28,7 @@ import ApplyFriendController from '../../Logic/ApplyFriend/applyFriendController
 let currentObj;
 let applyFriendController = undefined;
 
-class Validate extends ContainerComponent {
+class Validate extends AppComponent {
     constructor(props){
         super(props)
         this.state={
@@ -37,6 +37,10 @@ class Validate extends ContainerComponent {
         }
         currentObj = this;
         applyFriendController = new ApplyFriendController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     static defaultProps = {

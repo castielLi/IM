@@ -23,7 +23,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 
-import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import AppComponent from '../../../../Core/Component/AppComponent'
 import IMController from '../../../../Logic/Im/imController'
 let imController = undefined;
 
@@ -38,7 +38,7 @@ const images = [{
 const uri = 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460';
 
 
-class Gallery extends ContainerComponent {
+class Gallery extends AppComponent {
     constructor(props) {
         super(props);
         this.state = {

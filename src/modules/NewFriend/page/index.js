@@ -14,25 +14,20 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
-//import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
 import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
-import  * as unReadMessageActions from '../../MainTabbar/reducer/action';
+import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 
-import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
-let applyFriendController = undefined;
-
-import UserController from '../../../TSController/UserController';
 import ApplyController from '../../../TSController/ApplyController';
-let userController = undefined;
 let applyController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj = undefined;
-class NewFriend extends ContainerComponent {
+class NewFriend extends AppComponent {
+
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
@@ -44,9 +39,13 @@ class NewFriend extends ContainerComponent {
             applyRecord:[],
         };
         currentObj = this;
-        userController = new UserController();
         applyController = new ApplyController();
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
     }

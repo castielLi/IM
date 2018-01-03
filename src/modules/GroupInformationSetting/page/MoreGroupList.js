@@ -18,10 +18,9 @@ import {Text,
     TouchableWithoutFeedback,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 let {height,width} = Dimensions.get('window');
@@ -29,9 +28,9 @@ let currentObj;
 
 
 
-class MoreGroupList extends ContainerComponent {
-    constructor(){
-        super();
+class MoreGroupList extends AppComponent {
+    constructor(prop){
+        super(props);
         this.state = {
 
             searchResult:true,
@@ -40,6 +39,10 @@ class MoreGroupList extends ContainerComponent {
         this.render = this.render.bind(this);
 
         currentObj = this;
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     searchUser = (keyword)=>{

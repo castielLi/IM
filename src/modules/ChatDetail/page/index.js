@@ -16,14 +16,11 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as chatDetailActions from '../reducer/action';
-import RNFS from 'react-native-fs';
-import ContainerComponent from '../../../Core/Component/ContainerComponent'
 import AppComponent from '../../../Core/Component/AppComponent';
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../Logic/Im/imController'
-import ContactController from '../../../Logic/Contact/contactController'
 
 let imController = undefined;
 let contactController = undefined;
@@ -45,11 +42,15 @@ class ChatDetail extends AppComponent {
         this.isDisabled = false
 
         imController = new IMController();
-        contactController = new ContactController();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
+
     _refreshUI(params){
-	  alert(params.content)
+
 	}
 
     goToChatSeeting = ()=>{

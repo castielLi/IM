@@ -58,7 +58,11 @@ class RecentChat extends AppComponent {
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
         userController = new UserController();
-        // imController = new IMController();
+        imController = new IMController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     _refreshUI(params){

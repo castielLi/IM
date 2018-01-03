@@ -16,6 +16,11 @@ export default class AppComponent extends ContainerComponent{
         currentObj = this;
     }
 
+
+    componentWillUnmount(){
+       AppManagement.removePageManagement(props.MarkType,this.constructor.name)
+    }
+
     _refreshUI(params){
 
     }
