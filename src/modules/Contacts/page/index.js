@@ -57,7 +57,6 @@ class Contacts extends ContainerComponent {
         currentObj = this;
 
         userController = new UserController();
-        //contactController = new ContactController();
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -229,12 +228,6 @@ class Contacts extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-
-        // contactController.getLatestContactList(function (contacts) {
-        //     currentObj.setState({
-        //         contacts
-        //     })
-        // });
         userController.getContactList(false,false,(contacts)=>{
             currentObj.setState({
                 contacts

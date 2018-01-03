@@ -84,12 +84,8 @@ class PhoneLogin extends ContainerComponent {
                 return;
             }
             currentObj.props.signDoing();
-            let account = { accountId:response.Data["Account"],SessionToken:response.Data["SessionToken"],IMToken:response.Data["IMToken"]
-                ,gender:response.Data["Gender"],Nick:response.Data["Nickname"],avator:response.Data["HeadImageUrl"],phone:response.Data["PhoneNumber"]
-                ,device:"Mobile",deviceId:"1"};
-
+            let account = response.Data;
             currentObj.props.signIn(account);
-            //imController.setMyAccount(account);
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
                 routeId: 'MainTabbar'
