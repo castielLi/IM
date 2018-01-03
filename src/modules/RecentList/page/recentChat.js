@@ -31,21 +31,11 @@ import {
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
-
-
-<<<<<<< Updated upstream
 import UserController from '../../../TSController/UserController'
-let userController = new UserController();
-=======
 import IMController from '../../../Logic/Im/imController'
-import LoginController from '../../../Logic/loginController'
-let imController = new IMController();
-let loginController = new LoginController();
 
-import UserController from '../../../TSController/UserController'
+let imController = undefined;
 let userController = undefined;
->>>>>>> Stashed changes
-
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
@@ -68,6 +58,7 @@ class RecentChat extends AppComponent {
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
         userController = new UserController();
+        imController = new IMController();
     }
 
     _refreshUI(params){
