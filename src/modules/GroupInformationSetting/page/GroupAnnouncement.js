@@ -17,8 +17,10 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import SettingController from '../../../Logic/Setting/settingController';
-let settingController = undefined;
+
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
+
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -34,7 +36,7 @@ class GroupAnnouncement extends ContainerComponent {
         };
 
         currentObj = this;
-        settingController = new SettingController();
+        userController = new UserController();
     }
 
 
@@ -64,14 +66,10 @@ class GroupAnnouncement extends ContainerComponent {
     toChangeDiscription = ()=>{
         let {accountId,ID,navigator} = this.props;
         currentObj.showLoading();
-        let params = {"Operater":accountId,"GroupId":ID,"Desc":this.state.text};
-        settingController.toChangeDiscription(params,(result)=>{
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-            if(result.data.Data){
+
+        userController.updateGroupBulletin(ID,this.state.text,(result)=>{
+            currentObj.hideLoading();
+            if(result.Result == 1){
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -80,7 +78,6 @@ class GroupAnnouncement extends ContainerComponent {
                         break;
                     }
                 }
-                // alert('发布成功');
                 //跳转到群设置
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
@@ -88,10 +85,10 @@ class GroupAnnouncement extends ContainerComponent {
                     params:{"groupId":ID}
                 },index)
             }else{
-                alert("http请求出错")
+                alert('更改失败');
             }
-        })
-    }
+        });
+    };
 
     render() {
         let Popup = this.PopContent;

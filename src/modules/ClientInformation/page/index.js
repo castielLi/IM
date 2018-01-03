@@ -102,7 +102,7 @@ class ClientInformation extends ContainerComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let {NickName,Account,HeadImageUrl} = this.state.userInfo;
+        let {Nickname,Account,HeadImageUrl} = this.state.userInfo;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -114,7 +114,7 @@ class ClientInformation extends ContainerComponent {
                     <View style={styles.basicBox}>
                         {HeadImageUrl!=''?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
                         <View style={styles.basicBoxRight}>
-                            <Text style={styles.name}>{NickName}</Text>
+                            <Text style={styles.name}>{Nickname}</Text>
                             <Text style={styles.id}>{'微信号：'+Account}</Text>
                         </View>
                     </View>

@@ -22,10 +22,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {bindActionCreators} from 'redux';
 
 
-import SettingController from '../../../Logic/Setting/settingController'
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
 
-
-let settingController = undefined;
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
@@ -42,7 +41,7 @@ class GroupName extends ContainerComponent {
         };
 
         currentObj = this;
-        settingController = new SettingController()
+        userController = new UserController()
     }
 
 
@@ -70,19 +69,14 @@ class GroupName extends ContainerComponent {
     toChangeName = ()=>{
         let {accountId,ID,navigator} = this.props;
         currentObj.showLoading();
-        let params = {"Operater":accountId,"GroupId":ID,"Name":this.state.text};
-        settingController.updateGroupName(accountId,ID,params,(result)=>{
+
+        userController.updateGroupName(accountId,ID,this.state.text,(result)=>{
             currentObj.hideLoading();
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-            if(result.data.Data){
+            if(result.Result == 1){
 
                 if(currentObj.props.UpdateHeadName != undefined){
                     currentObj.props.UpdateHeadName(currentObj.state.text);
                 }
-
                 //路由跳转
                 let routes = navigator.getCurrentRoutes();
                 let index;
@@ -100,10 +94,9 @@ class GroupName extends ContainerComponent {
 
                 },index)
             }else{
-                console.log("http请求出错")
+                alert('修改失败');
             }
         });
-
     }
 
     render() {

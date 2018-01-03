@@ -152,8 +152,8 @@ class ChooseClient extends ContainerComponent {
 	}
     choose=(item,hasMember)=>{
     	if(hasMember) return;
-		//改变选中颜色{RelationId:true,RelationId:false...}
-		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
+		//改变选中颜色{Account:true,Account:false...}
+		this.state.chooseObj[item.Account] = !this.state.chooseObj[item.Account];
 		let obj = {...this.state.chooseObj};
 		this.setState({
             chooseObj:obj
@@ -166,7 +166,7 @@ class ChooseClient extends ContainerComponent {
 			//已选中 选项
 			if(obj[arr[i]]){
 				for(let j=0;j<concatList.length;j++){
-					if(concatList[j].RelationId === arr[i]){
+					if(concatList[j].Account === arr[i]){
                         needArr.push(concatList[j]);
                         break;
 					}
@@ -184,13 +184,13 @@ class ChooseClient extends ContainerComponent {
     circleStyle = (info,hasMember)=>{
     	if(!this.hasGroup){
     		return (
-				<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}/>
+				<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.Account]?'green':'transparent'}]}/>
 			)
 		}else{
     		if(hasMember){
     			return <View style={[styles.circle,{backgroundColor:'red'}]}/>
 			}else{
-    			return <View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}/>
+    			return <View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.Account]?'green':'transparent'}]}/>
 			}
 		}
 	}
@@ -208,10 +208,10 @@ class ChooseClient extends ContainerComponent {
         }
     }
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.NickName;
+		var txt = '  ' + info.item.Nickname;
 		let hasMember;
         if(this.hasGroup){
-            hasMember = this.props.members.indexOf(info.item.RelationId);
+            hasMember = this.props.members.indexOf(info.item.Account);
             hasMember !== -1 ? hasMember = true : hasMember = false;
 		}
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
@@ -268,20 +268,16 @@ class ChooseClient extends ContainerComponent {
         let chooseArr = this.state.chooseArr;
 		let accounts = "";
 		let Nicks = "";
-		//let members = [];
 		let splNeedArr = [];
 		//拼接选中用户id
 		for(let item in chooseArr){
-			accounts+= chooseArr[item].RelationId+",";
-            //splNeedArr.push({Account:chooseArr[item].RelationId});
-            splNeedArr.push(chooseArr[item].RelationId);
+			accounts+= chooseArr[item].Account+",";
+            splNeedArr.push({Account:chooseArr[item].Account});
 			if(item < chooseArr.length - 1){
-				Nicks += chooseArr[item].Nick+",";
+				Nicks += chooseArr[item].Nickname+",";
 			}else{
-				Nicks += chooseArr[item].Nick;
+				Nicks += chooseArr[item].Nickname;
 			}
-
-			//members.push({"Account":chooseArr[item].RelationId})
 		}
 		this.splNeedArr = splNeedArr;
 		accounts += currentObj.props.accountId;
@@ -292,9 +288,9 @@ class ChooseClient extends ContainerComponent {
             currentObj.showLoading()
 
 			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
-			userController.addGroupMember(this.props.accountId,this.props.groupId,Nicks,accounts,(response)=>{
+			userController.addGroupMember(this.props.accountId,this.props.groupId,Nicks,accounts,(result)=>{
                 currentObj.hideLoading();
-                if(response.success){
+                if(result.Result == 1){
                     let routes = currentObj.props.navigator.getCurrentRoutes();
                     let index;
                     for (let i = 0; i < routes.length; i++) {
@@ -310,80 +306,29 @@ class ChooseClient extends ContainerComponent {
 
                     },index)
 				}else{
-                    alert(response.errorMessage);
-                    return;
+                    alert('添加成员失败');
                 }
 			});
-
-            // let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
-            // settingController.addGroupMember(this.props.accountId,Nicks,this.splNeedArr,this.props.groupId,this.state.chooseArr,params,(result)=>{
-            //         currentObj.hideLoading();
-            //         if (result.success) {
-            //             if (result.data.Data == null) {
-            //                 alert("返回群数据出错")
-            //                 return;
-            //             }
-            //
-            //             let routes = currentObj.props.navigator.getCurrentRoutes();
-            //             let index;
-            //             for (let i = 0; i < routes.length; i++) {
-            //                 if (routes[i]["key"] == "GroupInformationSetting") {
-            //                     index = i;
-            //                     break;
-            //                 }
-            //             }
-            //             alert('添加成功');
-            //             //跳转到群设置
-            //             currentObj.route.replaceAtIndex(currentObj.props,{
-            //                 key:'GroupInformationSetting',
-            //                 routeId: 'GroupInformationSetting',
-            //                 params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
-            //
-            //             },index)
-            //         }else{
-            //             alert(result.errorMessage);
-            //             return;
-            //         }
-            // })
 
         }
         //未有群 创建群
         else{
         	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',Nick:chooseArr[0].Nick}});
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].Account,type:'private',Nick:chooseArr[0].Nick}});
                 return;
 			}
             currentObj.showLoading()
 			let groupName = this.props.accountName + "发起的群聊";
-			userController.createGroup(this.props.accountId,groupName,Nicks,accounts,(response)=>{
-				if(response.success){
+			userController.createGroup(this.props.accountId,groupName,Nicks,accounts,(result)=>{
+				if(result.Result == 1){
 
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:response.data.Data,
-                        type:"group",HeadImageUrl:response.data.relation.localImage,Nick:response.data.relation.Nick}});
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,
+                        type:"group"}});
 
 				}else{
-                    alert(response.errorMessage);
-                    return;
+                    alert('创建失败');
 				}
 			});
-
-            // let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
-            // settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
-            //     currentObj.hideLoading();
-            //     if (result.success) {
-            //         if (result.data.Data == null) {
-            //             console.log("返回群数据出错")
-            //             return;
-            //         }
-            //
-            //         currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,
-				// 		type:"group",HeadImageUrl:result.data.relation.localImage,Nick:result.data.relation.Nick}});
-            //
-            //     }else{
-            //         alert(result.errorMessage);
-            //         return;
-            //     }
-            // })
 		}
 	}
 

@@ -109,7 +109,7 @@ class Contacts extends ContainerComponent {
 
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.NickName;
+		var txt = '  ' + info.item.Nickname;
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
