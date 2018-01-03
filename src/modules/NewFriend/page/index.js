@@ -43,6 +43,11 @@ class NewFriend extends AppComponent {
         contactController = new ContactController();
         applyFriendController = new ApplyFriendController();
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
     }

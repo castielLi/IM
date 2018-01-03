@@ -24,8 +24,8 @@ let {height,width} = Dimensions.get('window');
 let currentObj;
 
 class ClientInformation extends AppComponent {
-    constructor(){
-        super()
+    constructor(prop){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
                 userInfo:{},
@@ -35,6 +35,10 @@ class ClientInformation extends AppComponent {
 
         userController = new UserController();
         applyController = new ApplyController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     componentDidMount() {

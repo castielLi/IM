@@ -8,7 +8,7 @@ import phoneLogin from './phoneLogin';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 export default class EmailLogin extends AppComponent {
 	constructor(props) {
 	  super(props);
@@ -18,6 +18,11 @@ export default class EmailLogin extends AppComponent {
 		passWordText:'',
 	  };
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
 	render(){
 		return (
 			<View style= {styles.container}>

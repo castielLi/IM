@@ -15,8 +15,8 @@ let currentObj = undefined;
 
 
 class Start extends AppComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             selectedTab: 'home',
@@ -24,6 +24,10 @@ class Start extends AppComponent {
         }
         currentObj = this;
         LoginController = new loginController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
 

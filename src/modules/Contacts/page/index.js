@@ -52,6 +52,10 @@ class Contacts extends AppComponent {
         userController = new UserController();
 	}
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
 	onPressRightSectionItemIn = (index) =>{
 		this.refs.mySectionList.scrollToLocation({
 		animated : true,

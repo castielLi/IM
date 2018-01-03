@@ -19,13 +19,17 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 let {height,width} = Dimensions.get('window');
 
 class ChatSetting extends AppComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
         }
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     changeIsStickyChat = ()=>{

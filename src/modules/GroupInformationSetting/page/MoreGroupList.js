@@ -29,8 +29,8 @@ let currentObj;
 
 
 class MoreGroupList extends AppComponent {
-    constructor(){
-        super();
+    constructor(prop){
+        super(props);
         this.state = {
 
             searchResult:true,
@@ -39,6 +39,10 @@ class MoreGroupList extends AppComponent {
         this.render = this.render.bind(this);
 
         currentObj = this;
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     searchUser = (keyword)=>{

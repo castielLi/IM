@@ -8,8 +8,8 @@ let currentObj = undefined;
 
 export default class Register extends AppComponent {
 
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 
         this.state = {
             NicknameText:'',
@@ -21,6 +21,10 @@ export default class Register extends AppComponent {
 
         currentObj = this;
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 
 

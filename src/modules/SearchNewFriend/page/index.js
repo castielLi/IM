@@ -23,8 +23,8 @@ let currentObj;
 let SettingController = undefined;
 
 class SearchNewFriend extends AppComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             text:'',
@@ -32,6 +32,10 @@ class SearchNewFriend extends AppComponent {
         }
         currentObj = this;
         SettingController = new settingController();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
 

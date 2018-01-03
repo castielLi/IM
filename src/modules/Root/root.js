@@ -30,6 +30,10 @@ class Root extends AppComponent {
         this.render = this.render.bind(this);
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     renderScene(Route, navigator) {
         // this.route = route;
         this.navigator = navigator;

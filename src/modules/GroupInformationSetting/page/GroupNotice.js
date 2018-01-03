@@ -26,6 +26,10 @@ class GroupNotice extends AppComponent {
         super(props);
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     render() {
         return (
             <View style={styles.container}>

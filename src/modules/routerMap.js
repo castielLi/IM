@@ -74,7 +74,8 @@ export const RouteMap = {
     'Start': {
         'Start': {
             component: Start,
-            params: {}
+            params: {},
+            markType:Mark.ConversationDetail
         }
     },
     'MainTabbar': {
@@ -107,7 +108,8 @@ export const RouteMap = {
         },
         'PhoneLogin':{
             component: PhoneLogin,
-            params: {}
+            params: {},
+            markType:Mark.ConversationDetail
         },
         'EmailLogin':{
             component: EmailLogin,

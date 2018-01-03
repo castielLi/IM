@@ -44,10 +44,8 @@ class DeleteGroupMember extends AppComponent {
         settingController = new SettingController()
     }
 
-
-
-    componentWillMount(){
-
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     circleStyle = (isChoose)=>{

@@ -23,8 +23,8 @@ const options = ['取消','确认删除']
 const title = '你确定要删除这位好友么'
 
 class InformationSetting extends AppComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
         this.state = {
@@ -35,6 +35,11 @@ class InformationSetting extends AppComponent {
         currentObj = this;
         userController = new UserController();
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     //定义上导航的左按钮
     _leftButton() {
         return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>

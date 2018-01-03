@@ -23,6 +23,10 @@ class TabBarComponent extends AppComponent {
         this.render = this.render.bind(this);
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     isShowFeature = (number)=>{
         if(this.props.tabBarStore !== number && this.props.featuresStore){
             this.props.hideFeatures();

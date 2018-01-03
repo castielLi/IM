@@ -44,8 +44,13 @@ class ChatDetail extends AppComponent {
         imController = new IMController();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
+
     _refreshUI(params){
-	  alert(params.content)
+
 	}
 
     goToChatSeeting = ()=>{

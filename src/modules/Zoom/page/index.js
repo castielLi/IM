@@ -106,10 +106,11 @@ let styles = StyleSheet.create({
 class Zoom extends AppComponent {
 	constructor(props) {
 		super(props);
-		this.state = {
-			
-		};
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 	componentWillMount(){
         styles = super.componentWillMount(styles)

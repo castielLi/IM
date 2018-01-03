@@ -46,6 +46,10 @@ class GroupList extends AppComponent {
         userController = new UserController();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     goToChat = (item)=>{
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type,HeadImageUrl:item.avator,Nick:item.Nick}});
     }

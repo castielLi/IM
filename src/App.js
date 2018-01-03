@@ -14,7 +14,6 @@ import Root from './modules/Root/root'
 import Store from './store'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
-import DisplayComponent from './Core/Component'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 
 export default function App() {
@@ -29,7 +28,7 @@ export default function App() {
     Route.initRouteMap(router);
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
 
-    class InitApp extends DisplayComponent {
+    class InitApp extends Component {
         constructor() {
             super();
 
@@ -60,10 +59,12 @@ export default function App() {
 
             NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
         }
+
         componentWillUnmount() {
             AppState.removeEventListener('change', this._handleAppStateChange);
             AppState.removeEventListener('memoryWarning', this._handleMemoryWarning);
         }
+
         _handleMemoryWarning() {
             this.setState({memoryWarnings: this.state.memoryWarnings + 1});
         }

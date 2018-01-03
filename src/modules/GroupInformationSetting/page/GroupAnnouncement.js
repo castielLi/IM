@@ -23,8 +23,8 @@ let {height,width} = Dimensions.get('window');
 let userController = undefined;
 let currentObj = undefined;
 class GroupAnnouncement extends AppComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             rightButtonText:'',
@@ -37,6 +37,9 @@ class GroupAnnouncement extends AppComponent {
         userController = new UserController();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
     componentDidMount(){
         this.setState({

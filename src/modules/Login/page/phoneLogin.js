@@ -55,7 +55,10 @@ class PhoneLogin extends AppComponent {
         }else if(this.state.textMessage){
             this._textInput.setNativeProps({maxLength:16})
         }
+    }
 
+    componentWillUnmount(){
+       super.componentWillUnmount();
     }
 
 

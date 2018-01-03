@@ -17,15 +17,15 @@ import {
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/Setting/settingController';
 import contactController from '../../../Logic/Contact/contactController'
-let settingController = undefined;
-let ContactController = undefined;
+var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
+let settingController = undefined;
+let ContactController = undefined;
 
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
@@ -62,6 +62,10 @@ class ChooseClient extends AppComponent {
 
         userController = new UserController();
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 	onPressRightSectionItemIn = (index) =>{
 		this.refs.mySectionList.scrollToLocation({

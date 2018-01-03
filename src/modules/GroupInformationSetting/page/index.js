@@ -33,8 +33,8 @@ const options = ['取消','确认']
 const title = '退出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
 class GroupInformationSetting extends AppComponent {
-    constructor(){
-        super()
+    constructor(prop){
+        super(props)
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
         this.state = {
@@ -51,6 +51,11 @@ class GroupInformationSetting extends AppComponent {
         userController = new UserController();
         // SettingController = new settingController();
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     changeIsStickyChat = ()=>{
         this.setState({
             isStickyChat:!this.state.isStickyChat

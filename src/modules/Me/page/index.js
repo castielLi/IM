@@ -139,6 +139,10 @@ class Me extends AppComponent {
         loginController = new LoginController();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
 
     loginOut = ()=>{
         this.props.signOut();

@@ -39,6 +39,10 @@ class Validate extends AppComponent {
         applyFriendController = new ApplyFriendController();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     static defaultProps = {
 
     };

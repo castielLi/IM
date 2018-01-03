@@ -7,6 +7,14 @@ import AppComponent from '../../../Core/Component/AppComponent';
 
 export default class Main extends AppComponent {
 
+	constructor(props){
+		super(props)
+	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
 	render(){
 		return (
 			<View style={styles.container}>

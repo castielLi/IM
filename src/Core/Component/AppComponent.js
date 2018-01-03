@@ -6,7 +6,7 @@ import ContainerComponent from './ContainerComponent'
 import AppManagement from './AppManagement'
 
 let currentObj = undefined;
-export default class AppComponent extends AppComponent{
+export default class AppComponent extends ContainerComponent{
     constructor(props) {
         super(props);
         if(props && props.MarkType) {

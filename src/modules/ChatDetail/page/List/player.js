@@ -18,7 +18,7 @@ import * as Actions from '../../reducer/action';
 import Video from 'react-native-video';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Slider from "react-native-slider";
-import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import AppComponent from '../../../../Core/Component/AppComponent'
 
 let {width, height} = Dimensions.get('window');
 

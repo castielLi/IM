@@ -27,8 +27,8 @@ let {height,width} = Dimensions.get('window');
 let currentObj = undefined;
 
 class GroupName extends AppComponent {
-    constructor(){
-        super()
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             rightButtonText:'',
@@ -39,6 +39,10 @@ class GroupName extends AppComponent {
 
         currentObj = this;
         userController = new UserController()
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
 

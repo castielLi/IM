@@ -4,13 +4,9 @@ import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
-import Main from './main';
-import {connect} from 'react-redux';
-import checkReg from './regExp';
 import Confirm from './confirm';
-import emailLogin from './emailLogin';
 import PhoneLogin from './phoneLogin';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 
 
 export default class Login extends AppComponent {
@@ -24,6 +20,11 @@ export default class Login extends AppComponent {
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
 	//当点击短信验证的时候检测手机号码的方法
 	changeShowConfirm=()=>{
 		if((/^1[34578]\d{9}$/.test(this.state.phoneText))){

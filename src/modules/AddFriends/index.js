@@ -23,6 +23,10 @@ export default class AddFriends extends AppComponent {
         super(props)
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
     static defaultProps = {
         addType:[
             {typeName:'雷达加朋友',intro:'添加身边的朋友',typeID:1,source:require('./resource/radar.png')},

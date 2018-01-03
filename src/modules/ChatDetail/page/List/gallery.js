@@ -23,7 +23,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 
-import ContainerComponent from '../../../../Core/Component/ContainerComponent'
+import AppComponent from '../../../../Core/Component/AppComponent'
 import IMController from '../../../../Logic/Im/imController'
 let imController = undefined;
 
