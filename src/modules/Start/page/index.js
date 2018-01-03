@@ -39,7 +39,7 @@ class Start extends ContainerComponent {
             }
 
 
-            if(!result.Success){
+            if(result.Result != 1){
                 currentObj.route.push(currentObj.props,{
                     key:'Login',
                     routeId: 'Login'

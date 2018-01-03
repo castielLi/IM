@@ -32,7 +32,7 @@ import {
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
 import UserController from '../../../TSController/UserController'
-import IMController from '../../../Logic/Im/imController'
+import IMController from '../../../TSController/IMController'
 
 let imController = undefined;
 let userController = undefined;
@@ -58,7 +58,7 @@ class RecentChat extends AppComponent {
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
         userController = new UserController();
-        imController = new IMController();
+        // imController = new IMController();
     }
 
     _refreshUI(params){
@@ -69,28 +69,13 @@ class RecentChat extends AppComponent {
 
         this.props.showNavigationBottom();
         let param = {
-            updateConverseList:this._updateConverseList,
+            updateConversListHandle:this._updateConverseList,
         }
-        // AsyncStorage.getItem('account').then((value) => {
-        //     let account = JSON.parse(value);
-        //
-        //     loginController.getContactList(function (result) {
-        //         if (!result.success) {
-        //             alert("初始化account出错" + result.errorMessage);
-        //             return;
-        //         }
-        //         imController.init(param);
-        //         currentObj.props.changeUnReadMessageNumber(result.data.unUnDealRequestCount)
-        //         currentObj.props.hideNavigationBottom();
-        //
-        //     }, {"Account": account.phone});
-        // });
-
-
 
         userController.getContactList(false,true,(result)=>{
             userController.getContactList(true,true,(result)=>{
 
+                imController.init(param);
                 currentObj.props.hideNavigationBottom();
             })
         })
@@ -163,7 +148,7 @@ class RecentChat extends AppComponent {
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
-									<Text numberOfLines = {1} style = {styles.NickName}>{rowData.name}</Text>
+									<Text numberOfLines = {1} style = {styles.Nickname}>{rowData.name}</Text>
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>
@@ -247,7 +232,7 @@ let styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
     },
-    NickName: {
+    Nickname: {
         fontSize: checkDeviceHeight(30),
         color: '#373737',
         marginBottom: checkDeviceHeight(10),

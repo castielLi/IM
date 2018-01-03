@@ -78,8 +78,6 @@ class PhoneLogin extends ContainerComponent {
 
                 if(response.Result == 1003){
                     currentObj.alert("账号或者密码错误","错误");
-                }else{
-                    alert(response.errorMessage);
                 }
                 return;
             }
