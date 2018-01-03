@@ -208,7 +208,7 @@ class ChooseClient extends ContainerComponent {
         }
     }
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.Nick;
+		var txt = '  ' + info.item.NickName;
 		let hasMember;
         if(this.hasGroup){
             hasMember = this.props.members.indexOf(info.item.RelationId);
@@ -354,26 +354,36 @@ class ChooseClient extends ContainerComponent {
                 return;
 			}
             currentObj.showLoading()
+			let groupName = this.props.accountName + "发起的群聊";
+			userController.createGroup(this.props.accountId,groupName,Nicks,accounts,(response)=>{
+				if(response.success){
 
-			userController.createGroup()
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:response.data.Data,
+                        type:"group",HeadImageUrl:response.data.relation.localImage,Nick:response.data.relation.Nick}});
 
-            let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
-        	settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
-                currentObj.hideLoading();
-                if (result.success) {
-                    if (result.data.Data == null) {
-                        console.log("返回群数据出错")
-                        return;
-                    }
-
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,
-						type:"group",HeadImageUrl:result.data.relation.localImage,Nick:result.data.relation.Nick}});
-
-                }else{
-                    alert(result.errorMessage);
+				}else{
+                    alert(response.errorMessage);
                     return;
-                }
-            })
+				}
+			});
+
+            // let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
+            // settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
+            //     currentObj.hideLoading();
+            //     if (result.success) {
+            //         if (result.data.Data == null) {
+            //             console.log("返回群数据出错")
+            //             return;
+            //         }
+            //
+            //         currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,
+				// 		type:"group",HeadImageUrl:result.data.relation.localImage,Nick:result.data.relation.Nick}});
+            //
+            //     }else{
+            //         alert(result.errorMessage);
+            //         return;
+            //     }
+            // })
 		}
 	}
 
@@ -381,7 +391,7 @@ class ChooseClient extends ContainerComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
 		let chooseArr = this.state.chooseArr;
-        this.relationFlatListStore = initFlatListData('private',this.state.contacts,this.state.text);
+        this.relationFlatListStore = initFlatListData(this.state.contacts,this.state.text);
 
 
 		return (
