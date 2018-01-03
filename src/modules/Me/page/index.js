@@ -16,22 +16,14 @@ import {Text,
 import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import * as loginStoreAction from '../../Login/reducer/action';
-
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import LoginController from '../../../Logic/loginController';
-import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
-import Route from '../../../Core/route/router';
-let {height,width} = Dimensions.get('window');
+import LoginController from '../../../TSController/loginController';
 
-
-import IMController from '../../../Logic/Im/imController'
-let imController = undefined;
 let loginController = undefined;
-let applyContriller = undefined;
 
 
 var originData = [
@@ -144,18 +136,15 @@ class Me extends ContainerComponent {
 
         };
 
-        imController = new IMController();
         loginController = new LoginController();
-        applyContriller = new ApplyFriendController();
     }
 
 
     loginOut = ()=>{
         this.props.signOut();
-        loginController.loginOut();
-        imController.logout();
-        Route.ToLogin();
-        applyContriller.logout();
+        loginController.logOut();
+        this.route.ToLogin();
+
     }
 
     changeShowFeature=(newState)=>{

@@ -24,8 +24,6 @@ import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
 
 
-// import ContactController from '../../../Logic/Contact/contactController'
-// let contactController = undefined;
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
 
