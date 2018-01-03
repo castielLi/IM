@@ -163,7 +163,7 @@ class RecentChat extends AppComponent {
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
-									<Text numberOfLines = {1} style = {styles.NickName}>{rowData.name}</Text>
+									<Text numberOfLines = {1} style = {styles.Nickname}>{rowData.name}</Text>
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>
@@ -247,7 +247,7 @@ let styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
     },
-    NickName: {
+    Nickname: {
         fontSize: checkDeviceHeight(30),
         color: '#373737',
         marginBottom: checkDeviceHeight(10),

@@ -14,7 +14,7 @@ export function initDataFormate(arr){
     })
 
     snapArr.forEach((value,index)=>{
-        let firstLetter = HanZi_PinYin.get(value.NickName.slice(0,1)).slice(0,1);
+        let firstLetter = HanZi_PinYin.get(value.Nickname.slice(0,1)).slice(0,1);
         let exist = false;
         if(dataObj.needArr.length === 0){
             dataObj.needArr.push({'key':firstLetter,'data':[value]})
@@ -53,7 +53,7 @@ export function initDataFormate(arr){
 export function initFlatListData(arr=[],filterStr){
     let needArr = [];
     arr.forEach((v,i)=>{
-        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.NickName).indexOf(filterStr.toUpperCase()) >= 0){
+        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.Nickname).indexOf(filterStr.toUpperCase()) >= 0){
             needArr.push(v)
         }
     })
