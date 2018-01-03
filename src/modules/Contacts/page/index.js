@@ -23,10 +23,14 @@ import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
 
+
 // import ContactController from '../../../Logic/Contact/contactController'
-// let contactController = new ContactController();
+// let contactController = undefined;
 import UserController from '../../../TSController/UserController';
-let userController = new UserController();
+let userController = undefined;
+
+
+
 
 let currentObj = undefined;
 var {height, width} = Dimensions.get('window');
@@ -53,6 +57,9 @@ class Contacts extends ContainerComponent {
 		}
         this.relationStore = [];
         currentObj = this;
+
+        userController = new UserController();
+        //contactController = new ContactController();
 	}
 
 	onPressRightSectionItemIn = (index) =>{
@@ -224,6 +231,7 @@ class Contacts extends ContainerComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
+
         // contactController.getLatestContactList(function (contacts) {
         //     currentObj.setState({
         //         contacts

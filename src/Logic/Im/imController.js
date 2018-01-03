@@ -146,18 +146,6 @@ export default class IMController {
         AppKickOutHandle = kickOutMessage;
         AppHandleRefreshUI =handleRefreshUI;
         connectIM();
-
-        setInterval(function () {
-
-            AppHandleRefreshUI(Mark.ConversationDetail,{"content":"消息详情需要更新了"})
-
-        }, 10000)
-
-        setInterval(function () {
-
-            AppHandleRefreshUI(Mark.ConversationList,{"content":"会话列表需要更新了"})
-
-        }, 7000)
     }
 
     setMyAccount(accountObj){

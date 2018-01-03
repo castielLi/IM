@@ -8,7 +8,11 @@ import ContainerComponent from '../../../Core/Component/ContainerComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
+
+import loginController from '../../../TSController/loginController';
+let LoginController = undefined;
 let currentObj = undefined;
+
 
 class Start extends ContainerComponent {
     constructor(){
@@ -19,59 +23,48 @@ class Start extends ContainerComponent {
             isLogged: false
         }
         currentObj = this;
+        LoginController = new loginController();
     }
 
 
     componentWillMount(){
-        // AsyncStorage.getItem('account')
-        //     .then((value) => {
-        //         let account = JSON.parse(value);
-        //         //已经登录
-        //         if(account){
-                    // loginController.loginWithToken(function(result){
-                    //     if(!result.success){
-                    //         //2003代码是token失效
-                    //         if(result.errorCode == 2003){
-                    //             currentObj.route.push(currentObj.props,{
-                    //                 key:'Login',
-                    //                 routeId: 'Login'
-                    //             });
-                    //             return;
-                    //         }
-                    //         alert(result.errorMessage)
-                    //         return;
-                    //     }
-                    //
-                    //     if(result.data.Data == null){
-                    //         currentObj.route.push(currentObj.props,{
-                    //             key:'Login',
-                    //             routeId: 'Login'
-                    //         });
-                    //     }else{
-                    //         account = result.data.account;
-                    //         currentObj.props.signIn(account);
-                    //         imController.setMyAccount(account);
-                    //
-                    //         currentObj.route.push(currentObj.props,{
-                    //             key:'MainTabbar',
-                    //             routeId: 'MainTabbar'
-                    //         });
-                    //     }
-                    //
-                    // },{},account);
-        //         }else{
-        //             //切换至登录页面
-        //             this.route.push(this.props,{
-        //                 key:'Login',
-        //                 routeId: 'Login'
-        //             });
-        //         }
-        //     }).catch((error) => {
-        //     alert(error)
-        // })
-        this.route.push(this.props,{
-            key:'Login',
-            routeId: 'Login'
+
+        LoginController.loginWithToken(account,function(result){
+            if(result == null){
+                currentObj.route.push(currentObj.props,{
+                    key:'Login',
+                    routeId: 'Login'
+                });
+            }
+
+            if(!result.success){
+                //2003代码是token失效
+                if(result.errorCode == 2003){
+                    currentObj.route.push(currentObj.props,{
+                        key:'Login',
+                        routeId: 'Login'
+                    });
+                    return;
+                }
+                alert(result.errorMessage)
+                return;
+            }
+
+            if(result.data.Data == null){
+                currentObj.route.push(currentObj.props,{
+                    key:'Login',
+                    routeId: 'Login'
+                });
+            }else{
+                account = result.data.account;
+                currentObj.props.signIn(account);
+
+                currentObj.route.push(currentObj.props,{
+                    key:'MainTabbar',
+                    routeId: 'MainTabbar'
+                });
+            }
+
         });
     }
 

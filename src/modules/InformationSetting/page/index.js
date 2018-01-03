@@ -15,16 +15,8 @@ import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 
-
-// import SettingController from '../../../Logic/Setting/settingController';
-// import ContactControlller from '../../../Logic/Contact/contactController';
-// import IMController from '../../../Logic/Im/imController';
-// let imController = new IMController();
-// let settingController = new SettingController();
-// let contactControlller = new ContactControlller();
-
 import UserController from '../../../TSController/UserController';
-let userController = new UserController();
+let userController = undefined;
 
 let currentObj = undefined;
 const options = ['取消','确认删除']
@@ -41,6 +33,7 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:false,
         }
         currentObj = this;
+        userController = new UserController();
     }
     //定义上导航的左按钮
     _leftButton() {

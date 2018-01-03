@@ -26,7 +26,7 @@ import ApplyFriendController from '../../Logic/ApplyFriend/applyFriendController
 
 
 let currentObj;
-let applyFriendController = new ApplyFriendController();
+let applyFriendController = undefined;
 
 class Validate extends ContainerComponent {
     constructor(props){
@@ -36,6 +36,7 @@ class Validate extends ContainerComponent {
             text:''
         }
         currentObj = this;
+        applyFriendController = new ApplyFriendController();
     }
 
     static defaultProps = {
@@ -80,6 +81,8 @@ class Validate extends ContainerComponent {
             relation.Type = ChatWayEnum.Private;
             relation.show = 'false';
             // user.AddNewRelation(relation);
+
+
             applyFriendController.tempApplyFriend(relation);
             //currentObj.props.addRelation(relation);
 

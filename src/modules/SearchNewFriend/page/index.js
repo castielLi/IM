@@ -20,7 +20,7 @@ import settingController from '../../../Logic/Setting/settingController';
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
-let SettingController = new settingController();
+let SettingController = undefined;
 
 class SearchNewFriend extends ContainerComponent {
     constructor(){
@@ -31,6 +31,7 @@ class SearchNewFriend extends ContainerComponent {
             searchResult:true
         }
         currentObj = this;
+        SettingController = new settingController();
     }
 
 

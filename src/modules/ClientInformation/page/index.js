@@ -15,19 +15,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import {bindActionCreators} from 'redux';
 
-// import SettingController from '../../../Logic/Setting/settingController'
-// import ContactController from '../../../Logic/Contact/contactController'
-// import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
-// let contactController = new ContactController();
-// let settingController = new SettingController();
-// let applyFriendController = new ApplyFriendController();
-
 import UserController from '../../../TSController/UserController';
 import ApplyController from '../../../TSController/ApplyController';
-let userController = new UserController();
-let applyController = new ApplyController();
-
-
+let userController = undefined;
+let applyController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -41,6 +32,9 @@ class ClientInformation extends ContainerComponent {
                 isFriend:false,
         };
         currentObj = this;
+
+        userController = new UserController();
+        applyController = new ApplyController();
     }
     // isUpdateFriendInfo = (UserInfo,propsRelation) =>{
     //     let {accountId} = this.props.loginStore;

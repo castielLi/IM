@@ -25,8 +25,8 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../Logic/Im/imController'
 import ContactController from '../../../Logic/Contact/contactController'
 
-let imController = new IMController();
-let contactController = new ContactController();
+let imController = undefined;
+let contactController = undefined;
 class ChatDetail extends AppComponent {
 	constructor(props) {
         super(props);
@@ -44,6 +44,8 @@ class ChatDetail extends AppComponent {
         currentObj = this;
         this.isDisabled = false
 
+        imController = new IMController();
+        contactController = new ContactController();
     }
 
     _refreshUI(params){
@@ -117,7 +119,7 @@ class ChatDetail extends AppComponent {
 	}
 
     componentWillUnmount(){
-        imController.setOutCurrentConverse()
+        // imController.setOutCurrentConverse()
 	}
 }
 

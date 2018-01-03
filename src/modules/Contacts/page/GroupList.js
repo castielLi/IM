@@ -28,7 +28,7 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
 import ContactController from '../../../Logic/Contact/contactController'
 
-let contactController = new ContactController();
+let contactController = undefined;
 var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 
@@ -47,6 +47,7 @@ class GroupList extends ContainerComponent {
         }
         this.relationStore = [];
         currentObj = this;
+        contactController = new ContactController()
     }
 
     goToChat = (item)=>{

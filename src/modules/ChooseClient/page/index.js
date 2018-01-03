@@ -28,12 +28,13 @@ import {initDataFormate,initFlatListData} from './formateData';
 import SettingController from '../../../Logic/Setting/settingController';
 import contactController from '../../../Logic/Contact/contactController'
 import RelationDto from '../../../Logic/Common/dto/RelationDto'
-let settingController = new SettingController();
-let ContactController = new contactController();
+
 var {height, width} = Dimensions.get('window');
 
 let currentObj = undefined;
 let title = null;
+let settingController = undefined;
+let ContactController = undefined;
 
 class ChooseClient extends ContainerComponent {
 
@@ -62,6 +63,8 @@ class ChooseClient extends ContainerComponent {
         this.splNeedArr = [];
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
+        settingController = new SettingController();
+        ContactController = new contactController();
 	}
 
 	onPressRightSectionItemIn = (index) =>{
