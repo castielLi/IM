@@ -142,7 +142,7 @@ class Me extends ContainerComponent {
 
     loginOut = ()=>{
         this.props.signOut();
-        loginController.logOut();
+        loginController.logOut(this.props.accountId);
         this.route.ToLogin();
 
     }
@@ -253,9 +253,9 @@ class Me extends ContainerComponent {
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId,
-    avator:state.loginStore.accountMessage.avator,
-    Nick:state.loginStore.accountMessage.Nick,
+    accountId:state.loginStore.accountMessage.Account,
+    avator:state.loginStore.accountMessage.HeadImageUrl,
+    Nick:state.loginStore.accountMessage.Nickname,
 
 });
 

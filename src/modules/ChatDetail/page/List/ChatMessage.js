@@ -93,9 +93,3 @@ export default class ChatMessage extends Component {
 const styles = StyleSheet.create({
 
 });
-
-// const mapStateToProps = (state,props) => ({
-//     accountId:state.loginStore.accountMessage.accountId
-// });
-//
-// export default connect(mapStateToProps)(ChatMessage);

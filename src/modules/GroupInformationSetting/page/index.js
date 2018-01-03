@@ -464,7 +464,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId,
+    accountId:state.loginStore.accountMessage.Account,
     relations:state.relationStore
 });
 
