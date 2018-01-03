@@ -1,6 +1,6 @@
 import SQLiteFactory from "./TSCore/Tools/SQLite/SQLiteFactory";
 export default class Config {
-    constructor() {
+    static Init() {
         if (Config.DBType == "sqlite") {
             SQLiteFactory.InitClienType(Config.ClientType);
         }

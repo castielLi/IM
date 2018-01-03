@@ -33,8 +33,18 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
 
 
+<<<<<<< Updated upstream
 import UserController from '../../../TSController/UserController'
 let userController = new UserController();
+=======
+import IMController from '../../../Logic/Im/imController'
+import LoginController from '../../../Logic/loginController'
+let imController = new IMController();
+let loginController = new LoginController();
+
+import UserController from '../../../TSController/UserController'
+let userController = undefined;
+>>>>>>> Stashed changes
 
 let currentObj= undefined;
 

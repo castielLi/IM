@@ -29,13 +29,15 @@ class Start extends ContainerComponent {
 
     componentWillMount(){
 
-        LoginController.loginWithToken(account,function(result){
+        LoginController.loginWithToken(function(result){
             if(result == null){
                 currentObj.route.push(currentObj.props,{
                     key:'Login',
                     routeId: 'Login'
                 });
+                return;
             }
+
 
             if(!result.success){
                 //2003代码是token失效

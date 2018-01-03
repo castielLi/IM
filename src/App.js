@@ -22,7 +22,7 @@ export default function App() {
     //关闭yellowbox
     console.disableYellowBox = true
 
-    let config = new Config();
+    Config.Init();
 
     let store = Store;
     //初始化路由表
