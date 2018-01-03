@@ -62,7 +62,7 @@ class InformationSetting extends ContainerComponent {
     }
 
     componentWillMount(){
-        userController.getInfo(this.props.client,false,(result)=>{
+        userController.getInfo(this.props.clientId,false,(result)=>{
             let BlackList = result.BlackList;
             if(BlackList == 'true'){
                 BlackList = true;
@@ -89,7 +89,7 @@ class InformationSetting extends ContainerComponent {
     changeJoinBlackList = (value)=>{
         currentObj.showLoading();
 
-        userController.setBlackList(this.props.client,value,(result)=>{
+        userController.setBlackList(this.props.clientId,value,(result)=>{
             currentObj.hideLoading();
             if(result.success && result.data.Data){
                 this.setState({
@@ -107,7 +107,7 @@ class InformationSetting extends ContainerComponent {
         //删除好友
         if(1 == i){
             currentObj.showLoading();
-            userController.removeFriend(this.props.client,(result)=>{
+            userController.removeFriend(this.props.clientId,(result)=>{
                 currentObj.hideLoading();
                 let pages = currentObj.props.navigator.getCurrentRoutes();
                 let target = pages[pages.length - 3];

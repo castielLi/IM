@@ -23,15 +23,19 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
-
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import settingController from '../../../Logic/Setting/settingController'
 import RelationDto from '../../../Logic/Common/dto/RelationDto'
+
+import settingController from '../../../Logic/Setting/settingController'
 let SettingController = new settingController();
+
+import UserController from '../../../TSController/UserController';
+let userController = new UserController();
+
+
 let {height,width} = Dimensions.get('window');
 let currentObj;
-
 const options = ['取消','确认']
 const title = '退出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
@@ -63,27 +67,10 @@ class GroupInformationSetting extends ContainerComponent {
     }
 
     addOrRemoveTheContacts = () =>{
-        let Save = !this.state.isSave;
-        let groupObj = this.state.groupInformation;
-        let params = {"Account":this.props.accountId,"GroupId":this.props.groupId};
-        currentObj.showLoading();
-        callback = (results)=>{
-            currentObj.hideLoading();
-            if(results.success && results.data.Result){
-                currentObj.setState({
-                    isSave:Save
-                })
-            }
-            else{
-                console.log('群通讯录操作出错');
-            }
-        };
-        if(Save){
-            SettingController.addGroupToContact(params,groupObj,callback);
-        }
-        else{
-            SettingController.removeGroupFromContact(params,groupObj.ID,callback);
-        }
+        currentObj.setState({
+            isSave:Save
+        });
+        userController.addOrRemoveContacts(this.props.groupId,!this.state.isSave);
     }
 
     componentDidMount(){
@@ -120,26 +107,37 @@ class GroupInformationSetting extends ContainerComponent {
             }
         };
         SettingController.getGroupInfo(params,callback);
+
+        currentObj.showLoading();
+        userController.getInfo(this.props.groupId,true,(result)=>{
+            currentObj.hideLoading();
+        })
     }
 
 
     handlePress(i){
-        let {groupId,accountId} = this.props;
-        let params = {"GroupId":groupId,"Account":accountId};
+        // let {groupId,accountId} = this.props;
+        // let params = {"GroupId":groupId,"Account":accountId};
         //退出群组
         if(1 == i){
+            // currentObj.showLoading();
+            // callback = (results)=>{
+            //     currentObj.hideLoading();
+            //     if(results.data.Data){
+            //         currentObj.route.toMain(currentObj.props);
+            //     }
+            //     else{
+            //         alert(results.errorMessage);
+            //         console.log('退出群组出错')
+            //     }
+            // };
+            // SettingController.exitGroup(params,callback);
+
             currentObj.showLoading();
-            callback = (results)=>{
+            userController.removeGroup(this.props.groupId,()=>{
                 currentObj.hideLoading();
-                if(results.data.Data){
-                    currentObj.route.toMain(currentObj.props);
-                }
-                else{
-                    alert(results.errorMessage);
-                    console.log('退出群组出错')
-                }
-            };
-            SettingController.exitGroup(params,callback);
+                currentObj.route.toMain(currentObj.props);
+            });
         }
     }
 
@@ -158,33 +156,34 @@ class GroupInformationSetting extends ContainerComponent {
     }
 
 
-    searchUser = (keyword)=>{
-        let params = {"Keyword":keyword};
-        currentObj.showLoading();
-        callback = (results) =>{
-            currentObj.hideLoading();
-            if(results.success && results.data.Data){
-                let relations = currentObj.props.relations;
-                let needRelation = null;
-                let hasRelation = false;
-                for(let item in relations){
-                    if(relations[item].RelationId == results.data.Data.Account && relations[item].show === 'true'){
-                        hasRelation = !hasRelation;
-                        needRelation = relations[item];
-                        break;
-                    }
-                }
-                if(hasRelation===false){
-                    needRelation = results.data.Data;
-                }
-                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+    searchUser = (Account)=>{
+        // let params = {"Keyword":keyword};
+        // currentObj.showLoading();
+        // callback = (results) =>{
+        //     currentObj.hideLoading();
+        //     if(results.success && results.data.Data){
+        //         let relations = currentObj.props.relations;
+        //         let needRelation = null;
+        //         let hasRelation = false;
+        //         for(let item in relations){
+        //             if(relations[item].RelationId == results.data.Data.Account && relations[item].show === 'true'){
+        //                 hasRelation = !hasRelation;
+        //                 needRelation = relations[item];
+        //                 break;
+        //             }
+        //         }
+        //         if(hasRelation===false){
+        //             needRelation = results.data.Data;
+        //         }
+                //currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
 
-            }
-            else{
-                console.log('查询用户信息出错');
-            }
-        };
-        SettingController.searchUser(params,callback);
+        //     }
+        //     else{
+        //         console.log('查询用户信息出错');
+        //     }
+        // };
+        // SettingController.searchUser(params,callback);
+        currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
     }
 
     goToChooseClient = ()=>{
