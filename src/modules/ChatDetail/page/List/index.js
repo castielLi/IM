@@ -676,9 +676,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state,props) => ({
 
-    accountId:state.loginStore.accountMessage.accountId,
-    myAvator:state.loginStore.accountMessage.avator,
-    accountName:state.loginStore.accountMessage.Nick
+    accountId:state.loginStore.accountMessage.Account,
+    myAvator:state.loginStore.accountMessage.HeadImageUrl,
+    accountName:state.loginStore.accountMessage.Nickname
 });
 
 const mapDispatchToProps = dispatch => ({

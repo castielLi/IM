@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     mediaPlayerStore: state.mediaPlayerStore,
-    loginStore:state.loginStore.accountMessage.accountId,
+    loginStore:state.loginStore.accountMessage.Account,
 });
 
 const mapDispatchToProps = dispatch => ({
