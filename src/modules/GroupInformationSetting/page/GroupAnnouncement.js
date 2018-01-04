@@ -65,10 +65,10 @@ class GroupAnnouncement extends AppComponent {
     }
 
     toChangeDiscription = ()=>{
-        let {accountId,ID,navigator} = this.props;
+        let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        userController.updateGroupBulletin(ID,this.state.text,(result)=>{
+        userController.updateGroupBulletin(Id,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
                 let routes = navigator.getCurrentRoutes();
@@ -83,7 +83,7 @@ class GroupAnnouncement extends AppComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":ID}
+                    params:{"groupId":Id}
                 },index)
             }else{
                 alert('更改失败');

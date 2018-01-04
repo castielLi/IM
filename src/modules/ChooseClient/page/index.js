@@ -119,17 +119,6 @@ class ChooseClient extends AppComponent {
 		}
 	}
 	componentDidMount(){
-        // ContactController.getLatestContactList(function (contact) {
-        //     let contacts = contact;
-        //     let data = initDataFormate('private',contact);
-        //     let relationStore = data.needArr;
-        //     let sectionStore = data.sectionArr;
-        //     currentObj.setState({
-        //         contacts,
-        //         sectionStore,
-        //         relationStore
-        //     })
-        // })
 
 		userController.getContactList(false,false,(contact)=>{
             let contacts = contact;
@@ -315,8 +304,7 @@ class ChooseClient extends AppComponent {
 			userController.createGroup(this.props.accountId,groupName,Nicks,accounts,(result)=>{
 				if(result.Result == 1){
 
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,
-                        type:"group"}});
+                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
 
 				}else{
                     alert('创建失败');

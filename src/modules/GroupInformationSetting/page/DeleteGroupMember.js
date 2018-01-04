@@ -34,7 +34,7 @@ class DeleteGroupMember extends AppComponent {
     constructor(props) {
         super(props);
         this.state={
-            data:props.realMemberList,
+            data:[],
             needData:[],
             text:''
         }
@@ -46,6 +46,13 @@ class DeleteGroupMember extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+    }
+    componentWillMount(){
+        userController.getGroupMembersInfo(this.props.groupId,(result)=>{
+            this.setState({
+                data:result
+            })
+        })
     }
 
     circleStyle = (isChoose)=>{
@@ -122,11 +129,10 @@ class DeleteGroupMember extends AppComponent {
 
     //定义上导航的右按钮
     _rightButton() {
-        let {accountId,ID,navigator} = this.props;
-        let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
-        let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
+        let {groupId,navigator} = this.props;
+        let close = currentObj.state.data.length-currentObj.state.needData.length<=1 ? true : false;
         currentObj.showLoading();
-        userController.removeGroupMember(ID,close,this.needStr,(result)=>{
+        userController.removeGroupMember(groupId,close,this.needStr,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
                 if(close)
@@ -147,7 +153,7 @@ class DeleteGroupMember extends AppComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":ID,onUpdateHeadName:currentObj.props.UpdateHeadName},
+                    params:{"groupId":groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
 
                 },index)
             }else{
@@ -167,7 +173,7 @@ class DeleteGroupMember extends AppComponent {
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
                     heading={title}
-                    right={{func:()=>{this.confirm(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1?'确定要解散该群吗？':'确定要删除指定成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
+                    right={{func:()=>{this.confirm(this.state.data.length-currentObj.state.needData.length<=1?'确定要解散该群吗？':'确定要删除指定成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
                 />
                 <View style={styles.listHeaderBox}>
                     <TextInput

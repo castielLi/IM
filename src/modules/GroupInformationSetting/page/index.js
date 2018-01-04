@@ -25,15 +25,17 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
+
 import UserController from '../../../TSController/UserController';
-let {height,width} = Dimensions.get('window');
 let userController = undefined;
+
+let {height,width} = Dimensions.get('window');
 let currentObj;
 const options = ['取消','确认']
 const title = '退出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
 class GroupInformationSetting extends AppComponent {
-    constructor(prop){
+    constructor(props){
         super(props)
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
@@ -69,50 +71,36 @@ class GroupInformationSetting extends AppComponent {
 
     addOrRemoveTheContacts = () =>{
         currentObj.setState({
-            isSave:Save
+            isSave:!this.state.isSave
         });
         userController.addOrRemoveContacts(this.props.groupId,!this.state.isSave);
     }
 
     componentDidMount(){
-        let params = {"GroupId":this.props.groupId};
-        currentObj.showLoading();
-        callback = (results)=>{
-            currentObj.hideLoading();
-            if(results.success){
-                let Data = results.data.Data;
-                let groupInformation = {
-                    ID:Data.ID,
-                    LastUpdateTime:Data.LastUpdateTime,
-                    Name:Data.Name,
-                    Owner:Data.Owner,
-                    ProfilePicture:Data.ProfilePicture,
-                    Description:Data.Description,
-                };
-                let members;
-                if(Data.MemberList.length>13){
-                    members = Data.MemberList.slice(0,13);
-                }else{
-                    members = Data.MemberList.concat()
-                }
-                let save = SettingController.getGroupIsInContact(this.props.groupId)
-                currentObj.setState({
-                    members:members.concat([{},{}]),
-                    realMemberList:Data.MemberList,
-                    groupInformation,
-                    isSave:save
-                })
+        userController.getGroupAndMembersInfo(this.props.groupId,10,(result)=>{
+            let save = false;
+            if(result.Save == true || result.Save == 'true'){
+                save = true;
             }
-            else{
-                console.log('获取群信息失败')
+            if(!result.Note || result.Note == 'null'){
+                result.Note = null;
             }
-        };
-        SettingController.getGroupInfo(params,callback);
+            let groupInformation = {
+                Id : result.Id,
+                Name : result.Name,
+                Note : result.Note,
+                HeadImageUrl : result.HeadImageUrl,
+                HeadImagePath : result.HeadImagePath,
+                Owner : result.Owner,
+                Save : save,
+            }
 
-        currentObj.showLoading();
-        userController.getGroupInfo(this.props.groupId,(result)=>{
-            currentObj.hideLoading();
-        })
+            currentObj.setState({
+                members:result.memberList.concat([{},{}]),
+                groupInformation,
+                isSave:save
+            })
+        });
     }
 
 
@@ -132,7 +120,7 @@ class GroupInformationSetting extends AppComponent {
     }
 
     _footer = () => {
-        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{memberList:this.state.realMemberList}})}}>
+        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{groupId:this.props.groupId}})}}>
                     <View style={styles.listFooter}>
                         <Text style={styles.listFooterText}>查看更多群成员</Text>
                         <Icon name="angle-right" size={20} color="#aaa" />
@@ -146,17 +134,17 @@ class GroupInformationSetting extends AppComponent {
         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
     };
 
+    //跳转加添群成员页面
     goToChooseClient = ()=>{
         let members = this.state.members.map((item,index)=>{
             return item.Account;
         });
         let groupId = this.props.groupId;
-        let groupNick = this.state.groupInformation.Name;
-        let groupAvator = this.state.groupInformation.ProfilePicture;
-        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,groupNick,groupAvator,"UpdateHeadName":this.props.onUpdateHeadName}})
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,"UpdateHeadName":this.props.onUpdateHeadName}})
     }
+
     goToDeleteClient = ()=>{
-        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{ID:this.state.groupInformation.ID,realMemberList:this.state.realMemberList,"UpdateHeadName":this.props.onUpdateHeadName}})
+        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{groupId:this.props.groupId,"UpdateHeadName":this.props.onUpdateHeadName}})
     }
     _renderItem = (item) => {
         //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
@@ -186,44 +174,32 @@ class GroupInformationSetting extends AppComponent {
 
         }
         else{
-
-                return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
-                            <View style={styles.itemBox}>
-                                {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
-                                <Text style={styles.itemText}>{item.item.Nickname}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
-
+            return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
+                        <View style={styles.itemBox}>
+                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
+                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
         }
 
 
 
     }
     gotoGroupAnnouncement = ()=>{
-        let {ID,LastUpdateTime,Name,Owner,ProfilePicture,Description} = this.state.groupInformation;
+        let {Owner,Description} = this.state.groupInformation;
         if(Owner!==this.props.accountId&&!Description){
             alert('只有群主才能设置公告')
         }else{
             this.route.push(this.props,{key:'GroupAnnouncement',routeId:'GroupAnnouncement',params:{...this.state.groupInformation}});
-
         }
     }
     gotoGroupName = ()=>{
-        let groupAvator = this.state.groupInformation.ProfilePicture;
-
-
-
-
             this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
-
-
-
-
     }
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let {ID,LastUpdateTime,Name,Owner,ProfilePicture,Description} = this.state.groupInformation;
+        let {Id,HeadImageUrl,Name,Owner,Save,Note,HeadImagePath} = this.state.groupInformation;
 
         return (
             <View style={styles.container}>
@@ -272,11 +248,11 @@ class GroupInformationSetting extends AppComponent {
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupAnnouncement}>
-                            {Description?
+                            {Note?
                                 <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
                                     <View style={{maxWidth:width-100}}>
                                         <Text style={styles.remarks}>群公告</Text>
-                                        <Text style={styles.remarksText} numberOfLines={3}>{Description}</Text>
+                                        <Text style={styles.remarksText} numberOfLines={3}>{Note}</Text>
                                     </View>
 
                                     <Icon name="angle-right" size={35} color="#aaa" />

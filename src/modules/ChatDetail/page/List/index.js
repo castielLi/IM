@@ -119,7 +119,6 @@ class Chat extends Component {
         }else{
             group = true;
         }
-        imController.setCurrentConverse(client,group,this.onUpdataChatRecord,this.props.updateHeadName,this.props.updateDisplaySetting);
 
         if(!this.chatRecord.length){
             //this.props.addClient(client);
@@ -185,7 +184,6 @@ class Chat extends Component {
                     this.setState({
                         isMore:msgState.LOADING,
                     });
-                    imController.getHistoryChatList(client,group);
 
                     //this.props.getHistoryChatRecord()
                 }
@@ -397,7 +395,6 @@ class Chat extends Component {
             this.setState({
                 isMore : msgState.LOADING
             });
-            imController.getHistoryChatList(client,group);
 
             //this.props.getHistoryChatRecord()
         }

@@ -22,6 +22,8 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -29,16 +31,23 @@ let currentObj;
 
 
 class MoreGroupList extends AppComponent {
-    constructor(prop){
+    constructor(props){
         super(props);
         this.state = {
-
-            searchResult:true,
-
-        }
+            memberList:[]
+        };
         this.render = this.render.bind(this);
 
         currentObj = this;
+        userController = new UserController();
+    }
+
+    componentWillMount(){
+        userController.getGroupMembersInfo(this.props.groupId,(result)=>{
+            this.setState({
+                memberList:result
+            })
+        })
     }
 
     componentWillUnmount(){
@@ -46,41 +55,7 @@ class MoreGroupList extends AppComponent {
     }
 
     searchUser = (keyword)=>{
-
-        currentObj.showLoading()
-        this.fetchData("POST","Member/SearchUser",function(result){
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-
-
-            if(result.data.Data){
-
-
-                let relations = currentObj.props.relations;
-                let needRelation = null;
-                let hasRelation = false;
-                for(let item in relations){
-                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-                        hasRelation = !hasRelation;
-                        needRelation = relations[item];
-                        break;
-                    }
-                }
-                if(hasRelation===false){
-                    needRelation = result.data.Data;
-                }
-                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-
-
-            }else{
-                that.setState({
-                    searchResult:false
-                })
-            }
-        },{"Keyword":keyword})
+        currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
     }
 
     _renderItem = (item) => {
@@ -122,7 +97,7 @@ class MoreGroupList extends AppComponent {
                             horizontal={false}
                             keyExtractor={(item,index)=>(index)}
                             style={{backgroundColor:'#fff'}}
-                            data={this.props.memberList}>
+                            data={this.state.memberList}>
                         </FlatList>
                     </View>
                 </View>

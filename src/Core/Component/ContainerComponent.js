@@ -36,7 +36,7 @@ export default class ContainerComponent extends Component {
     }
 
     alert(content,title="",clickCallback=undefined) {
-        if(ttle == ""){
+        if(title == ""){
 
             this.popup.alert(content);
         }else{

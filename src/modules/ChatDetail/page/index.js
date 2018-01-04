@@ -26,27 +26,34 @@ import IMController from '../../../Logic/Im/imController'
 let imController = undefined;
 let contactController = undefined;
 
+let currentObj = undefined;
 // import ImController from '../../../TSController/IMController';
 // let imController = undefined;
+import UserController from '../../../TSController/UserController';
+let userController = undefined;
+let settingButton = undefined;
 
 class ChatDetail extends AppComponent {
 	constructor(props) {
         super(props);
-        let BlackList;
+
+        imController = new IMController();
+        userController = new UserController();
+
         if (props.type == 'group') {
-            BlackList = contactController.getIfBlackInGroupById(props.client);
-        } else {
-            BlackList = false;
+            userController.getGroupInfo(props.client,false,(result)=>{
+                settingButton = result.Exited;
+            })
         }
         this.state = {
             isDisabled: true,
             name: props.Nick,
-            settingButtonDisplay: BlackList
+            settingButtonDisplay: settingButton
         };
         currentObj = this;
-        this.isDisabled = false
+        this.isDisabled = false;
 
-        imController = new IMController();
+
     }
 
 

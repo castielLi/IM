@@ -51,7 +51,7 @@ class GroupList extends AppComponent {
     }
 
     goToChat = (item)=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type,HeadImageUrl:item.avator,Nick:item.Nick}});
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.Id,type:'group',HeadImageUrl:item.HeadImageUrl,Nick:item.Name}});
     }
 
     _renderAvator= (Obj)=>{
@@ -67,7 +67,7 @@ class GroupList extends AppComponent {
         }
     }
     _renderItem = (info) => {
-        var txt = '  ' + info.item.Nick;
+        var txt = '  ' + info.item.Name;
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
             <View  style={styles.itemBox} >
                 {this._renderAvator(info.item)}
