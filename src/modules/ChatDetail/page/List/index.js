@@ -95,6 +95,21 @@ class Chat extends Component {
         })
     }
 
+    // componentWillReceiveProps(nextProps){
+    //     let {chatRecord,isMore} = nextProps;
+    //     let {msgState} = ListConst;
+    //     if(!chatRecord || !chatRecord.length) return;
+    //     currentObj.chatRecord = chatRecord;
+    //     currentObj.chatRecord2 = chatRecord.concat([]).reverse();
+    //     currentObj.data = currentObj.prepareMessages(currentObj.chatRecord);
+    //     currentObj.data2 = currentObj.prepareMessages(currentObj.chatRecord2);
+    //     currentObj.setState({
+    //         dataSource:currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
+    //         dataSourceO:currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys),
+    //         isMore: isMore ? msgState.END : msgState.NOMORE
+    //     })
+    // }
+
     componentWillMount() {
         // imController.init(param);
         let {type,client} = this.props;
@@ -171,6 +186,8 @@ class Chat extends Component {
                         isMore:msgState.LOADING,
                     });
                     imController.getHistoryChatList(client,group);
+
+                    //this.props.getHistoryChatRecord()
                 }
             },
         })
@@ -381,6 +398,8 @@ class Chat extends Component {
                 isMore : msgState.LOADING
             });
             imController.getHistoryChatList(client,group);
+
+            //this.props.getHistoryChatRecord()
         }
     }
 

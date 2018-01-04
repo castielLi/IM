@@ -43,7 +43,7 @@ class ClientInformation extends AppComponent {
 
     componentDidMount() {
         //todo:更新问题  什么时候更新用户信息
-        userController.getUserInfo(this.props.clientId,(result)=>{
+        userController.getUserInfo(this.props.clientId,false,(result)=>{
             let isFriend = false;
             if(result.Friend === true || result.Friend === 'true'){
                 isFriend = true;

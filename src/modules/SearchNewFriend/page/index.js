@@ -52,6 +52,11 @@ class SearchNewFriend extends AppComponent {
             return;
         }
 
+        userController.getUserInfo(keyword,true,(result)=>{
+           if(result.Result == 1){
+               currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientID:keyword}});
+           }
+        });
 
         let params = {"Keyword":keyword};
         currentObj.showLoading();

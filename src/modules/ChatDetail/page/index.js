@@ -20,10 +20,15 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import IMController from '../../../Logic/Im/imController'
 
+
+import IMController from '../../../Logic/Im/imController'
 let imController = undefined;
 let contactController = undefined;
+
+// import ImController from '../../../TSController/IMController';
+// let imController = undefined;
+
 class ChatDetail extends AppComponent {
 	constructor(props) {
         super(props);
@@ -43,6 +48,19 @@ class ChatDetail extends AppComponent {
 
         imController = new IMController();
     }
+
+
+    // getHistoryChatRecord(){
+    //     imController.getHistoryChatRecord(this.props.client,this.props.type);
+    // }
+
+    // componentWillMount(){
+    //     imController.setCurrentConverse(this.props.client,this.props.type,()=>{
+    //         this.setState({
+    //             ChatRecord
+    //         })
+    //     },this.onUpdateHeadName,this.onUpdateDisplaySetting);
+    // }
 
     componentWillUnmount(){
         super.componentWillUnmount();
@@ -110,7 +128,8 @@ class ChatDetail extends AppComponent {
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
 						<Chat onRef={ref => (this.chat = ref)} client={this.props.client} updateHeadName = {this.onUpdateHeadName} updateDisplaySetting={this.onUpdateDisplaySetting} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>
-					</View>
+                        {/*<Chat onRef={ref => (this.chat = ref)} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator} updateChatList={this.getHistoryChatRecord}/>*/}
+                    </View>
 				</TouchableWithoutFeedback>
 				{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}
 				<ThouchBar client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></ThouchBar>
@@ -121,7 +140,7 @@ class ChatDetail extends AppComponent {
 
     componentWillUnmount(){
         // imController.setOutCurrentConverse()
-	}
+    }
 }
 
 
