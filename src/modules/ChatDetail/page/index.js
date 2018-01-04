@@ -20,6 +20,8 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
+import IMController from '../../../TSController/IMController'
+
 
 
 import IMController from '../../../Logic/Im/imController'
@@ -137,10 +139,6 @@ class ChatDetail extends AppComponent {
 
 		);
 	}
-
-    componentWillUnmount(){
-        // imController.setOutCurrentConverse()
-    }
 }
 
 
