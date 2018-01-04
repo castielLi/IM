@@ -169,7 +169,7 @@ class ClientInformation extends AppComponent {
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
-            
+
     }
 }
 
