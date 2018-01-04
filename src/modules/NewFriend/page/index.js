@@ -132,7 +132,7 @@ class NewFriend extends AppComponent {
                             <View style={styles.basicBox}>
                                 {this._renderAvator(rowData.avator)}
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{rowData.nick}</Text>
+                                    <Text style={styles.name}>{rowData.Nickname}</Text>
                                     <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
                                 </View>
                             </View>

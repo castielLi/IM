@@ -47,47 +47,48 @@ class SearchNewFriend extends AppComponent {
 
 
     searchUser = (keyword)=>{
-        if(keyword == this.props.loginStore.accountId||keyword == this.props.loginStore.phone){
+        if(keyword == this.props.loginStore.Account||keyword == this.props.loginStore.PhoneNumber){
             currentObj.alert("添加好友不允许添加自己","错误");
             return;
         }
-
+        currentObj.showLoading();
         userController.getUserInfo(keyword,true,(result)=>{
+            currentObj.hideLoading();
            if(result.Result == 1){
-               currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientID:keyword}});
+               currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
            }
         });
 
-        let params = {"Keyword":keyword};
-        currentObj.showLoading();
-        callback = (result) =>{
-            currentObj.hideLoading();
-            if(result.success && result.data.Data){
-                let relations = currentObj.props.relations;
-                let needRelation = null;
-                let hasRelation = false;
-                // for(let item in relations){
-                //     if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-                //         hasRelation = !hasRelation;
-                //         needRelation = relations[item];
-                //         break;
-                //     }
-                // }
-                let temp = SettingController.getUserRelationByIdFromCache(result.data.Data.Account);
-                if(temp){
-                    hasRelation = true;
-                    needRelation = temp;
-                }else {
-                    needRelation = result.data.Data;;
-                }
-
-                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-            }
-            else{
-                currentObj.alert("用户不存在","错误");
-            }
-        };
-        SettingController.searchUser(params,callback);
+        // let params = {"Keyword":keyword};
+        // currentObj.showLoading();
+        // callback = (result) =>{
+        //     currentObj.hideLoading();
+        //     if(result.success && result.data.Data){
+        //         let relations = currentObj.props.relations;
+        //         let needRelation = null;
+        //         let hasRelation = false;
+        //         // for(let item in relations){
+        //         //     if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
+        //         //         hasRelation = !hasRelation;
+        //         //         needRelation = relations[item];
+        //         //         break;
+        //         //     }
+        //         // }
+        //         let temp = SettingController.getUserRelationByIdFromCache(result.data.Data.Account);
+        //         if(temp){
+        //             hasRelation = true;
+        //             needRelation = temp;
+        //         }else {
+        //             needRelation = result.data.Data;;
+        //         }
+        //
+        //         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
+        //     }
+        //     else{
+        //         currentObj.alert("用户不存在","错误");
+        //     }
+        // };
+        // SettingController.searchUser(params,callback);
 
         // currentObj.showLoading()
         // this.fetchData("POST","Member/SearchUser",function(result){

@@ -24,7 +24,7 @@ let {height,width} = Dimensions.get('window');
 let currentObj;
 
 class ClientInformation extends AppComponent {
-    constructor(prop){
+    constructor(props){
         super(props)
         this.render = this.render.bind(this);
         this.state = {
