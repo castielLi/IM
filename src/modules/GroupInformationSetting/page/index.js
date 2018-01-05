@@ -194,7 +194,7 @@ class GroupInformationSetting extends AppComponent {
         }
     }
     gotoGroupName = ()=>{
-            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
+            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{groupId:this.props.groupId,"UpdateHeadName":this.props.onUpdateHeadName}});
     }
     render() {
         let Popup = this.PopContent;

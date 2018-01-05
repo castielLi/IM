@@ -68,10 +68,11 @@ class GroupName extends AppComponent {
     }
 
     toChangeName = ()=>{
-        let {accountId,Id,navigator} = this.props;
+        let {groupId,navigator} = this.props;
+        let {Account} = userController.getCurrentAccount();
         currentObj.showLoading();
 
-        userController.updateGroupName(accountId,Id,this.state.text,(result)=>{
+        userController.updateGroupName(Account,groupId,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
 
@@ -91,7 +92,7 @@ class GroupName extends AppComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":Id,onUpdateHeadName:currentObj.props.UpdateHeadName},
+                    params:{"groupId":groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
 
                 },index)
             }else{
