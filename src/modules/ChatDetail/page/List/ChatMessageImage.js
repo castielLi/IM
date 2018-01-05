@@ -65,14 +65,14 @@ class ChatMessageImage extends AppComponent {
     }
     render() {
         let {data, style} = this.props;
-        let {localSource,remoteSource} = data;
+        let {LocalSource,RemoteSource} = data;
 
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToGallery(localSource,remoteSource,data)}>
+                <Thouch onPress={()=>this.goToGallery(LocalSource,RemoteSource,data)}>
                     <Image
                         resizeMode={Image.resizeMode.cover}
-                        source={this.localSourceObj(localSource)}
+                        source={this.localSourceObj(LocalSource)}
                         style={[styles.imageStyle]}
                     />
                 </Thouch>
