@@ -128,6 +128,7 @@ class ChatDetail extends AppComponent {
     			<MyNavigationBar
 					left={{func:()=>{
 					    this.route.toMain(this.props);
+					    imController.goOutCurrentConverse();
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:this.state.settingButtonDisplay?'':'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />
