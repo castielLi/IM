@@ -58,7 +58,7 @@ class RecentChat extends AppComponent {
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
         userController = new UserController();
-        imController = new IMController();
+        imController = new IMController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -72,14 +72,11 @@ class RecentChat extends AppComponent {
     componentDidMount() {
 
         this.props.showNavigationBottom();
-        let param = {
-            updateConversListHandle:this._updateConverseList,
-        }
 
         userController.getContactList(false,true,(result)=>{
             userController.getContactList(true,true,(result)=>{
 
-                imController.init(param);
+                imController.getConversationList();
                 currentObj.props.hideNavigationBottom();
             })
         })

@@ -10,6 +10,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import Touch from '../../Common/Thouch/index';
 import loginController from '../../../TSController/loginController';
+import AppManagement from '../../../AppManagement'
 let LoginController = undefined;
 
 let currentObj = undefined;
@@ -85,8 +86,7 @@ class PhoneLogin extends AppComponent {
                 return;
             }
             currentObj.props.signDoing();
-            let account = response.Data;
-            currentObj.props.signIn(account);
+            AppManagement.onLoginSuccess();
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
                 routeId: 'MainTabbar'

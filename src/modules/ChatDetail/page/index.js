@@ -21,15 +21,11 @@ import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMController'
-let imController = undefined;
-let contactController = undefined;
-
-let currentObj = undefined;
-// import ImController from '../../../TSController/IMController';
-// let imController = undefined;
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
 let settingButton = undefined;
+let imController = undefined;
+let currentObj = undefined;
 
 class ChatDetail extends AppComponent {
 	constructor(props) {
@@ -51,7 +47,7 @@ class ChatDetail extends AppComponent {
         currentObj = this;
         this.isDisabled = false;
 
-
+        imController = IMController.getSingleInstance();
     }
 
 
@@ -59,13 +55,15 @@ class ChatDetail extends AppComponent {
     //     imController.getHistoryChatRecord(this.props.client,this.props.type);
     // }
 
-    // componentWillMount(){
-    //     imController.setCurrentConverse(this.props.client,this.props.type,()=>{
-    //         this.setState({
-    //             ChatRecord
-    //         })
-    //     },this.onUpdateHeadName,this.onUpdateDisplaySetting);
-    // }
+
+    componentWillMount(){
+	    let group = this.props.type == "private"?false:true;
+        imController.setCurrentConverse(this.props.client,group,(ChatRecords)=>{
+            this.setState({
+                ChatRecords
+            })
+        });
+    }
 
     componentWillUnmount(){
         super.componentWillUnmount();

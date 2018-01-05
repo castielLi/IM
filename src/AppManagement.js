@@ -2,7 +2,9 @@
  * Created by apple on 2017/12/29.
  */
 
-import Mark from './AppPageMarkEnum';
+import Mark from './Core/Component/AppPageMarkEnum';
+import IMController from './TSController/IMController'
+import * as AppHandles from './modules/AppUIHandle'
 
 let Contact = {};
 
@@ -13,6 +15,23 @@ let ConversationList = {};
 let ConversationDetail = {};
 
 export default class AppManagement{
+
+    static onLoginSuccess(){
+        let im = IMController.getSingleInstance();
+        im.init({
+            "AppKickOutHandle":AppHandles.AppKickOutHandle,
+            "AppReceiveMessageHandle":AppHandles.AppReceiveMessageHandle,
+            "updateConversListHandle":AppHandles.updateConversListHandle,
+            "updateChatRecordHandle":AppHandles.updateChatRecordHandle,
+            "updateHeadNameHandle":AppHandles.updateHeadNameHandle,
+            "updateChatDisplaySetting":AppHandles.updateChatDisplaySetting,
+            "updateContactHandle":AppHandles.updateContactHandle,
+            "updateApplyHandle":AppHandles.updateApplyHandle,
+            "appOnConnect":AppHandles.appOnConnect,
+            "appOnClosed":AppHandles.appOnClosed,
+            "appOnError":AppHandles.appOnError
+        })
+    }
 
     static addPageManagement(type,pageName,handle){
 
