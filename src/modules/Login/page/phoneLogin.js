@@ -10,7 +10,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import Touch from '../../Common/Thouch/index';
 import loginController from '../../../TSController/loginController';
-import AppManagement from '../../../AppManagement'
+import AppManagement from '../../../App/AppManagement'
 let LoginController = undefined;
 
 let currentObj = undefined;
@@ -82,6 +82,8 @@ class PhoneLogin extends AppComponent {
 
                 if(response.Result == 1003){
                     currentObj.alert("账号或者密码错误","错误");
+                }else{
+                    currentObj.alert("登录请求出错","错误");
                 }
                 return;
             }

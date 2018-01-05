@@ -22,6 +22,7 @@ import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMController'
 import UserController from '../../../TSController/UserController';
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 let userController = undefined;
 let settingButton = undefined;
 let imController = undefined;
@@ -31,8 +32,6 @@ class ChatDetail extends AppComponent {
 	constructor(props) {
         super(props);
 
-        imController = new IMController();
-        userController = new UserController();
 
         if (props.type == 'group') {
             userController.getGroupInfo(props.client,false,(result)=>{
@@ -42,27 +41,26 @@ class ChatDetail extends AppComponent {
         this.state = {
             isDisabled: true,
             name: props.Nick,
-            settingButtonDisplay: settingButton
+            settingButtonDisplay: settingButton,
+            chatRecord:[],
+            isMore:0
         };
         currentObj = this;
         this.isDisabled = false;
 
         imController = IMController.getSingleInstance();
+        userController = new UserController();
     }
 
 
-    // getHistoryChatRecord(){
-    //     imController.getHistoryChatRecord(this.props.client,this.props.type);
-    // }
+    getHistoryChatRecord(){
+        imController.getHistoryChatRecord(this.props.client,this.props.type);
+    }
 
 
     componentWillMount(){
 	    let group = this.props.type == "private"?false:true;
-        imController.setCurrentConverse(this.props.client,group,(ChatRecords)=>{
-            this.setState({
-                ChatRecords
-            })
-        });
+        imController.setCurrentConverse(this.props.client,group);
     }
 
     componentWillUnmount(){
@@ -70,8 +68,28 @@ class ChatDetail extends AppComponent {
     }
 
 
-    _refreshUI(params){
-
+    _refreshUI(type,params){
+        switch (type){
+            case AppPageMarkEnum.ConversationDetail:
+                let chatRecord = params.list;
+                currentObj.setState({
+                    chatRecord,
+                    isMore:params.dropAble
+                })
+                break;
+            case AppPageMarkEnum.ModifyGroupSetting:
+                let name = params.name;
+                currentObj.setState({
+                    name
+                })
+                break;
+            case AppPageMarkEnum.ModifyGroupSetting:
+                let display = params.display;
+                currentObj.setState({
+                    settingButtonDisplay:display
+                })
+                break;
+        }
 	}
 
     goToChatSeeting = ()=>{
@@ -89,17 +107,6 @@ class ChatDetail extends AppComponent {
 	//控制子组件Chat中的消息滚动到底部
 	goBottom() {
 		this.chat.getWrappedInstance().scrollToEnd()
-	}
-    onUpdateHeadName = (name)=>{
-        this.setState({
-            name
-        })
-    }
-
-    onUpdateDisplaySetting = (bool)=>{
-        this.setState({
-            settingButtonDisplay:!bool
-        })
 	}
 
 	componentWillReceiveProps(newProps){
@@ -121,20 +128,22 @@ class ChatDetail extends AppComponent {
     			<MyNavigationBar
 					left={{func:()=>{
 					    this.route.toMain(this.props);
-					    // this.props.changeChatDetailPageStatus(false,'','');
-
-                        //imController.setOutCurrentConverse()
-
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:this.state.settingButtonDisplay?'':'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />
 				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
-						<Chat onRef={ref => (this.chat = ref)} client={this.props.client} updateHeadName = {this.onUpdateHeadName} updateDisplaySetting={this.onUpdateDisplaySetting} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator}/>
-                        {/*<Chat onRef={ref => (this.chat = ref)} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl} navigator={this.props.navigator} updateChatList={this.getHistoryChatRecord}/>*/}
+
+                        <Chat onRef={ref => (this.chat = ref)}
+                              isMore = {this.state.isMore}
+                              chatRecord = {this.state.chatRecord}
+                              client={this.props.client}
+                              updateHeadName = {this.onUpdateHeadName}
+                              updateDisplaySetting={this.onUpdateDisplaySetting}
+                              type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
+                              navigator={this.props.navigator}/>
                     </View>
 				</TouchableWithoutFeedback>
-				{/*<Chat ref={e => this.chat = e} client={this.props.client} type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}/>*/}
 				<ThouchBar client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></ThouchBar>
     		</MyView>
 
@@ -163,7 +172,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     thouchBarStore: state.thouchBarStore,
-	accountId:state.loginStore.accountMessage.Account,
 });
 const mapDispatchToProps = (dispatch) => {
   return{

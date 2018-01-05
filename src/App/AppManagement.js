@@ -2,9 +2,9 @@
  * Created by apple on 2017/12/29.
  */
 
-import Mark from './Core/Component/AppPageMarkEnum';
-import IMController from './TSController/IMController'
-import * as AppHandles from './modules/AppUIHandle'
+import Mark from './AppPageMarkEnum';
+import IMController from '../TSController/IMController'
+import * as AppHandles from './AppUIHandle'
 
 let Contact = {};
 
@@ -29,7 +29,8 @@ export default class AppManagement{
             "updateApplyHandle":AppHandles.updateApplyHandle,
             "appOnConnect":AppHandles.appOnConnect,
             "appOnClosed":AppHandles.appOnClosed,
-            "appOnError":AppHandles.appOnError
+            "appOnError":AppHandles.appOnError,
+            "appOnWillReconnect":AppHandles.appOnWillReconnect
         })
     }
 
@@ -64,12 +65,12 @@ export default class AppManagement{
         switch(type){
             case Mark.ConversationList:
                 for(let item in ConversationList){
-                    ConversationList[item] && ConversationList[item](params);
+                    ConversationList[item] && ConversationList[item](type,params);
                 }
                 break
             case Mark.ConversationDetail:
                 for(let item in ConversationDetail){
-                    ConversationDetail[item] && ConversationDetail[item](params);
+                    ConversationDetail[item] && ConversationDetail[item](type,params);
                 }
                 break
         }

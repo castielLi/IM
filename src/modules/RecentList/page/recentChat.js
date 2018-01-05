@@ -34,6 +34,7 @@ import TimeHelper from '../../../Core/Helper/TimeHelper';
 
 import UserController from '../../../TSController/UserController'
 import IMController from '../../../TSController/IMController'
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 let imController = undefined;
 let userController = undefined;
 
@@ -66,8 +67,12 @@ class RecentChat extends AppComponent {
         super.componentWillUnmount();
     }
 
-    _refreshUI(params){
-        alert(params.content)
+    _refreshUI(type,ConverseList){
+        if(type == AppPageMarkEnum.ConversationList) {
+            currentObj.setState({
+                ConverseList
+            })
+        }
     }
 
     componentDidMount() {
@@ -82,12 +87,6 @@ class RecentChat extends AppComponent {
             })
         })
     }
-
-    _updateConverseList(ConverseList){
-        currentObj.setState({
-            ConverseList
-        })
-    };
 
 
     goToChatDetail(rowData) {

@@ -8,7 +8,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
-import AppManagement from '../../../AppManagement'
+import AppManagement from '../../../App/AppManagement'
 import loginController from '../../../TSController/loginController';
 let LoginController = undefined;
 let currentObj = undefined;

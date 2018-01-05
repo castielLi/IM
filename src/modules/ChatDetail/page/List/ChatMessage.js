@@ -28,12 +28,20 @@ export default class ChatMessage extends Component {
     static propTypes = {
     };
 
-    typeOption = (data,type,style)=> {
-        switch (data.type) {
-            case 'text': {
+    typeOption = (rowData,type,style)=> {
+
+        // enum MessageType {
+        //     TEXT = 1,
+        //         FILE = 2
+        // }
+
+        let {message,messageType} = rowData;
+
+        switch (messageType) {
+            case 1: {
                 return (
                     <ChatMessageText
-                        data={data}
+                        data={message}
                         type={type}
                         style={style}
                         navigator={this.props.navigator}
@@ -41,41 +49,44 @@ export default class ChatMessage extends Component {
                 )
             }
                 break;
-            case 'image': {
-                return (
-                    <ChatMessageImage
-                        data={data}
-                        type={type}
-                        style={style}
-                        navigator={this.props.navigator}
-                    />
-                )
+            case 2: {
+                    // IMAGE = 1,
+                    // VIDEO = 2,
+                    // AUDIO = 3
+
+                switch (message.Type){
+                    case 1:
+                        return (
+                            <ChatMessageImage
+                                data={message}
+                                type={type}
+                                style={style}
+                                navigator={this.props.navigator}
+                            />
+                        )
+                    case 2:
+                        return (
+                            <ChatMessageVideo
+                                data={message}
+                                type={type}
+                                style={style}
+                                navigator={this.props.navigator}
+                            />
+                        )
+                    case 3:
+                        return (
+                            <ChatMessageSound
+                                data={message}
+                                type={type}
+                                style={style}
+                                navigator={this.props.navigator}
+                            />
+                        )
+                    default:
+                        break;
+                }
             }
-                break;
-            case 'audio': {
-                return (
-                    <ChatMessageSound
-                        data={data}
-                        type={type}
-                        style={style}
-                        navigator={this.props.navigator}
-                    />
-                )
-            }
-                break;
-            case 'video': {
-                return (
-                    <ChatMessageVideo
-                        data={data}
-                        type={type}
-                        style={style}
-                        navigator={this.props.navigator}
-                    />
-                )
-            }
-                break;
             default:
-                return null;
                 break;
         }
     };

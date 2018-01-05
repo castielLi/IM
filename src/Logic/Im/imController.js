@@ -19,7 +19,7 @@ import IMMessageToManagementApplyMessageDto from '../../Core/Management/Common/m
 import InitConversationListStatusEnum from './dto/InitConversationListStatusEnum'
 import InitChatRecordConfig from '../../Core/Management/Chat/Common/dto/InitChatRecordConfig';
 import UpdateConversationTypeEnum from '../Common/dto/UpdateConversationTypeEnum'
-import Mark from '../../Core/Component/AppPageMarkEnum'
+import Mark from '../../App/AppPageMarkEnum'
 
 
 let __instance = (function () {

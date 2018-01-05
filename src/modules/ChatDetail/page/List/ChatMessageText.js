@@ -28,7 +28,7 @@ export default class ChatMessageText extends Component {
 
     render() {
         let {data,style} = this.props;
-        let dataArr = stringToContentArray(data.message)
+        let dataArr = stringToContentArray(data)
         return(
             <View style={[style,styles.bubble]}>
                     {

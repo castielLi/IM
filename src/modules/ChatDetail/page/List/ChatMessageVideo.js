@@ -90,7 +90,7 @@ class ChatMessageVideo extends AppComponent {
     }
     render() {
         let {data, style} = this.props;
-        let {localSource,remoteSource} = data.message;
+        let {localSource,remoteSource} = data;
         return(
             <View style={[styles.bubble]}>
                 <Thouch onPress={()=>this.playVideo(localSource,remoteSource,data)} disabled={this.state.download}>

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
-import AppManagement from '../../AppManagement'
+import AppManagement from '../../App/AppManagement'
 
 let rootNavigator;
 

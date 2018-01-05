@@ -27,7 +27,7 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import RNFS from 'react-native-fs';
-
+import UserController from '../../../../TSController/UserController'
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
 let scrollDistance = 0;//滚动距离
@@ -36,6 +36,7 @@ let _MaxListHeight = 0; //记录最大list高度
 
 let FooterLayout = false;
 let ListLayout = false;
+let userController = undefined;
 let currentObj;
 
 class Chat extends Component {
@@ -62,6 +63,7 @@ class Chat extends Component {
 
         this.timestamp = 0;
         this.noMore = 0;
+        this.currentAccount = undefined;
 
         this.state = {
             dataSource: ds,
@@ -73,15 +75,12 @@ class Chat extends Component {
         };
 
         this.renderRow = this.renderRow.bind(this);
-    }
-
-    _refreshUI(params){
-        console.log(params.content);
-        alert("component" + params.content);
+        userController = new UserController();
     }
 
 
-    onUpdataChatRecord(chatRecord,isMore){
+    componentWillReceiveProps(nextProps){
+        let {chatRecord,isMore} = nextProps;
         let {msgState} = ListConst;
         if(!chatRecord || !chatRecord.length) return;
         currentObj.chatRecord = chatRecord;
@@ -95,23 +94,8 @@ class Chat extends Component {
         })
     }
 
-    // componentWillReceiveProps(nextProps){
-    //     let {chatRecord,isMore} = nextProps;
-    //     let {msgState} = ListConst;
-    //     if(!chatRecord || !chatRecord.length) return;
-    //     currentObj.chatRecord = chatRecord;
-    //     currentObj.chatRecord2 = chatRecord.concat([]).reverse();
-    //     currentObj.data = currentObj.prepareMessages(currentObj.chatRecord);
-    //     currentObj.data2 = currentObj.prepareMessages(currentObj.chatRecord2);
-    //     currentObj.setState({
-    //         dataSource:currentObj.state.dataSource.cloneWithRows(currentObj.data.blob, currentObj.data.keys),
-    //         dataSourceO:currentObj.state.dataSourceO.cloneWithRows(currentObj.data2.blob, currentObj.data2.keys),
-    //         isMore: isMore ? msgState.END : msgState.NOMORE
-    //     })
-    // }
-
     componentWillMount() {
-        // imController.init(param);
+        this.currentAccount = userController.getCurrentAccount();
         let {type,client} = this.props;
         let group;
         if(type === 'private'){
@@ -258,14 +242,26 @@ class Chat extends Component {
 
 
     messagesStatus = (status)=>{
-        if(status === 'WaitOpreator'){
+
+        // //正在发送
+        // SENDING = 0,
+        //     //接收成功/发送成功
+        //     SUCCESS = 1,
+        //     //下载失败/发送失败
+        //     FAIL = 2,
+        //     //等待下载(如果是文件类型)
+        //     WAIT_DOWNLOAD = 3,
+        //     //正在下载(如果是文件类型)
+        //     DOWNLOADING = 4,
+
+        if(status === 0 || status === 3 || status === 4){
             return (
                 <ActivityIndicator
                     size="small"
                 />
             )
         }
-        else if(status === 'SendSuccess'){
+        else if(status === 1){
             return null;
         }
         else{
@@ -312,11 +308,22 @@ class Chat extends Component {
 
     renderRow = (row,sid,rowid) => {
         console.log('renderRow')
-        let {sender,message,sendTime,type,status} = row;
-        sendTime = parseInt(sendTime);
+        let {sender,message,messageTime,messageSource,status} = row;
 
-        let timer = this.getTimestamp(sendTime,rowid);
-        if(type == 'info'){
+        let timer = this.getTimestamp(messageTime,rowid);
+
+        // enum MessageSource {
+        //     //发送消息
+        //     SEND = 1,
+        //         //接收消息
+        //         RECEIVE = 2,
+        //         //系统消息
+        //         SYSTEM = 3,
+        //         ERROR = 4,
+        //         FRIEND=5
+        // }
+
+        if(messageSource == 3){
             return (
                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={styles.timestampView}>
@@ -328,7 +335,7 @@ class Chat extends Component {
                 </View>
             )
         }
-        else if(type == 'error'){
+        else if(messageSource == 4){
             return(
                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={styles.timestampView}>
@@ -343,7 +350,7 @@ class Chat extends Component {
                 </View>
             )
         }
-        else if (sender.account == this.props.accountId){
+        else if (sender.account == this.currentAccount.Account){
             return(
                 <View key={rowid} style={styles.itemViewRight}>
                     <View style={styles.timestampView}>

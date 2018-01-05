@@ -3,7 +3,7 @@
  */
 
 import ContainerComponent from './ContainerComponent'
-import AppManagement from '../../AppManagement'
+import AppManagement from '../../App/AppManagement'
 
 let currentObj = undefined;
 export default class AppComponent extends ContainerComponent{
