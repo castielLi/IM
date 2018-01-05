@@ -79,9 +79,8 @@ class ChatDetail extends AppComponent {
                 break;
             case AppPageMarkEnum.ModifyGroupSetting:
                 let name = params.name;
-                currentObj.setState({
-                    name
-                })
+
+                currentObj.onUpdateHeadName(name);
                 break;
             case AppPageMarkEnum.ModifyGroupSetting:
                 let display = params.display;
@@ -91,6 +90,13 @@ class ChatDetail extends AppComponent {
                 break;
         }
 	}
+
+    onUpdateHeadName(name){
+        currentObj.setState({
+            name
+        })
+    }
+
 
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
@@ -139,7 +145,6 @@ class ChatDetail extends AppComponent {
                               isMore = {this.state.isMore}
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
-                              updateHeadName = {this.onUpdateHeadName}
                               updateDisplaySetting={this.onUpdateDisplaySetting}
                               type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
                               navigator={this.props.navigator}/>
