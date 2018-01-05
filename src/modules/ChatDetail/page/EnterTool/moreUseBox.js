@@ -22,14 +22,15 @@ import * as Actions from '../../reducer/action';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
-import IMController from '../../../../Logic/Im/imController'
+import IMController from '../../../../TSController/IMController'
 import * as commonMethod from '../../common/commonMethod'
-var imController = new IMController();
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var ImagePicker = require('react-native-image-picker');
 var {height, width} = Dimensions.get('window');
-  
+
+let imController = undefined;
+
 var options = {
     allowsEditing:true,//允许编辑image
     quality:CameraConfig.PHOTO_QUALITY,
@@ -51,179 +52,203 @@ let videoOptions = {
     }
 }
 
-class MoreUseBox extends Component {  
-  constructor(props) {  
-    super(props); 
-    this.useCamera = this.useCamera.bind(this);
-    this.useLocal = this.useLocal.bind(this);
-    this.useCameraVideo = this.useCameraVideo.bind(this);
-      this.useLocalVideo = this.useLocalVideo.bind(this);
-    this.imagePikerCallBack = this.imagePikerCallBack.bind(this);
-  }
+class MoreUseBox extends Component {
+    constructor(props) {
+        super(props);
+        this.useCamera = this.useCamera.bind(this);
+        this.useLocal = this.useLocal.bind(this);
+        this.useCameraVideo = this.useCameraVideo.bind(this);
+        this.useLocalVideo = this.useLocalVideo.bind(this);
+        this.imagePikerCallBack = this.imagePikerCallBack.bind(this);
 
-imagePikerCallBack(response){
-  if (response.didCancel) {//如果用户取消上传
-        console.log('UserGroup cancelled image picker');
-  }
-  else if (response.error) {//如果有错
-    console.log('ImagePicker Error: ', response.error);
-  }
-  else if (response.customButton) {//如果点击了自定义按钮
-    console.log('UserGroup tapped custom button: ', response.customButton);
-  }
-  else {
-    //console.log(response.uri)// 选择本地content://media/external/images/media/30；拍照file:///storage/emulated/0/Pictures/image-ad930ba1-fc6f-44c5-afb4-dda910fccc8c.jpg
-    //console.log(response.path)  //response.path限android,可得到图片的绝对路径
-    // You can also display the image using data:
-    // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+        imController = IMController.getSingleInstance();
+    }
 
-    //初始化消息
-    let responsePath = Platform.OS === 'ios'? response.uri : 'file://'+response.path;
-    // let message = addResourceMessage('image',this.props.type,[{FileType:ResourceTypeEnum.image,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-    //   chatController.addMessage(message,(result)=>{
-    // },[(tips)=>{console.log(tips)}]);
-      let group = this.props.type == 'group' ? true : false;
-      let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'image')
-      imController.sendMessage(message);
-  }
-}
-
-
-useCamera(){
-    ImagePicker.launchCamera( options,this.imagePikerCallBack);
-  }
-useLocal(){
-  ImagePicker.launchImageLibrary(options,this.imagePikerCallBack);
-}
-
-useCameraVideo(){
-    ImagePicker.launchCamera( videoOptions,(response) => {
-        console.log('Response = ', response);
-
-        if (response.didCancel) {
-            console.log('UserGroup cancelled video picker');
+    imagePikerCallBack(response) {
+        if (response.didCancel) {//如果用户取消上传
+            console.log('UserGroup cancelled image picker');
         }
-        else if (response.error) {
+        else if (response.error) {//如果有错
             console.log('ImagePicker Error: ', response.error);
         }
-        else if (response.customButton) {
+        else if (response.customButton) {//如果点击了自定义按钮
             console.log('UserGroup tapped custom button: ', response.customButton);
         }
-        else{
-            let responsePath = 'file://'+response.path;
-            let group = this.props.type == 'group' ? true : false;
-            let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
-            imController.sendMessage(message);
-        }
-    });
-}
-useLocalVideo(){
-    ImagePicker.launchImageLibrary(videoOptions,(response) => {
-        console.log('Response = ', response);
+        else {
+            //console.log(response.uri)// 选择本地content://media/external/images/media/30；拍照file:///storage/emulated/0/Pictures/image-ad930ba1-fc6f-44c5-afb4-dda910fccc8c.jpg
+            //console.log(response.path)  //response.path限android,可得到图片的绝对路径
+            // You can also display the image using data:
+            // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-        if (response.didCancel) {
-            console.log('UserGroup cancelled video picker');
-        }
-        else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-        }
-        else if (response.customButton) {
-            console.log('UserGroup tapped custom button: ', response.customButton);
-        }
-        else{
-            let responsePath = 'file://'+response.path;
-            // let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
-            // chatController.addMessage(message,(result)=>{
-            // },[(tips)=>{console.log(tips)}]);
-            let group = this.props.type == 'group' ? true : false;
-            let message = commonMethod.createMessage(group,this.props.client,this.props.accountId,{localSource:responsePath,remoteSource:''},'video')
-            imController.sendMessage(message);
-        }
-    });
-}
+            //初始化消息
+            let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
-render(){
-      return(
-        <View style={styles.ThouchBarBoxBottomBox}>
-          <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false}>
-            <TouchableWithoutFeedback>
-            <View style={styles.swiperSlide}>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocal}>
-                  <Icon name="picture-o" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>照片</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useLocalVideo}>
-                  <Icon name="picture-o" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>视频</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCamera}>
-                  <Icon name="camera" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>拍照</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.useCameraVideo}>
-                  <Icon name="camera" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>录像</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="video-camera" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>视频聊天</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="map-marker" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>位置</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="envelope" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>红包</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="envelope" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>红包</Text>
-              </View>
+            imController.SendFile(1, responsePath);
+        }
+    }
+
+
+    useCamera() {
+        ImagePicker.launchCamera(options, this.imagePikerCallBack);
+    }
+
+    useLocal() {
+        ImagePicker.launchImageLibrary(options, this.imagePikerCallBack);
+    }
+
+    useCameraVideo() {
+        ImagePicker.launchCamera(videoOptions, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('UserGroup cancelled video picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+                console.log('UserGroup tapped custom button: ', response.customButton);
+            }
+            else {
+                let responsePath = 'file://' + response.path;
+                let group = this.props.type == 'group' ? true : false;
+                let message = commonMethod.createMessage(group, this.props.client, this.props.accountId, {
+                    localSource: responsePath,
+                    remoteSource: ''
+                }, 'video')
+                imController.sendMessage(message);
+            }
+        });
+    }
+
+    useLocalVideo() {
+        ImagePicker.launchImageLibrary(videoOptions, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('UserGroup cancelled video picker');
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+                console.log('UserGroup tapped custom button: ', response.customButton);
+            }
+            else {
+                let responsePath = 'file://' + response.path;
+                // let message = addResourceMessage('video',this.props.type,[{FileType:ResourceTypeEnum.video,LocalSource:responsePath,RemoteSource:''}],this.props.accountId,this.props.client);//(资源类型，way，资源，发送者，接收者)
+                // chatController.addMessage(message,(result)=>{
+                // },[(tips)=>{console.log(tips)}]);
+                let group = this.props.type == 'group' ? true : false;
+                let message = commonMethod.createMessage(group, this.props.client, this.props.accountId, {
+                    localSource: responsePath,
+                    remoteSource: ''
+                }, 'video')
+                imController.sendMessage(message);
+            }
+        });
+    }
+
+    render() {
+        return (
+            <View style={styles.ThouchBarBoxBottomBox}>
+                <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false}>
+                    <TouchableWithoutFeedback>
+                        <View style={styles.swiperSlide}>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={this.useLocal}>
+                                    <Icon name="picture-o" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>照片</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={this.useLocalVideo}>
+                                    <Icon name="picture-o" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>视频</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={this.useCamera}>
+                                    <Icon name="camera" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>拍照</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={this.useCameraVideo}>
+                                    <Icon name="camera" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>录像</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="video-camera" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>视频聊天</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="map-marker" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>位置</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="envelope" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>红包</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="envelope" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>红包</Text>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback>
+                        <View style={styles.swiperSlide}>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="map-marker" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>位置</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="envelope" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>红包</Text>
+                            </View>
+                            <View style={styles.plusItemBox}>
+                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
+                                                    activeOpacity={0.5} onPress={() => {
+                                }}>
+                                    <Icon name="picture-o" size={30} color="#aaa"/>
+                                </TouchableHighlight>
+                                <Text style={styles.plusItemTit}>照片</Text>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Swiper>
             </View>
-            </TouchableWithoutFeedback>
-              <TouchableWithoutFeedback>
-            <View style={styles.swiperSlide}>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="map-marker" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>位置</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="envelope" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>红包</Text>
-              </View>
-              <View style={styles.plusItemBox}>
-                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}}>
-                  <Icon name="picture-o" size={30} color="#aaa" />
-                </TouchableHighlight>
-                <Text style={styles.plusItemTit}>照片</Text>
-              </View>
-            </View>
-              </TouchableWithoutFeedback>
-          </Swiper>
-        </View>
         )
-  }
+    }
 }
 
 const styles = StyleSheet.create({

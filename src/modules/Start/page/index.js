@@ -8,7 +8,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
-
+import AppManagement from '../../../AppManagement'
 import loginController from '../../../TSController/loginController';
 let LoginController = undefined;
 let currentObj = undefined;
@@ -51,9 +51,7 @@ class Start extends AppComponent {
                 return;
             }
 
-            let account = result.Data;
-            currentObj.props.signIn(account);
-
+            AppManagement.onLoginSuccess();
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
                 routeId: 'MainTabbar'
