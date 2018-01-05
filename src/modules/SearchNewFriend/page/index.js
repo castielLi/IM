@@ -47,10 +47,6 @@ class SearchNewFriend extends AppComponent {
 
 
     searchUser = (keyword)=>{
-        if(keyword == this.props.loginStore.Account||keyword == this.props.loginStore.PhoneNumber){
-            currentObj.alert("添加好友不允许添加自己","错误");
-            return;
-        }
         currentObj.showLoading();
         userController.getUserInfo(keyword,true,(result)=>{
             currentObj.hideLoading();

@@ -85,17 +85,10 @@ class InformationSetting extends AppComponent {
         })
     }
     changeJoinBlackList = (value)=>{
-        currentObj.showLoading();
-
+        this.setState({
+            joinBlackList:value
+        });
         userController.setBlackList(this.props.clientId,value,(result)=>{
-            currentObj.hideLoading();
-            if(result.success && result.data.Data){
-                this.setState({
-                    joinBlackList:value
-                })
-            }else{
-                currentObj.alert(result.errorMessage,"错误");
-            }
         });
     };
 

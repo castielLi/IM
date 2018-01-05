@@ -22,14 +22,16 @@ let applyController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
+let currentAccount = undefined;
 
 class ClientInformation extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
         this.state = {
-                userInfo:{},
-                isFriend:false,
+            userInfo:{},
+            isFriend:false,
+            oneself:false,
         };
         currentObj = this;
 
@@ -43,14 +45,20 @@ class ClientInformation extends AppComponent {
 
     componentDidMount() {
         //todo:更新问题  什么时候更新用户信息
+        currentAccount = userController.getCurrentAccount();
         userController.getUserInfo(this.props.clientId,false,(result)=>{
             let isFriend = false;
+            let oneself = false;
             if(result.Friend === true || result.Friend === 'true'){
                 isFriend = true;
+            }
+            if(currentAccount.Account == this.props.clientId){
+                oneself = true;
             }
             this.setState({
                 userInfo:result,
                 isFriend,
+                oneself
             })
         });
     }
@@ -91,15 +99,15 @@ class ClientInformation extends AppComponent {
 
     //todo:双方添加好友 验证页面
     addFriend = (Applicant,Respondent)=>{
-        applyController.applyFriend(Applicant,Respondent,(response)=>{
-            if(response.success){
-                if(response.data.Result === 3002 && response.data.Data instanceof Object){
-                    this.setState({
-                        isFriend:true
-                    })
-                }else if(response.data.Result === 1 && typeof response.data.Data === 'string'){
-                    currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo}})
-                }
+        applyController.applyFriend(Applicant,Respondent,(result)=>{
+            if(result && result.Result === 3002 && result.Data instanceof Object){
+                this.setState({
+                    isFriend:true
+                })
+            }else if(result && result.Result === 1 && typeof result.Data === 'string'){
+                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo}})
+            }else{
+                currentObj.alert('发送好友申请失败');
             }
         });
     }
@@ -156,10 +164,10 @@ class ClientInformation extends AppComponent {
                             <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight> : null}
-                    {this.state.isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
+                    {this.state.isFriend && !this.state.oneself ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>发消息</Text>
                     </TouchableHighlight>: null}
-                    {this.state.isFriend ? null : <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(this.props.loginStore.accountId,Account)}} style={styles.sendMessageBox}>
+                    {this.state.isFriend || this.state.oneself ? null : <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(currentAccount.Account,Account)}} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>添加到通讯录</Text>
                     </TouchableHighlight>}
 

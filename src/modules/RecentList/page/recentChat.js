@@ -31,11 +31,12 @@ import {
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
+
 import UserController from '../../../TSController/UserController'
 import IMController from '../../../TSController/IMController'
-
 let imController = undefined;
 let userController = undefined;
+
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
