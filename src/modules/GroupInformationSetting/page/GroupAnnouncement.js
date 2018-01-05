@@ -21,6 +21,7 @@ import UserController from '../../../TSController/UserController';
 let {height,width} = Dimensions.get('window');
 
 let userController = undefined;
+let currentAccount = undefined;
 let currentObj = undefined;
 class GroupAnnouncement extends AppComponent {
     constructor(props){
@@ -29,12 +30,13 @@ class GroupAnnouncement extends AppComponent {
         this.state = {
             rightButtonText:'',
             rightButtonDisabled:false,
-            text:'',
+            text:props.Note,
             isChangeText:false
         };
 
         currentObj = this;
         userController = new UserController();
+        currentAccount = userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
@@ -42,10 +44,7 @@ class GroupAnnouncement extends AppComponent {
     }
 
     componentDidMount(){
-        this.setState({
-            text:this.props.Description
-        })
-        if(this.props.Owner===this.props.accountId){
+        if(this.props.Owner===currentAccount.Account){
             this.setState({
                 rightButtonText:'编辑'
             })
@@ -124,7 +123,7 @@ class GroupAnnouncement extends AppComponent {
                             >
                             </TextInput>
                         }
-                        {this.props.Owner===this.props.accountId?null:
+                        {this.props.Owner===currentAccount.Account?null:
                             <View style={{height:50,justifyContent:'center',alignItems:'center'}}>
                                 <Text>仅群主可编辑</Text>
                             </View>

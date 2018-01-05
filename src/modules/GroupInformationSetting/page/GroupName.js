@@ -25,6 +25,7 @@ let userController = undefined;
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
+let currentAccount = undefined;
 
 class GroupName extends AppComponent {
     constructor(props){
@@ -33,12 +34,13 @@ class GroupName extends AppComponent {
         this.state = {
             rightButtonText:'',
             rightButtonDisabled:false,
-            text:'',
+            text:props.Name,
             isChangeText:false
         };
 
         currentObj = this;
         userController = new UserController()
+        currentAccount = userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
@@ -47,9 +49,6 @@ class GroupName extends AppComponent {
 
 
     componentDidMount(){
-        this.setState({
-            text:this.props.Name
-        })
         if(this.state.isChangeText===false){
             this.setState({rightButtonDisabled:true})
         }
@@ -68,11 +67,10 @@ class GroupName extends AppComponent {
     }
 
     toChangeName = ()=>{
-        let {groupId,navigator} = this.props;
-        let {Account} = userController.getCurrentAccount();
+        let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        userController.updateGroupName(Account,groupId,this.state.text,(result)=>{
+        userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
 
@@ -92,7 +90,7 @@ class GroupName extends AppComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+                    params:{"groupId":Id,onUpdateHeadName:currentObj.props.UpdateHeadName},
 
                 },index)
             }else{

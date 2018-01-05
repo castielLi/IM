@@ -31,6 +31,7 @@ let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
+let currentAccount = undefined;
 const options = ['取消','确认']
 const title = '退出后不会通知群聊中其他成员,且不会再接收此群聊的消息'
 
@@ -51,7 +52,6 @@ class GroupInformationSetting extends AppComponent {
         currentObj = this;
 
         userController = new UserController();
-        // SettingController = new settingController();
     }
 
     componentWillUnmount(){
@@ -77,6 +77,7 @@ class GroupInformationSetting extends AppComponent {
     }
 
     componentDidMount(){
+        currentAccount = userController.getCurrentAccount();
         userController.getGroupAndMembersInfo(this.props.groupId,10,(result)=>{
             let save = false;
             if(result.Save == true || result.Save == 'true'){
@@ -160,7 +161,7 @@ class GroupInformationSetting extends AppComponent {
 
 
         }else if(item.index == this.state.members.length-1){
-            if(this.state.groupInformation.Owner === this.props.accountId){
+            if(this.state.groupInformation.Owner === currentAccount.Account){
                 return  <TouchableWithoutFeedback onPress={()=>{this.goToDeleteClient()}}>
                     <View style={styles.itemBox}>
                         <View style={styles.lastItemBox}>
@@ -186,15 +187,15 @@ class GroupInformationSetting extends AppComponent {
 
     }
     gotoGroupAnnouncement = ()=>{
-        let {Owner,Description} = this.state.groupInformation;
-        if(Owner!==this.props.accountId&&!Description){
+        let {Owner} = this.state.groupInformation;
+        if(Owner!==currentAccount.Account){
             alert('只有群主才能设置公告')
         }else{
             this.route.push(this.props,{key:'GroupAnnouncement',routeId:'GroupAnnouncement',params:{...this.state.groupInformation}});
         }
     }
     gotoGroupName = ()=>{
-            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{groupId:this.props.groupId,"UpdateHeadName":this.props.onUpdateHeadName}});
+            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
     }
     render() {
         let Popup = this.PopContent;

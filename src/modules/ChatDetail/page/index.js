@@ -31,17 +31,10 @@ let currentObj = undefined;
 class ChatDetail extends AppComponent {
 	constructor(props) {
         super(props);
-
-
-        if (props.type == 'group') {
-            userController.getGroupInfo(props.client,false,(result)=>{
-                settingButton = result.Exited;
-            })
-        }
         this.state = {
             isDisabled: true,
             name: props.Nick,
-            settingButtonDisplay: settingButton,
+            settingButtonDisplay: false,
             chatRecord:[],
             isMore:0
         };
@@ -60,6 +53,14 @@ class ChatDetail extends AppComponent {
 
     componentWillMount(){
 	    let group = this.props.type == "private"?false:true;
+        if (group) {
+            userController.getGroupInfo(this.props.client,false,(result)=>{
+                let settingButton = result.Exited;
+                this.setState({
+                    settingButtonDisplay:!settingButton
+                })
+            })
+        }
         imController.setCurrentConverse(this.props.client,group);
     }
 
