@@ -158,6 +158,9 @@ class Contacts extends AppComponent {
 	}
     goToNewFriend = () =>{
 		this.props.changeUnDealRequestNumber(0);
+		if(this.props.unReadApplyMessageMark){
+            this.props.hideUnReadMark();
+		}
         this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
 
     }
@@ -198,9 +201,9 @@ class Contacts extends AppComponent {
 								<View  style={styles.itemBox} >
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
 									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
-									{this.props.unDealRequestNumber?
+									{this.props.unReadApplyMessageMark?
 										<View style={styles.circle}>
-											<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>
+											{/*<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>*/}
 										</View>:
 										null
 									}

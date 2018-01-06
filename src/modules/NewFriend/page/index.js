@@ -21,6 +21,8 @@ import {bindActionCreators} from 'redux';
 import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppManagement from '../../../App/AppManagement';
+import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
 
 import ApplyController from '../../../TSController/ApplyController';
 let applyController = undefined;
@@ -57,6 +59,7 @@ class NewFriend extends AppComponent {
                 applyRecord
             })
         });
+        AppManagement.reqeustSource(AppPageRequestEnum.ApplyMessageList);
     }
 
     _refreshUI(type,params){

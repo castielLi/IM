@@ -27,8 +27,8 @@ export default class AppManagement{
 
     static Init(){
         imController = IMController.getSingleInstance();
-        userController = new UserController.getSingleInstance();
-        applyController = new ApplyController.getSingleInstance();
+        userController = UserController.getSingleInstance();
+        applyController = ApplyController.getSingleInstance();
     }
 
     static onLoginSuccess(){
