@@ -94,10 +94,13 @@ class GroupInformationSetting extends AppComponent {
                 HeadImagePath : result.HeadImagePath,
                 Owner : result.Owner,
                 Save : save,
+            };
+            let members = [];
+            if(result.memberList){
+                members  = result.memberList.concat([{},{}]);
             }
-
             currentObj.setState({
-                members:result.memberList.concat([{},{}]),
+                members,
                 groupInformation,
                 isSave:save
             })
