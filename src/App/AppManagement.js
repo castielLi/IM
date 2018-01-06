@@ -36,11 +36,11 @@ export default class AppManagement{
         AppManagement.Init();
 
         userController.init({
-            "updateContactList":AppHandles.updateContactHandle
+            "updateContactHandle":AppHandles.updateContactHandle
         })
 
         applyController.init({
-            "updateApplyMessageList":AppHandles.updateApplyMessageHandle
+            "updateApplyHandle":AppHandles.updateApplyMessageHandle
         })
 
         imController.init({
