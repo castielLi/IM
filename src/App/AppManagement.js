@@ -69,7 +69,7 @@ export default class AppManagement{
                 break;
             case Request.ConversationDetail:
                 if(params == undefined) return;
-                let {chatId,group} = params;
+                var {chatId,group} = params;
                 imController.setCurrentConverse(chatId,group);
                 break;
             case Request.ApplyMessageList:
@@ -77,7 +77,7 @@ export default class AppManagement{
                 break;
             case Request.ConversationDetailHistory:
                 if(params == undefined) return;
-                let {chatId,group} = params;
+                var {chatId,group} = params;
                 imController.getHistoryChatRecord(chatId,group);
                 break;
             case Request.AcceptApplyFriend:
