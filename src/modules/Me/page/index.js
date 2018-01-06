@@ -22,8 +22,12 @@ import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/loginController';
+import UserController from '../../../TSController/UserController';
 
 let loginController = undefined;
+let userController = undefined;
+
+let currentAccount = undefined;
 
 
 var originData = [
@@ -137,6 +141,9 @@ class Me extends AppComponent {
         };
 
         loginController = new LoginController();
+        userController = UserController.getSingleInstance();
+        currentAccount = userController.getCurrentAccount();
+
     }
 
     componentWillUnmount(){
@@ -202,13 +209,13 @@ class Me extends AppComponent {
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >
-                    {this.props.avator&&this.props.avator!==''?
-                        <Image source={{uri:this.props.avator}} style={styles.topPic} ></Image>:
+                    {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
+                        <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
                         <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
                     }
                     <View style={{height:60,justifyContent:'space-between'}}>
-                        <Text style={styles.headerText}>{this.props.Nick}</Text>
-                        <Text style={styles.itemSmallText}>{'微信号：'+this.props.accountId}</Text>
+                        <Text style={styles.headerText}>{currentAccount.Nickname}</Text>
+                        <Text style={styles.itemSmallText}>{'微信号：'+currentAccount.Account}</Text>
                     </View>
                 </View>
                 {/*<Text style={styles.arrow}>{'>'}</Text>*/}
