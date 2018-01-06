@@ -19,13 +19,10 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import SettingController from '../../../Logic/Setting/settingController';
-import contactController from '../../../Logic/Contact/contactController'
 var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
-let settingController = undefined;
-let ContactController = undefined;
+let currentAccount = undefined;
 
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
@@ -57,10 +54,9 @@ class ChooseClient extends AppComponent {
         this.splNeedArr = [];
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
-        settingController = new SettingController();
-        ContactController = new contactController();
 
         userController = new UserController();
+        currentAccount = userController.getCurrentAccount()
 	}
 
     componentWillUnmount(){
@@ -262,7 +258,7 @@ class ChooseClient extends AppComponent {
 			}
 		}
 		this.splNeedArr = splNeedArr;
-		accounts += currentObj.props.accountId;
+		accounts += currentAccount.Account;
 
 		//已有群 添加新成员
 
@@ -270,7 +266,7 @@ class ChooseClient extends AppComponent {
             currentObj.showLoading()
 
 			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
-			userController.addGroupMember(this.props.accountId,this.props.groupId,Nicks,accounts,(result)=>{
+			userController.addGroupMember(currentAccount.Account,this.props.groupId,Nicks,accounts,(result)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
                     let routes = currentObj.props.navigator.getCurrentRoutes();
@@ -300,8 +296,8 @@ class ChooseClient extends AppComponent {
                 return;
 			}
             currentObj.showLoading()
-			let groupName = this.props.accountName + "发起的群聊";
-			userController.createGroup(this.props.accountId,groupName,Nicks,accounts,(result)=>{
+			let groupName = currentAccount.Nickname + "发起的群聊";
+			userController.createGroup(currentAccount.Account,groupName,Nicks,accounts,(result)=>{
 				if(result.Result == 1){
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});

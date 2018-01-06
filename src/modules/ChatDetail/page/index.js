@@ -60,8 +60,13 @@ class ChatDetail extends AppComponent {
         if (group) {
             userController.getGroupInfo(this.props.client,false,(result)=>{
                 let settingButton = result.Exited;
+                if(settingButton == true || settingButton == 'true'){
+                    settingButton = true;
+                }else{
+                    settingButton = false;
+                }
                 this.setState({
-                    settingButtonDisplay:!settingButton
+                    settingButtonDisplay:settingButton
                 })
             })
         }
