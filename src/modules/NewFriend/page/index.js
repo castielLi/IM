@@ -157,7 +157,7 @@ class NewFriend extends AppComponent {
                                 {this._renderAvator(rowData.avator)}
                                 <View style={styles.basicBoxRight}>
                                     <Text style={styles.name}>{rowData.Nickname}</Text>
-                                    <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
+                                    <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment && rowData.comment != 'undefined' ? rowData.comment : ''}</Text>
                                 </View>
                             </View>
                             {this.applyMsgStyle(rowID,rowData)}
