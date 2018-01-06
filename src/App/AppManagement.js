@@ -3,8 +3,17 @@
  */
 
 import Mark from './AppPageMarkEnum';
-import IMController from '../TSController/IMController'
 import * as AppHandles from './AppUIHandle'
+import Request from './AppPageRequestEnum'
+
+//controller
+import IMController from '../TSController/IMController'
+import UserController from '../TSController/UserController'
+import ApplyController from '../TSController/ApplyController'
+
+let imController = undefined;
+let userController = undefined;
+let applyController = undefined;
 
 let Contact = {};
 
@@ -16,9 +25,17 @@ let ConversationDetail = {};
 
 export default class AppManagement{
 
+    static Init(){
+        imController = IMController.getSingleInstance();
+        userController = new UserController();
+        applyController = new ApplyController();
+    }
+
     static onLoginSuccess(){
-        let im = IMController.getSingleInstance();
-        im.init({
+
+        AppManagement.Init();
+
+        imController.init({
             "AppKickOutHandle":AppHandles.AppKickOutHandle,
             "AppReceiveMessageHandle":AppHandles.AppReceiveMessageHandle,
             "updateConversListHandle":AppHandles.updateConversListHandle,
@@ -32,6 +49,44 @@ export default class AppManagement{
             "appOnError":AppHandles.appOnError,
             "appOnWillReconnect":AppHandles.appOnWillReconnect
         })
+    }
+
+    static reqeustSource(type,params=undefined){
+        switch (type) {
+            case Request.ContactList:
+                userController.getContactList(false,false,(contacts)=>{
+                    AppManagement.dispatchMessageToMarkPage(Mark.Contacts,contacts);
+                })
+                break;
+            case Request.ConversationList:
+                imController.getConversationList();
+                break;
+            case Request.ConversationDetail:
+                if(params == undefined) return;
+                let {chatId,group} = params;
+                imController.setCurrentConverse(chatId,group);
+                break;
+            case Request.ApplyMessageList:
+                applyController.setApplyFriendRecord((messages)=>{
+                    AppManagement.dispatchMessageToMarkPage(Mark.ApplyMessage,messages);
+                })
+                break;
+            case Request.ConversationDetailHistory:
+                if(params == undefined) return;
+                let {chatId,group} = params;
+                imController.getHistoryChatRecord(chatId,group);
+                break;
+            case Request.AcceptApplyFriend:
+                userController.getContactList(false,false,(contacts)=>{
+                    AppManagement.dispatchMessageToMarkPage(Mark.Contacts,contacts);
+                })
+
+                applyController.setApplyFriendRecord((messages)=>{
+                    AppManagement.dispatchMessageToMarkPage(Mark.ApplyMessage,messages);
+                })
+                break;
+        }
+
     }
 
     static addPageManagement(type,pageName,handle){

@@ -74,8 +74,7 @@ export const RouteMap = {
     'Start': {
         'Start': {
             component: Start,
-            params: {},
-            markType:Mark.ConversationDetail
+            params: {}
         }
     },
     'MainTabbar': {
