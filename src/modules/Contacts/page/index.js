@@ -22,8 +22,10 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
+import * as applyActions from '../reducer/action';
 import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 let currentObj = undefined;
 let userController = undefined;
 
@@ -51,6 +53,38 @@ class Contacts extends AppComponent {
 
         userController = new UserController();
 	}
+
+    componentWillMount(){
+        //通过回调改变页面显示
+        userController.getContactList(false,false,(contacts)=>{
+            currentObj.setState({
+                contacts
+            })
+        })
+    }
+
+    _refreshUI(type,params){
+        switch (type){
+            case AppPageMarkEnum.Contacts:
+                var contacts = params.list;
+                currentObj.setState({
+                    contacts
+                });
+                break;
+			case AppPageMarkEnum.ApplyMessage:
+                //显示未读好友申请红点
+				this.props.showUnReadMark();
+				break;
+			case AppPageMarkEnum.AcceptApplyFriend:
+                var contacts = params.list;
+                currentObj.setState({
+                    contacts
+                });
+				break;
+        }
+    }
+
+
 
     componentWillUnmount(){
         super.componentWillUnmount();
@@ -223,14 +257,6 @@ class Contacts extends AppComponent {
         this.setState({showFeatures:newState});
     }
 
-    componentWillMount(){
-        //通过回调改变页面显示
-        userController.getContactList(false,false,(contacts)=>{
-            currentObj.setState({
-                contacts
-            })
-		})
-	}
 	render() {
 		let objData = initDataFormate(this.state.contacts,this.state.text);
 		this.relationStore = objData.needArr;
@@ -386,13 +412,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     unDealRequestNumber:state.unReadMessageStore.unDealRequestNumber,
+    unReadApplyMessageMark:state.unReadApplyMessageStore.unReadApplyMessageMark
 });
 
 const mapDispatchToProps = (dispatch) => {
   return{
 
       ...bindActionCreators(featuresAction, dispatch),
-      ...bindActionCreators(tabBarActions, dispatch)
+      ...bindActionCreators(tabBarActions, dispatch),
+	  ...bindActionCreators(applyActions,dispatch)
 
   }};
 

@@ -47,7 +47,7 @@ class MoreGroupList extends AppComponent {
             this.setState({
                 memberList:result
             })
-        })
+        },null,true)
     }
 
     componentWillUnmount(){

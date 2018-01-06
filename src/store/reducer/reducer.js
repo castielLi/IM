@@ -7,6 +7,7 @@ import {unReadMessageStore,tabBarStore} from '../../modules/MainTabbar/reducer';
 import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} from '../../modules/ChatDetail/reducer/index';
 import FeaturesStore from '../../modules/Common/menu/reducer'
 import NavigationBottomStore  from '../../modules/Common/NavigationBar/reducer/index'
+import {unReadApplyMessageStore} from '../../modules/Contacts/reducer'
 
 export default combineReducers({
 	//登录状态
@@ -28,6 +29,8 @@ export default combineReducers({
     //播放器状态
     mediaPlayerStore,
     //导航底部显示隐藏
-    NavigationBottomStore
+    NavigationBottomStore,
+    //未读好友申请显示隐藏
+    unReadApplyMessageStore
 
 });

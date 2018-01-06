@@ -185,7 +185,8 @@ export const RouteMap = {
     'NewFriend': {
         'NewFriend': {
             component: NewFriend,
-            params: {}
+            params: {},
+            markType:Mark.ApplyMessage
         }
     },
     'SearchNewFriend': {

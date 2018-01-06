@@ -35,38 +35,38 @@ export function updateChatRecordHandle(data){
 };
 //聊天头部名字回调
 export function updateHeadNameHandle(data){
-    AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.ModifyGroupName,data);
+    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ModifyGroupName,data);
 }
 //聊天设置回调
 export function updateChatDisplaySetting(data){
-    AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.ModifyGroupSetting,data);
+    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ModifyGroupSetting,data);
 };
 
 //通讯录回调
 export function updateContactHandle(data){
-    AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.Contacts,data);
+    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.Contacts,data);
 };
 
 //好友申请界面回调
 export function updateApplyHandle(data){
-    AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.ApplyMessage,data);
+    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ApplyMessage,data);
 };
 
 export function appOnConnect(data){
-    // AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+    // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };
 
 //关闭连接
 export function appOnClosed(data){
-    // AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+    // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };
 
 //socket错误
 export function appOnError(data){
-    // AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+    // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };
 
 //重新连接
 export function appOnWillReconnect(data){
-    // AppPageMarkEnum.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+    // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };

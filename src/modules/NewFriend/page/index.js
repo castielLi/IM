@@ -20,6 +20,7 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
 import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 
 import ApplyController from '../../../TSController/ApplyController';
 let applyController = undefined;
@@ -56,6 +57,23 @@ class NewFriend extends AppComponent {
                 applyRecord
             })
         });
+    }
+
+    _refreshUI(type,params){
+        switch (type){
+            case AppPageMarkEnum.ApplyMessage:
+                let applyRecord = params.list;
+                currentObj.setState({
+                    applyRecord
+                });
+                break;
+            case AppPageMarkEnum.AcceptApplyFriend:
+                let applyRecord = params.list;
+                currentObj.setState({
+                    applyRecord
+                });
+                break;
+        }
     }
 
     acceptFriend = (key)=>{
