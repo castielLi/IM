@@ -50,7 +50,7 @@ class SearchNewFriend extends AppComponent {
         currentObj.showLoading();
         userController.getUserInfo(keyword,true,(result)=>{
             currentObj.hideLoading();
-           if(result && result.Result == 1){
+           if(result){
                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
            }else{
                currentObj.alert("该用户不存在","错误");
