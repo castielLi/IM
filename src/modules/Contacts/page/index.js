@@ -70,9 +70,8 @@ class Contacts extends AppComponent {
     _refreshUI(type,params){
         switch (type){
             case AppPageMarkEnum.Contacts:
-                var contacts = params.list;
                 currentObj.setState({
-                    contacts
+                    contacts:params
                 });
                 break;
 			case AppPageMarkEnum.ApplyMessage:

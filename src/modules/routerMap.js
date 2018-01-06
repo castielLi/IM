@@ -89,7 +89,8 @@ export const RouteMap = {
         },
         'TabTwo': {
             component: Contacts,
-            params: {}
+            params: {},
+            markType:Mark.Contacts
         },
         'TabThree': {
             component: Zoom,

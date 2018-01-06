@@ -106,14 +106,14 @@ export default class AppManagement{
                 ConversationDetail[pageName] = handle;
                 break;
             case Mark.ApplyMessage:
-                if(ConversationDetail[pageName])
+                if(ApplyMessage[pageName])
                     return;
-                ConversationDetail[pageName] = handle;
+                ApplyMessage[pageName] = handle;
                 break;
             case Mark.Contacts:
-                if(ConversationDetail[pageName])
+                if(Contacts[pageName])
                     return;
-                ConversationDetail[pageName] = handle;
+                Contacts[pageName] = handle;
                 break;
         }
     }
@@ -142,13 +142,13 @@ export default class AppManagement{
                 }
                 break;
             case Mark.ApplyMessage:
-                for(let item in ConversationDetail){
-                    ConversationDetail[item] && ConversationDetail[item](type,params);
+                for(let item in ApplyMessage){
+                    ApplyMessage[item] && ApplyMessage[item](type,params);
                 }
                 break;
             case Mark.Contacts:
-                for(let item in ConversationDetail){
-                    ConversationDetail[item] && ConversationDetail[item](type,params);
+                for(let item in Contacts){
+                    Contacts[item] && Contacts[item](type,params);
                 }
                 break;
         }
