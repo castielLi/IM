@@ -35,6 +35,9 @@ import TimeHelper from '../../../Core/Helper/TimeHelper';
 import UserController from '../../../TSController/UserController'
 import IMController from '../../../TSController/IMController'
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppManagement from '../../../App/AppManagement'
+import AppPageRequestEnum from '../../../App/AppPageRequestEnum'
+
 let imController = undefined;
 let userController = undefined;
 
@@ -79,10 +82,11 @@ class RecentChat extends AppComponent {
 
         this.props.showNavigationBottom();
 
+        // imController.getConversationList();
+        AppManagement.reqeustSource(AppPageRequestEnum.ConversationList);
+
         userController.getContactList(false,true,(result)=>{
             userController.getContactList(true,true,(result)=>{
-
-                imController.getConversationList();
                 currentObj.props.hideNavigationBottom();
             })
         })
