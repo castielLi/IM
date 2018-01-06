@@ -23,6 +23,9 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMController'
 import UserController from '../../../TSController/UserController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppManagement from '../../../App/AppManagement';
+import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+
 let userController = undefined;
 let settingButton = undefined;
 let imController = undefined;
@@ -47,8 +50,9 @@ class ChatDetail extends AppComponent {
 
 
     getHistoryChatRecord(){
-        imController.getHistoryChatRecord(this.props.client,this.props.type);
-    }
+        // imController.getHistoryChatRecord(this.props.client,this.props.type);
+        AppManagement.reqeustSource(AppPageRequestEnum.ConversationDetailHistory,{"chatId":this.props.client,"group":group});
+	}
 
 
     componentWillMount(){
@@ -61,7 +65,8 @@ class ChatDetail extends AppComponent {
                 })
             })
         }
-        imController.setCurrentConverse(this.props.client,group);
+        AppManagement.reqeustSource(AppPageRequestEnum.ConversationDetail,{"chatId":this.props.client,"group":group});
+        // imController.setCurrentConverse(this.props.client,group);
     }
 
     componentWillUnmount(){
