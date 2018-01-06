@@ -74,13 +74,13 @@ export default class ChatMessageSound extends Component {
     }
     render() {
         let {data,style} = this.props;
-        let {localSource,remoteSource,time} = data;
-        let soundObjConfig = this.getSoundTime(time);
+        let {LocalSource,RemoteSource,Time} = data;
+        let soundObjConfig = this.getSoundTime(Time);
 
         return(
             <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                <Thouch onPress={()=>this.playSound(localSource)}>
-                    <Text>{time}"</Text>
+                <Thouch onPress={()=>this.playSound(LocalSource)}>
+                    <Text>{Time}"</Text>
                 </Thouch>
             </View>
         )
