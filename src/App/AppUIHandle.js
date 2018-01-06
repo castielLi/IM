@@ -48,7 +48,7 @@ export function updateContactHandle(data){
 };
 
 //好友申请界面回调
-export function updateApplyHandle(data){
+export function updateApplyMessageHandle(data){
     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ApplyMessage,data);
 };
 

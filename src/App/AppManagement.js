@@ -35,6 +35,14 @@ export default class AppManagement{
 
         AppManagement.Init();
 
+        userController.init({
+            "updateContactList":AppHandles.updateContactHandle
+        })
+
+        applyController.init({
+            "updateApplyMessageList":AppHandles.updateApplyMessageHandle
+        })
+
         imController.init({
             "AppKickOutHandle":AppHandles.AppKickOutHandle,
             "AppReceiveMessageHandle":AppHandles.AppReceiveMessageHandle,
@@ -43,7 +51,7 @@ export default class AppManagement{
             "updateHeadNameHandle":AppHandles.updateHeadNameHandle,
             "updateChatDisplaySetting":AppHandles.updateChatDisplaySetting,
             "updateContactHandle":AppHandles.updateContactHandle,
-            "updateApplyHandle":AppHandles.updateApplyHandle,
+            "updateApplyHandle":AppHandles.updateApplyMessageHandle,
             "appOnConnect":AppHandles.appOnConnect,
             "appOnClosed":AppHandles.appOnClosed,
             "appOnError":AppHandles.appOnError,
@@ -54,9 +62,7 @@ export default class AppManagement{
     static reqeustSource(type,params=undefined){
         switch (type) {
             case Request.ContactList:
-                userController.getContactList(false,false,(contacts)=>{
-                    AppManagement.dispatchMessageToMarkPage(Mark.Contacts,contacts);
-                })
+                userController.getContactList(false,false)
                 break;
             case Request.ConversationList:
                 imController.getConversationList();
@@ -67,9 +73,7 @@ export default class AppManagement{
                 imController.setCurrentConverse(chatId,group);
                 break;
             case Request.ApplyMessageList:
-                applyController.setApplyFriendRecord((messages)=>{
-                    AppManagement.dispatchMessageToMarkPage(Mark.ApplyMessage,messages);
-                })
+                applyController.setApplyFriendRecord()
                 break;
             case Request.ConversationDetailHistory:
                 if(params == undefined) return;
@@ -77,13 +81,8 @@ export default class AppManagement{
                 imController.getHistoryChatRecord(chatId,group);
                 break;
             case Request.AcceptApplyFriend:
-                userController.getContactList(false,false,(contacts)=>{
-                    AppManagement.dispatchMessageToMarkPage(Mark.Contacts,contacts);
-                })
-
-                applyController.setApplyFriendRecord((messages)=>{
-                    AppManagement.dispatchMessageToMarkPage(Mark.ApplyMessage,messages);
-                })
+                userController.getContactList(false,false)
+                applyController.setApplyFriendRecord()
                 break;
         }
 
