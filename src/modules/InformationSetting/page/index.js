@@ -33,7 +33,7 @@ class InformationSetting extends AppComponent {
             joinBlackList:false,
         }
         currentObj = this;
-        userController = new UserController();
+        userController = new UserController.getSingleInstance();
     }
 
     componentWillUnmount(){
