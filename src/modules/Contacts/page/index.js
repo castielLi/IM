@@ -26,6 +26,8 @@ import * as applyActions from '../reducer/action';
 import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppManagement from '../../../App/AppManagement';
+import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
 let currentObj = undefined;
 let userController = undefined;
 
@@ -56,11 +58,13 @@ class Contacts extends AppComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        userController.getContactList(false,false,(contacts)=>{
-            currentObj.setState({
-                contacts
-            })
-        })
+        // userController.getContactList(false,false,(contacts)=>{
+        //     currentObj.setState({
+        //         contacts
+        //     })
+        // })
+
+        AppManagement.reqeustSource(AppPageRequestEnum.ContactList);
     }
 
     _refreshUI(type,params){
@@ -74,12 +78,6 @@ class Contacts extends AppComponent {
 			case AppPageMarkEnum.ApplyMessage:
                 //显示未读好友申请红点
 				this.props.showUnReadMark();
-				break;
-			case AppPageMarkEnum.AcceptApplyFriend:
-                var contacts = params.list;
-                currentObj.setState({
-                    contacts
-                });
 				break;
         }
     }

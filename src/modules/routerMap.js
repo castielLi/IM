@@ -150,7 +150,8 @@ export const RouteMap = {
     'Contacts': {
         'Contacts': {
             component: Contacts,
-            params: {}
+            params: {},
+            markType:Mark.Contacts
         },
         'GroupList':{
             component:GroupList,

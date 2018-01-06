@@ -15,7 +15,7 @@ let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
 
-let Contact = {};
+let Contacts = {};
 
 let ApplyMessage = {};
 
@@ -40,7 +40,7 @@ export default class AppManagement{
         })
 
         applyController.init({
-            "updateApplyHandle":AppHandles.updateApplyMessageHandle
+            "updateApplyHandle":AppHandles.updateApplyMessageHandle,
         })
 
         imController.init({
@@ -62,7 +62,7 @@ export default class AppManagement{
     static reqeustSource(type,params=undefined){
         switch (type) {
             case Request.ContactList:
-                userController.getContactList(false,false)
+                userController.getUserContactList(false);
                 break;
             case Request.ConversationList:
                 imController.getConversationList();
@@ -81,8 +81,12 @@ export default class AppManagement{
                 imController.getHistoryChatRecord(chatId,group);
                 break;
             case Request.AcceptApplyFriend:
-                userController.getContactList(false,false)
-                applyController.setApplyFriendRecord()
+                // userController.getContactList(false,false)
+                // applyController.setApplyFriendRecord()
+                if(params == undefined) return;
+                var {key,callback} = params;
+                applyController.acceptFriend(key,callback);
+                userController.getUserContactList(false);
                 break;
         }
 
@@ -95,12 +99,22 @@ export default class AppManagement{
                if(ConversationList[pageName])
                    return;
                ConversationList[pageName] = handle;
-                   break
+                   break;
             case Mark.ConversationDetail:
                 if(ConversationDetail[pageName])
                     return;
                 ConversationDetail[pageName] = handle;
-                break
+                break;
+            case Mark.ApplyMessage:
+                if(ConversationDetail[pageName])
+                    return;
+                ConversationDetail[pageName] = handle;
+                break;
+            case Mark.Contacts:
+                if(ConversationDetail[pageName])
+                    return;
+                ConversationDetail[pageName] = handle;
+                break;
         }
     }
 
@@ -121,12 +135,22 @@ export default class AppManagement{
                 for(let item in ConversationList){
                     ConversationList[item] && ConversationList[item](type,params);
                 }
-                break
+                break;
             case Mark.ConversationDetail:
                 for(let item in ConversationDetail){
                     ConversationDetail[item] && ConversationDetail[item](type,params);
                 }
-                break
+                break;
+            case Mark.ApplyMessage:
+                for(let item in ConversationDetail){
+                    ConversationDetail[item] && ConversationDetail[item](type,params);
+                }
+                break;
+            case Mark.Contacts:
+                for(let item in ConversationDetail){
+                    ConversationDetail[item] && ConversationDetail[item](type,params);
+                }
+                break;
         }
     }
 
