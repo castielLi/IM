@@ -22,11 +22,12 @@ import {bindActionCreators} from 'redux';
 
 import RelationModel from '../../Logic/Common/dto/RelationDto'
 import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
-import ApplyFriendController from '../../Logic/ApplyFriend/applyFriendController';
+import UserController from '../../TSController/UserController';
+
 
 
 let currentObj;
-let applyFriendController = undefined;
+let userController = undefined;
 
 class Validate extends AppComponent {
     constructor(props){
@@ -36,7 +37,7 @@ class Validate extends AppComponent {
             text:''
         }
         currentObj = this;
-        applyFriendController = new ApplyFriendController();
+        userController = UserController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -67,30 +68,22 @@ class Validate extends AppComponent {
 
     sendApplyMessage= ()=>{
         let {Applicant,Respondent} = this.props;
-        // currentObj.showLoading()
         Keyboard.dismiss();
-        // im.addMessage(addMessage,function(){
-        //     currentObj.hideLoading()
-            currentObj.alert("申请消息已经发送,等待对方验证","提醒",
-                function(){
-                    currentObj.route.pop(currentObj.props);
-                });
+        currentObj.alert("申请消息已经发送,等待对方验证","提醒",
+        function(){
+            currentObj.route.pop(currentObj.props);
+        });
 
-            //向数据库添加关系，并且标记这条关系显示为false;
-            let relation = new RelationModel();
-            relation.Nick = currentObj.props.relation.Nickname;
-            relation.RelationId = currentObj.props.relation.Account;
-            relation.OtherComment = currentObj.props.relation.Gender;
-            relation.avator = currentObj.props.relation.HeadImageUrl;
-            relation.Type = ChatWayEnum.Private;
-            relation.show = 'false';
-            // user.AddNewRelation(relation);
+        // //向数据库添加关系，并且标记这条关系显示为false;
+        // let relation = new RelationModel();
+        // relation.Nick = currentObj.props.relation.Nickname;
+        // relation.RelationId = currentObj.props.relation.Account;
+        // relation.OtherComment = currentObj.props.relation.Gender;
+        // relation.avator = currentObj.props.relation.HeadImageUrl;
+        // relation.Type = ChatWayEnum.Private;
+        // relation.show = 'false';
+        // userController.tempApplyFriend(relation);
 
-
-            applyFriendController.tempApplyFriend(relation);
-            //currentObj.props.addRelation(relation);
-
-        // })
     }
     render() {
         let Popup = this.PopContent;
