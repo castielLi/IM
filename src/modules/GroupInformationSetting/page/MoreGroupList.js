@@ -39,7 +39,7 @@ class MoreGroupList extends AppComponent {
         this.render = this.render.bind(this);
 
         currentObj = this;
-        userController = new UserController();
+        userController =  UserController.getSingleInstance();
     }
 
     componentWillMount(){

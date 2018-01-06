@@ -31,7 +31,7 @@ class SearchNewFriend extends AppComponent {
             searchResult:true
         }
         currentObj = this;
-        userController = new UserController();
+        userController =  UserController.getSingleInstance();
     }
 
     componentWillUnmount(){

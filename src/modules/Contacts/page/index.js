@@ -53,7 +53,7 @@ class Contacts extends AppComponent {
         this.relationStore = [];
         currentObj = this;
 
-        userController = new UserController();
+        userController =  UserController.getSingleInstance();
 	}
 
     componentWillMount(){

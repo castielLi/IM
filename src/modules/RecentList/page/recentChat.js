@@ -62,8 +62,8 @@ class RecentChat extends AppComponent {
         this.deleteSomeRow = this.deleteSomeRow.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
-        userController = new UserController();
-        imController = new IMController.getSingleInstance();
+        userController =  UserController.getSingleInstance();
+        imController =  IMController.getSingleInstance();
     }
 
     componentWillUnmount(){

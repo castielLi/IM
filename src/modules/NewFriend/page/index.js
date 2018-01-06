@@ -42,7 +42,7 @@ class NewFriend extends AppComponent {
             applyRecord:[],
         };
         currentObj = this;
-        applyController = new ApplyController();
+        applyController =  ApplyController.getSingleInstance();
     }
 
     componentWillUnmount(){

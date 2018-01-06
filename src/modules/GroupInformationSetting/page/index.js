@@ -51,7 +51,7 @@ class GroupInformationSetting extends AppComponent {
         }
         currentObj = this;
 
-        userController = new UserController();
+        userController =  UserController.getSingleInstance();
     }
 
     componentWillUnmount(){

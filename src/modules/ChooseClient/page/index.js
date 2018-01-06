@@ -55,7 +55,7 @@ class ChooseClient extends AppComponent {
 		this._rightButton = this._rightButton.bind(this);
 		currentObj = this;
 
-        userController = new UserController();
+        userController =  UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount()
 	}
 

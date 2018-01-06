@@ -75,7 +75,7 @@ class Chat extends Component {
         };
 
         this.renderRow = this.renderRow.bind(this);
-        userController = new UserController();
+        userController = UserController.getSingleInstance();
     }
 
 

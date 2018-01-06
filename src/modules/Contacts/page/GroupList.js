@@ -43,7 +43,7 @@ class GroupList extends AppComponent {
         }
         this.relationStore = [];
         currentObj = this;
-        userController = new UserController();
+        userController = UserController.getSingleInstance();
     }
 
     componentWillUnmount(){

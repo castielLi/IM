@@ -41,7 +41,7 @@ class DeleteGroupMember extends AppComponent {
         this.relationStore = []
         this._rightButton = this._rightButton.bind(this);
         currentObj = this;
-        userController = new UserController();
+        userController =  UserController.getSingleInstance();
     }
 
     componentWillUnmount(){

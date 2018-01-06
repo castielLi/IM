@@ -45,7 +45,7 @@ class ChatDetail extends AppComponent {
         this.isDisabled = false;
 
         imController = IMController.getSingleInstance();
-        userController = new UserController();
+        userController = UserController.getSingleInstance();
     }
 
 

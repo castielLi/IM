@@ -35,8 +35,8 @@ class ClientInformation extends AppComponent {
         };
         currentObj = this;
 
-        userController = new UserController();
-        applyController = new ApplyController();
+        userController =  UserController.getSingleInstance();
+        applyController =  ApplyController.getSingleInstance();
     }
 
     componentWillUnmount(){

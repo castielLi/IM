@@ -39,7 +39,7 @@ class GroupName extends AppComponent {
         };
 
         currentObj = this;
-        userController = new UserController()
+        userController =  UserController.getSingleInstance()
         currentAccount = userController.getCurrentAccount();
     }
 
