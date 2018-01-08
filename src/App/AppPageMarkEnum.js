@@ -10,5 +10,7 @@ export default Mark = {
     ModifyGroupName:5,
     ModifyGroupSetting:6,
     AppStatus:7,
-    UnReadMessage:8
+    UnReadMessage:8,
+
+    AppKickOutHandle:101
 }

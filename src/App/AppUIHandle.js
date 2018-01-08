@@ -22,7 +22,7 @@ export function AppKickOutHandle(){
 
 //Tab数字回调
 export function AppReceiveMessageHandle(data){
-
+    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.UnReadMessage,data);
 }
 //会话列表的回调
 export function updateConversListHandle(data){
@@ -52,11 +52,6 @@ export function updateApplyMessageHandle(data){
     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ApplyMessage,data);
 };
 
-//未读消息回调
-export function updateUnReadMessageHandle(data){
-    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.UnReadMessage,data);
-};
-
 export function appOnConnect(data){
     // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };
@@ -75,3 +70,60 @@ export function appOnError(data){
 export function appOnWillReconnect(data){
     // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };
+
+
+export function pageManagement(type,data){
+    switch (type){
+        case AppPageMarkEnum.AppKickOutHandle:
+            Alert.alert(
+                '下线通知',
+                "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
+                [
+                    {text: '确定', onPress: () => {
+                        Route.ToLogin();
+                    }},
+                    {text: '不是本人操作',style:{color:"red"}, onPress: () => {
+                        Route.ToLogin();
+                    }},
+                ]);
+            break;
+        default :
+            if(type){
+                AppManagement.dispatchMessageToMarkPage(type,data);
+                break;
+            }
+        // case 0:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.UnReadMessage,data);
+        //     break;
+        // case 1:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ConversationList,data);
+        //     break;
+        // case 2:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ConversationDetail,data);
+        //     break;
+        // case 3:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ModifyGroupName,data);
+        //     break;
+        // case 4:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ModifyGroupSetting,data);
+        //     break;
+        // case 5:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.Contacts,data);
+        //     break;
+        // case 6:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ApplyMessage,data);
+        //     break;
+        // case 7:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+        //     break;
+        // case 8:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+        //     break;
+        // case 9:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+        //     break;
+        // case 10:
+        //     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
+        //     break;
+    }
+}

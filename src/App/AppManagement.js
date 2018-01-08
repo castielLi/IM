@@ -37,30 +37,17 @@ export default class AppManagement{
 
         AppManagement.Init();
 
-        userController.init({
-            "updateContactHandle":AppHandles.updateContactHandle,
-        })
+        userController.init(
+            AppHandles.pageManagement,
+        )
 
-        applyController.init({
-            "updateApplyHandle":AppHandles.updateApplyMessageHandle,
-            "updateContactHandle":AppHandles.updateContactHandle,
-        })
+        applyController.init(
+            AppHandles.pageManagement,
+        )
 
-        imController.init({
-            "AppKickOutHandle":AppHandles.AppKickOutHandle,
-            "AppReceiveMessageHandle":AppHandles.AppReceiveMessageHandle,
-            "updateConversListHandle":AppHandles.updateConversListHandle,
-            "updateChatRecordHandle":AppHandles.updateChatRecordHandle,
-            "updateHeadNameHandle":AppHandles.updateHeadNameHandle,
-            "updateChatDisplaySetting":AppHandles.updateChatDisplaySetting,
-            "updateContactHandle":AppHandles.updateContactHandle,
-            "updateApplyHandle":AppHandles.updateApplyMessageHandle,
-            "updateUnReadMessageHandle":AppHandles.updateUnReadMessageHandle,
-            "appOnConnect":AppHandles.appOnConnect,
-            "appOnClosed":AppHandles.appOnClosed,
-            "appOnError":AppHandles.appOnError,
-            "appOnWillReconnect":AppHandles.appOnWillReconnect
-        })
+        imController.init(
+            AppHandles.pageManagement,
+        )
     }
 
     static reqeustSource(type,params=undefined){
