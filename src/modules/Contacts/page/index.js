@@ -28,6 +28,7 @@ import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
 import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+import UnReadEnum from '../../Common/Enum/UnReadEnum';
 let currentObj = undefined;
 let userController = undefined;
 
@@ -74,9 +75,11 @@ class Contacts extends AppComponent {
                     contacts:params
                 });
                 break;
-			case AppPageMarkEnum.ApplyMessage:
-                //显示未读好友申请红点
-				this.props.showUnReadMark();
+			case AppPageMarkEnum.UnReadMessage:
+                if(params.type == UnReadEnum.unReadApply){
+                    //显示未读好友申请红点
+                    this.props.showUnReadMark();
+				}
 				break;
         }
     }
@@ -154,7 +157,9 @@ class Contacts extends AppComponent {
 				</View>
 	}
     goToNewFriend = () =>{
-		this.props.changeUnDealRequestNumber(0);
+		if(this.props.unDealRequestMark){
+            this.props.hideUnDealRequest();
+		}
 		if(this.props.unReadApplyMessageMark){
             this.props.hideUnReadMark();
 		}
@@ -411,7 +416,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    unDealRequestNumber:state.unReadMessageStore.unDealRequestNumber,
+    unDealRequestMark:state.unReadMessageStore.unDealRequestMark,
     unReadApplyMessageMark:state.unReadApplyMessageStore.unReadApplyMessageMark
 });
 

@@ -18,6 +18,7 @@ import * as featuresAction from '../../Common/menu/reducer/action';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
 import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+import UnReadEnum from '../../Common/Enum/UnReadEnum';
 
 
 class TabBarComponent extends AppComponent {
@@ -28,8 +29,12 @@ class TabBarComponent extends AppComponent {
 
     _refreshUI(type,params){
         switch (type){
-            case AppPageMarkEnum.ConversationList:
-                this.props.changeUnReadMessageNumber(params.number);
+            case AppPageMarkEnum.UnReadMessage:
+                if(params.type == UnReadEnum.unReadMessage){
+                    this.props.changeUnReadMessageNumber(params.number);
+                }else if(params.type == UnReadEnum.unReadApply){
+                    this.props.showUnDealRequest();
+                }
                 break;
         }
     }
@@ -52,7 +57,7 @@ class TabBarComponent extends AppComponent {
                 return null;
             }
         }else{
-            if(count>0){
+            if(count){
                 return <View style={styles.otherBadge}></View>
             }else{
                 return null;
@@ -95,7 +100,7 @@ class TabBarComponent extends AppComponent {
                                                       resizeMode={Image.resizeMode.contain}
                     />}
                     //badgeText={this.props.unReadMessageStore.unDealRequestNumber}
-                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unDealRequestNumber)}
+                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unDealRequestMark)}
                     onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1)}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>

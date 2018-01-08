@@ -81,7 +81,7 @@ export const RouteMap = {
         'MainTabbar':{
             component: MainTabbar,
             params: {},
-            markType:Mark.ConversationList
+            markType:Mark.UnReadMessage
         },
         'TabOne': {
             component: RecentList,
@@ -91,7 +91,7 @@ export const RouteMap = {
         'TabTwo': {
             component: Contacts,
             params: {},
-            markType:Mark.Contacts
+            markType:Mark.Contacts | Mark.UnReadMessage
         },
         'TabThree': {
             component: Zoom,

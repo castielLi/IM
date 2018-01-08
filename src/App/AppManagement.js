@@ -23,6 +23,8 @@ let ConversationList = {};
 
 let ConversationDetail = {};
 
+let UnReadMessage = {};
+
 export default class AppManagement{
 
     static Init(){
@@ -81,12 +83,9 @@ export default class AppManagement{
                 imController.getHistoryChatRecord(chatId,group);
                 break;
             case Request.AcceptApplyFriend:
-                // userController.getContactList(false,false)
-                // applyController.setApplyFriendRecord()
                 if(params == undefined) return;
                 var {key,callback} = params;
                 applyController.acceptFriend(key,callback);
-                userController.getUserContactList(false);
                 break;
         }
 
@@ -115,6 +114,11 @@ export default class AppManagement{
                     return;
                 Contacts[pageName] = handle;
                 break;
+            case Mark.UnReadMessage:
+                if(UnReadMessage[pageName])
+                    return;
+                UnReadMessage[pageName] = handle;
+                break;
         }
     }
 
@@ -122,10 +126,19 @@ export default class AppManagement{
         switch(type){
             case Mark.ConversationList:
                 delete ConversationList[name];
-                break
+                break;
             case Mark.ConversationDetail:
                 delete ConversationDetail[name];
-                break
+                break;
+            case Mark.ApplyMessage:
+                delete ApplyMessage[name];
+                break;
+            case Mark.Contacts:
+                delete Contacts[name];
+                break;
+            case Mark.UnReadMessage:
+                delete UnReadMessage[name];
+                break;
         }
     }
 
@@ -151,6 +164,10 @@ export default class AppManagement{
                     Contacts[item] && Contacts[item](type,params);
                 }
                 break;
+            case Mark.UnReadMessage:
+                for(let item in UnReadMessage){
+                    UnReadMessage[item] && UnReadMessage[item](type,params);
+                }
         }
     }
 

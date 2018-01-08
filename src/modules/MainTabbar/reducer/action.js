@@ -10,13 +10,16 @@ export function changeUnReadMessageNumber(number){
 
 }
 
-
-export function changeUnDealRequestNumber(number){
+export function showUnDealRequest(){
     return {
-        type: 'CHANGE_UNDEALREQUEST_NUMBER',
-        number
+        type: 'SHOW_UNDEALREQUEST',
     };
+}
 
+export function hideUnDealRequest(){
+    return {
+        type: 'HIDE_UNDEALREQUEST',
+    };
 }
 
 export function changeUnReadZoomMessageNumber(number){
@@ -31,13 +34,6 @@ export function changeUnSettingNumber(number){
     return {
         type: 'CHANGE_UNSETTING_NUMBER',
         number
-    };
-
-}
-
-export function clearUnDealRequestNumber(){
-    return {
-        type: 'CLEAR_UNDEALREQUEST_NUMBER',
     };
 
 }

@@ -2,7 +2,7 @@
 
 const initialState = {
     unReadMessageNumber:0,//未读消息数量
-    unDealRequestNumber:0,//未处理请求数量
+    unDealRequestMark:false,//未处理请求数量
     unReadZoomMessageNumber:0,//未读朋友圈消息数量
     unSettingNumber:0//我的
 };
@@ -18,15 +18,15 @@ export  function unReadMessageStore(state=initialState, action){
                 ...state,
                 unReadMessageNumber:action.number
             };
-        case 'CHANGE_UNDEALREQUEST_NUMBER':
+        case 'SHOW_UNDEALREQUEST':
             return {
                 ...state,
-                unDealRequestNumber:action.number
+                unDealRequestNumber:true
             };
-        case 'CLEAR_UNDEALREQUEST_NUMBER':
+        case 'HIDE_UNDEALREQUEST':
             return {
                 ...state,
-                unDealRequestNumber:0
+                unDealRequestNumber:false
             };
         case 'CHANGE_UNREADZOOMMESSAGE_NUMBER':
             return {
