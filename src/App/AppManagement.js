@@ -38,11 +38,12 @@ export default class AppManagement{
         AppManagement.Init();
 
         userController.init({
-            "updateContactHandle":AppHandles.updateContactHandle
+            "updateContactHandle":AppHandles.updateContactHandle,
         })
 
         applyController.init({
             "updateApplyHandle":AppHandles.updateApplyMessageHandle,
+            "updateContactHandle":AppHandles.updateContactHandle,
         })
 
         imController.init({
@@ -54,6 +55,7 @@ export default class AppManagement{
             "updateChatDisplaySetting":AppHandles.updateChatDisplaySetting,
             "updateContactHandle":AppHandles.updateContactHandle,
             "updateApplyHandle":AppHandles.updateApplyMessageHandle,
+            "updateUnReadMessageHandle":AppHandles.updateUnReadMessageHandle,
             "appOnConnect":AppHandles.appOnConnect,
             "appOnClosed":AppHandles.appOnClosed,
             "appOnError":AppHandles.appOnError,

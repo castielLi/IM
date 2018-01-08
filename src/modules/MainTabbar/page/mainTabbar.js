@@ -19,21 +19,23 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
 import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
 import UnReadEnum from '../../Common/Enum/UnReadEnum';
-
+let currentObj = undefined;
 
 class TabBarComponent extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
+        currentObj = this;
     }
 
     _refreshUI(type,params){
+        console.log(currentObj);
         switch (type){
             case AppPageMarkEnum.UnReadMessage:
                 if(params.type == UnReadEnum.unReadMessage){
-                    this.props.changeUnReadMessageNumber(params.number);
+                    currentObj.props.changeUnReadMessageNumber(params.number);
                 }else if(params.type == UnReadEnum.unReadApply){
-                    this.props.showUnDealRequest();
+                    currentObj.props.showUnDealRequest();
                 }
                 break;
         }

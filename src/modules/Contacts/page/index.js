@@ -78,7 +78,7 @@ class Contacts extends AppComponent {
 			case AppPageMarkEnum.UnReadMessage:
                 if(params.type == UnReadEnum.unReadApply){
                     //显示未读好友申请红点
-                    this.props.showUnReadMark();
+                    currentObj.props.showUnReadMark();
 				}
 				break;
         }

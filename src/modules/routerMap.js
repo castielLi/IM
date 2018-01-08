@@ -91,7 +91,7 @@ export const RouteMap = {
         'TabTwo': {
             component: Contacts,
             params: {},
-            markType:Mark.Contacts | Mark.UnReadMessage
+            markType:[Mark.Contacts,Mark.UnReadMessage]
         },
         'TabThree': {
             component: Zoom,

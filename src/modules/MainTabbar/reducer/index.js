@@ -21,12 +21,12 @@ export  function unReadMessageStore(state=initialState, action){
         case 'SHOW_UNDEALREQUEST':
             return {
                 ...state,
-                unDealRequestNumber:true
+                unDealRequestMark:true
             };
         case 'HIDE_UNDEALREQUEST':
             return {
                 ...state,
-                unDealRequestNumber:false
+                unDealRequestMark:false
             };
         case 'CHANGE_UNREADZOOMMESSAGE_NUMBER':
             return {

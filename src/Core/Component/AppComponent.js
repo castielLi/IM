@@ -10,7 +10,13 @@ export default class AppComponent extends ContainerComponent{
     constructor(props) {
         super(props);
         if(props && props.MarkType) {
-            AppManagement.addPageManagement(props.MarkType, this.constructor.name ,this._refreshUI)
+            if(props.MarkType instanceof Array){
+                props.MarkType.forEach((value,index)=>{
+                    AppManagement.addPageManagement(value, this.constructor.name ,this._refreshUI)
+                })
+            }else{
+                AppManagement.addPageManagement(props.MarkType, this.constructor.name ,this._refreshUI)
+            }
         }
         this._refreshUI = this._refreshUI.bind(this);
         currentObj = this;

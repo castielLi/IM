@@ -52,6 +52,11 @@ export function updateApplyMessageHandle(data){
     AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.ApplyMessage,data);
 };
 
+//未读消息回调
+export function updateUnReadMessageHandle(data){
+    AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.UnReadMessage,data);
+};
+
 export function appOnConnect(data){
     // AppManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,data);
 };
