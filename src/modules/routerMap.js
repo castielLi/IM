@@ -80,7 +80,8 @@ export const RouteMap = {
     'MainTabbar': {
         'MainTabbar':{
             component: MainTabbar,
-            params: {}
+            params: {},
+            markType:Mark.ConversationList
         },
         'TabOne': {
             component: RecentList,

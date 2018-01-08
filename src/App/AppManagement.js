@@ -73,7 +73,7 @@ export default class AppManagement{
                 imController.setCurrentConverse(chatId,group);
                 break;
             case Request.ApplyMessageList:
-                applyController.setApplyFriendRecord()
+                applyController.setApplyFriendRecord();
                 break;
             case Request.ConversationDetailHistory:
                 if(params == undefined) return;

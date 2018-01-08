@@ -15,12 +15,23 @@ import {bindActionCreators} from 'redux';
 import tabBarPageEnum from './tabBarPageEnum';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppManagement from '../../../App/AppManagement';
+import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
 
 
 class TabBarComponent extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
+    }
+
+    _refreshUI(type,params){
+        switch (type){
+            case AppPageMarkEnum.ConversationList:
+                this.props.changeUnReadMessageNumber(params.number);
+                break;
+        }
     }
 
     componentWillUnmount(){
