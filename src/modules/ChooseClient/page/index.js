@@ -116,7 +116,7 @@ class ChooseClient extends AppComponent {
 	}
 	componentDidMount(){
 
-		userController.getContactList(false,false,(contact)=>{
+		userController.getUserContactList(false,(contact)=>{
             let contacts = contact;
             let data = initDataFormate(contact);
             let relationStore = data.needArr;

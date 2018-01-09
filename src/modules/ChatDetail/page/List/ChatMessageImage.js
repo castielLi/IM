@@ -56,6 +56,28 @@ class ChatMessageImage extends AppComponent {
         })
     }
 
+    defaultPicture(data){
+        let {LocalSource,RemoteSource} = data.message;
+        let {status} = data;
+
+        if(status == 4){
+            return(
+                <Image
+                    resizeMode={Image.resizeMode.cover}
+                    source={require('../../resource/avator.jpg')}
+                    style={[styles.imageStyle]}
+                />
+            )
+        }
+        return (
+            <Image
+                resizeMode={Image.resizeMode.cover}
+                source={this.localSourceObj(LocalSource)}
+                style={[styles.imageStyle]}
+            />
+        )
+    }
+
     localSourceObj = (Source)=>{
         return {uri:Source}
     }
@@ -65,16 +87,17 @@ class ChatMessageImage extends AppComponent {
     }
     render() {
         let {data, style} = this.props;
-        let {LocalSource,RemoteSource} = data;
+        let {LocalSource,RemoteSource} = data.message;
 
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToGallery(LocalSource,RemoteSource,data)}>
-                    <Image
-                        resizeMode={Image.resizeMode.cover}
-                        source={this.localSourceObj(LocalSource)}
-                        style={[styles.imageStyle]}
-                    />
+                <Thouch onPress={()=>this.goToGallery(LocalSource,RemoteSource,data.message)}>
+                    {/*<Image*/}
+                        {/*resizeMode={Image.resizeMode.cover}*/}
+                        {/*source={this.localSourceObj(LocalSource)}*/}
+                        {/*style={[styles.imageStyle]}*/}
+                    {/*/>*/}
+                    {this.defaultPicture(data)}
                 </Thouch>
             </View>
         )

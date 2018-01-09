@@ -53,7 +53,7 @@ export default class AppManagement{
     static reqeustSource(type,params=undefined){
         switch (type) {
             case Request.ContactList:
-                userController.getUserContactList(false);
+                userController.getUserContactList(false,null,true);
                 break;
             case Request.ConversationList:
                 imController.getConversationList();

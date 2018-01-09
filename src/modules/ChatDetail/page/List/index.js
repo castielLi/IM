@@ -383,6 +383,13 @@ class Chat extends Component {
                             {this.props.type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
                             <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
                         </View>
+                        <View style={styles.msgStatus}>
+                            <TouchableOpacity>
+                                {
+                                    this.messagesStatus(status)
+                                }
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             )

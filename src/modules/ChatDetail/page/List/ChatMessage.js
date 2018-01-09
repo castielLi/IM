@@ -58,7 +58,7 @@ export default class ChatMessage extends Component {
                     case 1:
                         return (
                             <ChatMessageImage
-                                data={message}
+                                data={rowData}
                                 type={type}
                                 style={style}
                                 navigator={this.props.navigator}

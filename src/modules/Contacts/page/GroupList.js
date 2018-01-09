@@ -97,7 +97,7 @@ class GroupList extends AppComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        userController.getContactList(true,false,(contacts)=>{
+        userController.getGroupContactList(true,false,(contacts)=>{
             currentObj.setState({
                 contacts
             })

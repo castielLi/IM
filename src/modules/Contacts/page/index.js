@@ -59,7 +59,7 @@ class Contacts extends AppComponent {
 
     componentWillMount(){
         //通过回调改变页面显示
-        userController.getContactList(false,false,(contacts)=>{
+        userController.getUserContactList(false,(contacts)=>{
             currentObj.setState({
                 contacts
             })
