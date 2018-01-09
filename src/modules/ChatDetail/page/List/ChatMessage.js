@@ -76,7 +76,7 @@ export default class ChatMessage extends Component {
                     case 3:
                         return (
                             <ChatMessageSound
-                                data={message}
+                                data={rowData}
                                 type={type}
                                 style={style}
                                 navigator={this.props.navigator}

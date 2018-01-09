@@ -63,7 +63,7 @@ export default class ChatMessageSound extends Component {
             }
         };
         const sound = new Sound(SoundUrl,'', error => callback(error, sound));
-    }
+    };
 
     getSoundTime = (Time)=>{
         let soundWidth = 50;
@@ -71,17 +71,35 @@ export default class ChatMessageSound extends Component {
             soundWidth = (width-260)*((Time-5)/55)+50;
         }
         return soundWidth;
+    };
+
+    defaultSound(LocalSource,Time,status){
+        if(status == 4){
+            return(
+                <View style={styles.defaultSound}>
+                    <Text>音频下载中。。。</Text>
+                </View>
+            )
+        }
+        return (
+            <Thouch onPress={()=>this.playSound(LocalSource)}>
+                <Text>{Time}"</Text>
+            </Thouch>
+        )
     }
+
     render() {
         let {data,style} = this.props;
-        let {LocalSource,RemoteSource,Time} = data;
+        let {LocalSource,RemoteSource,Time} = data.message;
+        let {status} = data;
         let soundObjConfig = this.getSoundTime(Time);
 
         return(
             <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                <Thouch onPress={()=>this.playSound(LocalSource)}>
-                    <Text>{Time}"</Text>
-                </Thouch>
+                {/*<Thouch onPress={()=>this.playSound(LocalSource)}>*/}
+                    {/*<Text>{Time}"</Text>*/}
+                {/*</Thouch>*/}
+                {this.defaultSound(LocalSource,Time,status)}
             </View>
         )
     }
@@ -97,4 +115,8 @@ const styles = StyleSheet.create({
         height:40,
         paddingHorizontal:10,
     },
+    defaultSound:{
+        width:200,
+        alignItems:'center'
+    }
 });
