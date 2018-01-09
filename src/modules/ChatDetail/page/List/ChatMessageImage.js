@@ -72,7 +72,7 @@ class ChatMessageImage extends AppComponent {
         return (
             <Image
                 resizeMode={Image.resizeMode.cover}
-                source={this.localSourceObj(LocalSource)}
+                source={{uri:'file://'+LocalSource}}
                 style={[styles.imageStyle]}
             />
         )
