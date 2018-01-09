@@ -23,11 +23,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/loginController';
 import UserController from '../../../TSController/UserController';
+import IMControlelr from '../../../TSController/IMController'
 
 let loginController = undefined;
 let userController = undefined;
-
 let currentAccount = undefined;
+let imController = undefined;
 
 
 var originData = [
@@ -141,6 +142,7 @@ class Me extends AppComponent {
         };
 
         loginController = new LoginController();
+        imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
 
@@ -154,6 +156,7 @@ class Me extends AppComponent {
     loginOut = ()=>{
         this.props.signOut();
         loginController.logOut();
+        imController.logout();
         this.route.ToLogin();
 
     }
