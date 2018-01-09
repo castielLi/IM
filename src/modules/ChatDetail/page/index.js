@@ -30,6 +30,7 @@ let userController = undefined;
 let settingButton = undefined;
 let imController = undefined;
 let currentObj = undefined;
+let group = undefined;
 
 class ChatDetail extends AppComponent {
 	constructor(props) {
@@ -43,6 +44,7 @@ class ChatDetail extends AppComponent {
         };
         currentObj = this;
         this.isDisabled = false;
+        group = props.type == "private"?false:true;
 
         imController = IMController.getSingleInstance();
         userController = UserController.getSingleInstance();
@@ -50,13 +52,11 @@ class ChatDetail extends AppComponent {
 
 
     getHistoryChatRecord(){
-        // imController.getHistoryChatRecord(this.props.client,this.props.type);
-        AppManagement.reqeustSource(AppPageRequestEnum.ConversationDetailHistory,{"chatId":this.props.client,"group":group});
-	}
+         imController.getHistoryChatRecord(this.props.client,group);
+        }
 
 
     componentWillMount(){
-	    let group = this.props.type == "private"?false:true;
         if (group) {
             userController.getGroupInfo(this.props.client,false,(result)=>{
                 let settingButton = result.Exited;
@@ -70,8 +70,7 @@ class ChatDetail extends AppComponent {
                 })
             })
         }
-        AppManagement.reqeustSource(AppPageRequestEnum.ConversationDetail,{"chatId":this.props.client,"group":group});
-        // imController.setCurrentConverse(this.props.client,group);
+         imController.setCurrentConverse(this.props.client,group);
     }
 
     componentWillUnmount(){

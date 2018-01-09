@@ -58,14 +58,7 @@ class Contacts extends AppComponent {
 	}
 
     componentWillMount(){
-        //通过回调改变页面显示
-        userController.getUserContactList(false,(contacts)=>{
-            currentObj.setState({
-                contacts
-            })
-        })
-
-        // AppManagement.reqeustSource(AppPageRequestEnum.ContactList);
+		userController.getUserContactList(false,null,true);
     }
 
     _refreshUI(type,params){

@@ -82,8 +82,7 @@ class RecentChat extends AppComponent {
 
         this.props.showNavigationBottom();
 
-        // imController.getConversationList();
-        AppManagement.reqeustSource(AppPageRequestEnum.ConversationList);
+         imController.getConversationList();
 
         userController.getUserContactList(true,(result)=>{
             userController.getGroupContactList(true,(result)=>{

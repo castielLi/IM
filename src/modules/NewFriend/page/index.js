@@ -54,12 +54,7 @@ class NewFriend extends AppComponent {
     }
 
     componentWillMount(){
-        // applyController.setApplyFriendRecord((applyRecord)=>{
-        //     currentObj.setState({
-        //         applyRecord
-        //     })
-        // });
-        AppManagement.reqeustSource(AppPageRequestEnum.ApplyMessageList);
+        applyController.setApplyFriendRecord();
     }
 
     _refreshUI(type,params){
@@ -74,14 +69,6 @@ class NewFriend extends AppComponent {
 
     acceptFriend = (key)=>{
         this.showLoading();
-        // applyController.acceptFriend(key,(result)=>{
-        //     currentObj.hideLoading();
-        //     if(result.Result == 1){
-        //         alert('接受好友申請成功')
-        //     }else{
-        //         alert('接受好友申請失败')
-        //     }
-        // });
         let callback = (result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
@@ -90,8 +77,7 @@ class NewFriend extends AppComponent {
                 alert('接受好友申請失败')
             }
         };
-
-        AppManagement.reqeustSource(AppPageRequestEnum.AcceptApplyFriend,{key,callback});
+        applyController.acceptFriend(key,callback);
 
     }
 
