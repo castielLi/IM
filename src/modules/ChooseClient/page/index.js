@@ -298,6 +298,7 @@ class ChooseClient extends AppComponent {
             currentObj.showLoading()
 			let groupName = currentAccount.Nickname + "发起的群聊";
 			userController.createGroup(currentAccount.Account,groupName,Nicks,accounts,(result)=>{
+				currentObj.hideLoading();
 				if(result.Result == 1){
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
