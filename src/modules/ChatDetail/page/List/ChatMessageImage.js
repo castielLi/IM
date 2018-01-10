@@ -25,12 +25,6 @@ let {width, height} = Dimensions.get('window');
 class ChatMessageImage extends AppComponent {
     constructor(props){
         super(props)
-
-        // this.Size = {
-        //     width : 0,
-        //     height: 0,
-        // }
-
         this.state = {
             Size: {
                 width: 0,
@@ -38,17 +32,9 @@ class ChatMessageImage extends AppComponent {
             }
         }
     }
-
-    static defaultProps = {
-    };
-
-    static propTypes = {
-    };
-
     getImageSize = (uri)=>{
         Image.getSize(uri, (w, h) => {
             // this.Size = {width,height}
-
             this.setState({
                 Size : {width:w,height:h}
             })
@@ -80,26 +66,14 @@ class ChatMessageImage extends AppComponent {
             />
         )
     }
-
-    localSourceObj = (Source)=>{
-        return {uri:Source}
-    }
-
-    goToGallery = (path,url,data)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"url":url,"message":data},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    goToGallery = (chatId,type,data)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;
-        let {LocalSource,RemoteSource} = data.message;
-
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToGallery(LocalSource,RemoteSource,data.message)}>
-                    {/*<Image*/}
-                        {/*resizeMode={Image.resizeMode.cover}*/}
-                        {/*source={this.localSourceObj(LocalSource)}*/}
-                        {/*style={[styles.imageStyle]}*/}
-                    {/*/>*/}
+                <Thouch onPress={()=>this.goToGallery(this.props.chatId,this.props.type,data)}>
                     {this.defaultPicture(data)}
                 </Thouch>
             </View>

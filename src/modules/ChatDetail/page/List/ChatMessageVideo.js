@@ -21,8 +21,8 @@ import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
-import IMController from '../../../../Logic/Im/imController'
-let imController = new IMController();
+import IMController from '../../../../TSController/IMController';
+let imController = undefined;
 
 let {width, height} = Dimensions.get('window');
 
@@ -30,52 +30,28 @@ class ChatMessageVideo extends AppComponent {
     constructor(props){
         super(props)
         this.state = {
-            progress:0,
+            progress:props.data.sourceRate,
             play:false,
             download:false,
         }
+
+        imController = IMController.getSingleInstance();
     }
-
-    static defaultProps = {
-    };
-
-    static propTypes = {
-    };
+    componentWillMount(){
+        let sourceRate = this.props.data.sourceRate;
+        let download = sourceRate && sourceRate != 1 ? true : false;
+        this.setState({
+            download
+        })
+    }
 
     playVideo = (Local,Remote,data)=>{
         let currentObj = this;
+        let {messageId,message} = data;
+        let group = this.props.type == 'group' ? true : false;
         RNFS.exists(Local).then((success) => {
             if(!success){
-                //todo:先下载视频，获取路径
-                let ME = this.props.loginStore;
-                let type = data.type;
-                let chatType = this.props.type;
-                let Sender = data.sender.account;
-                let Receiver = data.chatId;
-                let otherID ="";
-                if(chatType == "group"){
-                    otherID = Receiver;
-                }else{
-                    otherID = Receiver == ME ? Sender : Receiver;
-                }
-
-                let format = Remote.slice(Remote.lastIndexOf('.'));
-                //let messageId = data.messageId;
-                let filePath = `${RNFS.DocumentDirectoryPath}/${ME}/${type}/chat/${chatType}-${otherID}/${new Date().getTime()}${format}`
-
-                imController.manualDownloadResource(data,Remote,filePath,function (result) {
-                    currentObj.setState({
-                        download:false,
-                    });
-                    if(result){
-                        currentObj.route.push(currentObj.props,{key: 'Player',routeId: 'Player',params:{"path":filePath},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-                    }
-                },function (percent) {
-                    currentObj.setState({
-                        progress:Math.ceil(percent * 100),
-                        download:true,
-                    });
-                });
+                imController.manualDownloadResource(this.props.chatId,messageId,group,message);
             }
             else{
                 this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
@@ -83,14 +59,10 @@ class ChatMessageVideo extends AppComponent {
         }).catch((err) => {
             console.log(err.message);
         });
-    }
-
-    downloadProgress = (progress)=>{
-
-    }
+    };
     render() {
         let {data, style} = this.props;
-        let {LocalSource,RemoteSource} = data;
+        let {LocalSource,RemoteSource} = data.message;
         return(
             <View style={[styles.bubble]}>
                 <Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>
@@ -105,8 +77,6 @@ class ChatMessageVideo extends AppComponent {
         )
     }
 }
-
-
 
 const styles = StyleSheet.create({
     bubble:{

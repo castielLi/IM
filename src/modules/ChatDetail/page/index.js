@@ -52,7 +52,7 @@ class ChatDetail extends AppComponent {
 
 
     getHistoryChatRecord(){
-         imController.getHistoryChatRecord(this.props.client,group);
+         imController.getHistoryChatRecord(currentObj.props.client,group);
         }
 
 
@@ -155,7 +155,7 @@ class ChatDetail extends AppComponent {
                               isMore = {this.state.isMore}
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
-                              getHistoryChatRecord={this.getHistoryChatRecord()}
+                              getHistoryChatRecord={this.getHistoryChatRecord}
                               type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
                               navigator={this.props.navigator}/>
                     </View>

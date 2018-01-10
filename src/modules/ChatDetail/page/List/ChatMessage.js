@@ -28,7 +28,7 @@ export default class ChatMessage extends Component {
     static propTypes = {
     };
 
-    typeOption = (rowData,type,style)=> {
+    typeOption = (rowData,type,style,chatId)=> {
 
         // enum MessageType {
         //     TEXT = 1,
@@ -41,9 +41,10 @@ export default class ChatMessage extends Component {
             case 1: {
                 return (
                     <ChatMessageText
-                        data={message}
-                        type={type}
+                        data={message} //聊天数据
+                        type={type} //聊天类型group/private
                         style={style}
+                        chatId={chatId} //chatId
                         navigator={this.props.navigator}
                     />
                 )
@@ -61,15 +62,17 @@ export default class ChatMessage extends Component {
                                 data={rowData}
                                 type={type}
                                 style={style}
+                                chatId={chatId}
                                 navigator={this.props.navigator}
                             />
                         )
                     case 2:
                         return (
                             <ChatMessageVideo
-                                data={message}
+                                data={rowData}
                                 type={type}
                                 style={style}
+                                chatId={chatId}
                                 navigator={this.props.navigator}
                             />
                         )
@@ -79,6 +82,7 @@ export default class ChatMessage extends Component {
                                 data={rowData}
                                 type={type}
                                 style={style}
+                                chatId={chatId}
                                 navigator={this.props.navigator}
                             />
                         )
@@ -92,9 +96,9 @@ export default class ChatMessage extends Component {
     };
 
     render() {
-        let {rowData,type,style} = this.props;
+        let {rowData,type,style,chatId} = this.props;
         return (
-            this.typeOption(rowData,type,style)
+            this.typeOption(rowData,type,style,chatId)
         )
     }
 }

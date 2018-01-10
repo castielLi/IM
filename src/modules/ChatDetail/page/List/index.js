@@ -359,12 +359,16 @@ class Chat extends Component {
                     <View style={styles.infoViewRight}>
                         <View style={styles.msgStatus}>
                             <TouchableOpacity>
-                                {
-                                    this.messagesStatus(status)
-                                }
+                                {this.messagesStatus(status)}
                             </TouchableOpacity>
                         </View>
-                        <ChatMessage style={styles.bubbleViewRight} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
+                        <ChatMessage
+                            style={styles.bubbleViewRight}
+                            rowData={row}
+                            chatId={this.props.client}
+                            type={this.props.type}
+                            navigator={this.props.navigator}
+                        />
                         {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                     </View>
@@ -381,13 +385,17 @@ class Chat extends Component {
                         {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
                         <View>
                             {this.props.type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
-                            <ChatMessage style={styles.bubbleView} rowData={row} type={this.props.type} navigator={this.props.navigator}/>
+                            <ChatMessage
+                                style={styles.bubbleView}
+                                rowData={row}
+                                chatId={this.props.client}
+                                type={this.props.type}
+                                navigator={this.props.navigator}
+                            />
                         </View>
                         <View style={styles.msgStatus}>
                             <TouchableOpacity>
-                                {
-                                    this.messagesStatus(status)
-                                }
+                                {this.messagesStatus(status)}
                             </TouchableOpacity>
                         </View>
                     </View>
