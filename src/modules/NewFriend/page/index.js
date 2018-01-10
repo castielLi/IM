@@ -185,10 +185,6 @@ class NewFriend extends AppComponent {
             )
             
     }
-
-    componentWillUnmount(){
-         //applyFriendController.outApplyFriendPage()
-    }
 }
 
 const styles = StyleSheet.create({
