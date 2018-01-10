@@ -50,35 +50,6 @@ export default class AppManagement{
         )
     }
 
-    static reqeustSource(type,params=undefined){
-        switch (type) {
-            case Request.ContactList:
-                userController.getUserContactList(false,null,true);
-                break;
-            case Request.ConversationList:
-                imController.getConversationList();
-                break;
-            case Request.ConversationDetail:
-                if(params == undefined) return;
-                var {chatId,group} = params;
-                imController.setCurrentConverse(chatId,group);
-                break;
-            case Request.ApplyMessageList:
-                applyController.setApplyFriendRecord();
-                break;
-            case Request.ConversationDetailHistory:
-                if(params == undefined) return;
-                var {chatId,group} = params;
-                imController.getHistoryChatRecord(chatId,group);
-                break;
-            case Request.AcceptApplyFriend:
-                if(params == undefined) return;
-                var {key,callback} = params;
-                applyController.acceptFriend(key,callback);
-                break;
-        }
-
-    }
 
     static addPageManagement(type,pageName,handle){
 
@@ -155,6 +126,11 @@ export default class AppManagement{
                 break;
             case Mark.UnReadMessage:
                 for(let item in UnReadMessage){
+                    if(type == TabTypeEnum.Contact) {
+                      if(ApplyMessage["NewFriend"]){
+                          return;
+                      }
+                    }else
                     UnReadMessage[item] && UnReadMessage[item](type,params);
                 }
         }
