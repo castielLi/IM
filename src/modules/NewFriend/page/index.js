@@ -55,6 +55,7 @@ class NewFriend extends AppComponent {
 
     componentWillMount(){
         applyController.setApplyFriendRecord();
+        applyController.clearUncheckCount();
     }
 
     _refreshUI(type,params){

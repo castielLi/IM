@@ -61,7 +61,6 @@ class Contacts extends AppComponent {
     componentWillMount(){
 		userController.getUserContactList(false,null,true);
         applyController.getUncheckApplyFriendCount();
-        applyController.clearUncheckCount();
     }
 
     _refreshUI(type,params){
