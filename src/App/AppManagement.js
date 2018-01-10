@@ -131,7 +131,7 @@ export default class AppManagement{
                       if(ApplyMessage["NewFriend"]){
                           return;
                       }
-                    }else
+                    }
                     UnReadMessage[item] && UnReadMessage[item](type,params);
                 }
         }

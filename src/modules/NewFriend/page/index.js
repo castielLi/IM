@@ -55,6 +55,7 @@ class NewFriend extends AppComponent {
 
     componentWillMount(){
         applyController.setApplyFriendRecord();
+        applyController.clearUncheckCount();
     }
 
     _refreshUI(type,params){
@@ -159,7 +160,7 @@ class NewFriend extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left={{func:()=>{this.route.pop(this.props)}}}
+                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
                     heading={"新的朋友"}
                     right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
                 />
@@ -184,10 +185,6 @@ class NewFriend extends AppComponent {
             </View>
             )
             
-    }
-
-    componentWillUnmount(){
-         //applyFriendController.outApplyFriendPage()
     }
 }
 
