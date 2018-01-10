@@ -295,10 +295,9 @@ class ChooseClient extends AppComponent {
                 this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].Account,type:'private',Nick:chooseArr[0].Nick}});
                 return;
 			}
-            currentObj.showLoading();
+            currentObj.showLoading()
 			let groupName = currentAccount.Nickname + "发起的群聊";
 			userController.createGroup(currentAccount.Account,groupName,Nicks,accounts,(result)=>{
-                currentObj.hideLoading();
 				if(result.Result == 1){
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
