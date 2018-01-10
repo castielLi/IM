@@ -34,13 +34,13 @@ import TimeHelper from '../../../Core/Helper/TimeHelper';
 
 import UserController from '../../../TSController/UserController'
 import IMController from '../../../TSController/IMController'
+import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
-import AppManagement from '../../../App/AppManagement'
-import AppPageRequestEnum from '../../../App/AppPageRequestEnum'
+
 
 let imController = undefined;
 let userController = undefined;
-
+let applyController = undefined;
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
@@ -64,6 +64,7 @@ class RecentChat extends AppComponent {
         currentObj = this;
         userController =  UserController.getSingleInstance();
         imController =  IMController.getSingleInstance();
+        applyController = ApplyController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -83,6 +84,7 @@ class RecentChat extends AppComponent {
         this.props.showNavigationBottom();
 
          imController.getConversationList();
+         applyController.getUncheckApplyFriendCount();
 
         userController.getUserContactList(true,(result)=>{
             userController.getGroupContactList(true,(result)=>{

@@ -26,11 +26,11 @@ import * as applyActions from '../reducer/action';
 import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
-import AppManagement from '../../../App/AppManagement';
-import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+import ApplyController from '../../../TSController/ApplyController'
 import UnReadEnum from '../../Common/Enum/UnReadEnum';
 let currentObj = undefined;
 let userController = undefined;
+let applyController = undefined;
 
 class Contacts extends AppComponent {
 
@@ -55,10 +55,13 @@ class Contacts extends AppComponent {
         currentObj = this;
 
         userController =  UserController.getSingleInstance();
+        applyController = ApplyController.getSingleInstance();
 	}
 
     componentWillMount(){
 		userController.getUserContactList(false,null,true);
+        applyController.getUncheckApplyFriendCount();
+        applyController.clearUncheckCount();
     }
 
     _refreshUI(type,params){
