@@ -62,6 +62,7 @@ class Contacts extends AppComponent {
     }
 
     _refreshUI(type,params){
+    	//这里如果没有点击通讯录界面是不会进行初始化的，不会初始化就会导致下层通知上层的时候不会显示contact 申请的红点
         switch (type){
             case AppPageMarkEnum.Contacts:
                 currentObj.setState({
