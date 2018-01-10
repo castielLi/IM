@@ -159,7 +159,7 @@ class NewFriend extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
+                    left={{func:()=>{this.route.pop(this.props)}}}
                     heading={"新的朋友"}
                     right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
                 />

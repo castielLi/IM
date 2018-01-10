@@ -127,7 +127,7 @@ export default class AppManagement{
                 break;
             case Mark.UnReadMessage:
                 for(let item in UnReadMessage){
-                    if(type == TabTypeEnum.Contact) {
+                    if(params.type == TabTypeEnum.Contact) {
                       if(ApplyMessage["NewFriend"]){
                           return;
                       }
