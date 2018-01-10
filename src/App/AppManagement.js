@@ -10,6 +10,7 @@ import Request from './AppPageRequestEnum'
 import IMController from '../TSController/IMController'
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
+import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 
 let imController = undefined;
 let userController = undefined;
