@@ -18,7 +18,7 @@ import * as featuresAction from '../../Common/menu/reducer/action';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
 import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
-import UnReadEnum from '../../Common/Enum/UnReadEnum';
+import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum'
 let currentObj = undefined;
 
 class TabBarComponent extends AppComponent {
@@ -32,9 +32,9 @@ class TabBarComponent extends AppComponent {
         console.log(currentObj);
         switch (type){
             case AppPageMarkEnum.UnReadMessage:
-                if(params.type == UnReadEnum.unReadMessage){
+                if(params.type == TabTypeEnum.RecentList){
                     currentObj.props.changeUnReadMessageNumber(params.number);
-                }else if(params.type == UnReadEnum.unReadApply){
+                }else if(params.type == TabTypeEnum.Contact){
                     currentObj.props.showUnDealRequest();
                 }
                 break;

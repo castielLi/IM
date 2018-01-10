@@ -27,7 +27,7 @@ import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import ApplyController from '../../../TSController/ApplyController'
-import UnReadEnum from '../../Common/Enum/UnReadEnum';
+import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum'
 let currentObj = undefined;
 let userController = undefined;
 let applyController = undefined;
@@ -73,7 +73,7 @@ class Contacts extends AppComponent {
                 });
                 break;
 			case AppPageMarkEnum.UnReadMessage:
-                if(params.type == UnReadEnum.unReadApply){
+                if(params.type == TabTypeEnum.Contact){
                     //显示未读好友申请红点
                     currentObj.props.showUnReadMark();
 				}

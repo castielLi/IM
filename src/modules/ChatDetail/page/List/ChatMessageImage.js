@@ -41,12 +41,19 @@ class ChatMessageImage extends AppComponent {
             //alert(this.Size.width+"22")
         })
     }
-
-    defaultPicture(data){
-        let {LocalSource,RemoteSource} = data.message;
+    //重新构建路径
+    rebuildPath(LocalSource){
         if(LocalSource.indexOf('file:') == -1){
             LocalSource = 'file://'+LocalSource;
         }
+        return LocalSource;
+    }
+
+    defaultPicture(data){
+        let {LocalSource,RemoteSource} = data.message;
+        // if(LocalSource.indexOf('file:') == -1){
+        //     LocalSource = 'file://'+LocalSource;
+        // }
         let {status} = data;
 
         if(status == 4){
@@ -67,10 +74,11 @@ class ChatMessageImage extends AppComponent {
         )
     }
     goToGallery = (chatId,type,data)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     }
     render() {
         let {data, style} = this.props;
+        data.message.LocalSource = this.rebuildPath(data.message.LocalSource);
         return(
             <View style={[style,styles.bubble]}>
                 <Thouch onPress={()=>this.goToGallery(this.props.chatId,this.props.type,data)}>
