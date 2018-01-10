@@ -155,7 +155,7 @@ class ChatDetail extends AppComponent {
                               isMore = {this.state.isMore}
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
-                              updateDisplaySetting={this.onUpdateDisplaySetting}
+                              getHistoryChatRecord={this.getHistoryChatRecord()}
                               type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
                               navigator={this.props.navigator}/>
                     </View>

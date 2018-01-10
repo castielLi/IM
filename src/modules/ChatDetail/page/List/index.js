@@ -169,7 +169,7 @@ class Chat extends Component {
                         isMore:msgState.LOADING,
                     });
 
-                    //this.props.getHistoryChatRecord()
+                    this.props.getHistoryChatRecord();
                 }
             },
         })
@@ -397,22 +397,22 @@ class Chat extends Component {
     }
 
     oldMsg = () => {
-        let {type,client} = this.props;
-        let group;
-        if(type === 'private'){
-            group = false;
-        }else{
-            group = true;
-        }
+        // let {type,client} = this.props;
+        // let group;
+        // if(type === 'private'){
+        //     group = false;
+        // }else{
+        //     group = true;
+        // }
         let {msgState} = ListConst;
         if(this.state.isMore === msgState.END){
             this.setState({
                 isMore : msgState.LOADING
             });
 
-            //this.props.getHistoryChatRecord()
+            this.props.getHistoryChatRecord();
         }
-    }
+    };
 
     myRenderFooter(){
         //console.log('foot执行了')

@@ -58,6 +58,9 @@ class ChatMessageImage extends AppComponent {
 
     defaultPicture(data){
         let {LocalSource,RemoteSource} = data.message;
+        if(LocalSource.indexOf('file:') == -1){
+            LocalSource = 'file://'+LocalSource;
+        }
         let {status} = data;
 
         if(status == 4){
@@ -72,7 +75,7 @@ class ChatMessageImage extends AppComponent {
         return (
             <Image
                 resizeMode={Image.resizeMode.cover}
-                source={{uri:'file://'+LocalSource}}
+                source={{uri:LocalSource}}
                 style={[styles.imageStyle]}
             />
         )
