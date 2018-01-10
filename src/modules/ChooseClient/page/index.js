@@ -263,7 +263,7 @@ class ChooseClient extends AppComponent {
 		//已有群 添加新成员
 
 		if(this.hasGroup) {
-            currentObj.showLoading()
+            currentObj.showLoading();
 
 			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
 			userController.addGroupMember(currentAccount.Account,this.props.groupId,Nicks,accounts,(result)=>{
@@ -295,9 +295,10 @@ class ChooseClient extends AppComponent {
                 this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].Account,type:'private',Nick:chooseArr[0].Nick}});
                 return;
 			}
-            currentObj.showLoading()
+            currentObj.showLoading();
 			let groupName = currentAccount.Nickname + "发起的群聊";
 			userController.createGroup(currentAccount.Account,groupName,Nicks,accounts,(result)=>{
+                currentObj.hideLoading();
 				if(result.Result == 1){
 
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
