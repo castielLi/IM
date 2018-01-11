@@ -16,6 +16,7 @@ import {
     FlatList
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
+import AppManagement from '../../../App/AppManagement'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
@@ -132,7 +133,7 @@ class DeleteGroupMember extends AppComponent {
         let {groupId,navigator} = this.props;
         let close = currentObj.state.data.length-currentObj.state.needData.length<=1 ? true : false;
         currentObj.showLoading();
-        userController.removeGroupMember(groupId,close,this.needStr,(result)=>{
+        userController.removeGroupMember(groupId,close,this.needStr,(result,Conversation)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
                 if(close)
@@ -141,6 +142,7 @@ class DeleteGroupMember extends AppComponent {
                     currentObj.route.toMain(currentObj.props);
                     return;
                 }
+                AppManagement.addConversationToCache(Conversation);
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
