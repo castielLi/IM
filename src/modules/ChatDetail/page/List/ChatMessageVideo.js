@@ -37,11 +37,12 @@ class ChatMessageVideo extends AppComponent {
 
         imController = IMController.getSingleInstance();
     }
-    componentWillMount(){
-        let sourceRate = this.props.data.sourceRate;
+    componentWillReceiveProps(nextProps){
+        let sourceRate = nextProps.data.sourceRate;
         let download = sourceRate && sourceRate != 1 ? true : false;
         this.setState({
-            download
+            download,
+            progress:sourceRate
         })
     }
 
@@ -69,7 +70,7 @@ class ChatMessageVideo extends AppComponent {
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
-                            <Text style={styles.progressText}>{this.state.progress}%</Text>
+                            <Text style={styles.progressText}>{Math.ceil(this.state.progress*100)}%</Text>
                         </View> :null
                     }
                 </Thouch>
