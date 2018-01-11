@@ -51,7 +51,6 @@ export default class AppManagement{
         )
     }
 
-
     static addPageManagement(type,pageName,handle){
 
         switch(type){
@@ -135,6 +134,10 @@ export default class AppManagement{
                     UnReadMessage[item] && UnReadMessage[item](type,params);
                 }
         }
+    }
+
+    static addConversationToCache(conversation){
+        imController.addNewConversationToList(conversation);
     }
 
 }
