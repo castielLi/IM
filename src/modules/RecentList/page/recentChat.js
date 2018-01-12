@@ -36,6 +36,7 @@ import UserController from '../../../TSController/UserController'
 import IMController from '../../../TSController/IMController'
 import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppManagement from '../../../App/AppManagement'
 
 
 let imController = undefined;
@@ -88,6 +89,7 @@ class RecentChat extends AppComponent {
 
         userController.getUserContactList(true,(result)=>{
             userController.getGroupContactList(true,(result)=>{
+                AppManagement.refreshContact();
                 currentObj.props.hideNavigationBottom();
             })
         })
