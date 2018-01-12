@@ -11,6 +11,8 @@ import Route from '../route/router'
 import style from '../StyleSheet/style'
 import StyleSheetHelper from '../StyleSheet/index'
 import Localization from '../Localization';
+import IMController from '../../TSController/IMController'
+let imController = undefined;
 
 export default class ContainerComponent extends Component {
 
@@ -62,6 +64,8 @@ export default class ContainerComponent extends Component {
         let navigator = this.props.navigator;
         //
         if(navigator!=undefined){
+            imController = IMController.getSingleInstance();
+            imController.logout();
             return this.route.androidBack(this.props)
         }else{
             return false;
