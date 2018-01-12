@@ -267,10 +267,11 @@ class ChooseClient extends AppComponent {
             currentObj.showLoading();
 
 			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
-			userController.addGroupMember(this.props.groupId,accounts,(result,Conversation)=>{
+			userController.addGroupMember(this.props.groupId,Nicks,accounts,(result,Conversation,message)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
-                    AppManagement.addConversationToCache(Conversation);
+                    AppManagement.addOrUpdateConversationToCache(Conversation);
+                    AppManagement.refreshConversationDetail(message);
                     let routes = currentObj.props.navigator.getCurrentRoutes();
                     let index;
                     for (let i = 0; i < routes.length; i++) {
@@ -302,7 +303,7 @@ class ChooseClient extends AppComponent {
 			userController.createGroup(groupName,accounts,(result,Conversation)=>{
                 currentObj.hideLoading();
 				if(result.Result == 1){
-                    AppManagement.addConversationToCache(Conversation);
+                    AppManagement.addOrUpdateConversationToCache(Conversation);
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
 
 				}else{

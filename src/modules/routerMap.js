@@ -139,7 +139,7 @@ export const RouteMap = {
         'ChatDetail': {
             component: ChatDetail,
             params: {},
-            markType:Mark.ConversationDetail
+            markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting]
         }
     },
     'RecentList': {
