@@ -249,17 +249,24 @@ class ChooseClient extends AppComponent {
 		let Nicks = "";
 		let splNeedArr = [];
 		//拼接选中用户id
-		for(let item in chooseArr){
-			accounts+= chooseArr[item].Account+",";
-            splNeedArr.push({Account:chooseArr[item].Account});
-			if(item < chooseArr.length - 1){
-				Nicks += chooseArr[item].Nickname+",";
-			}else{
-				Nicks += chooseArr[item].Nickname;
-			}
+
+		if(chooseArr.length == 1){
+            accounts+= chooseArr[0].Account;
+            Nicks += chooseArr[0].Nickname;
+		}else{
+            for(let item in chooseArr){
+                accounts+= chooseArr[item].Account+",";
+                splNeedArr.push({Account:chooseArr[item].Account});
+                if(item < chooseArr.length - 1){
+                    Nicks += chooseArr[item].Nickname+",";
+                }else{
+                    Nicks += chooseArr[item].Nickname;
+                }
+            }
 		}
+
 		this.splNeedArr = splNeedArr;
-		accounts += currentAccount.Account;
+		// accounts += currentAccount.Account;
 
 		//已有群 添加新成员
 
