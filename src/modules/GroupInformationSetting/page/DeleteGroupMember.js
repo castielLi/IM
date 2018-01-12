@@ -37,6 +37,7 @@ class DeleteGroupMember extends AppComponent {
         this.state={
             data:[],
             needData:[],
+            needNickData:[],
             text:''
         }
         this.relationStore = []
@@ -75,30 +76,45 @@ class DeleteGroupMember extends AppComponent {
         //修改this.state.needData
         if(!item.isChoose){
             this.state.needData.push(item.Account)
+            this.state.needNickData.push(item.Nickname)
             this.setState({
-                needData:this.state.needData.concat()
+                needData:this.state.needData.concat(),
+                needNickData:this.state.needNickData.concat()
             })
         }else{
             for(let j=0;j<this.state.needData.length;j++){
                 if(this.state.needData[j]==item.Account){
                     this.state.needData.splice(j,1);
+                    this.state.needNickData.splice(j,1);
                     j--;
                 }
             }
             this.setState({
-                needData:this.state.needData.concat()
+                needData:this.state.needData.concat(),
+                needNickData:this.state.needNickData.concat()
             })
         }
         //this.state.needData组成字符串发送请求
         let needStr = '';
+        let needNick = '';
         this.state.needData.forEach((value,index)=>{
             needStr+=value+','
         })
+
+        this.state.needNickData.forEach((value,index)=>{
+            needNick+=value+','
+        })
+
         if(needStr[needStr.length-1] == ','){//如果最后一个字符为','
             needStr = needStr.substring(0,needStr.length-1);
         }
 
+        if(needNick[needNick.length-1] == ','){//如果最后一个字符为','
+            needNick = needNick.substring(0,needNick.length-1);
+        }
+
         this.needStr = needStr;
+        this.needNick = needNick;
         //修改this.state.data
         for(let i=0;i<this.state.data.length;i++){
             if(this.state.data[i].Account === item.Account){
@@ -133,7 +149,7 @@ class DeleteGroupMember extends AppComponent {
         let {groupId,navigator} = this.props;
         let close = currentObj.state.data.length-currentObj.state.needData.length<=1 ? true : false;
         currentObj.showLoading();
-        userController.removeGroupMember(groupId,close,this.needStr,(result,Conversation)=>{
+        userController.removeGroupMember(groupId,close,this.needNick,this.needStr,(result,Conversation,message)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
                 if(close)
@@ -142,7 +158,8 @@ class DeleteGroupMember extends AppComponent {
                     currentObj.route.toMain(currentObj.props);
                     return;
                 }
-                AppManagement.addConversationToCache(Conversation);
+                AppManagement.addOrUpdateConversationToCache(Conversation);
+                AppManagement.refreshConversationDetail(message);
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {

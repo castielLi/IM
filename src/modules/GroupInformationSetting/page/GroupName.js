@@ -19,6 +19,7 @@ import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UserController from '../../../TSController/UserController';
+import AppManagement from '../../../App/AppManagement'
 
 let userController = undefined;
 
@@ -70,9 +71,12 @@ class GroupName extends AppComponent {
         let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result)=>{
+        userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result,Conversation,message)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
+
+                AppManagement.addOrUpdateConversationToCache(Conversation);
+                AppManagement.refreshConversationDetail(message);
 
                 if(currentObj.props.UpdateHeadName != undefined){
                     currentObj.props.UpdateHeadName(currentObj.state.text);

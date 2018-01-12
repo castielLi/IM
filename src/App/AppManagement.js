@@ -26,6 +26,10 @@ let ConversationDetail = {};
 
 let UnReadMessage = {};
 
+let ModifyGroupName = {};
+
+let ModifyGroupSetting = {};
+
 export default class AppManagement{
 
     static Init(){
@@ -78,6 +82,16 @@ export default class AppManagement{
                 if(UnReadMessage[pageName])
                     return;
                 UnReadMessage[pageName] = handle;
+                break;
+            case Mark.ModifyGroupName:
+                if(ModifyGroupName[pageName])
+                    return;
+                ModifyGroupName[pageName] = handle;
+                break;
+            case Mark.ModifyGroupSetting:
+                if(ModifyGroupSetting[pageName])
+                    return;
+                ModifyGroupSetting[pageName] = handle;
                 break;
         }
     }
@@ -133,11 +147,26 @@ export default class AppManagement{
                     }
                     UnReadMessage[item] && UnReadMessage[item](type,params);
                 }
+                break;
+            case Mark.ModifyGroupName:
+                for(let item in ModifyGroupName){
+                    ModifyGroupName[item] && ModifyGroupName[item](type,params);
+                }
+                break
+            case Mark.ModifyGroupSetting:
+                for(let item in ModifyGroupSetting){
+                    ModifyGroupSetting[item] && ModifyGroupSetting[item](type,params);
+                }
+                break
         }
     }
 
-    static addConversationToCache(conversation){
-        imController.addNewConversationToList(conversation);
+    static addOrUpdateConversationToCache(conversation){
+        imController.addOrUpdateConversationToCache(conversation);
+    }
+
+    static refreshConversationDetail(message){
+        imController.refreshConversationList(message);
     }
 
 }

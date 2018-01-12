@@ -87,9 +87,8 @@ class ChatDetail extends AppComponent {
                     isMore:params.dropAble
                 })
                 break;
-            case AppPageMarkEnum.ModifyGroupSetting:
+            case AppPageMarkEnum.ModifyGroupName:
                 let name = params.name;
-
                 currentObj.onUpdateHeadName(name);
                 break;
             case AppPageMarkEnum.ModifyGroupSetting:
