@@ -156,9 +156,13 @@ class Me extends AppComponent {
     loginOut = ()=>{
         this.props.signOut();
         loginController.logOut();
-        imController.logout();
-        this.route.ToLogin();
 
+        //关闭数据库
+        imController.logout();
+        userController.logout();
+
+
+        this.route.ToLogin();
     }
 
     changeShowFeature=(newState)=>{
