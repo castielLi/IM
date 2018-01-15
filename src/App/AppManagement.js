@@ -30,6 +30,9 @@ let ModifyGroupName = {};
 
 let ModifyGroupSetting = {};
 
+//todo:socket连接状态具体显示方式
+let AppStatus = {};
+
 export default class AppManagement{
 
     static Init(){
@@ -92,6 +95,11 @@ export default class AppManagement{
                 if(ModifyGroupSetting[pageName])
                     return;
                 ModifyGroupSetting[pageName] = handle;
+                break;
+            case Mark.AppStatus:
+                if(AppStatus[pageName])
+                    return;
+                AppStatus[pageName] = handle;
                 break;
         }
     }
@@ -156,6 +164,11 @@ export default class AppManagement{
             case Mark.ModifyGroupSetting:
                 for(let item in ModifyGroupSetting){
                     ModifyGroupSetting[item] && ModifyGroupSetting[item](type,params);
+                }
+                break
+            case Mark.AppStatus:
+                for(let item in AppStatus){
+                    AppStatus[item] && AppStatus[item](type,params);
                 }
                 break
         }

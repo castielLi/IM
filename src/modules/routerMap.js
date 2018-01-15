@@ -86,7 +86,7 @@ export const RouteMap = {
         'TabOne': {
             component: RecentList,
             params: {},
-            markType:Mark.ConversationList
+            markType:[Mark.ConversationList,Mark.AppStatus]
         },
         'TabTwo': {
             component: Contacts,

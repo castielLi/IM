@@ -64,8 +64,8 @@ export default class ContainerComponent extends Component {
         let navigator = this.props.navigator;
         //
         if(navigator!=undefined){
-            imController = IMController.getSingleInstance();
-            imController.logout();
+            // imController = IMController.getSingleInstance();
+            // imController.logout();
             return this.route.androidBack(this.props)
         }else{
             return false;

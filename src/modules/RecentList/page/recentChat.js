@@ -56,6 +56,7 @@ class RecentChat extends AppComponent {
             rowID: '',
             dataSource: ds,
             relationStore:[],
+            socket:true,//socket连接状态
 
             ConverseList:[]
         };
@@ -72,10 +73,14 @@ class RecentChat extends AppComponent {
         super.componentWillUnmount();
     }
 
-    _refreshUI(type,ConverseList){
+    _refreshUI(type,params){
         if(type == AppPageMarkEnum.ConversationList) {
             currentObj.setState({
-                ConverseList
+                ConverseList:params
+            })
+        }else if(type == AppPageMarkEnum.AppStatus){
+            currentObj.setState({
+                socket:params
             })
         }
     }
@@ -120,6 +125,24 @@ class RecentChat extends AppComponent {
             return <Image style = {styles.avatar} source = {require('../resource/avator.jpg')}/>
         }
         return <Image style = {styles.avatar} source = {{uri:HeadImageUrl}}/>
+    }
+
+    renderHeader = ()=>{
+        switch (this.state.socket){
+            case 1:
+                return <Text>正常连接</Text>;
+                break;
+            case 2:
+                return <Text>断开连接</Text>;
+                break;
+            case 3:
+                return <Text>连接错误</Text>;
+                break;
+            case 4:
+                return <Text>正在连接</Text>;
+                break;
+
+        }
     }
 
     _renderRow = (rowData, sectionID, rowID) => {
@@ -188,6 +211,7 @@ class RecentChat extends AppComponent {
 					<ListView
 						style = {{height:checkDeviceHeight(1110)}}
 						dataSource = {this.state.dataSource.cloneWithRows(this.state.ConverseList)}
+                        renderHeader = {this.renderHeader}
 						renderRow = {this._renderRow}
 						enableEmptySections = {true}
 						removeClippedSubviews={false}

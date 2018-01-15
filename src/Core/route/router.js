@@ -12,9 +12,10 @@ import {
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 import AppManagement from '../../App/AppManagement'
+import IMController from '../../TSController/IMController'
 
 let rootNavigator;
-
+let imController = undefined;
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
 class Route {
@@ -154,6 +155,7 @@ class Route {
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
         let containIndex = 0;
+        imController = IMController.getSingleInstance();
         for (let i = 0; i < routes.length; i++) {
             if (routes[i]["key"] == this.mainPage["key"] && routes[i]["routeId"] == this.mainPage["routeId"]) {
                 contain = true;
@@ -167,6 +169,7 @@ class Route {
                 props.navigator.pop();
                 return true;
             }else{
+                imController.logout();
                 return false;
             }
 
@@ -175,6 +178,7 @@ class Route {
                 props.navigator.pop();
                 return true;
             }else{
+                imController.logout();
                 return false
             }
         }
