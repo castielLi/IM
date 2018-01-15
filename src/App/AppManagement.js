@@ -169,4 +169,8 @@ export default class AppManagement{
         imController.refreshConversationList(message);
     }
 
+    static refreshContact(){
+        userController.refreshUserContact();
+    }
+
 }
