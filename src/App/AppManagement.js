@@ -38,7 +38,7 @@ let AppStatus = {};
 export default class AppManagement{
 
     static Init(){
-        imController = IMController.getSingleInstance();
+        // imController = IMController.getSingleInstance();
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMLogicController.getSingleInstance();
@@ -56,9 +56,9 @@ export default class AppManagement{
             AppHandles.pageManagement,
         )
 
-        imController.init(
-            AppHandles.pageManagement,
-        )
+        // imController.init(
+        //     AppHandles.pageManagement,
+        // )
 
         imLogicController.init(
             AppHandles.pageManagement,
