@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
+let currentAccount = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -47,15 +48,21 @@ class SearchNewFriend extends AppComponent {
 
 
     searchUser = (keyword)=>{
+        currentAccount = userController.getCurrentAccount();
         currentObj.showLoading();
-        userController.getUserInfo(keyword,true,(result)=>{
+        if(currentAccount.Account == keyword){
             currentObj.hideLoading();
-           if(result){
-               currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
-           }else{
-               currentObj.alert("该用户不存在","错误");
-           }
-        });
+            currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
+        }else{
+            userController.getUserInfo(keyword,true,(result)=>{
+                currentObj.hideLoading();
+                if(result){
+                    currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
+                }else{
+                    currentObj.alert("该用户不存在","错误");
+                }
+            });
+        }
     }
 
     render() {

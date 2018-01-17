@@ -46,21 +46,25 @@ class ClientInformation extends AppComponent {
     componentDidMount() {
         //todo:更新问题  什么时候更新用户信息
         currentAccount = userController.getCurrentAccount();
-        userController.getUserInfo(this.props.clientId,false,(result)=>{
-            let isFriend = false;
-            let oneself = false;
-            if(result.Friend === true || result.Friend === 'true'){
-                isFriend = true;
-            }
-            if(currentAccount.Account == this.props.clientId){
-                oneself = true;
-            }
+        if(currentAccount.Account == this.props.clientId){
             this.setState({
-                userInfo:result,
-                isFriend,
-                oneself
+                oneself:true,
+                isFriend:false,
+                userInfo:currentAccount
             })
-        });
+        }else{
+            userController.getUserInfo(this.props.clientId,false,(result)=>{
+                let isFriend = false;
+                if(result.Friend === true || result.Friend === 'true'){
+                    isFriend = true;
+                }
+                this.setState({
+                    userInfo:result,
+                    isFriend,
+                    oneself:false
+                })
+            });
+        }
     }
 
 
