@@ -181,13 +181,10 @@ export default class AppManagement{
         }
     }
 
-    static addOrUpdateConversationToCache(conversation){
-        imController.addOrUpdateConversationToCache(conversation);
+    static addMockMessage(message){
+        imLogicController.addMockMessage(message);
     }
 
-    static refreshConversationDetail(message){
-        imController.refreshConversationList(message);
-    }
 
     static refreshContact(){
         userController.refreshUserContact();
