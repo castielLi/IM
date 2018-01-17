@@ -11,10 +11,12 @@ import IMController from '../TSController/IMController'
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
+import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
 
 let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
+let imLogicController = undefined;
 
 let Contacts = {};
 
@@ -39,6 +41,7 @@ export default class AppManagement{
         imController = IMController.getSingleInstance();
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
+        imLogicController = IMLogicController.getSingleInstance();
     }
 
     static onLoginSuccess(){
@@ -54,6 +57,10 @@ export default class AppManagement{
         )
 
         imController.init(
+            AppHandles.pageManagement,
+        )
+
+        imLogicController.init(
             AppHandles.pageManagement,
         )
     }

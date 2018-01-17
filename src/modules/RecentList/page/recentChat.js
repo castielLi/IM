@@ -37,11 +37,13 @@ import IMController from '../../../TSController/IMController'
 import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import AppManagement from '../../../App/AppManagement'
+import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 
 
 let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
+let imLogicController = undefined;
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
@@ -67,6 +69,7 @@ class RecentChat extends AppComponent {
         userController =  UserController.getSingleInstance();
         imController =  IMController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
+        imLogicController = IMControllerLogic.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -89,7 +92,8 @@ class RecentChat extends AppComponent {
 
         this.props.showNavigationBottom();
 
-         imController.getConversationList();
+         // imController.getConversationList();
+        imLogicController.getConversationList();
          applyController.getUncheckApplyFriendCount();
 
         userController.getUserContactList(true,(result)=>{

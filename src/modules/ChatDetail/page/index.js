@@ -20,7 +20,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import IMController from '../../../TSController/IMController'
+import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import UserController from '../../../TSController/UserController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import AppManagement from '../../../App/AppManagement';
@@ -52,7 +52,7 @@ class ChatDetail extends AppComponent {
 
 
     getHistoryChatRecord(){
-         imController.getHistoryChatRecord(currentObj.props.client,group);
+         imController.getHistory();
         }
 
 
@@ -70,7 +70,7 @@ class ChatDetail extends AppComponent {
                 })
             })
         }
-         imController.setCurrentConverse(this.props.client,group);
+         imController.setCurrentConversation(this.props.client,group);
     }
 
     componentWillUnmount(){
@@ -143,7 +143,7 @@ class ChatDetail extends AppComponent {
     			<MyNavigationBar
 					left={{func:()=>{
 					    this.route.toMain(this.props);
-					    imController.goOutCurrentConverse();
+					    imController.exitCurrentConversation();
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:this.state.settingButtonDisplay?'':'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />

@@ -22,7 +22,7 @@ import * as Actions from '../../reducer/action';
 import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
 import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
-import IMController from '../../../../TSController/IMController'
+import IMController from '../../../../TSController/IMLogic/IMControllerLogic'
 import * as commonMethod from '../../common/commonMethod'
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);

@@ -28,7 +28,7 @@ import {
 import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
-import IMController from '../../../../TSController/IMController';
+import IMController from '../../../../TSController/IMLogic/IMControllerLogic';
 
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);

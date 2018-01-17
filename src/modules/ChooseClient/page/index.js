@@ -301,6 +301,13 @@ class ChooseClient extends AppComponent {
         }
         //未有群 创建群
         else{
+            if(chooseArr.length == 1)
+                accounts += "," + currentAccount.Account;
+            else
+                accounts += currentAccount.Account;
+
+
+
         	if(chooseArr.length == 1){
                 this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].Account,type:'private',Nick:chooseArr[0].Nick}});
                 return;

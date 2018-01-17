@@ -13,7 +13,7 @@ import {
     connect
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
-import IMController from '../../../../TSController/IMController';
+import IMController from '../../../../TSController/IMLogic/IMControllerLogic';
 import * as commonMethod from '../../common/commonMethod'
 const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
