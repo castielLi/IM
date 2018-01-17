@@ -20,7 +20,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import ThouchBar from './EnterTool/thouchBar';
 import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import IMController from '../../../TSController/IMController'
+import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import UserController from '../../../TSController/UserController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import AppManagement from '../../../App/AppManagement';
