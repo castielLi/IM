@@ -129,16 +129,16 @@ class RecentChat extends AppComponent {
 
     renderHeader = ()=>{
         switch (this.state.socket){
-            case 1:
+            case 0:
                 return <Text>正常连接</Text>;
                 break;
-            case 2:
+            case 1:
                 return <Text>断开连接</Text>;
                 break;
-            case 3:
+            case 2:
                 return <Text>连接错误</Text>;
                 break;
-            case 4:
+            case 3:
                 return <Text>正在连接</Text>;
                 break;
 
