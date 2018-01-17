@@ -33,14 +33,11 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
 
 import UserController from '../../../TSController/UserController'
-import IMController from '../../../TSController/IMController'
 import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 
-
-let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
@@ -67,7 +64,6 @@ class RecentChat extends AppComponent {
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
         userController =  UserController.getSingleInstance();
-        imController =  IMController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
     }
@@ -92,9 +88,8 @@ class RecentChat extends AppComponent {
 
         this.props.showNavigationBottom();
 
-         // imController.getConversationList();
         imLogicController.getConversationList();
-         applyController.getUncheckApplyFriendCount();
+        applyController.getUncheckApplyFriendCount();
 
         userController.getUserContactList(true,(result)=>{
             userController.getGroupContactList(true,(result)=>{
@@ -119,7 +114,7 @@ class RecentChat extends AppComponent {
     }
     deleteSomeRow(rowID, rowData) {
         let oKCallback = () => {
-            imController.removeConverse(rowData.chatId,rowData.group);
+            imLogicController.removeConverse(rowData.chatId,rowData.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
