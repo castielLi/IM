@@ -93,7 +93,6 @@ class RecentChat extends AppComponent {
 
         userController.getUserContactList(true,(result)=>{
             userController.getGroupContactList(true,(result)=>{
-                AppManagement.refreshContact();
                 currentObj.props.hideNavigationBottom();
             })
         })
