@@ -181,8 +181,8 @@ export default class AppManagement{
         }
     }
 
-    static addMockMessage(message){
-        imLogicController.addMockMessage(message);
+    static addMockMessage(message,mockType,otherParams=undefined){
+        imLogicController.addMockMessage(message,mockType,otherParams);
     }
 
 

@@ -276,10 +276,10 @@ class ChooseClient extends AppComponent {
             currentObj.showLoading();
 
 			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
-			userController.addGroupMember(this.props.groupId,Nicks,accounts,(result,message)=>{
+			userController.addGroupMember(this.props.groupId,Nicks,accounts,(result,message,mockType)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
-                    AppManagement.addMockMessage(message);
+                    AppManagement.addMockMessage(message,mockType);
                     let routes = currentObj.props.navigator.getCurrentRoutes();
                     let index;
                     for (let i = 0; i < routes.length; i++) {
@@ -315,10 +315,10 @@ class ChooseClient extends AppComponent {
 			}
             currentObj.showLoading();
 			let groupName = currentAccount.Nickname + "发起的群聊";
-			userController.createGroup(groupName,accounts,(result,message)=>{
+			userController.createGroup(groupName,accounts,(result,message,mockType)=>{
                 currentObj.hideLoading();
 				if(result.Result == 1){
-                    AppManagement.addMockMessage(message);
+                    AppManagement.addMockMessage(message,mockType);
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
 
 				}else{
