@@ -255,12 +255,14 @@ class ChooseClient extends AppComponent {
             Nicks += chooseArr[0].Nickname;
 		}else{
             for(let item in chooseArr){
-                accounts+= chooseArr[item].Account+",";
+
                 splNeedArr.push({Account:chooseArr[item].Account});
                 if(item < chooseArr.length - 1){
                     Nicks += chooseArr[item].Nickname+",";
+                    accounts+= chooseArr[item].Account+",";
                 }else{
                     Nicks += chooseArr[item].Nickname;
+                    accounts+= chooseArr[item].Account;
                 }
             }
 		}
@@ -300,7 +302,7 @@ class ChooseClient extends AppComponent {
         }
         //未有群 创建群
         else{
-            if(chooseArr.length == 1)
+            if(chooseArr.length > 0)
                 accounts += "," + currentAccount.Account;
             else
                 accounts += currentAccount.Account;
