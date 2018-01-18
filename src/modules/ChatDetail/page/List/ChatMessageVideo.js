@@ -39,7 +39,9 @@ class ChatMessageVideo extends AppComponent {
     }
     componentWillReceiveProps(nextProps){
         let sourceRate = nextProps.data.sourceRate;
-        let download = sourceRate && sourceRate != 1 ? true : false;
+        let status = nextProps.data.status;
+        // let download = sourceRate && sourceRate != 1 ? true : false;
+        let download = status && status == 4 ? true : false;
         this.setState({
             download,
             progress:sourceRate
