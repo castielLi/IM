@@ -22,8 +22,8 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 
 import AppComponent from '../../../../Core/Component/AppComponent'
-import IMController from '../../../../TSController/IMController'
-let imController = undefined;
+import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic'
+let imControllerLogic = undefined;
 
 class Gallery extends AppComponent {
     constructor(props) {
@@ -35,7 +35,7 @@ class Gallery extends AppComponent {
             thumbnail:props.data.message.LocalSource.indexOf('/thumbnail') !== -1 ? true : false
             //thumbnail:props.Remote.indexOf('#imageView2') !== -1 ? true : false
         }
-        imController = IMController.getSingleInstance();
+        imControllerLogic = IMControllerLogic.getSingleInstance();
     }
 
     componentWillMount(){
@@ -50,7 +50,7 @@ class Gallery extends AppComponent {
         // let pathB = Path.slice(Path.lastIndexOf('/'));
         // let path = pathA+pathB;
 
-        imController.manualDownloadResource(chatId,messageId,group,message)
+        imControllerLogic.manualDownloadResource(chatId,messageId,group,message)
     }
     render() {
         let {chatId,type,data} = this.props;

@@ -21,8 +21,8 @@ import Thouch from '../../../Common/Thouch/index'
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
-import IMController from '../../../../TSController/IMController';
-let imController = undefined;
+import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic';
+let imControllerLogic = undefined;
 
 let {width, height} = Dimensions.get('window');
 
@@ -35,7 +35,7 @@ class ChatMessageVideo extends AppComponent {
             download:false,
         }
 
-        imController = IMController.getSingleInstance();
+        imControllerLogic = IMControllerLogic.getSingleInstance();
     }
     componentWillReceiveProps(nextProps){
         let sourceRate = nextProps.data.sourceRate;
@@ -52,7 +52,7 @@ class ChatMessageVideo extends AppComponent {
         let group = this.props.type == 'group' ? true : false;
         RNFS.exists(Local).then((success) => {
             if(!success){
-                imController.manualDownloadResource(this.props.chatId,messageId,group,message);
+                imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
             }
             else{
                 this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
