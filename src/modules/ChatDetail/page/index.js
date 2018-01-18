@@ -92,9 +92,8 @@ class ChatDetail extends AppComponent {
                 currentObj.onUpdateHeadName(name);
                 break;
             case AppPageMarkEnum.ModifyGroupSetting:
-                let display = params.display;
                 currentObj.setState({
-                    settingButtonDisplay:display
+                    settingButtonDisplay:!params
                 })
                 break;
         }
