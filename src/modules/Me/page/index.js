@@ -23,7 +23,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/loginController';
 import UserController from '../../../TSController/UserController';
-import IMControlelr from '../../../TSController/IMController'
+import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
 
 let loginController = undefined;
 let userController = undefined;

@@ -5,13 +5,9 @@ export default class Config {
             SQLiteFactory.InitClienType(Config.ClientType);
         }
     }
-    static SetLogout(account) {
-        SQLiteFactory.MoveSQLByPath(account);
-    }
     static SetLoginSuccess(account) {
         if (Config.DBType == "sqlite") {
             SQLiteFactory.InitClienType(Config.ClientType);
-            SQLiteFactory.InitDBPath(account);
         }
     }
 }
