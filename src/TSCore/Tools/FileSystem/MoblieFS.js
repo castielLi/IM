@@ -24,8 +24,8 @@ export default class MoblieFS {
         let filePath = RNFS.DocumentDirectoryPath + "/" + accountId;
         let directoryNames = ["image", "audio", "video"];
         for (let i = 0; i < directoryNames.length; i++) {
-            let chatName = group ? "group_" : "private_" + chatId;
-            let path = filePath + "/" + directoryNames[i] + "/" + chatName;
+            let chatName = (group ? "group-" : "private-") + chatId;
+            let path = filePath + "/" + directoryNames[i] + "/chat/" + chatName;
             RNFS.mkdir(path).then(() => {
                 console.log("创建聊天目录" + directoryNames[i] + "成功");
             });

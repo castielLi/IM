@@ -159,7 +159,7 @@ class ThouchBarBoxTopBox extends Component {
         this.state.fileName = fileName;
         startTime = Date.now();
         recordTimer = setTimeout(() => {
-            audio = new Audio(this.props.accountId, this.props.client, this.props.type, fileName);
+            audio = new Audio(this.account.accountId, this.props.client, this.props.type, fileName);
             audio._record();
         }, 200)
         this.setState({
@@ -373,9 +373,9 @@ class ThouchBarBoxTopBox extends Component {
             },
         }
 
-        let account = imController.getCurrentAccount();
+        this.account = imController.getCurrentAccount();
 
-        let audioPath = RNFS.DocumentDirectoryPath + '/' + account.accountId + '/audio/chat/' + this.props.type + '-' + this.props.client;
+        let audioPath = RNFS.DocumentDirectoryPath + '/' + this.account.accountId + '/audio/chat/' + this.props.type + '-' + this.props.client;
         this.audioPath = audioPath;
     }
 

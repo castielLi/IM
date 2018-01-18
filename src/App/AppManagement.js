@@ -184,10 +184,4 @@ export default class AppManagement{
     static addMockMessage(message,mockType,otherParams=undefined){
         imLogicController.addMockMessage(message,mockType,otherParams);
     }
-
-
-    static refreshContact(){
-        userController.refreshUserContact();
-    }
-
 }
