@@ -1,4 +1,5 @@
 import SQLiteFactory from "./TSCore/Tools/SQLite/SQLiteFactory";
+import MoblieFS from './TSCore/Tools/FileSystem/MoblieFS';
 export default class Config {
     static Init() {
         if (Config.DBType == "sqlite") {
@@ -9,6 +10,7 @@ export default class Config {
         if (Config.DBType == "sqlite") {
             SQLiteFactory.InitClienType(Config.ClientType);
             SQLiteFactory.InitDBPath(account);
+            MoblieFS.initDirectory(account);
         }
     }
 }

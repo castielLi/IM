@@ -372,11 +372,11 @@ class ThouchBarBoxTopBox extends Component {
                 return false;
             },
         }
-        //创建文件夹
-        let audioPath = RNFS.DocumentDirectoryPath + '/' + this.props.accountId + '/audio/chat/' + this.props.type + '-' + this.props.client;
-        let imagePath = RNFS.DocumentDirectoryPath + '/' + this.props.accountId + '/image/chat/' + this.props.type + '-' + this.props.client;
+
+        let account = imController.getCurrentAccount();
+
+        let audioPath = RNFS.DocumentDirectoryPath + '/' + account.accountId + '/audio/chat/' + this.props.type + '-' + this.props.client;
         this.audioPath = audioPath;
-        this.imagePath = imagePath;
     }
 
     renderModal() {
