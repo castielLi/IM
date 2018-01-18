@@ -8,6 +8,7 @@ export default class Config {
     static SetLoginSuccess(account) {
         if (Config.DBType == "sqlite") {
             SQLiteFactory.InitClienType(Config.ClientType);
+            SQLiteFactory.InitDBPath(account);
         }
     }
 }

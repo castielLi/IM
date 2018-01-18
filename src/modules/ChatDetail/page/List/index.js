@@ -104,43 +104,6 @@ class Chat extends Component {
             group = true;
         }
 
-        if(!this.chatRecord.length){
-            //this.props.addClient(client);
-            //新建文件夹
-            let audioPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/audio/chat/' + type + '-' +client;
-            let imagePath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client;
-            let thumbnail = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/image/chat/' + type + '-' +client+'/thumbnail';
-            let videoPath = RNFS.DocumentDirectoryPath + '/' +this.props.accountId+'/video/chat/' + type + '-' +client;
-            RNFS.mkdir(audioPath)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-            RNFS.mkdir(imagePath)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-            RNFS.mkdir(thumbnail)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-            RNFS.mkdir(videoPath)
-                .then((success) => {
-                    console.log('create new dir success!');
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
-        }
-
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => false,  //对触摸进行响应
             onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
