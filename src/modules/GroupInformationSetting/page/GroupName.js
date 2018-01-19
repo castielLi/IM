@@ -71,11 +71,9 @@ class GroupName extends AppComponent {
         let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result,message,mockType,otherParams)=>{
+        userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
-
-                AppManagement.addMockMessage(message,mockType,otherParams);
 
                 if(currentObj.props.UpdateHeadName != undefined){
                     currentObj.props.UpdateHeadName(currentObj.state.text);

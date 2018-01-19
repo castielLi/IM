@@ -180,8 +180,4 @@ export default class AppManagement{
                 break
         }
     }
-
-    static addMockMessage(message,mockType,otherParams=undefined){
-        imLogicController.addMockMessage(message,mockType,otherParams);
-    }
 }

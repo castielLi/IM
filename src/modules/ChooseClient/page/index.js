@@ -276,10 +276,9 @@ class ChooseClient extends AppComponent {
             currentObj.showLoading();
 
 			//参数：发起人id,群id,添加成员昵称,添加成员id字符串(xx,xx,xx),
-			userController.addGroupMember(this.props.groupId,Nicks,accounts,(result,message,mockType)=>{
+			userController.addGroupMember(this.props.groupId,Nicks,accounts,(result)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
-                    AppManagement.addMockMessage(message,mockType);
                     let routes = currentObj.props.navigator.getCurrentRoutes();
                     let index;
                     for (let i = 0; i < routes.length; i++) {

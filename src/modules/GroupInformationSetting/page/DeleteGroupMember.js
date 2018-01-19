@@ -149,7 +149,7 @@ class DeleteGroupMember extends AppComponent {
         let {groupId,navigator} = this.props;
         let close = currentObj.state.data.length-currentObj.state.needData.length<=1 ? true : false;
         currentObj.showLoading();
-        userController.removeGroupMember(groupId,close,this.needNick,this.needStr,(result,message,mockType)=>{
+        userController.removeGroupMember(groupId,close,this.needNick,this.needStr,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
                 if(close)
@@ -158,7 +158,6 @@ class DeleteGroupMember extends AppComponent {
                     currentObj.route.toMain(currentObj.props);
                     return;
                 }
-                AppManagement.addMockMessage(message,mockType);
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
