@@ -301,11 +301,11 @@ class ChooseClient extends AppComponent {
         }
         //未有群 创建群
         else{
-            if(chooseArr.length > 0)
-                accounts += "," + currentAccount.Account;
-            else
-                accounts += currentAccount.Account;
-
+            // if(chooseArr.length > 0)
+            //     accounts += "," + currentAccount.Account;
+            // else
+            //     accounts += currentAccount.Account;
+            //
 
 
         	if(chooseArr.length == 1){
