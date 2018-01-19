@@ -317,7 +317,6 @@ class ChooseClient extends AppComponent {
 			userController.createGroup(groupName,accounts,(result,message,mockType)=>{
                 currentObj.hideLoading();
 				if(result.Result == 1){
-                    AppManagement.addMockMessage(message,mockType);
                     currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
 
 				}else{
