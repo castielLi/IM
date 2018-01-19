@@ -104,12 +104,14 @@ class ClientInformation extends AppComponent {
     //todo:双方添加好友 验证页面
     addFriend = (Applicant,Respondent)=>{
         applyController.applyFriend(Applicant,Respondent,(result)=>{
-            if(result && result.Result === 3002 && result.Data instanceof Object){
-                this.setState({
-                    isFriend:true
-                })
-            }else if(result && result.Result === 1 && typeof result.Data === 'string'){
-                currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo}})
+            if(result && result.Result === 1){
+                if(result.Data instanceof Object){
+                    this.setState({
+                        isFriend:true
+                    })
+                }else if(typeof result.Data === 'string'){
+                    currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo}})
+                }
             }else{
                 currentObj.alert('发送好友申请失败');
             }
