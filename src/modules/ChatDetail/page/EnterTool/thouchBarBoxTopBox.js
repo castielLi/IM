@@ -375,7 +375,7 @@ class ThouchBarBoxTopBox extends Component {
 
         this.account = imController.getCurrentAccount();
 
-        let audioPath = RNFS.DocumentDirectoryPath + '/' + this.account.accountId + '/audio/chat/' + this.props.type + '-' + this.props.client;
+        let audioPath = RNFS.DocumentDirectoryPath + '/' + this.account.accountId + '/chat/' + this.props.type + '-' + this.props.client + '/audio/';
         this.audioPath = audioPath;
     }
 
