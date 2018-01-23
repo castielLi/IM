@@ -3,7 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Image,AsyncStorage,Platform} from 'react-native';
+import {StyleSheet, Image,AsyncStorage,Platform,Alert} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -31,7 +31,7 @@ class Start extends AppComponent {
     }
 
 
-    componentWillMount(){
+    componentDidMount(){
 
         LoginController.loginWithToken(function(result){
             if(result == null){
@@ -45,8 +45,8 @@ class Start extends AppComponent {
 
             if(result.Result != 1){
 
-                if(response.Result == 6001){
-                    currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
+                if(result.Result == 6001){
+                    Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
                 }
 
                 currentObj.route.push(currentObj.props,{
@@ -70,10 +70,9 @@ class Start extends AppComponent {
 
         return (
             <Image source={require('../resource/earth.jpg')} style={styles.img}>
-
             </Image>
-            )
-            
+
+        )
     }
 }
 
