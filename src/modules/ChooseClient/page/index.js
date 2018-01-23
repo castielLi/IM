@@ -498,8 +498,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-	accountName:state.loginStore.accountMessage.Nickname,
-    accountId:state.loginStore.accountMessage.Account,
+
 });
 
 const mapDispatchToProps = (dispatch) => {
