@@ -44,6 +44,11 @@ class Start extends AppComponent {
 
 
             if(result.Result != 1){
+
+                if(response.Result == 6001){
+                    currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
+                }
+
                 currentObj.route.push(currentObj.props,{
                     key:'Login',
                     routeId: 'Login'

@@ -82,6 +82,8 @@ class PhoneLogin extends AppComponent {
 
                 if(response.Result == 1003){
                     currentObj.alert("账号或者密码错误","错误");
+                }else if(response.Result == 6001){
+                    currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
                 }else{
                     currentObj.alert("登录请求出错","错误");
                 }
