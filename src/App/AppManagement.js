@@ -35,7 +35,7 @@ let ModifyGroupSetting = {};
 //todo:socket连接状态具体显示方式
 let AppStatus = {};
 
-let InitReady = {"ConversationList":false}
+let InitReady = {"ConversationList":false,"Contact":false}
 
 export default class AppManagement{
 
@@ -51,6 +51,7 @@ export default class AppManagement{
 
         userController.init(
             AppHandles.pageManagement,
+            AppManagement.pageInitReady
         )
 
         applyController.init(
@@ -184,6 +185,9 @@ export default class AppManagement{
         switch(type){
             case PageInitReadyEnum.ConversationList:
                 InitReady["ConversationList"] = true;
+                break;
+            case PageInitReadyEnum.Contact:
+                InitReady["Contact"] = true;
                 break;
         }
 
