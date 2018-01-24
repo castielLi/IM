@@ -91,7 +91,7 @@ class MyNavigationBar extends Component {
 
                         <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func} disabled={item.disabled?true:false}>
                             <View style={styles.rightBox}>
-                                <Icon name={item.icon} size={25} color="#fff"/>
+                                {item.icon != '' ? <Icon name={item.icon} size={25} color="#fff"/> : null}
                             </View>
                         </TouchableOpacity>
                     )}
