@@ -8,6 +8,7 @@ import Confirm from './confirm';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import Touch from '../../Common/Thouch/index';
 import loginController from '../../../TSController/loginController';
 import AppManagement from '../../../App/AppManagement'
@@ -90,6 +91,7 @@ class PhoneLogin extends AppComponent {
                 return;
             }
             currentObj.props.signDoing();
+            currentObj.props.changeTabBar(0);
             AppManagement.onLoginSuccess();
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
@@ -330,7 +332,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
     return{
-
+        ...bindActionCreators(unReadMessageActions, dispatch),
         ...bindActionCreators(Actions, dispatch)
 
     }

@@ -8,6 +8,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
+import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import AppManagement from '../../../App/AppManagement'
 import loginController from '../../../TSController/loginController';
 let LoginController = undefined;
@@ -55,7 +56,7 @@ class Start extends AppComponent {
                 });
                 return;
             }
-
+            currentObj.props.changeTabBar(0);
             AppManagement.onLoginSuccess();
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
@@ -92,6 +93,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = (dispatch) => {
   return{
+      ...bindActionCreators(unReadMessageActions, dispatch),
     ...bindActionCreators(Actions, dispatch)
 
   }};

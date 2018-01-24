@@ -159,7 +159,7 @@ class Me extends AppComponent {
 
         //关闭数据库
         // userController.logout();
-        this.route.ToLogin();
+        this.route.ToLogin(this.props);
     }
 
     changeShowFeature=(newState)=>{

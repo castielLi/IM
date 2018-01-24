@@ -12,7 +12,7 @@ import {
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 import AppManagement from '../../App/AppManagement'
-import IMController from '../../TSController/IMController'
+import IMController from '../../TSController/IMLogic/IMControllerLogic';
 
 let rootNavigator;
 let imController = undefined;
@@ -158,7 +158,6 @@ class Route {
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
         let containIndex = 0;
-        imController = IMController.getSingleInstance();
         for (let i = 0; i < routes.length; i++) {
             if (routes[i]["key"] == this.mainPage["key"] && routes[i]["routeId"] == this.mainPage["routeId"]) {
                 contain = true;
@@ -166,22 +165,20 @@ class Route {
                 break;
             }
         }
-
         if(contain){
             if(routes.length - 1 > containIndex){
                 props.navigator.pop();
                 return true;
             }else{
+                imController = IMController.getSingleInstance();
                 imController.logout();
                 return false;
             }
-
         }else{
             if(routes.length > 2){
                 props.navigator.pop();
                 return true;
             }else{
-                imController.logout();
                 return false
             }
         }
@@ -210,8 +207,8 @@ class Route {
         // })
     }
 
-    static ToLogin() {
-        let routes = rootNavigator.getCurrentRoutes();
+    static ToLogin(props) {
+        let routes = props.navigator.getCurrentRoutes();
         let route;
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
@@ -223,11 +220,11 @@ class Route {
         }
         if (!contain) {
             let loginRoute = this.loginRoute;
-            rootNavigator.replaceAtIndex(this.loginRoute,1,function(){
-                rootNavigator.jumpTo(loginRoute)
+            props.navigator.replaceAtIndex(this.loginRoute,1,function(){
+                props.navigator.jumpTo(loginRoute)
             });
         }else{
-            rootNavigator.jumpTo(route)
+            props.navigator.jumpTo(route)
         }
     }
 }
