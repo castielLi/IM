@@ -88,14 +88,14 @@ class RecentChat extends AppComponent {
 
     componentDidMount() {
 
-        this.props.showNavigationBottom();
+        // this.props.showNavigationBottom();
 
         imLogicController.getConversationList();
         applyController.getUncheckApplyFriendCount();
 
         userController.getUserContactList(true,(result)=>{
             userController.getGroupContactList(true,(result)=>{
-                currentObj.props.hideNavigationBottom();
+                // currentObj.props.hideNavigationBottom();
             })
         })
     }
@@ -130,7 +130,7 @@ class RecentChat extends AppComponent {
     renderHeader = ()=>{
         switch (this.state.socket){
             case 0:
-                return <Text>正常连接</Text>;
+                return null;
                 break;
             case 1:
                 return (

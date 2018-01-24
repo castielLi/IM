@@ -121,12 +121,12 @@ class MyNavigationBar extends Component {
                     {...this.props}
                 >
                 </NavigationBar>
-                {this.props.NavigationBottomStore ?
-                    <View style={{justifyContent:'center',alignItems:'center',height:30}}>
-                        <Text style={{}}>Loading...</Text>
-                    </View>
-                    : null
-                }
+                {/*{this.props.NavigationBottomStore ?*/}
+                    {/*<View style={{justifyContent:'center',alignItems:'center',height:30}}>*/}
+                        {/*<Text style={{}}>Loading...</Text>*/}
+                    {/*</View>*/}
+                    {/*: null*/}
+                {/*}*/}
             </View>
         )
     }
