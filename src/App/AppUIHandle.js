@@ -5,6 +5,7 @@ import AppManagement from './AppManagement'
 import {Alert} from 'react-native'
 import Route from '../Core/route/router'
 import AppPageMarkEnum from './AppPageMarkEnum'
+import PageInitReadyEnum from './PageInitReadyEnum'
 
 export function pageManagement(type,data){
     switch (type){

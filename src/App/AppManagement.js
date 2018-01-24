@@ -12,6 +12,7 @@ import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
+import PageInitReadyEnum from './PageInitReadyEnum'
 
 let imController = undefined;
 let userController = undefined;
@@ -34,6 +35,8 @@ let ModifyGroupSetting = {};
 
 //todo:socket连接状态具体显示方式
 let AppStatus = {};
+
+let InitReady = {"ConversationList":false}
 
 export default class AppManagement{
 
@@ -62,6 +65,7 @@ export default class AppManagement{
 
         imLogicController.init(
             AppHandles.pageManagement,
+            AppManagement.pageInitReady
         )
     }
 
@@ -179,5 +183,22 @@ export default class AppManagement{
                 }
                 break
         }
+    }
+
+    static pageInitReady(type){
+
+        switch(type){
+            case PageInitReadyEnum.ConversationList:
+                InitReady["ConversationList"] = true;
+                break;
+        }
+
+        for(let item in InitReady){
+            if(!InitReady[item]){
+                return;
+            }
+        }
+
+        imController.connectSocket();
     }
 }
