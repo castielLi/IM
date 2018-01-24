@@ -182,6 +182,10 @@ export default class AppManagement{
         }
     }
 
+    static AppLogout(){
+        ConnectState = false;
+    }
+
     static pageInitReady(type){
 
         switch(type){
