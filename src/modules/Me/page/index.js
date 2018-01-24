@@ -15,7 +15,6 @@ import {Text,
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-import * as loginStoreAction from '../../Login/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
@@ -270,14 +269,10 @@ class Me extends AppComponent {
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.Account,
-    avator:state.loginStore.accountMessage.HeadImageUrl,
-    Nick:state.loginStore.accountMessage.Nickname,
 
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(loginStoreAction, dispatch),
     ...bindActionCreators(featuresAction, dispatch)
 });
 
