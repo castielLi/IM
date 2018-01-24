@@ -90,7 +90,7 @@ export default function App() {
             connectionInfo:connectionInfo
                       });
 
-            if(connectionInfo == "NONE" || connectionInfo == "none"){
+            if(connectionInfo.type == "NONE" || connectionInfo.type == "none"){
                 connectionInfo = 1;
             }else {
                 connectionInfo = 0;

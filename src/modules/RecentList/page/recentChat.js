@@ -132,27 +132,11 @@ class RecentChat extends AppComponent {
             case 0:
                 return null;
                 break;
-            case 1:
+            default:
                 return (
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
                         <Text>网络连接不可用</Text>
-                    </View>
-                );
-                break;
-            case 2:
-                return (
-                    <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
-                        <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
-                        <Text>网络连接不可用</Text>
-                    </View>
-                );
-                break;
-            case 3:
-                return (
-                    <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
-                        <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
-                        <Text>正在连接...</Text>
                     </View>
                 );
                 break;
