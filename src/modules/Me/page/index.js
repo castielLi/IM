@@ -15,7 +15,6 @@ import {Text,
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-import * as loginStoreAction from '../../Login/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
@@ -24,6 +23,7 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/loginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
+import AppManagement from '../../../App/AppManagement'
 
 let loginController = undefined;
 let userController = undefined;
@@ -145,7 +145,6 @@ class Me extends AppComponent {
         imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
-
     }
 
     componentWillUnmount(){
@@ -157,11 +156,10 @@ class Me extends AppComponent {
         this.props.signOut();
         loginController.logOut();
         imController.logout();
+        AppManagement.AppLogout();
 
         //关闭数据库
         // userController.logout();
-
-
         this.route.ToLogin();
     }
 
@@ -271,14 +269,10 @@ class Me extends AppComponent {
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.Account,
-    avator:state.loginStore.accountMessage.HeadImageUrl,
-    Nick:state.loginStore.accountMessage.Nickname,
 
 });
 
 const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(loginStoreAction, dispatch),
     ...bindActionCreators(featuresAction, dispatch)
 });
 
