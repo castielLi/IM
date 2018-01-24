@@ -37,6 +37,8 @@ let AppStatus = {};
 
 let InitReady = {"ConversationList":false,"Contact":false}
 
+let ConnectState = false;
+
 export default class AppManagement{
 
     static Init(){
@@ -197,6 +199,9 @@ export default class AppManagement{
             }
         }
 
-        imLogicController.connectSocket();
+        if(!ConnectState) {
+            imLogicController.connectSocket();
+            ConnectState = !ConnectState;
+        }
     }
 }
