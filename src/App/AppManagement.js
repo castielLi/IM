@@ -7,7 +7,6 @@ import * as AppHandles from './AppUIHandle'
 import Request from './AppPageRequestEnum'
 
 //controller
-import IMController from '../TSController/IMController'
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
@@ -41,7 +40,6 @@ let InitReady = {"ConversationList":false}
 export default class AppManagement{
 
     static Init(){
-        // imController = IMController.getSingleInstance();
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMLogicController.getSingleInstance();
@@ -58,10 +56,6 @@ export default class AppManagement{
         applyController.init(
             AppHandles.pageManagement,
         )
-
-        // imController.init(
-        //     AppHandles.pageManagement,
-        // )
 
         imLogicController.init(
             AppHandles.pageManagement,
@@ -199,6 +193,6 @@ export default class AppManagement{
             }
         }
 
-        imController.connectSocket();
+        imLogicController.connectSocket();
     }
 }
