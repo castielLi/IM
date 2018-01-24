@@ -3,5 +3,6 @@
  */
 
 export default PageInitReadyEnum={
-    ConversationList : 1
+    ConversationList : 1,
+    Contact:2
 }
