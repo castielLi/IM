@@ -153,7 +153,6 @@ class Me extends AppComponent {
 
 
     loginOut = ()=>{
-        this.props.signOut();
         loginController.logOut();
         imController.logout();
         AppManagement.AppLogout();
