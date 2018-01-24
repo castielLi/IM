@@ -14,7 +14,6 @@ import * as commons from '../Helper/index'
 import AppManagement from '../../App/AppManagement'
 import IMController from '../../TSController/IMLogic/IMControllerLogic';
 
-let rootNavigator;
 let imController = undefined;
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
@@ -47,9 +46,6 @@ class Route {
         this.loginRoute = LoginRoute
     }
 
-    static setRootNavigator(navigator){
-        rootNavigator = navigator;
-    }
     //赋值外部接口
     static setAssignMainTabBarPage(TabBarReduxAction){
         assignMainTabBarPage = TabBarReduxAction;

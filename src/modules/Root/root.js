@@ -46,7 +46,6 @@ class Root extends AppComponent {
 
         //初始化跟导航器
         if(!initRootNavigation){
-            this.route.setRootNavigator(navigator);
             initRootNavigation = !initRootNavigation;
         }
 
