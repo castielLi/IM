@@ -18,6 +18,8 @@ let rootNavigator;
 let imController = undefined;
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
+//是否正在进行路由处理
+let routering = false;
 class Route {
 
     /**
@@ -152,6 +154,7 @@ class Route {
     }
 
     static androidBack(props){
+        //todo:在pop后动画结束前并没有立马卸载页面 下一次getCurrentRoutes会获取一样的场景 导致处理错误
         let routes = props.navigator.getCurrentRoutes();
         let contain = false;
         let containIndex = 0;

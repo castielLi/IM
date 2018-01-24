@@ -15,6 +15,8 @@ import Store from './store'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
+import * as AppHandles from './App/AppUIHandle'
+import AppPageMarkEnum from './App/AppPageMarkEnum'
 
 export default function App() {
 
@@ -87,6 +89,13 @@ export default function App() {
             this.setState({
             connectionInfo:connectionInfo
                       });
+
+            if(connectionInfo == "NONE" || connectionInfo == "none"){
+                connectionInfo = 1;
+            }else {
+                connectionInfo = 0;
+            }
+            AppHandles.pageManagement(AppPageMarkEnum.AppStatus,{socketStatus:connectionInfo,info:''})
 
             // if(connectionInfo == "NONE" || connectionInfo == "none"){
             //     im.handleNetEnvironment(connectionInfo);

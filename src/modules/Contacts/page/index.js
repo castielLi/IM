@@ -295,6 +295,7 @@ class Contacts extends AppComponent {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+        backgroundColor: "#fff"
 	},
     sectionHeaderBox:{
         height: 30,

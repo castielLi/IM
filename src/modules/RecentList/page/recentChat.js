@@ -55,7 +55,8 @@ class RecentChat extends AppComponent {
             rowID: '',
             dataSource: ds,
             relationStore:[],
-            socket:true,//socket连接状态
+            socket:0,//socket连接状态
+            socketError:'',//socket错误提示
 
             ConverseList:[]
         };
@@ -79,7 +80,8 @@ class RecentChat extends AppComponent {
             })
         }else if(type == AppPageMarkEnum.AppStatus){
             currentObj.setState({
-                socket:params
+                socket:params.socketStatus,
+                socketError:params.info
             })
         }
     }
@@ -131,13 +133,28 @@ class RecentChat extends AppComponent {
                 return <Text>正常连接</Text>;
                 break;
             case 1:
-                return <Text>断开连接</Text>;
+                return (
+                    <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                        <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
+                        <Text>网络连接不可用</Text>
+                    </View>
+                );
                 break;
             case 2:
-                return <Text>连接错误</Text>;
+                return (
+                    <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                        <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
+                        <Text>网络连接不可用</Text>
+                    </View>
+                );
                 break;
             case 3:
-                return <Text>正在连接</Text>;
+                return (
+                    <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                        <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
+                        <Text>正在连接...</Text>
+                    </View>
+                );
                 break;
 
         }

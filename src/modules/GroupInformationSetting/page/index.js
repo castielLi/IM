@@ -79,10 +79,7 @@ class GroupInformationSetting extends AppComponent {
     componentDidMount(){
         currentAccount = userController.getCurrentAccount();
         userController.getGroupAndMembersInfo(this.props.groupId,10,(result)=>{
-            let save = false;
-            if(result.Save == true || result.Save == 'true'){
-                save = true;
-            }
+            let save = result.Save ? true : false;
             if(!result.Note || result.Note == 'null'){
                 result.Note = null;
             }

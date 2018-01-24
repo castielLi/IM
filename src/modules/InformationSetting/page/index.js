@@ -61,12 +61,7 @@ class InformationSetting extends AppComponent {
 
     componentWillMount(){
         userController.getUserInfo(this.props.clientId,false,(result)=>{
-            let BlackList = result.BlackList;
-            if(BlackList == 'true'){
-                BlackList = true;
-            }else if (BlackList == 'false'){
-                BlackList = false;
-            }
+            let BlackList = result.BlackList ? true : false;
             this.setState({
                 joinBlackList:BlackList,
             })

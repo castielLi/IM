@@ -54,10 +54,7 @@ class ClientInformation extends AppComponent {
             })
         }else{
             userController.getUserInfo(this.props.clientId,false,(result)=>{
-                let isFriend = false;
-                if(result.Friend === true || result.Friend === 'true'){
-                    isFriend = true;
-                }
+                let isFriend = result.Friend ? true : false;
                 this.setState({
                     userInfo:result,
                     isFriend,
