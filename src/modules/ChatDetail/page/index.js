@@ -74,6 +74,7 @@ class ChatDetail extends AppComponent {
     }
 
     componentWillUnmount(){
+        imController.exitCurrentConversation();
         super.componentWillUnmount();
     }
 
@@ -142,7 +143,7 @@ class ChatDetail extends AppComponent {
     			<MyNavigationBar
 					left={{func:()=>{
 					    this.route.toMain(this.props);
-					    imController.exitCurrentConversation();
+					    // imController.exitCurrentConversation();
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:this.state.settingButtonDisplay?'':'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />
