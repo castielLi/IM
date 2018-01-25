@@ -16,7 +16,8 @@ import {Text,
     Switch,
     FlatList,
     TouchableWithoutFeedback,
-    ScrollView
+    ScrollView,
+    InteractionManager
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
@@ -77,30 +78,32 @@ class GroupInformationSetting extends AppComponent {
     }
 
     componentDidMount(){
-        currentAccount = userController.getCurrentAccount();
-        userController.getGroupAndMembersInfo(this.props.groupId,10,(result)=>{
-            let save = result.Save ? true : false;
-            if(!result.Note || result.Note == 'null'){
-                result.Note = null;
-            }
-            let groupInformation = {
-                Id : result.Id,
-                Name : result.Name,
-                Note : result.Note,
-                HeadImageUrl : result.HeadImageUrl,
-                HeadImagePath : result.HeadImagePath,
-                Owner : result.Owner,
-                Save : save,
-            };
-            let members = [];
-            if(result.memberList){
-                members  = result.memberList.concat([{},{}]);
-            }
-            currentObj.setState({
-                members,
-                groupInformation,
-                isSave:save
-            })
+        InteractionManager.runAfterInteractions(()=> {
+            currentAccount = userController.getCurrentAccount();
+            userController.getGroupAndMembersInfo(this.props.groupId, 10, (result) => {
+                let save = result.Save ? true : false;
+                if (!result.Note || result.Note == 'null') {
+                    result.Note = null;
+                }
+                let groupInformation = {
+                    Id: result.Id,
+                    Name: result.Name,
+                    Note: result.Note,
+                    HeadImageUrl: result.HeadImageUrl,
+                    HeadImagePath: result.HeadImagePath,
+                    Owner: result.Owner,
+                    Save: save,
+                };
+                let members = [];
+                if (result.memberList) {
+                    members = result.memberList.concat([{}, {}]);
+                }
+                currentObj.setState({
+                    members,
+                    groupInformation,
+                    isSave: save
+                })
+            });
         });
     }
 

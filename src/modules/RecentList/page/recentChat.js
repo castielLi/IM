@@ -11,7 +11,8 @@ import {
     Platform,
     StyleSheet,
     Alert,
-    AsyncStorage
+    AsyncStorage,
+    InteractionManager
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -90,14 +91,18 @@ class RecentChat extends AppComponent {
 
         // this.props.showNavigationBottom();
 
-        imLogicController.getConversationList();
-        applyController.getUncheckApplyFriendCount();
+        InteractionManager.runAfterInteractions(()=>{
+            imLogicController.getConversationList();
+            applyController.getUncheckApplyFriendCount();
 
-        userController.getUserContactList(true,(result)=>{
-            userController.getGroupContactList(true,(result)=>{
-                // currentObj.props.hideNavigationBottom();
+            userController.getUserContactList(true,(result)=>{
+                userController.getGroupContactList(true,(result)=>{
+                    // currentObj.props.hideNavigationBottom();
+                })
             })
         })
+
+
     }
 
 

@@ -9,7 +9,8 @@ import {
 	TouchableOpacity,
 	KeyboardAvoidingView,
 	Platform,
-	TouchableWithoutFeedback
+	TouchableWithoutFeedback,
+    InteractionManager
 } from 'react-native';
 import {
   connect
@@ -53,24 +54,27 @@ class ChatDetail extends AppComponent {
 
     getHistoryChatRecord(){
          imController.getHistory();
-        }
+
+	}
 
 
-    componentWillMount(){
-        if (group) {
-            userController.getGroupInfo(this.props.client,false,(result)=>{
-                let settingButton = result.Exited;
-                if(settingButton == true || settingButton == 'true'){
-                    settingButton = true;
-                }else{
-                    settingButton = false;
-                }
-                this.setState({
-                    settingButtonDisplay:settingButton
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            if (group) {
+                userController.getGroupInfo(this.props.client, false, (result) => {
+                    let settingButton = result.Exited;
+                    if (settingButton == true || settingButton == 'true') {
+                        settingButton = true;
+                    } else {
+                        settingButton = false;
+                    }
+                    this.setState({
+                        settingButtonDisplay: settingButton
+                    })
                 })
-            })
-        }
-         imController.setCurrentConversation(this.props.client,group);
+            }
+            imController.setCurrentConversation(this.props.client, group);
+        });
     }
 
     componentWillUnmount(){

@@ -12,7 +12,8 @@ import {
 	TouchableWithoutFeedback,
 	TextInput,
 	Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    InteractionManager
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -58,9 +59,11 @@ class Contacts extends AppComponent {
         applyController = ApplyController.getSingleInstance();
 	}
 
-    componentWillMount(){
-		userController.getUserContactList(false,null,true);
-        applyController.getUncheckApplyFriendCount();
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            userController.getUserContactList(false, null, true);
+            applyController.getUncheckApplyFriendCount();
+        });
     }
 
     _refreshUI(type,params){
