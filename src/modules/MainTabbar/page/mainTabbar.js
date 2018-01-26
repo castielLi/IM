@@ -29,7 +29,6 @@ class TabBarComponent extends AppComponent {
     }
 
     _refreshUI(type,params){
-        console.log(currentObj);
         switch (type){
             case AppPageMarkEnum.UnReadMessage:
                 if(params.type == TabTypeEnum.RecentList){
