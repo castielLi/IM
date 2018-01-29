@@ -81,10 +81,10 @@ class GroupInformationSetting extends AppComponent {
         InteractionManager.runAfterInteractions(()=> {
             currentAccount = userController.getCurrentAccount();
             userController.getGroupAndMembersInfo(this.props.groupId, 10, (result) => {
-                let save = result.Save ? true : false;
-                if (!result.Note || result.Note == 'null') {
-                    result.Note = null;
-                }
+                // let save = result.Save ? true : false;
+                // if (!result.Note || result.Note == 'null') {
+                //     result.Note = null;
+                // }
                 let groupInformation = {
                     Id: result.Id,
                     Name: result.Name,
@@ -92,7 +92,7 @@ class GroupInformationSetting extends AppComponent {
                     HeadImageUrl: result.HeadImageUrl,
                     HeadImagePath: result.HeadImagePath,
                     Owner: result.Owner,
-                    Save: save,
+                    Save: result.Save,
                 };
                 let members = [];
                 if (result.memberList) {
@@ -101,7 +101,7 @@ class GroupInformationSetting extends AppComponent {
                 currentObj.setState({
                     members,
                     groupInformation,
-                    isSave: save
+                    isSave: result.Save
                 })
             });
         });

@@ -16,11 +16,14 @@ import {
 import AppComponent from '../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
+import UserController from '../../TSController/UserController';
+let userController = undefined;
 
 
 export default class AddFriends extends AppComponent {
     constructor(props){
         super(props)
+        userController =  UserController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -53,6 +56,7 @@ export default class AddFriends extends AppComponent {
     }
 
     render() {
+        let AccountObj = userController.getCurrentAccount();
         return(
             <View style={styles.container}>
                 <MyNavigationBar
@@ -70,7 +74,7 @@ export default class AddFriends extends AppComponent {
                         </View>
                     </TouchableWithoutFeedback>
                     <View style={styles.userInfo}>
-                        <Text>我的手机号:{'18580607008'.replace(/(^\d{3}|\d{4}\B)/g,"$1 ")}</Text>
+                        <Text>我的手机号:{AccountObj.PhoneNumber.replace(/(^\d{3}|\d{4}\B)/g,"$1 ")}</Text>
                     </View>
                 </View>
                 <View style={styles.addWayView}>
