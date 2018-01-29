@@ -16,7 +16,9 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 
 import UserController from '../../../TSController/UserController';
+import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 let userController = undefined;
+let imControllerLogic = undefined;
 
 let currentObj = undefined;
 const options = ['取消','确认删除']
@@ -34,6 +36,7 @@ class InformationSetting extends AppComponent {
         }
         currentObj = this;
         userController = UserController.getSingleInstance();
+        imControllerLogic = IMControllerLogic.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -89,7 +92,7 @@ class InformationSetting extends AppComponent {
 
 
     handlePress(i){
-        let {client,type,accountId} = this.props;
+        let {clientId,type} = this.props;
         //删除好友
         if(1 == i){
             currentObj.showLoading();
@@ -99,6 +102,8 @@ class InformationSetting extends AppComponent {
                 let target = pages[pages.length - 3];
                 currentObj.route.popToSpecialRoute(currentObj.props,target);
             });
+            //删除会话列表对应会话
+            imControllerLogic.removeConverse(this.props.clientId,false)
         }
 
     }

@@ -44,7 +44,7 @@ var options = {
 }
 let videoOptions = {
     mediaType: 'video',
-    videoQuality: CameraConfig.VEDIO_QUALITY,
+    videoQuality: Platform.OS != 'ios' ? CameraConfig.VEDIO_QUALITY_HIGH : CameraConfig.VEDIO_QUALITY_LOW,
     durationLimit:CameraConfig.VEDIO_MAX_TIME,
     storageOptions: {
         skipBackup: true,
