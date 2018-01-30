@@ -50,11 +50,14 @@ function DateFormat(date,hasTime,format) {
         let day = newDate.getDay();
         let oldday = oldDate.getDay();
         day == 0 ? day = 7 : null;
+        oldday == 0 ? oldday = 7 : null;
         if(newDate.getTime() - date < day*1000*60*60*24){
             //判断在不在同一天
             if(day == oldday){
-                console.log(dateFtt(format,date))
                 return dateFtt(format,date)
+            }
+            else if(day - oldday == 1){
+                return hasTime ? '昨天 ' + dateFtt(format,date) : '昨天';
             }else{
                 return  hasTime ? DateDayFormat(oldday) +' '+ dateFtt(format,date) : DateDayFormat(oldday);
             }
@@ -72,7 +75,7 @@ function DateFormat(date,hasTime,format) {
 
 function DateDayFormat(day) {
     switch (day){
-        case 0:
+        case 7:
             return '星期天';
         case 1:
             return '星期一';

@@ -28,6 +28,7 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import RNFS from 'react-native-fs';
 import UserController from '../../../../TSController/UserController'
+import TimeHelper from '../../../../Core/Helper/TimeHelper'
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
 let scrollDistance = 0;//滚动距离
@@ -157,28 +158,6 @@ class Chat extends Component {
         };
     }
 
-    timeFormat = (time) => {
-        if(time < 10){
-            return '0'+time;
-        }
-        else{
-            return time;
-        }
-    }
-
-    timestampFormat = (time)=>{
-        let nowTime = new Date();
-        let Hours = this.timeFormat(time.getHours());
-        let Minutes = this.timeFormat(time.getMinutes());
-
-        if(time.toLocaleDateString() == nowTime.toLocaleDateString()){
-            return Hours+':'+Minutes;
-        }
-        else{
-            return time.getMonth()+1+'月'+time.getDate()+'日'+' '+Hours+':'+Minutes;
-        }
-    }
-
     getTimestamp = (LocalTime,rowid) =>{
         let timer = null;
         if(this.state.showInvertible){
@@ -187,7 +166,7 @@ class Chat extends Component {
             this.chatRecord2[index+1] ?
                 prevTime = parseInt(this.chatRecord2[index+1].sendTime) : prevTime = 0;
             if((LocalTime - prevTime) > 180000){
-                timer = new Date(LocalTime);
+                timer = TimeHelper.DateFormat(LocalTime,true,'h:mm');
             }
             return timer;
         }
@@ -197,7 +176,7 @@ class Chat extends Component {
             this.chatRecord[index-1] ?
                 prevTime = parseInt(this.chatRecord[index-1].sendTime) : prevTime = 0;
             if((LocalTime - prevTime) > 180000){
-                timer = new Date(LocalTime);
+                timer = TimeHelper.DateFormat(LocalTime,true,'h:mm');
             }
             return timer;
         }
@@ -290,7 +269,7 @@ class Chat extends Component {
             return (
                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
                         <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
@@ -302,7 +281,7 @@ class Chat extends Component {
             return(
                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
                     <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
                         <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
@@ -317,7 +296,7 @@ class Chat extends Component {
             return(
                 <View key={rowid} style={styles.itemViewRight}>
                     <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={styles.infoViewRight}>
                         <View style={styles.msgStatus}>
@@ -342,7 +321,7 @@ class Chat extends Component {
             return(
                 <View key={rowid} style={styles.itemView}>
                     <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{this.timestampFormat(timer)}</Text> : null}
+                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={styles.infoView}>
                         {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
@@ -368,13 +347,6 @@ class Chat extends Component {
     }
 
     oldMsg = () => {
-        // let {type,client} = this.props;
-        // let group;
-        // if(type === 'private'){
-        //     group = false;
-        // }else{
-        //     group = true;
-        // }
         let {msgState} = ListConst;
         if(this.state.isMore === msgState.END){
             this.setState({
