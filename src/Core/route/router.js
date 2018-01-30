@@ -12,9 +12,9 @@ import {
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 import AppManagement from '../../App/AppManagement'
-import IMController from '../../TSController/IMLogic/IMControllerLogic';
+// import IMController from '../../TSController/IMLogic/IMControllerLogic';
 
-let imController = undefined;
+// let imController = undefined;
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
 //是否正在进行路由处理
@@ -166,8 +166,8 @@ class Route {
                 props.navigator.pop();
                 return true;
             }else{
-                imController = IMController.getSingleInstance();
-                imController.logout();
+                // imController = IMController.getSingleInstance();
+                // imController.logout();
                 return false
             }
         }else{
