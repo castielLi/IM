@@ -7,5 +7,5 @@ export default CameraConfig = {
     PHOTO_MAX_HEIGHT:720,
     VEDIO_QUALITY_LOW:'low',//'low', 'medium', or 'high' on iOS, 'low' or 'high' on Android,
     VEDIO_QUALITY_HIGH:'high',//'low', 'medium', or 'high' on iOS, 'low' or 'high' on Android,
-    VEDIO_MAX_TIME:60//Max video recording time, in seconds
+    VEDIO_MAX_TIME:10//Max video recording time, in seconds
 }
