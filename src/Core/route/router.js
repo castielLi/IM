@@ -7,7 +7,7 @@ import React from 'react';
 import {
     Navigator,
     View,
-    InteractionManager
+    InteractionManager,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
@@ -168,7 +168,7 @@ class Route {
             }else{
                 imController = IMController.getSingleInstance();
                 imController.logout();
-                return false;
+                return false
             }
         }else{
             if(routes.length > 2){
