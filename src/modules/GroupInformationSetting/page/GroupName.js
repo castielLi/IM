@@ -127,7 +127,7 @@ class GroupName extends AppComponent {
                                 style={styles.input}
                             >
                             </TextInput>
-                            <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:''})}} style={{marginHorizontal:10}}/>
+                            <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({groupName:''})}} style={{marginHorizontal:10}}/>
                         </View>
 
 
