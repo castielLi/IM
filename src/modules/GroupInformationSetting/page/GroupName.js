@@ -35,7 +35,8 @@ class GroupName extends AppComponent {
         this.state = {
             rightButtonText:'',
             rightButtonDisabled:false,
-            text:props.Name,
+            text:"",
+            groupName:props.Name,
             isChangeText:false
         };
 
@@ -59,7 +60,7 @@ class GroupName extends AppComponent {
 
     _onChangeText=(v)=>{
         this.setState({isChangeText:true})
-        if(v === this.state.text||v === ''){
+        if(this.state.groupName === this.state.text){
             this.setState({text:v,rightButtonDisabled:true})
         }else{
             this.setState({text:v,rightButtonDisabled:false})
@@ -120,7 +121,7 @@ class GroupName extends AppComponent {
                             <TextInput
                                 underlineColorAndroid = {'transparent'}
                                 autoFocus = {true}
-                                defaultValue={this.state.text}
+                                defaultValue={this.state.groupName}
                                 maxLength = {20}
                                 onChangeText={(v)=>{this._onChangeText(v)}}
                                 style={styles.input}
