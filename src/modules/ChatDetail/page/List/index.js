@@ -44,7 +44,8 @@ class Chat extends Component {
     constructor(props){
         super(props);
         this.state = {
-            chatRecordStore:[]
+            chatRecordStore:[],
+            showInvertible:false
         }
         currentObj = this;
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
