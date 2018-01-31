@@ -1614,6 +1614,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.QIM;
 				PRODUCT_NAME = IM;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1645,6 +1646,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.QIM;
 				PRODUCT_NAME = IM;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
