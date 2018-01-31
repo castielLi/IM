@@ -43,6 +43,18 @@ let currentObj;
 class Chat extends Component {
     constructor(props){
         super(props);
+
+        let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
+            if(r1.messageType === 2)
+            {
+                let r1Local = r1.message.LocalSource;
+                let r2Local = r2.message.LocalSource;
+                return r1Local !== r2Local || r1.sourceRate !== r2.sourceRate || r1.messageId !== r2.messageId || r1.status !== r2.status;
+            }
+            return r1.messageId !== r2.messageId || r1.status !== r2.status;
+        }});
+
+
         this.state = {
             chatRecordStore:[],
             showInvertible:false,
@@ -53,15 +65,6 @@ class Chat extends Component {
             groupMembers:[],
         }
         currentObj = this;
-        let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
-            if(r1.messageType === 2)
-            {
-                let r1Local = r1.message.LocalSource;
-                let r2Local = r2.message.LocalSource;
-                return r1Local !== r2Local || r1.sourceRate !== r2.sourceRate || r1.messageId !== r2.messageId || r1.status !== r2.status;
-            }
-            return r1.messageId !== r2.messageId || r1.status !== r2.status;
-        }});
 
         this.data = [];
         this.data2 = [];
