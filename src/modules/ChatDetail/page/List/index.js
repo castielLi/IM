@@ -45,7 +45,12 @@ class Chat extends Component {
         super(props);
         this.state = {
             chatRecordStore:[],
-            showInvertible:false
+            showInvertible:false,
+            dataSource: ds,
+            dataSourceO: ds,
+            isMore:0,
+            isShowModal:false,
+            groupMembers:[],
         }
         currentObj = this;
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
@@ -66,15 +71,6 @@ class Chat extends Component {
         this.timestamp = 0;
         this.noMore = 0;
         this.currentAccount = undefined;
-
-        this.state = {
-            dataSource: ds,
-            dataSourceO: ds,
-            showInvertible:false,
-            isMore:0,
-            isShowModal:false,
-            groupMembers:[],
-        };
 
         this.renderRow = this.renderRow.bind(this);
         userController = UserController.getSingleInstance();
