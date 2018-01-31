@@ -2,8 +2,9 @@ import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import AppComponent from '../../../Core/Component/AppComponent';
+import loginController from '../../../TSController/loginController';
 
-
+let LoginController = undefined;
 let currentObj = undefined;
 
 export default class Register extends AppComponent {
@@ -20,6 +21,7 @@ export default class Register extends AppComponent {
         }
 
         currentObj = this;
+        LoginController = new loginController();
 	}
 
     componentWillUnmount(){
@@ -35,39 +37,47 @@ export default class Register extends AppComponent {
         }
 
         this.showLoading();
-        this.fetchData("POST","Member/GetMobileCaptchaForRegistion",function(result){
-            currentObj.hideLoading()
-        	if(!result.success) {
-                currentObj.alert(result.errorMessage,"错误");
-            }else{
-            	currentObj.alert("验证码已经发送")
+        LoginController.GetCaptcha(this.state.phoneText,(response)=>{
+            currentObj.hideLoading();
+            switch (response.data.Result){
+                case 2:
+                    currentObj.alert("请填写正确的手机号!");
+                    break;
+                case 5001:
+                    currentObj.alert("达到今日次数限制!");
+                    break;
+				case 5002:
+					currentObj.alert("手机号已存在!");
+					break;
+                case 5003:
+                    currentObj.alert("手机号不存在!");
+                    break;
+                case 5004:
+                    currentObj.alert("请求频繁，亲稍后再试!");
+                    break;
+
 			}
-		},{"PhoneNumber":this.state.phoneText})
+        });
 	}
 
 	register=()=>{
 
 		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.passWordText&&this.state.NicknameText){
-			// this.setState({
-			// 	showConfirm:true,
-			// });
 
             this.showLoading();
-            this.fetchData("POST","Member/RegistByMobilePhone",function(result){
-                currentObj.hideLoading()
-                if(!result.success) {
-                    currentObj.alert(result.errorMessage,"错误");
-                }else{
 
-                	currentObj.alert("您已经成功注册账号","提示",function(){
-                        currentObj.route.replaceTop(currentObj.props,{
-                            key:'Login',
-                            routeId: 'PhoneLogin'
-                        })
-					})
-				}
-            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.NicknameText,"Captcha":this.state.codeText,"Password":this.state.passWordText})
+            LoginController.Registered(this.state.phoneText,this.state.passWordText,this.state.NicknameText,this.state.codeText,(response)=>{
+                currentObj.hideLoading();
+                switch (response.data.Result){
+                    case 1:
+                        currentObj.alert("注册成功!");
+                        break;
+                    case 5005:
+                        currentObj.alert("验证码无效!");
+                        break;
 
+                }
+			});
 		}else{
 			alert('信息不能为空!');
 		}
