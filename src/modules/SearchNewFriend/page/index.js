@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff',
         color:'#000',
         padding:0,
-        fontSize:10
+        fontSize:16
     },
     itemBox:{
         height:60,

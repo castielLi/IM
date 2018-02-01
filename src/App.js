@@ -9,7 +9,6 @@ import {
     Provider
 } from 'react-redux';
 import { AppState , NetInfo,Platform,Alert} from 'react-native'
-import Config from './Config';
 import Root from './modules/Root/root'
 import Store from './store'
 import Route from './Core/route/router'
@@ -22,8 +21,6 @@ export default function App() {
 
     //关闭yellowbox
     console.disableYellowBox = true
-
-    Config.Init();
 
     let store = Store;
     //初始化路由表

@@ -10,9 +10,11 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import AppManagement from '../../../App/AppManagement'
-import loginController from '../../../TSController/loginController';
-let LoginController = undefined;
+import LoginController from '../../../TSController/LoginController';
+import SystemManager from '../../../TSController/SystemManager'
+let loginController = undefined;
 let currentObj = undefined;
+let systemManager = undefined;
 
 
 class Start extends AppComponent {
@@ -24,7 +26,8 @@ class Start extends AppComponent {
             isLogged: false
         }
         currentObj = this;
-        LoginController = new loginController();
+        loginController = new LoginController();
+        systemManager = new SystemManager()
     }
 
     componentWillUnmount(){
@@ -33,38 +36,39 @@ class Start extends AppComponent {
 
 
     componentDidMount(){
-
-        LoginController.loginWithToken(function(result){
-            if(result == null){
-                currentObj.route.push(currentObj.props,{
-                    key:'Login',
-                    routeId: 'Login'
-                });
-                return;
-            }
-
-
-            if(result.Result != 1){
-
-                if(result.Result == 6001){
-                    Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
+        systemManager.init(()=>{
+            loginController.loginWithToken(function(result){
+                if(result == null){
+                    currentObj.route.push(currentObj.props,{
+                        key:'Login',
+                        routeId: 'Login'
+                    });
+                    return;
                 }
 
+
+                if(result.Result != 1){
+
+                    if(result.Result == 6001){
+                        Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
+                    }
+
+                    currentObj.route.push(currentObj.props,{
+                        key:'Login',
+                        routeId: 'Login'
+                    });
+                    return;
+                }
+                currentObj.props.changeTabBar(0);
+                AppManagement.onLoginSuccess();
                 currentObj.route.push(currentObj.props,{
-                    key:'Login',
-                    routeId: 'Login'
+                    key:'MainTabbar',
+                    routeId: 'MainTabbar'
                 });
-                return;
-            }
-            currentObj.props.changeTabBar(0);
-            AppManagement.onLoginSuccess();
-            currentObj.route.push(currentObj.props,{
-                key:'MainTabbar',
-                routeId: 'MainTabbar'
+
+
             });
-
-
-        });
+        })
     }
 
     render() {

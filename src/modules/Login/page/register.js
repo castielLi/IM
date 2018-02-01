@@ -2,9 +2,9 @@ import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import AppComponent from '../../../Core/Component/AppComponent';
-import loginController from '../../../TSController/loginController';
+import LoginController from '../../../TSController/LoginController';
 
-let LoginController = undefined;
+let loginController = undefined;
 let currentObj = undefined;
 
 export default class Register extends AppComponent {
@@ -21,7 +21,7 @@ export default class Register extends AppComponent {
         }
 
         currentObj = this;
-        LoginController = new loginController();
+        loginController = new LoginController();
 	}
 
     componentWillUnmount(){
@@ -37,7 +37,7 @@ export default class Register extends AppComponent {
         }
 
         this.showLoading();
-        LoginController.GetCaptcha(this.state.phoneText,(response)=>{
+        loginController.GetCaptcha(this.state.phoneText,(response)=>{
             currentObj.hideLoading();
             switch (response.data.Result){
                 case 2:

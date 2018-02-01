@@ -20,7 +20,7 @@ import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import LoginController from '../../../TSController/loginController';
+import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
 import AppManagement from '../../../App/AppManagement'

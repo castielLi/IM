@@ -10,9 +10,9 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../reducer/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import Touch from '../../Common/Thouch/index';
-import loginController from '../../../TSController/loginController';
+import LoginController from '../../../TSController/LoginController';
 import AppManagement from '../../../App/AppManagement'
-let LoginController = undefined;
+let loginController = undefined;
 
 let currentObj = undefined;
 class PhoneLogin extends AppComponent {
@@ -31,7 +31,7 @@ class PhoneLogin extends AppComponent {
         this.addUser = this.addUser.bind(this)
         currentObj = this;
 
-        LoginController = new loginController();
+        loginController = new LoginController();
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{
@@ -77,7 +77,7 @@ class PhoneLogin extends AppComponent {
 
 
 
-        LoginController.login(currentObj.state.phoneText,currentObj.state.passWordText,function(response){
+        loginController.login(currentObj.state.phoneText,currentObj.state.passWordText,function(response){
             if(response.Result !== 1){
                 currentObj.hideLoading()
 
