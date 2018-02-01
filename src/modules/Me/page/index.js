@@ -155,6 +155,7 @@ class Me extends AppComponent {
     loginOut = ()=>{
         loginController.logOut();
         imController.logout();
+        userController.logout();
         AppManagement.AppLogout();
 
         //关闭数据库

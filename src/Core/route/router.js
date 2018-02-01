@@ -19,6 +19,7 @@ import AppManagement from '../../App/AppManagement'
 let assignMainTabBarPage = undefined;
 //是否正在进行路由处理
 let routering = false;
+let rootNavigator;
 class Route {
 
     /**
@@ -46,6 +47,9 @@ class Route {
         this.loginRoute = LoginRoute
     }
 
+    static setRootNavigator(navigator){
+        rootNavigator = navigator;
+    }
     //赋值外部接口
     static setAssignMainTabBarPage(TabBarReduxAction){
         assignMainTabBarPage = TabBarReduxAction;
@@ -204,7 +208,9 @@ class Route {
     }
 
     static ToLogin(props) {
-        let routes = props.navigator.getCurrentRoutes();
+        let navigator = null;
+        props ? navigator = props.navigator : navigator = rootNavigator;
+        let routes = navigator.getCurrentRoutes();
         let route;
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
@@ -216,11 +222,11 @@ class Route {
         }
         if (!contain) {
             let loginRoute = this.loginRoute;
-            props.navigator.replaceAtIndex(this.loginRoute,1,function(){
-                props.navigator.jumpTo(loginRoute)
+            navigator.replaceAtIndex(this.loginRoute,1,function(){
+                navigator.jumpTo(loginRoute)
             });
         }else{
-            props.navigator.jumpTo(route)
+            navigator.jumpTo(route)
         }
     }
 }
