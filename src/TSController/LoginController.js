@@ -11,8 +11,9 @@ export default class LoginController {
         this.commonManager.login(Account, Password, (response) => {
             if (response.Result == ResultError.Success) {
                 //设置当前客户的Id
-                this.onLoginSuccess(response.Data.Account);
-                callback && callback(response);
+                this.onLoginSuccess(response.Data.Account, () => {
+                    callback && callback(response);
+                });
             }
             else {
                 callback && callback(response);
@@ -26,8 +27,9 @@ export default class LoginController {
             }
             if (response.Result == ResultError.Success) {
                 //设置当前客户的Id
-                this.onLoginSuccess(response.Data.Account);
-                callback && callback(response);
+                this.onLoginSuccess(response.Data.Account, () => {
+                    callback && callback(response);
+                });
             }
             else {
                 callback && callback(response);
@@ -51,9 +53,11 @@ export default class LoginController {
     }
     onLoginSuccess(account, callback) {
         //初始化文件目录，用户db，客户端类型
-        SystemManager.LoginSuccess(account, callback);
+        SystemManager.LoginSuccess(account, () => {
+            this.commonManager.onLoginSuccess();
+            callback && callback();
+        });
         //创建UserManager和GroupManager实例
-        this.commonManager.onLoginSuccess();
     }
 }
 //# sourceMappingURL=LoginController.js.map

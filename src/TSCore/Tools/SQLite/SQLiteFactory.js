@@ -7,12 +7,13 @@ export default class SQLiteFactory {
      * @path: 数据库路径
      * @dbName: 数据库名字
      */
-    static CreateSQLite(dbKey, clientType, path, dbName) {
+    static CreateSQLite(dbKey, clientType, path, dbName, callback) {
         if (SQLiteFactory.sqliteList[dbKey] == undefined) {
             let sqlite = SQLiteFactory.SQLByPath(clientType, path, dbName);
             SQLiteFactory.sqliteList[dbKey] = sqlite;
         }
-        return SQLiteFactory.sqliteList[dbKey];
+        callback && callback();
+        // return SQLiteFactory.sqliteList[dbKey];
     }
     /*
      * 销毁数据库

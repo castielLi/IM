@@ -26,7 +26,6 @@ class Start extends AppComponent {
             isLogged: false
         }
         currentObj = this;
-        loginController = new LoginController();
         systemManager = new SystemManager()
     }
 
@@ -37,6 +36,7 @@ class Start extends AppComponent {
 
     componentDidMount(){
         systemManager.init(()=>{
+            loginController = new LoginController();
             loginController.loginWithToken(function(result){
                 if(result == null){
                     currentObj.route.push(currentObj.props,{

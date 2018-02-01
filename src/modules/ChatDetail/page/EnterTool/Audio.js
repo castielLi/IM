@@ -16,7 +16,7 @@ export default class Audio {
       currentTime: 0.0,
       recording: false,
       finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/'+accountId+'/chat/' + type + '-' +name + '/audio/' + fileName +'.aac',
+      audioPath: AudioUtils.DocumentDirectoryPath + '/Files/'+ accountId +'/Audio/' + fileName +'.aac',
       hasPermission: undefined,
     };
 
