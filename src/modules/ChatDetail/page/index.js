@@ -41,7 +41,7 @@ class ChatDetail extends AppComponent {
             name: props.Nick,
             settingButtonDisplay: false,
             chatRecord:[],
-            isMore:0
+            isMore:false
         };
         currentObj = this;
         this.isDisabled = false;

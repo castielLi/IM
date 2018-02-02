@@ -60,7 +60,7 @@ class Chat extends Component {
             showInvertible:false,
             dataSource: ds,
             dataSourceO: ds,
-            isMore:0,
+            isMore:2,
             isShowModal:false,
             groupMembers:[],
         }
@@ -72,7 +72,7 @@ class Chat extends Component {
         this.chatRecord2 = [];
 
         this.timestamp = 0;
-        this.noMore = 0;
+        // this.noMore = 0;
         this.currentAccount = undefined;
 
         this.renderRow = this.renderRow.bind(this);
