@@ -16,6 +16,7 @@ import {
     Modal,
     TouchableWithoutFeedback,
     PanResponder,
+    Button
 
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -249,18 +250,23 @@ class Chat extends Component {
     }
 
     analysisInfo = (message)=> {
-        var regex = new RegExp('\\{[a-zA-Z0-9\\/\\u4e00-\\u9fa5]+\\}', 'g')
+        var regex = new RegExp('{{.*?}}', 'g')
         let array = message.match(regex)
 
 
         if(!array || array.length == 0)
             return (<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>)
 
-        return(
-            array.map((user,index)=>{
-                <Button style={[styles.informText,{fontSize:14,textAlign:'left',color:"blue"}]}>{user.name}</Button>
-            })
-        )
+        return (<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>)
+
+        // return(
+        //
+        //     array.map((user,index)=>{
+        //         <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+        //     })
+        //
+        //
+        // )
     }
 
 
