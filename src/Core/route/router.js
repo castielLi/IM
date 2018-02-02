@@ -12,9 +12,8 @@ import {
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
 import AppManagement from '../../App/AppManagement'
-// import IMController from '../../TSController/IMLogic/IMControllerLogic';
 
-// let imController = undefined;
+
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
 //是否正在进行路由处理
@@ -156,6 +155,11 @@ class Route {
     static androidBack(props){
         //todo:在pop后动画结束前并没有立马卸载页面 下一次getCurrentRoutes会获取一样的场景 导致处理错误
         let routes = props.navigator.getCurrentRoutes();
+        let presentedIndex = props.navigator.state.presentedIndex;
+        let transitionFromIndex = props.navigator.state.transitionFromIndex;
+        if(presentedIndex != transitionFromIndex && transitionFromIndex != null){
+            return true;
+        }
         let contain = false;
         let containIndex = 0;
         for (let i = 0; i < routes.length; i++) {
@@ -170,8 +174,6 @@ class Route {
                 props.navigator.pop();
                 return true;
             }else{
-                // imController = IMController.getSingleInstance();
-                // imController.logout();
                 return false
             }
         }else{

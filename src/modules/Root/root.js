@@ -31,6 +31,7 @@ class Root extends AppComponent {
     }
 
     componentWillUnmount(){
+        initRootNavigation = false;
         super.componentWillUnmount();
     }
 
@@ -45,10 +46,10 @@ class Root extends AppComponent {
         // }
 
         //初始化跟导航器
-        // if(!initRootNavigation){
+        if(!initRootNavigation){
             this.route.setRootNavigator(navigator);
-            // initRootNavigation = !initRootNavigation;
-        // }
+            initRootNavigation = !initRootNavigation;
+        }
 
         return this.route.getRoutePage(Route, navigator);
     }
