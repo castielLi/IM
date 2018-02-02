@@ -29,9 +29,10 @@ export default class SystemManager {
                         });
                     }
                 });
-                for (let item = 1; item <= Object.keys(FileNameEnum).length; item++) {
-                    MobileFS.createDirectory("Files/" + loginAccount, null, true, item);
-                }
+                MobileFS.createDirectory("Files/" + loginAccount, null, true, FileNameEnum.HeadImage);
+                MobileFS.createDirectory("Files/" + loginAccount, null, true, FileNameEnum.Audio);
+                MobileFS.createDirectory("Files/" + loginAccount, null, true, FileNameEnum.Video);
+                MobileFS.createDirectory("Files/" + loginAccount, null, true, FileNameEnum.Image);
             }
         });
     }
