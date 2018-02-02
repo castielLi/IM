@@ -77,7 +77,7 @@ export default class ChatMessageSound extends Component {
         if(status == 4){
             return(
                 <View style={styles.defaultSound}>
-                    <Text>音频下载中。。。</Text>
+                    <Text style={styles.defaultText}>音频下载中。。。</Text>
                 </View>
             )
         }
@@ -110,13 +110,22 @@ export default class ChatMessageSound extends Component {
 const styles = StyleSheet.create({
     bubble:{
         maxWidth:width-100,
-        justifyContent:'center',
         borderRadius:5,
-        height:40,
         paddingHorizontal:10,
+        paddingVertical:10,
+        flexDirection:'row',
+        flexWrap:'wrap',
+        alignItems:'center'
     },
     defaultSound:{
         width:200,
-        alignItems:'center'
+        alignItems:'center',
+        justifyContent:'center',
+    },
+    defaultText:{
+        includeFontPadding:false,
+        fontSize:16,
+        lineHeight:20,
+        color:'#000'
     }
 });

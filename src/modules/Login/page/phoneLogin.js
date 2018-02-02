@@ -81,12 +81,23 @@ class PhoneLogin extends AppComponent {
             if(response.Result !== 1){
                 currentObj.hideLoading()
 
-                if(response.Result == 1003){
-                    currentObj.alert("账号或者密码错误","错误");
-                }else if(response.Result == 6001){
-                    currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
-                }else{
-                    currentObj.alert("登录请求出错","错误");
+                // if(response.Result == 1003){
+                //     currentObj.alert("账号或者密码错误","错误");
+                // }else if(response.Result == 6001){
+                //     currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
+                // }else{
+                //     currentObj.alert("登录请求出错","错误");
+                // }
+                switch (response.Result){
+                    case 1003:
+                        currentObj.alert("账号或者密码错误","错误");
+                        break;
+                    case 6001:
+                        currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
+                        break;
+                    default:
+                        currentObj.alert("登录请求出错","错误");
+                        break;
                 }
                 return;
             }
@@ -173,9 +184,9 @@ class PhoneLogin extends AppComponent {
 					<View style= {styles.footer}>
 						<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
                         {/*<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>*/}
-						<Touch onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'});}} activeOpacity = {0.8}
-							   return
-						><Text style= {styles.footerText}>忘记密码</Text></Touch>
+						<Touch onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'});}} activeOpacity = {0.8}>
+                            <Text style= {styles.footerText}>忘记密码</Text>
+                        </Touch>
 					</View>
 				</View>
                 {

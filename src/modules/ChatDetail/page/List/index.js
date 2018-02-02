@@ -335,11 +335,11 @@ class Chat extends Component {
                                 navigator={this.props.navigator}
                             />
                         </View>
-                        <View style={styles.msgStatus}>
-                            <TouchableOpacity>
-                                {this.messagesStatus(status)}
-                            </TouchableOpacity>
-                        </View>
+                        {/*<View style={styles.msgStatus}>*/}
+                            {/*<TouchableOpacity>*/}
+                                {/*{this.messagesStatus(status)}*/}
+                            {/*</TouchableOpacity>*/}
+                        {/*</View>*/}
                     </View>
                 </View>
             )

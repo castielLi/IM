@@ -54,11 +54,7 @@ export default class Login extends AppComponent {
 		return (
 
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
-				key:'Login',
-                routeId: 'Login',
-                sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>找回密码</Text>	
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
@@ -114,13 +110,13 @@ export default class Login extends AppComponent {
 							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notSure.png')}></Image>
 							)
 					}
-				<View style= {styles.footer}>
-					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{
-						key:'Login',
-						routeId:'EmailLogin'
-					})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
-					<TouchableOpacity  activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
-				</View>
+				{/*<View style= {styles.footer}>*/}
+					{/*<TouchableOpacity onPress = {()=>{this.route.push(this.props,{*/}
+						{/*key:'Login',*/}
+						{/*routeId:'EmailLogin'*/}
+					{/*})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>*/}
+					{/*<TouchableOpacity  activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>*/}
+				{/*</View>*/}
 				</View>
 				{
 					this.state.showConfirm?
