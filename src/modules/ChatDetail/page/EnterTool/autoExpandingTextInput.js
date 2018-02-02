@@ -62,11 +62,17 @@ class AutoExpandingTextInput extends Component {
             //   this.props.setTextInputData('');
             // });
             let group = this.props.type == 'group' ? true : false;
+
+            if(this.state.data[this.state.data.length - 1] == '\n'){
+                this.state.data.Substring(0,this.state.data.Length-1)
+            }
+
             imController.SendMessage(this.state.data);
             this.input.clear();
             if (isIos) {
                 //发送表情不会获得焦点
-                if (!this.props.thouchBarStore.isExpressionPage) this.input.focus();
+                if (!this.props.thouchBarStore.isExpressionPage)
+                    this.input.focus();
             }
             this.state.data = '';
             this.props.setTextInputData('');

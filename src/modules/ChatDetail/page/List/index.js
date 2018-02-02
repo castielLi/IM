@@ -248,6 +248,22 @@ class Chat extends Component {
         })
     }
 
+    analysisInfo = (message)=> {
+        var regex = new RegExp('\\{[a-zA-Z0-9\\/\\u4e00-\\u9fa5]+\\}', 'g')
+        let array = message.match(regex)
+
+
+        if(!array || array.length == 0)
+            return (<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>)
+
+        return(
+            array.map((user,index)=>{
+                <Button style={[styles.informText,{fontSize:14,textAlign:'left',color:"blue"}]}>{user.name}</Button>
+            })
+        )
+    }
+
+
     renderRow = (row,sid,rowid) => {
         console.log('renderRow')
         let {sender,message,messageTime,messageSource,status} = row;
@@ -272,7 +288,8 @@ class Chat extends Component {
                         {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+                        {/*<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>*/}
+                        {this.analysisInfo(message)}
                     </View>
                 </View>
             )
