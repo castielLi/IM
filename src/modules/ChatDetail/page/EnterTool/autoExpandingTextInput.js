@@ -64,7 +64,7 @@ class AutoExpandingTextInput extends Component {
             let group = this.props.type == 'group' ? true : false;
 
             if(this.state.data[this.state.data.length - 1] == '\n'){
-                this.state.data.Substring(0,this.state.data.Length-1)
+                this.state.data.substring(0,this.state.data.length-1)
             }
 
             imController.SendMessage(this.state.data);
