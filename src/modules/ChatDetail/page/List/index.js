@@ -305,9 +305,9 @@ class Chat extends Component {
                                 let account = value["content"].replace("{{","").replace("}}","");
                                 let infos = account.split(',')
                                 return <TouchableOpacity onPress={()=> {
-                                    alert(infos[0])
+                                    this.props.goToClientInfo(infos[0]);
                                 }}>
-                                    <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"blue"}]}>{"'" + infos[1] +"'"}</Text>
+                                    <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"#4d90fe"}]}>{"'" + infos[1] +"'"}</Text>
                                 </TouchableOpacity>
                             }else{
                                 return <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{value["content"]}</Text>

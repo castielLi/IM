@@ -110,6 +110,13 @@ class ChatDetail extends AppComponent {
         })
     }
 
+    goToClientInfo = (Account)=>{
+        let {type} = this.props;
+        if(type === 'group'){
+            this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
+
+        }
+    }
 
     goToChatSeeting = ()=>{
         let {client,type} = this.props;
@@ -159,6 +166,7 @@ class ChatDetail extends AppComponent {
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
                               getHistoryChatRecord={this.getHistoryChatRecord}
+                              goToClientInfo = {this.goToClientInfo}
                               type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
                               navigator={this.props.navigator}/>
                     </View>

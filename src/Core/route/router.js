@@ -209,6 +209,25 @@ class Route {
         // })
     }
 
+    static pushifExistRoute(props,existRoute){
+        let routes = props.navigator.getCurrentRoutes();
+        let route = null;
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i]["key"] == existRoute["key"] && routes[i]["routeId"] == existRoute["routeId"]) {
+                if(i - 1 > 0) {
+                    route = routes[i - 1];
+                }
+                break;
+            }
+        }
+
+        if(route != null) {
+            props.navigator.jumpTo(route)
+        }
+        props.navigator.push(existRoute)
+
+    }
+
     static ToLogin(props) {
         let navigator = null;
         props ? navigator = props.navigator : navigator = rootNavigator;
