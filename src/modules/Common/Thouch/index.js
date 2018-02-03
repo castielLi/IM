@@ -18,12 +18,23 @@ export default class Touch extends Component {
         super(props);
         // 初始状态
         this.state = {
-            isDisable:false,//是否被禁用
+            isDisable:props.disabled,//是否被禁用
         };
     }
 
     componentWillUnMount() {
         this.timer && clearTimeout(this.timer)
+    }
+
+    componentWillReceiveProps(nextProps){
+        let {disabled} = nextProps;
+        if(disabled == this.state.isDisable){
+            return;
+        }
+        this.setState({
+            isDisable:disabled,
+        })
+
     }
 
     ToPress = async ()=>{
