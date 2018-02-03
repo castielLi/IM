@@ -255,18 +255,69 @@ class Chat extends Component {
 
 
         if(!array || array.length == 0)
-            return (<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>)
+            return (
+                <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                    <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
+                </View>)
 
-        return (<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>)
+        let tempMessage = message.replace(regex,"#");
+        let pureStringArray = tempMessage.split("#");
 
-        // return(
-        //
-        //     array.map((user,index)=>{
-        //         <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
-        //     })
-        //
-        //
-        // )
+        for(let item = 0; item<pureStringArray.length;item++){
+            if(pureStringArray[item] == ""){
+                pureStringArray.splice(item,1);
+            }
+        }
+
+        let beginWithPureString = tempMessage.indexOf('#') > 0?true:false;
+        let maxLength = pureStringArray.length > array.length?pureStringArray.length:array.length
+
+        let displayString = [];
+        if(beginWithPureString){
+            for(let i = 0;i<maxLength;i++){
+                if(i<pureStringArray.length){
+                    displayString.push({"filling":false,"content":pureStringArray[i]})
+                }
+                if(i<array.length){
+                    displayString.push({"filling":true,"content":array[i]})
+                }
+            }
+
+        }else{
+            for(let i = 0;i<maxLength;i++){
+                if(i<array.length){
+                    displayString.push({"filling":true,"content":array[i]})
+                }
+
+                if(i<pureStringArray.length){
+                    displayString.push({"filling":false,"content":pureStringArray[i]})
+                }
+            }
+        }
+
+        return(
+
+            <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
+                    {
+                        displayString.map((value,index)=>{
+
+                            if(value["filling"]){
+                                let account = value["content"].replace("{{","").replace("}}","");
+                                let infos = account.split(',')
+                                return <TouchableOpacity onPress={()=> {
+                                    alert(infos[0])
+                                }}>
+                                    <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"blue"}]}>{"'" + infos[1] +"'"}</Text>
+                                </TouchableOpacity>
+                            }else{
+                                return <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{value["content"]}</Text>
+                            }
+                        })
+                    }
+                </View>
+
+        )
+
     }
 
 
@@ -293,10 +344,9 @@ class Chat extends Component {
                     <View style={styles.timestampView}>
                         {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
-                    <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5,marginTop:5}}>
-                        {/*<Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>*/}
-                        {this.analysisInfo(message)}
-                    </View>
+
+                    {this.analysisInfo(message)}
+
                 </View>
             )
         }
