@@ -51,14 +51,11 @@ class RecentChat extends AppComponent {
             rowHasChanged: (r1, r2) => r1 !== r2,
         })
         this.state = {
-            isAndroid: '',
             sectionID: '',
             rowID: '',
             dataSource: ds,
-            relationStore:[],
             socket:0,//socket连接状态
             socketError:'',//socket错误提示
-
             ConverseList:[]
         };
         this.goToChatDetail = this.goToChatDetail.bind(this);

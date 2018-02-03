@@ -31,13 +31,12 @@ let currentAccount = undefined;
 class GroupName extends AppComponent {
     constructor(props){
         super(props)
-        this.render = this.render.bind(this);
         this.state = {
-            rightButtonText:'',
-            rightButtonDisabled:false,
-            text:"",
-            groupName:props.Name,
-            isChangeText:false
+            // rightButtonText:'',
+            rightButtonDisabled:true,
+            text:props.Name,
+            defaultValue:props.Name,
+            // isChangeText:false
         };
 
         currentObj = this;
@@ -51,21 +50,23 @@ class GroupName extends AppComponent {
 
 
     componentDidMount(){
-        if(this.state.isChangeText===false){
-            this.setState({rightButtonDisabled:true})
-        }
+        // if(this.state.isChangeText===false){
+        //     this.setState({rightButtonDisabled:true})
+        // }
     }
 
 
 
     _onChangeText=(v)=>{
-        this.setState({isChangeText:true})
+        // this.setState({isChangeText:true})
         if(this.state.groupName === this.state.text){
             this.setState({text:v,rightButtonDisabled:true})
         }else{
             this.setState({text:v,rightButtonDisabled:false})
         }
-
+    }
+    ClearText(){
+        this.setState({text:'',rightButtonDisabled:true})
     }
 
     toChangeName = ()=>{
@@ -121,13 +122,13 @@ class GroupName extends AppComponent {
                             <TextInput
                                 underlineColorAndroid = {'transparent'}
                                 autoFocus = {true}
-                                defaultValue={this.state.groupName}
+                                value={this.state.text}
                                 maxLength = {20}
                                 onChangeText={(v)=>{this._onChangeText(v)}}
                                 style={styles.input}
                             >
                             </TextInput>
-                            <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({groupName:''})}} style={{marginHorizontal:10}}/>
+                            <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.ClearText()}} style={{marginHorizontal:10}}/>
                         </View>
 
 
@@ -175,14 +176,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-
-    accountName:state.loginStore.accountMessage.Nickname,
-    accountId:state.loginStore.accountMessage.Account
 });
-
 const mapDispatchToProps = dispatch => ({
-
-
 });
-
 export default connect(mapStateToProps, mapDispatchToProps)(GroupName);

@@ -72,7 +72,7 @@ class ChatMessageVideo extends AppComponent {
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
-                            <Text style={styles.progressText}>{Math.ceil(this.state.progress*100)}%</Text>
+                            <Text style={styles.progressText}>{Math.ceil(this.state.progress)}%</Text>
                         </View> :null
                     }
                 </Thouch>
