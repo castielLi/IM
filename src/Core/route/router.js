@@ -223,11 +223,13 @@ class Route {
             }
         }
 
-        // if(route != null) {
+        if(route != null) {
             // props.navigator.jumpTo(route)
-        // }
-        // props.navigator.push(existRoute)
-        props.navigator.popToRoute(route)
+            props.navigator.popToRoute(route);
+        }else{
+            props.navigator.push(existRoute);
+        }
+
 
     }
 
