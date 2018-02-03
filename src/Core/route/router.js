@@ -214,17 +214,20 @@ class Route {
         let route = null;
         for (let i = 0; i < routes.length; i++) {
             if (routes[i]["key"] == existRoute["key"] && routes[i]["routeId"] == existRoute["routeId"]) {
-                if(i - 1 > 0) {
-                    route = routes[i - 1];
-                }
+
+                props.navigator.replaceAtIndex(existRoute,i);
+                // if(i - 1 > 0) {
+                    route = routes[i];
+                // }
                 break;
             }
         }
 
-        if(route != null) {
-            props.navigator.jumpTo(route)
-        }
-        props.navigator.push(existRoute)
+        // if(route != null) {
+            // props.navigator.jumpTo(route)
+        // }
+        // props.navigator.push(existRoute)
+        props.navigator.popToRoute(route)
 
     }
 
