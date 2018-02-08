@@ -14,9 +14,10 @@ import {
     ActivityIndicator,
     TextInput,
     Modal,
-    TouchableWithoutFeedback,
+    TouchableHighlight,
     PanResponder,
-    Button
+    Button,
+    TouchableNativeFeedback
 
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -40,7 +41,7 @@ let FooterLayout = false;
 let ListLayout = false;
 let userController = undefined;
 let currentObj;
-
+let {width,height} = Dimensions.get('window');
 class Chat extends Component {
     constructor(props){
         super(props);
@@ -57,13 +58,12 @@ class Chat extends Component {
 
 
         this.state = {
-            chatRecordStore:[],
             showInvertible:false,
             dataSource: ds,
             dataSourceO: ds,
             isMore:2,
             isShowModal:false,
-            groupMembers:[],
+            popupMenu:false,
         }
         currentObj = this;
 
@@ -73,7 +73,6 @@ class Chat extends Component {
         this.chatRecord2 = [];
 
         this.timestamp = 0;
-        // this.noMore = 0;
         this.currentAccount = undefined;
 
         this.renderRow = this.renderRow.bind(this);
@@ -304,13 +303,13 @@ class Chat extends Component {
                             if(value["filling"]){
                                 let account = value["content"].replace("{{","").replace("}}","");
                                 let infos = account.split(',')
-                                return <TouchableOpacity onPress={()=> {
+                                return <TouchableOpacity key={index} onPress={()=> {
                                     this.props.goToClientInfo(infos[0]);
                                 }}>
                                     <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"#4d90fe"}]}>{"'" + infos[1] +"'"}</Text>
                                 </TouchableOpacity>
                             }else{
-                                return <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{value["content"]}</Text>
+                                return <Text key={index} style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{value["content"]}</Text>
                             }
                         })
                     }
@@ -383,6 +382,7 @@ class Chat extends Component {
                             chatId={this.props.client}
                             type={this.props.type}
                             navigator={this.props.navigator}
+                            onpress={this.ShowPopupMenu}
                         />
                         {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
@@ -406,17 +406,49 @@ class Chat extends Component {
                                 chatId={this.props.client}
                                 type={this.props.type}
                                 navigator={this.props.navigator}
+                                onpress={this.ShowPopupMenu}
                             />
                         </View>
-                        {/*<View style={styles.msgStatus}>*/}
-                            {/*<TouchableOpacity>*/}
-                                {/*{this.messagesStatus(status)}*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
                     </View>
                 </View>
             )
         }
+    }
+
+    ShowPopupMenu = ()=>{
+        this.setState({popupMenu:true})
+    };
+    HidePopupMenu = ()=>{
+        this.setState({popupMenu:false})
+    };
+    _PopupMenu(){
+        return (
+            <Modal
+                animationType='none'
+                transparent={true}
+                onRequestClose={()=>{}}
+                visible={this.state.popupMenu}
+            >
+                <TouchableNativeFeedback onPress={()=>this.HidePopupMenu()}>
+                    <View style={{position: 'absolute',top: 0,left: 0,width,height}}/>
+                </TouchableNativeFeedback>
+                <View style={{flexDirection:'row',backgroundColor:'#333',height:40,borderRadius:5,alignItems:'center',
+                position:'absolute',top:300,left:20,paddingHorizontal:5}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                        <Text style={{color:'#fff'}}>复制</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                        <Text style={{color:'#fff'}}>转发</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                        <Text style={{color:'#fff'}}>撤销</Text>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                        <Text style={{color:'#fff'}}>删除</Text>
+                    </TouchableHighlight>
+                </View>
+            </Modal>
+        )
     }
 
     oldMsg = () => {
@@ -556,6 +588,7 @@ class Chat extends Component {
                             />
                         </View>
                         {this.renderModal()}
+                        {this._PopupMenu()}
                     </View>
             );
         }else{
