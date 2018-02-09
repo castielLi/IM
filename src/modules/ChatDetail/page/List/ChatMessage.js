@@ -121,7 +121,7 @@ export default class ChatMessage extends AppComponent {
                         let popupMenu = {top,left,componentWidth:width,componentHeight:height};
                         this.props.onPress(popupMenu,this.props.rowData);
                     });
-                },300);
+                },1000);
 
             },
             onPanResponderMove: (evt,gs)=>{
@@ -139,7 +139,7 @@ export default class ChatMessage extends AppComponent {
                 // })
                 // alert(evt.target)
                 let currentTime = new Date().getTime();
-                if(currentTime - this.press_time >300){
+                if(currentTime - this.press_time >1000){
 
                 }else{
                     clearTimeout(this.long_press_timeout);
