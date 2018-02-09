@@ -184,7 +184,7 @@ class RecentChat extends AppComponent {
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>
-									<Text style ={styles.LastMessageTime}>{TimeHelper.DateFormat(rowData.lastTime,false,'h:mm',)}</Text>
+									<Text style ={styles.LastMessageTime}>{rowData.lastTime == 0?"":TimeHelper.DateFormat(rowData.lastTime,false,'h:mm',)}</Text>
                                     {rowData.unreadCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text></View>:null}
 								</View>
 							</View>
