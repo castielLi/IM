@@ -8,6 +8,7 @@ var UiHandleEnum;
     UiHandleEnum[UiHandleEnum["ModifyGroupSetting"] = 6] = "ModifyGroupSetting";
     UiHandleEnum[UiHandleEnum["AppStatus"] = 7] = "AppStatus";
     UiHandleEnum[UiHandleEnum["UnReadMessage"] = 8] = "UnReadMessage";
+    UiHandleEnum[UiHandleEnum["ForwardMessage"] = 9] = "ForwardMessage";
     UiHandleEnum[UiHandleEnum["AppKickOutHandle"] = 101] = "AppKickOutHandle";
 })(UiHandleEnum || (UiHandleEnum = {}));
 export default UiHandleEnum;

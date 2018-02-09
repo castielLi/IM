@@ -65,6 +65,7 @@ class Chat extends Component {
             isShowModal:false,
             popupMenu:false,
             loaction:{top:0,left:0,componentWidth:0,componentHeight:0},
+            longPressMessageData:null
         }
         currentObj = this;
 
@@ -418,15 +419,17 @@ class Chat extends Component {
         }
     }
 
-    ShowPopupMenu = (loaction)=>{
+    ShowPopupMenu = (loaction,rowData)=>{
         this.setState({
             popupMenu:true,
+            longPressMessageData:rowData,
             loaction
         })
     };
     HidePopupMenu = ()=>{
         this.setState({
             popupMenu:false,
+            longPressMessageData:null
         })
     };
     _PopupMenu(){
@@ -445,18 +448,36 @@ class Chat extends Component {
                     <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>复制</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.forwardMessage()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>转发</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.retactMessage()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>撤销</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.deleteMessage()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>删除</Text>
                     </TouchableHighlight>
                 </View>
             </Modal>
         )
+    }
+
+    deleteMessage(){
+        this.HidePopupMenu()
+        const {longPressMessageData} = this.state;
+        this.props.deleteMessage(longPressMessageData)
+    }
+
+    retactMessage(){
+        this.HidePopupMenu()
+        const {longPressMessageData} = this.state;
+        this.props.retactMessage(longPressMessageData)
+    }
+
+    forwardMessage(){
+        this.HidePopupMenu()
+        const {longPressMessageData} = this.state;
+        this.props.forwardMessage(longPressMessageData)
     }
 
     oldMsg = () => {

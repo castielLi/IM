@@ -117,7 +117,7 @@ export default class ChatMessage extends Component {
                 this.long_press_timeout = setTimeout(()=>{
                     UIManager.measure(currentTarget, (x, y, width, height, left, top) => {
                         let popupMenu = {top,left,componentWide:width,componentHeight:height};
-                        this.props.onPress(popupMenu);
+                        this.props.onPress(popupMenu,this.props.rowData);
                     });
                 },300);
 
