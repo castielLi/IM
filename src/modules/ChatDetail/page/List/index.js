@@ -85,7 +85,9 @@ class Chat extends Component {
     componentWillReceiveProps(nextProps){
         let {chatRecord,isMore} = nextProps;
         let {msgState} = ListConst;
-        if(!chatRecord || !chatRecord.length) return;
+        if(!chatRecord
+            || !chatRecord.length
+        ) return;
         currentObj.chatRecord = chatRecord;
         currentObj.chatRecord2 = chatRecord.concat([]).reverse();
         currentObj.data = currentObj.prepareMessages(currentObj.chatRecord);
