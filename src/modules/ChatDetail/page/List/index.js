@@ -17,7 +17,7 @@ import {
     TouchableHighlight,
     PanResponder,
     Button,
-    TouchableNativeFeedback
+    TouchableWithoutFeedback
 
 } from 'react-native';
 import {connect} from 'react-redux';
@@ -64,6 +64,7 @@ class Chat extends Component {
             isMore:2,
             isShowModal:false,
             popupMenu:false,
+            loaction:{top:0,left:0,componentWidth:0,componentHeight:0},
         }
         currentObj = this;
 
@@ -382,7 +383,8 @@ class Chat extends Component {
                             chatId={this.props.client}
                             type={this.props.type}
                             navigator={this.props.navigator}
-                            onpress={this.ShowPopupMenu}
+                            onPress={this.ShowPopupMenu}
+                            onLongPress={this.ShowPopupMenu}
                         />
                         {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
@@ -406,7 +408,8 @@ class Chat extends Component {
                                 chatId={this.props.client}
                                 type={this.props.type}
                                 navigator={this.props.navigator}
-                                onpress={this.ShowPopupMenu}
+                                onPress={this.ShowPopupMenu}
+                                onLongPress={this.ShowPopupMenu}
                             />
                         </View>
                     </View>
@@ -415,11 +418,16 @@ class Chat extends Component {
         }
     }
 
-    ShowPopupMenu = ()=>{
-        this.setState({popupMenu:true})
+    ShowPopupMenu = (loaction)=>{
+        this.setState({
+            popupMenu:true,
+            loaction
+        })
     };
     HidePopupMenu = ()=>{
-        this.setState({popupMenu:false})
+        this.setState({
+            popupMenu:false,
+        })
     };
     _PopupMenu(){
         return (
@@ -429,11 +437,11 @@ class Chat extends Component {
                 onRequestClose={()=>{}}
                 visible={this.state.popupMenu}
             >
-                <TouchableNativeFeedback onPress={()=>this.HidePopupMenu()}>
+                <TouchableWithoutFeedback onPress={()=>this.HidePopupMenu()}>
                     <View style={{position: 'absolute',top: 0,left: 0,width,height}}/>
-                </TouchableNativeFeedback>
+                </TouchableWithoutFeedback>
                 <View style={{flexDirection:'row',backgroundColor:'#333',height:40,borderRadius:5,alignItems:'center',
-                position:'absolute',top:300,left:20,paddingHorizontal:5}}>
+                position:'absolute',top:this.state.loaction.top-40,left:20,paddingHorizontal:5}}>
                     <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>复制</Text>
                     </TouchableHighlight>
@@ -611,6 +619,7 @@ class Chat extends Component {
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
                         {this.renderModal()}
+                        {this._PopupMenu()}
                     </View>
                 )
         }

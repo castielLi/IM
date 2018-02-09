@@ -10,12 +10,23 @@ import {
     TouchableHighlight,
     PanResponder,
     UIManager,
+    Alert,
+    Platform
 } from 'react-native';
 import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
 import ChatMessageVideo from './ChatMessageVideo';
+import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
+import Sound from 'react-native-sound';
+import RNFS from 'react-native-fs';
+import {
+    Navigator,
+} from 'react-native-deprecated-custom-components';
+import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic';
+let imControllerLogic = undefined;
+let stopSoundObj = null;
 
 let {width, height} = Dimensions.get('window');
 
@@ -28,6 +39,7 @@ export default class ChatMessage extends Component {
             left: 0
         }
         this.long_press_timeout = -1;
+        imControllerLogic = IMControllerLogic.getSingleInstance();
     }
 
     static defaultProps = {
@@ -35,6 +47,60 @@ export default class ChatMessage extends Component {
 
     static propTypes = {
     };
+
+   //  //Image
+   //  _goToGallery = (chatId,type,data)=>{
+   //      this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+   //  }
+   //  //Audio
+   //  _playSound = (SoundUrl) => {
+   //      if (Platform.OS === 'ios') {
+   //          Sound.enable(true);
+   //      }
+   //      const callback = (error, sound) => {
+   //          if (error) {
+   //              Alert.alert('error', error.message);
+   //          }
+   //          if(stopSoundObj){
+   //              stopSoundObj.stop(()=>{
+   //                  if(stopSoundObj && sound._filename == stopSoundObj._filename){
+   //                      stopSoundObj = null;
+   //                      return;
+   //                  }
+   //                  stopSoundObj = sound;
+   //                  sound.play(() => {
+   //                      stopSoundObj = null;
+   //                      sound.release();
+   //                  });
+   //
+   //              }).release()
+   //          }
+   //          else{
+   //              stopSoundObj = sound;
+   //              sound.play(() => {
+   //                  stopSoundObj = null;
+   //                  sound.release();
+   //              });
+   //          }
+   //      };
+   //      const sound = new Sound(SoundUrl,'', error => callback(error, sound));
+   //  };
+   //  //video
+   // _playVideo = (Local,Remote,data)=>{
+   //      let currentObj = this;
+   //      let {messageId,message} = data;
+   //      let group = this.props.type == 'group' ? true : false;
+   //      RNFS.exists(Local).then((success) => {
+   //          if(!success){
+   //              imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
+   //          }
+   //          else{
+   //              this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+   //          }
+   //      }).catch((err) => {
+   //          console.log(err.message);
+   //      });
+   //  };
 
     componentWillMount(){
         this._panResponder = PanResponder.create({
@@ -44,11 +110,16 @@ export default class ChatMessage extends Component {
                 this._top = this.state.top
                 this._left = this.state.left
                 this.setState({bg: 'red'})
-                this.e = evt;
+                // console.log(ReactNativeComponentTree.getInstanceFromNode(evt.currentTarget));
+                // console.log(ReactNativeComponentTree.getInstanceFromNode(evt.target));
+                let currentTarget = evt.currentTarget;
+                this.press_time = new Date().getTime();
                 this.long_press_timeout = setTimeout(()=>{
-                            // let popupMenu = {top,left,componentWide:1};
-                            this.props.onpress();
-                    },1500);
+                    UIManager.measure(currentTarget, (x, y, width, height, left, top) => {
+                        let popupMenu = {top,left,componentWide:width,componentHeight:height};
+                        this.props.onPress(popupMenu);
+                    });
+                },300);
 
             },
             onPanResponderMove: (evt,gs)=>{
@@ -64,17 +135,25 @@ export default class ChatMessage extends Component {
                     top: this._top+gs.dy,
                     left: this._left+gs.dx
                 })
-                alert(evt.target)
-                UIManager.measure(evt.target, (x, y, width, height, left, top) => {
+                // alert(evt.target)
+                let currentTime = new Date().getTime();
+                if(currentTime - this.press_time >300){
+
+                }else{
                     clearTimeout(this.long_press_timeout);
-                    console.log(top + "    " + left)
-                });
+
+                }
+                // UIManager.measure(evt.currentTarget, (x, y, width, height, left, top) => {
+                //     clearTimeout(this.long_press_timeout);
+                //     console.log(top + "    " + left)
+                //     // alert(top + "    " + left)
+                // });
 
             }
         })
     }
 
-    typeOption = (rowData,type,style,chatId)=> {
+    typeOption = (rowData)=> {
 
         // enum MessageType {
         //     TEXT = 1,
@@ -88,10 +167,7 @@ export default class ChatMessage extends Component {
                 return (
                     <ChatMessageText
                         data={message} //聊天数据
-                        type={type} //聊天类型group/private
-                        style={style}
-                        chatId={chatId} //chatId
-                        navigator={this.props.navigator}
+                        {...this.props}
                     />
                 )
             }
@@ -106,30 +182,22 @@ export default class ChatMessage extends Component {
                         return (
                             <ChatMessageImage
                                 data={rowData}
-                                type={type}
-                                style={style}
-                                chatId={chatId}
-                                navigator={this.props.navigator}
+                                onLongPress={this._OnLongPress()}
+                                {...this.props}
                             />
                         )
                     case 2:
                         return (
                             <ChatMessageVideo
                                 data={rowData}
-                                type={type}
-                                style={style}
-                                chatId={chatId}
-                                navigator={this.props.navigator}
+                                {...this.props}
                             />
                         )
                     case 3:
                         return (
                             <ChatMessageSound
                                 data={rowData}
-                                type={type}
-                                style={style}
-                                chatId={chatId}
-                                navigator={this.props.navigator}
+                                {...this.props}
                             />
                         )
                     default:
@@ -147,11 +215,19 @@ export default class ChatMessage extends Component {
         })
     }
 
+    _OnLongPress(){
+        // let {onLongPress} = this.props;
+        // this.chat.measure(this.target, (x, y, width, height, left, top) => {
+        //     clearTimeout(this.long_press_timeout);
+        //     alert(top + "    " + left)
+        // });
+        // onLongPress && onLongPress();
+    }
     render() {
-        let {rowData,type,style,chatId} = this.props;
+        // let {rowData,type,style,chatId} = this.props;
         return (
-            <View {...this._panResponder.panHandlers}>
-                {this.typeOption(rowData,type,style,chatId)}
+            <View ref={(e)=>this.chat = e} {...this._panResponder.panHandlers} collapsable={false}>
+                {this.typeOption(this.props.rowData)}
             </View>
         )
     }
