@@ -67,15 +67,15 @@ class ChatMessageVideo extends AppComponent {
         let {data, style} = this.props;
         let {LocalSource,RemoteSource} = data.message;
         return(
-            <View style={[styles.bubble]}>
-                <Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>
+            <View style={styles.bubble}>
+                {/*<Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>*/}
                     <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
                             <Text style={styles.progressText}>{Math.ceil(this.state.progress)}%</Text>
                         </View> :null
                     }
-                </Thouch>
+                {/*</Thouch>*/}
             </View>
         )
     }

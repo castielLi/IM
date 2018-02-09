@@ -81,9 +81,9 @@ class ChatMessageImage extends AppComponent {
         data.message.LocalSource = this.rebuildPath(data.message.LocalSource);
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToGallery(this.props.chatId,this.props.type,data)}>
+                {/*<Thouch onPress={()=>this.goToGallery(this.props.chatId,this.props.type,data)}>*/}
                     {this.defaultPicture(data)}
-                </Thouch>
+                {/*</Thouch>*/}
             </View>
         )
     }

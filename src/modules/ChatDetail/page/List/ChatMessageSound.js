@@ -82,12 +82,14 @@ export default class ChatMessageSound extends Component {
             )
         }
         return (
-            <Thouch onPress={()=>this.playSound(LocalSource)}>
                 <Text>{Time}"</Text>
-            </Thouch>
         )
     }
-
+/*
+* <Thouch onPress={()=>this.playSound(LocalSource)}>
+                <Text>{Time}"</Text>
+            </Thouch>
+* */
     render() {
         let {data,style} = this.props;
         let {LocalSource,RemoteSource,Time} = data.message;

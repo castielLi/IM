@@ -18,7 +18,8 @@ import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
 import ChatMessageVideo from './ChatMessageVideo';
-import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
+// import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
+import AppComponent from '../../../../Core/Component/AppComponent'
 import Sound from 'react-native-sound';
 import RNFS from 'react-native-fs';
 import {
@@ -30,7 +31,7 @@ let stopSoundObj = null;
 
 let {width, height} = Dimensions.get('window');
 
-export default class ChatMessage extends Component {
+export default class ChatMessage extends AppComponent {
     constructor(props){
         super(props)
         this.state = {
@@ -48,59 +49,58 @@ export default class ChatMessage extends Component {
     static propTypes = {
     };
 
-   //  //Image
-   //  _goToGallery = (chatId,type,data)=>{
-   //      this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-   //  }
-   //  //Audio
-   //  _playSound = (SoundUrl) => {
-   //      if (Platform.OS === 'ios') {
-   //          Sound.enable(true);
-   //      }
-   //      const callback = (error, sound) => {
-   //          if (error) {
-   //              Alert.alert('error', error.message);
-   //          }
-   //          if(stopSoundObj){
-   //              stopSoundObj.stop(()=>{
-   //                  if(stopSoundObj && sound._filename == stopSoundObj._filename){
-   //                      stopSoundObj = null;
-   //                      return;
-   //                  }
-   //                  stopSoundObj = sound;
-   //                  sound.play(() => {
-   //                      stopSoundObj = null;
-   //                      sound.release();
-   //                  });
-   //
-   //              }).release()
-   //          }
-   //          else{
-   //              stopSoundObj = sound;
-   //              sound.play(() => {
-   //                  stopSoundObj = null;
-   //                  sound.release();
-   //              });
-   //          }
-   //      };
-   //      const sound = new Sound(SoundUrl,'', error => callback(error, sound));
-   //  };
-   //  //video
-   // _playVideo = (Local,Remote,data)=>{
-   //      let currentObj = this;
-   //      let {messageId,message} = data;
-   //      let group = this.props.type == 'group' ? true : false;
-   //      RNFS.exists(Local).then((success) => {
-   //          if(!success){
-   //              imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
-   //          }
-   //          else{
-   //              this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-   //          }
-   //      }).catch((err) => {
-   //          console.log(err.message);
-   //      });
-   //  };
+    //Image
+    _goToGallery = (chatId,type,data)=>{
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    }
+    //Audio
+    _playSound = (SoundUrl) => {
+        if (Platform.OS === 'ios') {
+            Sound.enable(true);
+        }
+        const callback = (error, sound) => {
+            if (error) {
+                Alert.alert('error', error.message);
+            }
+            if(stopSoundObj){
+                stopSoundObj.stop(()=>{
+                    if(stopSoundObj && sound._filename == stopSoundObj._filename){
+                        stopSoundObj = null;
+                        return;
+                    }
+                    stopSoundObj = sound;
+                    sound.play(() => {
+                        stopSoundObj = null;
+                        sound.release();
+                    });
+
+                }).release()
+            }
+            else{
+                stopSoundObj = sound;
+                sound.play(() => {
+                    stopSoundObj = null;
+                    sound.release();
+                });
+            }
+        };
+        const sound = new Sound(SoundUrl,'', error => callback(error, sound));
+    };
+    //video
+   _playVideo = (Local,Remote,data)=>{
+        let {messageId,message} = data;
+        let group = this.props.type == 'group' ? true : false;
+        RNFS.exists(Local).then((success) => {
+            if(!success){
+                imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
+            }
+            else{
+                this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+            }
+        }).catch((err) => {
+            console.log(err.message);
+        });
+    };
 
     componentWillMount(){
         this._panResponder = PanResponder.create({
@@ -116,7 +116,7 @@ export default class ChatMessage extends Component {
                 this.press_time = new Date().getTime();
                 this.long_press_timeout = setTimeout(()=>{
                     UIManager.measure(currentTarget, (x, y, width, height, left, top) => {
-                        let popupMenu = {top,left,componentWide:width,componentHeight:height};
+                        let popupMenu = {top,left,componentWidth:width,componentHeight:height};
                         this.props.onPress(popupMenu);
                     });
                 },300);
@@ -141,7 +141,31 @@ export default class ChatMessage extends Component {
 
                 }else{
                     clearTimeout(this.long_press_timeout);
-
+                    let rowData = this.props.rowData;
+                    let {message,messageType} = rowData;
+                    //如果在下载状态禁止点击
+                    if(rowData.status == 4) return;
+                    switch (messageType) {
+                        case 1:
+                            break;
+                        case 2: {
+                            switch (message.Type){
+                                case 1:
+                                    this._goToGallery(this.props.chatId,this.props.type,rowData);
+                                    break;
+                                case 2:
+                                    this._playVideo(message.LocalSource,message.RemoteSource,rowData);
+                                    break;
+                                case 3:
+                                    this._playSound(message.LocalSource);
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                        default:
+                            break;
+                    }
                 }
                 // UIManager.measure(evt.currentTarget, (x, y, width, height, left, top) => {
                 //     clearTimeout(this.long_press_timeout);

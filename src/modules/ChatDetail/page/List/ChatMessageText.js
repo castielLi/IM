@@ -8,9 +8,11 @@ import {
     View,
     Image,
     Dimensions,
+    TouchableHighlight
 } from 'react-native';
 import EMOJI_ENUM from '../EnterTool/EmojiEnum';
 import stringToContentArray from './stringToContentArrayMethod';
+import Thouch from '../../../Common/Thouch/index'
 
 let {width, height} = Dimensions.get('window');
 
@@ -30,25 +32,26 @@ export default class ChatMessageText extends Component {
         let {data,style} = this.props;
         let dataArr = stringToContentArray(data)
         return(
-            <View style={[style,styles.bubble]}>
-                    {
-                        dataArr.map((v,i)=>{
-                            if (v["Content"] != null) {//文本
-                                return <Text key={i} style = {styles.contentText}>{v["Content"]}</Text>
-                            }
-                            else if (v["Resources"] != null) {//emoji
-                                if(!EMOJI_ENUM[v["Resources"]]){
-                                    return <Text key={i} style = {styles.contentText}>{v["Resources"]}</Text>
+
+                <View style={[styles.bubble,style]}>
+                        {
+                            dataArr.map((v,i)=>{
+                                if (v["Content"] != null) {//文本
+                                    return <Text collapsable={false} key={i} style = {styles.contentText}>{v["Content"]}</Text>
                                 }
-                                return <Image
-                                            key = {i}
-                                            style = {styles.emoji}
-                                            source={EMOJI_ENUM[v["Resources"]]}
-                                />
-                            }
-                        })
-                    }
-            </View>
+                                else if (v["Resources"] != null) {//emoji
+                                    if(!EMOJI_ENUM[v["Resources"]]){
+                                        return <Text collapsable={false} key={i} style = {styles.contentText}>{v["Resources"]}</Text>
+                                    }
+                                    return <Image
+                                                key = {i}
+                                                style = {styles.emoji}
+                                                source={EMOJI_ENUM[v["Resources"]]}
+                                    />
+                                }
+                            })
+                        }
+                </View>
         )
     }
 }
