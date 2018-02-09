@@ -436,6 +436,7 @@ class Chat extends Component {
         })
     };
     _PopupMenu(){
+        if(!this.state.popupMenu) return;
         let {left,componentWidth,top,componentHeight} = this.state.loaction;
         //距屏幕顶部
         let menuLeft = 0;
@@ -453,9 +454,9 @@ class Chat extends Component {
         if(top<45){
             menuTop = top + componentHeight +5;
         }
-        // if(new Date().getTime() - this.state.longPressMessageData.messageTime < 180000){
-        //     retract = true;
-        // }
+        if(new Date().getTime() - this.state.longPressMessageData.messageTime < 180000 && this.state.longPressMessageData.sender.account == this.currentAccount.Account){
+            retract = true;
+        }
         return (
             <Modal
                 animationType='none'
@@ -474,9 +475,9 @@ class Chat extends Component {
                     <TouchableHighlight underlayColor='#666' onPress={()=>this.forwardMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>转发</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.retactMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
+                    {retract ? <TouchableHighlight underlayColor='#666' onPress={()=>this.retactMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>撤销</Text>
-                    </TouchableHighlight>
+                    </TouchableHighlight> : null}
                     <TouchableHighlight underlayColor='#666' onPress={()=>this.deleteMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>删除</Text>
                     </TouchableHighlight>
