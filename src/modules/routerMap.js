@@ -43,6 +43,7 @@ import GroupName from './GroupInformationSetting/page/GroupName'
 import DeleteGroupMember from './GroupInformationSetting/page/DeleteGroupMember'
 import Player from './ChatDetail/page/List/player'
 import Gallery from './ChatDetail/page/List/gallery'
+import ForwardChoose from './ForwardChoose/page/ForwardChoose'
 
 export const MainPage = {
     key: 'MainTabbar',
@@ -260,6 +261,12 @@ export const RouteMap = {
     'Gallery' : {
         'Gallery' : {
         component: Gallery,
+            params: {}
+        }
+    },
+    'ForwardChoose':{
+        'ForwardChoose': {
+            component: ForwardChoose,
             params: {}
         }
     },

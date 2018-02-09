@@ -130,6 +130,24 @@ class ChatDetail extends AppComponent {
         }
     }
 
+
+    //删除聊天信息
+    deleteChatMessage = (rowData)=>{
+        const {messageId} = rowData;
+        imController.removeMessage(messageId)
+    }
+
+    //车条聊天信息
+    retactMessage = (rowData)=>{
+        const {messageId} = rowData;
+        imController.RetactMessage(messageId)
+    }
+
+    forwardMessage = (rowData)=>{
+        this.route.push(this.props,{key:'ForwardChoose',routeId:'ForwardChoose',params:{rowData}});
+    }
+
+
 	//控制子组件Chat中的消息滚动到底部
 	goBottom() {
 		this.chat.getWrappedInstance().scrollToEnd()
@@ -166,6 +184,9 @@ class ChatDetail extends AppComponent {
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
                               getHistoryChatRecord={this.getHistoryChatRecord}
+                              deleteMessage={this.deleteChatMessage}
+                              retactMessage={this.retactMessage}
+                              forwardMessage={this.forwardMessage}
                               goToClientInfo = {this.goToClientInfo}
                               type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
                               navigator={this.props.navigator}/>
