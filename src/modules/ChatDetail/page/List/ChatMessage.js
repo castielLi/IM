@@ -107,9 +107,9 @@ export default class ChatMessage extends AppComponent {
             onStartShouldSetPanResponder: () => true,
             onMoveShouldSetPanResponder: ()=> true,
             onPanResponderGrant: (evt, gestureState)=>{
-                this._top = this.state.top
-                this._left = this.state.left
-                this.setState({bg: 'red'})
+                // this._top = this.state.top
+                // this._left = this.state.left
+                // this.setState({bg: 'red'})
                 // console.log(ReactNativeComponentTree.getInstanceFromNode(evt.currentTarget));
                 // console.log(ReactNativeComponentTree.getInstanceFromNode(evt.target));
                 let currentTarget = evt.currentTarget;
@@ -125,18 +125,18 @@ export default class ChatMessage extends AppComponent {
 
             },
             onPanResponderMove: (evt,gs)=>{
-                console.log(gs.dx+' '+gs.dy)
-                this.setState({
-                    top: this._top+gs.dy,
-                    left: this._left+gs.dx
-                })
+                // console.log(gs.dx+' '+gs.dy)
+                // this.setState({
+                //     top: this._top+gs.dy,
+                //     left: this._left+gs.dx
+                // })
             },
             onPanResponderRelease: (evt,gs)=>{
-                this.setState({
-                    bg: 'white',
-                    top: this._top+gs.dy,
-                    left: this._left+gs.dx
-                })
+                // this.setState({
+                //     bg: 'white',
+                //     top: this._top+gs.dy,
+                //     left: this._left+gs.dx
+                // })
                 // alert(evt.target)
                 let currentTime = new Date().getTime();
                 if(currentTime - this.press_time >300){

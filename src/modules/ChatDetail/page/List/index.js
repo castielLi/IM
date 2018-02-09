@@ -436,18 +436,25 @@ class Chat extends Component {
     };
     _PopupMenu(){
         let {left,componentWidth,top,componentHeight} = this.state.loaction;
-        let MenuLeft = 0;
-        let MenuTop = top-45;
+        //距屏幕顶部
+        let menuLeft = 0;
+        //距屏幕左边
+        let menuTop = top-45;
+        //是否可以撤回
+        let retract = false;
         //消息体中心距离左边的距离
         let messageLeft = left+componentWidth/2 -5;
         if(messageLeft>=105 && (width-messageLeft)>=105){
-            MenuLeft = messageLeft - 105;
+            menuLeft = messageLeft - 105;
         }else if((width-messageLeft)<105){
-            MenuLeft = width - 210;
+            menuLeft = width - 210;
         }
         if(top<45){
-            MenuTop = top + componentHeight +5;
+            menuTop = top + componentHeight +5;
         }
+        // if(new Date().getTime() - this.state.longPressMessageData.messageTime < 180000){
+        //     retract = true;
+        // }
         return (
             <Modal
                 animationType='none'
@@ -459,17 +466,17 @@ class Chat extends Component {
                     <View style={{position: 'absolute',top: 0,left: 0,width,height}}/>
                 </TouchableWithoutFeedback>
                 <View style={{flexDirection:'row',backgroundColor:'#333',height:40,borderRadius:5,alignItems:'center',
-                position:'absolute',top:MenuTop,left:MenuLeft,paddingHorizontal:5}}>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
+                position:'absolute',top:menuTop,left:menuLeft,paddingHorizontal:5}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>复制</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.forwardMessage()} style={{height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.forwardMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>转发</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.retactMessage()} style={{height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.retactMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>撤销</Text>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.deleteMessage()} style={{height:40,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
+                    <TouchableHighlight underlayColor='#666' onPress={()=>this.deleteMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>删除</Text>
                     </TouchableHighlight>
                 </View>
