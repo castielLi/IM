@@ -120,8 +120,8 @@ export default class ChatMessage extends AppComponent {
                         // this.props.onPress(popupMenu);
                         let popupMenu = {top,left,componentWidth:width,componentHeight:height};
                         this.props.onPress(popupMenu,this.props.rowData);
-                    });
-                },1000);
+                    });   
+                },1500);
 
             },
             onPanResponderMove: (evt,gs)=>{
