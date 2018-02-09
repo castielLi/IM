@@ -199,8 +199,9 @@ class Chat extends Component {
         //     WAIT_DOWNLOAD = 3,
         //     //正在下载(如果是文件类型)
         //     DOWNLOADING = 4,
+        //     RETACTING = 5
 
-        if(status === 0 || status === 3 || status === 4){
+        if(status === 0 || status === 3 || status === 4 || status === 5){
             return (
                 <ActivityIndicator
                     size="small"
