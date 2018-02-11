@@ -44,6 +44,9 @@ import DeleteGroupMember from './GroupInformationSetting/page/DeleteGroupMember'
 import Player from './ChatDetail/page/List/player'
 import Gallery from './ChatDetail/page/List/gallery'
 import ForwardChoose from './ForwardChoose/page/ForwardChoose'
+import ContactsChoose from './ForwardChoose/page/ContactsChoose'
+import GroupsChoose from './ForwardChoose/page/GroupsChoose'
+
 
 export const MainPage = {
     key: 'MainTabbar',
@@ -267,6 +270,19 @@ export const RouteMap = {
     'ForwardChoose':{
         'ForwardChoose': {
             component: ForwardChoose,
+            params: {},
+            markType:Mark.ConversationList
+        }
+    },
+    'ContactsChoose':{
+        'ContactsChoose': {
+            component: ContactsChoose,
+            params: {}
+        }
+    },
+    'GroupsChoose':{
+        'GroupsChoose': {
+            component: GroupsChoose,
             params: {}
         }
     },

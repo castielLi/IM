@@ -445,7 +445,7 @@ class Chat extends Component {
         //是否可以撤回
         let retract = false;
         //消息体中心距离左边的距离
-        let messageLeft = left+componentWidth/2 -5;
+        let messageLeft = left+(componentWidth-10)/2;
         if(messageLeft>=105 && (width-messageLeft)>=105){
             menuLeft = messageLeft - 105;
         }else if((width-messageLeft)<105){
@@ -454,7 +454,7 @@ class Chat extends Component {
         if(top<45){
             menuTop = top + componentHeight +5;
         }
-        if(new Date().getTime() - this.state.longPressMessageData.messageTime < 180000 && this.state.longPressMessageData.sender.account == this.currentAccount.Account){
+        if(new Date().getTime() - this.state.longPressMessageData.messageTime < 120000 && this.state.longPressMessageData.sender.account == this.currentAccount.Account){
             retract = true;
         }
         return (

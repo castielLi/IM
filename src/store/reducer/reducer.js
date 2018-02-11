@@ -8,6 +8,7 @@ import {thouchBarStore,imageModalStore,chatDetailPageStore,mediaPlayerStore} fro
 import FeaturesStore from '../../modules/Common/menu/reducer'
 import NavigationBottomStore  from '../../modules/Common/NavigationBar/reducer/index'
 import {unReadApplyMessageStore} from '../../modules/Contacts/reducer'
+import selectRecordStore from '../../modules/ForwardChoose/reducer'
 
 export default combineReducers({
 	//登录状态
@@ -23,6 +24,8 @@ export default combineReducers({
     unReadMessageStore,
     //mainTabBar显示状态
     tabBarStore,
+    //选中的转发人
+    selectRecordStore,
 
     //控制features显示隐藏
     FeaturesStore,

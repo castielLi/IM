@@ -6,6 +6,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    TouchableHighlight,
     Platform,
     requireNativeComponent
 } from 'react-native';
@@ -43,7 +44,12 @@ export default class Touch extends Component {
         await this.setState({isDisable:true})//防重复点击
         this.timer = setTimeout(async()=>{
             await this.setState({isDisable:false})//1.5秒后可点击
-        },2000)
+        },500)
+    }
+
+    ToLongPress = ()=>{
+        const {onLongPress} = this.props;
+        onLongPress && onLongPress();
     }
 
     render(){
@@ -51,9 +57,13 @@ export default class Touch extends Component {
         return(
             <TouchableOpacity
                 disabled={this.state.isDisable}
-                activeOpacity={this.props.activeOpacity?this.props.activeOpacity:0.5}
+                activeOpacity={this.props.activeOpacity?this.props.activeOpacity:0.7}
+                // underlayColor='#dedede'
                 style={style?style:{}}
-                onPress={this.ToPress}>
+                onPress={this.ToPress}
+                // onLongPress={this.ToLongPress}
+                // delayLongPress={300}
+            >
                 {this.props.children}
             </TouchableOpacity>
         )

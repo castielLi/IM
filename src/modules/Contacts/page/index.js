@@ -61,7 +61,7 @@ class Contacts extends AppComponent {
 
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
-            userController.getUserContactList(false, null, true);
+            userController.getUserContactList(false, null);
             applyController.getUncheckApplyFriendCount();
         });
     }

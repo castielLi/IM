@@ -11,70 +11,56 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import UserController from '../../../TSController/UserController'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 
+let userController = undefined;
 let imLogicController = undefined;
-let currentObj = undefined;
 let {width,height} = Dimensions.get('window');
-
-class ForwardChoose extends AppComponent {
+class GroupsChoose extends AppComponent {
     constructor(props) {
         super(props);
         this.state = {
-            ConversationData: [],//最近会话记录
+            GroupsData: [],
         };
         this.CheckBoxData = [];//选择框组件
         this.HasData = 0;//是否有选择数据
-        currentObj = this;
+        userController = UserController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
-        //初始化缓存数据
-        this.props.initSelect();
     }
 
     componentDidMount() {
-        imLogicController.getConversationList();
-    }
-
-    _refreshUI(type, params) {
-        if (type == AppPageMarkEnum.ConversationList) {
-            currentObj.setState({
-                ConversationData: params
+        userController.getGroupContactList(false,(contacts)=>{
+            this.setState({
+                GroupsData:contacts
             })
-        }
+        });
     }
 
     /*生成key值*/
     _keyExtractor = (item, index) => {
         return index;
     };
-    /*渲染头部*/
-    _renderHeader = () => {
-        return (
-            <View style={styles.headerView}>
-                <Text style={styles.headerText}>最近聊天会话</Text>
-            </View>
-        )
-    };
     /*渲染每个记录*/
     _renderItem = (item) => { //item:{item:{},index:number,separators:{}}
         let content = item.item;
         let index = item.index;
-        let checked = this.props.selectRecord[content.chatId] ? true : false;
+        let checked = this.props.selectRecord[content.Id] ? true : false;
         return (
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
-                        {this._renderAvator(content.HeadImageUrl,content.group)}
+                        {this._renderAvator(content.HeadImagePath, content.HeadImageUrl)}
                         <View style={styles.itemTextView}>
-                            <Text style={styles.itemText}  numberOfLines={1}>{content.name}</Text>
+                            <Text style={styles.itemText}  numberOfLines={1}>{content.Name}</Text>
                         </View>
                     </View>
                     {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e)} checked={checked}/> : null}
@@ -97,29 +83,12 @@ class ForwardChoose extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
-                    heading={'选择'}
+                    heading={'选择群聊'}
                     right={{func:()=>{this._forwardMessage()},text:optionText}}
                 />
-                <View style={styles.headerMenuView}>
-                    <TouchableHighlight style={styles.menuTouch} underlayColor={'#333'} onPress={() => {this._goToContacts()}}>
-                        <View style={styles.optionView}>
-                            <Text style={styles.optionText}>选择好友</Text>
-                        </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight style={[styles.menuTouch, styles.optionMiddle]} underlayColor={'#333'} onPress={() => {this._goToGroups()}}>
-                        <View style={styles.optionView}>
-                            <Text style={styles.optionText}>选择群聊</Text>
-                        </View>
-                    </TouchableHighlight>
-                    {/*<TouchableHighlight style={styles.menuTouch} underlayColor={'#333'} onPress={() => {}}>*/}
-                        {/*<View style={styles.optionView}>*/}
-                            {/*<Text style={styles.optionText}>创建群聊</Text>*/}
-                        {/*</View>*/}
-                    {/*</TouchableHighlight>*/}
-                </View>
                 <FlatList
-                    data={this.state.ConversationData}
-                    extraData={{data:this.state,props:this.props}}
+                    data={this.state.GroupsData}
+                    extraData={this.state}
                     keyExtractor={this._keyExtractor}
                     ListHeaderComponent={this._renderHeader}
                     renderItem={this._renderItem}
@@ -130,33 +99,21 @@ class ForwardChoose extends AppComponent {
     }
 
     /*渲染头像*/
-    _renderAvator = (Uri, group) => {
-        if (Uri != null && Uri != '') {
-            return <Image style={styles.itemImage} source={{uri: Uri}}/>
+    _renderAvator = (HeadImagePath, HeadImageUrl, group) => {
+        if (HeadImagePath != null && HeadImagePath != '') {
+            return <Image style={styles.itemImage} source={{uri: HeadImagePath}}/>
         }
-        if (group) {
-            return <Image style={styles.itemImage} source={require('../resource/groupHeader.png')}/>
-        } else {
-            return <Image style={styles.itemImage} source={require('../resource/avator.jpg')}/>
+        if (HeadImageUrl != null && HeadImageUrl != '') {
+            return <Image style={styles.itemImage} source={{uri: HeadImageUrl}}/>
         }
-    };
-
-    /*路由跳转*/
-    _goToContacts =()=>{
-        this.route.push(this.props,{key: 'ContactsChoose',routeId: 'ContactsChoose',params:{rowData:this.props.rowData},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
-    };
-    _goToGroups =()=>{
-        this.route.push(this.props,{key: 'GroupsChoose',routeId: 'GroupsChoose',params:{rowData:this.props.rowData},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
-    };
-    _goToCreateGroup =()=>{
-
+        return <Image style={styles.itemImage} source={require('../resource/groupHeader.png')}/>
     };
 
     /*item点击事件*/
     _itemTouch=(content,index)=>{
         let RecordDto = {};
-        RecordDto.receiveId = content.chatId;
-        RecordDto.group = content.group;
+        RecordDto.receiveId = content.Id;
+        RecordDto.group = true;
         if(this.props.optionsType){
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
@@ -188,49 +145,13 @@ class ForwardChoose extends AppComponent {
         if(checkBox!=null){
             this.CheckBoxData.push(checkBox);
         }
-    };
+    }
 }
 
 const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'#fff'
-    },
-    headerMenuView:{
-    },
-    menuTouch:{
-    },
-    optionView:{
-        height:50,
-        paddingVertical:8,
-        justifyContent:'center',
-        paddingLeft:15,
-        backgroundColor:'#fff'
-    },
-    optionText:{
-        color:'#000',
-        fontWeight:'normal',
-        fontSize:16,
-        textAlignVertical:'center',
-        includeFontPadding:false
-    },
-    optionMiddle:{
-        borderColor:'#dedede',
-        borderTopWidth:1,
-        borderBottomWidth:1
-    },
-    headerView:{
-        backgroundColor:'#dedede',
-        justifyContent:'center',
-        paddingLeft:15,
-        paddingVertical:2
-    },
-    headerText:{
-        color:'#666',
-        fontSize:14,
-        fontWeight:'normal',
-        textAlignVertical:'center',
-        includeFontPadding:false
     },
     itemTouch:{
     },
@@ -282,4 +203,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForwardChoose);
+export default connect(mapStateToProps, mapDispatchToProps)(GroupsChoose);
