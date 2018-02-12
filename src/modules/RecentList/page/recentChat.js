@@ -122,11 +122,15 @@ class RecentChat extends AppComponent {
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
     }
-    _renderAvator = (HeadImageUrl) => {
-        if (!HeadImageUrl || HeadImageUrl === '') {
-            return <Image style = {styles.avatar} source = {require('../resource/avator.jpg')}/>
-        }
-        return <Image style = {styles.avatar} source = {{uri:HeadImageUrl}}/>
+    _renderAvator = (userId,group) => {
+        let imageUrl = userController.getAccountHeadImagePath(userId)
+
+        // if (!HeadImageUrl || HeadImageUrl === '') {
+            return <Image style = {styles.avatar}
+                          defaultSource = {require('../resource/avator.jpg')}
+                          source = {{uri:imageUrl}}/>
+        // }
+        // return <Image style = {styles.avatar} source = {{uri:HeadImageUrl}}/>
     }
 
     renderHeader = ()=>{
@@ -176,7 +180,7 @@ class RecentChat extends AppComponent {
 					<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 						<View style = {styles.ListContainer}>
 							<View style = {styles.userLogo}>
-                                {this._renderAvator(rowData.HeadImageUrl)}
+                                {this._renderAvator(rowData.chatId,rowData.group)}
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
