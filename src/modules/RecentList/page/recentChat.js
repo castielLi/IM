@@ -127,10 +127,17 @@ class RecentChat extends AppComponent {
 
         // if (!HeadImageUrl || HeadImageUrl === '') {
             return <Image style = {styles.avatar}
-                          defaultSource = {require('../resource/avator.jpg')}
-                          source = {{uri:imageUrl}}/>
+                          source = {require('../resource/avator.jpg')}
+                          />
         // }
         // return <Image style = {styles.avatar} source = {{uri:HeadImageUrl}}/>
+
+
+
+        // ios:
+        //     return <Image style = {styles.avatar}
+        //                   defaultSource = {require('../resource/avator.jpg')}
+        //                   source = {{uri:imageUrl}}/>
     }
 
     renderHeader = ()=>{

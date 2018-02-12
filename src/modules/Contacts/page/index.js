@@ -144,9 +144,16 @@ class Contacts extends AppComponent {
 		let headImagePath = userController.getAccountHeadImagePath(info.item.Account)
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						<Image
-							defaultSource = {require('../resource/avator.jpg')}
-							source = {{uri:headImagePath}} style={styles.pic} ></Image>
+						{/*ios:*/}
+						{/*<Image style = {styles.pic}*/}
+							   {/*defaultSource = {require('../resource/avator.jpg')}*/}
+							   {/*source = {{uri:headImagePath}}/>*/}
+
+						<Image style = {styles.pic}
+							   source = {require('../resource/avator.jpg')}
+							   />
+
+
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
