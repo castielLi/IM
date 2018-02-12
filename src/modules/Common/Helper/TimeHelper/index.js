@@ -51,7 +51,7 @@ function DateFormat(date,hasTime,format) {
         let oldday = oldDate.getDay();
         day == 0 ? day = 7 : null;
         oldday == 0 ? oldday = 7 : null;
-        if(newDate.getTime() - date < day*1000*60*60*24){
+        if(newDate.getTime() - date < day*1000*60*60*24 && oldday <= day){
             //判断在不在同一天
             if(day == oldday){
                 return dateFtt(format,date)

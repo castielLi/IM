@@ -16,6 +16,7 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
+import ForwardConfirm from './ForwardConfirm'
 
 let imLogicController = undefined;
 let currentObj = undefined;
@@ -29,6 +30,7 @@ class ForwardChoose extends AppComponent {
         };
         this.CheckBoxData = [];//选择框组件
         this.HasData = 0;//是否有选择数据
+        this.RecordDto = null;//是有单选记录
         currentObj = this;
         imLogicController = IMControllerLogic.getSingleInstance();
     }
@@ -98,7 +100,7 @@ class ForwardChoose extends AppComponent {
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
                     heading={'选择'}
-                    right={{func:()=>{this._forwardMessage()},text:optionText}}
+                    right={{func:()=>{this._navigationBtn()},text:optionText}}
                 />
                 <View style={styles.headerMenuView}>
                     <TouchableHighlight style={styles.menuTouch} underlayColor={'#333'} onPress={() => {this._goToContacts()}}>
@@ -125,6 +127,11 @@ class ForwardChoose extends AppComponent {
                     renderItem={this._renderItem}
                     ItemSeparatorComponent={this._renderSeparator}
                 />
+                <ForwardConfirm
+                    ref={e=>this.confirm = e}
+                    onPress={this.forwardMessage}
+                    rowData={this.props.rowData}
+                />
             </View>
         )
     }
@@ -143,10 +150,10 @@ class ForwardChoose extends AppComponent {
 
     /*路由跳转*/
     _goToContacts =()=>{
-        this.route.push(this.props,{key: 'ContactsChoose',routeId: 'ContactsChoose',params:{rowData:this.props.rowData},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
+        this.route.push(this.props,{key: 'ContactsChoose',routeId: 'ContactsChoose',params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
     };
     _goToGroups =()=>{
-        this.route.push(this.props,{key: 'GroupsChoose',routeId: 'GroupsChoose',params:{rowData:this.props.rowData},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
+        this.route.push(this.props,{key: 'GroupsChoose',routeId: 'GroupsChoose',params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
     };
     _goToCreateGroup =()=>{
 
@@ -164,16 +171,39 @@ class ForwardChoose extends AppComponent {
             this.CheckBoxData[index].onChange();
         }else{
             //调用发送方法
-            imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
+            // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
+            // this.route.pop(this.props);
+            this.forwardConfirm(RecordDto);
         }
     };
 
     /*发送转发*/
-    _forwardMessage=()=>{
-        //是否有选中用户
-        if(this.HasData){
+    forwardMessage=()=>{
+        if(this.props.optionsType && this.HasData){
             let SelectRecord = Object.values(this.props.selectRecord);
             imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+        }else{
+            imLogicController.ForwardMessage(this.props.rowData,[this.RecordDto]);
+        }
+        this.route.pop(this.props);
+    };
+
+    /*显示确认组件*/
+    forwardConfirm=(RecordDto)=>{
+        if(RecordDto){
+            this.RecordDto = RecordDto;
+        }
+        this.confirm.onChange();
+    };
+
+
+    _navigationBtn=()=>{
+        //是否有选中用户
+        if(this.HasData){
+            // let SelectRecord = Object.values(this.props.selectRecord);
+            // imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+            // this.route.pop(this.props);
+            this.forwardConfirm();
         }else{
             //没有选择用户切换类型
             if(this.props.optionsType){

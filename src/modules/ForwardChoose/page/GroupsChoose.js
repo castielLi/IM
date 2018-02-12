@@ -121,7 +121,9 @@ class GroupsChoose extends AppComponent {
             this.CheckBoxData[index].onChange();
         }else{
             //调用发送方法
-            imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
+            // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
+            this.route.pop(this.props);
+            this.props.forwardMethod(RecordDto);
         }
     };
 
@@ -129,8 +131,10 @@ class GroupsChoose extends AppComponent {
     _forwardMessage=()=>{
         //是否有选中用户
         if(this.HasData){
-            let SelectRecord = Object.values(this.props.selectRecord);
-            imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+            // let SelectRecord = Object.values(this.props.selectRecord);
+            // imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+            this.route.pop(this.props);
+            this.props.forwardMethod();
         }else{
             //没有选择用户切换类型
             if(this.props.optionsType){

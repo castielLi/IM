@@ -144,12 +144,12 @@ class ChatDetail extends AppComponent {
     }
 
     forwardMessage = (rowData)=>{
-        // this.route.push(this.props,{key:'ForwardChoose',routeId:'ForwardChoose',params:{rowData}});
-        let receives = [];
-        receives.push({"receiveId":"wg003723","group":false});
-        receives.push({"receiveId":"wg003744","group":false});
-        receives.push({"receiveId":"wg003735","group":false});
-        imController.ForwardMessage(rowData,receives)
+        this.route.push(this.props,{key:'ForwardChoose',routeId:'ForwardChoose',params:{rowData}});
+        // let receives = [];
+        // receives.push({"receiveId":"wg003723","group":false});
+        // receives.push({"receiveId":"wg003744","group":false});
+        // receives.push({"receiveId":"wg003735","group":false});
+        // imController.ForwardMessage(rowData,receives)
     }
 
 
