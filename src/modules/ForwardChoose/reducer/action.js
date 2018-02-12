@@ -11,6 +11,14 @@ export function changeOptionsType(){
     };
 }
 
+export function changTargetInfo(key,TargetDto){
+    return {
+        type: 'CHANGE_TARGET_INFO',
+        key,
+        TargetDto
+    };
+}
+
 export function initSelect(){
     return {
         type: 'INIT_SELECT',

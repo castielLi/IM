@@ -137,9 +137,13 @@ class ContactsChoose extends AppComponent {
         let RecordDto = {};
         RecordDto.receiveId = content.Account;
         RecordDto.group = false;
+        let TargetDto = {};
+        TargetDto.name = content.Nickname;
+        TargetDto.headImage = content.HeadImagePath;
         if(this.props.optionsType){
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
+            this.props.changTargetInfo(content.Account,TargetDto);
             //改变选中框样式
             this.CheckBoxData[index].onChange();
         }else{

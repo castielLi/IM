@@ -114,9 +114,13 @@ class GroupsChoose extends AppComponent {
         let RecordDto = {};
         RecordDto.receiveId = content.Id;
         RecordDto.group = true;
+        let TargetDto = {};
+        TargetDto.name = content.Name;
+        TargetDto.headImage = content.HeadImagePath;
         if(this.props.optionsType){
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
+            this.props.changTargetInfo(content.Id,TargetDto);
             //改变选中框样式
             this.CheckBoxData[index].onChange();
         }else{

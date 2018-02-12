@@ -34,7 +34,7 @@ export default class ForwardConfirm extends Component {
     }
 
     render(){
-
+        let TargetNames = this._buildTargetName(this.props.targetInfo);
         return (
             <Modal
                 animationType={'none'}
@@ -49,7 +49,7 @@ export default class ForwardConfirm extends Component {
                         </View>
                         <View style={styles.userView}>
                             <Text style={styles.userText}>
-                                后海湾
+                                {TargetNames}
                             </Text>
                         </View>
                         <View style={styles.contentView}>
@@ -81,6 +81,15 @@ export default class ForwardConfirm extends Component {
     onChange() {
         this.setState({visible:!this.state.visible});
     }
+
+    /**/
+    _buildTargetName=(target)=>{
+        let targetNames = '';
+        for(let key in target){
+            targetNames += target[key].name + ',';
+        }
+        return targetNames.slice(0,-1);
+    };
 
     /*确认按钮执行方法*/
     _confirmMethod=()=>{

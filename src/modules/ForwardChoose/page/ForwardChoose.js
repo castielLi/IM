@@ -131,6 +131,7 @@ class ForwardChoose extends AppComponent {
                     ref={e=>this.confirm = e}
                     onPress={this.forwardMessage}
                     rowData={this.props.rowData}
+                    targetInfo={this.props.targetInfo}
                 />
             </View>
         )
@@ -164,9 +165,13 @@ class ForwardChoose extends AppComponent {
         let RecordDto = {};
         RecordDto.receiveId = content.chatId;
         RecordDto.group = content.group;
+        let TargetDto = {};
+        TargetDto.name = content.name;
+        TargetDto.headImage = content.HeadImageUrl;
         if(this.props.optionsType){
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
+            this.props.changTargetInfo(content.chatId,TargetDto);
             //改变选中框样式
             this.CheckBoxData[index].onChange();
         }else{
@@ -196,7 +201,7 @@ class ForwardChoose extends AppComponent {
         this.confirm.onChange();
     };
 
-
+    /*导航右侧按钮点击事件*/
     _navigationBtn=()=>{
         //是否有选中用户
         if(this.HasData){
@@ -304,6 +309,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     selectRecord:state.selectRecordStore.selectRecord,
     optionsType:state.selectRecordStore.optionsType,
+    targetInfo:state.selectRecordStore.targetInfo,
 });
 
 const mapDispatchToProps = (dispatch) => {
