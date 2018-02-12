@@ -141,9 +141,12 @@ class Contacts extends AppComponent {
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nickname;
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
+		let headImagePath = userController.getAccountHeadImagePath(info.item.Account)
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						{info.item.HeadImageUrl?<Image source={{uri:info.item.HeadImageUrl}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
+						<Image
+							defaultSource = {require('../resource/avator.jpg')}
+							source = {{uri:headImagePath}} style={styles.pic} ></Image>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
