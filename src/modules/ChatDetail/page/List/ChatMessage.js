@@ -33,12 +33,12 @@ let {width, height} = Dimensions.get('window');
 
 export default class ChatMessage extends AppComponent {
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             bg: 'white',
             top: 0,
             left: 0
-        }
+        };
         this.long_press_timeout = -1;
         imControllerLogic = IMControllerLogic.getSingleInstance();
     }

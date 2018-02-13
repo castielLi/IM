@@ -60,7 +60,7 @@ class ChatMessageImage extends AppComponent {
             return(
                 <Image
                     resizeMode={Image.resizeMode.cover}
-                    source={require('../../resource/avator.jpg')}
+                    source={require('../../resource/placeholder.png')}
                     style={[styles.imageStyle]}
                 />
             )
