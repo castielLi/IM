@@ -85,9 +85,9 @@ class Chat extends Component {
     componentWillReceiveProps(nextProps){
         let {chatRecord,isMore} = nextProps;
         let {msgState} = ListConst;
-        if(!chatRecord
-            || !chatRecord.length
-        ) return;
+        // if(!chatRecord
+        //     || !chatRecord.length
+        // ) return;
         currentObj.chatRecord = chatRecord;
         currentObj.chatRecord2 = chatRecord.concat([]).reverse();
         currentObj.data = currentObj.prepareMessages(currentObj.chatRecord);
@@ -149,7 +149,9 @@ class Chat extends Component {
 
     prepareMessages(messages) {
         //console.log(messages)
-        if(!messages || !messages.length) return;
+        if(!messages || !messages.length) {
+            return {keys:[],blob:[]}
+        };
         return {
             keys: messages.map((m,i) => m.messageId),
             blob: messages.reduce((o, m, i) => { //(previousValue, currentValue, currentIndex, array1)
@@ -390,7 +392,7 @@ class Chat extends Component {
                             onPress={this.ShowPopupMenu}
                             onLongPress={this.ShowPopupMenu}
                         />
-                        {this.props.myAvator&&this.props.myAvator!==''?<Image source={{uri:this.props.myAvator}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+                        {this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
 
                     </View>
                 </View>
@@ -438,24 +440,26 @@ class Chat extends Component {
     _PopupMenu(){
         if(!this.state.popupMenu) return;
         let {left,componentWidth,top,componentHeight} = this.state.loaction;
-        //距屏幕顶部
-        let menuLeft = 0;
         //距屏幕左边
+        let menuLeft = 0;
+        //距屏幕顶部
         let menuTop = top-45;
         //是否可以撤回
         let retract = false;
+        //是否可撤回由时间和发送着决定
+        if(new Date().getTime() - this.state.longPressMessageData.messageTime < 120000 && this.state.longPressMessageData.sender.account == this.currentAccount.Account){
+            retract = true;
+        }
+        let menuWidth = retract ? 50*3+10 : 50*2+10;
         //消息体中心距离左边的距离
         let messageLeft = left+(componentWidth-10)/2;
-        if(messageLeft>=105 && (width-messageLeft)>=105){
-            menuLeft = messageLeft - 105;
-        }else if((width-messageLeft)<105){
-            menuLeft = width - 210;
+        if(messageLeft>=menuWidth/2 && (width-messageLeft)>=menuWidth/2){
+            menuLeft = messageLeft - menuWidth/2;
+        }else if((width-messageLeft)<menuWidth/2){
+            menuLeft = width - menuWidth;
         }
         if(top<45){
             menuTop = top + componentHeight +5;
-        }
-        if(new Date().getTime() - this.state.longPressMessageData.messageTime < 120000 && this.state.longPressMessageData.sender.account == this.currentAccount.Account){
-            retract = true;
         }
         return (
             <Modal
@@ -469,9 +473,9 @@ class Chat extends Component {
                 </TouchableWithoutFeedback>
                 <View style={{flexDirection:'row',backgroundColor:'#333',height:40,borderRadius:5,alignItems:'center',
                 position:'absolute',top:menuTop,left:menuLeft,paddingHorizontal:5}}>
-                    <TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
-                        <Text style={{color:'#fff'}}>复制</Text>
-                    </TouchableHighlight>
+                    {/*<TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>*/}
+                        {/*<Text style={{color:'#fff'}}>复制</Text>*/}
+                    {/*</TouchableHighlight>*/}
                     <TouchableHighlight underlayColor='#666' onPress={()=>this.forwardMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>转发</Text>
                     </TouchableHighlight>

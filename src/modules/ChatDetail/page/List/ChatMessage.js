@@ -207,7 +207,7 @@ export default class ChatMessage extends AppComponent {
                         return (
                             <ChatMessageImage
                                 data={rowData}
-                                onLongPress={this._OnLongPress()}
+                                // onLongPress={this._OnLongPress()}
                                 {...this.props}
                             />
                         )
