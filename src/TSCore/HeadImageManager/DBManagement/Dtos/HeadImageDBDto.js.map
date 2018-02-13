@@ -1,1 +1,1 @@
-{"version":3,"file":"HeadImageDBDto.js","sourceRoot":"","sources":["../../../../../TSCore/HeadImageManager/DBManagement/Dtos/HeadImageDBDto.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,MAAM,CAAC,OAAO;CAGb"}
+{"version":3,"file":"HeadImageDBDto.js","sourceRoot":"","sources":["../../../../../TSCore/HeadImageManager/DBManagement/Dtos/HeadImageDBDto.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,MAAM,CAAC,OAAO;IAIV;QACI,IAAI,CAAC,YAAY,GAAG,EAAE,CAAC;QACvB,IAAI,CAAC,MAAM,GAAG,EAAE,CAAC;IACrB,CAAC;CACJ"}

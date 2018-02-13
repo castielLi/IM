@@ -38,6 +38,7 @@ import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
+import ImagePlaceHolder from './ImagePlaceHolder'
 
 let userController = undefined;
 let applyController = undefined;
@@ -125,19 +126,9 @@ class RecentChat extends AppComponent {
     _renderAvator = (userId,group) => {
         let imageUrl = userController.getAccountHeadImagePath(userId)
 
-        // if (!HeadImageUrl || HeadImageUrl === '') {
-            return <Image style = {styles.avatar}
-                          source = {require('../resource/avator.jpg')}
-                          />
-        // }
-        // return <Image style = {styles.avatar} source = {{uri:HeadImageUrl}}/>
-
-
-
-        // ios:
-        //     return <Image style = {styles.avatar}
-        //                   defaultSource = {require('../resource/avator.jpg')}
-        //                   source = {{uri:imageUrl}}/>
+        return <ImagePlaceHolder style = {styles.avatar}
+                      imageUrl = {imageUrl}
+                      />
     }
 
     renderHeader = ()=>{

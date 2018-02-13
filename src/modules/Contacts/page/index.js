@@ -29,6 +29,7 @@ import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import ApplyController from '../../../TSController/ApplyController'
 import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum'
+import ImagePlaceHolder from './ImagePlaceHolder'
 let currentObj = undefined;
 let userController = undefined;
 let applyController = undefined;
@@ -140,20 +141,13 @@ class Contacts extends AppComponent {
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nickname;
+		let path = userController.getAccountHeadImagePath(info.item.Account)
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
-		let headImagePath = userController.getAccountHeadImagePath(info.item.Account)
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						{/*ios:*/}
-						{/*<Image style = {styles.pic}*/}
-							   {/*defaultSource = {require('../resource/avator.jpg')}*/}
-							   {/*source = {{uri:headImagePath}}/>*/}
-
-						<Image style = {styles.pic}
-							   source = {require('../resource/avator.jpg')}
-							   />
-
-
+						<ImagePlaceHolder style={styles.pic}
+							imageUrl ={path}
+						/>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>

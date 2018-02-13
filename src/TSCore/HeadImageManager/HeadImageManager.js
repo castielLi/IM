@@ -72,6 +72,10 @@ export default class HeadImageManager {
         }
     }
     addHeadImageRequest(userId, headImageUrl) {
+        //如果出现脏数据的undefined的情况，将undefined设置成空字符串
+        if (headImageUrl == undefined) {
+            headImageUrl = "";
+        }
         let oldRequest = this.headImageCache[userId];
         if (oldRequest != undefined && headImageUrl == oldRequest) {
             return;
