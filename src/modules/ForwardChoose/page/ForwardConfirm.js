@@ -27,11 +27,11 @@ export default class ForwardConfirm extends Component {
         onPress: React.PropTypes.func
     };
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            visible: nextProps.visible
-        });
-    }
+    // componentWillReceiveProps(nextProps) {
+    //     this.setState({
+    //         visible: nextProps.visible
+    //     });
+    // }
 
     render(){
         let TargetNames = this._buildTargetName(this.props.targetInfo);
@@ -56,14 +56,14 @@ export default class ForwardConfirm extends Component {
                             {this._renderContent(this.props.rowData)}
                         </View>
                         <View style={styles.btnView}>
-                            <TouchableHighlight onPress={()=>{this.onChange()}} underlayColor={'#eee'} style={styles.optinTouch}>
+                            <TouchableHighlight onPress={()=>{this._onCancelMethod()}} underlayColor={'#eee'} style={styles.optinTouch}>
                                 <View style={styles.optinView}>
                                     <Text style={styles.cancelText}>
                                         取消
                                     </Text>
                                 </View>
                             </TouchableHighlight>
-                            <TouchableHighlight onPress={()=>{this._confirmMethod()}} underlayColor={'#eee'} style={styles.optinTouch}>
+                            <TouchableHighlight onPress={()=>{this._onConfirmMethod()}} underlayColor={'#eee'} style={styles.optinTouch}>
                                 <View style={styles.optinView}>
                                     <Text style={styles.confirmText}>
                                         发送
@@ -91,10 +91,17 @@ export default class ForwardConfirm extends Component {
         return targetNames.slice(0,-1);
     };
 
+    /*取消按钮回调*/
+    _onCancelMethod=()=>{
+        let {cancel} = this.props;
+        cancel && cancel();
+        this.onChange();
+    };
+
     /*确认按钮执行方法*/
-    _confirmMethod=()=>{
-        let {onPress} = this.props;
-        onPress && onPress();
+    _onConfirmMethod=()=>{
+        let {confirm} = this.props;
+        confirm && confirm();
         this.onChange();
     };
 

@@ -11,14 +11,13 @@ import {
     PanResponder,
     UIManager,
     Alert,
-    Platform
+    Platform,
 } from 'react-native';
 import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
 import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
 import ChatMessageVideo from './ChatMessageVideo';
-// import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 import AppComponent from '../../../../Core/Component/AppComponent'
 import Sound from 'react-native-sound';
 import RNFS from 'react-native-fs';
@@ -26,9 +25,10 @@ import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
 import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic';
+// import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
+
 let imControllerLogic = undefined;
 let stopSoundObj = null;
-
 let {width, height} = Dimensions.get('window');
 
 export default class ChatMessage extends AppComponent {
@@ -52,7 +52,7 @@ export default class ChatMessage extends AppComponent {
     //Image
     _goToGallery = (chatId,type,data)=>{
         this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-    }
+    };
     //Audio
     _playSound = (SoundUrl) => {
         if (Platform.OS === 'ios') {
@@ -121,7 +121,7 @@ export default class ChatMessage extends AppComponent {
                         let popupMenu = {top,left,componentWidth:width,componentHeight:height};
                         this.props.onPress(popupMenu,this.props.rowData);
                     });   
-                },1500);
+                },1000);
 
             },
             onPanResponderMove: (evt,gs)=>{
@@ -149,6 +149,7 @@ export default class ChatMessage extends AppComponent {
                     if(rowData.status == 4) return;
                     switch (messageType) {
                         case 1:
+
                             break;
                         case 2: {
                             switch (message.Type){
@@ -180,12 +181,10 @@ export default class ChatMessage extends AppComponent {
     }
 
     typeOption = (rowData)=> {
-
         // enum MessageType {
         //     TEXT = 1,
         //         FILE = 2
         // }
-
         let {message,messageType} = rowData;
 
         switch (messageType) {
@@ -235,20 +234,20 @@ export default class ChatMessage extends AppComponent {
         }
     };
 
-    menu(){
-        this.Touch.measure((x, y, width, height, left, top) => {
-            alert(top + "    " + left)
-        })
-    }
+    // menu(){
+    //     this.Touch.measure((x, y, width, height, left, top) => {
+    //         alert(top + "    " + left)
+    //     })
+    // }
 
-    _OnLongPress(){
+    // _OnLongPress(){
         // let {onLongPress} = this.props;
         // this.chat.measure(this.target, (x, y, width, height, left, top) => {
         //     clearTimeout(this.long_press_timeout);
         //     alert(top + "    " + left)
         // });
         // onLongPress && onLongPress();
-    }
+    // }
     render() {
         // let {rowData,type,style,chatId} = this.props;
         return (

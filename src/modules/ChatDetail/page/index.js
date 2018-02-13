@@ -130,19 +130,21 @@ class ChatDetail extends AppComponent {
         }
     }
 
+    //复制文字消息
 
     //删除聊天信息
     deleteChatMessage = (rowData)=>{
         const {messageId} = rowData;
         imController.removeMessage(messageId)
-    }
+    };
 
-    //车条聊天信息
+    //撤回聊天信息
     retactMessage = (rowData)=>{
         const {messageId} = rowData;
         imController.RetactMessage(messageId)
-    }
+    };
 
+    //转发消息
     forwardMessage = (rowData)=>{
         this.route.push(this.props,{key:'ForwardChoose',routeId:'ForwardChoose',params:{rowData}});
         // let receives = [];
@@ -150,7 +152,7 @@ class ChatDetail extends AppComponent {
         // receives.push({"receiveId":"wg003744","group":false});
         // receives.push({"receiveId":"wg003735","group":false});
         // imController.ForwardMessage(rowData,receives)
-    }
+    };
 
 
 	//控制子组件Chat中的消息滚动到底部

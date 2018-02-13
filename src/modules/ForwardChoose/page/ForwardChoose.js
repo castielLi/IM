@@ -129,7 +129,8 @@ class ForwardChoose extends AppComponent {
                 />
                 <ForwardConfirm
                     ref={e=>this.confirm = e}
-                    onPress={this.forwardMessage}
+                    confirm={this.forwardMessage}
+                    cancel={this.onCancel}
                     rowData={this.props.rowData}
                     targetInfo={this.props.targetInfo}
                 />
@@ -168,10 +169,10 @@ class ForwardChoose extends AppComponent {
         let TargetDto = {};
         TargetDto.name = content.name;
         TargetDto.headImage = content.HeadImageUrl;
+        this.props.changTargetInfo(content.chatId,TargetDto);
         if(this.props.optionsType){
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
-            this.props.changTargetInfo(content.chatId,TargetDto);
             //改变选中框样式
             this.CheckBoxData[index].onChange();
         }else{
@@ -182,7 +183,7 @@ class ForwardChoose extends AppComponent {
         }
     };
 
-    /*发送转发*/
+    /*确认发送方法*/
     forwardMessage=()=>{
         if(this.props.optionsType && this.HasData){
             let SelectRecord = Object.values(this.props.selectRecord);
@@ -191,6 +192,13 @@ class ForwardChoose extends AppComponent {
             imLogicController.ForwardMessage(this.props.rowData,[this.RecordDto]);
         }
         this.route.pop(this.props);
+    };
+
+    /*取消发送方法*/
+    onCancel=()=>{
+        if(!this.props.optionsType){
+            this.props.initSelect();
+        }
     };
 
     /*显示确认组件*/
