@@ -46,6 +46,7 @@ import Gallery from './ChatDetail/page/List/gallery'
 import ForwardChoose from './ForwardChoose/page/ForwardChoose'
 import ContactsChoose from './ForwardChoose/page/ContactsChoose'
 import GroupsChoose from './ForwardChoose/page/GroupsChoose'
+import Profile from './Profile/page'
 
 
 export const MainPage = {
@@ -286,6 +287,12 @@ export const RouteMap = {
             params: {}
         }
     },
+    'Profile':{
+        'Profile': {
+            component: Profile,
+            params: {}
+        }
+    }
 };
 
 
