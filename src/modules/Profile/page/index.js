@@ -38,6 +38,8 @@ var originData = [
     {
         'key':'1',
         'data': [{
+            'name': "头像",
+        },{
             'name': "名字",
         }, {
             'name': "云信号",
@@ -94,12 +96,13 @@ const styles = StyleSheet.create({
         height:1
     },
     itemBox:{
-        height:40,
+        minHeight:40,
         flexDirection:'row',
         paddingHorizontal:15,
         alignItems:'center',
         justifyContent:'space-between',
-        backgroundColor:'#fff'
+        backgroundColor:'#fff',
+        paddingVertical:8
     },
     itemLeftBox:{
         height:30,
@@ -124,8 +127,10 @@ const styles = StyleSheet.create({
 
     },
     ItemSeparator:{
-        height:1,
-        backgroundColor: '#eee',
+        marginHorizontal:15,
+        height:0,
+        borderBottomWidth:1,
+        borderBottomColor:'#eee',
     },
     ItemSeparatorBox:{
         flex:1,
@@ -166,49 +171,50 @@ class Profile extends AppComponent {
                 <View  style={styles.itemLeftBox} >
                     <Text style={styles.itemText}>{info.item.name}</Text>
                 </View>
-                <View>
-                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                </View>
-                <View style={styles.ItemSeparator}></View>
+                {this._fillingValue(info)}
             </View>
         </TouchableHighlight>
     }
-    _renderSection = ()=>{
+    _renderSection = (info)=>{
+        if(info.section.key == 1){
+            return null;
+        }
         return <View style={styles.sction}></View>
     }
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}></View>
     }
-    _renderHeader =()=>{
-        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
-            <View style={styles.topBox}>
-                <View  style={styles.topLeftBox} >
-                    <View style={{height:60,justifyContent:'space-between'}}>
-                        <Text>头像</Text>
-                    </View>
-                </View>
-                <View style={{flexDirection:'row',alignItems:'center'}}>
-                    {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-                        <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-                        <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                    }
-                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                </View>
-            </View>
-        </TouchableHighlight>
-    }
+    // _renderHeader =()=>{
+    //     return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
+    //         <View style={styles.topBox}>
+    //             <View  style={styles.topLeftBox} >
+    //                 <View style={{height:60,justifyContent:'space-between'}}>
+    //                     <Text>头像</Text>
+    //                 </View>
+    //             </View>
+    //             <View style={{flexDirection:'row',alignItems:'center'}}>
+    //                 {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
+    //                     <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
+    //                     <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
+    //                 }
+    //                 <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+    //             </View>
+    //         </View>
+    //     </TouchableHighlight>
+    // }
     render() {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{
                         this.route.pop(this.props)
-                    },text:"我"}}
+                    }}}
+                    heading={'个人信息'}
                 />
 
                 <SectionList
                     keyExtractor={(item,index)=>("index"+index+item)}
-                    ListHeaderComponent={this._renderHeader}
+                    // ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
                     sections={originData}
@@ -219,6 +225,27 @@ class Profile extends AppComponent {
             </View>
         )
         //this.features.getWrappedInstance().changeFeatureState()
+    }
+
+    _fillingValue=(info)=>{
+        switch (info.item.name){
+            case '头像':
+                return (
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
+                            <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
+                            <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
+                        }
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                );
+            default:
+                return(
+                    <View>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                )
+        }
     }
 }
 
