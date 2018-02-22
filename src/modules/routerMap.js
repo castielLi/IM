@@ -47,6 +47,7 @@ import ForwardChoose from './ForwardChoose/page/ForwardChoose'
 import ContactsChoose from './ForwardChoose/page/ContactsChoose'
 import GroupsChoose from './ForwardChoose/page/GroupsChoose'
 import Profile from './Profile/page'
+import HeadImage from './Profile/page/HeadImage'
 
 
 export const MainPage = {
@@ -291,6 +292,10 @@ export const RouteMap = {
         'Profile': {
             component: Profile,
             params: {}
+        },
+        'HeadImage':{
+            component:HeadImage,
+            params:{}
         }
     }
 };

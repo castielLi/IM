@@ -162,7 +162,14 @@ class Profile extends AppComponent {
     }
 
     toDoSome = (name)=>{
-
+        switch (name){
+            case '头像':
+                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":""}});
+                break;
+            default:
+                alert('未开发');
+                break;
+        }
     }
 
     _renderItem = (info)=>{
@@ -185,7 +192,9 @@ class Profile extends AppComponent {
         return <View style={styles.ItemSeparator}></View>
     }
     // _renderHeader =()=>{
-    //     return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
+    //     return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
+    //         this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":""}});
+    //     }}>
     //         <View style={styles.topBox}>
     //             <View  style={styles.topLeftBox} >
     //                 <View style={{height:60,justifyContent:'space-between'}}>
