@@ -27,9 +27,9 @@ import * as applyActions from '../reducer/action';
 import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
-import ApplyController from '../../../TSController/ApplyController'
-import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum'
-import ImagePlaceHolder from './ImagePlaceHolder'
+import ApplyController from '../../../TSController/ApplyController';
+import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 let currentObj = undefined;
 let userController = undefined;
 let applyController = undefined;

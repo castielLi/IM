@@ -11,7 +11,7 @@ import {
 import {
     checkDeviceHeight,
     checkDeviceWidth
-} from '../../../Core/Helper/UIAdapter';
+} from '../../Helper/UIAdapter';
 
 export default class ImagePlaceHolder extends Component {
 
@@ -33,7 +33,7 @@ export default class ImagePlaceHolder extends Component {
                            })
                        }}
                 />
-                <Image source={require('../resource/avator.jpg')} style={this.state.show?[styles.hide]:_style}/>
+                <Image source={require('./resource/avator.jpg')} style={this.state.show?[styles.hide]:_style}/>
             </View>
         );
     }

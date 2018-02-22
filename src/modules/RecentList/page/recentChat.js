@@ -35,10 +35,10 @@ import TimeHelper from '../../../Core/Helper/TimeHelper';
 
 import UserController from '../../../TSController/UserController'
 import ApplyController from '../../../TSController/ApplyController';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
-import ImagePlaceHolder from './ImagePlaceHolder'
+import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let userController = undefined;
 let applyController = undefined;
