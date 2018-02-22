@@ -2,7 +2,7 @@ import {
   Platform,
   PermissionsAndroid
 } from 'react-native';
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 import {
   AudioRecorder,
   AudioUtils

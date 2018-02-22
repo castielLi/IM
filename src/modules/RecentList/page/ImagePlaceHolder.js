@@ -23,16 +23,17 @@ export default class ImagePlaceHolder extends Component {
     }
 
     render() {
+        let _style = this.props.style ? this.props.style : this.styles.avatar;
         return (
             <View>
-                <Image source={{uri:this.props.imageUrl}} style={ this.state.show?[styles.avatar]:[styles.hide]}
+                <Image source={{uri:this.props.imageUrl}} style={ this.state.show?_style:[styles.hide]}
                        onError={()=>{
                            this.setState({
                                show:false
                            })
                        }}
                 />
-                <Image source={require('../resource/avator.jpg')} style={this.state.show?[styles.hide]:styles.avatar}/>
+                <Image source={require('../resource/avator.jpg')} style={this.state.show?[styles.hide]:_style}/>
             </View>
         );
     }
