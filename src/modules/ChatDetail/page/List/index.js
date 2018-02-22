@@ -17,26 +17,23 @@ import {
     TouchableHighlight,
     PanResponder,
     Button,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Clipboard
 
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-
 import ChatMessage from './ChatMessage';
-
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-import RNFS from 'react-native-fs';
 import UserController from '../../../../TSController/UserController'
 import TimeHelper from '../../../../Core/Helper/TimeHelper'
+
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
 let scrollDistance = 0;//滚动距离
-
 let _MaxListHeight = 0; //记录最大list高度
-
 let FooterLayout = false;
 let ListLayout = false;
 let userController = undefined;
@@ -446,11 +443,19 @@ class Chat extends Component {
         let menuTop = top-45;
         //是否可以撤回
         let retract = false;
+        //是否可以复制
+        let copy = false;
+        let optionNumber = 2;
         //是否可撤回由时间和发送着决定
         if(new Date().getTime() - this.state.longPressMessageData.messageTime < 120000 && this.state.longPressMessageData.sender.account == this.currentAccount.Account){
             retract = true;
+            optionNumber+=1;
         }
-        let menuWidth = retract ? 50*3+10 : 50*2+10;
+        if(this.state.longPressMessageData.messageType == 1){
+            copy = true;
+            optionNumber+=1;
+        }
+        let menuWidth = 50*optionNumber+10;
         //消息体中心距离左边的距离
         let messageLeft = left+(componentWidth-10)/2;
         if(messageLeft>=menuWidth/2 && (width-messageLeft)>=menuWidth/2){
@@ -473,9 +478,9 @@ class Chat extends Component {
                 </TouchableWithoutFeedback>
                 <View style={{flexDirection:'row',backgroundColor:'#333',height:40,borderRadius:5,alignItems:'center',
                 position:'absolute',top:menuTop,left:menuLeft,paddingHorizontal:5}}>
-                    {/*<TouchableHighlight underlayColor='#666' onPress={()=>this.HidePopupMenu()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>*/}
-                        {/*<Text style={{color:'#fff'}}>复制</Text>*/}
-                    {/*</TouchableHighlight>*/}
+                    {copy ? <TouchableHighlight underlayColor='#666' onPress={()=>this.copyTextMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
+                        <Text style={{color:'#fff'}}>复制</Text>
+                    </TouchableHighlight> : null}
                     <TouchableHighlight underlayColor='#666' onPress={()=>this.forwardMessage()} style={{height:40,width:50,justifyContent:'center',alignItems:'center',paddingHorizontal:8}}>
                         <Text style={{color:'#fff'}}>转发</Text>
                     </TouchableHighlight>
@@ -488,6 +493,12 @@ class Chat extends Component {
                 </View>
             </Modal>
         )
+    }
+
+    copyTextMessage(){
+        this.HidePopupMenu()
+        const {longPressMessageData} = this.state;
+        Clipboard.setString(longPressMessageData.message)
     }
 
     deleteMessage(){
