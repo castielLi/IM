@@ -73,6 +73,8 @@ class HeadImage extends AppComponent {
             let data = Platform.OS === 'ios' ? response.data : response.data;
             userController.modifyHeadImage(data,(success)=>{
                 console.log("修改头像已经" + success);
+                currentObj.props.onChangeHeader(success);
+
             })
         }
     }
@@ -117,7 +119,7 @@ class HeadImage extends AppComponent {
                            onClick={()=>this.route.pop(this.props)}
                 >
                     <Image style={{width,height,resizeMode: 'contain'}}
-                           source={{uri:this.props.data}}/>
+                           source={{uri:this.props.data+"?v="+new Date().getTime()}}/>
                 </ImageZoom>
                 <ActionSheet
                     ref={o => this.ActionSheet = o}

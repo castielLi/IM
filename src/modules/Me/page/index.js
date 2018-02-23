@@ -12,6 +12,7 @@ import {Text,
     AsyncStorage,
     StatusBar,
     SectionList
+
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
@@ -148,6 +149,10 @@ class Me extends AppComponent {
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        if(Platform.OS == 'android'){
+            headImagePath = 'file://'+headImagePath;
+        }
+
     }
 
     componentWillUnmount(){
