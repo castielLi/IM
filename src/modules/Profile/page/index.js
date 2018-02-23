@@ -167,6 +167,9 @@ class Profile extends AppComponent {
             case '头像':
                 this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":this.props.headImagePath}});
                 break;
+            case '名字':
+                this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
+                break;
             default:
                 alert('未开发');
                 break;
