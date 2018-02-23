@@ -24,10 +24,12 @@ import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
 import AppManagement from '../../../App/AppManagement'
+import PlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder'
 
 let loginController = undefined;
 let userController = undefined;
 let currentAccount = undefined;
+let headImagePath = undefined;
 let imController = undefined;
 
 
@@ -145,6 +147,7 @@ class Me extends AppComponent {
         imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
     }
 
     componentWillUnmount(){
@@ -212,14 +215,13 @@ class Me extends AppComponent {
     }
     _renderHeader =()=>{
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{}});
+            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{headImagePath:headImagePath}});
         }}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >
-                    {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-                        <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-                        <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                    }
+                    <PlaceHolder style={styles.topPic}
+                                      imageUrl ={headImagePath}
+                    />
                     <View style={{height:60,justifyContent:'space-between'}}>
                         <Text style={styles.headerText}>{currentAccount.Nickname}</Text>
                         <Text style={styles.itemSmallText}>{'微信号：'+currentAccount.Account}</Text>
@@ -235,14 +237,9 @@ class Me extends AppComponent {
         </TouchableHighlight>
     }
     render() {
+
         return (
             <View style={styles.container}>
-                {/*<StatusBar*/}
-                    {/*translucent={false}*/}
-                    {/*animated={false}*/}
-                    {/*hidden={false}*/}
-                    {/*backgroundColor="blue"*/}
-                    {/*barStyle="light-content" />*/}
                 <MyNavigationBar
                     left = {'云信'}
                     right={[

@@ -27,6 +27,7 @@ import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
 import AppManagement from '../../../App/AppManagement'
+import PlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder'
 
 let loginController = undefined;
 let userController = undefined;
@@ -164,7 +165,7 @@ class Profile extends AppComponent {
     toDoSome = (name)=>{
         switch (name){
             case '头像':
-                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":""}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":this.props.headImagePath}});
                 break;
             default:
                 alert('未开发');
@@ -191,26 +192,6 @@ class Profile extends AppComponent {
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}></View>
     }
-    // _renderHeader =()=>{
-    //     return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-    //         this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":""}});
-    //     }}>
-    //         <View style={styles.topBox}>
-    //             <View  style={styles.topLeftBox} >
-    //                 <View style={{height:60,justifyContent:'space-between'}}>
-    //                     <Text>头像</Text>
-    //                 </View>
-    //             </View>
-    //             <View style={{flexDirection:'row',alignItems:'center'}}>
-    //                 {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-    //                     <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-    //                     <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-    //                 }
-    //                 <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-    //             </View>
-    //         </View>
-    //     </TouchableHighlight>
-    // }
     render() {
         return (
             <View style={styles.container}>
@@ -241,10 +222,9 @@ class Profile extends AppComponent {
             case '头像':
                 return (
                     <View style={{flexDirection:'row',alignItems:'center'}}>
-                        {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-                            <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-                            <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                        }
+                        <PlaceHolder style={styles.topPic}
+                                     imageUrl ={this.props.headImagePath}
+                        />
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 );
