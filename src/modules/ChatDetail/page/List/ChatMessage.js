@@ -105,7 +105,7 @@ export default class ChatMessage extends AppComponent {
     componentWillMount(){
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: () => true,
-            onMoveShouldSetPanResponder: ()=> true,
+            onMoveShouldSetPanResponder: ()=> false,
             onPanResponderGrant: (evt, gestureState)=>{
                 // this._top = this.state.top
                 // this._left = this.state.left
@@ -121,7 +121,7 @@ export default class ChatMessage extends AppComponent {
                         let popupMenu = {top,left,componentWidth:width,componentHeight:height};
                         this.props.onPress(popupMenu,this.props.rowData);
                     });   
-                },1000);
+                },500);
 
             },
             onPanResponderMove: (evt,gs)=>{
@@ -139,7 +139,7 @@ export default class ChatMessage extends AppComponent {
                 // })
                 // alert(evt.target)
                 let currentTime = new Date().getTime();
-                if(currentTime - this.press_time >1000){
+                if(currentTime - this.press_time >500){
 
                 }else{
                     clearTimeout(this.long_press_timeout);
@@ -176,7 +176,7 @@ export default class ChatMessage extends AppComponent {
                 //     // alert(top + "    " + left)
                 // });
 
-            }
+            },
         })
     }
 

@@ -25,8 +25,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
-import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
-import AppManagement from '../../../App/AppManagement'
+import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
+import AppManagement from '../../../App/AppManagement';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let loginController = undefined;
 let userController = undefined;
@@ -148,7 +149,7 @@ class Profile extends AppComponent {
 
         this.state = {
             showFeatures:false,//显示功能块组件
-
+            headImageUrl:null,
         };
 
         loginController = new LoginController();
@@ -164,7 +165,7 @@ class Profile extends AppComponent {
     toDoSome = (name)=>{
         switch (name){
             case '头像':
-                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":""}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":"",onChangeHeader:this.onChangeHeader}});
                 break;
             default:
                 alert('未开发');
@@ -211,6 +212,38 @@ class Profile extends AppComponent {
     //         </View>
     //     </TouchableHighlight>
     // }
+
+    _fillingValue=(info)=>{
+        switch (info.item.name){
+            case '头像':
+                let path = userController.getAccountHeadImagePath(info.item.Account);
+                return (
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <ImagePlaceHolder style={styles.topPic}
+                                          imageUrl ={path}
+                        />
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                );
+            default:
+                return(
+                    <View>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                )
+        }
+    }
+
+    onChangeHeader=(success)=>{
+        if(!success){
+            return;
+        }
+        let {onChangeHeader} = this.props;
+        onChangeHeader && onChangeHeader(success);
+        this.setState({
+            headImageUrl:success,
+        })
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -236,26 +269,6 @@ class Profile extends AppComponent {
         //this.features.getWrappedInstance().changeFeatureState()
     }
 
-    _fillingValue=(info)=>{
-        switch (info.item.name){
-            case '头像':
-                return (
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
-                        {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-                            <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-                            <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                        }
-                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                    </View>
-                );
-            default:
-                return(
-                    <View>
-                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                    </View>
-                )
-        }
-    }
 }
 
 

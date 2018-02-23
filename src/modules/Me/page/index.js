@@ -22,8 +22,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
-import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic'
-import AppManagement from '../../../App/AppManagement'
+import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
+import AppManagement from '../../../App/AppManagement';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let loginController = undefined;
 let userController = undefined;
@@ -138,7 +139,7 @@ class Me extends AppComponent {
 
         this.state = {
             showFeatures:false,//显示功能块组件
-
+            headImageUrl:null,
         };
 
         loginController = new LoginController();
@@ -211,15 +212,15 @@ class Me extends AppComponent {
         return <View style={styles.ItemSeparator}></View>
     }
     _renderHeader =()=>{
+        let path = userController.getAccountHeadImagePath(info.item.Account);
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{}});
+            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{onChangeHeader:this.onChangeHeader}});
         }}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >
-                    {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-                        <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-                        <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-                    }
+                    <ImagePlaceHolder style={styles.topPic}
+                                      imageUrl ={path}
+                    />
                     <View style={{height:60,justifyContent:'space-between'}}>
                         <Text style={styles.headerText}>{currentAccount.Nickname}</Text>
                         <Text style={styles.itemSmallText}>{'微信号：'+currentAccount.Account}</Text>
@@ -233,6 +234,12 @@ class Me extends AppComponent {
                 </View>
             </View>
         </TouchableHighlight>
+    }
+
+    onChangeHeader=(success)=>{
+        this.setState({
+            headImageUrl:success,
+        })
     }
     render() {
         return (

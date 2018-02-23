@@ -14,7 +14,8 @@ import {
     Easing,
     Dimensions,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Platform
 } from 'react-native';
 var ImagePicker = require('react-native-image-picker');
 import ImageZoom from 'react-native-image-pan-zoom';
@@ -25,8 +26,9 @@ import ActionSheet from 'react-native-actionsheet'
 import {bindActionCreators} from 'redux';
 
 import AppComponent from '../../../../Core/Component/AppComponent'
-import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic'
-let imControllerLogic = undefined;
+import UserController from '../../../../TSController/UserController'
+let userController = undefined;
+let currentObj = undefined;
 
 const options = ['取消','拍照','从手机相册选择','保存图片']
 const title = '更改你的头像'
@@ -47,6 +49,8 @@ class HeadImage extends AppComponent {
     constructor(props) {
         super(props);
         this.handlePress = this.handlePress.bind(this);
+        currentObj = this;
+        userController = UserController.getSingleInstance();
     }
 
     componentWillMount(){
@@ -73,6 +77,7 @@ class HeadImage extends AppComponent {
             let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
             // imController.SendFile(1, responsePath);
+            userController.modifyCurrentAccountHeadImage(response.data,currentObj.props.onChangeHeader)
         }
     }
 
