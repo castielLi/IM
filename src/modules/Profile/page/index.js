@@ -165,7 +165,7 @@ class Profile extends AppComponent {
     toDoSome = (name)=>{
         switch (name){
             case '头像':
-                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":"",onChangeHeader:this.onChangeHeader}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":this.props.headImagePath,onChangeHeader:this.onChangeHeader}});
                 break;
             default:
                 alert('未开发');
@@ -192,35 +192,14 @@ class Profile extends AppComponent {
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}></View>
     }
-    // _renderHeader =()=>{
-    //     return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-    //         this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":""}});
-    //     }}>
-    //         <View style={styles.topBox}>
-    //             <View  style={styles.topLeftBox} >
-    //                 <View style={{height:60,justifyContent:'space-between'}}>
-    //                     <Text>头像</Text>
-    //                 </View>
-    //             </View>
-    //             <View style={{flexDirection:'row',alignItems:'center'}}>
-    //                 {currentAccount.HeadImageUrl&&currentAccount.HeadImageUrl!==''?
-    //                     <Image source={{uri:currentAccount.HeadImageUrl}} style={styles.topPic} ></Image>:
-    //                     <Image source={require('../resource/avator.jpg')} style={styles.topPic} ></Image>
-    //                 }
-    //                 <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-    //             </View>
-    //         </View>
-    //     </TouchableHighlight>
-    // }
 
     _fillingValue=(info)=>{
         switch (info.item.name){
             case '头像':
-                let path = userController.getAccountHeadImagePath(info.item.Account);
                 return (
                     <View style={{flexDirection:'row',alignItems:'center'}}>
                         <ImagePlaceHolder style={styles.topPic}
-                                          imageUrl ={path}
+                                          imageUrl ={this.props.headImagePath}
                         />
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
@@ -268,7 +247,6 @@ class Profile extends AppComponent {
         )
         //this.features.getWrappedInstance().changeFeatureState()
     }
-
 }
 
 

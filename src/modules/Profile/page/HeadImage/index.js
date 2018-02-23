@@ -28,6 +28,7 @@ import {bindActionCreators} from 'redux';
 import AppComponent from '../../../../Core/Component/AppComponent'
 import UserController from '../../../../TSController/UserController'
 let userController = undefined;
+
 let currentObj = undefined;
 
 const options = ['取消','拍照','从手机相册选择','保存图片']
@@ -68,16 +69,11 @@ class HeadImage extends AppComponent {
             console.log('UserGroup tapped custom button: ', response.customButton);
         }
         else {
-            //console.log(response.uri)// 选择本地content://media/external/images/media/30；拍照file:///storage/emulated/0/Pictures/image-ad930ba1-fc6f-44c5-afb4-dda910fccc8c.jpg
-            //console.log(response.path)  //response.path限android,可得到图片的绝对路径
-            // You can also display the image using data:
-            // let source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-            //初始化消息
-            let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
-
-            // imController.SendFile(1, responsePath);
-            userController.modifyCurrentAccountHeadImage(response.data,currentObj.props.onChangeHeader)
+            let data = Platform.OS === 'ios' ? response.data : response.data;
+            userController.modifyHeadImage(data,(success)=>{
+                console.log("修改头像已经" + success);
+            })
         }
     }
 
@@ -121,7 +117,7 @@ class HeadImage extends AppComponent {
                            onClick={()=>this.route.pop(this.props)}
                 >
                     <Image style={{width,height,resizeMode: 'contain'}}
-                           source={require('../../resource/avator.jpg')}/>
+                           source={{uri:this.props.data}}/>
                 </ImageZoom>
                 <ActionSheet
                     ref={o => this.ActionSheet = o}

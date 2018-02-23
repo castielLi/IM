@@ -29,6 +29,7 @@ import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHold
 let loginController = undefined;
 let userController = undefined;
 let currentAccount = undefined;
+let headImagePath = undefined;
 let imController = undefined;
 
 
@@ -146,6 +147,7 @@ class Me extends AppComponent {
         imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
     }
 
     componentWillUnmount(){
@@ -212,14 +214,13 @@ class Me extends AppComponent {
         return <View style={styles.ItemSeparator}></View>
     }
     _renderHeader =()=>{
-        let path = userController.getAccountHeadImagePath(info.item.Account);
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{onChangeHeader:this.onChangeHeader}});
+            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{headImagePath,onChangeHeader:this.onChangeHeader}});
         }}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >
                     <ImagePlaceHolder style={styles.topPic}
-                                      imageUrl ={path}
+                                      imageUrl ={headImagePath}
                     />
                     <View style={{height:60,justifyContent:'space-between'}}>
                         <Text style={styles.headerText}>{currentAccount.Nickname}</Text>
@@ -242,14 +243,9 @@ class Me extends AppComponent {
         })
     }
     render() {
+
         return (
             <View style={styles.container}>
-                {/*<StatusBar*/}
-                    {/*translucent={false}*/}
-                    {/*animated={false}*/}
-                    {/*hidden={false}*/}
-                    {/*backgroundColor="blue"*/}
-                    {/*barStyle="light-content" />*/}
                 <MyNavigationBar
                     left = {'云信'}
                     right={[
