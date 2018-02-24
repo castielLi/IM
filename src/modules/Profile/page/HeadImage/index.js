@@ -52,6 +52,9 @@ class HeadImage extends AppComponent {
         this.handlePress = this.handlePress.bind(this);
         currentObj = this;
         userController = UserController.getSingleInstance();
+        this.state = {
+            headImageUrl:null,
+        };
     }
 
     componentWillMount(){
@@ -73,7 +76,11 @@ class HeadImage extends AppComponent {
             let data = Platform.OS === 'ios' ? response.data : response.data;
             userController.modifyHeadImage(data,(success)=>{
                 console.log("修改头像已经" + success);
+                if(!success) return;
                 currentObj.props.onChangeHeader(success);
+                currentObj.setState({
+                    headImageUrl:success,
+                })
 
             })
         }
