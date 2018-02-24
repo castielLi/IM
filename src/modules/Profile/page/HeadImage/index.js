@@ -24,6 +24,7 @@ import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar'
 import {connect} from 'react-redux';
 import ActionSheet from 'react-native-actionsheet'
 import {bindActionCreators} from 'redux';
+import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 import AppComponent from '../../../../Core/Component/AppComponent'
 import UserController from '../../../../TSController/UserController'
@@ -125,8 +126,9 @@ class HeadImage extends AppComponent {
                            leaveDistance={20}
                            onClick={()=>this.route.pop(this.props)}
                 >
-                    <Image style={{width,height,resizeMode: 'contain'}}
-                           source={{uri:this.props.data+"?v="+new Date().getTime()}}/>
+                    <ImagePlaceHolder style={{width,height,resizeMode: 'contain'}}
+                                      imageUrl={this.props.data}/>
+
                 </ImageZoom>
                 <ActionSheet
                     ref={o => this.ActionSheet = o}

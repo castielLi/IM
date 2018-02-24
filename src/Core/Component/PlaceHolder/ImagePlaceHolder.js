@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Image,
     View,
+    Platform,
 } from 'react-native';
 import {
     checkDeviceHeight,
@@ -20,20 +21,38 @@ export default class ImagePlaceHolder extends Component {
         this.state = {
             show:true
         }
+        this.newUrl = true;
+    }
+
+    componentWillReceiveProps() {
+        this.newUrl = true;
     }
 
     render() {
         let _style = this.props.style ? this.props.style : this.styles.avatar;
+        // alert(this.props.imageUrl + "?v=" + new Date().getTime()+this.state.show)
+        let _uri = {uri:  Platform.OS==='ios'?this.props.imageUrl:this.props.imageUrl + "?v=" + new Date().getTime()};
+        let _default = require('./resource/avator.jpg');
         return (
             <View>
-                <Image source={{uri:this.props.imageUrl+"?v="+new Date().getTime()}} style={ this.state.show?_style:[styles.hide]}
+                {/*<Image source={{uri:  Platform.OS==='ios'?this.props.imageUrl:this.props.imageUrl + "?v=" + new Date().getTime()}} style={ this.state.show?_style:[styles.hide]}*/}
+                       {/*onError={()=>{*/}
+                           {/*this.setState({*/}
+                               {/*show:false*/}
+                           {/*})*/}
+                       {/*}}*/}
+                {/*/>*/}
+                {/*<Image source={require('./resource/avator.jpg')} style={this.state.show?[styles.hide]:_style}/>*/}
+
+                <Image source={(this.state.show || this.newUrl) ? _uri : _default}
+                       style={_style}
                        onError={()=>{
                            this.setState({
                                show:false
-                           })
+                           });
+                           this.newUrl = false;
                        }}
                 />
-                <Image source={require('./resource/avator.jpg')} style={this.state.show?[styles.hide]:_style}/>
             </View>
         );
     }
