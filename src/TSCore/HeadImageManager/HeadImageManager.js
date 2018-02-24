@@ -7,24 +7,49 @@ import MoblieFS from '../Tools/FileSystem/MoblieFS';
 import FileManager from "../FileManagement/FileManager";
 import DownloadFileDto from '../FileManagement/Dtos/DownloadFileDto';
 import HeadImageConfig from "./HeadImageConfig";
+<<<<<<< Updated upstream:src/TSCore/HeadImageManager/HeadImageManager.js
+=======
+import UploadFileDto from "../../../FileManagement/Dtos/UploadFileDto";
+import FileSaveManager from "../../../Tools/DownloadFile/FileSaveManager";
+import UploadHeadImageCallbackParamDto from "./Dtos/UploadHeadImageCallbackParamDto";
+>>>>>>> Stashed changes:src/TSCore/WebApiManagement/UserManagement/HeadImageManager/HeadImageManager.js
 export default class HeadImageManager {
-    constructor(isDB) {
+    constructor(isDB, Account) {
         this.dbManager = null;
         this.headImageQueue = new Queue("HeadImage");
         this.downloadTime = 10;
         this.sleepTime = 200;
         this.headImageCache = {};
+        this.uploadHeadImageCache = {};
         this.timerId = 0;
+<<<<<<< Updated upstream:src/TSCore/HeadImageManager/HeadImageManager.js
         this.fileDownloadManager = null;
         if (isDB)
             this.dbManager = new DBManager();
         this.fileDownloadManager = new FileManager();
         this.fileDownloadManager.init(this);
+=======
+        this.fileManager = null;
+        this.handle = null;
+        this.uploadRequestIndex = 0;
+        if (isDB)
+            this.dbManager = new DBManager();
+        this.fileManager = new FileManager();
+        this.fileManager.init(this);
+        if (this.dbManager != null) {
+            //加载数据库中数据
+            this.dbManager.getUploadRecord(Account, (data) => {
+                if (data == null || data.length == 0)
+                    return;
+                this.addUploadHandle(data.userId, data.localPath);
+            });
+        }
+>>>>>>> Stashed changes:src/TSCore/WebApiManagement/UserManagement/HeadImageManager/HeadImageManager.js
         this.start();
     }
-    static getSingleInstance(isDB) {
+    static getSingleInstance(isDB, Account) {
         if (HeadImageManager.SingleInstance == null) {
-            HeadImageManager.SingleInstance = new HeadImageManager(isDB);
+            HeadImageManager.SingleInstance = new HeadImageManager(isDB, Account);
         }
         return HeadImageManager.SingleInstance;
     }
@@ -83,6 +108,32 @@ export default class HeadImageManager {
         this.headImageCache[userId] = headImageUrl;
         this.headImageQueue.send(userId);
     }
+<<<<<<< Updated upstream:src/TSCore/HeadImageManager/HeadImageManager.js
+=======
+    addUploadHeadImageRequest(data, userId, callback) {
+        let localPath = MoblieFS.getCurrentUserHeadImagePath() + "/" + userId + ".jpg";
+        FileSaveManager.saveHeadImage(localPath, data, (path, success) => {
+            callback && callback(path, success);
+        });
+        //添加上传头像db
+        if (this.dbManager) {
+            this.dbManager.addUploadRecord(userId, localPath);
+        }
+        //对上传进行标记，若在上传的过程中有新的上传请求来，则标记+1，上传成功回调判断标记是否是最新的请求，若是最新的请求
+        //则删除数据库，标记清空，修改成功，否则需要进行等待上传到最新的标记才能进行操作，其余的操作都将丢弃
+        this.uploadRequestIndex += 1;
+        this.addUploadHandle(userId, localPath);
+    }
+    addUploadHandle(userId, localPath) {
+        let dto = new UploadFileDto();
+        dto.FileUrls = [localPath];
+        let paramDto = new UploadHeadImageCallbackParamDto();
+        paramDto.userId = userId;
+        paramDto.index = this.uploadRequestIndex;
+        dto.CallBackParam = paramDto;
+        this.fileManager.Upload(dto);
+    }
+>>>>>>> Stashed changes:src/TSCore/WebApiManagement/UserManagement/HeadImageManager/HeadImageManager.js
     getUserHeadImagePath(userId) {
         //查看当前用户headImage目录下是否有文件，若没有也需要进行下载
         let path = this.getPathBySpecifiedUser(userId);
@@ -118,8 +169,28 @@ export default class HeadImageManager {
     }
     //上传失败
     UploadFail(failCode, index, callBackParam) {
+        let param = callBackParam;
+        //重新进行upload上传处理
+        if (param.index == this.uploadRequestIndex) {
+            let localPath = MoblieFS.getCurrentUserHeadImagePath() + "/" + param.userId + ".jpg";
+            this.addUploadHandle(param.userId, localPath);
+        }
     }
+    //上传成功
     UploadSuccess(index, url, callBackParam) {
+<<<<<<< Updated upstream:src/TSCore/HeadImageManager/HeadImageManager.js
+=======
+        let uploadRequestIndex = callBackParam.index;
+        //当上传的图片的标记已经不是最新的上传标记了，直接丢弃掉
+        if (uploadRequestIndex == this.uploadRequestIndex) {
+            this.handle.HeadImageUploadSuccess && this.handle.HeadImageUploadSuccess(url);
+            //删除上传数据库记录
+            if (this.dbManager) {
+                this.dbManager.removeUploadRecord(callBackParam);
+            }
+            this.uploadRequestIndex = 0;
+        }
+>>>>>>> Stashed changes:src/TSCore/WebApiManagement/UserManagement/HeadImageManager/HeadImageManager.js
     }
     //下载完成
     DownloadSuccess(index, url, callBackParam) {

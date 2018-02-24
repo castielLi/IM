@@ -10,6 +10,7 @@ import SQLiteSql from "./ExecuteCommand/SQLiteSql";
 import SQLiteHelper from "../../Tools/SQLite/SQLiteHelper";
 import SQLiteFactory from "../../Tools/SQLite/SQLiteFactory";
 import HeadImageDBDto from "./Dtos/HeadImageDBDto";
+import UploadRecordDBDto from "./Dtos/UploadRecordDBDto";
 export default class DBManager {
     constructor() {
         //TODO: 客户端类型
@@ -54,6 +55,38 @@ export default class DBManager {
             let sql = SQLiteSql.clear[key];
             this.sql.ExecuteSQL(sql);
         }
+    }
+    addUploadRecord(userId, request) {
+        if (this.sql == null)
+            return;
+        let dto = new UploadRecordDBDto();
+        dto.localPath = request;
+        dto.userId = userId;
+        let querySql = SQLiteHelper.sqlStringFormat(SQLiteSql.addUploadRecord, dto);
+        this.sql.ExecuteSQL(querySql);
+    }
+    removeUploadRecord(userId) {
+        if (this.sql == null)
+            return;
+        let dto = new UploadRecordDBDto();
+        dto.userId = userId;
+        let querySql = SQLiteHelper.sqlStringFormat(SQLiteSql.removeUploadRecord, dto);
+        this.sql.ExecuteSQL(querySql);
+    }
+    getUploadRecord(userId, callback) {
+        if (this.sql == null)
+            return;
+        let dto = new UploadRecordDBDto();
+        dto.userId = userId;
+        let querySql = SQLiteHelper.sqlStringFormat(SQLiteSql.getUploadRecord, dto);
+        this.sql.ExecuteSQLWithT(querySql, (data) => {
+            if (data && data.length != 0) {
+                callback && callback(data[0]);
+            }
+            else {
+                callback && callback(null);
+            }
+        }, UploadRecordDBDto);
     }
     //退出关闭数据库
     logout() {

@@ -7,6 +7,7 @@ import {
     StyleSheet,
     Image,
     View,
+    Platform
 } from 'react-native';
 import {
     checkDeviceHeight,
@@ -26,7 +27,7 @@ export default class ImagePlaceHolder extends Component {
         let _style = this.props.style ? this.props.style : this.styles.avatar;
         return (
             <View>
-                <Image source={{uri:this.props.imageUrl}} style={ this.state.show?_style:[styles.hide]}
+                <Image source={{uri:  Platform.OS==='ios'?this.props.imageUrl:this.props.imageUrl + "?ts=" + new Date().getTime()}} style={ this.state.show?_style:[styles.hide]}
                        onError={()=>{
                            this.setState({
                                show:false
