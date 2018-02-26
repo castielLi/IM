@@ -29,6 +29,8 @@ import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceH
 import AppComponent from '../../../../Core/Component/AppComponent'
 import UserController from '../../../../TSController/UserController'
 let userController = undefined;
+let headImagePath = undefined;
+let currentAccount = undefined;
 
 let currentObj = undefined;
 
@@ -53,6 +55,7 @@ class HeadImage extends AppComponent {
         this.handlePress = this.handlePress.bind(this);
         currentObj = this;
         userController = UserController.getSingleInstance();
+        currentAccount = userController.getCurrentAccount();
         this.state = {
             headImageUrl:null,
         };
@@ -109,6 +112,7 @@ class HeadImage extends AppComponent {
 
     render() {
         let {chatId,type,data} = this.props;
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -127,7 +131,7 @@ class HeadImage extends AppComponent {
                            onClick={()=>this.route.pop(this.props)}
                 >
                     <ImagePlaceHolder style={{width,height,resizeMode: 'contain'}}
-                                      imageUrl={this.props.data}/>
+                                      imageUrl={headImagePath}/>
 
                 </ImageZoom>
                 <ActionSheet

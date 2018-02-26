@@ -33,6 +33,7 @@ let loginController = undefined;
 let userController = undefined;
 let currentAccount = undefined;
 let imController = undefined;
+let headImagePath = undefined;
 
 
 var originData = [
@@ -165,7 +166,7 @@ class Profile extends AppComponent {
     toDoSome = (name)=>{
         switch (name){
             case '头像':
-                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{"data":this.props.headImagePath,onChangeHeader:this.onChangeHeader}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{onChangeHeader:this.onChangeHeader}});
                 break;
             case '名字':
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
@@ -199,10 +200,11 @@ class Profile extends AppComponent {
     _fillingValue=(info)=>{
         switch (info.item.name){
             case '头像':
+                headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
                 return (
                     <View style={{flexDirection:'row',alignItems:'center'}}>
                         <ImagePlaceHolder style={styles.topPic}
-                                          imageUrl ={this.props.headImagePath}
+                                          imageUrl ={headImagePath}
                         />
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>

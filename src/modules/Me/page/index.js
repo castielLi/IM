@@ -148,7 +148,6 @@ class Me extends AppComponent {
         imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
     }
 
     componentWillUnmount(){
@@ -215,8 +214,9 @@ class Me extends AppComponent {
         return <View style={styles.ItemSeparator}></View>
     }
     _renderHeader =()=>{
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{headImagePath,onChangeHeader:this.onChangeHeader}});
+            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{onChangeHeader:this.onChangeHeader}});
         }}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >

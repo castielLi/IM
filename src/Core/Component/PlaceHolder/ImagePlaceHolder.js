@@ -31,7 +31,7 @@ export default class ImagePlaceHolder extends Component {
     render() {
         let _style = this.props.style ? this.props.style : this.styles.avatar;
         // alert(this.props.imageUrl + "?v=" + new Date().getTime()+this.state.show)
-        let _uri = {uri:  Platform.OS==='ios'?this.props.imageUrl:this.props.imageUrl + "?v=" + new Date().getTime()};
+        let _uri = {uri: this.props.imageUrl};
         let _default = require('./resource/avator.jpg');
         return (
             <View>
