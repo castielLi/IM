@@ -17,12 +17,13 @@ export default class HeadImageManager {
         this.downloadTime = 10;
         this.sleepTime = 200;
         this.headImageCache = {};
-        this.uploadHeadImageCache = {};
         this.timerId = 0;
         this.fileManager = null;
         this.handle = null;
         this.uploadRequestIndex = 0;
         this.currentAccount = "";
+        this.headVersionByUser = {};
+        this.headVersion = new Date().getTime().toString();
         if (isDB)
             this.dbManager = new DBManager();
         this.fileManager = new FileManager();
@@ -69,6 +70,7 @@ export default class HeadImageManager {
                                 let resourceDto = new DownloadFileDto();
                                 resourceDto.SpecifiedName = true;
                                 resourceDto.LocalPath = this.getPathBySpecifiedUser(userId);
+                                resourceDto.CallBackParam = userId;
                                 resourceDto.FileUrls = [];
                                 //判断如果数据库和缓存中的值不一致则使用缓存中的值，进行下载并且更新数据库
                                 //如果是缓存中没有相关数据，或者是一致的情况则直接使用数据库中的url重新进行下载
@@ -113,6 +115,9 @@ export default class HeadImageManager {
     addUploadHeadImageRequest(data, userId, callback) {
         let localPath = MoblieFS.getLoginUserHeadImagePath() + "/" + userId + ".jpg";
         FileSaveManager.saveHeadImage(localPath, data, (path, success) => {
+            this.headVersionByUser[userId] = new Date().getTime().toString();
+            path += "?v=" + this.headVersionByUser[userId];
+            path = 'file://' + path;
             callback && callback(path, success);
         });
         //添加上传头像db
@@ -145,7 +150,13 @@ export default class HeadImageManager {
                 });
             }
         });
-        return path;
+        if (this.headVersionByUser[userId] != undefined && this.headVersionByUser[userId] != null) {
+            path += "?v=" + this.headVersionByUser[userId];
+        }
+        else {
+            path += "?v=" + this.headVersion;
+        }
+        return 'file://' + path;
     }
     stop() {
         if (this.timerId > 0) {
@@ -190,6 +201,7 @@ export default class HeadImageManager {
     }
     //下载完成
     DownloadSuccess(index, url, callBackParam) {
+        this.headVersionByUser[callBackParam] = new Date().getTime().toString();
     }
     typeHeadImageUrlWithJPG(headImageUrl) {
         return headImageUrl + "?imageView2/1/w/" + HeadImageConfig.defaultWidth + "/h/" + HeadImageConfig.defaultHeight + "/format/" + HeadImageConfig.SuffixName;

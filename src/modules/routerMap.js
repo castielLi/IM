@@ -106,7 +106,8 @@ export const RouteMap = {
         },
         'TabFour': {
             component: Me,
-            params: {}
+            params: {},
+            markType:Mark.Me
         }
     },
     'Login': {
@@ -213,7 +214,8 @@ export const RouteMap = {
     'Me': {
         'Me': {
             component: Me,
-            params: {}
+            params: {},
+            markType:Mark.Me
         }
     },
     'Validate': {

@@ -25,6 +25,7 @@ import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
 import AppManagement from '../../../App/AppManagement';
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let loginController = undefined;
@@ -32,6 +33,7 @@ let userController = undefined;
 let currentAccount = undefined;
 let headImagePath = undefined;
 let imController = undefined;
+let currentObj = undefined;
 
 
 var originData = [
@@ -139,19 +141,32 @@ class Me extends AppComponent {
     constructor(props){
         super(props);
 
-        this.state = {
-            showFeatures:false,//显示功能块组件
-            headImageUrl:null,
-        };
-
         loginController = new LoginController();
         imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+
+        this.state = {
+            showFeatures:false,//显示功能块组件
+            headImageUrl:headImagePath
+        };
+
+        currentObj = this;
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+    }
+
+    _refreshUI(type,param){
+        switch (type){
+            case AppPageMarkEnum.Me:
+            currentObj.setState({
+                headImageUrl:param,
+            });
+            break;
+        }
     }
 
 
@@ -216,12 +231,12 @@ class Me extends AppComponent {
     _renderHeader =()=>{
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{onChangeHeader:this.onChangeHeader}});
+            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{"headImagePath":this.state.headImageUrl,onChangeHeader:this.onChangeHeader}});
         }}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >
                     <ImagePlaceHolder style={styles.topPic}
-                                      imageUrl ={headImagePath}
+                                      imageUrl ={this.state.headImageUrl}
                     />
                     <View style={{height:60,justifyContent:'space-between'}}>
                         <Text style={styles.headerText}>{currentAccount.Nickname}</Text>
@@ -238,11 +253,6 @@ class Me extends AppComponent {
         </TouchableHighlight>
     }
 
-    onChangeHeader=(success)=>{
-        this.setState({
-            headImageUrl:success,
-        })
-    }
     render() {
 
         return (

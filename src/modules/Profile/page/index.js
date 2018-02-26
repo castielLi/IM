@@ -218,16 +218,6 @@ class Profile extends AppComponent {
         }
     }
 
-    onChangeHeader=(success)=>{
-        if(!success){
-            return;
-        }
-        let {onChangeHeader} = this.props;
-        onChangeHeader && onChangeHeader(success);
-        this.setState({
-            headImageUrl:success,
-        })
-    }
     render() {
         return (
             <View style={styles.container}>

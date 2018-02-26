@@ -78,15 +78,7 @@ class HeadImage extends AppComponent {
         else {
 
             let data = Platform.OS === 'ios' ? response.data : response.data;
-            userController.modifyHeadImage(data,(success)=>{
-                console.log("修改头像已经" + success);
-                if(!success) return;
-                currentObj.props.onChangeHeader(success);
-                currentObj.setState({
-                    headImageUrl:success,
-                })
-
-            })
+            userController.modifyHeadImage(data)
         }
     }
 

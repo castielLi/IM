@@ -15,5 +15,5 @@ SQLiteSql.clear = {
 };
 SQLiteSql.addUploadRecord = "insert or replace into UploadHeadImageTable (userId,localPath) values ({userId},{localPath})";
 SQLiteSql.removeUploadRecord = "delete from UploadHeadImageTable where userId = {userId}";
-SQLiteSql.getUploadRecord = "select request from UploadHeadImageTable where userId = {userId}";
+SQLiteSql.getUploadRecord = "select * from UploadHeadImageTable where userId = {userId}";
 //# sourceMappingURL=SQLiteSql.js.map
