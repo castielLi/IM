@@ -12,10 +12,10 @@ export default class AppComponent extends ContainerComponent{
         if(props && props.MarkType) {
             if(props.MarkType instanceof Array){
                 props.MarkType.forEach((value,index)=>{
-                    AppManagement.addPageManagement(value, props.name? props.name:this.constructor.name ,this._refreshUI)
+                    AppManagement.addPageManagement(value, props.name?props.name:this.constructor.name ,this._refreshUI)
                 })
             }else{
-                AppManagement.addPageManagement(props.MarkType, props.name? props.name:this.constructor.name,this._refreshUI)
+                AppManagement.addPageManagement(props.MarkType, props.name?props.name:this.constructor.name ,this._refreshUI)
             }
         }
         this._refreshUI = this._refreshUI.bind(this);

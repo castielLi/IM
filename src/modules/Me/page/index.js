@@ -161,21 +161,18 @@ class Me extends AppComponent {
     }
 
     _refreshUI(type,param){
+        console.log("Me")
         switch (type){
-            case AppPageMarkEnum.Me:
-            /* 1:HeadImage  2: NickName  */
-            switch (param.type){
-                case 1:
-                    currentObj.setState({
-                        headImageUrl:param.value,
-                    });
-                    break;
-                case 2:
-                    currentObj.setState({
-                        name:param.value,
-                    });
-                    break;
-            }
+            case AppPageMarkEnum.ChangeHeadImage:
+                currentObj.setState({
+                    headImageUrl:param,
+                });
+                break;
+            case AppPageMarkEnum.ChangeNickname:
+                currentObj.setState({
+                    name:param
+                });
+                break;
             break;
         }
     }
@@ -241,7 +238,7 @@ class Me extends AppComponent {
     }
     _renderHeader =()=>{
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{"headImagePath":this.state.headImageUrl,onChangeHeader:this.onChangeHeader}});
+            this.route.push(this.props,{key:'Profile',routeId:'Profile'});
         }}>
             <View style={styles.topBox}>
                 <View  style={styles.topLeftBox} >

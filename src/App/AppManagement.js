@@ -32,7 +32,9 @@ let ModifyGroupName = {};
 
 let ModifyGroupSetting = {};
 
-let Me = {};
+let ChangeHeadImage = {};
+
+let ChangeNickname = {};
 
 //todo:socket连接状态具体显示方式
 let AppStatus = {};
@@ -110,10 +112,15 @@ export default class AppManagement{
                     return;
                 AppStatus[pageName] = handle;
                 break;
-            case Mark.Me:
-                if(Me[pageName])
+            case Mark.ChangeHeadImage:
+                if(ChangeHeadImage[pageName])
                     return;
-                Me[pageName] = handle;
+                ChangeHeadImage[pageName] = handle;
+                break;
+            case Mark.ChangeNickname:
+                if(ChangeNickname[pageName])
+                    return;
+                ChangeNickname[pageName] = handle;
                 break;
         }
     }
@@ -144,8 +151,11 @@ export default class AppManagement{
             case Mark.AppStatus:
                 delete AppStatus[name];
                 break;
-            case Mark.Me:
-                delete Me[name];
+            case Mark.ChangeHeadImage:
+                delete ChangeHeadImage[name];
+                break;
+            case Mark.ChangeNickname:
+                delete ChangeNickname[name];
                 break;
         }
     }
@@ -197,9 +207,14 @@ export default class AppManagement{
                     AppStatus[item] && AppStatus[item](type,params);
                 }
                 break
-            case Mark.Me:
-                for(let item in Me){
-                    Me[item] && Me[item](type,params);
+            case Mark.ChangeHeadImage:
+                for(let item in ChangeHeadImage){
+                    ChangeHeadImage[item] && ChangeHeadImage[item](type,params);
+                }
+                break
+            case Mark.ChangeNickname:
+                for(let item in ChangeNickname){
+                    ChangeNickname[item] && ChangeNickname[item](type,params);
                 }
                 break
         }

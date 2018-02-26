@@ -57,27 +57,24 @@ class HeadImage extends AppComponent {
         currentObj = this;
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         this.state = {
-            headImageUrl:props.headImagePath,
+            headImageUrl:headImagePath
         };
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+
     }
 
     _refreshUI(type,param){
+        console.log("Headimage")
         switch (type){
-            case AppPageMarkEnum.Me:
-                switch (param.type){
-                    case 1:
-                        currentObj.setState({
-                            headImageUrl:param.value,
-                        });
-                        break;
-                    default:
-                        break;
-                }
+            case AppPageMarkEnum.ChangeHeadImage:
+                currentObj.setState({
+                    headImageUrl:param
+                });
                 break;
         }
     }
