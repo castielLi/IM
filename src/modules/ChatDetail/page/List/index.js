@@ -28,7 +28,8 @@ import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
 import UserController from '../../../../TSController/UserController'
-import TimeHelper from '../../../../Core/Helper/TimeHelper'
+import TimeHelper from '../../../../Core/Helper/TimeHelper';
+import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -327,7 +328,7 @@ class Chat extends Component {
     renderRow = (row,sid,rowid) => {
         console.log('renderRow')
         let {sender,message,messageTime,messageSource,status} = row;
-
+        let headImagePath = userController.getAccountHeadImagePath(sender.account);
         let timer = this.getTimestamp(messageTime,rowid);
 
         // enum MessageSource {
@@ -389,8 +390,9 @@ class Chat extends Component {
                             onPress={this.ShowPopupMenu}
                             onLongPress={this.ShowPopupMenu}
                         />
-                        {this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
-
+                        {/*{this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
+                        <ImagePlaceHolder style={styles.userImage}
+                                          imageUrl={headImagePath}/>
                     </View>
                 </View>
             )
@@ -402,7 +404,9 @@ class Chat extends Component {
                         {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={styles.infoView}>
-                        {this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}
+                        {/*{this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
+                        <ImagePlaceHolder style={styles.userImage}
+                                          imageUrl={headImagePath}/>
                         <View>
                             {this.props.type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
                             <ChatMessage
