@@ -150,15 +150,15 @@ class Profile extends AppComponent {
     constructor(props){
         super(props);
 
-        this.state = {
-            showFeatures:false,//显示功能块组件
-            headImageUrl:props.headImagePath,
-        };
-
         loginController = new LoginController();
         imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        this.state = {
+            showFeatures:false,//显示功能块组件
+            headImageUrl:headImagePath
+        };
         currentObj = this;
     }
 
@@ -167,17 +167,12 @@ class Profile extends AppComponent {
     }
 
     _refreshUI(type,param){
+        console.log("Profile")
         switch (type){
-            case AppPageMarkEnum.Me:
-                switch (param.type){
-                    case 1:
-                        currentObj.setState({
-                            headImageUrl:param.value,
-                        });
-                        break;
-                    default:
-                        break;
-                }
+            case AppPageMarkEnum.ChangeHeadImage:
+                currentObj.setState({
+                    headImageUrl:param,
+                });
                 break;
         }
     }
@@ -185,7 +180,7 @@ class Profile extends AppComponent {
     toDoSome = (name)=>{
         switch (name){
             case '头像':
-                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage',params:{headImagePath:this.state.headImageUrl,onChangeHeader:this.onChangeHeader}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage'});
                 break;
             case '名字':
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});

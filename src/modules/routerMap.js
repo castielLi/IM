@@ -75,236 +75,235 @@ export const RouteMap = {
     'Root': {
         'Root': {
             component: Root,
-            params: {}
+            params: {"name":"Root"}
         }
     },
     'Start': {
         'Start': {
             component: Start,
-            params: {}
+            params: {"name":"Start"}
         }
     },
     'MainTabbar': {
         'MainTabbar':{
             component: MainTabbar,
-            params: {},
+            params: {"name":"MainTabbar"},
             markType:Mark.UnReadMessage
         },
         'TabOne': {
             component: RecentList,
-            params: {},
+            params: {"name":"RecentList"},
             markType:[Mark.ConversationList,Mark.AppStatus]
         },
         'TabTwo': {
             component: Contacts,
-            params: {},
+            params: {"name":"Contacts"},
             markType:[Mark.Contacts,Mark.UnReadMessage]
         },
         'TabThree': {
             component: Zoom,
-            params: {}
+            params: {"name":"Zoom"}
         },
         'TabFour': {
             component: Me,
-            params: {},
-            markType:Mark.Me
+            params: {"name":"Me"},
+            markType:[Mark.ChangeNickname,Mark.ChangeHeadImage]
         }
     },
     'Login': {
         'Login': {
             component: Login,
-            params: {}
+            params: {"name":"Login"}
         },
         'PhoneLogin':{
             component: PhoneLogin,
-            params: {},
+            params: {"name":"PhoneLogin"},
             markType:Mark.ConversationDetail
         },
         'EmailLogin':{
             component: EmailLogin,
-            params: {}
+            params: {"name":"EmailLogin"}
         }
     },
     'Register':{
         'Register': {
             component: Register,
-            params: {}
+            params: {"name":"Register"}
         }
     },
     'FindPassword':{
          'FindPassword': {
             component: FindPassword,
-            params: {}
+            params: {"name":"FindPassword"}
         }
     },
     'ChangePassword':{
          'ChangePassword': {
             component: ChangePassword,
-            params: {}
+            params: {"name":"ChangePassword"}
         }
     },
     'ChatDetail': {
         'ChatDetail': {
             component: ChatDetail,
-            params: {},
+            params: {"name":"ChatDetail"},
             markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting]
         }
     },
     'RecentList': {
         'RecentList': {
             component: RecentList,
-            params: {},
+            params: {"name":"RecentList"},
             markType:Mark.ConversationList
         }
     },
     'Contacts': {
         'Contacts': {
             component: Contacts,
-            params: {},
+            params: {"name":"Contacts"},
             markType:[Mark.Contacts,Mark.UnReadMessage]
         },
         'GroupList':{
             component:GroupList,
-            params:{}
+            params:{"name":"GroupList"}
         }
     },
     'Zoom': {
         'Zoom': {
             component: Zoom,
-            params: {}
+            params: {"name":"Zoom"}
         }
     },
     'AddFriends':{
         'AddFriends':{
             component: AddFriends,
-            params: {}
+            params: {"name":"AddFriends"}
         }
     },
     'ClientInformation': {
         'ClientInformation': {
             component: ClientInformation,
-            params: {}
+            params: {"name":"ClientInformation"}
         }
     },
     'InformationSetting': {
         'InformationSetting': {
             component: InformationSetting,
-            params: {}
+            params: {"name":"InformationSetting"}
         }
     },
     'NewFriend': {
         'NewFriend': {
             component: NewFriend,
-            params: {},
+            params: {"name":"NewFriend"},
             markType:Mark.ApplyMessage
         }
     },
     'SearchNewFriend': {
         'SearchNewFriend': {
             component: SearchNewFriend,
-            params: {}
+            params: {"name":"SearchNewFriend"}
         }
     },
     'ChatSetting': {
         'ChatSetting': {
             component: ChatSetting,
-            params: {}
+            params: {"name":"ChatSetting"}
         }
     },
     'Me': {
         'Me': {
             component: Me,
-            params: {},
-            markType:Mark.Me
+            params: {"name":"Me"}
         }
     },
     'Validate': {
         'Validate': {
             component: Validate,
-            params: {}
+            params: {"name":"Validate"}
         }
     },
     'ChooseClient': {
         'ChooseClient': {
             component: ChooseClient,
-            params: {}
+            params: {"name":"ChooseClient"}
         }
     },
     'GroupInformationSetting': {
         'GroupInformationSetting': {
             component: GroupInformationSetting,
-            params: {}
+            params: {"name":"GroupInformationSetting"}
         }
     },
     'MoreGroupList': {
         'MoreGroupList': {
             component: MoreGroupList,
-            params: {}
+            params: {"name":"MoreGroupList"}
         }
     },
     'GroupAnnouncement': {
         'GroupAnnouncement': {
             component: GroupAnnouncement,
-            params: {}
+            params: {"name":"GroupAnnouncement"}
         }
     },
     'GroupName': {
         'GroupName': {
             component: GroupName,
-            params: {}
+            params: {"name":"GroupName"}
         }
     },
     'DeleteGroupMember': {
         'DeleteGroupMember': {
             component: DeleteGroupMember,
-            params: {}
+            params: {"name":"DeleteGroupMember"}
         }
     },
     'Player' : {
         'Player' : {
             component: Player,
-            params: {}
+            params: {"name":"Player"}
         }
     },
     'Gallery' : {
         'Gallery' : {
         component: Gallery,
-            params: {}
+            params: {"name":"Gallery"}
         }
     },
     'ForwardChoose':{
         'ForwardChoose': {
             component: ForwardChoose,
-            params: {},
+            params: {"name":"ForwardChoose"},
             markType:Mark.ConversationList
         }
     },
     'ContactsChoose':{
         'ContactsChoose': {
             component: ContactsChoose,
-            params: {}
+            params: {"name":"ContactsChoose"}
         }
     },
     'GroupsChoose':{
         'GroupsChoose': {
             component: GroupsChoose,
-            params: {}
+            params: {"name":"GroupsChoose"}
         }
     },
     'Profile':{
         'Profile': {
             component: Profile,
-            params: {},
-            markType:Mark.Me
+            params: {"name":"Profile"},
+            markType:Mark.ChangeHeadImage
         },
         'HeadImage':{
-            component:HeadImage,
-            params:{},
-            markType:Mark.Me
+            component: HeadImage,
+            params:{"name":"HeadImage"},
+            markType:Mark.ChangeHeadImage
         },
         'NickName':{
             component:NickName,
-            params:{}
+            params:{"name":"NickName"}
         }
     }
 };

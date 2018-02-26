@@ -12,7 +12,8 @@ export default Mark = {
     AppStatus:7,
     UnReadMessage:8,
     ForwardMessage : 9,
-    Me : 10,
+    ChangeHeadImage : 10,
+    ChangeNickname : 11,
 
     AppKickOutHandle:101
 }

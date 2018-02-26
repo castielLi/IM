@@ -138,6 +138,18 @@ export default class HeadImageManager {
         dto.CallBackParam = paramDto;
         this.fileManager.Upload(dto);
     }
+    /*
+     * 批量获取头像地址
+     * @userIds 帐号列表
+     */
+    getUsersHeadImagePath(userIds) {
+        let result = new Array();
+        userIds.forEach((userId) => {
+            let path = this.getUserHeadImagePath(userId);
+            result.push(path);
+        });
+        return result;
+    }
     getUserHeadImagePath(userId) {
         //查看当前用户headImage目录下是否有文件，若没有也需要进行下载
         let path = this.getPathBySpecifiedUser(userId);
