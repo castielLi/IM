@@ -26,7 +26,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
 
@@ -178,9 +178,13 @@ class GroupInformationSetting extends AppComponent {
 
         }
         else{
+            let path = userController.getAccountHeadImagePath(item.item.Account)
             return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
                         <View style={styles.itemBox}>
-                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
+                            {/*{item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}*/}
+                            <ImagePlaceHolder style={styles.itemImage}
+                                              imageUrl ={path}
+                            />
                             <Text style={styles.itemText}>{item.item.Nickname}</Text>
                         </View>
                     </TouchableWithoutFeedback>

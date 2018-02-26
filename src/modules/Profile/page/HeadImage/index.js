@@ -25,6 +25,7 @@ import {connect} from 'react-redux';
 import ActionSheet from 'react-native-actionsheet'
 import {bindActionCreators} from 'redux';
 import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import AppPageMarkEnum from '../../../../App/AppPageMarkEnum';
 
 import AppComponent from '../../../../Core/Component/AppComponent'
 import UserController from '../../../../TSController/UserController'
@@ -57,12 +58,28 @@ class HeadImage extends AppComponent {
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
         this.state = {
-            headImageUrl:null,
+            headImageUrl:props.headImagePath,
         };
     }
 
     componentWillMount(){
 
+    }
+
+    _refreshUI(type,param){
+        switch (type){
+            case AppPageMarkEnum.Me:
+                switch (param.type){
+                    case 1:
+                        currentObj.setState({
+                            headImageUrl:param.value,
+                        });
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
     }
 
     imagePikerCallBack(response) {
@@ -103,8 +120,7 @@ class HeadImage extends AppComponent {
     }
 
     render() {
-        let {chatId,type,data} = this.props;
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        let {chatId,type} = this.props;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -123,7 +139,7 @@ class HeadImage extends AppComponent {
                            onClick={()=>this.route.pop(this.props)}
                 >
                     <ImagePlaceHolder style={{width,height,resizeMode: 'contain'}}
-                                      imageUrl={headImagePath}/>
+                                      imageUrl={this.state.headImageUrl}/>
 
                 </ImageZoom>
                 <ActionSheet

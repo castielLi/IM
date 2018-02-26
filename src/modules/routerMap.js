@@ -294,11 +294,13 @@ export const RouteMap = {
     'Profile':{
         'Profile': {
             component: Profile,
-            params: {}
+            params: {},
+            markType:Mark.Me
         },
         'HeadImage':{
             component:HeadImage,
-            params:{}
+            params:{},
+            markType:Mark.Me
         },
         'NickName':{
             component:NickName,

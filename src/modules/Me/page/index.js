@@ -149,7 +149,8 @@ class Me extends AppComponent {
 
         this.state = {
             showFeatures:false,//显示功能块组件
-            headImageUrl:headImagePath
+            headImageUrl:headImagePath,
+            name : currentAccount.Nickname
         };
 
         currentObj = this;
@@ -162,9 +163,19 @@ class Me extends AppComponent {
     _refreshUI(type,param){
         switch (type){
             case AppPageMarkEnum.Me:
-            currentObj.setState({
-                headImageUrl:param,
-            });
+            /* 1:HeadImage  2: NickName  */
+            switch (param.type){
+                case 1:
+                    currentObj.setState({
+                        headImageUrl:param.value,
+                    });
+                    break;
+                case 2:
+                    currentObj.setState({
+                        name:param.value,
+                    });
+                    break;
+            }
             break;
         }
     }
@@ -229,7 +240,6 @@ class Me extends AppComponent {
         return <View style={styles.ItemSeparator}></View>
     }
     _renderHeader =()=>{
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
             this.route.push(this.props,{key:'Profile',routeId:'Profile',params:{"headImagePath":this.state.headImageUrl,onChangeHeader:this.onChangeHeader}});
         }}>
@@ -239,7 +249,7 @@ class Me extends AppComponent {
                                       imageUrl ={this.state.headImageUrl}
                     />
                     <View style={{height:60,justifyContent:'space-between'}}>
-                        <Text style={styles.headerText}>{currentAccount.Nickname}</Text>
+                        <Text style={styles.headerText}>{this.state.name}</Text>
                         <Text style={styles.itemSmallText}>{'微信号：'+currentAccount.Account}</Text>
                     </View>
                 </View>
