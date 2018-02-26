@@ -49,6 +49,7 @@ class ModifyNickName extends AppComponent {
     finished = ()=>{
         if(currentAccount.Nickname != this.state.nickname){
            userController.modifyNickname(this.state.nickname);
+           this.route.pop(this.props);
         }
     }
 
