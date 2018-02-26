@@ -69,7 +69,6 @@ export default class AppManagement{
     }
 
     static addPageManagement(type,pageName,handle){
-
         switch(type){
             case Mark.ConversationList:
                if(ConversationList[pageName])

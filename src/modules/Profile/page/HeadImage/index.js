@@ -62,8 +62,8 @@ class HeadImage extends AppComponent {
         };
     }
 
-    componentWillMount(){
-
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     _refreshUI(type,param){
