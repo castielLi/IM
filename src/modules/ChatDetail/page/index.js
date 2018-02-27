@@ -10,8 +10,10 @@ import {
 	KeyboardAvoidingView,
 	Platform,
 	TouchableWithoutFeedback,
-    InteractionManager
+    InteractionManager,
+    Dimensions
 } from 'react-native';
+var {height} = Dimensions.get('window');
 import {
   connect
 } from 'react-redux';
@@ -84,6 +86,7 @@ class ChatDetail extends AppComponent {
 
 
     _refreshUI(type,params){
+        console.log("children refreshUI"+ new Date().getTime());
         switch (type){
             case AppPageMarkEnum.ConversationDetail:
                 let chatRecord = params.list;
@@ -175,7 +178,7 @@ class ChatDetail extends AppComponent {
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
-			<MyView style={styles.container} behavior='padding'>
+			<MyView style={styles.container} behavior='padding'  keyboardVerticalOffset={20}>
     			<MyNavigationBar
 					left={{func:()=>{
 					    this.route.toMain(this.props);
