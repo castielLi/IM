@@ -388,7 +388,7 @@ class Chat extends Component {
                             type={this.props.type}
                             navigator={this.props.navigator}
                             onPress={this.ShowPopupMenu}
-                            onLongPress={this.ShowPopupMenu}
+                            // onLongPress={this.ShowPopupMenu}
                         />
                         {/*{this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
                         <ImagePlaceHolder style={styles.userImage}
@@ -416,7 +416,7 @@ class Chat extends Component {
                                 type={this.props.type}
                                 navigator={this.props.navigator}
                                 onPress={this.ShowPopupMenu}
-                                onLongPress={this.ShowPopupMenu}
+                                // onLongPress={this.ShowPopupMenu}
                             />
                         </View>
                     </View>
@@ -426,6 +426,7 @@ class Chat extends Component {
     }
 
     ShowPopupMenu = (loaction,rowData)=>{
+        this.listView.setNativeProps({scrollEnabled: false})
         this.setState({
             popupMenu:true,
             longPressMessageData:rowData,
@@ -433,6 +434,7 @@ class Chat extends Component {
         })
     };
     HidePopupMenu = ()=>{
+        this.listView.setNativeProps({scrollEnabled: true})
         this.setState({
             popupMenu:false,
             longPressMessageData:null

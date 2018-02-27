@@ -140,7 +140,6 @@ export default class ChatMessage extends AppComponent {
                 // alert(evt.target)
                 let currentTime = new Date().getTime();
                 if(currentTime - this.press_time >500){
-
                 }else{
                     clearTimeout(this.long_press_timeout);
                     let rowData = this.props.rowData;
@@ -175,8 +174,13 @@ export default class ChatMessage extends AppComponent {
                 //     console.log(top + "    " + left)
                 //     // alert(top + "    " + left)
                 // });
-
             },
+            onShouldBlockNativeResponder:()=> false,
+            onPanResponderTerminate:()=> {
+                clearTimeout(this.long_press_timeout);
+                return true;
+            },
+            onPanResponderTerminationRequest:()=>true,
         })
     }
 
@@ -190,10 +194,10 @@ export default class ChatMessage extends AppComponent {
         switch (messageType) {
             case 1: {
                 return (
-                    <ChatMessageText
-                        data={message} //聊天数据
-                        {...this.props}
-                    />
+                        <ChatMessageText
+                            data={message} //聊天数据
+                            {...this.props}
+                        />
                 )
             }
                 break;
