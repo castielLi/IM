@@ -140,7 +140,7 @@ class Contacts extends AppComponent {
 
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.Nickname;
+		let name = info.item.Nickname;
 		let path = userController.getAccountHeadImagePath(info.item.Account)
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
@@ -148,7 +148,7 @@ class Contacts extends AppComponent {
 						<ImagePlaceHolder style={styles.pic}
 							imageUrl ={path}
 						/>
-						<Text style={styles.itemText}>{txt}</Text>
+						<Text style={styles.itemText}>{name}</Text>
 					</View>
 			   </TouchableHighlight>
 	}
@@ -205,7 +205,7 @@ class Contacts extends AppComponent {
 							<View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
-									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
+									<Text style={styles.itemText}>新的朋友</Text>
 									{this.props.unReadApplyMessageMark?
 										<View style={styles.circle}>
 											{/*<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>*/}
@@ -222,7 +222,7 @@ class Contacts extends AppComponent {
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
+								<Text style={styles.itemText}>群聊</Text>
 							</View>
 							</View>
 					   </TouchableHighlight>
@@ -230,7 +230,7 @@ class Contacts extends AppComponent {
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
+								<Text style={styles.itemText}>公众号</Text>
 							</View>
 							</View>
 					   </TouchableHighlight>
@@ -238,7 +238,7 @@ class Contacts extends AppComponent {
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
+								<Text style={styles.itemText}>标签</Text>
 								</View>
 							</View>
 					   </TouchableHighlight>
@@ -329,7 +329,8 @@ const styles = StyleSheet.create({
 	itemText:{		
 		textAlignVertical: 'center',
 		color: '#5C5C5C', 
-		fontSize: 15
+		fontSize: 15,
+		marginLeft:10
 	},
 	ItemSeparator:{
 		// height:1,

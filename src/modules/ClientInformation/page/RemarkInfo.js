@@ -42,6 +42,11 @@ export default class RemarkInfo extends AppComponent {
         })
     };
 
+   _modifyRemark=()=>{
+       let {account} = this.props;
+        userController.modifyRemark(account,this.state.remark);
+        this.route.pop(this.props);
+    };
 
     render(){
         return (
@@ -49,7 +54,7 @@ export default class RemarkInfo extends AppComponent {
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
                     heading={'备注信息'}
-                    right={{func:()=>{this.route.pop(this.props)},text:'完成'}}
+                    right={{func:()=>{this._modifyRemark()},text:'完成'}}
                 />
                 <View style={styles.RemarkModule}>
                     <Text style={styles.titleName}>备注名</Text>

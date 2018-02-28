@@ -102,8 +102,8 @@ class ClientInformation extends AppComponent {
             this.route.pushifExistRoute(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.userInfo.Account,type:'private',HeadImageUrl:this.state.userInfo.HeadImageUrl,Nick:this.state.userInfo.Nickname}});
     }
 
-    _goToRemarkInfo =(remark)=>{
-        this.route.push(this.props,{key:'RemarkInfo',routeId:'RemarkInfo',params:{remark}});
+    _goToRemarkInfo =(account,remark)=>{
+        this.route.push(this.props,{key:'RemarkInfo',routeId:'RemarkInfo',params:{account,remark}});
     };
 
 
@@ -121,6 +121,7 @@ class ClientInformation extends AppComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         let {Nickname,Account,HeadImageUrl,Remark} = this.state.userInfo;
+        let hasRemark = Remark != '' ? true : false;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -132,11 +133,12 @@ class ClientInformation extends AppComponent {
                     <View style={styles.basicBox}>
                         {HeadImageUrl!=''?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
                         <View style={styles.basicBoxRight}>
-                            <Text style={styles.name}>{Nickname}</Text>
-                            <Text style={styles.id}>{'微信号：'+Account}</Text>
+                            <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
+                            <Text style={styles.id}>{'奇信号：'+Account}</Text>
+                            {hasRemark ? <Text style={styles.id}>{'昵称：'+Nickname}</Text> : null}
                         </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Remark)} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Account,Remark)} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置备注和标签</Text>
                             {/*<Text style={styles.arrow}>{'>'}</Text>*/}
