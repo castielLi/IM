@@ -28,6 +28,6 @@ export default class AppComponent extends ContainerComponent{
     }
 
     _refreshUI(params){
-
+        console.log("super refreshUI")
     }
 }
