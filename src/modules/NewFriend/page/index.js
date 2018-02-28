@@ -23,9 +23,11 @@ import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
 import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
-
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import ApplyController from '../../../TSController/ApplyController';
+import UserController from '../../../TSController/UserController';
 let applyController = undefined;
+let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj = undefined;
@@ -43,6 +45,7 @@ class NewFriend extends AppComponent {
         };
         currentObj = this;
         applyController =  ApplyController.getSingleInstance();
+        userController = UserController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -109,13 +112,21 @@ class NewFriend extends AppComponent {
     }
 
     _renderAvator= (path)=>{
-        if(path && path !== ' '){
-            return 	<Image style = {styles.headPic} source = {{uri:path}}/>
-        }else{
-            return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
-        }
+
+        return <ImagePlaceHolder style={styles.headPic}
+                          imageUrl ={path}
+        />
+
+        // if(path && path !== ' '){
+        //     return 	<Image style = {styles.headPic} source = {{uri:path}}/>
+        // }else{
+        //     return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
+        // }
     }
     _renderRow = (rowData, sectionID, rowID)=>{
+
+        let path = userController.getAccountHeadImagePath(rowData.sender)
+
         return(
             <View>
                 {/*<Swipeout*/}
@@ -141,7 +152,7 @@ class NewFriend extends AppComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
-                                {this._renderAvator(rowData.avator)}
+                                {this._renderAvator(path)}
                                 <View style={styles.basicBoxRight}>
                                     <Text style={styles.name}>{rowData.Nickname}</Text>
                                     <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment && rowData.comment != 'undefined' ? rowData.comment : ''}</Text>
