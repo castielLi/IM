@@ -37,6 +37,8 @@ class ClientInformation extends AppComponent {
 
         userController =  UserController.getSingleInstance();
         applyController =  ApplyController.getSingleInstance();
+
+        this.changeAddFriendButton = this.changeAddFriendButton.bind(this);
     }
 
     componentWillUnmount(){
@@ -98,21 +100,15 @@ class ClientInformation extends AppComponent {
     }
 
 
+    changeAddFriendButton(value){
+        this.setState({
+            isFriend:value
+        })
+    }
+
     //todo:双方添加好友 验证页面
     addFriend = (Applicant,Respondent)=>{
-        applyController.applyFriend(Applicant,Respondent,(result)=>{
-            if(result && result.Result === 1){
-                if(result.Data instanceof Object){
-                    this.setState({
-                        isFriend:true
-                    })
-                }else if(typeof result.Data === 'string'){
-                    currentObj.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo}})
-                }
-            }else{
-                currentObj.alert('发送好友申请失败');
-            }
-        });
+        this.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo,Applicant:Applicant,Respondent:Respondent,changeAddFriendButton:this.changeAddFriendButton}})
     }
     render() {
         let Popup = this.PopContent;

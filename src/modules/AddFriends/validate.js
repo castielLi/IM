@@ -23,11 +23,12 @@ import {bindActionCreators} from 'redux';
 import RelationModel from '../../Logic/Common/dto/RelationDto'
 import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
 import UserController from '../../TSController/UserController';
-
+import ApplyController from '../../TSController/ApplyController';
 
 
 let currentObj;
 let userController = undefined;
+let applyController = undefined;
 
 class Validate extends AppComponent {
     constructor(props){
@@ -38,6 +39,7 @@ class Validate extends AppComponent {
         }
         currentObj = this;
         userController = UserController.getSingleInstance();
+        applyController = ApplyController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -69,10 +71,25 @@ class Validate extends AppComponent {
     sendApplyMessage= ()=>{
         let {Applicant,Respondent} = this.props;
         Keyboard.dismiss();
-        currentObj.alert("申请消息已经发送,等待对方验证","提醒",
-        function(){
-            currentObj.route.pop(currentObj.props);
+
+        applyController.applyFriend(Applicant,Respondent,this.state.text,(result)=>{
+            if(result && result.Result === 1){
+                if(result.Data instanceof Object){
+                    currentObj.props.changeAddFriendButton(true);
+                    currentObj.route.pop(currentObj.props);
+                }else if(typeof result.Data === 'string'){
+                    currentObj.alert("申请消息已经发送,等待对方验证","提醒",
+                        function(){
+                            currentObj.route.pop(currentObj.props);
+                        });
+                }
+            }else{
+                currentObj.alert('发送好友申请失败');
+            }
         });
+
+
+
 
         // //向数据库添加关系，并且标记这条关系显示为false;
         // let relation = new RelationModel();
