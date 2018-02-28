@@ -407,8 +407,12 @@ class Chat extends Component {
                     </View>
                     <View style={styles.infoView}>
                         {/*{this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
+                        <TouchableOpacity onPress = {()=>{
+                            this.props.goToClientInfo(sender.account);
+                        }}>
                         <ImagePlaceHolder style={styles.userImage}
                                           imageUrl={headImagePath}/>
+                        </TouchableOpacity>
                         <View>
                             {this.props.type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
                             <ChatMessage
