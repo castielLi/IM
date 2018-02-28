@@ -28,7 +28,9 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import UserController from '../../../TSController/UserController';
+import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 let userController = undefined;
+let imController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -53,6 +55,7 @@ class GroupInformationSetting extends AppComponent {
         currentObj = this;
 
         userController =  UserController.getSingleInstance();
+        imController = IMController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -319,7 +322,10 @@ class GroupInformationSetting extends AppComponent {
                             <Icon name="angle-right" size={35} color="#aaa" />
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
+                        imController.removeAllMessage(Id,true)
+                        alert("清空聊天记录成功")
+                    }} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>清空聊天记录</Text>
                         </View>
