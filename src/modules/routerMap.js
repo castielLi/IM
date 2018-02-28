@@ -49,6 +49,7 @@ import GroupsChoose from './ForwardChoose/page/GroupsChoose'
 import Profile from './Profile/page'
 import HeadImage from './Profile/page/HeadImage'
 import NickName from './Profile/page/Nickname'
+import SelectGroup from './ChooseClient/page/SelectGroup'
 
 
 export const MainPage = {
@@ -304,6 +305,12 @@ export const RouteMap = {
         'NickName':{
             component:NickName,
             params:{"name":"NickName"}
+        }
+    },
+    'SelectGroup':{
+        'SelectGroup': {
+            component: SelectGroup,
+            params: {"name":"SelectGroup"}
         }
     }
 };

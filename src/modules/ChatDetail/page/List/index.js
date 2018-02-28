@@ -428,7 +428,7 @@ class Chat extends Component {
     }
 
     ShowPopupMenu = (loaction,rowData)=>{
-        this.listView.setNativeProps({scrollEnabled: fa})
+        this.listView.setNativeProps({scrollEnabled: false})
         this.setState({
             popupMenu:true,
             longPressMessageData:rowData,

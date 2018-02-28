@@ -198,7 +198,7 @@ class ChatDetail extends AppComponent {
                               retactMessage={this.retactMessage}
                               forwardMessage={this.forwardMessage}
                               goToClientInfo = {this.goToClientInfo}
-                              type={this.props.type} HeadImageUrl={this.props.HeadImageUrl}
+                              type={this.props.type}
                               navigator={this.props.navigator}/>
                     </View>
 				</TouchableWithoutFeedback>

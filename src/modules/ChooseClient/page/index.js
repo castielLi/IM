@@ -20,6 +20,8 @@ import AppManagement from '../../../App/AppManagement'
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
+  import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+
 var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
@@ -174,18 +176,6 @@ class ChooseClient extends AppComponent {
 		}
 	}
 
-    _renderAvator= (Obj)=>{
-        if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
-                return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
-
-            }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
-
-        }else{
-            return null
-        }
-    }
 	_renderItem = (info) => {
 		var txt = '  ' + info.item.Nickname;
 		let hasMember;
@@ -193,11 +183,13 @@ class ChooseClient extends AppComponent {
             hasMember = this.props.members.indexOf(info.item.Account);
             hasMember !== -1 ? hasMember = true : hasMember = false;
 		}
+        let path = userController.getAccountHeadImagePath(info.item.Account)
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
 					<View  style={[styles.itemBox,this.state.isShowFlatList?{borderBottomWidth:1,borderColor:'#bbb'}:{}]} >
 						{this.circleStyle(info,hasMember)}
-                        {this._renderAvator(info.item)}
-						{/*<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>*/}
+						<ImagePlaceHolder style={styles.pic}
+										  imageUrl ={path}
+						/>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -207,38 +199,33 @@ class ChooseClient extends AppComponent {
 		var txt = info.section.key;
 		return <Text style={styles.sectionHeader}>{txt}</Text>
 	}
-    goToNewFriend = () =>{
-        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
-
-    }
 	_renderHeader = () => {
     	if(this.hasGroup) return null;
 		return  <View>
 					<View style={styles.listOtherUseBox}>
-
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this._goToSelectGroup()}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
 								<Text style={[styles.itemText,{paddingLeft:10}]}>选择一个群</Text>
 							</View>
 							</View>
 					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Text style={[styles.itemText,{paddingLeft:10}]}>面对面建群</Text>
-								</View>
-							</View>
-					   </TouchableHighlight>
+					   {/*<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>*/}
+						   {/*<View style={styles.ItemSeparator}>*/}
+								{/*<View  style={styles.itemBox} >*/}
+								{/*<Text style={[styles.itemText,{paddingLeft:10}]}>面对面建群</Text>*/}
+								{/*</View>*/}
+							{/*</View>*/}
+					   {/*</TouchableHighlight>*/}
 					</View>
 				</View>
-			      			}
+	}
 	_renderSeparator = () =>{
 		return <View style={styles.ItemSeparator}><Text></Text></View>
 	}
 
-    goToAddFriends = ()=>{
-        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
+    _goToSelectGroup = ()=>{
+        this.route.push(this.props,{key:'SelectGroup',routeId:'SelectGroup',params:{}});
 
     }
 		//定义上导航的右按钮
