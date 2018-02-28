@@ -50,6 +50,7 @@ import Profile from './Profile/page'
 import HeadImage from './Profile/page/HeadImage'
 import NickName from './Profile/page/Nickname'
 import SelectGroup from './ChooseClient/page/SelectGroup'
+import RemarkInfo from './ClientInformation/page/RemarkInfo'
 
 
 export const MainPage = {
@@ -312,7 +313,14 @@ export const RouteMap = {
             component: SelectGroup,
             params: {"name":"SelectGroup"}
         }
+    },
+    'RemarkInfo':{
+        'RemarkInfo': {
+            component: RemarkInfo,
+            params: {"name":"RemarkInfo"}
+        }
     }
+
 };
 
 

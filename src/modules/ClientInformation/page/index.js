@@ -99,6 +99,10 @@ class ClientInformation extends AppComponent {
         this.route.pushifExistRoute(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.userInfo.Account,type:'private',HeadImageUrl:this.state.userInfo.HeadImageUrl,Nick:this.state.userInfo.Nickname}});
     }
 
+    _goToRemarkInfo =(remark)=>{
+        this.route.push(this.props,{key:'RemarkInfo',routeId:'RemarkInfo',params:{remark}});
+    };
+
 
     changeAddFriendButton(value){
         this.setState({
@@ -113,7 +117,7 @@ class ClientInformation extends AppComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let {Nickname,Account,HeadImageUrl} = this.state.userInfo;
+        let {Nickname,Account,HeadImageUrl,Remark} = this.state.userInfo;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -129,7 +133,7 @@ class ClientInformation extends AppComponent {
                             <Text style={styles.id}>{'微信号：'+Account}</Text>
                         </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Remark)} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置备注和标签</Text>
                             {/*<Text style={styles.arrow}>{'>'}</Text>*/}

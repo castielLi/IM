@@ -112,8 +112,6 @@ class InformationSetting extends AppComponent {
         this.ActionSheet.show()
     }
 
-
-
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -124,13 +122,13 @@ class InformationSetting extends AppComponent {
                     left={{func:()=>{this.route.pop(this.props)},text:'详细资料'}}
                 />
                 <View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>设置备注和标签</Text>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </View>
-                    </TouchableHighlight>
+                    {/*<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo()} style={{marginTop:15}}>*/}
+                        {/*<View  style={styles.remarksBox}>*/}
+                            {/*<Text style={styles.remarks}>设置备注和标签</Text>*/}
+                            {/*/!*<Text style={styles.arrow}>{'>'}</Text>*!/*/}
+                            {/*<Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>*/}
+                        {/*</View>*/}
+                    {/*</TouchableHighlight>*/}
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>不让他看我朋友圈</Text>
