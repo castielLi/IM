@@ -116,7 +116,7 @@ class ChatDetail extends AppComponent {
     goToClientInfo = (Account)=>{
         // let {type} = this.props;
         // if(type === 'group'){
-            this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
+            this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account,existChatDetailId:this.props.client}});
         // }
     }
 
