@@ -9,6 +9,7 @@ import UserController from '../../../TSController/UserController'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 import {Navigator} from 'react-native-deprecated-custom-components';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 let userController = undefined;
 let imLogicController = undefined;
@@ -31,13 +32,13 @@ export default class RemarkInfo extends AppComponent {
     }
 
     _onFocus=()=>{
-        this.inputBox.setNativeProps({
-            style:styles.inputBoxChecked
+        this.inputView.setNativeProps({
+            style:styles.inputViewChecked
         })
     };
     _onBlur=()=>{
-        this.inputBox.setNativeProps({
-            style:styles.inputBoxDefault
+        this.inputView.setNativeProps({
+            style:styles.inputViewDefault
         })
     };
 
@@ -52,15 +53,27 @@ export default class RemarkInfo extends AppComponent {
                 />
                 <View style={styles.RemarkModule}>
                     <Text style={styles.titleName}>备注名</Text>
-                    <TextInput
-                        ref={e=>this.inputBox = e}
-                        style={styles.inputBoxDefault}
-                        underlineColorAndroid="transparent"
-                        onBlur={()=>this._onBlur()}
-                        onFocus={()=>this._onFocus()}
-                        onChangeText={(v)=>{this.setState({remark:v})}}
-                        value={this.state.remark}
-                    />
+                    <View ref={e=>this.inputView = e} style={styles.inputViewDefault}>
+                        <TextInput
+                            style={styles.inputBox}
+                            underlineColorAndroid="transparent"
+                            onBlur={()=>this._onBlur()}
+                            onFocus={()=>this._onFocus()}
+                            onChangeText={(v)=>{this.setState({remark:v})}}
+                            value={this.state.remark}
+                        />
+                        {this.state.remark.length ?
+                            <View style={{justifyContent:'center', alignItems:'center'}}>
+                                <Icon
+                                    name="remove"
+                                    size={24}
+                                    color="#aaa"
+                                    onPress={()=>{this.setState({remark:''})}}
+                                    style={styles.inputIcon}
+                                />
+                            </View> : null
+                        }
+                    </View>
                 </View>
             </View>
         )
@@ -83,19 +96,27 @@ const styles = StyleSheet.create({
         textAlignVertical:'center',
         includeFontPadding:false,
     },
-    inputBoxDefault:{
+    inputViewDefault:{
         paddingTop:10,
         borderBottomWidth:1,
         borderBottomColor:'#eee',
-        paddingBottom:0,
-        fontSize:16,
-
+        flexDirection:'row'
     },
-    inputBoxChecked:{
+    inputViewChecked:{
         paddingTop:10,
         borderBottomWidth:1,
         borderBottomColor:'#62b900',
-        paddingBottom:0,
+        flexDirection:'row'
+    },
+    inputBox:{
         fontSize:16,
+        flex:1,
+        paddingRight:0,
+        paddingVertical:0,
+    },
+    inputIcon:{
+        flex:1,
+        textAlignVertical:'center',
+        paddingHorizontal:10
     }
 });
