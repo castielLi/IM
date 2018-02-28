@@ -96,7 +96,10 @@ class ClientInformation extends AppComponent {
         </TouchableOpacity>
     }
     goToChatDetail = ()=>{
-        this.route.pushifExistRoute(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.userInfo.Account,type:'private',HeadImageUrl:this.state.userInfo.HeadImageUrl,Nick:this.state.userInfo.Nickname}});
+        if(this.props.existChatDetailId == this.state.userInfo.Account)
+            this.route.pop(this.props);
+        else
+            this.route.pushifExistRoute(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.userInfo.Account,type:'private',HeadImageUrl:this.state.userInfo.HeadImageUrl,Nick:this.state.userInfo.Nickname}});
     }
 
     _goToRemarkInfo =(remark)=>{
