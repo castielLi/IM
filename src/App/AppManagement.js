@@ -36,6 +36,8 @@ let ChangeHeadImage = {};
 
 let ChangeNickname = {};
 
+let ChangeRemark = {};
+
 //todo:socket连接状态具体显示方式
 let AppStatus = {};
 
@@ -122,6 +124,10 @@ export default class AppManagement{
                     return;
                 ChangeNickname[pageName] = handle;
                 break;
+            case Mark.ChangeRemark:
+                if(ChangeRemark[pageName])
+                    return;
+                ChangeRemark[pageName] = handle;
         }
     }
 
@@ -156,6 +162,9 @@ export default class AppManagement{
                 break;
             case Mark.ChangeNickname:
                 delete ChangeNickname[name];
+                break;
+            case Mark.ChangeRemark:
+                delete ChangeRemark[name];
                 break;
         }
     }
@@ -215,6 +224,11 @@ export default class AppManagement{
             case Mark.ChangeNickname:
                 for(let item in ChangeNickname){
                     ChangeNickname[item] && ChangeNickname[item](type,params);
+                }
+                break
+            case Mark.ChangeRemark:
+                for(let item in ChangeRemark){
+                    ChangeRemark[item] && ChangeRemark[item](type,params);
                 }
                 break
         }

@@ -100,7 +100,7 @@ export const RouteMap = {
         'TabTwo': {
             component: Contacts,
             params: {"name":"Contacts"},
-            markType:[Mark.Contacts,Mark.UnReadMessage]
+            markType:[Mark.Contacts,Mark.UnReadMessage,Mark.ChangeRemark]
         },
         'TabThree': {
             component: Zoom,
@@ -185,7 +185,8 @@ export const RouteMap = {
     'ClientInformation': {
         'ClientInformation': {
             component: ClientInformation,
-            params: {"name":"ClientInformation"}
+            params: {"name":"ClientInformation"},
+            markType: Mark.ChangeRemark
         }
     },
     'InformationSetting': {

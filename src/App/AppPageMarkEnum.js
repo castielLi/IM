@@ -14,6 +14,7 @@ export default Mark = {
     ForwardMessage : 9,
     ChangeHeadImage : 10,
     ChangeNickname : 11,
+    ChangeRemark : 12,
 
     AppKickOutHandle:101
 }

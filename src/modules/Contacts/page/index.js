@@ -81,6 +81,10 @@ class Contacts extends AppComponent {
                     currentObj.props.showUnReadMark();
 				}
 				break;
+			case AppPageMarkEnum.ChangeRemark:
+                currentObj.setState({
+                    contacts:currentObj.state.contacts
+                });
         }
     }
 
@@ -140,8 +144,8 @@ class Contacts extends AppComponent {
 
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
-		let name = info.item.Nickname;
-		let path = userController.getAccountHeadImagePath(info.item.Account)
+		let name = info.item.Remark != "" ? info.item.Remark:info.item.Nickname;
+		let path = userController.getAccountHeadImagePath(info.item.Account);
 		let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
 					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >

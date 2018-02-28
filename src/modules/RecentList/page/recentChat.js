@@ -73,20 +73,22 @@ class RecentChat extends AppComponent {
     }
 
     _refreshUI(type,params){
-        if(type == AppPageMarkEnum.ConversationList) {
-            currentObj.setState({
-                ConverseList:params
-            })
-        }else if(type == AppPageMarkEnum.AppStatus){
-            currentObj.setState({
-                socket:params.socketStatus,
-                socketError:params.info
-            })
+        switch (type){
+            case AppPageMarkEnum.ConversationList:
+                currentObj.setState({
+                    ConverseList:params
+                });
+                break;
+            case AppPageMarkEnum.AppStatus:
+                currentObj.setState({
+                    socket:params.socketStatus,
+                    socketError:params.info
+                });
+                break;
         }
     }
 
     componentDidMount() {
-
         // this.props.showNavigationBottom();
 
         InteractionManager.runAfterInteractions(()=>{
