@@ -146,7 +146,6 @@ class Me extends AppComponent {
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
-
         this.state = {
             showFeatures:false,//显示功能块组件
             headImageUrl:headImagePath,

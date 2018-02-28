@@ -214,11 +214,10 @@ class Profile extends AppComponent {
     _fillingValue=(info)=>{
         switch (info.item.name){
             case '头像':
-                headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
                 return (
                     <View style={{flexDirection:'row',alignItems:'center'}}>
                         <ImagePlaceHolder style={styles.topPic}
-                                          imageUrl ={headImagePath}
+                                          imageUrl ={this.state.headImageUrl}
                         />
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>

@@ -226,22 +226,24 @@ class Chat extends Component {
         >
             <View style={styles.validateModalBox}>
                 <View style={styles.validateModal}>
-                    <Text style={styles.modalTitle}>对方启用类好友验证</Text>
-                    <Text style={styles.modalSubTitle}>你需要发送验证申请，对方通过后你才能添加其为好友</Text>
-                    <TextInput style={styles.modalInput} underlineColorAndroid="transparent"></TextInput>
+                    <Text style={styles.modalTitle}>验证申请</Text>
+                    <Text style={styles.modalSubTitle}>你需要发送验证请求，并在对方通过后你才能成为朋友</Text>
+                    <TextInput style={styles.modalInput} underlineColorAndroid="transparent" placeholder={'最多50个字'} maxLength={50}></TextInput>
                     <View style={styles.modalButtonBox}>
-                        <TouchableOpacity  style={{flex:1}} onPress={()=>{this.setState({isShowModal:false})}}>
+                        <TouchableHighlight onPress={()=>{this.setState({isShowModal:false})}} underlayColor={'#eee'} style={styles.modalTouch}>
                             <View style={styles.modalButton}>
-                                <Text style={styles.modalButtonTxt}>取消</Text>
-
+                                <Text style={styles.modalButtonTxt}>
+                                    取消
+                                </Text>
                             </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{flex:1}}>
-                            <View style={[styles.modalButton,{borderLeftWidth:1,borderColor:'#000'}]}>
-                                <Text style={styles.modalButtonTxt}>发送</Text>
-
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress={()=>{}} underlayColor={'#eee'} style={styles.modalTouch}>
+                            <View style={styles.modalButton}>
+                                <Text style={[styles.modalButtonTxt,styles.modalTextColor]}>
+                                    发送
+                                </Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     </View>
                 </View>
             </View>
@@ -426,7 +428,7 @@ class Chat extends Component {
     }
 
     ShowPopupMenu = (loaction,rowData)=>{
-        this.listView.setNativeProps({scrollEnabled: false})
+        this.listView.setNativeProps({scrollEnabled: fa})
         this.setState({
             popupMenu:true,
             longPressMessageData:rowData,
@@ -778,47 +780,58 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     validateModal: {
-        height: 200,
-        width: 400,
-        backgroundColor: '#eee',
-        borderRadius:10,
-        alignItems:'center',
+        width: 350,
+        backgroundColor: '#fff',
+        padding:15,
+        borderRadius:2,
     },
     modalTitle:{
+        fontSize:20,
         color:'#000',
-        fontSize:16,
-        marginTop:10
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false
     },
     modalSubTitle:{
         color:'#000',
-        fontSize:12
+        fontSize:16,
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        marginTop:15
     },
     modalInput:{
-        width:300,
         height:40,
-        borderColor:'#000',
-        borderWidth:1,
+        borderBottomColor:'#62b900',
+        borderBottomWidth:1,
         padding:0,
         paddingHorizontal:5,
-        marginTop:30
+        marginTop:10
     },
     modalButtonBox:{
-        flex:1,
-        height:50,
+        backgroundColor:'#fff',
         flexDirection:'row',
-        marginTop:30,
-        borderTopWidth:1,
-        borderColor:'#000',
+        justifyContent:'flex-end',
+        paddingTop:10,
+    },
+    modalTouch:{
+        borderRadius:2
     },
     modalButton:{
-        flex:1,
-        height:50,
+        paddingHorizontal:10,
+        paddingVertical:4,
+        justifyContent:'center',
         alignItems:'center',
-        justifyContent:'center'
     },
     modalButtonTxt:{
-        color:'#1d4eb2',
-        fontSize:16
+        fontSize:16,
+        color:'#666',
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+    },
+    modalTextColor:{
+        color:'#62b900',
     }
 });
 

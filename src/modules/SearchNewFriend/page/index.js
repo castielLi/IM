@@ -50,9 +50,9 @@ class SearchNewFriend extends AppComponent {
     searchUser = (keyword)=>{
         currentAccount = userController.getCurrentAccount();
         currentObj.showLoading();
-        if(currentAccount.Account == keyword){
+        if(currentAccount.Account == keyword || currentAccount.PhoneNumber == keyword){
             currentObj.hideLoading();
-            currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
+            this.alert('你不能添加自己到通讯录')
         }else{
             userController.getUserInfo(keyword,true,(result)=>{
                 currentObj.hideLoading();
@@ -79,7 +79,7 @@ class SearchNewFriend extends AppComponent {
                                 style={styles.search}
                                 underlineColorAndroid = 'transparent'
                                 autoFocus = {true}
-                                placeholder = '微信号/手机号'
+                                placeholder = '奇信号/手机号'
                                 defaultValue = {this.state.text}
                                 onChangeText={(v)=>{this.setState({text:v})}}
                             >
