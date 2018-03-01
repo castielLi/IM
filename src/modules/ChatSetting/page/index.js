@@ -16,6 +16,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
+import Icon from 'react-native-vector-icons/FontAwesome';
 let imController = undefined;
 
 let {height,width} = Dimensions.get('window');
@@ -24,11 +25,20 @@ class ChatSetting extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
-        this.state = {
-            isStickyChat:false,//置顶聊天
-            notDisturb:false,//消息免打扰
-        }
         imController = IMController.getSingleInstance();
+
+        let setting = imController.getChatSetting();
+        if(setting == undefined){
+            this.state = {
+                isStickyChat:false,//置顶聊天
+                notDisturb:false,//消息免打扰
+            }
+        }else{
+            this.state = {
+                isStickyChat:setting.StickToTheTop,//置顶聊天
+                notDisturb:setting.NoDisturb,//消息免打扰
+            }
+        }
     }
 
     componentWillUnmount(){
@@ -36,11 +46,13 @@ class ChatSetting extends AppComponent {
     }
 
     changeIsStickyChat = ()=>{
+        imController.setStickToTheTop(!this.state.isStickyChat);
         this.setState({
             isStickyChat:!this.state.isStickyChat
         })
     }
     changeNotDisturb = ()=>{
+        imController.setNoDisturb(!this.state.notDisturb);
         this.setState({
             notDisturb:!this.state.notDisturb
         })
@@ -73,7 +85,7 @@ class ChatSetting extends AppComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置当前聊天背景</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            <Icon name="angle-right" size={20} color="#aaa" />
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
@@ -87,7 +99,7 @@ class ChatSetting extends AppComponent {
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>投诉</Text>
-                            <Text style={styles.arrow}>{'>'}</Text>
+                            <Icon name="angle-right" size={20} color="#aaa" />
                         </View>
                     </TouchableHighlight>
 

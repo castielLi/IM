@@ -43,19 +43,32 @@ class GroupInformationSetting extends AppComponent {
         super(props)
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
-        this.state = {
-            isStickyChat:false,//置顶聊天
-            notDisturb:false,//消息免打扰
-            isSave:false,
-            searchResult:true,
-            members:[],
-            realMemberList:[],
-            groupInformation:{}
-        }
-        currentObj = this;
-
         userController =  UserController.getSingleInstance();
         imController = IMController.getSingleInstance();
+
+        let setting = imController.getChatSetting();
+        if(setting == undefined){
+            this.state = {
+                isStickyChat:false,//置顶聊天
+                notDisturb:false,//消息免打扰
+                isSave:false,
+                searchResult:true,
+                members:[],
+                realMemberList:[],
+                groupInformation:{}
+            }
+        }else{
+            this.state = {
+                isStickyChat:setting.StickToTheTop,//置顶聊天
+                notDisturb:setting.NoDisturb,//消息免打扰
+                isSave:false,
+                searchResult:true,
+                members:[],
+                realMemberList:[],
+                groupInformation:{}
+            }
+        }
+        currentObj = this;
     }
 
     componentWillUnmount(){
@@ -63,11 +76,13 @@ class GroupInformationSetting extends AppComponent {
     }
 
     changeIsStickyChat = ()=>{
+        imController.setStickToTheTop(!this.state.isStickyChat);
         this.setState({
             isStickyChat:!this.state.isStickyChat
         })
     }
     changeNotDisturb = ()=>{
+        imController.setNoDisturb(!this.state.notDisturb);
         this.setState({
             notDisturb:!this.state.notDisturb
         })
