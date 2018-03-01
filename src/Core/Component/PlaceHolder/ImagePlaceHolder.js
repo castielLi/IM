@@ -24,6 +24,14 @@ export default class ImagePlaceHolder extends Component {
         this.newUrl = true;
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if(nextProps.imageUrl != this.props.imageUrl || nextState.show != this.state.show){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     componentWillReceiveProps() {
         this.newUrl = true;
     }
