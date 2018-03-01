@@ -15,6 +15,8 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
+import IMController from '../../../TSController/IMLogic/IMControllerLogic'
+let imController = undefined;
 
 let {height,width} = Dimensions.get('window');
 
@@ -26,6 +28,7 @@ class ChatSetting extends AppComponent {
             isStickyChat:false,//置顶聊天
             notDisturb:false,//消息免打扰
         }
+        imController = IMController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -73,7 +76,10 @@ class ChatSetting extends AppComponent {
                             <Text style={styles.arrow}>{'>'}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
+                        imController.removeAllMessage(Id,false);
+                        alert("清空聊天记录成功")
+                    }} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>清空聊天记录</Text>
                         </View>
