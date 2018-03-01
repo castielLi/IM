@@ -39,6 +39,7 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 let userController = undefined;
 let applyController = undefined;
@@ -184,12 +185,21 @@ class RecentChat extends AppComponent {
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
+                                    {
+                                        rowData.noSound?(rowData.unreadCount>0?<Text numberOfLines = {1} style = {styles.Nickname}>[{rowData.unreadCount}]</Text>:null):
+                                            null
+                                    }
 									<Text numberOfLines = {1} style = {styles.Nickname}>{rowData.name}</Text>
 									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
 								</View>
 								<View style = {styles.userTime}>
 									<Text style ={styles.LastMessageTime}>{rowData.lastTime == 0?"":TimeHelper.DateFormat(rowData.lastTime,false,'h:mm',)}</Text>
-                                    {rowData.unreadCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text></View>:null}
+                                    {
+                                        rowData.noSound?<Icon name="bell-slash" size={20} color="#aaa" />:
+                                            (rowData.unreadCount?<View  style = {styles.MessageNumberBox}>
+                                        <Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text>
+                                         </View>:null)
+                                    }
 								</View>
 							</View>
 						</View>
