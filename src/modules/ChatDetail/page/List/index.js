@@ -27,9 +27,12 @@ import * as Actions from '../../reducer/action';
 import ChatMessage from './ChatMessage';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import {ListConst} from './typeConfig/index';
-import UserController from '../../../../TSController/UserController'
+import UserController from '../../../../TSController/UserController';
+import ApplyController from '../../../../TSController/ApplyController'
 import TimeHelper from '../../../../Core/Helper/TimeHelper';
 import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import AppComponent from '../../../../Core/Component/AppComponent';
+import ApplyModal from './ApplyModal';
 
 let _listHeight = 0; //list显示高度
 let _footerY = 0; //foot距离顶部距离
@@ -38,9 +41,10 @@ let _MaxListHeight = 0; //记录最大list高度
 let FooterLayout = false;
 let ListLayout = false;
 let userController = undefined;
+let applyController = undefined;
 let currentObj;
 let {width,height} = Dimensions.get('window');
-class Chat extends Component {
+class Chat extends AppComponent {
     constructor(props){
         super(props);
 
@@ -60,7 +64,6 @@ class Chat extends Component {
             dataSource: ds,
             dataSourceO: ds,
             isMore:2,
-            isShowModal:false,
             popupMenu:false,
             loaction:{top:0,left:0,componentWidth:0,componentHeight:0},
             longPressMessageData:null
@@ -77,6 +80,7 @@ class Chat extends Component {
 
         this.renderRow = this.renderRow.bind(this);
         userController = UserController.getSingleInstance();
+        applyController = ApplyController.getSingleInstance();
     }
 
 
@@ -217,43 +221,27 @@ class Chat extends Component {
             )
         }
     }
-    renderModal() {
-        return <Modal
-            animationType='fade'
-            transparent={true}
-            onRequestClose={()=>{}}
-            visible={this.state.isShowModal}
-        >
-            <View style={styles.validateModalBox}>
-                <View style={styles.validateModal}>
-                    <Text style={styles.modalTitle}>验证申请</Text>
-                    <Text style={styles.modalSubTitle}>你需要发送验证请求，并在对方通过后你才能成为朋友</Text>
-                    <TextInput style={styles.modalInput} underlineColorAndroid="transparent" placeholder={'最多50个字'} maxLength={50}></TextInput>
-                    <View style={styles.modalButtonBox}>
-                        <TouchableHighlight onPress={()=>{this.setState({isShowModal:false})}} underlayColor={'#eee'} style={styles.modalTouch}>
-                            <View style={styles.modalButton}>
-                                <Text style={styles.modalButtonTxt}>
-                                    取消
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight onPress={()=>{}} underlayColor={'#eee'} style={styles.modalTouch}>
-                            <View style={styles.modalButton}>
-                                <Text style={[styles.modalButtonTxt,styles.modalTextColor]}>
-                                    发送
-                                </Text>
-                            </View>
-                        </TouchableHighlight>
-                    </View>
-                </View>
-            </View>
-        </Modal>
-    }
+
+    //发送好友申请信息
+    _sendApplyMessage=(value)=>{
+        // Keyboard.dismiss();
+        // currentObj.showLoading();
+        applyController.applyFriend(this.currentAccount.Account,this.props.client,value,(result)=>{
+            // currentObj.hideLoading();
+            if(result && result.Result === 1){
+                currentObj.alert("申请消息已经发送");
+            }else if(result && result.Result === 3003){
+                currentObj.alert('对方已为好友');
+            }
+            else{
+                currentObj.alert('发送好友申请失败');
+            }
+        });
+    };
+    //显示好友申请框
     applyFriend = ()=>{
-        this.setState({
-            isShowModal:true
-        })
-    }
+        this.ApplyModal.onChange();
+    };
 
     analysisInfo = (message)=> {
         var regex = new RegExp('{{.*?}}', 'g')
@@ -667,7 +655,7 @@ class Chat extends Component {
                                 //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
                             />
                         </View>
-                        {this.renderModal()}
+                        <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
                         {this._PopupMenu()}
                     </View>
             );
@@ -690,7 +678,7 @@ class Chat extends Component {
 
                             renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         />
-                        {this.renderModal()}
+                        <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
                         {this._PopupMenu()}
                     </View>
                 )

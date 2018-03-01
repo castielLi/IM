@@ -87,20 +87,6 @@ class Validate extends AppComponent {
                 currentObj.alert('发送好友申请失败');
             }
         });
-
-
-
-
-        // //向数据库添加关系，并且标记这条关系显示为false;
-        // let relation = new RelationModel();
-        // relation.Nick = currentObj.props.relation.Nickname;
-        // relation.RelationId = currentObj.props.relation.Account;
-        // relation.OtherComment = currentObj.props.relation.Gender;
-        // relation.avator = currentObj.props.relation.HeadImageUrl;
-        // relation.Type = ChatWayEnum.Private;
-        // relation.show = 'false';
-        // userController.tempApplyFriend(relation);
-
     }
     render() {
         let Popup = this.PopContent;
