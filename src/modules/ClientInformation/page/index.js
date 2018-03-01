@@ -12,6 +12,8 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 import {bindActionCreators} from 'redux';
 
@@ -32,6 +34,7 @@ class ClientInformation extends AppComponent {
             userInfo:{},
             isFriend:false,
             oneself:false,
+            applyKey:props.applyKey,
         };
         currentObj = this;
 
@@ -63,6 +66,16 @@ class ClientInformation extends AppComponent {
                     oneself:false
                 })
             });
+        }
+    }
+
+    _refreshUI(type,params){
+        //这里如果没有点击通讯录界面是不会进行初始化的，不会初始化就会导致下层通知上层的时候不会显示contact 申请的红点
+        switch (type){
+            case AppPageMarkEnum.ChangeRemark:
+                currentObj.setState({
+                    userInfo:currentObj.state.userInfo
+                });
         }
     }
 
@@ -117,11 +130,126 @@ class ClientInformation extends AppComponent {
     addFriend = (Applicant,Respondent)=>{
         this.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo,Applicant:Applicant,Respondent:Respondent,changeAddFriendButton:this.changeAddFriendButton}})
     }
+
+    //用户信息控制
+    _infoControl=(Account,Remark,Nickname)=>{
+        let path = userController.getAccountHeadImagePath(Account);
+        let hasRemark = Remark != '' ? true : false;
+        return (
+            <View style={styles.basicBox}>
+               <ImagePlaceHolder style={styles.headPic}
+                                  imageUrl ={path}
+                />
+                <View style={styles.basicBoxRight}>
+                    <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
+                    {this.state.applyKey ? null :
+                        <View>
+                            <Text style={styles.id}>{'奇信号：'+Account}</Text>
+                            {hasRemark ? <Text style={styles.id}>{'昵称：'+Nickname}</Text> : null}
+                        </View>
+                    }
+                </View>
+            </View>
+        )
+    };
+
+    //用户资料控制
+    _dataControl=()=>{
+        return (
+            <View style={styles.dataBox}>
+                <TouchableHighlight>
+                    <View style={styles.dataRowBox}>
+                        <Text style={styles.dataTitle}>地区</Text>
+                        <Text style={styles.dataText}>重庆 大渡口</Text>
+                    </View>
+                </TouchableHighlight>
+                {this.state.isFriend ? null :
+                    <TouchableHighlight>
+                        <View style={[styles.dataRowBox,styles.noBorder]}>
+                            <Text style={styles.dataTitle}>个性签名</Text>
+                            <Text style={styles.dataText}>签名内容</Text>
+                        </View>
+                    </TouchableHighlight>
+                }
+                {this.state.isFriend ?
+                    <TouchableHighlight>
+                        <View style={styles.dataRowBox}>
+                            <Text style={styles.dataTitle}>个性相册</Text>
+                            <View style={styles.dataPhotos}>
+                                <Image style={styles.dataPhoto} source={require('../resource/other.jpg')}/>
+                                <Image style={styles.dataPhoto} source={require('../resource/other.jpg')}/>
+                                <Image style={styles.dataPhoto} source={require('../resource/other.jpg')}/>
+                            </View>
+                        </View>
+                    </TouchableHighlight> : null
+                }
+                {this.state.isFriend ?
+                    <TouchableHighlight>
+                        <View style={[styles.dataRowBox,styles.noBorder]}>
+                            <Text style={styles.dataTitle}>更多</Text>
+                        </View>
+                    </TouchableHighlight> : null}
+            </View>
+        )
+    };
+
+    //备注控制
+    _remarkControl=(Account,Remark)=>{
+        return (
+            <View>
+                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Account,Remark)} style={{marginTop:15}}>
+                    <View  style={styles.remarksBox}>
+                        <Text style={styles.remarks}>设置备注和标签</Text>
+                    </View>
+                </TouchableHighlight>
+                {(!this.state.isFriend && this.state.applyKey) ?
+                    <View style={styles.verifyBox}>
+                        <Text style={styles.verifyText}>我是xxx</Text>
+                        <View style={styles.touchBtnBox}>
+                            <TouchableHighlight style={styles.touchBtn}>
+                                <Text style={styles.touchBtnText}>回复</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View> : null
+                }
+            </View>
+        )
+    };
+
+    //按钮显示控制
+    _buttonControl=()=>{
+        if(this.state.isFriend){
+            return (
+                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
+                    <Text style={styles.sendMessage}>发消息</Text>
+                </TouchableHighlight>
+            )
+        }else{
+            if(this.state.applyKey){
+                return (
+                    <View>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}} style={styles.sendMessageBox}>
+                            <Text style={styles.sendMessage}>通过验证</Text>
+                        </TouchableHighlight>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}} style={styles.sendMessageBox}>
+                            <Text style={styles.sendMessage}>加入黑名单</Text>
+                        </TouchableHighlight>
+                    </View>
+                )
+            }else{
+                return (
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(currentAccount.Account,Account)}} style={styles.sendMessageBox}>
+                        <Text style={styles.sendMessage}>添加到通讯录</Text>
+                    </TouchableHighlight>
+                )
+            }
+        }
+    };
+
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         let {Nickname,Account,HeadImageUrl,Remark} = this.state.userInfo;
-        let hasRemark = Remark != '' ? true : false;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -130,56 +258,10 @@ class ClientInformation extends AppComponent {
                     right={[{func:()=>{this.goToInformationSetting()},icon:this.state.isFriend ?'ellipsis-h':''}]}
                 />
                 <View>
-                    <View style={styles.basicBox}>
-                        {HeadImageUrl!=''?<Image style={styles.headPic} source={{uri:HeadImageUrl}}/>:<Image style={styles.headPic} source={require('../resource/avator.jpg')}/>}
-                        <View style={styles.basicBoxRight}>
-                            <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
-                            <Text style={styles.id}>{'奇信号：'+Account}</Text>
-                            {hasRemark ? <Text style={styles.id}>{'昵称：'+Nickname}</Text> : null}
-                        </View>
-                    </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Account,Remark)} style={{marginTop:15}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>设置备注和标签</Text>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </View>
-                    </TouchableHighlight>
-                    <View  style={styles.placeBox}>
-                        <Text style={styles.address}>地区</Text>
-                        <Text style={styles.place}>重庆 大渡口</Text>
-                    </View>
-                    {this.state.isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('相册')}>
-                        <View  style={styles.photoBox}>
-                            <View style={{flexDirection:'row',alignItems:'center'}}>
-                                <Text style={styles.address}>个人相册</Text>
-                                <View style={styles.photos}>
-                                    <Image style={styles.photo} source={require('../resource/other.jpg')}></Image>
-                                    <Image style={styles.photo} source={require('../resource/other.jpg')}></Image>
-                                    <Image style={styles.photo} source={require('../resource/other.jpg')}></Image>
-                                    <Image style={styles.photo} source={require('../resource/other.jpg')}></Image>
-
-                                </View>
-                            </View>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </View>
-                    </TouchableHighlight> : null}
-                    {this.state.isFriend ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('更多')}>
-                        <View  style={[styles.remarksBox,{marginTop:0}]}>
-                            <Text style={styles.remarks}>更多</Text>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </View>
-                    </TouchableHighlight> : null}
-                    {this.state.isFriend && !this.state.oneself ? <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
-                        <Text style={styles.sendMessage}>发消息</Text>
-                    </TouchableHighlight>: null}
-                    {this.state.isFriend || this.state.oneself ? null : <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(currentAccount.Account,Account)}} style={styles.sendMessageBox}>
-                        <Text style={styles.sendMessage}>添加到通讯录</Text>
-                    </TouchableHighlight>}
-
-
+                    {this._infoControl(Account,Remark,Nickname)}
+                    {this._remarkControl(Account,Remark)}
+                    {this._dataControl()}
+                    {this._buttonControl()}
                 </View>
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
@@ -242,49 +324,8 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff'
     },
     remarks:{
-        fontSize:14,
+        fontSize:16,
         color:'#000'
-    },
-    arrow:{
-        fontSize:14,
-        color:'#aaa'
-    },
-    placeBox:{
-        marginTop:15,
-        height:40,
-        paddingHorizontal:15,
-        flexDirection:'row',
-        alignItems:'center',
-        backgroundColor:'#fff',
-        borderBottomWidth:1,
-        borderColor:'#eee'
-    },
-    address:{
-        fontSize:14,
-        color:'#000',
-        width:80
-    },
-    place:{
-        fontSize:14,
-        color:'#000'
-    },
-    photoBox:{
-        height:100,
-        padding:15,
-        flexDirection:'row',
-        alignItems:'center',
-        backgroundColor:'#fff',
-        borderBottomWidth:1,
-        borderColor:'#eee',
-        justifyContent:'space-between'
-    },
-    photos:{
-        flexDirection:'row',
-    },
-    photo:{
-        width:50,
-        height:50,
-        marginRight:8
     },
     sendMessageBox:{
         height:50,
@@ -299,7 +340,77 @@ const styles = StyleSheet.create({
         textAlignVertical:'center',
         color:'#fff',
         fontSize:20,
-    }
+    },
+
+    dataBox:{
+        backgroundColor:'#fff',
+        paddingHorizontal:15,
+        marginTop:15
+    },
+    noBorder:{
+        borderBottomWidth:0
+    },
+    dataRowBox:{
+        paddingVertical:10,
+        borderBottomWidth:1,
+        borderBottomColor:'#eee',
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    dataTitle:{
+        fontSize:16,
+        color:'#000',
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        width:100
+    },
+    dataText:{
+        fontSize:15,
+        color:'#bbb',
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+    },
+    dataPhotos:{
+        flexDirection:'row',
+    },
+    dataPhoto:{
+        height:65,
+        width:65,
+        marginRight:8
+    },
+
+    verifyBox:{
+        backgroundColor:'#FCFCFC',
+        padding:15,
+    },
+    verifyText:{
+        fontSize:14,
+        color:'#bbb',
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+    },
+    touchBtnBox:{
+        alignItems:'flex-end'
+    },
+    touchBtn:{
+        borderWidth:1,
+        borderColor:'#ddd',
+        borderRadius:3,
+        paddingHorizontal:15,
+        paddingVertical:5
+    },
+    touchBtnText:{
+        fontSize:14,
+        color:'#000',
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+    },
+
+
 });
 
 

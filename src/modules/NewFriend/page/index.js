@@ -123,6 +123,12 @@ class NewFriend extends AppComponent {
         //     return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
         // }
     }
+
+    _goToClientInfo=(account,applyKey)=>{
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:account,applyKey:applyKey}});
+    };
+
+
     _renderRow = (rowData, sectionID, rowID)=>{
 
         let path = userController.getAccountHeadImagePath(rowData.sender)
@@ -149,7 +155,7 @@ class NewFriend extends AppComponent {
                     {/*autoClose={true}*/}
                 {/*>*/}
 
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToClientInfo(rowData.sender,rowData.key)}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
                                 {this._renderAvator(path)}
