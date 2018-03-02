@@ -51,12 +51,6 @@ class ChatSetting extends AppComponent {
             isStickyChat:!this.state.isStickyChat
         })
     }
-    changeNotDisturb = ()=>{
-        imController.setNoDisturb(!this.state.notDisturb);
-        this.setState({
-            notDisturb:!this.state.notDisturb
-        })
-    }
     render() {
         return (
             <View style={styles.container}>
@@ -70,15 +64,6 @@ class ChatSetting extends AppComponent {
                             <Switch
                                 value={this.state.isStickyChat}
                                 onValueChange={this.changeIsStickyChat}
-                            ></Switch>
-                        </View>
-                    </View>
-                    <View>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>消息免打扰</Text>
-                            <Switch
-                                value={this.state.notDisturb}
-                                onValueChange={this.changeNotDisturb}
                             ></Switch>
                         </View>
                     </View>

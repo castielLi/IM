@@ -39,6 +39,7 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 let userController = undefined;
 let applyController = undefined;
@@ -125,12 +126,15 @@ class RecentChat extends AppComponent {
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
     }
-    _renderAvator = (userId,group) => {
+    _renderAvator = (userId,group,nosound,unreadCount) => {
         let imageUrl = userController.getAccountHeadImagePath(userId)
 
-        return <ImagePlaceHolder style = {styles.avatar}
+        return <View style = {styles.avatar}>
+            <ImagePlaceHolder style = {styles.avatar}
                       imageUrl = {imageUrl}
                       />
+            {nosound&&unreadCount?<View style={styles.circle}></View>:null}
+        </View>
     }
 
     renderHeader = ()=>{
@@ -180,16 +184,27 @@ class RecentChat extends AppComponent {
 					<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
 						<View style = {styles.ListContainer}>
 							<View style = {styles.userLogo}>
-                                {this._renderAvator(rowData.chatId,rowData.group)}
+                                {this._renderAvator(rowData.chatId,rowData.group,rowData.noSound,rowData.unreadCount)}
 							</View>
 							<View style = {styles.ChatContent}>
 								<View style = {styles.Message}>
 									<Text numberOfLines = {1} style = {styles.Nickname}>{rowData.name}</Text>
-									<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
+                                    {
+                                        rowData.noSound?(rowData.unreadCount>0?<Text numberOfLines = {1} style = {styles.ChatMessage}>[{rowData.unreadCount}]
+                                            <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
+                                        </Text>:<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>):
+                                            <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
+                                    }
+
 								</View>
 								<View style = {styles.userTime}>
 									<Text style ={styles.LastMessageTime}>{rowData.lastTime == 0?"":TimeHelper.DateFormat(rowData.lastTime,false,'h:mm',)}</Text>
-                                    {rowData.unreadCount?<View  style = {styles.MessageNumberBox}><Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text></View>:null}
+                                    {
+                                        rowData.noSound?<Icon name="bell-slash" size={20} color="#aaa" />:
+                                            (rowData.unreadCount?<View  style = {styles.MessageNumberBox}>
+                                        <Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text>
+                                         </View>:null)
+                                    }
 								</View>
 							</View>
 						</View>
@@ -280,6 +295,12 @@ let styles = StyleSheet.create({
             android: {},
         }),
     },
+    ChatNoSoundMessageCount: {
+        fontSize: checkDeviceHeight(30),
+        lineHeight: checkDeviceHeight(35),
+        width:30,
+        color: '#999999',
+    },
     ChatMessage: {
         fontSize: checkDeviceHeight(30),
         lineHeight: checkDeviceHeight(35),
@@ -310,6 +331,15 @@ let styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: checkDeviceHeight(20),
     },
+    circle:{
+        width:10,
+        height:10,
+        backgroundColor:'red',
+        borderRadius:5,
+        position:'absolute',
+        left:3,
+        top:0
+    }
 });
 
 const mapStateToProps = state => ({
