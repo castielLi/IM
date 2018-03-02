@@ -217,7 +217,7 @@ class ClientInformation extends AppComponent {
     };
 
     //按钮显示控制
-    _buttonControl=()=>{
+    _buttonControl=(Account)=>{
         if(this.state.isFriend){
             return (
                 <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
@@ -261,7 +261,7 @@ class ClientInformation extends AppComponent {
                     {this._infoControl(Account,Remark,Nickname)}
                     {this._remarkControl(Account,Remark)}
                     {this._dataControl()}
-                    {this._buttonControl()}
+                    {this._buttonControl(Account)}
                 </View>
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
