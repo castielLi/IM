@@ -196,14 +196,15 @@ class GroupInformationSetting extends AppComponent {
 
         }
         else{
-            let path = userController.getAccountHeadImagePath(item.item.Account)
+            let path = userController.getAccountHeadImagePath(item.item.Account);
+            let name = item.item.Remark != "" ? item.item.Remark:item.item.Nickname;
             return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
                         <View style={styles.itemBox}>
                             {/*{item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}*/}
                             <ImagePlaceHolder style={styles.itemImage}
                                               imageUrl ={path}
                             />
-                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
+                            <Text style={styles.itemText}>{name}</Text>
                         </View>
                     </TouchableWithoutFeedback>
         }

@@ -229,12 +229,12 @@ class Chat extends AppComponent {
         applyController.applyFriend(this.currentAccount.Account,this.props.client,value,(result)=>{
             // currentObj.hideLoading();
             if(result && result.Result === 1){
-                currentObj.alert("申请消息已经发送");
+                alert("申请消息已经发送");
             }else if(result && result.Result === 3003){
-                currentObj.alert('对方已为好友');
+                alert('对方已为好友');
             }
             else{
-                currentObj.alert('发送好友申请失败');
+                alert('发送好友申请失败');
             }
         });
     };
@@ -381,8 +381,7 @@ class Chat extends AppComponent {
                             // onLongPress={this.ShowPopupMenu}
                         />
                         {/*{this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
-                        <ImagePlaceHolder style={styles.userImage}
-                                          imageUrl={headImagePath}/>
+                        <ImagePlaceHolder style={styles.userImage} imageUrl={headImagePath}/>
                     </View>
                 </View>
             )
@@ -398,8 +397,7 @@ class Chat extends AppComponent {
                         <TouchableOpacity onPress = {()=>{
                             this.props.goToClientInfo(sender.account);
                         }}>
-                        <ImagePlaceHolder style={styles.userImage}
-                                          imageUrl={headImagePath}/>
+                        <ImagePlaceHolder style={styles.userImage} imageUrl={headImagePath}/>
                         </TouchableOpacity>
                         <View>
                             {this.props.type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
