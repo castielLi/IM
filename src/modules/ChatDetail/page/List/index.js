@@ -314,6 +314,17 @@ class Chat extends AppComponent {
 
     }
 
+    _errorMessageOpt=(ErrorCode)=>{
+        //不是好友:6001,已经是好友:6002,被加入黑名单:6003,不在群:6004
+        switch (ErrorCode){
+            case 6001:
+                return "你与该用户并非好友,或你已经被拉入黑名单,请重新添加";
+            case 6003:
+                return "对方拒绝接收你的消息";
+            case 6004:
+                return "你已经被踢出了该群";
+        }
+    };
 
     renderRow = (row,sid,rowid) => {
         console.log('renderRow')
@@ -321,17 +332,7 @@ class Chat extends AppComponent {
         let headImagePath = userController.getAccountHeadImagePath(sender.account);
         let timer = this.getTimestamp(messageTime,rowid);
 
-        // enum MessageSource {
-        //     //发送消息
-        //     SEND = 1,
-        //         //接收消息
-        //         RECEIVE = 2,
-        //         //系统消息
-        //         SYSTEM = 3,
-        //         ERROR = 4,
-        //         FRIEND=5
-        // }
-
+         //发送消息SEND = 1,接收消息RECEIVE = 2,系统消息SYSTEM = 3,ERROR = 4,FRIEND=5
         if(messageSource == 3){
             return (
                 <View key={rowid} style={[styles.informView,{marginHorizontal:40,alignItems:'center',marginBottom:10}]}>
@@ -351,10 +352,10 @@ class Chat extends AppComponent {
                         {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={{backgroundColor:'#cfcfcf',flexDirection:'row',flexWrap:'wrap',justifyContent:'center',padding:5,borderRadius:5}}>
-                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{message}</Text>
-                        {this.props.type === 'group'?null: <TouchableOpacity onPress={()=>{this.applyFriend()}}>
+                        <Text style={[styles.informText,{fontSize:14,textAlign:'left',color:"white"}]}>{this._errorMessageOpt(message)}</Text>
+                        {message === 6001 ? <TouchableOpacity onPress={()=>{this.applyFriend()}}>
                             <Text style={{color:'#1d4eb2'}}>发送朋友验证</Text>
-                        </TouchableOpacity>}
+                        </TouchableOpacity> : null}
                     </View>
                 </View>
             )
