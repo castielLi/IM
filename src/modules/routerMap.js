@@ -51,6 +51,7 @@ import HeadImage from './Profile/page/HeadImage'
 import NickName from './Profile/page/Nickname'
 import SelectGroup from './ChooseClient/page/SelectGroup'
 import RemarkInfo from './ClientInformation/page/RemarkInfo'
+import QRCodeContent from './Profile/page/QRCode'
 
 
 export const MainPage = {
@@ -298,7 +299,7 @@ export const RouteMap = {
         'Profile': {
             component: Profile,
             params: {"name":"Profile"},
-            markType:Mark.ChangeHeadImage
+            markType:[Mark.ChangeHeadImage,Mark.ChangeNickname]
         },
         'HeadImage':{
             component: HeadImage,
@@ -308,7 +309,12 @@ export const RouteMap = {
         'NickName':{
             component:NickName,
             params:{"name":"NickName"}
+        },
+        'QRCode': {
+                component: QRCodeContent,
+                params: {"name":"QRCode"}
         }
+
     },
     'SelectGroup':{
         'SelectGroup': {

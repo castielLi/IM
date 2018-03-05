@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
     itemText:{
         fontSize:15,
         color:'#000',
-
     },
     headerText:{
         fontSize:24,
@@ -157,7 +156,9 @@ class Profile extends AppComponent {
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         this.state = {
             showFeatures:false,//显示功能块组件
-            headImageUrl:headImagePath
+            headImageUrl:headImagePath,
+            currentAccount:currentAccount,
+            nickname:currentAccount.Nickname
         };
         currentObj = this;
     }
@@ -174,6 +175,10 @@ class Profile extends AppComponent {
                     headImageUrl:param,
                 });
                 break;
+            case AppPageMarkEnum.ChangeNickname:
+                currentObj.setState({
+                    nickname:param
+                })
         }
     }
 
@@ -185,8 +190,10 @@ class Profile extends AppComponent {
             case '名字':
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
+            case '我的二维码':
+                this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{}});
+                break;
             default:
-                alert('未开发');
                 break;
         }
     }
@@ -222,6 +229,29 @@ class Profile extends AppComponent {
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 );
+            case '名字':
+                return(
+                    <View>
+                        <Text style={styles.itemText}>{this.state.nickname}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                        </Text>
+                    </View>
+                )
+            case '云信号':
+                return(
+                    <View>
+                        <Text style={styles.itemText}>{this.state.currentAccount.Account}
+                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                        </Text>
+                    </View>
+                )
+            case '我的二维码':
+                return(
+                    <View>
+                        <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                )
             default:
                 return(
                     <View>
