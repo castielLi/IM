@@ -79,35 +79,10 @@ class ClientInformation extends AppComponent {
         }
     }
 
-
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <View style={styles.back}>
-
-                <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
-
-                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'通讯录'}</Text>
-            </View>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "详细资料",
-            tintColor:'#fff',
-        }
-    }
     goToInformationSetting= ()=>{
         this.route.push(this.props,{key:'InformationSetting',routeId:'InformationSetting',params:{clientId:this.state.userInfo.Account,type:'pravite'}});
     }
 
-    _rightButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={this.goToInformationSetting}>
-            <Icon name="ellipsis-h" size={20} color="#fff" style={{marginRight:10,textAlignVertical:'center'}}/>
-
-        </TouchableOpacity>
-    }
     goToChatDetail = ()=>{
         if(this.props.existChatDetailId == this.state.userInfo.Account)
             this.route.pop(this.props);

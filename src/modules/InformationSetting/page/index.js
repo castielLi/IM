@@ -43,25 +43,6 @@ class InformationSetting extends AppComponent {
         super.componentWillUnmount();
     }
 
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <View style={styles.back}>
-
-                <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
-
-                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'详细资料'}</Text>
-            </View>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "资料设置",
-            tintColor:'#fff',
-        }
-    }
-
     componentWillMount(){
         userController.getUserInfo(this.props.clientId,false,(result)=>{
             let BlackList = result.BlackList ? true : false;
@@ -135,7 +116,7 @@ class InformationSetting extends AppComponent {
                             <Switch
                                 value={this.state.notSeeMyZoom}
                                 onValueChange={this.changeNotSeeMyZoom}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <View>
@@ -144,7 +125,7 @@ class InformationSetting extends AppComponent {
                             <Switch
                                 value={this.state.notSeeHisZoom}
                                 onValueChange={this.changeNotSeeHisZoom}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
@@ -153,13 +134,12 @@ class InformationSetting extends AppComponent {
                             <Switch
                                 value={this.state.joinBlackList}
                                 onValueChange={this.changeJoinBlackList}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>投诉</Text>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
                             <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                         </View>
                     </TouchableHighlight>
