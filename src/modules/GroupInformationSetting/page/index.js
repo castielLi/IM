@@ -132,7 +132,7 @@ class GroupInformationSetting extends AppComponent {
                 })
             });
             userController.getGroupSetting(this.props.groupId,(result)=>{
-                this.state({
+                this.setState({
                     isNickname:result.Nickname,
                 })
             })
