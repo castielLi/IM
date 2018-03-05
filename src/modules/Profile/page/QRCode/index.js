@@ -43,11 +43,24 @@ class QRCodeContent extends AppComponent {
                     heading={'二维码'}
                     left={{func:()=>{this.route.pop(this.props)}}}
                 />
-                <QRCode
-                    value={this.state.code}
-                    size={200}
-                    bgColor='black'
-                    fgColor='white'/>
+                <View style={styles.Box}>
+                    <View style={styles.QRCodeBox}>
+                        <View style={styles.userInfo}>
+                            <Image style={styles.userHeadImage}/>
+                            <View style={styles.userDataBox}>
+                                <Text style={styles.userName}>Z</Text>
+                                <Text style={styles.address}>中国</Text>
+                            </View>
+                        </View>
+                        <View style={styles.QRCode}>
+                            <QRCode
+                                value={this.state.code}
+                                size={250}
+                                bgColor='black'
+                                fgColor='white'/>
+                        </View>
+                    </View>
+                </View>
             </View>
         )
     }
@@ -55,8 +68,31 @@ class QRCodeContent extends AppComponent {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'white',
-        flex:1
+        backgroundColor:'#2c2c2c',
+        flex:1,
+    },
+    Box:{
+        flex:1,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    QRCodeBox:{
+        padding:10,
+        backgroundColor:'#fff'
+    },
+    userInfo:{
+        flexDirection:'row'
+    },
+    userHeadImage:{
+        width:50,
+        height:50,
+    },
+    userDataBox:{
+        marginLeft:10,
+        justifyContent:'center'
+    },
+    userName:{
+
     }
 });
 

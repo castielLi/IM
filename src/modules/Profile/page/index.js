@@ -86,7 +86,6 @@ const styles = StyleSheet.create({
         width:60,
         height:60,
         resizeMode:'stretch',
-        marginRight:15
     },
     itemSmallText:{
         fontSize:14,
@@ -142,7 +141,8 @@ const styles = StyleSheet.create({
     },
     arrow:{
         fontSize:20,
-        color:'#aaa'
+        color:'#aaa',
+        marginLeft:15
     },
 });
 class Profile extends AppComponent {
@@ -231,30 +231,28 @@ class Profile extends AppComponent {
                 );
             case '名字':
                 return(
-                    <View>
-                        <Text style={styles.itemText}>{this.state.nickname}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </Text>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <Text style={styles.itemText}>{this.state.nickname}</Text>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
             case '云信号':
                 return(
-                    <View>
-                        <Text style={styles.itemText}>{this.state.currentAccount.Account}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </Text>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <Text style={styles.itemText}>{this.state.currentAccount.Account}</Text>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
             case '我的二维码':
                 return(
-                    <View>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
                         <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
             default:
                 return(
-                    <View>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
