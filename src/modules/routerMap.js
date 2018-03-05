@@ -52,6 +52,7 @@ import NickName from './Profile/page/Nickname'
 import SelectGroup from './ChooseClient/page/SelectGroup'
 import RemarkInfo from './ClientInformation/page/RemarkInfo'
 import QRCodeContent from './Profile/page/QRCode'
+import ScanCode from './ScanCode/page'
 
 
 export const MainPage = {
@@ -327,7 +328,13 @@ export const RouteMap = {
             component: RemarkInfo,
             params: {"name":"RemarkInfo"}
         }
+    },
+    'ScanCode':{
+        'ScanCode': {
+            component: ScanCode,
+            params: {"name":"ScanCode"}
     }
+}
 
 };
 

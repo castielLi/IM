@@ -59,6 +59,11 @@ class Features extends ContainerComponent {
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
 
     }
+
+    scanCode = ()=>{
+        this.route.push(this.props,{key: 'ScanCode',routeId: 'ScanCode',params:{}});
+    }
+
 	render(){
 		if(this.props.FeaturesStore){
             return (
@@ -82,7 +87,7 @@ class Features extends ContainerComponent {
 								<Text style = {styles.Text}>添加朋友</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState(); this.scanCode()}}>
 							<View style = {styles.featureBox}>
 								<Image style={styles.logo} source = {require('./resource/sweep.png')}/>
 								<Text style = {styles.Text}>扫一扫</Text>
