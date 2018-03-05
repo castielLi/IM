@@ -106,6 +106,21 @@ class ClientInformation extends AppComponent {
         this.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo,Applicant:Applicant,Respondent:Respondent,changeAddFriendButton:this.changeAddFriendButton}})
     }
 
+    _acceptFriend = ()=>{
+        this.showLoading();
+        applyController.acceptFriend(this.state.applyKey,()=>{
+            this.hideLoading();
+            if(result.Result == 1){
+                this.setState({
+                    isFriend:true,
+                })
+                // this.alert('接受好友申請成功','提示')
+            }else{
+                this.alert('接受好友申請失败','提示')
+            }
+        });
+    };
+
     //用户信息控制
     _infoControl=(Account,Remark,Nickname)=>{
         let path = userController.getAccountHeadImagePath(Account);
@@ -117,12 +132,10 @@ class ClientInformation extends AppComponent {
                 />
                 <View style={styles.basicBoxRight}>
                     <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
-                    {this.state.applyKey ? null :
-                        <View>
-                            <Text style={styles.id}>{'奇信号：'+Account}</Text>
-                            {hasRemark ? <Text style={styles.id}>{'昵称：'+Nickname}</Text> : null}
-                        </View>
-                    }
+                    <View>
+                        <Text style={styles.id}>{'奇信号：'+Account}</Text>
+                        {hasRemark ? <Text style={styles.id}>{'昵称：'+Nickname}</Text> : null}
+                    </View>
                 </View>
             </View>
         )
@@ -181,9 +194,9 @@ class ClientInformation extends AppComponent {
                     <View style={styles.verifyBox}>
                         <Text style={styles.verifyText}>我是xxx</Text>
                         <View style={styles.touchBtnBox}>
-                            <TouchableHighlight style={styles.touchBtn}>
-                                <Text style={styles.touchBtnText}>回复</Text>
-                            </TouchableHighlight>
+                            {/*<TouchableHighlight style={styles.touchBtn}>*/}
+                                {/*<Text style={styles.touchBtnText}>回复</Text>*/}
+                            {/*</TouchableHighlight>*/}
                         </View>
                     </View> : null
                 }
@@ -203,7 +216,7 @@ class ClientInformation extends AppComponent {
             if(this.state.applyKey){
                 return (
                     <View>
-                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}} style={styles.sendMessageBox}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._acceptFriend()} style={styles.sendMessageBox}>
                             <Text style={styles.sendMessage}>通过验证</Text>
                         </TouchableHighlight>
                         <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{}} style={styles.sendMessageBox}>
