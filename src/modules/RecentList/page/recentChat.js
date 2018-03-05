@@ -127,7 +127,10 @@ class RecentChat extends AppComponent {
 
     }
     _renderAvator = (userId,group,nosound,unreadCount) => {
-        let imageUrl = userController.getAccountHeadImagePath(userId)
+        let imageUrl = "";
+        if(!group){
+            imageUrl = userController.getAccountHeadImagePath(userId);
+        }
         return <View style = {styles.avatar}>
             <ImagePlaceHolder style = {styles.avatar}
                       imageUrl = {imageUrl}

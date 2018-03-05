@@ -177,7 +177,7 @@ class ChatDetail extends AppComponent {
 	render() {
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
-			<MyView style={styles.container} behavior='padding'  keyboardVerticalOffset={20}>
+			<MyView style={styles.container} behavior='padding'  keyboardVerticalOffset={0}>
     			<MyNavigationBar
 					left={{func:()=>{
 					    this.route.toMain(this.props);
