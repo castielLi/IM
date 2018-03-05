@@ -47,12 +47,14 @@ class GroupInformationSetting extends AppComponent {
         imController = IMController.getSingleInstance();
 
         let setting = imController.getChatSetting();
+
         if(setting == undefined){
             this.state = {
                 isStickyChat:false,//置顶聊天
                 notDisturb:false,//消息免打扰
                 isSave:false,
                 searchResult:true,
+                isNickname:false,
                 members:[],
                 realMemberList:[],
                 groupInformation:{}
@@ -63,6 +65,7 @@ class GroupInformationSetting extends AppComponent {
                 notDisturb:setting.NoDisturb,//消息免打扰
                 isSave:false,
                 searchResult:true,
+                isNickname:false,
                 members:[],
                 realMemberList:[],
                 groupInformation:{}
@@ -94,6 +97,12 @@ class GroupInformationSetting extends AppComponent {
         });
         userController.addOrRemoveContacts(this.props.groupId,!this.state.isSave);
     }
+    _changeIsNickname = (value)=>{
+        currentObj.setState({
+            isNickname:value
+        });
+        userController.modifyNicknameSetting(this.props.groupId,value);
+    };
 
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
@@ -122,6 +131,11 @@ class GroupInformationSetting extends AppComponent {
                     isSave: result.Save
                 })
             });
+            userController.getGroupSetting(this.props.groupId,(result)=>{
+                this.state({
+                    isNickname:result.Nickname,
+                })
+            })
         });
     }
 
@@ -275,26 +289,15 @@ class GroupInformationSetting extends AppComponent {
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupAnnouncement}>
-                            {Note?
-                                <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
-                                    <View style={{maxWidth:width-100}}>
-                                        <Text style={styles.remarks}>群公告</Text>
-                                        <Text style={styles.remarksText} numberOfLines={3}>{Note}</Text>
-                                    </View>
-
-                                    <Icon name="angle-right" size={35} color="#aaa" />
-                                </View>:
-                                <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
-                                    <View style={{maxWidth:width-100}}>
-                                        <Text style={styles.remarks}>群公告</Text>
-                                    </View>
-                                    <View style={{flexDirection:'row',alignItems:'center'}}>
-                                        <Text style={styles.arrowText}>{'未设置'}</Text>
-                                        <Icon name="angle-right" size={35} color="#aaa" />
-                                    </View>
+                            <View  style={[styles.remarksBox,{height:null,paddingVertical:10}]}>
+                                <View style={{maxWidth:width-100}}>
+                                    <Text style={styles.remarks}>群公告</Text>
                                 </View>
-                            }
-
+                                <View style={{flexDirection:'row',alignItems:'center'}}>
+                                    <Text style={styles.arrowText}>{Note ? Note : '未设置'}</Text>
+                                    <Icon name="angle-right" size={35} color="#aaa" />
+                                </View>
+                            </View>
                         </TouchableHighlight>
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
@@ -311,7 +314,7 @@ class GroupInformationSetting extends AppComponent {
                             <Switch
                                 value={this.state.isStickyChat}
                                 onValueChange={this.changeIsStickyChat}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <View>
@@ -320,16 +323,26 @@ class GroupInformationSetting extends AppComponent {
                             <Switch
                                 value={this.state.notDisturb}
                                 onValueChange={this.changeNotDisturb}
-                            ></Switch>
+                            />
                         </View>
                     </View>
-                    <View>
+                    <View style={{marginBottom:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>添加到通讯录</Text>
                             <Switch
                                 value={this.state.isSave}
                                 onValueChange={this.addOrRemoveTheContacts}
-                            ></Switch>
+                            />
+                        </View>
+                    </View>
+
+                    <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
+                        <View  style={styles.remarksBox}>
+                            <Text style={styles.remarks}>显示群成员昵称</Text>
+                            <Switch
+                                value={this.state.isNickname}
+                                onValueChange={this._changeIsNickname}
+                            />
                         </View>
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>

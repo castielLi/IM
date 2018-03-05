@@ -50,19 +50,30 @@ class InformationSetting extends AppComponent {
                 joinBlackList:BlackList,
             })
         });
+        userController.getUserSetting(this.props.clientId,(result)=>{
+            this.setState({
+                notSeeHisZoom:result.ScanZoom,
+                notSeeMyZoom:result.ReScanZoom,
+            })
+        })
 
     }
 
-    changeNotSeeMyZoom = ()=>{
+    //不然他看我朋友圈
+    changeNotSeeMyZoom = (value)=>{
         this.setState({
-            notSeeMyZoom:!this.state.notSeeMyZoom
-        })
-    }
-    changeNotSeeHisZoom = ()=>{
+            notSeeMyZoom:value
+        });
+        userController.modifyScanZoom(this.props.clientId,value)
+    };
+    //不看她朋友圈
+    changeNotSeeHisZoom = (value)=>{
         this.setState({
-            notSeeHisZoom:!this.state.notSeeHisZoom
-        })
-    }
+            notSeeHisZoom:value
+        });
+        userController.modifyReScanZoom(this.props.clientId,value)
+    };
+    //黑名单
     changeJoinBlackList = (value)=>{
         this.setState({
             joinBlackList:value
