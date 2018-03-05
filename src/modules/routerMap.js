@@ -235,7 +235,8 @@ export const RouteMap = {
     'GroupInformationSetting': {
         'GroupInformationSetting': {
             component: GroupInformationSetting,
-            params: {"name":"GroupInformationSetting"}
+            params: {"name":"GroupInformationSetting"},
+            markType:Mark.ChangeRemark
         }
     },
     'MoreGroupList': {

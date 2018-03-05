@@ -29,6 +29,7 @@ import {bindActionCreators} from 'redux';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import UserController from '../../../TSController/UserController';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
+import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
 let userController = undefined;
 let imController = undefined;
 
@@ -69,6 +70,23 @@ class GroupInformationSetting extends AppComponent {
             }
         }
         currentObj = this;
+    }
+
+    _refreshUI(type,params){
+        //这里如果没有点击通讯录界面是不会进行初始化的，不会初始化就会导致下层通知上层的时候不会显示contact 申请的红点
+        switch (type){
+            case AppPageMarkEnum.ChangeRemark:
+                 let {account,remark} = params;
+                 let changesMembers = currentObj.state.members;
+                 for(let item in changesMembers){
+                     if(changesMembers[item].Account == account){
+                         changesMembers.Remark = remark;
+                     }
+                 }
+                currentObj.setState({
+                    members:changesMembers.concat([])
+                })
+        }
     }
 
     componentWillUnmount(){
@@ -440,8 +458,9 @@ const styles = StyleSheet.create({
         borderRadius:5
     },
     itemText:{
-        fontSize:14,
-        color:'#000'
+        fontSize:12,
+        color:'#000',
+        marginTop:3
     },
     lastItemBox:{
         width:49,
