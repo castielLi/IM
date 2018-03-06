@@ -4,8 +4,8 @@
 export default class UserSettingDto {
     constructor() {
         this.BlackList = false;
-        this.ScanFriends = false;
-        this.ReScanFriends = false;
+        this.ScanZoom = false;
+        this.ReScanZoom = false;
         this.SpecialFriend = false;
     }
 }
