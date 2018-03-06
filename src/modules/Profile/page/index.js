@@ -59,7 +59,6 @@ var originData = [
             'name': "我的地址",
         }]
     },
-
 ]
 
 
@@ -112,6 +111,10 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
 
+    },
+    itemRightBox:{
+        flexDirection:'row',
+        alignItems:'center'
     },
     pic:{
         width:25,
@@ -183,6 +186,7 @@ class Profile extends AppComponent {
     }
 
     toDoSome = (name)=>{
+        let {nickname,headImageUrl} = this.state;
         switch (name){
             case '头像':
                 this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage'});
@@ -191,7 +195,10 @@ class Profile extends AppComponent {
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
             case '我的二维码':
-                this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{nickname,headImageUrl}});
+                break;
+            case '更多':
+                this.route.push(this.props,{key: 'Profile',routeId: 'MoreSetting',params:{}});
                 break;
             default:
                 break;
@@ -222,7 +229,7 @@ class Profile extends AppComponent {
         switch (info.item.name){
             case '头像':
                 return (
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <View style={styles.itemRightBox}>
                         <ImagePlaceHolder style={styles.topPic}
                                           imageUrl ={this.state.headImageUrl}
                         />
@@ -231,28 +238,28 @@ class Profile extends AppComponent {
                 );
             case '名字':
                 return(
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <View style={styles.itemRightBox}>
                         <Text style={styles.itemText}>{this.state.nickname}</Text>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
             case '云信号':
                 return(
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <View style={styles.itemRightBox}>
                         <Text style={styles.itemText}>{this.state.currentAccount.Account}</Text>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
             case '我的二维码':
                 return(
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <View style={styles.itemRightBox}>
                         <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
             default:
                 return(
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <View style={styles.itemRightBox}>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )

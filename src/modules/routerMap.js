@@ -53,6 +53,8 @@ import SelectGroup from './ChooseClient/page/SelectGroup'
 import RemarkInfo from './ClientInformation/page/RemarkInfo'
 import QRCodeContent from './Profile/page/QRCode'
 import ScanCode from './ScanCode/page'
+import MoreSetting from './Profile/page/More'
+import Signature from './Profile/page/More/Signature'
 
 
 export const MainPage = {
@@ -312,8 +314,16 @@ export const RouteMap = {
             params:{"name":"NickName"}
         },
         'QRCode': {
-                component: QRCodeContent,
-                params: {"name":"QRCode"}
+            component: QRCodeContent,
+            params: {"name":"QRCode"}
+        },
+        'MoreSetting':{
+            component: MoreSetting,
+            params: {"name":"MoreSetting"}
+        },
+        'Signature':{
+            component: Signature,
+            params: {"name":"Signature"}
         }
 
     },

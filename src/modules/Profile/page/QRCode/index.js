@@ -18,6 +18,7 @@ import AppComponent from '../../../../Core/Component/AppComponent';
 import QRCode from 'react-native-qrcode';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import UserController from '../../../../TSController/UserController';
+import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 let currentObj;
 let userController = undefined;
 
@@ -46,9 +47,9 @@ class QRCodeContent extends AppComponent {
                 <View style={styles.Box}>
                     <View style={styles.QRCodeBox}>
                         <View style={styles.userInfo}>
-                            <Image style={styles.userHeadImage}/>
+                            <ImagePlaceHolder style = {styles.userHeadImage} imageUrl = {this.props.headImageUrl}/>
                             <View style={styles.userDataBox}>
-                                <Text style={styles.userName}>Z</Text>
+                                <Text style={styles.userName}>{this.props.nickname}</Text>
                                 <Text style={styles.address}>中国</Text>
                             </View>
                         </View>
@@ -77,22 +78,37 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     QRCodeBox:{
-        padding:10,
+        padding:15,
         backgroundColor:'#fff'
     },
     userInfo:{
         flexDirection:'row'
     },
     userHeadImage:{
-        width:50,
-        height:50,
+        width:55,
+        height:55,
+        borderRadius: 4,
     },
     userDataBox:{
         marginLeft:10,
         justifyContent:'center'
     },
     userName:{
-
+        color:'#000',
+        fontSize:16,
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false
+    },
+    address:{
+        color:'#777',
+        fontSize:14,
+        fontWeight:'normal',
+        textAlignVertical:'center',
+        includeFontPadding:false
+    },
+    QRCode:{
+        margin:20
     }
 });
 

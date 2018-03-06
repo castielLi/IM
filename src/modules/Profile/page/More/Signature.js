@@ -1,32 +1,32 @@
 /**
- * Created by Hsu. on 2018/2/28.
+ * Created by Hsu. on 2018/3/6.
  */
-import React, {Component} from 'react';
-import {StyleSheet,Image,TextInput,Platform,Alert,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
-import AppComponent from '../../../Core/Component/AppComponent';
-import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../TSController/UserController'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
+import React, { Component } from 'react';
+import {
+    StyleSheet,
+    TextInput,
+    View,
+} from 'react-native';
+import AppComponent from '../../../../Core/Component/AppComponent';
+import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
+import UserController from '../../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+let currentObj;
 let userController = undefined;
-let imLogicController = undefined;
-let {width,height} = Dimensions.get('window');
-export default class RemarkInfo extends AppComponent {
-    constructor(props) {
+
+export default class Signature extends AppComponent {
+    constructor(props){
         super(props);
-        this.state = {
-            remark:props.remark,
-        };
         userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        this.state = {
+            Signature: props.Signature,
+            Confirm:true,
+        }
+        this.cache = props.Signature;
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(){
         super.componentWillUnmount();
-    }
-
-    componentDidMount() {
     }
 
     _onFocus=()=>{
@@ -40,38 +40,50 @@ export default class RemarkInfo extends AppComponent {
         })
     };
 
-   _modifyRemark=()=>{
-       let {account} = this.props;
-        userController.modifyRemark(account,this.state.remark);
+    _onChangeText=(text)=>{
+        let Confirm = true;
+        if(text != this.cache){
+            Confirm = false;
+        }
+        this.setState({
+            Signature:text,
+            Confirm
+        })
+    };
+
+    _modifySignature=()=>{
+        let {account} = this.props;
+        // userController.modifyRemark(account,this.state.remark);
         this.route.pop(this.props);
     };
 
     render(){
+        let {Signature,Confirm} = this.state;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
-                    heading={'备注信息'}
-                    right={{func:()=>{this._modifyRemark()},text:'完成'}}
+                    heading={'个性签名'}
+                    right={{func:()=>{this._modifySignature()},text:'完成',disabled:Confirm}}
                 />
                 <View style={styles.RemarkModule}>
-                    <Text style={styles.titleName}>备注名</Text>
                     <View ref={e=>this.inputView = e} style={styles.inputViewDefault}>
                         <TextInput
                             style={styles.inputBox}
                             underlineColorAndroid="transparent"
                             onBlur={()=>this._onBlur()}
                             onFocus={()=>this._onFocus()}
-                            onChangeText={(v)=>{this.setState({remark:v})}}
-                            value={this.state.remark}
+                            onChangeText={(v)=>this._onChangeText(v)}
+                            value={Signature}
+                            autoFocus={true}
                         />
-                        {this.state.remark.length ?
+                        {(Signature && Signature.length) ?
                             <View style={{justifyContent:'center', alignItems:'center'}}>
                                 <Icon
                                     name="remove"
                                     size={24}
                                     color="#aaa"
-                                    onPress={()=>{this.setState({remark:''})}}
+                                    onPress={()=>this._onChangeText('')}
                                     style={styles.inputIcon}
                                 />
                             </View> : null
@@ -90,14 +102,6 @@ const styles = StyleSheet.create({
     },
     RemarkModule:{
         paddingHorizontal:15
-    },
-    titleName:{
-        paddingTop:20,
-        color:'#bbb',
-        fontWeight:'normal',
-        fontSize:16,
-        textAlignVertical:'center',
-        includeFontPadding:false,
     },
     inputViewDefault:{
         paddingTop:10,

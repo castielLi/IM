@@ -38,7 +38,7 @@ class MyNavigationBar extends Component {
         if(!left){
             return null;
         }
-        else if(typeof left == 'string'){
+        if(typeof left == 'string'){
             return(
                 <View style={styles.leftTextView}>
                     <Text style={styles.leftTextContent}>{left}</Text>
@@ -71,10 +71,8 @@ class MyNavigationBar extends Component {
         //     tintColor:'#fff',
         //     numberOfLines:1
         // }
-
         return (
                 <Text numberOfLines = {1} style={styles.title}>{heading}</Text>
-
         )
     };
 
