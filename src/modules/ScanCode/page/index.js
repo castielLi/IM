@@ -25,22 +25,29 @@ import {
 import {
     bindActionCreators
 } from 'redux';
+import { QRScannerView } from 'ac-qrcode';
 import UserController from '../../../TSController/UserController'
 
 class ScanCode extends AppComponent {
     constructor(props) {
         super(props);
 
-        this.state = {
-            torchMode: 'off',
-            cameraType: 'back',
-        };
+        this.render = this.render.bind(this);
+    }
+
+    _renderMenu() {
+        return null;
+
+    }
+
+    _renderTitleBar(){
+        return null;
     }
 
     barcodeReceived(e) {
-        console.log('Barcode: ' + e.data);
-        console.log('Type: ' + e.type);
+        alert('Type: ' + e.type + '\nData: ' + e.data);
     }
+
 
     render() {
         return (
@@ -51,7 +58,11 @@ class ScanCode extends AppComponent {
                     }}}
                     heading={'二维码/条码'}
                 />
-
+                < QRScannerView
+                    onScanResultReceived={this.barcodeReceived.bind(this)}
+                    renderTopBarView={() => this._renderTitleBar()}
+                    renderBottomMenuView={() => this._renderMenu()}
+                />
             </View>
         );
     }
