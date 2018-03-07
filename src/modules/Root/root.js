@@ -21,6 +21,8 @@ import {
 } from 'react-redux';
 import * as router from '../routerMap'
 import AppComponent from '../../Core/Component/AppComponent'
+import AppManagement from '../../App/AppManagement'
+
 
 let initRootNavigation = false;
 
@@ -28,6 +30,7 @@ class Root extends AppComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
+
     }
 
     componentWillUnmount(){
@@ -49,6 +52,7 @@ class Root extends AppComponent {
         if(!initRootNavigation){
             this.route.setRootNavigator(navigator);
             initRootNavigation = !initRootNavigation;
+            AppManagement.setRoot(this);
         }
 
         return this.route.getRoutePage(Route, navigator);

@@ -9,14 +9,17 @@ import Request from './AppPageRequestEnum'
 //controller
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
+// import ScanController from '../TSController/ScanController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
 import PageInitReadyEnum from './PageInitReadyEnum'
+import AppPushSpecifyPageEnum from './AppPushSpecifyPageEnum'
 
 let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
+let scanController = undefined;
 
 let Contacts = {};
 
@@ -45,12 +48,19 @@ let InitReady = {"ConversationList":false,"Contact":false}
 
 let ConnectState = false;
 
+let root = undefined;
+
 export default class AppManagement{
 
     static Init(){
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMLogicController.getSingleInstance();
+        // scanController = ScanController.getSingleInstance();
+    }
+
+    static setRoot(rootComponent){
+        root = rootComponent;
     }
 
     static onLoginSuccess(){
@@ -234,6 +244,10 @@ export default class AppManagement{
         }
     }
 
+    static pushSpecifyPage(type,params){
+
+    }
+
     static AppLogout(){
         ConnectState = false;
     }
@@ -259,5 +273,17 @@ export default class AppManagement{
             imLogicController.connectSocket();
             ConnectState = !ConnectState;
         }
+    }
+
+    static requestPageManagement(type,data){
+       switch (type){
+           case AppPushSpecifyPageEnum.UserInfo:
+               root.route.push(root,{
+                   key:'ClientInformation',
+                   routeId: 'ClientInformation',
+                   params:{"clientId":data}
+               });
+               break;
+       }
     }
 }

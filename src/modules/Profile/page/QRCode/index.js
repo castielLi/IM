@@ -19,16 +19,18 @@ import QRCode from 'react-native-qrcode';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import UserController from '../../../../TSController/UserController';
 import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-let currentObj;
+let currentObj = undefined;
 let userController = undefined;
 
 class QRCodeContent extends AppComponent {
     constructor(props){
         super(props)
         userController = UserController.getSingleInstance();
+        let currentUser = userController.getCurrentAccount();
+        let code = userController.getAccountQRCode(currentUser.Account)
         this.state = {
-            code:"wg003722"
-        }
+            code:code
+        };
     }
 
     componentWillUnmount(){
