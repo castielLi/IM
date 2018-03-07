@@ -22,12 +22,14 @@ import {
 import * as router from '../routerMap'
 import AppComponent from '../../Core/Component/AppComponent'
 
+
 let initRootNavigation = false;
 
 class Root extends AppComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
+
     }
 
     componentWillUnmount(){

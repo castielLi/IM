@@ -13,6 +13,7 @@ import ApplyController from '../TSController/ApplyController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
 import PageInitReadyEnum from './PageInitReadyEnum'
+import AppPushSpecifyPageEnum from './AppPushSpecifyPageEnum'
 
 let imController = undefined;
 let userController = undefined;
@@ -47,6 +48,8 @@ let InitReady = {"ConversationList":false,"Contact":false}
 
 let ConnectState = false;
 
+let root = undefined;
+
 export default class AppManagement{
 
     static Init(){
@@ -54,6 +57,10 @@ export default class AppManagement{
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMLogicController.getSingleInstance();
         // scanController = ScanController.getSingleInstance();
+    }
+
+    static setRoot(rootComponent){
+        root = rootComponent;
     }
 
     static onLoginSuccess(){
@@ -269,6 +276,14 @@ export default class AppManagement{
     }
 
     static requestPageManagement(type,data){
-       alert("开始push界面了")
+       switch (type){
+           case AppPushSpecifyPageEnum.UserInfo:
+               root.route.push(root.props,{
+                   key:'ClientInformation',
+                   routeId: 'ClientInformation',
+                   params:{"clientId":data}
+               });
+               break;
+       }
     }
 }
