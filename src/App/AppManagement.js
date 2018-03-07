@@ -234,6 +234,10 @@ export default class AppManagement{
         }
     }
 
+    static pushSpecifyPage(type,params){
+
+    }
+
     static AppLogout(){
         ConnectState = false;
     }

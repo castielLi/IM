@@ -1,0 +1,1 @@
+{"version":3,"file":"QRCodeManager.js","sourceRoot":"","sources":["../../../TSCore/QRCodeManagement/QRCodeManager.ts"],"names":[],"mappings":"AAAA;;GAEG;AAGH,MAAM,CAAC,OAAO;IAGH,MAAM,CAAC,iBAAiB;QAC3B,EAAE,CAAC,CAAC,aAAa,CAAC,cAAc,IAAI,IAAI,CAAC,CAAC,CAAC;YACvC,aAAa,CAAC,cAAc,GAAG,IAAI,aAAa,EAAE,CAAC;QACvD,CAAC;QACD,MAAM,CAAC,aAAa,CAAC,cAAc,CAAC;IACxC,CAAC;IAED;IACA,CAAC;CACJ"}
