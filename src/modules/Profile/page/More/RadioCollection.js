@@ -46,7 +46,7 @@ export default class RadioCollection extends AppComponent {
 
     _onTouchOption=(value)=>{
         let {onPress} = this.props;
-        onPress &&onPress(value);
+        onPress && onPress(value);
         this.onChange();
     };
 
@@ -62,7 +62,7 @@ export default class RadioCollection extends AppComponent {
     render(){
         return (
             <Modal
-                animationType='fade'
+                animationType='none'
                 transparent={true}
                 onRequestClose={()=>{}}
                 visible={this.state.visible}
@@ -80,10 +80,10 @@ export default class RadioCollection extends AppComponent {
                                     {this._radioIcon(1)}
                                 </View>
                             </TouchableHighlight>
-                            <TouchableHighlight underlayColor={'#eee'} activeOpacity={0.5} onPress={()=>this._onTouchOption(0)}>
+                            <TouchableHighlight underlayColor={'#eee'} activeOpacity={0.5} onPress={()=>this._onTouchOption(2)}>
                                 <View style={styles.radioItem}>
                                     <Text style={styles.radioText}>女</Text>
-                                    {this._radioIcon(0)}
+                                    {this._radioIcon(2)}
                                 </View>
                             </TouchableHighlight>
                         </View>

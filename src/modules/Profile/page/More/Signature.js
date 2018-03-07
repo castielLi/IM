@@ -51,9 +51,16 @@ export default class Signature extends AppComponent {
         })
     };
 
+    _onChangeSize=(e)=>{
+        this._TextInput.setNativeProps({
+            style:[styles.inputBox,{height:e.nativeEvent.contentSize.height}]
+        })
+    };
+
     _modifySignature=()=>{
-        let {account} = this.props;
-        // userController.modifyRemark(account,this.state.remark);
+        let {onPress} = this.props;
+        // userController.modifyRemark(this.state.Signature);
+        onPress && onPress(this.state.Signature);
         this.route.pop(this.props);
     };
 
@@ -69,13 +76,16 @@ export default class Signature extends AppComponent {
                 <View style={styles.RemarkModule}>
                     <View ref={e=>this.inputView = e} style={styles.inputViewDefault}>
                         <TextInput
+                            ref={e=>this._TextInput = e}
                             style={styles.inputBox}
                             underlineColorAndroid="transparent"
-                            onBlur={()=>this._onBlur()}
-                            onFocus={()=>this._onFocus()}
-                            onChangeText={(v)=>this._onChangeText(v)}
+                            onBlur={this._onBlur}
+                            onFocus={this._onFocus}
+                            onChangeText={this._onChangeText}
+                            onContentSizeChange={this._onChangeSize}
                             value={Signature}
                             autoFocus={true}
+                            multiline={true}
                         />
                         {(Signature && Signature.length) ?
                             <View style={{justifyContent:'center', alignItems:'center'}}>
@@ -101,7 +111,8 @@ const styles = StyleSheet.create({
         backgroundColor:'#fff',
     },
     RemarkModule:{
-        paddingHorizontal:15
+        paddingHorizontal:15,
+        marginTop:10,
     },
     inputViewDefault:{
         paddingTop:10,
@@ -119,7 +130,7 @@ const styles = StyleSheet.create({
         fontSize:16,
         flex:1,
         paddingRight:0,
-        paddingVertical:0,
+        paddingBottom:5
     },
     inputIcon:{
         flex:1,

@@ -34,6 +34,9 @@ export default class MoreSetting extends AppComponent {
         super(props);
         userController = UserController.getSingleInstance();
         this.state = {
+            gender:props.gender,
+            signature:props.signature,
+            address:props.address
         }
     }
 
@@ -65,7 +68,7 @@ export default class MoreSetting extends AppComponent {
             case '性別':
                 return (
                     <View style={styles.itemRightBox}>
-                        <Text style={styles.itemContent}>男</Text>
+                        <Text style={styles.itemContent}>{this.state.gender ? this.state.gender == 1 ? '男' : '女' : '未设置'}</Text>
                     </View>
                 );
             case '地区':
@@ -77,7 +80,7 @@ export default class MoreSetting extends AppComponent {
             case '个性签名':
                 return(
                     <View style={styles.itemRightBox}>
-                        <Text style={styles.itemContent}>{false ? '' : '未填写'}</Text>
+                        <Text style={styles.itemContent}>{this.state.signature ? this.state.signature : '未填写'}</Text>
                     </View>
                 );
         }
@@ -86,18 +89,34 @@ export default class MoreSetting extends AppComponent {
     _toDoSome = (name)=>{
         switch (name){
             case '性別':
-                // this._RadioCollection.onChange();
+                this._RadioCollection.onChange();
                 break;
             case '地区':
                 // this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
             case '个性签名':
-                // this.route.push(this.props,{key: 'Profile',routeId: 'Signature',params:{Signature:''}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'Signature',params:{Signature:this.state.signature,onPress:this.onChangSignature}});
                 break;
             default:
                 break;
         }
-    }
+    };
+
+    onChangGender=(gender)=>{
+        this.setState({
+            gender
+        })
+    };
+    onChangSignature=(signature)=>{
+        this.setState({
+            signature
+        })
+    };
+    onChangAddress=(address)=>{
+        this.setState({
+            address
+        })
+    };
 
     render() {
         return(
@@ -117,7 +136,7 @@ export default class MoreSetting extends AppComponent {
                         stickySectionHeadersEnabled={false}
                     />
                 </View>
-                <RadioCollection ref={e=>this._RadioCollection = e}/>
+                <RadioCollection ref={e=>this._RadioCollection = e} defaultValue={this.state.gender} onPress={this.onChangGender}/>
             </View>
         )
     }
@@ -158,7 +177,10 @@ const styles = StyleSheet.create({
     },
     itemRightBox:{
         flexDirection:'row',
-        alignItems:'center'
+        alignItems:'center',
+        flex:1,
+        justifyContent:'flex-end',
+        marginLeft:15,
     },
     itemText:{
         color:'#000',
@@ -172,7 +194,8 @@ const styles = StyleSheet.create({
         fontSize:14,
         fontWeight:'normal',
         textAlignVertical:'center',
-        includeFontPadding:false
+        includeFontPadding:false,
+        textAlign:'right',
     }
 
 });
