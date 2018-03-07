@@ -128,7 +128,7 @@ class ForwardChoose extends AppComponent {
                     ItemSeparatorComponent={this._renderSeparator}
                 />
                 <ForwardConfirm
-                    ref={e=>this.confirm = e}
+                    ref={e=>this._confirm = e}
                     confirm={this.forwardMessage}
                     cancel={this.onCancel}
                     rowData={this.props.rowData}
@@ -152,10 +152,18 @@ class ForwardChoose extends AppComponent {
 
     /*路由跳转*/
     _goToContacts =()=>{
-        this.route.push(this.props,{key: 'ContactsChoose',routeId: 'ContactsChoose',params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
+        this.route.push(this.props,{
+            key: 'ContactsChoose',
+            routeId: 'ContactsChoose',
+            params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},
+            sceneConfig:{...Navigator.SceneConfigs.FloatFromBottom,gestures: null}});
     };
     _goToGroups =()=>{
-        this.route.push(this.props,{key: 'GroupsChoose',routeId: 'GroupsChoose',params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},sceneConfig:Navigator.SceneConfigs.FloatFromBottom});
+        this.route.push(this.props,{
+            key: 'GroupsChoose',
+            routeId: 'GroupsChoose',
+            params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm}
+            ,sceneConfig:{...Navigator.SceneConfigs.FloatFromBottom,gestures: null}});
     };
     _goToCreateGroup =()=>{
 
@@ -206,7 +214,7 @@ class ForwardChoose extends AppComponent {
         if(RecordDto){
             this.RecordDto = RecordDto;
         }
-        this.confirm.onChange();
+        this._confirm.onChange();
     };
 
     /*导航右侧按钮点击事件*/

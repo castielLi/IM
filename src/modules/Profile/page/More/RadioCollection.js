@@ -53,9 +53,9 @@ export default class RadioCollection extends AppComponent {
     _radioIcon=(value)=>{
         let defaultValue = this.props.defaultValue;
         if(defaultValue == value){
-            return <Icon style={styles.radioIcon} name="dot-circle-o" size={20} color="#62b900"/>
+            return <Icon style={styles.radioIcon} name="dot-circle-o" size={18} color="#62b900"/>
         }else {
-            return <Icon style={styles.radioIcon} name="circle-o" size={20} color="#999"/>
+            return <Icon style={styles.radioIcon} name="circle-o" size={18} color="#999"/>
         }
     };
 
@@ -102,13 +102,13 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     radioModel:{
-        padding:30,
+        padding:20,
         backgroundColor:'#fff',
         width:width-100
     },
     title:{
         color:'#000',
-        fontSize:24,
+        fontSize:20,
         fontWeight:'normal',
         textAlignVertical:'center',
         includeFontPadding:false
@@ -124,11 +124,11 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         paddingHorizontal:10,
-        paddingVertical:15
+        paddingVertical:10
     },
     radioText:{
         color:'#000',
-        fontSize:18,
+        fontSize:16,
         fontWeight:'normal',
         textAlignVertical:'center',
         includeFontPadding:false

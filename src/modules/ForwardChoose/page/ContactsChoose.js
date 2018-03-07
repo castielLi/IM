@@ -18,6 +18,7 @@ import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListData';
+import LetterPosition from './LetterPosition';
 
 let userController = undefined;
 let imLogicController = undefined;
@@ -108,15 +109,18 @@ class ContactsChoose extends AppComponent {
                     heading={'选择联系人'}
                     right={{func:()=>{this._forwardMessage()},text:optionText}}
                 />
-                <SectionList
-                    sections={ContactsData}
-                    extraData={this.state}
-                    keyExtractor={this._keyExtractor}
-                    ListHeaderComponent={this._renderHeader}
-                    renderSectionHeader={this._renderItemHeader}
-                    renderItem={this._renderItem}
-                    ItemSeparatorComponent={this._renderSeparator}
-                />
+                <View style={{flex:1}}>
+                    <SectionList
+                        sections={ContactsData}
+                        extraData={this.state}
+                        keyExtractor={this._keyExtractor}
+                        ListHeaderComponent={this._renderHeader}
+                        renderSectionHeader={this._renderItemHeader}
+                        renderItem={this._renderItem}
+                        ItemSeparatorComponent={this._renderSeparator}
+                    />
+                    <LetterPosition/>
+                </View>
             </View>
         )
     }
@@ -140,10 +144,10 @@ class ContactsChoose extends AppComponent {
         let TargetDto = {};
         TargetDto.name = content.Nickname;
         TargetDto.headImage = content.HeadImagePath;
+        this.props.changTargetInfo(content.Account,TargetDto);
         if(this.props.optionsType){
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
-            this.props.changTargetInfo(content.Account,TargetDto);
             //改变选中框样式
             this.CheckBoxData[index].onChange();
         }else{
