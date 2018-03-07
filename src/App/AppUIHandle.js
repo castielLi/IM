@@ -29,8 +29,3 @@ export function pageManagement(type,data){
             }
     }
 }
-
-
-export function requestPageManagement(type,data){
-    AppManagement.dispatchMessageToMarkPage(type,data);
-}

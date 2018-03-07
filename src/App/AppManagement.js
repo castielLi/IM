@@ -9,6 +9,7 @@ import Request from './AppPageRequestEnum'
 //controller
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
+// import ScanController from '../TSController/ScanController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
 import PageInitReadyEnum from './PageInitReadyEnum'
@@ -17,6 +18,7 @@ let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
+let scanController = undefined;
 
 let Contacts = {};
 
@@ -51,6 +53,7 @@ export default class AppManagement{
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMLogicController.getSingleInstance();
+        // scanController = ScanController.getSingleInstance();
     }
 
     static onLoginSuccess(){
@@ -263,5 +266,9 @@ export default class AppManagement{
             imLogicController.connectSocket();
             ConnectState = !ConnectState;
         }
+    }
+
+    static requestPageManagement(type,data){
+       alert("开始push界面了")
     }
 }

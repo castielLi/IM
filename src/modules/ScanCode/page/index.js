@@ -18,6 +18,7 @@ import {
     InteractionManager
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
+import AppManagement from '../../../App/AppManagement';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {
     connect
@@ -26,13 +27,17 @@ import {
     bindActionCreators
 } from 'redux';
 import { QRScannerView } from 'ac-qrcode';
-import UserController from '../../../TSController/UserController'
+import ScanController from '../../../TSController/ScanController'
+
+let scanController = undefined;
 
 class ScanCode extends AppComponent {
     constructor(props) {
         super(props);
 
         this.render = this.render.bind(this);
+        scanController = ScanController.getSingleInstance();
+        scanController.init(AppManagement.requestPageManagement)
     }
 
     _renderMenu() {
@@ -45,7 +50,8 @@ class ScanCode extends AppComponent {
     }
 
     barcodeReceived(e) {
-        alert('Type: ' + e.type + '\nData: ' + e.data);
+        // alert('Type: ' + e.type + '\nData: ' + e.data);
+        scanController.scanCode(e.data);
     }
 
 
