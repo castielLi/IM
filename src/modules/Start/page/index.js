@@ -27,7 +27,6 @@ class Start extends AppComponent {
         }
         currentObj = this;
         systemManager = new SystemManager()
-        AppManagement.setRoot(this);
     }
 
     componentWillUnmount(){

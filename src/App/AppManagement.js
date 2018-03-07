@@ -278,7 +278,7 @@ export default class AppManagement{
     static requestPageManagement(type,data){
        switch (type){
            case AppPushSpecifyPageEnum.UserInfo:
-               root.route.push(root.props,{
+               root.route.push(root,{
                    key:'ClientInformation',
                    routeId: 'ClientInformation',
                    params:{"clientId":data}
