@@ -30,7 +30,7 @@ import { QRScannerView } from 'ac-qrcode';
 import ScanController from '../../../TSController/ScanController'
 
 let scanController = undefined;
-
+let scanSuccess = false;
 class ScanCode extends AppComponent {
     constructor(props) {
         super(props);
@@ -51,7 +51,10 @@ class ScanCode extends AppComponent {
 
     barcodeReceived(e) {
         // alert('Type: ' + e.type + '\nData: ' + e.data);
-        scanController.scanCode(e.data);
+        if(!scanSuccess) {
+            scanController.scanCode(e.data);
+            scanSuccess = true;
+        }
     }
 
 

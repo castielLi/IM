@@ -6,6 +6,7 @@ export default class ScanController {
     constructor() {
         this.codeTool = null;
         this.codeTool = QRCodeTool.getSingleInstance();
+        this.codeTool.init(this);
     }
     static getSingleInstance() {
         if (ScanController.SingleInstance == null) {
