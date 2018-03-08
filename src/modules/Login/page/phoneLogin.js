@@ -31,7 +31,7 @@ class PhoneLogin extends AppComponent {
         this.addUser = this.addUser.bind(this)
         currentObj = this;
 
-        loginController = new LoginController();
+        loginController = LoginController.getSingleInstance();
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{
@@ -103,7 +103,7 @@ class PhoneLogin extends AppComponent {
             }
             currentObj.props.signDoing();
             currentObj.props.changeTabBar(0);
-            AppManagement.onLoginSuccess();
+            AppManagement.initBaseManagers();
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
                 routeId: 'MainTabbar'

@@ -48,6 +48,8 @@ let InitReady = {"ConversationList":false,"Contact":false}
 
 let ConnectState = false;
 
+let Logined = false;
+
 let root = undefined;
 
 export default class AppManagement{
@@ -63,7 +65,12 @@ export default class AppManagement{
         root = rootComponent;
     }
 
-    static onLoginSuccess(){
+    static loginSuccess(){
+        Logined = true;
+        tryConnectSocket();
+    }
+
+    static initBaseManagers(){
 
         AppManagement.Init();
 
@@ -246,6 +253,11 @@ export default class AppManagement{
 
     static AppLogout(){
         ConnectState = false;
+        Logined = false;
+    }
+
+    static getAppLoginStates(){
+        return Logined;
     }
 
     static pageInitReady(type){
@@ -259,16 +271,7 @@ export default class AppManagement{
                 break;
         }
 
-        for(let item in InitReady){
-            if(!InitReady[item]){
-                return;
-            }
-        }
-
-        if(!ConnectState) {
-            imLogicController.connectSocket();
-            ConnectState = !ConnectState;
-        }
+        tryConnectSocket();
     }
 
     static requestPageManagement(type,data){
@@ -289,5 +292,18 @@ export default class AppManagement{
                break;
 
        }
+    }
+}
+
+function tryConnectSocket(){
+    for(let item in InitReady){
+        if(!InitReady[item]){
+            return;
+        }
+    }
+
+    if(!ConnectState && Logined) {
+        imLogicController.connectSocket();
+        ConnectState = !ConnectState;
     }
 }
