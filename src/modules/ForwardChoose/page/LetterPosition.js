@@ -2,14 +2,12 @@
  * Created by Hsu. on 2018/3/7.
  */
 import React, {Component} from 'react';
-import {StyleSheet,Image,Modal,Platform,Alert,PanResponder,TouchableHighlight,View,Text,Dimensions} from 'react-native';
-import UserController from '../../../TSController/UserController';
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
+import {StyleSheet,Image,Modal,Platform,UIManager,PanResponder,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 
-let userController = undefined;
-let imLogicController = undefined;
 let {width,height} = Dimensions.get('window');
 let LetterSet = ['~','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','#'];
+let timer = null;
+
 export default class LetterPosition extends Component {
     constructor(props) {
         super(props);
@@ -19,16 +17,12 @@ export default class LetterPosition extends Component {
         this.currentLetter = null;
         this.height = null;
         this.singleHeight = null;
-
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        this.top = null;
     }
 
     static defaultProps = {
-        visible: false
     };
     static propTypes = {
-        visible: React.PropTypes.bool,
         onPress: React.PropTypes.func
     };
 
@@ -40,28 +34,32 @@ export default class LetterPosition extends Component {
             onMoveShouldSetPanResponderCapture: ()=> true, //是否要劫持滑动事件
             //激活时做的动作
             onPanResponderGrant: (e)=>{
-                let a = Math.floor(e.nativeEvent.locationY/this.singleHeight);
+                let a = Math.floor((e.nativeEvent.pageY-this.top)/this.singleHeight);
                 if(a != this.currentLetter){
                     this.currentLetter = a;
-                    this._SelectText.onChangeShow(LetterSet[a])
+                    timer = setTimeout(()=>{
+                        this._SelectText.onChangeShow(LetterSet[a]);
+                    },150);
+                    this.props.onPress && this.props.onPress(LetterSet[a]);
                 }
                 this._LetterPosition.setNativeProps({
                     style:[styles.container,styles.focusContainer]
                 });
             },
             //移动时作出的动作
-            onPanResponderMove: (e,g)=>{
-                let a = Math.floor((e.nativeEvent.locationY+g.dy)/this.singleHeight);
-                alert(e.nativeEvent.locationY+'/'+g.dy)
+            onPanResponderMove: (e)=>{
+                let a = Math.floor((e.nativeEvent.pageY-this.top)/this.singleHeight);
                 if(a >= 0 && a != this.currentLetter){
                     this.currentLetter = a;
                     this._SelectText.onChangeText(LetterSet[a]);
-                    // alert(LetterSet[a])
+                    this.props.onPress && this.props.onPress(LetterSet[a]);
                 }
             },
             //离开时
             onPanResponderRelease:(e)=>{
-                this._SelectText.onChangeHide('')
+                clearTimeout(timer);
+                this.currentLetter = null;
+                this._SelectText.onChangeHide('');
                 this._LetterPosition.setNativeProps({
                     style:styles.container
                 });
@@ -71,8 +69,11 @@ export default class LetterPosition extends Component {
     }
 
     _onLayout=(e)=>{
-        this.height = e.nativeEvent.layout.height;
-        this.singleHeight = this.height/LetterSet.length
+        UIManager.measure(e.target, (x, y, width, height, left, top) => {
+            this.height = height;
+            this.singleHeight = height/LetterSet.length;
+            this.top = top;
+        });
     }
 
     render() {
@@ -111,6 +112,7 @@ class SelectText extends Component{
     };
 
     onChangeShow=(value)=>{
+        if(this.state.show) return;
         this.setState({
             show:true,
             text:value
@@ -118,6 +120,7 @@ class SelectText extends Component{
     };
 
     onChangeHide=()=>{
+        if(!this.state.show) return;
         this.setState({
             show:false,
             text:''
@@ -129,11 +132,9 @@ class SelectText extends Component{
             return null;
         }
         return (
-            <View style={{position:'absolute', left:0}}>
-               <View style={{width:60,height:60,backgroundColor:'rgba(0,0,0,.3)',justifyContent:'center', alignItems:'center'}}>
-                   <Text>{this.state.text}</Text>
+               <View style={{width:80,height:80,backgroundColor:'rgba(0,0,0,.5)',borderRadius:5,justifyContent:'center', alignItems:'center'}}>
+                   <Text style={{fontSize:30,color:'#fff'}}>{this.state.text}</Text>
                </View>
-            </View>
         )
     }
 }
@@ -144,7 +145,9 @@ const styles = StyleSheet.create({
         right:0,
         top:0,
         bottom:0,
-        left:0
+        left:0,
+        justifyContent:'center',
+        alignItems:'center'
     },
     container:{
         position:'absolute',

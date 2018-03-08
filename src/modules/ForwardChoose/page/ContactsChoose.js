@@ -32,6 +32,7 @@ class ContactsChoose extends AppComponent {
         };
         this.CheckBoxData = [];//选择框组件
         this.HasData = 0;//是否有选择数据
+        this.ContactsData = [];//分组集合和数据
         userController = UserController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
     }
@@ -96,12 +97,22 @@ class ContactsChoose extends AppComponent {
         )
     };
 
+    scrollToLocation=(section)=>{
+        let hasLetter = this.ContactsData.KeyArray.indexOf(section);
+        if(hasLetter === -1) return;
+        this._SectionList.scrollToLocation({
+            animated : true,
+            sectionIndex: hasLetter,
+            itemIndex : 0,
+            viewOffset : 22
+        })
+    };
     render(){
         //将数据处理为SectionList所需要的格式
         let optionText = this.props.optionsType ? '单选' : '多选';
         this.HasData = Object.keys(this.props.selectRecord).length;
         optionText = this.HasData ? '发送('+this.HasData+')' : optionText;
-        let ContactsData = SectionDataFormate(this.state.ContactsData).SectionArray;
+        this.ContactsData = SectionDataFormate(this.state.ContactsData);
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -109,9 +120,10 @@ class ContactsChoose extends AppComponent {
                     heading={'选择联系人'}
                     right={{func:()=>{this._forwardMessage()},text:optionText}}
                 />
-                <View style={{flex:1}}>
+                <View style={styles.container}>
                     <SectionList
-                        sections={ContactsData}
+                        ref={e=>this._SectionList = e}
+                        sections={this.ContactsData.SectionArray}
                         extraData={this.state}
                         keyExtractor={this._keyExtractor}
                         ListHeaderComponent={this._renderHeader}
@@ -119,7 +131,7 @@ class ContactsChoose extends AppComponent {
                         renderItem={this._renderItem}
                         ItemSeparatorComponent={this._renderSeparator}
                     />
-                    <LetterPosition/>
+                    <LetterPosition onPress={this.scrollToLocation}/>
                 </View>
             </View>
         )

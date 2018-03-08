@@ -156,14 +156,16 @@ class ForwardChoose extends AppComponent {
             key: 'ContactsChoose',
             routeId: 'ContactsChoose',
             params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},
-            sceneConfig:{...Navigator.SceneConfigs.FloatFromBottom,gestures: null}});
+            // sceneConfig:{...Navigator.SceneConfigs.FloatFromBottom,gestures: null}
+            });
     };
     _goToGroups =()=>{
         this.route.push(this.props,{
             key: 'GroupsChoose',
             routeId: 'GroupsChoose',
-            params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm}
-            ,sceneConfig:{...Navigator.SceneConfigs.FloatFromBottom,gestures: null}});
+            params:{rowData:this.props.rowData,forwardMethod:this.forwardConfirm},
+            // sceneConfig:{...Navigator.SceneConfigs.FloatFromBottom,gestures: null}
+            });
     };
     _goToCreateGroup =()=>{
 
