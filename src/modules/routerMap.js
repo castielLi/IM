@@ -55,6 +55,7 @@ import QRCodeContent from './Profile/page/QRCode'
 import ScanCode from './ScanCode/page'
 import MoreSetting from './Profile/page/More'
 import Signature from './Profile/page/More/Signature'
+import ScanUnknow from './ScanCode/page/ScanUnknowPage'
 
 
 export const MainPage = {
@@ -343,8 +344,12 @@ export const RouteMap = {
         'ScanCode': {
             component: ScanCode,
             params: {"name":"ScanCode"}
+        },
+        'ScanUnknow':{
+            component:ScanUnknow,
+            params:{}
+        }
     }
-}
 
 };
 
