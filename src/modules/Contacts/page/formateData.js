@@ -1,46 +1,33 @@
 import HanZi_PinYin from './getFirestLetter';
-export function initDataFormate(arr,filterStr){
+export function initDataFormate(arr,filterStr) {
     let dataObj = {
-        needArr : [],
-        sectionArr : [],
+        SectionArray: [],//返回Section所需数组格式
+        KeyArray: [],//['A','B'...]
     };
-    let snapArr = [];
-    arr.forEach((v,i)=>{
-        if((v.Friend === true || v.Friend === 'true')&&HanZi_PinYin.get(v.Remark!=""?v.Remark:v.Nickname).indexOf(filterStr.toUpperCase()) >= 0){
-            snapArr.push(v)
-        }
-    })
 
-
-    snapArr.forEach((value,index)=>{
-        let firstLetter = HanZi_PinYin.get(value.Remark!=""?value.Remark.slice(0,1):value.Nickname.slice(0,1)).slice(0,1);
-        let exist = false;
-
-
-        if(dataObj.needArr.length === 0){
-            dataObj.needArr.push({'key':firstLetter,'data':[value]})
-            dataObj.sectionArr.push(firstLetter);
-        }else{
-            for(var i=0;i<dataObj.needArr.length;i++){
-                if(dataObj.needArr[i]&&dataObj.needArr[i].key===firstLetter){
-                    dataObj.needArr[i].data.push(value)
-                    exist = true;
+    if (arr instanceof Array) {
+        let SectionData = {};//{'A':{'wg003724':{...data},'wg003723':...}}
+        arr.forEach((current, index) => {
+            if ((current.Friend === true) && HanZi_PinYin.get(current.Remark != "" ? current.Remark : current.Nickname).indexOf(filterStr.toUpperCase()) >= 0) {
+                let firstChat = HanZi_PinYin.get(current.Remark != "" ? current.Remark.slice(0, 1) : current.Nickname.slice(0, 1)).slice(0, 1);
+                if (SectionData[firstChat] == null) {
+                    SectionData[firstChat] = {};
+                    SectionData[firstChat][current.Account] = current;
+                    dataObj.KeyArray.push(firstChat);
+                } else {
+                    SectionData[firstChat][current.Account] = current;
                 }
             }
-            if(exist === false){
-                dataObj.sectionArr.push(firstLetter);
-                if(dataObj.needArr[dataObj.needArr.length-1].key<=firstLetter){
-                    dataObj.needArr.push({'key':firstLetter,'data':[value]})
-
-                }else{
-                    dataObj.needArr.splice(dataObj.needArr.length-2,0,{'key':firstLetter,'data':[value]})
-                }
-            }
+        });
+        for (let i in SectionData) {
+            //小组信息对象
+            let PieceObj = {};
+            PieceObj['key'] = i;
+            PieceObj['data'] = Object.values(SectionData[i]);
+            dataObj.SectionArray.push(PieceObj);
         }
-
-    })
-
-    return dataObj;
+        return dataObj;
+    }
 }
 
 export function initFlatListData(arr){

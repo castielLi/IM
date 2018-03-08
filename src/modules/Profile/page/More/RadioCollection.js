@@ -91,7 +91,11 @@ export default class RadioCollection extends AppComponent {
     };
 
     _renderSeparator = () =>{
-        return <View style={styles.ItemSeparator}/>
+        return (
+            <View style={styles.ItemSeparatorBox}>
+                <View style={styles.ItemSeparator}/>
+            </View>
+        )
     };
 
 
@@ -120,7 +124,7 @@ export default class RadioCollection extends AppComponent {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#eee',
+        backgroundColor:'#ebebeb',
         flex:1,
     },
     SectionListBox:{
@@ -128,13 +132,15 @@ const styles = StyleSheet.create({
     },
     sectionHead:{
         height:20,
-        backgroundColor:'#eee',
+        backgroundColor:'#ebebeb',
+    },
+    ItemSeparatorBox:{
+        backgroundColor: '#fff',
     },
     ItemSeparator:{
-        marginHorizontal:15,
-        height:0,
-        borderBottomWidth:1,
-        borderBottomColor:'#eee',
+        height:1,
+        backgroundColor:'#eee',
+        marginHorizontal:15
     },
     itemBox:{
         minHeight:40,

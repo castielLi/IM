@@ -60,7 +60,13 @@ export default class MoreSetting extends AppComponent {
     };
 
     _renderSeparator = () =>{
-        return <View style={styles.ItemSeparator}/>
+        return(
+            <View style={styles.ItemSeparatorBox}>
+                <View style={styles.ItemSeparator}/>
+            </View>
+        )
+
+
     };
 
     _fillingValue=(info)=>{
@@ -125,16 +131,15 @@ export default class MoreSetting extends AppComponent {
                     left = {{func:()=>{this.route.pop(this.props)}}}
                     heading={'更多信息'}
                 />
-
-                    <SectionList
-                        keyExtractor={(item,index)=>("index"+index+item)}
-                        // ListHeaderComponent={this._renderHeader}
-                        renderSectionHeader={this._renderSection}
-                        renderItem={this._renderItem}
-                        sections={originData}
-                        ItemSeparatorComponent={this._renderSeparator}
-                        stickySectionHeadersEnabled={false}
-                    />
+                <SectionList
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    // ListHeaderComponent={this._renderHeader}
+                    renderSectionHeader={this._renderSection}
+                    renderItem={this._renderItem}
+                    sections={originData}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    stickySectionHeadersEnabled={false}
+                />
             </View>
         )
     }
@@ -152,11 +157,13 @@ const styles = StyleSheet.create({
         height:20,
         backgroundColor:'#eee',
     },
+    ItemSeparatorBox:{
+        backgroundColor: '#fff',
+    },
     ItemSeparator:{
-        marginHorizontal:15,
-        height:0,
-        borderBottomWidth:1,
-        borderBottomColor:'#eee',
+        height:1,
+        backgroundColor:'#eee',
+        marginHorizontal:15
     },
     itemBox:{
         minHeight:40,

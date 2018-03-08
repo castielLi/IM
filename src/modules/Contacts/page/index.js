@@ -139,15 +139,16 @@ class Contacts extends AppComponent {
 	_renderItem = (info) => {
 		let name = info.item.Remark != "" ? info.item.Remark:info.item.Nickname;
 		let path = userController.getAccountHeadImagePath(info.item.Account);
-		let lastItem = (info.index + 1) == info.section.data.length?true:false;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
-					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						<ImagePlaceHolder style={styles.pic}
-							imageUrl ={path}
-						/>
-						<Text style={styles.itemText}>{name}</Text>
-					</View>
-			   </TouchableHighlight>
+		// let lastItem = (info.index + 1) == info.section.data.length?true:false;
+		return (
+			<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
+				<View  style={styles.itemBox} >
+					<ImagePlaceHolder style={styles.pic} imageUrl ={path}/>
+					<Text style={styles.itemText}>{name}</Text>
+				</View>
+			</TouchableHighlight>
+		)
+
 	};
 	_sectionComp = (info) => {
 		var txt = info.section.key;
@@ -188,48 +189,43 @@ class Contacts extends AppComponent {
 					</View>
 					<View style={styles.listOtherUseBox}>
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
-							<View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-									<Image source={require('../resource/newFriends.png')} style={styles.pic} />
-									<Text style={styles.itemText}>新的朋友</Text>
-									{this.props.unReadApplyMessageMark?
-										<View style={styles.circle}>
-											{/*<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>*/}
-										</View>:
-										null
-									}
-								</View>
+							<View  style={styles.itemBox} >
+								<Image source={require('../resource/newFriends.png')} style={styles.pic} />
+								<Text style={styles.itemText}>新的朋友</Text>
+								{this.props.unReadApplyMessageMark?
+									<View style={styles.circle}>
+										{/*<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>*/}
+									</View>:
+									null
+								}
 							</View>
 					   </TouchableHighlight>
+						<View style={styles.ItemSeparator}/>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToGroupList}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
+						   <View  style={styles.itemBox} >
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} />
 								<Text style={styles.itemText}>群聊</Text>
-							</View>
-							</View>
+						   </View>
 					   </TouchableHighlight>
+						<View style={styles.ItemSeparator}/>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
+						   <View  style={styles.itemBox} >
 								<Image source={require('../resource/public.png')} style={styles.pic} />
 								<Text style={styles.itemText}>公众号</Text>
-							</View>
-							</View>
+						   </View>
 					   </TouchableHighlight>
+						<View style={styles.ItemSeparator}/>
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
+						   <View  style={styles.itemBox} >
 								<Image source={require('../resource/logo.png')} style={styles.pic} />
 								<Text style={styles.itemText}>标签</Text>
-								</View>
-							</View>
+						   </View>
 					   </TouchableHighlight>
 					</View>
 				</View>
 			      			};
 	_renderSeparator = () =>{
-		return <View style={styles.ItemSeparator}><Text></Text></View>
+		return <View style={styles.ItemSeparator}/>
 	};
 	_renderFooter = () =>{
         let amount = 0;
@@ -267,8 +263,8 @@ class Contacts extends AppComponent {
     };
 	render() {
 		let objData = initDataFormate(this.state.contacts,this.state.text);
-		this.relationStore = objData.needArr;
-		this.sectionStore = objData.sectionArr;
+		this.relationStore = objData.SectionArray;
+		this.sectionStore = objData.KeyArray;
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
@@ -285,7 +281,7 @@ class Contacts extends AppComponent {
 						renderSectionHeader={this._sectionComp}
 						renderItem={this._renderItem}
 						sections={this.relationStore}
-						// ItemSeparatorComponent={this._renderSeparator}
+						ItemSeparatorComponent={this._renderSeparator}
 						ListHeaderComponent={this._renderHeader}
 						ListFooterComponent = {this._renderFooter}
 						stickySectionHeadersEnabled={true}
@@ -318,11 +314,10 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 	},
 	itemBox:{
-		flex:1,
 		height: 60, 
 		flexDirection:'row',
 		alignItems:'center',
-		paddingLeft:10
+		paddingHorizontal:15
 	},
 	pic:{
 		width:40,
@@ -338,7 +333,8 @@ const styles = StyleSheet.create({
 	ItemSeparator:{
 		// height:1,
 		borderBottomColor : '#eee',
-		borderBottomWidth:1
+		borderBottomWidth:1,
+		marginHorizontal:15
 		// backgroundColor: '#eee',
 	},
 	listHeaderBox:{

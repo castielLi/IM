@@ -144,7 +144,7 @@ class ForwardChoose extends AppComponent {
             return <Image style={styles.itemImage} source={{uri: Uri}}/>
         }
         if (group) {
-            return <Image style={styles.itemImage} source={require('../resource/groupHeader.png')}/>
+            return <Image style={styles.itemImage} source={require('../resource/groupAvator.png')}/>
         } else {
             return <Image style={styles.itemImage} source={require('../resource/avator.jpg')}/>
         }

@@ -50,6 +50,15 @@ class GroupList extends AppComponent {
         super.componentWillUnmount();
     }
 
+    componentWillMount(){
+        //通过回调改变页面显示
+        userController.getGroupContactList(false,(contacts)=>{
+            currentObj.setState({
+                contacts
+            })
+        });
+    }
+
     goToChat = (item)=>{
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.Id,type:'group',HeadImageUrl:item.HeadImageUrl,Nick:item.Name}});
     }
@@ -57,8 +66,7 @@ class GroupList extends AppComponent {
     _renderAvator= (Obj)=>{
         if(Obj){
             if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
-                return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
-
+                return 	<Image style = {styles.pic} source = {require('../resource/groupAvator.png')}></Image>
             }
             return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
 
@@ -68,24 +76,28 @@ class GroupList extends AppComponent {
     }
     _renderItem = (info) => {
         var txt = '  ' + info.item.Name;
-        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
-            <View  style={styles.itemBox} >
-                {this._renderAvator(info.item)}
-                <Text style={styles.itemText}>{txt}</Text>
-            </View>
-        </TouchableHighlight>
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
+                <View  style={styles.itemBox} >
+                    {this._renderAvator(info.item)}
+                    <Text style={styles.itemText}>{txt}</Text>
+                </View>
+            </TouchableHighlight>
+        )
     }
 
     _renderHeader = () => {
-        return  <View>
-            <View style={styles.listHeaderBox}>
-                <TextInput
-                    style={styles.search}
-                    underlineColorAndroid = 'transparent'
-                >
-                </TextInput>
+        return (
+            <View>
+                <View style={styles.listHeaderBox}>
+                    <TextInput
+                        style={styles.search}
+                        underlineColorAndroid = 'transparent'
+                    >
+                    </TextInput>
+                </View>
             </View>
-        </View>
+        )
     }
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}/>
@@ -95,14 +107,7 @@ class GroupList extends AppComponent {
     }
 
 
-    componentWillMount(){
-        //通过回调改变页面显示
-        userController.getGroupContactList(false,(contacts)=>{
-            currentObj.setState({
-                contacts
-            })
-        });
-    }
+    
     render() {
         this.relationStore = initFlatListData(this.state.contacts);
         return (
@@ -157,10 +162,9 @@ const styles = StyleSheet.create({
         fontSize: 15
     },
     ItemSeparator:{
-        // height:1,
+        marginHorizontal:15,
         borderBottomColor : '#eee',
-        borderBottomWidth:1
-        // backgroundColor: '#eee',
+        borderBottomWidth:1,
     },
     listHeaderBox:{
         backgroundColor: '#ddd',

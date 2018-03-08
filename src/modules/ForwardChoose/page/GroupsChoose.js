@@ -106,7 +106,7 @@ class GroupsChoose extends AppComponent {
         if (HeadImageUrl != null && HeadImageUrl != '') {
             return <Image style={styles.itemImage} source={{uri: HeadImageUrl}}/>
         }
-        return <Image style={styles.itemImage} source={require('../resource/groupHeader.png')}/>
+        return <Image style={styles.itemImage} source={require('../resource/groupAvator.png')}/>
     };
 
     /*item点击事件*/

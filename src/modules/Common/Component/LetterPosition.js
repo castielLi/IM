@@ -29,9 +29,9 @@ export default class LetterPosition extends Component {
     componentWillMount() {
         this._panResponder = PanResponder.create({
             onStartShouldSetPanResponder: (e) => true,  //对触摸进行响应
-            onStartShouldSetPanResponderCapture: ()=> true, //是否要劫持点击事件
+            onStartShouldSetPanResponderCapture: ()=> false, //是否要劫持点击事件
             onMoveShouldSetPanResponder: (e) => true,  //对滑动进行响应
-            onMoveShouldSetPanResponderCapture: ()=> true, //是否要劫持滑动事件
+            onMoveShouldSetPanResponderCapture: ()=> false, //是否要劫持滑动事件
             //激活时做的动作
             onPanResponderGrant: (e)=>{
                 let a = Math.floor((e.nativeEvent.pageY-this.top)/this.singleHeight);

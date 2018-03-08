@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     },
     ItemSeparator:{
         height:1,
-        backgroundColor:'#d9d9d9',
+        backgroundColor:'#eee',
         marginHorizontal:15
     },
     arrow:{
