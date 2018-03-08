@@ -50,7 +50,6 @@ class ScanCode extends AppComponent {
     }
 
     barcodeReceived(e) {
-        // alert('Type: ' + e.type + '\nData: ' + e.data);
         if(!this.scanSuccess) {
             scanController.scanCode(e.data);
             this.scanSuccess = true;

@@ -22,13 +22,13 @@ export default class QRCodeTool {
                     break;
                 default:
                     //显示一个字符串
-                    this.callback.scanFinished && this.callback.scanFinished(QRCodeType.UnKnow, "");
+                    this.callback.scanFinished && this.callback.scanFinished(QRCodeType.UnKnow, data);
                     break;
             }
         }
         else {
             //显示一个字符串
-            this.callback.scanFinished && this.callback.scanFinished(QRCodeType.UnKnow, "");
+            this.callback.scanFinished && this.callback.scanFinished(QRCodeType.UnKnow, data);
         }
     }
 }

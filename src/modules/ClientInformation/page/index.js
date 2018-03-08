@@ -183,6 +183,11 @@ class ClientInformation extends AppComponent {
 
     //备注控制
     _remarkControl=(Account,Remark)=>{
+
+        if(this.state.oneself){
+            return null;
+        }
+
         return (
             <View>
                 <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Account,Remark)} style={{marginTop:15}}>
@@ -206,6 +211,11 @@ class ClientInformation extends AppComponent {
 
     //按钮显示控制
     _buttonControl=(Account)=>{
+
+        if(this.state.oneself){
+            return null;
+        }
+
         if(this.state.isFriend){
             return (
                 <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChatDetail} style={styles.sendMessageBox}>
@@ -242,7 +252,7 @@ class ClientInformation extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     heading={"详细资料"}
-                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
+                    left={{func:()=>{this.route.pop(this.props)},text:this.props.scan!= undefined?"":'通讯录'}}
                     right={[{func:()=>{this.goToInformationSetting()},icon:this.state.isFriend ?'ellipsis-h':''}]}
                 />
                 <View>

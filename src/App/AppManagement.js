@@ -277,10 +277,15 @@ export default class AppManagement{
                root.route.replaceTop(root,{
                    key:'ClientInformation',
                    routeId: 'ClientInformation',
-                   params:{"clientId":data}
+                   params:{"clientId":data,"scan":true}
                });
                break;
            case AppPushSpecifyPageEnum.UnKnow:
+               root.route.replaceTop(root,{
+                   key:'ScanCode',
+                   routeId: 'ScanUnknow',
+                   params:{"data":data}
+               });
                break;
 
        }
