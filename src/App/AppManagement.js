@@ -244,10 +244,6 @@ export default class AppManagement{
         }
     }
 
-    static pushSpecifyPage(type,params){
-
-    }
-
     static AppLogout(){
         ConnectState = false;
     }
@@ -278,12 +274,20 @@ export default class AppManagement{
     static requestPageManagement(type,data){
        switch (type){
            case AppPushSpecifyPageEnum.UserInfo:
-               root.route.push(root,{
+               root.route.replaceTop(root,{
                    key:'ClientInformation',
                    routeId: 'ClientInformation',
-                   params:{"clientId":data}
+                   params:{"clientId":data,"scan":true}
                });
                break;
+           case AppPushSpecifyPageEnum.UnKnow:
+               root.route.replaceTop(root,{
+                   key:'ScanCode',
+                   routeId: 'ScanUnknow',
+                   params:{"data":data}
+               });
+               break;
+
        }
     }
 }

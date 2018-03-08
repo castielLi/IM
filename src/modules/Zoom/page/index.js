@@ -119,6 +119,17 @@ class Zoom extends AppComponent {
 	changeShowFeature=(newState)=>{
 		this.setState({showFeatures:newState});
 	}
+
+	itemClick = (info)=>{
+		switch (info.item.name){
+			case "扫一扫":
+                this.route.push(this.props,{key: 'ScanCode',routeId: 'ScanCode',params:{}});
+                break;
+			default:
+				break;
+		}
+	}
+
     chooseImage = (name)=>{
 		if(name == '圈子'){
 			return	<Image source={require('../resource/zoom.png')} style={styles.pic} ></Image>
@@ -135,7 +146,7 @@ class Zoom extends AppComponent {
         }
 	}
 	_renderItem = (info)=>{
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.itemClick(info)}>
 					<View style={styles.itemBox}>
 						<View  style={styles.itemLeftBox} >
 							{this.chooseImage(info.item.name)}
