@@ -9,7 +9,8 @@ import {
     TouchableHighlight,
     Text,
     Dimensions,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    SectionList
 } from 'react-native';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
@@ -19,122 +20,163 @@ let currentObj;
 let userController = undefined;
 let {width, height} = Dimensions.get('window');
 
+let originData = [
+    {
+        'key':'1',
+        'data': [{
+            'name': "男",
+        },{
+            'name': "女",
+        }]
+    }
+];
 export default class RadioCollection extends AppComponent {
     constructor(props){
         super(props);
-        this.state = {
-            visible:false
-        }
+        this._checkIcon = this._checkIcon.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
     }
 
-    static defaultProps = {
-        defaultValue:1
-    };
-    static propTypes={
-        onPress: React.PropTypes.func,
-    };
-
-    onChange=()=>{
-        this.setState({
-            visible:!this.state.visible
-        })
-    };
 
     _onTouchOption=(value)=>{
         let {onPress} = this.props;
         onPress && onPress(value);
-        this.onChange();
     };
 
-    _radioIcon=(value)=>{
-        let defaultValue = this.props.defaultValue;
-        if(defaultValue == value){
-            return <Icon style={styles.radioIcon} name="dot-circle-o" size={18} color="#62b900"/>
-        }else {
-            return <Icon style={styles.radioIcon} name="circle-o" size={18} color="#999"/>
+    _toDoSome = (name)=>{
+        switch (name){
+            case '女':
+                break;
+            case '男':
+                break;
+            default:
+                break;
         }
     };
 
+    setGender = ()=>{
+
+    }
+
+    _renderSection = ()=>{
+        return <View style={styles.sectionHead}/>
+    };
+
+    _checkIcon = (name) =>{
+        if((this.props.gender == 1 && name == "男") || (this.props.gender == 0 && name == "女")){
+            return <View style={styles.itemRightBox}>
+                <Icon name="check" size={35} color="#fff" style={styles.arrow}/>
+            </View>
+        }else{
+            return null;
+        }
+    }
+
+
+    _renderItem = (info)=>{
+        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._toDoSome.bind(this,info.item.name)}>
+            <View style={styles.itemBox}>
+                <View  style={styles.itemLeftBox} >
+                    <Text style={styles.itemText}>{info.item.name}</Text>
+                </View>
+                {
+                    this._checkIcon(info.item.name)
+                }
+
+            </View>
+        </TouchableHighlight>
+    };
+
+    _renderSeparator = () =>{
+        return <View style={styles.ItemSeparator}/>
+    };
+
+
     render(){
         return (
-            <Modal
-                animationType='none'
-                transparent={true}
-                onRequestClose={()=>{}}
-                visible={this.state.visible}
-            >
-                <View style={styles.container}>
-                    <TouchableWithoutFeedback onPress={()=>this.onChange()}>
-                        <View style={{position: 'absolute',top: 0,left: 0,width,height}}/>
-                    </TouchableWithoutFeedback>
-                    <View style={styles.radioModel}>
-                        <Text style={styles.title}>性别</Text>
-                        <View style={styles.radioBox}>
-                            <TouchableHighlight style={styles.radioItemTouch} underlayColor={'#eee'} activeOpacity={0.5} onPress={()=>this._onTouchOption(1)}>
-                                <View style={styles.radioItem}>
-                                    <Text style={styles.radioText}>男</Text>
-                                    {this._radioIcon(1)}
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight underlayColor={'#eee'} activeOpacity={0.5} onPress={()=>this._onTouchOption(2)}>
-                                <View style={styles.radioItem}>
-                                    <Text style={styles.radioText}>女</Text>
-                                    {this._radioIcon(2)}
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            <View style={styles.container}>
+                <MyNavigationBar
+                    left = {{func:()=>{this.route.pop(this.props)}}}
+                    heading={'设置性别'}
+                    right={{func:()=>{this.setGender()},text:'完成'}}
+                />
+
+                <SectionList
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    // ListHeaderComponent={this._renderHeader}
+                    renderSectionHeader={this._renderSection}
+                    renderItem={this._renderItem}
+                    sections={originData}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    stickySectionHeadersEnabled={false}
+                />
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container:{
+        backgroundColor:'#eee',
         flex:1,
-        backgroundColor:'rgba(0,0,0,.5)',
-        justifyContent:'center',
-        alignItems:'center'
     },
-    radioModel:{
-        padding:20,
+    SectionListBox:{
         backgroundColor:'#fff',
-        width:width-100
     },
-    title:{
-        color:'#000',
-        fontSize:20,
-        fontWeight:'normal',
-        textAlignVertical:'center',
-        includeFontPadding:false
+    sectionHead:{
+        height:20,
+        backgroundColor:'#eee',
     },
-    radioBox:{
-        marginVertical:15
-    },
-    radioItemTouch:{
+    ItemSeparator:{
+        marginHorizontal:15,
+        height:0,
         borderBottomWidth:1,
-        borderBottomColor:'#EEE'
+        borderBottomColor:'#eee',
     },
-    radioItem:{
+    itemBox:{
+        minHeight:40,
         flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
         justifyContent:'space-between',
-        paddingHorizontal:10,
-        paddingVertical:10
+        backgroundColor:'#fff',
+        paddingVertical:8
     },
-    radioText:{
+    itemLeftBox:{
+        height:30,
+        flexDirection:'row',
+        alignItems:'center',
+
+    },
+    itemRightBox:{
+        flexDirection:'row',
+        alignItems:'center',
+        flex:1,
+        justifyContent:'flex-end',
+        marginLeft:15,
+    },
+    itemText:{
         color:'#000',
         fontSize:16,
         fontWeight:'normal',
         textAlignVertical:'center',
         includeFontPadding:false
     },
-    radioIcon:{
+    itemContent:{
+        color:'#999',
+        fontSize:14,
+        fontWeight:'normal',
         textAlignVertical:'center',
-    }
+        includeFontPadding:false,
+        textAlign:'right',
+    },
+    arrow:{
+        fontSize:20,
+        color:'#aaa',
+        marginLeft:15
+    },
 
 });

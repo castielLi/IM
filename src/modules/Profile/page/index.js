@@ -109,7 +109,7 @@ class Profile extends AppComponent {
                 this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{nickname,headImageUrl}});
                 break;
             case '更多':
-                this.route.push(this.props,{key: 'Profile',routeId: 'MoreSetting',params:{}});
+                this.route.push(this.props,{key: 'Profile',routeId: 'MoreSetting',params:{"account":this.state.currentAccount}});
                 break;
             default:
                 break;

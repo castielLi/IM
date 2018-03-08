@@ -26,6 +26,9 @@ class QRCodeContent extends AppComponent {
     constructor(props){
         super(props)
         userController = UserController.getSingleInstance();
+    }
+
+    componentWillMount(){
         let currentUser = userController.getCurrentAccount();
         let code = userController.getAccountQRCode(currentUser.Account)
         this.state = {

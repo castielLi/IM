@@ -56,6 +56,7 @@ import ScanCode from './ScanCode/page'
 import MoreSetting from './Profile/page/More'
 import Signature from './Profile/page/More/Signature'
 import ScanUnknow from './ScanCode/page/ScanUnknowPage'
+import Gender from './Profile/page/More/RadioCollection'
 
 
 export const MainPage = {
@@ -325,6 +326,10 @@ export const RouteMap = {
         'Signature':{
             component: Signature,
             params: {"name":"Signature"}
+        },
+        'GenderChange':{
+            component:Gender,
+            params:{}
         }
 
     },
