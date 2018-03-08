@@ -30,6 +30,7 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import ApplyController from '../../../TSController/ApplyController';
 import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import LetterPosition from '../../Common/Component/LetterPosition';
 let currentObj = undefined;
 let userController = undefined;
 let applyController = undefined;
@@ -88,59 +89,51 @@ class Contacts extends AppComponent {
         }
     }
 
-
-
     componentWillUnmount(){
         super.componentWillUnmount();
     }
 
-	onPressRightSectionItemIn = (index) =>{
-		this.refs.mySectionList.scrollToLocation({
-		animated : true,
-		sectionIndex: index,
-		itemIndex : 0,
-		viewPosition: 0,
-		viewOffset : 35
-		})
-		this.setState({
-			rightSectionItemModalIndex:index
-		})
-	}
-	onPressRightSectionItemOut = () =>{
-		this.setState({
-			rightSectionItemModalIndex:''
-		})
-	}
-	_getSections = ()=>{
-		if(this.relationStore.length === 0){
-			return null
-		}else{
-            let sections = this.sectionStore;
-            let array = new Array();
-            for (let i = 0; i < sections.length; i++) {
-                array.push(
-					<View key={i}>
-						<TouchableWithoutFeedback
-							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
-							onPressOut={this.onPressRightSectionItemOut}
-							//pointerEvents="none"
-							ref={'sectionItem' + i}>
-							<View style={styles.rightSectionView}>
-								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
-							</View>
-						</TouchableWithoutFeedback>
-                        {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
-					</View>)
-            }
-            return array;
-		}
-    }
-
-    goToClientInfo = (Account)=>{
-		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
-
-    }
+    // onPressRightSectionItemIn = (index) =>{
+		// this.refs.mySectionList.scrollToLocation({
+		// animated : true,
+		// sectionIndex: index,
+		// itemIndex : 0,
+		// viewPosition: 0,
+		// viewOffset : 35
+		// })
+		// this.setState({
+		// 	rightSectionItemModalIndex:index
+		// })
+    // }
+    // onPressRightSectionItemOut = () =>{
+		// this.setState({
+		// 	rightSectionItemModalIndex:''
+		// })
+    // }
+    // _getSections = ()=>{
+		// if(this.relationStore.length === 0){
+		// 	return null
+		// }else{
+    //         let sections = this.sectionStore;
+    //         let array = new Array();
+    //         for (let i = 0; i < sections.length; i++) {
+    //             array.push(
+		// 			<View key={i}>
+		// 				<TouchableWithoutFeedback
+		// 					onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
+		// 					onPressOut={this.onPressRightSectionItemOut}
+		// 					//pointerEvents="none"
+		// 					ref={'sectionItem' + i}>
+		// 					<View style={styles.rightSectionView}>
+		// 						<Text style={styles.rightSectionItem}>{sections[i]}</Text>
+		// 					</View>
+		// 				</TouchableWithoutFeedback>
+    //                     {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
+		// 			</View>)
+    //         }
+    //         return array;
+		// }
+    // };
 
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
@@ -155,24 +148,13 @@ class Contacts extends AppComponent {
 						<Text style={styles.itemText}>{name}</Text>
 					</View>
 			   </TouchableHighlight>
-	}
-
+	};
 	_sectionComp = (info) => {
 		var txt = info.section.key;
 		return  <View style={styles.sectionHeaderBox}>
 					<Text style={styles.sectionHeader}>{txt}</Text>
 				</View>
-	}
-    goToNewFriend = () =>{
-		if(this.props.unDealRequestMark){
-            this.props.hideUnDealRequest();
-		}
-		if(this.props.unReadApplyMessageMark){
-            this.props.hideUnReadMark();
-		}
-        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
-
-    }
+	};
 	_renderHeader = () => {
 		return  <View>
 					<View style={styles.listHeaderBox}>
@@ -208,7 +190,7 @@ class Contacts extends AppComponent {
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
 							<View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
+									<Image source={require('../resource/newFriends.png')} style={styles.pic} />
 									<Text style={styles.itemText}>新的朋友</Text>
 									{this.props.unReadApplyMessageMark?
 										<View style={styles.circle}>
@@ -219,13 +201,10 @@ class Contacts extends AppComponent {
 								</View>
 							</View>
 					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-
-                           this.route.push(this.props,{key:'Contacts',routeId:'GroupList',params:{}});
-					   }}>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToGroupList}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
+								<Image source={require('../resource/friendsChat.png')} style={styles.pic} />
 								<Text style={styles.itemText}>群聊</Text>
 							</View>
 							</View>
@@ -233,7 +212,7 @@ class Contacts extends AppComponent {
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
+								<Image source={require('../resource/public.png')} style={styles.pic} />
 								<Text style={styles.itemText}>公众号</Text>
 							</View>
 							</View>
@@ -241,34 +220,51 @@ class Contacts extends AppComponent {
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
 						   <View style={styles.ItemSeparator}>
 								<View  style={styles.itemBox} >
-								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
+								<Image source={require('../resource/logo.png')} style={styles.pic} />
 								<Text style={styles.itemText}>标签</Text>
 								</View>
 							</View>
 					   </TouchableHighlight>
 					</View>
 				</View>
-			      			}
+			      			};
 	_renderSeparator = () =>{
 		return <View style={styles.ItemSeparator}><Text></Text></View>
-	}
+	};
 	_renderFooter = () =>{
         let amount = 0;
 		for(let i = 0; i< this.relationStore.length;i++){
 			amount+= this.relationStore[i].data.length;
 		}
 		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{amount+'位联系人'}</Text></View>
-	}
-    goToAddFriends = ()=>{
-        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
+	};
 
-    }
+    goToGroupList = ()=>{
+        this.route.push(this.props,{key:'Contacts',routeId:'GroupList',params:{}});
+    };
+    goToNewFriend = () =>{
+        if(this.props.unDealRequestMark){
+            this.props.hideUnDealRequest();
+        }
+        if(this.props.unReadApplyMessageMark){
+            this.props.hideUnReadMark();
+        }
+        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
+    };
+    goToClientInfo = (Account)=>{
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
+    };
 
-
-    changeShowFeature=(newState)=>{
-        this.setState({showFeatures:newState});
-    }
-
+    scrollToLocation=(section)=>{
+        let hasLetter = this.sectionStore.indexOf(section);
+        if(hasLetter === -1) return;
+        this.refs.mySectionList.scrollToLocation({
+            animated : true,
+            sectionIndex: hasLetter,
+            itemIndex : 0,
+            viewOffset : 22
+        })
+    };
 	render() {
 		let objData = initDataFormate(this.state.contacts,this.state.text);
 		this.relationStore = objData.needArr;
@@ -282,20 +278,23 @@ class Contacts extends AppComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
-			    <SectionList
-			      ref={'mySectionList'}
-			      keyExtractor={(item,index)=>("index"+index+item)}
-			      renderSectionHeader={this._sectionComp}
-			      renderItem={this._renderItem}
-			      sections={this.relationStore}
-			      // ItemSeparatorComponent={this._renderSeparator}
-			      ListHeaderComponent={this._renderHeader}
-				  ListFooterComponent = {this._renderFooter}
-				  stickySectionHeadersEnabled={true}
-				/>
-				<View style={styles.rightSection}>
-					{this._getSections()}
+				<View style={styles.container}>
+					<SectionList
+						ref={'mySectionList'}
+						keyExtractor={(item,index)=>("index"+index+item)}
+						renderSectionHeader={this._sectionComp}
+						renderItem={this._renderItem}
+						sections={this.relationStore}
+						// ItemSeparatorComponent={this._renderSeparator}
+						ListHeaderComponent={this._renderHeader}
+						ListFooterComponent = {this._renderFooter}
+						stickySectionHeadersEnabled={true}
+					/>
+					<LetterPosition onPress={this.scrollToLocation}/>
 				</View>
+				{/*<View style={styles.rightSection}>*/}
+					{/*{this._getSections()}*/}
+				{/*</View>*/}
                 <Features navigator={this.props.navigator}/>
 		    </View>
 	);
@@ -309,13 +308,13 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff"
 	},
     sectionHeaderBox:{
-        height: 30,
-        backgroundColor: '#eee',
+        height: 22,
+        backgroundColor: '#ebebeb',
 		paddingLeft:10,
 		justifyContent:'center'
     },
 	sectionHeader:{
-		color: '#aaa', 
+		color: '#989898',
 		fontSize: 14,
 	},
 	itemBox:{
@@ -332,7 +331,7 @@ const styles = StyleSheet.create({
 	},
 	itemText:{		
 		textAlignVertical: 'center',
-		color: '#5C5C5C', 
+		color: '#000',
 		fontSize: 15,
 		marginLeft:10
 	},

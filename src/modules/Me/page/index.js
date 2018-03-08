@@ -68,7 +68,7 @@ var originData = [
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f2f2f2"
+        backgroundColor: "#ebebeb"
     },
     topBox:{
         height:80,
@@ -90,10 +90,22 @@ const styles = StyleSheet.create({
         resizeMode:'stretch',
         marginRight:15
     },
+    topInfo:{
+        height:60,
+        justifyContent:'center',
+    },
+    headerText:{
+        fontSize:16,
+        color:'#000',
+        textAlignVertical:'center',
+        includeFontPadding:false
+    },
     itemSmallText:{
         fontSize:14,
-        color:'#000',
-        textAlignVertical:'center'
+        color:'#989898',
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        marginTop:2
     },
     sction:{
         height:20
@@ -120,11 +132,6 @@ const styles = StyleSheet.create({
     },
     itemText:{
         fontSize:15,
-        color:'#000',
-
-    },
-    headerText:{
-        fontSize:24,
         color:'#000',
 
     },
@@ -188,10 +195,6 @@ class Me extends AppComponent {
         this.route.ToLogin(this.props);
     }
 
-    changeShowFeature=(newState)=>{
-        this.setState({showFeatures:newState});
-    }
-
     toDoSome = (name)=>{
         if(name == '退出登录'){
             this.loginOut();
@@ -199,20 +202,25 @@ class Me extends AppComponent {
     }
 
     chooseImage = (name)=>{
-        if(name == '钱包'){
-            return	<Image source={require('../resource/package.png')} style={styles.pic} ></Image>
-        }else if(name == '卡包'){
-            return	<Image source={require('../resource/pack.png')} style={styles.pic} ></Image>
-        }else if(name == '收藏'){
-            return	<Image source={require('../resource/souc.png')} style={styles.pic} ></Image>
-        }else if(name == '相册'){
-            return	<Image source={require('../resource/photo.png')} style={styles.pic} ></Image>
-        }else if(name == '表情'){
-            return	<Image source={require('../resource/smile.png')} style={styles.pic} ></Image>
-        }else if(name == '退出登录'){
-            return	<Image source={require('../resource/set.png')} style={styles.pic} ></Image>
+        switch (name){
+            case '钱包':
+                return <Image source={require('../resource/package.png')} style={styles.pic} />;
+            case '卡包':
+                return <Image source={require('../resource/pack.png')} style={styles.pic} />;
+            case '收藏':
+                return <Image source={require('../resource/souc.png')} style={styles.pic} />;
+            case '相册':
+                return <Image source={require('../resource/photo.png')} style={styles.pic} />;
+            case '表情':
+                return <Image source={require('../resource/smile.png')} style={styles.pic} />;
+            case '退出登录':
+                return <Image source={require('../resource/set.png')} style={styles.pic} />;
         }
-    }
+    };
+
+    _goToProfile = ()=>{
+        this.route.push(this.props,{key:'Profile',routeId:'Profile'});
+    };
 
     _renderItem = (info)=>{
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toDoSome.bind(this,info.item.name)}>
@@ -228,39 +236,34 @@ class Me extends AppComponent {
 
             </View>
         </TouchableHighlight>
-    }
+    };
     _renderSection = ()=>{
-        return <View style={styles.sction}></View>
-    }
+        return <View style={styles.sction}/>
+    };
     _renderSeparator = () =>{
-        return <View style={styles.ItemSeparator}></View>
-    }
+        return <View style={styles.ItemSeparator}/>
+    };
     _renderHeader =()=>{
-        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-            this.route.push(this.props,{key:'Profile',routeId:'Profile'});
-        }}>
-            <View style={styles.topBox}>
-                <View  style={styles.topLeftBox} >
-                    <ImagePlaceHolder style={styles.topPic}
-                                      imageUrl ={this.state.headImageUrl}
-                    />
-                    <View style={{height:60,justifyContent:'space-between'}}>
-                        <Text style={styles.headerText}>{this.state.name}</Text>
-                        <Text style={styles.itemSmallText}>{'微信号：'+currentAccount.Account}</Text>
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToProfile}>
+                <View style={styles.topBox}>
+                    <View  style={styles.topLeftBox} >
+                        <ImagePlaceHolder style={styles.topPic} imageUrl ={this.state.headImageUrl}/>
+                        <View style={styles.topInfo}>
+                            <Text style={styles.headerText}>{this.state.name}</Text>
+                            <Text style={styles.itemSmallText}>{'云信号：'+currentAccount.Account}</Text>
+                        </View>
+                    </View>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <Icon name="qrcode" size={25} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 </View>
-                {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <Icon name="qrcode" size={35} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
-                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-
-                </View>
-            </View>
-        </TouchableHighlight>
-    }
+            </TouchableHighlight>
+        )
+    };
 
     render() {
-
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -270,7 +273,6 @@ class Me extends AppComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                         ]}
                 />
-
                 <SectionList
                     keyExtractor={(item,index)=>("index"+index+item)}
                     ListHeaderComponent={this._renderHeader}
@@ -283,12 +285,8 @@ class Me extends AppComponent {
                 <Features ref={e => this.features = e} navigator={this.props.navigator}/>
             </View>
             )
-            //this.features.getWrappedInstance().changeFeatureState()
     }
 }
-
-
-
 
 const mapStateToProps = state => ({
 

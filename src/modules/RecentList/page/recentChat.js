@@ -127,7 +127,7 @@ class RecentChat extends AppComponent {
 
     }
     _renderAvator = (userId,group,nosound,unreadCount) => {
-        let imageUrl = "";
+        let imageUrl = require('../resource/groupAvator.png');
         if(!group){
             imageUrl = userController.getAccountHeadImagePath(userId);
         }
@@ -158,7 +158,7 @@ class RecentChat extends AppComponent {
 
     _renderRow = (rowData, sectionID, rowID) => {
         return (
-			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
+			<View style= {styles.contentItem}>
 				<Swipeout
 					right = {
                         [{
@@ -195,7 +195,7 @@ class RecentChat extends AppComponent {
                                         rowData.noSound?(rowData.unreadCount>0?<Text numberOfLines = {1} style = {styles.ChatMessage}>[{rowData.unreadCount}]
                                             <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
                                         </Text>:<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>):
-                                            <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
+                                            <Text numberOfLines = {1} style = {[styles.ChatMessage,styles.lastMessage]}>{rowData.lastMessage}</Text>
                                     }
 
 								</View>
@@ -254,10 +254,14 @@ class RecentChat extends AppComponent {
 let styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f2f2f2"
+        backgroundColor: "#ebebeb"
     },
     content:{
         flex:1
+    },
+    contentItem:{
+        borderBottomWidth:1,
+        borderColor:'#d9d9d9'
     },
     ListContainer: {
         flexDirection: 'row',
@@ -287,8 +291,8 @@ let styles = StyleSheet.create({
         justifyContent: 'center',
     },
     Nickname: {
-        fontSize: checkDeviceHeight(30),
-        color: '#373737',
+        fontSize: checkDeviceHeight(33),
+        color: '#000',
         marginBottom: checkDeviceHeight(10),
         ...Platform.select({
             ios: {
@@ -297,15 +301,15 @@ let styles = StyleSheet.create({
             android: {},
         }),
     },
+    ChatMessage: {
+        fontSize: checkDeviceHeight(26),
+        lineHeight: checkDeviceHeight(30),
+        color: '#989898',
+    },
     ChatNoSoundMessageCount: {
         fontSize: checkDeviceHeight(30),
         lineHeight: checkDeviceHeight(35),
         width:30,
-        color: '#999999',
-    },
-    ChatMessage: {
-        fontSize: checkDeviceHeight(30),
-        lineHeight: checkDeviceHeight(35),
         color: '#999999',
     },
     userTime: {

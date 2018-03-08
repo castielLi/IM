@@ -62,7 +62,7 @@ var originData = [
 let styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f2f2f2"
+        backgroundColor: "#ebebeb"
     },
     sction:{
         height:20

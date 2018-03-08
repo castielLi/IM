@@ -20,13 +20,11 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
-import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
-import AppManagement from '../../../App/AppManagement';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 
@@ -59,95 +57,8 @@ var originData = [
             'name': "我的地址",
         }]
     },
-]
+];
 
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#f2f2f2"
-    },
-    topBox:{
-        height:80,
-        flexDirection:'row',
-        paddingHorizontal:15,
-        alignItems:'center',
-        justifyContent:'space-between',
-        backgroundColor:'#fff'
-    },
-    topLeftBox:{
-        height:70,
-        flexDirection:'row',
-        alignItems:'center',
-
-    },
-    topPic:{
-        width:60,
-        height:60,
-        resizeMode:'stretch',
-    },
-    itemSmallText:{
-        fontSize:14,
-        color:'#000',
-        textAlignVertical:'center'
-    },
-    sction:{
-        height:20
-    },
-    sctionBottom:{
-        height:1
-    },
-    itemBox:{
-        minHeight:40,
-        flexDirection:'row',
-        paddingHorizontal:15,
-        alignItems:'center',
-        justifyContent:'space-between',
-        backgroundColor:'#fff',
-        paddingVertical:8
-    },
-    itemLeftBox:{
-        height:30,
-        flexDirection:'row',
-        alignItems:'center',
-
-    },
-    itemRightBox:{
-        flexDirection:'row',
-        alignItems:'center'
-    },
-    pic:{
-        width:25,
-        height:25,
-        resizeMode:'contain',
-        marginRight:15
-    },
-    itemText:{
-        fontSize:15,
-        color:'#000',
-    },
-    headerText:{
-        fontSize:24,
-        color:'#000',
-
-    },
-    ItemSeparator:{
-        marginHorizontal:15,
-        height:0,
-        borderBottomWidth:1,
-        borderBottomColor:'#eee',
-    },
-    ItemSeparatorBox:{
-        flex:1,
-        height:1,
-        backgroundColor: '#eee',
-    },
-    arrow:{
-        fontSize:20,
-        color:'#aaa',
-        marginLeft:15
-    },
-});
 class Profile extends AppComponent {
     constructor(props){
         super(props);
@@ -219,10 +130,14 @@ class Profile extends AppComponent {
         if(info.section.key == 1){
             return null;
         }
-        return <View style={styles.sction}></View>
+        return <View style={styles.sction}/>
     }
     _renderSeparator = () =>{
-        return <View style={styles.ItemSeparator}></View>
+        return (
+            <View style={styles.ItemSeparatorBox}>
+                <View style={styles.ItemSeparator}/>
+            </View>
+        )
     }
 
     _fillingValue=(info)=>{
@@ -285,15 +200,94 @@ class Profile extends AppComponent {
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />
-                <Features ref={e => this.features = e} navigator={this.props.navigator}/>
             </View>
         )
-        //this.features.getWrappedInstance().changeFeatureState()
     }
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#ebebeb"
+    },
+    topBox:{
+        height:80,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff'
+    },
+    topLeftBox:{
+        height:70,
+        flexDirection:'row',
+        alignItems:'center',
 
+    },
+    topPic:{
+        width:60,
+        height:60,
+        resizeMode:'stretch',
+    },
+    itemSmallText:{
+        fontSize:14,
+        color:'#000',
+        textAlignVertical:'center'
+    },
+    sction:{
+        height:20
+    },
+    sctionBottom:{
+        height:1
+    },
+    itemBox:{
+        minHeight:40,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff',
+        paddingVertical:8
+    },
+    itemLeftBox:{
+        height:30,
+        flexDirection:'row',
+        alignItems:'center',
 
+    },
+    itemRightBox:{
+        flexDirection:'row',
+        alignItems:'center'
+    },
+    pic:{
+        width:25,
+        height:25,
+        resizeMode:'contain',
+        marginRight:15
+    },
+    itemText:{
+        fontSize:15,
+        color:'#000',
+    },
+    headerText:{
+        fontSize:24,
+        color:'#000',
+
+    },
+    ItemSeparatorBox:{
+        backgroundColor: '#fff',
+    },
+    ItemSeparator:{
+        height:1,
+        backgroundColor:'#d9d9d9',
+        marginHorizontal:15
+    },
+    arrow:{
+        fontSize:20,
+        color:'#aaa',
+        marginLeft:15
+    },
+});
 
 const mapStateToProps = state => ({
 

@@ -1,10 +1,6 @@
 /**
  * Created by apple on 2018/2/9.
  */
-/**
- * Created by apple on 2017/6/6.
- */
-
 import React, {Component} from 'react';
 import {StyleSheet,Image,AsyncStorage,Platform,Alert,SectionList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -18,7 +14,7 @@ import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListData';
-import LetterPosition from './LetterPosition';
+import LetterPosition from '../../Common/Component/LetterPosition';
 
 let userController = undefined;
 let imLogicController = undefined;
