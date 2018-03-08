@@ -12,7 +12,8 @@ import {
     StyleSheet,
     Alert,
     AsyncStorage,
-    InteractionManager
+    InteractionManager,
+    ActivityIndicator
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -39,11 +40,13 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
+let loginController = undefined;
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
@@ -67,6 +70,7 @@ class RecentChat extends AppComponent {
         userController =  UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
+        loginController = LoginController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -95,12 +99,50 @@ class RecentChat extends AppComponent {
         InteractionManager.runAfterInteractions(()=>{
             imLogicController.getConversationList();
             applyController.getUncheckApplyFriendCount();
+            userController.getUserContactList(false, null);
 
-            userController.getUserContactList(true,(result)=>{
-                userController.getGroupContactList(true,(result)=>{
-                    // currentObj.props.hideNavigationBottom();
+            //有token，但是还没有经过验证
+            if(AppManagement.getAppLoginStates()) {
+                userController.getUserContactList(true, (result) => {
+                    userController.getGroupContactList(true, (result) => {
+                        // currentObj.props.hideNavigationBottom();
+                    })
                 })
-            })
+            }else{
+                this.setState({
+                    socket:1,//socket连接状态
+                })
+                loginController.loginWithToken((result)=>{
+                    if(result == null){
+                        currentObj.route.ToLogin(currentObj.props);
+                        return;
+                    }
+
+
+                    if(result.Result != 1){
+
+                        if(result.Result == 6001){
+                            Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
+                        }
+
+                        currentObj.setState({
+                            socket:2,//socket连接状态
+                        })
+
+                        // currentObj.route.ToLogin(currentObj.props);
+                        return;
+                    }
+
+                    AppManagement.loginSuccess();
+                    currentObj.setState({
+                        socket:0,//socket连接状态
+                    })
+                    userController.getUserContactList(true, (result) => {
+                        userController.getGroupContactList(true, (result) => {
+                        })
+                    })
+                });
+            }
         })
 
 
@@ -127,7 +169,7 @@ class RecentChat extends AppComponent {
 
     }
     _renderAvator = (userId,group,nosound,unreadCount) => {
-        let imageUrl = require('../resource/groupAvator.png');
+        let imageUrl = "";
         if(!group){
             imageUrl = userController.getAccountHeadImagePath(userId);
         }
@@ -144,11 +186,22 @@ class RecentChat extends AppComponent {
             case 0:
                 return null;
                 break;
-            default:
+            case 2:
                 return (
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
                         <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络连接不可用</Text></View>
+                    </View>
+                );
+            default:
+                return (
+                    <View style={{backgroundColor:'white',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                        <ActivityIndicator
+                            size="small"
+                            color="black"
+                            style={{width:20,height:20}}
+                        />
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>连接中...</Text></View>
                     </View>
                 );
                 break;
@@ -158,7 +211,7 @@ class RecentChat extends AppComponent {
 
     _renderRow = (rowData, sectionID, rowID) => {
         return (
-			<View style= {styles.contentItem}>
+			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
 				<Swipeout
 					right = {
                         [{
@@ -195,7 +248,7 @@ class RecentChat extends AppComponent {
                                         rowData.noSound?(rowData.unreadCount>0?<Text numberOfLines = {1} style = {styles.ChatMessage}>[{rowData.unreadCount}]
                                             <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
                                         </Text>:<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>):
-                                            <Text numberOfLines = {1} style = {[styles.ChatMessage,styles.lastMessage]}>{rowData.lastMessage}</Text>
+                                            <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
                                     }
 
 								</View>
@@ -254,14 +307,10 @@ class RecentChat extends AppComponent {
 let styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#ebebeb"
+        backgroundColor: "#f2f2f2"
     },
     content:{
         flex:1
-    },
-    contentItem:{
-        borderBottomWidth:1,
-        borderColor:'#d9d9d9'
     },
     ListContainer: {
         flexDirection: 'row',
@@ -291,8 +340,8 @@ let styles = StyleSheet.create({
         justifyContent: 'center',
     },
     Nickname: {
-        fontSize: checkDeviceHeight(33),
-        color: '#000',
+        fontSize: checkDeviceHeight(30),
+        color: '#373737',
         marginBottom: checkDeviceHeight(10),
         ...Platform.select({
             ios: {
@@ -301,15 +350,15 @@ let styles = StyleSheet.create({
             android: {},
         }),
     },
-    ChatMessage: {
-        fontSize: checkDeviceHeight(26),
-        lineHeight: checkDeviceHeight(30),
-        color: '#989898',
-    },
     ChatNoSoundMessageCount: {
         fontSize: checkDeviceHeight(30),
         lineHeight: checkDeviceHeight(35),
         width:30,
+        color: '#999999',
+    },
+    ChatMessage: {
+        fontSize: checkDeviceHeight(30),
+        lineHeight: checkDeviceHeight(35),
         color: '#999999',
     },
     userTime: {
