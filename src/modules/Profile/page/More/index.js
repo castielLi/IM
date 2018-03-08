@@ -34,7 +34,7 @@ export default class MoreSetting extends AppComponent {
         super(props);
         userController = UserController.getSingleInstance();
         this.state = {
-            gender:props.gender,
+            gender:this.props.account.Gender,
             signature:props.signature,
             address:props.address
         }
@@ -68,7 +68,7 @@ export default class MoreSetting extends AppComponent {
             case '性別':
                 return (
                     <View style={styles.itemRightBox}>
-                        <Text style={styles.itemContent}>{this.state.gender ? this.state.gender == 1 ? '男' : '女' : '未设置'}</Text>
+                        <Text style={styles.itemContent}>{this.state.gender ? '男' : '女'}</Text>
                     </View>
                 );
             case '地区':
@@ -89,7 +89,7 @@ export default class MoreSetting extends AppComponent {
     _toDoSome = (name)=>{
         switch (name){
             case '性別':
-                this._RadioCollection.onChange();
+                this.route.push(this.props,{key: 'Profile',routeId: 'GenderChange',params:{"gender":this.state.gender,onPress:this.onChangGender}});
                 break;
             case '地区':
                 // this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
@@ -125,7 +125,7 @@ export default class MoreSetting extends AppComponent {
                     left = {{func:()=>{this.route.pop(this.props)}}}
                     heading={'更多信息'}
                 />
-                <View style={styles.SectionListBox}>
+
                     <SectionList
                         keyExtractor={(item,index)=>("index"+index+item)}
                         // ListHeaderComponent={this._renderHeader}
@@ -135,8 +135,6 @@ export default class MoreSetting extends AppComponent {
                         ItemSeparatorComponent={this._renderSeparator}
                         stickySectionHeadersEnabled={false}
                     />
-                </View>
-                <RadioCollection ref={e=>this._RadioCollection = e} defaultValue={this.state.gender} onPress={this.onChangGender}/>
             </View>
         )
     }

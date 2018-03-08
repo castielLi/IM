@@ -152,7 +152,6 @@ class Zoom extends AppComponent {
 							{this.chooseImage(info.item.name)}
 							<Text style={styles.itemText}>{info.item.name}</Text>
 						</View>
-						{/*<Text style={styles.arrow}>{'>'}</Text>*/}
 						<Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
 					</View>
 			   </TouchableHighlight>
