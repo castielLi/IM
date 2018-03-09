@@ -15,9 +15,12 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import IMController from '../../../TSController/IMLogic/IMControllerLogic'
+import IMController from '../../../TSController/IMLogic/IMControllerLogic';
+import UserController from '../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 let imController = undefined;
+let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 
@@ -26,6 +29,7 @@ class ChatSetting extends AppComponent {
         super(props)
         this.render = this.render.bind(this);
         imController = IMController.getSingleInstance();
+        userController = UserController.getSingleInstance();
 
         let setting = imController.getChatSetting();
         if(setting == undefined){
@@ -52,11 +56,21 @@ class ChatSetting extends AppComponent {
         })
     }
     render() {
+        let path = userController.getAccountHeadImagePath(this.props.Account);
         return (
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
                     heading={'聊天设置'} />
+                <View style={styles.userModuleBox}>
+                    <View style={styles.userBox}>
+                        <ImagePlaceHolder style={styles.userHeadImage} imageUrl={path}/>
+                        <Text style={styles.userName} numberOfLines={1}>{this.props.Name}</Text>
+                    </View>
+                    {/*<View style={styles.addBox}>*/}
+                        {/*<Text style={styles.addIcon}>+</Text>*/}
+                    {/*</View>*/}
+                </View>
                 <View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
@@ -64,7 +78,7 @@ class ChatSetting extends AppComponent {
                             <Switch
                                 value={this.state.isStickyChat}
                                 onValueChange={this.changeIsStickyChat}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
@@ -98,8 +112,30 @@ class ChatSetting extends AppComponent {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#eee',
+        backgroundColor: '#ebebeb',
 
+    },
+    userModuleBox:{
+        backgroundColor:'#fff',
+        marginVertical:15,
+        paddingHorizontal:15,
+        paddingVertical:10,
+        alignItems:'flex-start'
+    },
+    userBox:{
+        alignItems:'center',
+    },
+    userHeadImage:{
+        width:50,
+        height:50
+    },
+    userName:{
+        color:'#989898',
+        fontSize:13,
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        maxWidth:50,
+        marginTop:3,
     },
     back:{
         color: '#ffffff',

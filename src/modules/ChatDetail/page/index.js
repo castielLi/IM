@@ -124,7 +124,7 @@ class ChatDetail extends AppComponent {
         let {client,type} = this.props;
 
         if(type === 'private'){
-            this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{}});
+            this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{'Name': this.state.name,'Account':client}});
 
         }else if(type === 'group'){
             this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client,"onUpdateHeadName":this.onUpdateHeadName.bind(this)}});
