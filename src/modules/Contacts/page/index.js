@@ -237,9 +237,8 @@ class Contacts extends AppComponent {
 				/>
                 <Features navigator={this.props.navigator}/>
 		    </View>
-	);
-}
-
+		);
+	}
 }
 
 const styles = StyleSheet.create({
