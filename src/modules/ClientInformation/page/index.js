@@ -127,9 +127,7 @@ class ClientInformation extends AppComponent {
         let hasRemark = Remark != '' ? true : false;
         return (
             <View style={styles.basicBox}>
-               <ImagePlaceHolder style={styles.headPic}
-                                  imageUrl ={path}
-                />
+               <ImagePlaceHolder style={styles.headPic} imageUrl ={path}/>
                 <View style={styles.basicBoxRight}>
                     <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
                     <View>
@@ -183,7 +181,6 @@ class ClientInformation extends AppComponent {
 
     //备注控制
     _remarkControl=(Account,Remark)=>{
-
         if(this.state.oneself){
             return null;
         }
@@ -289,29 +286,27 @@ const styles = StyleSheet.create({
     },
     basicBox:{
         marginTop:15,
-        height:100,
         paddingVertical:10,
         paddingHorizontal:15,
         backgroundColor:'#fff',
         flexDirection:'row'
     },
     headPic:{
-        height:80,
-        width:80,
-        borderRadius:8,
+        height:70,
+        width:70,
+        borderRadius:7,
         //resizeMode:'stretch'
     },
     basicBoxRight:{
         marginLeft:15,
-        marginTop:5
     },
     name:{
         fontSize:15,
         color:'#000'
     },
     id:{
-        fontSize:12,
-        color:'#aaa'
+        fontSize:13,
+        color:'#989898'
     },
     remarksBox:{
         height:40,
