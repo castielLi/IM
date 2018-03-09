@@ -86,9 +86,22 @@ class ClientInformation extends AppComponent {
     goToChatDetail = ()=>{
         if(this.props.existChatDetailId == this.state.userInfo.Account)
             this.route.pop(this.props);
-        else
-            this.route.pushifExistRoute(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:this.state.userInfo.Account,type:'private',HeadImageUrl:this.state.userInfo.HeadImageUrl,Nick:this.state.userInfo.Nickname}});
-    }
+        else{
+            let name = this.state.userInfo.Nickname;
+            if(this.state.userInfo.Remark){
+                name = this.state.userInfo.Remark;
+            }
+            this.route.pushifExistRoute(this.props,{
+                key:'ChatDetail',
+                routeId:'ChatDetail',
+                params:{
+                    client:this.state.userInfo.Account,
+                    type:'private',
+                    HeadImageUrl:this.state.userInfo.HeadImageUrl,
+                    Nick:name
+                }});
+        }
+    };
 
     _goToRemarkInfo =(account,remark)=>{
         this.route.push(this.props,{key:'RemarkInfo',routeId:'RemarkInfo',params:{account,remark}});

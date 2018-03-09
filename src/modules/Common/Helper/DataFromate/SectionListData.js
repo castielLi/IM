@@ -12,14 +12,16 @@ export function SectionDataFormate(Data,filterStr = ''){
                 if(SectionData[firstChat] == null){
                     SectionData[firstChat] = {};
                     SectionData[firstChat][current.Account] = current;
-                    ResultObj.KeyArray.push(firstChat);
+                    // ResultObj.KeyArray.push(firstChat);
                     // dataObj.sectionArr.push(firstChat);
                 }else{
                     SectionData[firstChat][current.Account] = current;
                 }
             }
         });
-        for(let i in SectionData){
+
+        ResultObj.KeyArray = Object.keys(SectionData).sort();
+        for(let i of ResultObj.KeyArray){
             //小组信息对象
             let PieceObj = {};
             PieceObj['key'] = i;

@@ -1,7 +1,7 @@
 import HanZi_PinYin from './getFirestLetter';
 export function initDataFormate(arr,filterStr) {
     let dataObj = {
-        SectionArray: [],//返回Section所需数组格式
+        SectionArray: [],//返回Section所需数组格式;对字母进行排序
         KeyArray: [],//['A','B'...]
     };
 
@@ -13,13 +13,15 @@ export function initDataFormate(arr,filterStr) {
                 if (SectionData[firstChat] == null) {
                     SectionData[firstChat] = {};
                     SectionData[firstChat][current.Account] = current;
-                    dataObj.KeyArray.push(firstChat);
+                    // dataObj.KeyArray.push(firstChat);
                 } else {
                     SectionData[firstChat][current.Account] = current;
                 }
             }
         });
-        for (let i in SectionData) {
+
+        dataObj.KeyArray = Object.keys(SectionData).sort();
+        for(let i of dataObj.KeyArray){
             //小组信息对象
             let PieceObj = {};
             PieceObj['key'] = i;
