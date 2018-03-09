@@ -30,7 +30,7 @@ import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
 import ApplyController from '../../../TSController/ApplyController';
 import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import LetterPosition from '../../Common/Component/LetterPosition';
+import MySectionList from '../../Common/Component/MySectionList/'
 let currentObj = undefined;
 let userController = undefined;
 let applyController = undefined;
@@ -92,48 +92,6 @@ class Contacts extends AppComponent {
     componentWillUnmount(){
         super.componentWillUnmount();
     }
-
-    // onPressRightSectionItemIn = (index) =>{
-		// this.refs.mySectionList.scrollToLocation({
-		// animated : true,
-		// sectionIndex: index,
-		// itemIndex : 0,
-		// viewPosition: 0,
-		// viewOffset : 35
-		// })
-		// this.setState({
-		// 	rightSectionItemModalIndex:index
-		// })
-    // }
-    // onPressRightSectionItemOut = () =>{
-		// this.setState({
-		// 	rightSectionItemModalIndex:''
-		// })
-    // }
-    // _getSections = ()=>{
-		// if(this.relationStore.length === 0){
-		// 	return null
-		// }else{
-    //         let sections = this.sectionStore;
-    //         let array = new Array();
-    //         for (let i = 0; i < sections.length; i++) {
-    //             array.push(
-		// 			<View key={i}>
-		// 				<TouchableWithoutFeedback
-		// 					onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
-		// 					onPressOut={this.onPressRightSectionItemOut}
-		// 					//pointerEvents="none"
-		// 					ref={'sectionItem' + i}>
-		// 					<View style={styles.rightSectionView}>
-		// 						<Text style={styles.rightSectionItem}>{sections[i]}</Text>
-		// 					</View>
-		// 				</TouchableWithoutFeedback>
-    //                     {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
-		// 			</View>)
-    //         }
-    //         return array;
-		// }
-    // };
 
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
@@ -251,16 +209,6 @@ class Contacts extends AppComponent {
         this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
     };
 
-    scrollToLocation=(section)=>{
-        let hasLetter = this.sectionStore.indexOf(section);
-        if(hasLetter === -1) return;
-        this.refs.mySectionList.scrollToLocation({
-            animated : true,
-            sectionIndex: hasLetter,
-            itemIndex : 0,
-            viewOffset : 22
-        })
-    };
 	render() {
 		let objData = initDataFormate(this.state.contacts,this.state.text);
 		this.relationStore = objData.SectionArray;
@@ -274,23 +222,19 @@ class Contacts extends AppComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
-				<View style={styles.container}>
-					<SectionList
-						ref={'mySectionList'}
-						keyExtractor={(item,index)=>("index"+index+item)}
-						renderSectionHeader={this._sectionComp}
-						renderItem={this._renderItem}
-						sections={this.relationStore}
-						ItemSeparatorComponent={this._renderSeparator}
-						ListHeaderComponent={this._renderHeader}
-						ListFooterComponent = {this._renderFooter}
-						stickySectionHeadersEnabled={true}
-					/>
-					<LetterPosition onPress={this.scrollToLocation}/>
-				</View>
-				{/*<View style={styles.rightSection}>*/}
-					{/*{this._getSections()}*/}
-				{/*</View>*/}
+				<MySectionList
+					ref={'mySectionList'}
+					keyExtractor={(item,index)=>("index"+index+item)}
+					renderSectionHeader={this._sectionComp}
+					renderItem={this._renderItem}
+					sections={this.relationStore}
+					keyArray={this.sectionStore}
+					ItemSeparatorComponent={this._renderSeparator}
+					ListHeaderComponent={this._renderHeader}
+					ListFooterComponent = {this._renderFooter}
+					stickySectionHeadersEnabled={true}
+					viewOffset={22}
+				/>
                 <Features navigator={this.props.navigator}/>
 		    </View>
 	);

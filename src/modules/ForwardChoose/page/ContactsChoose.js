@@ -14,7 +14,7 @@ import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListData';
-import LetterPosition from '../../Common/Component/LetterPosition';
+import MySectionList from '../../Common/Component/MySectionList/'
 
 let userController = undefined;
 let imLogicController = undefined;
@@ -93,16 +93,6 @@ class ContactsChoose extends AppComponent {
         )
     };
 
-    scrollToLocation=(section)=>{
-        let hasLetter = this.ContactsData.KeyArray.indexOf(section);
-        if(hasLetter === -1) return;
-        this._SectionList.scrollToLocation({
-            animated : true,
-            sectionIndex: hasLetter,
-            itemIndex : 0,
-            viewOffset : 22
-        })
-    };
     render(){
         //将数据处理为SectionList所需要的格式
         let optionText = this.props.optionsType ? '单选' : '多选';
@@ -116,19 +106,19 @@ class ContactsChoose extends AppComponent {
                     heading={'选择联系人'}
                     right={{func:()=>{this._forwardMessage()},text:optionText}}
                 />
-                <View style={styles.container}>
-                    <SectionList
-                        ref={e=>this._SectionList = e}
-                        sections={this.ContactsData.SectionArray}
-                        extraData={this.state}
-                        keyExtractor={this._keyExtractor}
-                        ListHeaderComponent={this._renderHeader}
-                        renderSectionHeader={this._renderItemHeader}
-                        renderItem={this._renderItem}
-                        ItemSeparatorComponent={this._renderSeparator}
-                    />
-                    <LetterPosition onPress={this.scrollToLocation}/>
-                </View>
+                <MySectionList
+                    ref={e=>this._SectionList = e}
+                    sections={this.ContactsData.SectionArray}
+                    keyArray={this.ContactsData.KeyArray}
+                    extraData={this.state}
+                    keyExtractor={this._keyExtractor}
+                    ListHeaderComponent={this._renderHeader}
+                    renderSectionHeader={this._renderItemHeader}
+                    renderItem={this._renderItem}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    stickySectionHeadersEnabled={true}
+                    viewOffset={22}
+                />
             </View>
         )
     }
