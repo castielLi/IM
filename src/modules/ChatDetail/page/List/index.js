@@ -319,6 +319,8 @@ class Chat extends AppComponent {
         switch (ErrorCode){
             case 6001:
                 return "你与该用户并非好友,或你已经被拉入黑名单,请重新添加";
+            case 6002:
+                return "对方已经是你的好友";
             case 6003:
                 return "对方拒绝接收你的消息";
             case 6004:

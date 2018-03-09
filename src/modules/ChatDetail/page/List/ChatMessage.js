@@ -12,6 +12,7 @@ import {
     UIManager,
     Alert,
     Platform,
+    AppState
 } from 'react-native';
 import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
@@ -182,6 +183,27 @@ export default class ChatMessage extends AppComponent {
             },
             onPanResponderTerminationRequest:()=>true,
         })
+    }
+
+    _handleAppStateChange=(nextAppState)=>{
+        if(nextAppState !== 'active'){
+            if(stopSoundObj){
+                stopSoundObj.stop(()=>{
+                    stopSoundObj = null;
+                }).release();
+            }
+        }
+    };
+    componentDidMount() {
+        AppState.addEventListener('change', this._handleAppStateChange);
+    }
+    componentWillUnmount(){
+        AppState.removeEventListener('change', this._handleAppStateChange);
+        if(stopSoundObj){
+            stopSoundObj.stop(()=>{
+                stopSoundObj = null;
+            }).release();
+        }
     }
 
     typeOption = (rowData)=> {
