@@ -9,17 +9,16 @@ import Request from './AppPageRequestEnum'
 //controller
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
-// import ScanController from '../TSController/ScanController'
+import LoginController from '../TSController/LoginController'
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
 import PageInitReadyEnum from './PageInitReadyEnum'
 import AppPushSpecifyPageEnum from './AppPushSpecifyPageEnum'
 
-let imController = undefined;
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
-let scanController = undefined;
+let loginController = undefined;
 
 let Contacts = {};
 
@@ -58,7 +57,7 @@ export default class AppManagement{
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMLogicController.getSingleInstance();
-        // scanController = ScanController.getSingleInstance();
+        loginController = LoginController.getSingleInstance();
     }
 
     static setRoot(rootComponent){

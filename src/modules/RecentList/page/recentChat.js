@@ -42,7 +42,7 @@ import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+import AppStatusEnum from '../Enum/AppStatusEnum'
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
@@ -59,7 +59,7 @@ class RecentChat extends AppComponent {
             sectionID: '',
             rowID: '',
             dataSource: ds,
-            socket:0,//socket连接状态
+            socket:AppStatusEnum.Normal,//socket连接状态
             socketError:'',//socket错误提示
             ConverseList:[]
         };
@@ -71,6 +71,7 @@ class RecentChat extends AppComponent {
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
         loginController = LoginController.getSingleInstance();
+        this._changeAppStatus = this._changeAppStatus.bind(this);
     }
 
     componentWillUnmount(){
@@ -85,12 +86,19 @@ class RecentChat extends AppComponent {
                 });
                 break;
             case AppPageMarkEnum.AppStatus:
+                let {appStatus,info} = params;
                 currentObj.setState({
-                    socket:params.socketStatus,
-                    socketError:params.info
+                    socket:appStatus,
+                    socketError:info
                 });
                 break;
         }
+    }
+
+    _changeAppStatus(type){
+        this.setState({
+            socket:type
+        })
     }
 
     componentDidMount() {
@@ -109,9 +117,7 @@ class RecentChat extends AppComponent {
                     })
                 })
             }else{
-                this.setState({
-                    socket:1,//socket连接状态
-                })
+                currentObj._changeAppStatus(AppStatusEnum.Loginning);
                 loginController.loginWithToken((result)=>{
                     if(result == null){
                         currentObj.route.ToLogin(currentObj.props);
@@ -125,18 +131,10 @@ class RecentChat extends AppComponent {
                             Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
                         }
 
-                        currentObj.setState({
-                            socket:2,//socket连接状态
-                        })
-
-                        // currentObj.route.ToLogin(currentObj.props);
+                        currentObj._changeAppStatus(AppStatusEnum.LoginFailed);
                         return;
                     }
-
                     AppManagement.loginSuccess();
-                    currentObj.setState({
-                        socket:0,//socket连接状态
-                    })
                     userController.getUserContactList(true, (result) => {
                         userController.getGroupContactList(true, (result) => {
                         })
@@ -183,17 +181,24 @@ class RecentChat extends AppComponent {
 
     renderHeader = ()=>{
         switch (this.state.socket){
-            case 0:
+            case AppStatusEnum.SocketConnect:
                 return null;
                 break;
-            case 2:
+            case AppStatusEnum.NetworkError:
                 return (
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
                         <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络连接不可用</Text></View>
                     </View>
                 );
-            default:
+            case AppStatusEnum.SocketConnectError:
+                return (
+                    <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                        <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>接收消息失败</Text></View>
+                    </View>
+                );
+            case AppStatusEnum.Loginning:
                 return (
                     <View style={{backgroundColor:'white',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <ActivityIndicator
@@ -204,8 +209,17 @@ class RecentChat extends AppComponent {
                         <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>连接中...</Text></View>
                     </View>
                 );
-                break;
-
+            case AppStatusEnum.SocketConnecting:
+                return (
+                    <View style={{backgroundColor:'white',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                        <ActivityIndicator
+                            size="small"
+                            color="black"
+                            style={{width:20,height:20}}
+                        />
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>接收消息...</Text></View>
+                    </View>
+                );
         }
     }
 

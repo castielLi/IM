@@ -222,6 +222,7 @@ class Contacts extends AppComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
+<<<<<<< Updated upstream
 				<MySectionList
 					ref={'mySectionList'}
 					keyExtractor={(item,index)=>("index"+index+item)}
@@ -235,6 +236,22 @@ class Contacts extends AppComponent {
 					stickySectionHeadersEnabled={true}
 					viewOffset={22}
 				/>
+=======
+				<View style={styles.container}>
+					<SectionList
+						ref={'mySectionList'}
+						keyExtractor={(item,index)=>("index"+index+item)}
+						renderSectionHeader={this._sectionComp}
+						renderItem={this._renderItem}
+						sections={this.relationStore}
+						ItemSeparatorComponent={this._renderSeparator}
+						ListHeaderComponent={this._renderHeader}
+						ListFooterComponent = {this._renderFooter}
+						stickySectionHeadersEnabled={true}
+					/>
+					{/*<LetterPosition onPress={this.scrollToLocation}/>*/}
+				</View>
+>>>>>>> Stashed changes
                 <Features navigator={this.props.navigator}/>
 		    </View>
 	);
