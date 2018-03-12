@@ -35,56 +35,26 @@ class Start extends AppComponent {
 
 
     componentDidMount(){
-        systemManager.init(()=>{
-            loginController = LoginController.getSingleInstance();
+        SystemManager.initConfig(()=>{
+            systemManager.init(()=>{
+                loginController = LoginController.getSingleInstance();
 
-            loginController.checkLoginToken((user)=>{
-                if(user != null){
-                    currentObj.props.changeTabBar(0);
-                    AppManagement.initBaseManagers();
-                    currentObj.route.push(currentObj.props,{
-                        key:'MainTabbar',
-                        routeId: 'MainTabbar'
-                    });
-                }else{
-                    currentObj.route.push(currentObj.props,{
-                        key:'Login',
-                        routeId: 'Login'
-                    });
-                }
+                loginController.checkLoginToken((user)=>{
+                    if(user != null){
+                        currentObj.props.changeTabBar(0);
+                        AppManagement.initBaseManagers();
+                        currentObj.route.push(currentObj.props,{
+                            key:'MainTabbar',
+                            routeId: 'MainTabbar'
+                        });
+                    }else{
+                        currentObj.route.push(currentObj.props,{
+                            key:'Login',
+                            routeId: 'Login'
+                        });
+                    }
+                })
             })
-
-            // loginController.loginWithToken(function(result){
-            //     if(result == null){
-            //         currentObj.route.push(currentObj.props,{
-            //             key:'Login',
-            //             routeId: 'Login'
-            //         });
-            //         return;
-            //     }
-            //
-            //
-            //     if(result.Result != 1){
-            //
-            //         if(result.Result == 6001){
-            //             Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
-            //         }
-            //
-            //         currentObj.route.push(currentObj.props,{
-            //             key:'Login',
-            //             routeId: 'Login'
-            //         });
-            //         return;
-            //     }
-            //     currentObj.props.changeTabBar(0);
-            //     AppManagement.onLoginSuccess();
-            //     currentObj.route.push(currentObj.props,{
-            //         key:'MainTabbar',
-            //         routeId: 'MainTabbar'
-            //     });
-            //
-            //
-            // });
         })
     }
 
