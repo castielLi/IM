@@ -302,7 +302,7 @@ function tryConnectSocket(){
     }
 
     if(!ConnectState && Logined) {
-        imLogicController.connectSocket();
+        imLogicController.initSocket();
         ConnectState = !ConnectState;
     }
 }
