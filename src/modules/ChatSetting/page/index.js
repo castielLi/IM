@@ -3,11 +3,6 @@ import React, {Component} from 'react';
 import {Text,
     StyleSheet,
     View,
-    TextInput,
-    TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform,
-    Image,
     TouchableHighlight,
     Dimensions,
     Switch
@@ -54,7 +49,15 @@ class ChatSetting extends AppComponent {
         this.setState({
             isStickyChat:!this.state.isStickyChat
         })
-    }
+    };
+
+    _goToClientInfo=()=>{
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:this.props.Account}});
+    };
+
+    _createGroup=()=>{
+        this.route.push(this.props,{key: 'ChooseClientt',routeId: 'ChooseClientt',params:{clientId:this.props.Account,build:true}});
+    };
     render() {
         let path = userController.getAccountHeadImagePath(this.props.Account);
         return (
@@ -63,13 +66,17 @@ class ChatSetting extends AppComponent {
                     left={{func:()=>{this.route.pop(this.props)}}}
                     heading={'聊天设置'} />
                 <View style={styles.userModuleBox}>
-                    <View style={styles.userBox}>
-                        <ImagePlaceHolder style={styles.userHeadImage} imageUrl={path}/>
-                        <Text style={styles.userName} numberOfLines={1}>{this.props.Name}</Text>
-                    </View>
-                    {/*<View style={styles.addBox}>*/}
-                        {/*<Text style={styles.addIcon}>+</Text>*/}
-                    {/*</View>*/}
+                    <TouchableHighlight onPress={this._goToClientInfo} underlayColor={'transparent'}>
+                        <View style={styles.userBox}>
+                            <ImagePlaceHolder style={styles.userHeadImage} imageUrl={path}/>
+                            <Text style={styles.userName} numberOfLines={1}>{this.props.Name}</Text>
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={this._createGroup} underlayColor={'transparent'}>
+                        <View style={styles.addBox}>
+                            <Text style={styles.addIcon}>+</Text>
+                        </View>
+                    </TouchableHighlight>
                 </View>
                 <View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
@@ -120,7 +127,8 @@ const styles = StyleSheet.create({
         marginVertical:15,
         paddingHorizontal:15,
         paddingVertical:10,
-        alignItems:'flex-start'
+        alignItems:'flex-start',
+        flexDirection:'row'
     },
     userBox:{
         alignItems:'center',
@@ -136,6 +144,21 @@ const styles = StyleSheet.create({
         includeFontPadding:false,
         maxWidth:50,
         marginTop:3,
+    },
+    addBox:{
+        justifyContent:'center',
+        alignItems:'center',
+        height:50,
+        width:50,
+        borderWidth:1,
+        borderColor:'#d9d9d9',
+        marginLeft:30
+    },
+    addIcon:{
+        color:'#989898',
+        fontSize:30,
+        textAlignVertical:'center',
+        includeFontPadding:false,
     },
     back:{
         color: '#ffffff',
@@ -175,7 +198,7 @@ const styles = StyleSheet.create({
         color:'#fff',
         fontSize:20,
         alignSelf:'center'
-    }
+    },
 });
 
 
