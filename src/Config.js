@@ -1,18 +1,4 @@
-import SQLiteFactory from "./TSCore/Tools/SQLite/SQLiteFactory";
-import MoblieFS from './TSCore/Tools/FileSystem/MoblieFS';
 export default class Config {
-    static Init() {
-        if (Config.DBType == "sqlite") {
-            SQLiteFactory.InitClienType(Config.ClientType);
-        }
-    }
-    static SetLoginSuccess(account) {
-        if (Config.DBType == "sqlite") {
-            SQLiteFactory.InitClienType(Config.ClientType);
-            SQLiteFactory.InitDBPath(account);
-            MoblieFS.initDirectory(account);
-        }
-    }
 }
 Config.Version = "1.0.1";
 //是否使用DB
@@ -21,4 +7,8 @@ Config.IsDB = true;
 Config.ClientType = "rn";
 //DB类型
 Config.DBType = "sqlite";
+// public static BaseUrl: string = "http://192.168.0.2:7077/";
+Config.BaseUrl = "http://qic-web.s1.natapp.cc/";
+// public static BaseUrl: string = "http://qic-web.s1.natapp.cc/"
+Config.Host = "http://qic-web.s1.natapp.cc/";
 //# sourceMappingURL=Config.js.map
