@@ -10,15 +10,10 @@ import {
   TouchableWithoutFeedback,
   PixelRatio,
     Platform
-} from 'react-native';  
-import Icon from 'react-native-vector-icons/FontAwesome';
+} from 'react-native';
 import Swiper from 'react-native-swiper';
-
-const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-
-
-var {height, width} = Dimensions.get('window');
+var {width} = Dimensions.get('window');
   
 
 

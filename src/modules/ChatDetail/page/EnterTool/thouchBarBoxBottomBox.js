@@ -17,12 +17,6 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-
-const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
-const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-
-
-var {height, width} = Dimensions.get('window');
   
 
 

@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import UserController from '../../../TSController/UserController';
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';

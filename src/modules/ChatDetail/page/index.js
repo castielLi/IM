@@ -25,9 +25,9 @@ import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import UserController from '../../../TSController/UserController';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import AppManagement from '../../../App/AppManagement';
-import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+import AppPageRequestEnum from '../../../App/Enum/AppPageRequestEnum';
 
 let userController = undefined;
 let settingButton = undefined;

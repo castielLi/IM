@@ -25,7 +25,7 @@ import {connect} from 'react-redux';
 import ActionSheet from 'react-native-actionsheet'
 import {bindActionCreators} from 'redux';
 import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import AppPageMarkEnum from '../../../../App/AppPageMarkEnum';
+import AppPageMarkEnum from '../../../../App/Enum/AppPageMarkEnum';
 
 import AppComponent from '../../../../Core/Component/AppComponent'
 import UserController from '../../../../TSController/UserController'

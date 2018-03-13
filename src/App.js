@@ -15,7 +15,7 @@ import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import * as AppHandles from './App/AppUIHandle'
-import AppPageMarkEnum from './App/AppPageMarkEnum'
+import AppPageMarkEnum from './App/Enum/AppPageMarkEnum'
 
 export default function App() {
 

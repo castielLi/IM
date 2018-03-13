@@ -18,11 +18,9 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
-import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
+import ApplyFriendEnum from '../Enum/ApplyFriendEnum'
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
-import AppManagement from '../../../App/AppManagement';
-import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import ApplyController from '../../../TSController/ApplyController';
 import UserController from '../../../TSController/UserController';

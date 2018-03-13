@@ -12,8 +12,9 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import Touch from '../../Common/Thouch/index';
 import LoginController from '../../../TSController/LoginController';
 import AppManagement from '../../../App/AppManagement'
+import {LoginningState} from '../../../App/AppManagementState'
 let loginController = undefined;
-
+let appManagement = undefined;
 let currentObj = undefined;
 class PhoneLogin extends AppComponent {
     componentWillUnmount() {
@@ -32,6 +33,7 @@ class PhoneLogin extends AppComponent {
         currentObj = this;
 
         loginController = LoginController.getSingleInstance();
+        appManagement = new AppManagement();
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{
@@ -81,13 +83,6 @@ class PhoneLogin extends AppComponent {
             if(response.Result !== 1){
                 currentObj.hideLoading()
 
-                // if(response.Result == 1003){
-                //     currentObj.alert("账号或者密码错误","错误");
-                // }else if(response.Result == 6001){
-                //     currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
-                // }else{
-                //     currentObj.alert("登录请求出错","错误");
-                // }
                 switch (response.Result){
                     case 1003:
                         currentObj.alert("账号或者密码错误","错误");
@@ -103,7 +98,10 @@ class PhoneLogin extends AppComponent {
             }
             currentObj.props.signDoing();
             currentObj.props.changeTabBar(0);
-            AppManagement.initBaseManagers();
+
+            let loginnedState = new LoginningState();
+            loginnedState.stateOpreation(appManagement);
+
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',
                 routeId: 'MainTabbar'

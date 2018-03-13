@@ -15,9 +15,9 @@ import {bindActionCreators} from 'redux';
 import tabBarPageEnum from './tabBarPageEnum';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
-import AppPageRequestEnum from '../../../App/AppPageRequestEnum';
+import AppPageRequestEnum from '../../../App/Enum/AppPageRequestEnum';
 import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum'
 let currentObj = undefined;
 

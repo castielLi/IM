@@ -12,7 +12,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 import {bindActionCreators} from 'redux';

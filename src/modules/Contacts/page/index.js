@@ -26,7 +26,7 @@ import * as tabBarActions from '../../MainTabbar/reducer/action';
 import * as applyActions from '../reducer/action';
 import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import ApplyController from '../../../TSController/ApplyController';
 import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';

@@ -7,7 +7,7 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import UserController from '../../../TSController/UserController'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import {Navigator} from 'react-native-deprecated-custom-components';
 
 let userController = undefined;

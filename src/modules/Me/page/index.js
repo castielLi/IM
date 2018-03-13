@@ -25,8 +25,9 @@ import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
 import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
 import AppManagement from '../../../App/AppManagement';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import {LogoutState} from '../../../App/AppManagementState'
 
 let loginController = undefined;
 let userController = undefined;
@@ -34,6 +35,7 @@ let currentAccount = undefined;
 let headImagePath = undefined;
 let imController = undefined;
 let currentObj = undefined;
+let appManagement = undefined;
 
 
 var originData = [
@@ -153,6 +155,7 @@ class Me extends AppComponent {
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        appManagement = new AppManagement();
         this.state = {
             showFeatures:false,//显示功能块组件
             headImageUrl:headImagePath,
@@ -185,13 +188,8 @@ class Me extends AppComponent {
 
 
     loginOut = ()=>{
-        loginController.logOut();
-        imController.logout();
-        userController.logout();
-        AppManagement.AppLogout();
-
-        //关闭数据库
-        // userController.logout();
+        let logoutState = new LogoutState();
+        logoutState.stateOpreation(appManagement);
         this.route.ToLogin(this.props);
     }
 

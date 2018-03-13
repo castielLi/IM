@@ -14,10 +14,8 @@ import {
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
 import IMController from '../../../../TSController/IMLogic/IMControllerLogic';
-import * as commonMethod from '../../common/commonMethod'
-const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-var {height, width} = Dimensions.get('window');
+var {width} = Dimensions.get('window');
 let isIos = (Platform.OS === 'ios') ? true : false;
 
 var imController = undefined;

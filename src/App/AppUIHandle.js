@@ -4,8 +4,9 @@
 import AppManagement from './AppManagement'
 import {Alert} from 'react-native'
 import Route from '../Core/route/router'
-import AppPageMarkEnum from './AppPageMarkEnum'
-import PageInitReadyEnum from './PageInitReadyEnum'
+import AppPageMarkEnum from './Enum/AppPageMarkEnum'
+
+let appManagement = new AppManagement();
 
 export function pageManagement(type,data){
     switch (type){
@@ -24,8 +25,12 @@ export function pageManagement(type,data){
             break;
         default :
             if(type){
-                AppManagement.dispatchMessageToMarkPage(type,data);
+                appManagement.dispatchMessageToMarkPage(type,data);
                 break;
             }
     }
+}
+
+export function pageReadyManagement(type){
+    appManagement.pageInitReady(type);
 }

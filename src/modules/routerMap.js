@@ -11,7 +11,7 @@
  * 路由配置项
  * 可配置默认参数 props: params
  */
-import Mark from '../App/AppPageMarkEnum'
+import Mark from '../App/Enum/AppPageMarkEnum'
 import Root from './Root/root'
 import Login from './Login/page/main'
 import PhoneLogin from './Login/page/phoneLogin'

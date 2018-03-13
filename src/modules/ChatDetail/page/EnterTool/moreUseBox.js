@@ -19,15 +19,11 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-import ResourceTypeEnum from '../../../../Core/Management/Common/dto/ResourceTypeEnum'
-import {addResourceMessage} from '../../../../Core/Management/IM/action/createMessage';
 import CameraConfig from './cameraConfig';
 import IMController from '../../../../TSController/IMLogic/IMControllerLogic'
-import * as commonMethod from '../../common/commonMethod'
-const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var ImagePicker = require('react-native-image-picker');
-var {height, width} = Dimensions.get('window');
+var {width} = Dimensions.get('window');
 
 let imController = undefined;
 

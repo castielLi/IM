@@ -36,17 +36,19 @@ import TimeHelper from '../../../Core/Helper/TimeHelper';
 
 import UserController from '../../../TSController/UserController'
 import ApplyController from '../../../TSController/ApplyController';
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppStatusEnum from '../Enum/AppStatusEnum'
+import {TokenLoginnedState} from '../../../App/AppManagementState'
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
 let loginController = undefined;
+let appManagement = undefined;
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
@@ -71,6 +73,7 @@ class RecentChat extends AppComponent {
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
         loginController = LoginController.getSingleInstance();
+        appManagement = new AppManagement();
         this._changeAppStatus = this._changeAppStatus.bind(this);
     }
 
@@ -110,7 +113,7 @@ class RecentChat extends AppComponent {
             userController.getUserContactList(false, null);
 
             //有token，但是还没有经过验证
-            if(AppManagement.getAppLoginStates()) {
+            if(appManagement.Logined) {
                 userController.getUserContactList(true, (result) => {
                     userController.getGroupContactList(true, (result) => {
                         // currentObj.props.hideNavigationBottom();
@@ -129,12 +132,19 @@ class RecentChat extends AppComponent {
 
                         if(result.Result == 6001){
                             Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
+                        }else if(result.Result == 2003){
+                            Alert.alert("错误","登录账号密码时限过期，请重新登录");
+                            currentObj.route.ToLogin(currentObj.props);
+                            return;
                         }
 
                         currentObj._changeAppStatus(AppStatusEnum.LoginFailed);
                         return;
                     }
-                    AppManagement.loginSuccess();
+
+                    let loginnedState = new TokenLoginnedState();
+                    loginnedState.stateOpreation(appManagement);
+
                     userController.getUserContactList(true, (result) => {
                         userController.getGroupContactList(true, (result) => {
                         })

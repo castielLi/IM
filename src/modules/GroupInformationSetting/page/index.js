@@ -29,7 +29,7 @@ import {bindActionCreators} from 'redux';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import UserController from '../../../TSController/UserController';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
-import AppPageMarkEnum from '../../../App/AppPageMarkEnum'
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 let userController = undefined;
 let imController = undefined;
 

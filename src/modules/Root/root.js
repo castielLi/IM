@@ -25,12 +25,13 @@ import AppManagement from '../../App/AppManagement'
 
 
 let initRootNavigation = false;
+let appManagement = undefined;
 
 class Root extends AppComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
-
+        appManagement = new AppManagement();
     }
 
     componentWillUnmount(){
@@ -52,7 +53,7 @@ class Root extends AppComponent {
         if(!initRootNavigation){
             this.route.setRootNavigator(navigator);
             initRootNavigation = !initRootNavigation;
-            AppManagement.setRoot(this);
+            appManagement.setRoot(this);
         }
 
         return this.route.getRoutePage(Route, navigator);

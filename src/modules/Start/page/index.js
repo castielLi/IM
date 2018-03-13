@@ -12,9 +12,11 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import AppManagement from '../../../App/AppManagement'
 import LoginController from '../../../TSController/LoginController';
 import SystemManager from '../../../TSController/SystemManager'
+import {LoginningState,TokenLoginState} from '../../../App/AppManagementState'
 let loginController = undefined;
 let currentObj = undefined;
 let systemManager = undefined;
+let appManagement = undefined;
 
 
 class Start extends AppComponent {
@@ -27,6 +29,7 @@ class Start extends AppComponent {
         }
         currentObj = this;
         systemManager = new SystemManager()
+        appManagement = new AppManagement();
     }
 
     componentWillUnmount(){
@@ -35,14 +38,22 @@ class Start extends AppComponent {
 
 
     componentDidMount(){
+
         SystemManager.initConfig(()=>{
             systemManager.init(()=>{
-                loginController = LoginController.getSingleInstance();
 
+                let loginningState = new LoginningState();
+                loginningState.stateOpreation(appManagement);
+
+                loginController = LoginController.getSingleInstance();
                 loginController.checkLoginToken((user)=>{
                     if(user != null){
+
+                        //之前登录过，设置为token登录模式
+                        let tokenLoginnedState = new TokenLoginState();
+                        tokenLoginnedState.stateOpreation(appManagement);
+
                         currentObj.props.changeTabBar(0);
-                        AppManagement.initBaseManagers();
                         currentObj.route.push(currentObj.props,{
                             key:'MainTabbar',
                             routeId: 'MainTabbar'

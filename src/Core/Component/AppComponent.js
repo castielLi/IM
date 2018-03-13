@@ -9,13 +9,14 @@ let currentObj = undefined;
 export default class AppComponent extends ContainerComponent{
     constructor(props) {
         super(props);
+        this.appManagement = new AppManagement();
         if(props && props.MarkType) {
             if(props.MarkType instanceof Array){
                 props.MarkType.forEach((value,index)=>{
-                    AppManagement.addPageManagement(value, props.name?props.name:this.constructor.name ,this._refreshUI)
+                    this.appManagement.addPageManagement(value, props.name?props.name:this.constructor.name ,this._refreshUI)
                 })
             }else{
-                AppManagement.addPageManagement(props.MarkType, props.name?props.name:this.constructor.name ,this._refreshUI)
+                this.appManagement.addPageManagement(props.MarkType, props.name?props.name:this.constructor.name ,this._refreshUI)
             }
         }
         this._refreshUI = this._refreshUI.bind(this);
@@ -24,7 +25,7 @@ export default class AppComponent extends ContainerComponent{
 
 
     componentWillUnmount(){
-       AppManagement.removePageManagement(this.props.MarkType,this.constructor.name)
+        this.appManagement.removePageManagement(this.props.MarkType,this.constructor.name)
     }
 
     _refreshUI(params){

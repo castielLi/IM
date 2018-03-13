@@ -17,11 +17,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import AppComponent from '../../Core/Component/AppComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
-
 import {bindActionCreators} from 'redux';
-
-import RelationModel from '../../Logic/Common/dto/RelationDto'
-import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
 import UserController from '../../TSController/UserController';
 import ApplyController from '../../TSController/ApplyController';
 
