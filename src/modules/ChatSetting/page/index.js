@@ -56,7 +56,7 @@ class ChatSetting extends AppComponent {
     };
 
     _createGroup=()=>{
-        this.route.push(this.props,{key: 'ChooseClientt',routeId: 'ChooseClientt',params:{clientId:this.props.Account,build:true}});
+        this.route.push(this.props,{key: 'ChooseClientt',routeId: 'ChooseClientt',params:{Accounts:[this.props.Account],build:true}});
     };
     render() {
         let path = userController.getAccountHeadImagePath(this.props.Account);
@@ -72,11 +72,11 @@ class ChatSetting extends AppComponent {
                             <Text style={styles.userName} numberOfLines={1}>{this.props.Name}</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={this._createGroup} underlayColor={'transparent'}>
-                        <View style={styles.addBox}>
-                            <Text style={styles.addIcon}>+</Text>
-                        </View>
-                    </TouchableHighlight>
+                    {/*<TouchableHighlight onPress={this._createGroup} underlayColor={'transparent'}>*/}
+                        {/*<View style={styles.addBox}>*/}
+                            {/*<Text style={styles.addIcon}>+</Text>*/}
+                        {/*</View>*/}
+                    {/*</TouchableHighlight>*/}
                 </View>
                 <View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>

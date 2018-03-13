@@ -95,7 +95,7 @@ export default class SelectGroup extends AppComponent {
 
     /*item点击事件*/
     _itemTouch=(content)=>{
-        this.route.push(this.props, {
+        this.route.pushifExistRoute(this.props, {
             key: 'ChatDetail',
             routeId: 'ChatDetail',
             params: {

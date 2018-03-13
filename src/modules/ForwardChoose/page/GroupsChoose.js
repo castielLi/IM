@@ -53,7 +53,7 @@ class GroupsChoose extends AppComponent {
     _renderItem = (item) => { //item:{item:{},index:number,separators:{}}
         let content = item.item;
         let index = item.index;
-        let checked = this.props.selectRecord[content.Id] ? true : false;
+        let checked = this.props.selectRecord[content.Id] ? 1 : 2;
         return (
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index)}>
                 <View style={styles.itemView}>

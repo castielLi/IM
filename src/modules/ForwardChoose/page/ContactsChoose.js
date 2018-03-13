@@ -26,7 +26,7 @@ class ContactsChoose extends AppComponent {
         this.state = {
             ContactsData: [],
         };
-        this.CheckBoxData = [];//选择框组件
+        this.CheckBoxData = {};//选择框组件
         this.HasData = 0;//是否有选择数据
         this.ContactsData = [];//分组集合和数据
         userController = UserController.getSingleInstance();
@@ -71,9 +71,10 @@ class ContactsChoose extends AppComponent {
     _renderItem = (item) => { //item:{item:{},index:number,section:{本分组数据：key,data},separators:{}}
         let content = item.item;
         let index = item.index;
-        let checked = this.props.selectRecord[content.Account] ? true : false;
+        let key = item.section.key;
+        let checked = this.props.selectRecord[content.Account] ? 1 : 2;
         return (
-            <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index)}>
+            <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index,key)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
                         {this._renderAvator(content.HeadImagePath, content.HeadImageUrl)}
@@ -81,7 +82,7 @@ class ContactsChoose extends AppComponent {
                             <Text style={styles.itemText}  numberOfLines={1}>{content.Nickname}</Text>
                         </View>
                     </View>
-                    {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e)} checked={checked}/> : null}
+                    {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e,key)} checked={checked}/> : null}
                 </View>
             </TouchableHighlight>
         )
@@ -135,7 +136,7 @@ class ContactsChoose extends AppComponent {
     };
 
     /*item点击事件*/
-    _itemTouch=(content,index)=>{
+    _itemTouch=(content,index,key)=>{
         let RecordDto = {};
         RecordDto.receiveId = content.Account;
         RecordDto.group = false;
@@ -147,7 +148,7 @@ class ContactsChoose extends AppComponent {
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
             //改变选中框样式
-            this.CheckBoxData[index].onChange();
+            this.CheckBoxData[key][index].onChange();
         }else{
             //调用发送方法
             // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
@@ -174,9 +175,12 @@ class ContactsChoose extends AppComponent {
     };
 
     /*记录checkBox*/
-    _initCheckBoxData=(checkBox)=>{
+    _initCheckBoxData=(checkBox,key)=>{
         if(checkBox!=null){
-            this.CheckBoxData.push(checkBox);
+            if(!this.CheckBoxData[key]){
+                this.CheckBoxData[key] = [];
+            }
+            this.CheckBoxData[key].push(checkBox);
         }
     }
 }
