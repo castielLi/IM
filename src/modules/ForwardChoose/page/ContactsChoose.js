@@ -26,7 +26,7 @@ class ContactsChoose extends AppComponent {
         this.state = {
             ContactsData: [],
         };
-        this.CheckBoxData = {};//选择框组件
+        // this.CheckBoxData = {};//选择框组件
         this.HasData = 0;//是否有选择数据
         this.ContactsData = [];//分组集合和数据
         userController = UserController.getSingleInstance();
@@ -82,7 +82,7 @@ class ContactsChoose extends AppComponent {
                             <Text style={styles.itemText}  numberOfLines={1}>{content.Nickname}</Text>
                         </View>
                     </View>
-                    {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e,key)} checked={checked}/> : null}
+                    {this.props.optionsType ? <CheckBox checked={checked}/> : null}
                 </View>
             </TouchableHighlight>
         )
@@ -148,7 +148,7 @@ class ContactsChoose extends AppComponent {
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
             //改变选中框样式
-            this.CheckBoxData[key][index].onChange();
+            // this.CheckBoxData[key][index].onChange();
         }else{
             //调用发送方法
             // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
@@ -215,7 +215,8 @@ const styles = StyleSheet.create({
         paddingVertical:8,
         alignItems:'center',
         justifyContent:'space-between',
-        paddingHorizontal:15
+        paddingLeft:15,
+        paddingRight:45
     },
     itemContent:{
         flexDirection:'row',

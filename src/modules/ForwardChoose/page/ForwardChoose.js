@@ -28,7 +28,7 @@ class ForwardChoose extends AppComponent {
         this.state = {
             ConversationData: [],//最近会话记录
         };
-        this.CheckBoxData = [];//选择框组件
+        // this.CheckBoxData = [];//选择框组件
         this.HasData = 0;//是否有选择数据
         this.RecordDto = null;//是有单选记录
         currentObj = this;
@@ -79,7 +79,7 @@ class ForwardChoose extends AppComponent {
                             <Text style={styles.itemText}  numberOfLines={1}>{content.name}</Text>
                         </View>
                     </View>
-                    {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e)} checked={checked}/> : null}
+                    {this.props.optionsType ? <CheckBox checked={checked}/> : null}
                 </View>
             </TouchableHighlight>
         )
@@ -184,7 +184,7 @@ class ForwardChoose extends AppComponent {
             //加入redux缓存记录等待统一发送
             this.props.changeSelectRecord(RecordDto);
             //改变选中框样式
-            this.CheckBoxData[index].onChange();
+            // this.CheckBoxData[index].onChange();
         }else{
             //调用发送方法
             // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);

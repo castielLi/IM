@@ -23,11 +23,11 @@ export default class CheckBox extends Component{
         onChange: React.PropTypes.func
     };
 
-    // componentWillReceiveProps(nextProps) {
-    //     this.setState({
-    //         checked: nextProps.checked
-    //     });
-    // }
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            checked: nextProps.checked
+        });
+    }
 
     onChange(value) {
         if(this.state.checked == stateType.Default) return;
