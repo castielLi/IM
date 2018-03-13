@@ -44,9 +44,9 @@ export default class CheckBox extends Component{
     _renderOptin=(checked)=>{
         switch (checked){
             case stateType.Default:
-                return <Icon name={'check-square-o'} size={22} style={styles.checkbox} color="#999" />;
+                return <Icon name={'check-square'} size={22} style={styles.checkbox} color="#999" />;
             case stateType.Selected:
-                return <Icon name={'check-square-o'} size={22} style={styles.checkbox} color="#66CD00" />;
+                return <Icon name={'check-square'} size={22} style={styles.checkbox} color="#66CD00" />;
             case stateType.Unselected:
                 return <Icon name={'square-o'} size={22} style={styles.checkbox} color="#999" />;
         }

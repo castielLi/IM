@@ -54,7 +54,7 @@ class ContactsChoose extends AppComponent {
     _renderHeader = () => {
         return (
             <View style={styles.headerView}>
-                <Text style={styles.headerText}>最近聊天会话</Text>
+                <Text style={styles.headerText}>通讯录列表</Text>
             </View>
         )
     };
@@ -73,13 +73,14 @@ class ContactsChoose extends AppComponent {
         let index = item.index;
         let key = item.section.key;
         let checked = this.props.selectRecord[content.Account] ? 1 : 2;
+        let name = content.Remark != "" ? content.Remark:content.Nickname;
         return (
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index,key)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
                         {this._renderAvator(content.HeadImagePath, content.HeadImageUrl)}
                         <View style={styles.itemTextView}>
-                            <Text style={styles.itemText}  numberOfLines={1}>{content.Nickname}</Text>
+                            <Text style={styles.itemText}  numberOfLines={1}>{name}</Text>
                         </View>
                     </View>
                     {this.props.optionsType ? <CheckBox checked={checked}/> : null}
