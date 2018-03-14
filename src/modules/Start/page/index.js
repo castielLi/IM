@@ -14,7 +14,7 @@ import SystemManager from '../../../TSController/SystemManager'
 import {LoginningState,TokenLoginState} from '../../../App/AppManagementState'
 let loginController = undefined;
 let currentObj = undefined;
-
+let systemManager = undefined;
 
 class Start extends AppComponent {
     constructor(props){
@@ -25,6 +25,7 @@ class Start extends AppComponent {
             isLogged: false
         }
         currentObj = this;
+        systemManager = new SystemManager()
     }
 
     componentWillUnmount(){
@@ -33,29 +34,33 @@ class Start extends AppComponent {
 
 
     componentDidMount(){
-        let loginningState = new LoginningState();
-        loginningState.stateOpreation(this.appManagement);
+        SystemManager.initConfig(() => {
+            systemManager.init(() => {
+                let loginningState = new LoginningState();
+                loginningState.stateOpreation(this.appManagement);
 
-        loginController = LoginController.getSingleInstance();
-        loginController.checkLoginToken((user)=>{
-            if(user != null){
+                loginController = LoginController.getSingleInstance();
+                loginController.checkLoginToken((user)=>{
+                    if(user != null){
 
-                //之前登录过，设置为token登录模式
-                let tokenLoginnedState = new TokenLoginState();
-                tokenLoginnedState.stateOpreation(this.appManagement);
+                        //之前登录过，设置为token登录模式
+                        let tokenLoginnedState = new TokenLoginState();
+                        tokenLoginnedState.stateOpreation(this.appManagement);
 
-                currentObj.props.changeTabBar(0);
-                currentObj.route.push(currentObj.props,{
-                    key:'MainTabbar',
-                    routeId: 'MainTabbar'
-                });
-            }else{
-                currentObj.route.push(currentObj.props,{
-                    key:'Login',
-                    routeId: 'Login'
-                });
-            }
-        })
+                        currentObj.props.changeTabBar(0);
+                        currentObj.route.push(currentObj.props,{
+                            key:'MainTabbar',
+                            routeId: 'MainTabbar'
+                        });
+                    }else{
+                        currentObj.route.push(currentObj.props,{
+                            key:'Login',
+                            routeId: 'Login'
+                        });
+                    }
+                })
+            });
+        });
     }
 
     render() {

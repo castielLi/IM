@@ -21,23 +21,19 @@ export class LoginningState extends IAppManagementState{
     }
 
     stateOpreation(appManagementObj) {
-        SystemManager.initConfig(() => {
-            this.systemManager.init(() => {
-                appManagementObj.userController = UserController.getSingleInstance();
-                appManagementObj.applyController = ApplyController.getSingleInstance();
-                appManagementObj.loginController = LoginController.getSingleInstance();
-                appManagementObj.userController.init(
-                    AppHandles.pageManagement,
-                    AppHandles.pageReadyManagement
-                )
+        appManagementObj.userController = UserController.getSingleInstance();
+        appManagementObj.applyController = ApplyController.getSingleInstance();
+        appManagementObj.loginController = LoginController.getSingleInstance();
+        appManagementObj.userController.init(
+            AppHandles.pageManagement,
+            AppHandles.pageReadyManagement
+        )
 
-                appManagementObj.applyController.init(
-                    AppHandles.pageManagement,
-                )
+        appManagementObj.applyController.init(
+            AppHandles.pageManagement,
+        )
 
-                appManagementObj.setState(this)
-            });
-        });
+        appManagementObj.setState(this)
     }
 }
 
