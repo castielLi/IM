@@ -9,22 +9,35 @@ import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
 import LoginController from '../TSController/LoginController'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
+import SystemManager from '../../../TSController/SystemManager'
+
+
 
 export class LoginningState extends IAppManagementState{
-    stateOpreation(appManagementObj){
-        appManagementObj.userController = UserController.getSingleInstance();
-        appManagementObj.applyController = ApplyController.getSingleInstance();
-        appManagementObj.loginController = LoginController.getSingleInstance();
-        appManagementObj.userController.init(
-            AppHandles.pageManagement,
-            AppHandles.pageReadyManagement
-        )
 
-        appManagementObj.applyController.init(
-            AppHandles.pageManagement,
-        )
+    constructor(){
+        super();
+        this.systemManager = new SystemManager();
+    }
 
-        appManagementObj.setState(this)
+    stateOpreation(appManagementObj) {
+        SystemManager.initConfig(() => {
+            this.systemManager.init(() => {
+                appManagementObj.userController = UserController.getSingleInstance();
+                appManagementObj.applyController = ApplyController.getSingleInstance();
+                appManagementObj.loginController = LoginController.getSingleInstance();
+                appManagementObj.userController.init(
+                    AppHandles.pageManagement,
+                    AppHandles.pageReadyManagement
+                )
+
+                appManagementObj.applyController.init(
+                    AppHandles.pageManagement,
+                )
+
+                appManagementObj.setState(this)
+            });
+        });
     }
 }
 

@@ -9,14 +9,11 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../Login/reducer/action';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
-import AppManagement from '../../../App/AppManagement'
 import LoginController from '../../../TSController/LoginController';
 import SystemManager from '../../../TSController/SystemManager'
 import {LoginningState,TokenLoginState} from '../../../App/AppManagementState'
 let loginController = undefined;
 let currentObj = undefined;
-let systemManager = undefined;
-let appManagement = undefined;
 
 
 class Start extends AppComponent {
@@ -28,8 +25,6 @@ class Start extends AppComponent {
             isLogged: false
         }
         currentObj = this;
-        systemManager = new SystemManager()
-        appManagement = new AppManagement();
     }
 
     componentWillUnmount(){
@@ -38,34 +33,28 @@ class Start extends AppComponent {
 
 
     componentDidMount(){
+        let loginningState = new LoginningState();
+        loginningState.stateOpreation(this.appManagement);
 
-        SystemManager.initConfig(()=>{
-            systemManager.init(()=>{
+        loginController = LoginController.getSingleInstance();
+        loginController.checkLoginToken((user)=>{
+            if(user != null){
 
-                let loginningState = new LoginningState();
-                loginningState.stateOpreation(appManagement);
+                //之前登录过，设置为token登录模式
+                let tokenLoginnedState = new TokenLoginState();
+                tokenLoginnedState.stateOpreation(this.appManagement);
 
-                loginController = LoginController.getSingleInstance();
-                loginController.checkLoginToken((user)=>{
-                    if(user != null){
-
-                        //之前登录过，设置为token登录模式
-                        let tokenLoginnedState = new TokenLoginState();
-                        tokenLoginnedState.stateOpreation(appManagement);
-
-                        currentObj.props.changeTabBar(0);
-                        currentObj.route.push(currentObj.props,{
-                            key:'MainTabbar',
-                            routeId: 'MainTabbar'
-                        });
-                    }else{
-                        currentObj.route.push(currentObj.props,{
-                            key:'Login',
-                            routeId: 'Login'
-                        });
-                    }
-                })
-            })
+                currentObj.props.changeTabBar(0);
+                currentObj.route.push(currentObj.props,{
+                    key:'MainTabbar',
+                    routeId: 'MainTabbar'
+                });
+            }else{
+                currentObj.route.push(currentObj.props,{
+                    key:'Login',
+                    routeId: 'Login'
+                });
+            }
         })
     }
 

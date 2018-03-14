@@ -48,7 +48,6 @@ let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
 let loginController = undefined;
-let appManagement = undefined;
 let currentObj= undefined;
 
 class RecentChat extends AppComponent {
@@ -73,7 +72,6 @@ class RecentChat extends AppComponent {
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
         loginController = LoginController.getSingleInstance();
-        appManagement = new AppManagement();
         this._changeAppStatus = this._changeAppStatus.bind(this);
     }
 
@@ -113,7 +111,7 @@ class RecentChat extends AppComponent {
             userController.getUserContactList(false, null);
 
             //有token，但是还没有经过验证
-            if(appManagement.Logined) {
+            if(this.appManagement.Logined) {
                 userController.getUserContactList(true, (result) => {
                     userController.getGroupContactList(true, (result) => {
                         // currentObj.props.hideNavigationBottom();
@@ -138,12 +136,12 @@ class RecentChat extends AppComponent {
                             return;
                         }
 
-                        currentObj._changeAppStatus(AppStatusEnum.LoginFailed);
+                        currentObj._changeAppStatus(AppStatusEnum.NetworkError);
                         return;
                     }
 
                     let loginnedState = new TokenLoginnedState();
-                    loginnedState.stateOpreation(appManagement);
+                    loginnedState.stateOpreation(this.appManagement);
 
                     userController.getUserContactList(true, (result) => {
                         userController.getGroupContactList(true, (result) => {
