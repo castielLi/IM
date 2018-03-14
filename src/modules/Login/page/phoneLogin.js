@@ -14,7 +14,6 @@ import LoginController from '../../../TSController/LoginController';
 import AppManagement from '../../../App/AppManagement'
 import {LoginnedState} from '../../../App/AppManagementState'
 let loginController = undefined;
-let appManagement = undefined;
 let currentObj = undefined;
 class PhoneLogin extends AppComponent {
     componentWillUnmount() {
@@ -33,7 +32,6 @@ class PhoneLogin extends AppComponent {
         currentObj = this;
 
         loginController = LoginController.getSingleInstance();
-        appManagement = new AppManagement();
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{
@@ -100,7 +98,7 @@ class PhoneLogin extends AppComponent {
             currentObj.props.changeTabBar(0);
 
             let loginnedState = new LoginnedState();
-            loginnedState.stateOpreation(appManagement);
+            loginnedState.stateOpreation(this.appManagement);
 
             currentObj.route.push(currentObj.props,{
                 key:'MainTabbar',

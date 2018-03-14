@@ -19,19 +19,15 @@ import {
 import {
     connect
 } from 'react-redux';
-import * as router from '../routerMap'
 import AppComponent from '../../Core/Component/AppComponent'
-import AppManagement from '../../App/AppManagement'
 
 
 let initRootNavigation = false;
-let appManagement = undefined;
 
 class Root extends AppComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
-        appManagement = new AppManagement();
     }
 
     componentWillUnmount(){
@@ -40,20 +36,14 @@ class Root extends AppComponent {
     }
 
     renderScene(Route, navigator) {
-        // this.route = route;
         this.navigator = navigator;
         console.log('renderScene启动')
-        //如果已登录，再点击登录页面或者再返回登录页面，将跳转到TestRefresh
-        // if(Route.key === 'Login' && this.props.isLoggedIn === true){
-        // 	Route.routeId = 'TestRefresh';
-        // 	Route.key = 'TestRefresh';
-        // }
 
         //初始化跟导航器
         if(!initRootNavigation){
             this.route.setRootNavigator(navigator);
             initRootNavigation = !initRootNavigation;
-            appManagement.setRoot(this);
+            this.appManagement.setRoot(this);
         }
 
         return this.route.getRoutePage(Route, navigator);
@@ -64,7 +54,7 @@ class Root extends AppComponent {
         if (route.sceneConfig) {
              return route.sceneConfig;
          }
-        //return Navigator.SceneConfigs.FloatFromRight;
+
         return ({
             ...Navigator.SceneConfigs.FloatFromRight,
             //禁止手势
@@ -90,12 +80,6 @@ class Root extends AppComponent {
     }
 }
 
-const styles = StyleSheet.create({
-    navContainer: {
-        height: 40,
-        backgroundColor: '#fff'
-    }
-})
 
 function MapState(store) {
     return {
