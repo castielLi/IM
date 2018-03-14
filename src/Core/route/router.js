@@ -249,10 +249,10 @@ class Route {
         if (!contain) {
             let loginRoute = this.loginRoute;
             navigator.replaceAtIndex(this.loginRoute,1,function(){
-                navigator.jumpTo(loginRoute)
+                navigator.popToRoute(loginRoute)
             });
         }else{
-            navigator.jumpTo(route)
+            navigator.popToRoute(route)
         }
     }
 }

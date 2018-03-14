@@ -21,19 +21,19 @@ import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import LoginController from '../../../TSController/LoginController';
+// import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
-import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
+// import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
 import AppManagement from '../../../App/AppManagement';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import {LogoutState} from '../../../App/AppManagementState'
 
-let loginController = undefined;
+// let loginController = undefined;
 let userController = undefined;
 let currentAccount = undefined;
 let headImagePath = undefined;
-let imController = undefined;
+// let imController = undefined;
 let currentObj = undefined;
 let appManagement = undefined;
 
@@ -150,8 +150,8 @@ class Me extends AppComponent {
     constructor(props){
         super(props);
 
-        loginController = new LoginController();
-        imController = IMControlelr.getSingleInstance();
+        // loginController = new LoginController();
+        // imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)

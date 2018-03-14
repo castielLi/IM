@@ -66,10 +66,10 @@ export class LogoutState extends IAppManagementState{
     stateOpreation(appManagementObj){
         appManagementObj.ConnectState = false;
         appManagementObj.Logined = false;
-        appManagementObj.setState(this)
-        appManagementObj.loginController.logOut();
-        appManagementObj.imLogicController.logout();
-        appManagementObj.userController.logout();
+        appManagementObj.setState(this);
+        appManagementObj.loginController.destroyInstance();
+        appManagementObj.imLogicController.destroyInstance();
+        appManagementObj.userController.destroyInstance();
     }
 
 }

@@ -12,7 +12,7 @@ import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import Touch from '../../Common/Thouch/index';
 import LoginController from '../../../TSController/LoginController';
 import AppManagement from '../../../App/AppManagement'
-import {LoginningState} from '../../../App/AppManagementState'
+import {LoginnedState} from '../../../App/AppManagementState'
 let loginController = undefined;
 let appManagement = undefined;
 let currentObj = undefined;
@@ -99,7 +99,7 @@ class PhoneLogin extends AppComponent {
             currentObj.props.signDoing();
             currentObj.props.changeTabBar(0);
 
-            let loginnedState = new LoginningState();
+            let loginnedState = new LoginnedState();
             loginnedState.stateOpreation(appManagement);
 
             currentObj.route.push(currentObj.props,{
