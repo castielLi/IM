@@ -76,7 +76,6 @@ export class WaitValidateTokenState extends IAppManagementState{
 
 export class LoginedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.Logined = true;
         appManagementObj.imLogicController = IMLogicController.getSingleInstance();
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
@@ -95,6 +94,8 @@ export class LoginedState extends IAppManagementState{
             key:'MainTabbar',
             routeId: 'MainTabbar'
         });
+        appManagementObj.Logined = true;
+        appManagementObj.systemLoginSuccess();
 
         //获取网络数据
         appManagementObj.userController.getUserContactList(true, (result) => {
