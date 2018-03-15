@@ -123,7 +123,6 @@ class RecentChat extends AppComponent {
         });
     }
     _deleteSomeRow = (data)=> {
-        alert(JSON.stringify(data))
         let oKCallback = () => {
             imLogicController.removeConverse(data.chatId,data.group);
         }
