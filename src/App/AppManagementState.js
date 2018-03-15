@@ -90,6 +90,7 @@ export class LoginedState extends IAppManagementState{
         appManagementObj.applyController.init(
             appManagementObj.dispatchMessageToMarkPage,
         )
+
         appManagementObj.root.route.push(appManagementObj.root,{
             key:'MainTabbar',
             routeId: 'MainTabbar'
@@ -97,7 +98,7 @@ export class LoginedState extends IAppManagementState{
         appManagementObj.Logined = true;
         appManagementObj.systemLoginSuccess();
 
-        //获取网络数据
+        //获取网络数据,这里需要先执行刷新缓存在执行界面跳转，因为界面中最近会话会用到user缓存
         appManagementObj.userController.getUserContactList(true, (result) => {
             appManagementObj.userController.getGroupContactList(true, (result) => {
             })
@@ -120,6 +121,7 @@ export class TokenValidateSuccessState extends IAppManagementState{
         })
 
         appManagementObj.applyController.getUncheckApplyFriendCount();
+        appManagementObj.validateManager.destroyInstance();
         appManagementObj.setState(this)
     }
 }
@@ -136,10 +138,10 @@ export class LogoutState extends IAppManagementState{
     stateOpreation(appManagementObj){
         appManagementObj.ConnectState = false;
         appManagementObj.Logined = false;
-        appManagementObj.loginController.destroyInstance();
         appManagementObj.imLogicController.destroyInstance();
         appManagementObj.userController.destroyInstance();
-        appManagementObj.root.ToLogin();
+        appManagementObj.applyController.destroyInstance();
+        appManagementObj.root.route.ToLogin();
         appManagementObj.setState(this);
     }
 
