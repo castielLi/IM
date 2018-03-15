@@ -6,7 +6,15 @@ import Mark from './Enum/AppPageMarkEnum';
 import TabTypeEnum from '../TSController/Enums/TabTypeEnum'
 import PageInitReadyEnum from './Enum/PageInitReadyEnum'
 import AppPushSpecifyPageEnum from './Enum/AppPushSpecifyPageEnum'
+import {Alert} from 'react-native'
+import AppPageMarkEnum from './Enum/AppPageMarkEnum'
+import {InitState,NoTokenState,WaitValidateTokenState,TokenValidateSuccessState
+    ,TokenValidateFailedState,LogoutState
+    ,LoginedState}
+from './AppManagementState'
+import AppTokenStateEnum from './Enum/AppTokenStateEnum'
 
+let currentApp = undefined;
 
 let __instance = (function () {
     let instance;
@@ -42,6 +50,12 @@ export default class AppManagement{
         this.applyController = undefined;
         this.imLogicController = undefined;
         this.loginController = undefined;
+        this.validateManager = undefined;
+
+        let initState = new InitState()
+        initState.stateOpreation(this);
+
+        currentApp = this;
     }
 
     setRoot(rootComponent){
@@ -147,64 +161,77 @@ export default class AppManagement{
 
     dispatchMessageToMarkPage(type,params){
         switch(type){
+            case Mark.AppKickOutHandle:
+                Alert.alert(
+                    '下线通知',
+                    "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
+                    [
+                        {text: '确定', onPress: () => {
+                            currentApp.root.ToLogin();
+                        }},
+                        {text: '不是本人操作',style:{color:"red"}, onPress: () => {
+                            currentApp.root.ToLogin();
+                        }},
+                    ]);
+                break;
             case Mark.ConversationList:
-                for(let item in this.ConversationList){
-                    this.ConversationList[item] && this.ConversationList[item](type,params);
+                for(let item in currentApp.ConversationList){
+                    currentApp.ConversationList[item] && currentApp.ConversationList[item](type,params);
                 }
                 break;
             case Mark.ConversationDetail:
-                for(let item in this.ConversationDetail){
-                    this.ConversationDetail[item] && this.ConversationDetail[item](type,params);
+                for(let item in currentApp.ConversationDetail){
+                    currentApp.ConversationDetail[item] && currentApp.ConversationDetail[item](type,params);
                 }
                 break;
             case Mark.ApplyMessage:
-                for(let item in this.ApplyMessage){
-                    this.ApplyMessage[item] && this.ApplyMessage[item](type,params);
+                for(let item in currentApp.ApplyMessage){
+                    currentApp.ApplyMessage[item] && currentApp.ApplyMessage[item](type,params);
                 }
                 break;
             case Mark.Contacts:
-                for(let item in this.Contacts){
-                    this.Contacts[item] && this.Contacts[item](type,params);
+                for(let item in currentApp.Contacts){
+                    currentApp.Contacts[item] && currentApp.Contacts[item](type,params);
                 }
                 break;
             case Mark.UnReadMessage:
-                for(let item in this.UnReadMessage){
+                for(let item in currentApp.UnReadMessage){
                     if(params.type == TabTypeEnum.Contact) {
                       if(this.ApplyMessage["NewFriend"]){
                           return;
                       }
                     }
-                    this.UnReadMessage[item] && this.UnReadMessage[item](type,params);
+                    currentApp.UnReadMessage[item] && currentApp.UnReadMessage[item](type,params);
                 }
                 break;
             case Mark.ModifyGroupName:
-                for(let item in this.ModifyGroupName){
-                    this.ModifyGroupName[item] && this.ModifyGroupName[item](type,params);
+                for(let item in currentApp.ModifyGroupName){
+                    currentApp.ModifyGroupName[item] && currentApp.ModifyGroupName[item](type,params);
                 }
                 break
             case Mark.ModifyGroupSetting:
-                for(let item in this.ModifyGroupSetting){
-                    this.ModifyGroupSetting[item] && this.ModifyGroupSetting[item](type,params);
+                for(let item in currentApp.ModifyGroupSetting){
+                    currentApp.ModifyGroupSetting[item] && currentApp.ModifyGroupSetting[item](type,params);
                 }
                 break
             case Mark.AppStatus:
-                for(let item in this.AppStatus){
-                    this.AppStatus[item] && this.AppStatus[item](type,params);
+                for(let item in currentApp.AppStatus){
+                    currentApp.AppStatus[item] && currentApp.AppStatus[item](type,params);
                 }
                 break
             case Mark.ChangeHeadImage:
-                for(let item in this.ChangeHeadImage){
-                    this.ChangeHeadImage[item] && this.ChangeHeadImage[item](type,params);
+                for(let item in currentApp.ChangeHeadImage){
+                    currentApp.ChangeHeadImage[item] && currentApp.ChangeHeadImage[item](type,params);
                 }
                 break
             case Mark.ChangeNickname:
-                for(let item in this.ChangeNickname){
-                    this.ChangeNickname[item] && this.ChangeNickname[item](type,params);
+                for(let item in currentApp.ChangeNickname){
+                    currentApp.ChangeNickname[item] && currentApp.ChangeNickname[item](type,params);
                 }
                 break
             case Mark.ChangeRemark:
-                for(let item in this.ChangeRemark){
-                    this.ChangeRemark[item] && this.ChangeRemark[item](type,params);
+                for(let item in currentApp.ChangeRemark){
+                    currentApp.ChangeRemark[item] && currentApp.ChangeRemark[item](type,params);
                 }
                 break
         }
@@ -217,16 +244,37 @@ export default class AppManagement{
     pageInitReady(type){
         switch(type){
             case PageInitReadyEnum.ConversationList:
-                this.InitReady["ConversationList"] = true;
+                currentApp.InitReady["ConversationList"] = true;
                 break;
             case PageInitReadyEnum.Contact:
-                this.InitReady["Contact"] = true;
+                currentApp.InitReady["Contact"] = true;
                 break;
         }
-        this.checkNeedConnectSocket();
+        currentApp.checkNeedConnectSocket();
     }
 
-    systemLogined(){
+    dispatchAppTokenState(type){
+        switch (type){
+            case AppTokenStateEnum.NoToken:
+                let noToken = new NoTokenState()
+                noToken.stateOpreation(currentApp);
+                break;
+            case AppTokenStateEnum.WaitValidateToken:
+                let waitValidateToken = new WaitValidateTokenState()
+                waitValidateToken.stateOpreation(currentApp);
+                break;
+            case AppTokenStateEnum.ValidateTokenSuccess:
+                let validateSuccess = new TokenValidateSuccessState()
+                validateSuccess.stateOpreation(currentApp);
+                break;
+            case AppTokenStateEnum.ValidateTokenFailed:
+                let validateFailed = new TokenValidateFailedState()
+                validateFailed.stateOpreation(currentApp);
+                break;
+        }
+    }
+
+    systemLoginSuccess(){
         this.checkNeedConnectSocket();
     }
 
@@ -245,17 +293,27 @@ export default class AppManagement{
         }
     }
 
+    systemLogin(){
+        let loginState = new LoginedState();
+        loginState.stateOpreation(this);
+    }
+
+    systemLogout(){
+        let logoutState = new LogoutState()
+        logoutState.stateOpreation(this);
+    }
+
     requestPageManagement(type,data){
        switch (type){
            case AppPushSpecifyPageEnum.UserInfo:
-               this.root.route.replaceTop(this.root,{
+               currentApp.root.route.replaceTop(currentApp.root,{
                    key:'ClientInformation',
                    routeId: 'ClientInformation',
                    params:{"clientId":data,"scan":true}
                });
                break;
            case AppPushSpecifyPageEnum.UnKnow:
-               this.root.route.replaceTop(this.root,{
+               currentApp.root.route.replaceTop(currentApp.root,{
                    key:'ScanCode',
                    routeId: 'ScanUnknow',
                    params:{"data":data}

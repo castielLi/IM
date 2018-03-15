@@ -3,5 +3,5 @@
  */
 
 export default class IAppManagementState{
-    opreator(appManagementObj){}
+    stateOpreation(appManagementObj){}
 }
