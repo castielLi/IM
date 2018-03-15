@@ -40,6 +40,10 @@ class TabBarComponent extends AppComponent {
         }
     }
 
+    componentWillMount(){
+        currentObj.props.changeTabBar(0);
+    }
+
     componentWillUnmount(){
         super.componentWillUnmount();
     }

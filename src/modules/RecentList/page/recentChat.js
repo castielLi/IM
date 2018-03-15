@@ -43,7 +43,6 @@ import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHold
 import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppStatusEnum from '../Enum/AppStatusEnum'
-import {TokenLoginnedState} from '../../../App/AppManagementState'
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
@@ -107,48 +106,6 @@ class RecentChat extends AppComponent {
 
         InteractionManager.runAfterInteractions(()=>{
             imLogicController.getConversationList();
-            applyController.getUncheckApplyFriendCount();
-            userController.getUserContactList(false, null);
-
-            //有token，但是还没有经过验证
-            if(this.appManagement.Logined) {
-                userController.getUserContactList(true, (result) => {
-                    userController.getGroupContactList(true, (result) => {
-                        // currentObj.props.hideNavigationBottom();
-                    })
-                })
-            }else{
-                currentObj._changeAppStatus(AppStatusEnum.Loginning);
-                loginController.loginWithToken((result)=>{
-                    if(result == null){
-                        currentObj.route.ToLogin(currentObj.props);
-                        return;
-                    }
-
-
-                    if(result.Result != 1){
-
-                        if(result.Result == 6001){
-                            Alert.alert("错误","网络出现故障，请检查当前设备网络连接状态");
-                        }else if(result.Result == 2003){
-                            Alert.alert("错误","登录账号密码时限过期，请重新登录");
-                            currentObj.route.ToLogin(currentObj.props);
-                            return;
-                        }
-
-                        currentObj._changeAppStatus(AppStatusEnum.NetworkError);
-                        return;
-                    }
-
-                    let loginnedState = new TokenLoginnedState();
-                    loginnedState.stateOpreation(this.appManagement);
-
-                    userController.getUserContactList(true, (result) => {
-                        userController.getGroupContactList(true, (result) => {
-                        })
-                    })
-                });
-            }
         })
 
 

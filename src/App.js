@@ -14,13 +14,15 @@ import Store from './store'
 import Route from './Core/route/router'
 import * as router from './modules/routerMap'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
-import * as AppHandles from './App/AppUIHandle'
 import AppPageMarkEnum from './App/Enum/AppPageMarkEnum'
+import AppManagement from './App/AppManagement'
 
 export default function App() {
 
     //关闭yellowbox
     console.disableYellowBox = true
+
+    let appManagement = new AppManagement();
 
     let store = Store;
     //初始化路由表
@@ -92,7 +94,8 @@ export default function App() {
             }else {
                 connectionInfo = 0;
             }
-            AppHandles.pageManagement(AppPageMarkEnum.AppStatus,{socketStatus:connectionInfo,info:''})
+
+            appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{socketStatus:connectionInfo,info:''})
 
             // if(connectionInfo == "NONE" || connectionInfo == "none"){
             //     im.handleNetEnvironment(connectionInfo);
