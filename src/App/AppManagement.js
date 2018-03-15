@@ -170,7 +170,7 @@ export default class AppManagement{
             case Mark.UnReadMessage:
                 for(let item in this.UnReadMessage){
                     if(params.type == TabTypeEnum.Contact) {
-                      if(ApplyMessage["NewFriend"]){
+                      if(this.ApplyMessage["NewFriend"]){
                           return;
                       }
                     }
@@ -203,7 +203,7 @@ export default class AppManagement{
                 }
                 break
             case Mark.ChangeRemark:
-                for(let item in ChangeRemark){
+                for(let item in this.ChangeRemark){
                     this.ChangeRemark[item] && this.ChangeRemark[item](type,params);
                 }
                 break

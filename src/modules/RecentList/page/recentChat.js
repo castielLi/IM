@@ -7,7 +7,6 @@ import {
     Text,
     ListView,
     TouchableHighlight,
-    TouchableOpacity,
     Platform,
     StyleSheet,
     Alert,
@@ -33,7 +32,7 @@ import {
 } from '../../../Core/Helper/UIAdapter';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
-
+import {SwipeListView} from 'react-native-swipe-list-view'
 import UserController from '../../../TSController/UserController'
 import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
@@ -65,7 +64,6 @@ class RecentChat extends AppComponent {
             ConverseList:[]
         };
         this.goToChatDetail = this.goToChatDetail.bind(this);
-        this.deleteSomeRow = this.deleteSomeRow.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
         userController =  UserController.getSingleInstance();
@@ -167,9 +165,10 @@ class RecentChat extends AppComponent {
             }
         });
     }
-    deleteSomeRow(rowID, rowData) {
+    _deleteSomeRow = (data)=> {
+        alert(JSON.stringify(data))
         let oKCallback = () => {
-            imLogicController.removeConverse(rowData.chatId,rowData.group);
+            imLogicController.removeConverse(data.chatId,data.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
@@ -227,67 +226,46 @@ class RecentChat extends AppComponent {
                     </View>
                 );
         }
-    }
+    };
 
-    _renderRow = (rowData, sectionID, rowID) => {
+    _renderRow = (rowData, rowID) => {
+        let content = rowData.item;
         return (
-			<View style= {{borderBottomWidth:1,borderColor:'#d9d9d9'}}>
-				<Swipeout
-					right = {
-                        [{
-                            text:'标为未读',
-                            backgroundColor:'#c7c7cc',
-                            onPress:function(){alert('标记为未读成功!')}
-                        },
+           <TouchableHighlight onPress = {this.goToChatDetail.bind(this,content)}>
+                <View style = {styles.ListContainer}>
+                    <View style = {styles.userLogo}>
+                        {this._renderAvator(content.chatId,content.group,content.noSound,content.unreadCount)}
+                    </View>
+                    <View style = {styles.ChatContent}>
+                        <View style = {styles.Message}>
+                            <Text numberOfLines = {1} style = {styles.Nickname}>{content.name}</Text>
                             {
-                                text:'删除',
-                                type:'delete',
-                                onPress:this.deleteSomeRow.bind(this,rowID,rowData)
-                            },]
-                    }
-					rowID = {rowID}
-					sectionID = {sectionID}
-					close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}
-					onOpen={(sectionID, rowID) => {
-                        this.setState({
-                            sectionID:sectionID,
-                            rowID:rowID,
-                        })
-                    }}
-					autoClose={true}
-				>
-					<TouchableHighlight onPress = {this.goToChatDetail.bind(this,rowData)}>
-						<View style = {styles.ListContainer}>
-							<View style = {styles.userLogo}>
-                                {this._renderAvator(rowData.chatId,rowData.group,rowData.noSound,rowData.unreadCount)}
-							</View>
-							<View style = {styles.ChatContent}>
-								<View style = {styles.Message}>
-									<Text numberOfLines = {1} style = {styles.Nickname}>{rowData.name}</Text>
-                                    {
-                                        rowData.noSound?(rowData.unreadCount>0?<Text numberOfLines = {1} style = {styles.ChatMessage}>[{rowData.unreadCount}]
-                                            <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
-                                        </Text>:<Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>):
-                                            <Text numberOfLines = {1} style = {styles.ChatMessage}>{rowData.lastMessage}</Text>
-                                    }
-
-								</View>
-								<View style = {styles.userTime}>
-									<Text style ={styles.LastMessageTime}>{rowData.lastTime == 0?"":TimeHelper.DateFormat(rowData.lastTime,false,'h:mm',)}</Text>
-                                    {
-                                        rowData.noSound?<Icon name="bell-slash" size={20} color="#aaa" />:
-                                            (rowData.unreadCount?<View  style = {styles.MessageNumberBox}>
-                                        <Text style = {styles.MessageNumber}>{rowData.unreadCount>99?  99+'+' : rowData.unreadCount}</Text>
-                                         </View>:null)
-                                    }
-								</View>
-							</View>
-						</View>
-					</TouchableHighlight>
-				</Swipeout>
-			</View>
+                                content.noSound?(content.unreadCount>0?<Text numberOfLines = {1} style = {styles.ChatMessage}>[{content.unreadCount}]
+                                    <Text numberOfLines = {1} style = {styles.ChatMessage}>{content.lastMessage}</Text>
+                                </Text>:<Text numberOfLines = {1} style = {styles.ChatMessage}>{content.lastMessage}</Text>):
+                                    <Text numberOfLines = {1} style = {styles.ChatMessage}>{content.lastMessage}</Text>
+                            }
+                        </View>
+                        <View style = {styles.userTime}>
+                            <Text style ={styles.LastMessageTime}>{content.lastTime == 0?"":TimeHelper.DateFormat(content.lastTime,false,'h:mm',)}</Text>
+                            {
+                                content.noSound?<Icon name="bell-slash" size={20} color="#aaa" />:
+                                    (content.unreadCount?<View  style = {styles.MessageNumberBox}>
+                                        <Text style = {styles.MessageNumber}>{content.unreadCount>99?  99+'+' : content.unreadCount}</Text>
+                                    </View>:null)
+                            }
+                        </View>
+                    </View>
+                </View>
+            </TouchableHighlight>
         )
-    }
+    };
+
+    _renderSeparator=()=>{
+        return(
+            <View style={styles.ItemSeparator}/>
+        )
+    };
 
     render() {
         let Popup = this.PopContent;
@@ -303,15 +281,28 @@ class RecentChat extends AppComponent {
                     ]}
 				/>
 				<View style = {styles.content}>
-					<ListView
-						style = {{height:checkDeviceHeight(1110)}}
-						dataSource = {this.state.dataSource.cloneWithRows(this.state.ConverseList)}
-                        renderHeader = {this.renderHeader}
-						renderRow = {this._renderRow}
-						enableEmptySections = {true}
-						removeClippedSubviews={false}
-					>
-					</ListView>
+                    {this.renderHeader()}
+                    <SwipeListView
+                        useFlatList={true}
+                        data={this.state.ConverseList}
+                        rightOpenValue={-70}
+                        keyExtractor={(item,index)=>('index'+index)}
+                        disableRightSwipe={true}//关闭右滑
+                        closeOnRowPress={true}//按下某一行时是否应关闭打开的行
+                        closeOnScroll={true}//当listView开始滚动时应该关闭打开的行
+                        closeOnRowBeginSwipe={true}//当一排开始滑动打开时，是否应关闭打开的行
+                        renderItem={this._renderRow}
+                        renderHiddenItem={ (data, rowMap) => (
+                            <View style={{alignItems:'flex-end'}}>
+                                <TouchableHighlight onPress={()=>this._deleteSomeRow(data.item)}>
+                                    <View style={{backgroundColor:'red',justifyContent:'center', alignItems:'center',width:70,flex:1}}>
+                                        <Text style={{fontSize:14, color:'#fff'}}>删除</Text>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>
+                        )}
+                        ItemSeparatorComponent={this._renderSeparator}
+                    />
 				</View>
                 {/*<View style = {{flex:1,backgroundColor:'grey',justifyContent:'center',alignItems:'center'}}><Text>下面的导航条</Text></View>*/}
 				<Features navigator={this.props.navigator}/>
@@ -414,7 +405,11 @@ let styles = StyleSheet.create({
         position:'absolute',
         left:3,
         top:0
-    }
+    },
+    ItemSeparator:{
+        height:1,
+        backgroundColor:'#eee',
+    },
 });
 
 const mapStateToProps = state => ({

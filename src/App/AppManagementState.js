@@ -9,7 +9,7 @@ import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
 import LoginController from '../TSController/LoginController'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
-import SystemManager from '../../../TSController/SystemManager'
+import SystemManager from '../TSController/SystemManager'
 
 
 

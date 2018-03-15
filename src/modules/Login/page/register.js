@@ -21,7 +21,7 @@ export default class Register extends AppComponent {
         }
 
         currentObj = this;
-        loginController = new LoginController();
+        loginController = LoginController.getSingleInstance();
 	}
 
     componentWillUnmount(){
@@ -66,7 +66,7 @@ export default class Register extends AppComponent {
 
             this.showLoading();
 
-            LoginController.Registered(this.state.phoneText,this.state.passWordText,this.state.NicknameText,this.state.codeText,(response)=>{
+            loginController.Registered(this.state.phoneText,this.state.passWordText,this.state.NicknameText,this.state.codeText,(response)=>{
                 currentObj.hideLoading();
                 switch (response.data.Result){
                     case 1:

@@ -49,7 +49,7 @@ export default class LetterPosition extends Component {
             //移动时作出的动作
             onPanResponderMove: (e)=>{
                 let a = Math.floor((e.nativeEvent.pageY-this.top)/this.singleHeight);
-                if(a >= 0 && a != this.currentLetter){
+                if((a >= 0 &&　a<LetterSet.length) && a != this.currentLetter){
                     this.currentLetter = a;
                       this.props.onChangeText && this.props.onChangeText(LetterSet[a]);
                     this.props.onPress && this.props.onPress(LetterSet[a]);

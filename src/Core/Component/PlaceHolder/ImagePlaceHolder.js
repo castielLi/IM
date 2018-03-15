@@ -19,8 +19,8 @@ export default class ImagePlaceHolder extends Component {
         super(props);
         this.state = {
             show:true
-        }
-        // this.newUrl = true;
+        };
+        this.success = true;
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -50,9 +50,18 @@ export default class ImagePlaceHolder extends Component {
             <View>
                 <Image source={url} style={_style}
                        onError={()=>{
+                           this.success = false;
                            this.setState({
                                show:false
                            })
+                       }}
+                       onLoad={()=>{
+                           this.success = true;
+                           if(!this.state.show){
+                               this.setState({
+                                   show:true
+                               })
+                           }
                        }}
                 />
                 {this.state.show ? null : <Image source={require('./resource/avator.jpg')} style={[_style,{position:'absolute'}]}/>}

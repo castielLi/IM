@@ -77,7 +77,7 @@ class PhoneLogin extends AppComponent {
 
 
 
-        loginController.login(currentObj.state.phoneText,currentObj.state.passWordText,function(response){
+        loginController.login(currentObj.state.phoneText,currentObj.state.passWordText,(response)=>{
             if(response.Result !== 1){
                 currentObj.hideLoading()
 
@@ -94,13 +94,11 @@ class PhoneLogin extends AppComponent {
                 }
                 return;
             }
-            currentObj.props.signDoing();
-            currentObj.props.changeTabBar(0);
-
+            this.props.signDoing();
+            this.props.changeTabBar(0);
             let loginnedState = new LoginnedState();
             loginnedState.stateOpreation(this.appManagement);
-
-            currentObj.route.push(currentObj.props,{
+            this.route.push(this.props,{
                 key:'MainTabbar',
                 routeId: 'MainTabbar'
             });
