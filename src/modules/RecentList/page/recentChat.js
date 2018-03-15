@@ -182,6 +182,25 @@ class RecentChat extends AppComponent {
                         <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>接收消息...</Text></View>
                     </View>
                 );
+            case AppStatusEnum.SocketResetConnect:
+                return this.appManagement.normalNetwork?
+                    (
+                        <View style={{backgroundColor:'white',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                            <ActivityIndicator
+                                size="small"
+                                color="black"
+                                style={{width:20,height:20}}
+                            />
+                            <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络重新连接中...</Text></View>
+                        </View>
+                    )
+                    :(
+                        <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                            <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
+                            <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络重新连接中...</Text></View>
+                        </View>
+                    );
+                break;
         }
     };
 

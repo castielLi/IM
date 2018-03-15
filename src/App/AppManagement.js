@@ -51,10 +51,9 @@ export default class AppManagement{
         this.imLogicController = undefined;
         this.loginController = undefined;
         this.validateManager = undefined;
-
+        this.normalNetwork = true;
         let initState = new InitState()
         initState.stateOpreation(this);
-
         currentApp = this;
     }
 

@@ -16,6 +16,7 @@ import * as router from './modules/routerMap'
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import AppPageMarkEnum from './App/Enum/AppPageMarkEnum'
 import AppManagement from './App/AppManagement'
+import AppStatusEnum from './App/Enum/AppStatusEnum'
 
 export default function App() {
 
@@ -37,7 +38,6 @@ export default function App() {
                 store,
                 appState: AppState.currentState,
                 memoryWarnings: 0,
-                connectionInfo:"NONE"
             }
 
             this._handleAppStateChange = this._handleAppStateChange.bind(this);
@@ -54,6 +54,10 @@ export default function App() {
                 NetInfo.isConnected.fetch().done((isConnected) => {
                     console.log('First, is ' + (isConnected ? 'online' : 'offline'));
                     //im.setNetEnvironment(isConnected);
+                    if(!isConnected){
+                        appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
+                        appManagement.normalNetwork = false;
+                    }
                 });
             }
 
@@ -85,22 +89,13 @@ export default function App() {
         _handleConnectionInfoChange(connectionInfo) {
 
             console.log(connectionInfo);
-            this.setState({
-            connectionInfo:connectionInfo
-                      });
 
             if(connectionInfo.type == "NONE" || connectionInfo.type == "none"){
-                connectionInfo = 1;
-            }else {
-                connectionInfo = 0;
+                appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
+                appManagement.normalNetwork = false;
+            }else{
+                appManagement.normalNetwork = true;
             }
-
-            appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{socketStatus:connectionInfo,info:''})
-
-            // if(connectionInfo == "NONE" || connectionInfo == "none"){
-            //     im.handleNetEnvironment(connectionInfo);
-            // }
-
         }
 
         render() {
