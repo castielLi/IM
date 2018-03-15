@@ -41,7 +41,7 @@ export class NoTokenState extends IAppManagementState{
         appManagementObj.loginController = LoginController.getSingleInstance();
         appManagementObj.root.route.push(appManagementObj.root,{
             key:'Login',
-            routeId: 'Login'
+            routeId: 'PhoneLogin'
         });
         appManagementObj.setState(this)
     }

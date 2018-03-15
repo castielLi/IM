@@ -75,12 +75,12 @@ class Features extends ContainerComponent {
 								<Text style = {styles.Text}>发起群聊</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-							<View style = {styles.featureBox}>
-								<Image style={styles.logo} source = {require('./resource/pay.png')}/>
-								<Text style = {styles.Text}>收付款</Text>
-							</View>
-						</TouchableOpacity>
+						{/*<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>*/}
+							{/*<View style = {styles.featureBox}>*/}
+								{/*<Image style={styles.logo} source = {require('./resource/pay.png')}/>*/}
+								{/*<Text style = {styles.Text}>收付款</Text>*/}
+							{/*</View>*/}
+						{/*</TouchableOpacity>*/}
 						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToAddFriends();}}>
 							<View style = {styles.featureBox}>
 								<Image style={styles.logo} source = {require('./resource/addFriends.png')}/>
@@ -93,12 +93,12 @@ class Features extends ContainerComponent {
 								<Text style = {styles.Text}>扫一扫</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-							<View style = {[styles.featureBox,{borderBottomWidth:0}]}>
-								<Image style={styles.logo} source = {require('./resource/help.png')}/>
-								<Text style = {styles.Text}>帮助与反馈</Text>
-							</View>
-						</TouchableOpacity>
+						{/*<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>*/}
+							{/*<View style = {[styles.featureBox,{borderBottomWidth:0}]}>*/}
+								{/*<Image style={styles.logo} source = {require('./resource/help.png')}/>*/}
+								{/*<Text style = {styles.Text}>帮助与反馈</Text>*/}
+							{/*</View>*/}
+						{/*</TouchableOpacity>*/}
 					</View>
 				</TouchableHighlight>
             )

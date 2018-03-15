@@ -102,20 +102,21 @@ class PhoneLogin extends AppComponent {
 
         return (
 			<KeyboardAvoidingView behavior="position" style={styles.container}   keyboardVerticalOffset={-150}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props);}}>
-					<Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+                {/*<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props);}}>*/}
+					{/*<Text style = {styles.goBack}>返回</Text>*/}
+                {/*</TouchableOpacity>*/}
 				<View  style  = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>
 					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
 						<View style = {styles.area}>
 							<Text style = {styles.areaTitle}>国家/地区</Text>
 							<Text style = {styles.country}>中国</Text>
-							<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}></Image>
+							<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}/>
 						</View>
 					</TouchableOpacity>
 					<View style= {styles.inputBox}>
 						<View style={styles.imageBox}>
-							<Image style = {styles.loginImage} source = {require('../resource/ipone.png')}></Image>
+							<Image style = {styles.loginImage} source = {require('../resource/ipone.png')}/>
 						</View>
 						<Text style = {styles.NumberBefore}>+86</Text>
 						<TextInput
@@ -126,8 +127,7 @@ class PhoneLogin extends AppComponent {
 							placeholder = '请输入手机号码'
 							underlineColorAndroid= {'transparent'}
 							onChangeText={(Text)=>{this.setState({phoneText:Text})}}
-						></TextInput>
-
+						/>
 					</View>
 					<View style = {styles.inputBox}>
 						<View style={styles.imageBox}>
@@ -146,7 +146,7 @@ class PhoneLogin extends AppComponent {
 							placeholder = '请输入密码'
 							underlineColorAndroid= {'transparent'}
 							onChangeText={(Text)=>{this.setState({passWordText:Text})}}
-						></TextInput>
+						/>
                         {
                             !this.state.textMessage?(
 								<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.changeShowConfirm()}}>
@@ -154,11 +154,11 @@ class PhoneLogin extends AppComponent {
 								</TouchableOpacity>):null
                         }
 					</View>
-					<TouchableOpacity activeOpacity = {0.8} onPress = {()=>{this.setState({textMessage:!this.state.textMessage})}} >
-                        {this.state.textMessage?<Text style = {styles.changeLogin}>通过短信验证码登录</Text>:
-							<Text style = {styles.changeLogin}>通过密码登录</Text>
-                        }
-					</TouchableOpacity>
+					{/*<TouchableOpacity activeOpacity = {0.8} onPress = {()=>{this.setState({textMessage:!this.state.textMessage})}} >*/}
+                        {/*{this.state.textMessage?<Text style = {styles.changeLogin}>通过短信验证码登录</Text>:*/}
+							{/*<Text style = {styles.changeLogin}>通过密码登录</Text>*/}
+                        {/*}*/}
+					{/*</TouchableOpacity>*/}
 
 
 					<TouchableOpacity activeOpacity = {0.8} style={[styles.Login,{backgroundColor:this.state.phoneText && this.state.passWordText?'#1aad19':'#ccc'}]} onPress = {()=>{this.addUser()}} disabled={!(this.state.phoneText && this.state.passWordText)}>
@@ -167,19 +167,21 @@ class PhoneLogin extends AppComponent {
 
 
 					<View style= {styles.footer}>
-						<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
-                        {/*<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>*/}
+						{/*<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>*/}
 						<Touch onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'});}} activeOpacity = {0.8}>
-                            <Text style= {styles.footerText}>忘记密码</Text>
+                            <Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>忘记密码</Text>
                         </Touch>
-					</View>
+                        <Touch onPress = {()=>{this.route.push(this.props,{key:'Register',routeId: 'Register'})}} activeOpacity = {0.8}>
+                            <Text style= {styles.footerText}>注册账号</Text>
+                        </Touch>
+                    </View>
 				</View>
                 {
                     this.state.showConfirm?
 						<Confirm
 							phoneText = {this.state.phoneText}
 							cancelSend = {this.cancelSend}
-						></Confirm>:null
+						/>:null
                 }
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
@@ -310,7 +312,7 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
         borderRadius:10,
-        marginBottom:checkDeviceHeight(460),
+        marginBottom:checkDeviceHeight(40),
     },
     footer:{
         flexDirection:'row',

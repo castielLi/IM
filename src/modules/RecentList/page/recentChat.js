@@ -41,7 +41,7 @@ import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import AppStatusEnum from '../Enum/AppStatusEnum'
+import AppStatusEnum from '../../../App/Enum/AppStatusEnum'
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
