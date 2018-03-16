@@ -55,51 +55,6 @@ var originData = [
 			// },
 	];
 
-
-let styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#ebebeb"
-    },
-    sction:{
-        height:20
-    },
-    itemBox:{
-        height:40,
-        flexDirection:'row',
-        paddingHorizontal:15,
-        alignItems:'center',
-        justifyContent:'space-between',
-        backgroundColor:'#fff'
-    },
-    itemLeftBox:{
-        height:30,
-        flexDirection:'row',
-        alignItems:'center',
-
-    },
-    pic:{
-        width:25,
-        height:25,
-        resizeMode:'contain',
-        marginRight:15
-    },
-    itemText:{
-        fontSize:15,
-        color:'#000',
-        textAlignVertical:'center'
-    },
-    ItemSeparator:{
-        height:1,
-        backgroundColor: '#eee',
-    },
-    arrow:{
-        fontSize:15,
-        color:'#aaa'
-    },
-});
-
-
 class Zoom extends AppComponent {
 	constructor(props) {
 		super(props);
@@ -129,6 +84,14 @@ class Zoom extends AppComponent {
                 return	<Image source={require('../resource/zoom.png')} style={styles.pic} />;
             case '扫一扫':
                 return	<Image source={require('../resource/sao.png')} style={styles.pic} />;
+            // case '摇一摇':
+            //     return	<Image source={require('../resource/yao.png')} style={styles.pic} />;
+            // case '附近的人':
+            //     return	<Image source={require('../resource/place.png')} style={styles.pic} />;
+            // case '购物':
+            //     return	<Image source={require('../resource/shop.png')} style={styles.pic} />;
+            // case '游戏':
+            //     return	<Image source={require('../resource/game.png')} style={styles.pic} />;
             default:
                 break;
 		}
@@ -175,7 +138,48 @@ class Zoom extends AppComponent {
 		)
 	}
 }
+let styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#ebebeb"
+    },
+    sction:{
+        height:20
+    },
+    itemBox:{
+        height:40,
+        flexDirection:'row',
+        paddingHorizontal:15,
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#fff'
+    },
+    itemLeftBox:{
+        height:30,
+        flexDirection:'row',
+        alignItems:'center',
 
+    },
+    pic:{
+        width:25,
+        height:25,
+        resizeMode:'contain',
+        marginRight:15
+    },
+    itemText:{
+        fontSize:15,
+        color:'#000',
+        textAlignVertical:'center'
+    },
+    ItemSeparator:{
+        height:1,
+        backgroundColor: '#eee',
+    },
+    arrow:{
+        fontSize:15,
+        color:'#aaa'
+    },
+});
 
 const mapStateToProps = state => ({
 });

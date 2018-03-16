@@ -89,6 +89,10 @@ class GroupInformationSetting extends AppComponent {
                 currentObj.setState({
                     members:changesMembers.concat([])
                 })
+            case AppPageMarkEnum.ModifyGroupName:
+                let name = params.name;
+                currentObj.onUpdateHeadName(name);
+                break;
         }
     }
 

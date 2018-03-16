@@ -39,6 +39,24 @@ let appManagement = undefined;
 
 
 let originData = [
+    // {
+    //     'key':'1',
+    //     'data': [{
+    //         'name': "钱包",
+    //     }]
+    // },
+    // {
+    //     'key':'2',
+    //     'data': [{
+    //         'name': "卡包",
+    //     }, {
+    //         'name': "收藏",
+    //     }, {
+    //         'name': "相册",
+    //     }, {
+    //         'name': "表情",
+    //     }]
+    // },
     {
         'key':'1',
         'data': [{
@@ -123,6 +141,16 @@ class Me extends AppComponent {
         switch (name){
             case '设置':
                 return <Image source={require('../resource/set.png')} style={styles.pic} />;
+            // case '钱包':
+            //     return <Image source={require('../resource/package.png')} style={styles.pic} />;
+            // case '卡包':
+            //     return <Image source={require('../resource/pack.png')} style={styles.pic} />;
+            // case '收藏':
+            //     return <Image source={require('../resource/souc.png')} style={styles.pic} />;
+            // case '相册':
+            //     return <Image source={require('../resource/photo.png')} style={styles.pic} />;
+            // case '表情':
+            //     return <Image source={require('../resource/smile.png')} style={styles.pic} />;
             default:
                 break;
         }
