@@ -17,6 +17,7 @@ import {changeTabBar} from './modules/MainTabbar/reducer/action';
 import AppPageMarkEnum from './App/Enum/AppPageMarkEnum'
 import AppManagement from './App/AppManagement'
 import AppStatusEnum from './App/Enum/AppStatusEnum'
+import Orientation from 'react-native-orientation';
 
 export default function App() {
 
@@ -45,6 +46,10 @@ export default function App() {
             this._handleConnectionInfoChange = this._handleConnectionInfoChange.bind(this);
         }
 
+        componentWillMount(){
+            // 只允许竖屏
+            Orientation.lockToPortrait();
+        }
 
         componentDidMount() {
             AppState.addEventListener('change', this._handleAppStateChange);
