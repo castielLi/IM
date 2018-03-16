@@ -87,7 +87,9 @@ class ChooseClientt extends AppComponent {
         let name = content.Remark != "" ? content.Remark:content.Nickname;
         let path = userController.getAccountHeadImagePath(content.Account);
         let checked = this.selectData.indexOf(content.Account) != -1 ? 1 : 2;
-        checked = this.defaulData.indexOf(content.Account) != -1 ? 0 : checked;
+        if(this.defaulData){
+            checked = this.defaulData.indexOf(content.Account) != -1 ? 0 : checked;
+        }
         return (
             <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this._itemTouch(content.Account,index,key)}}>
                 <View style={styles.itemView}>

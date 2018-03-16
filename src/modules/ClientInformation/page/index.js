@@ -81,7 +81,7 @@ class ClientInformation extends AppComponent {
 
     goToInformationSetting= ()=>{
         this.route.push(this.props,{key:'InformationSetting',routeId:'InformationSetting',params:{clientId:this.state.userInfo.Account,type:'pravite'}});
-    }
+    };
 
     goToChatDetail = ()=>{
         if(this.props.existChatDetailId == this.state.userInfo.Account)
@@ -107,6 +107,11 @@ class ClientInformation extends AppComponent {
         this.route.push(this.props,{key:'RemarkInfo',routeId:'RemarkInfo',params:{account,remark}});
     };
 
+    //todo:双方添加好友 验证页面
+    addFriend = (Applicant,Respondent)=>{
+        this.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo,Applicant:Applicant,Respondent:Respondent,changeAddFriendButton:this.changeAddFriendButton}})
+    };
+
 
     changeAddFriendButton(value){
         this.setState({
@@ -114,10 +119,7 @@ class ClientInformation extends AppComponent {
         })
     }
 
-    //todo:双方添加好友 验证页面
-    addFriend = (Applicant,Respondent)=>{
-        this.route.push(currentObj.props,{key:'Validate',routeId:'Validate',params:{userInfo:this.state.userInfo,Applicant:Applicant,Respondent:Respondent,changeAddFriendButton:this.changeAddFriendButton}})
-    }
+
 
     _acceptFriend = ()=>{
         this.showLoading();
