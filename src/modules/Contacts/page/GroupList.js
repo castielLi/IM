@@ -5,25 +5,21 @@ import React, {
     Component
 } from 'react';
 import {
-    AppRegistry,
     View,
     Text,
-    SectionList,
     StyleSheet,
-    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
     TextInput,
     Dimensions,
     FlatList,
-    TouchableOpacity
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
 import UserController from '../../../TSController/UserController';
-var {height, width} = Dimensions.get('window');
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+let {height, width} = Dimensions.get('window');
 
 let userController = undefined;
 let currentObj = undefined;
@@ -61,30 +57,18 @@ class GroupList extends AppComponent {
 
     goToChat = (item)=>{
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.Id,type:'group',HeadImageUrl:item.HeadImageUrl,Nick:item.Name}});
-    }
+    };
 
-    _renderAvator= (Obj)=>{
-        if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
-                return 	<Image style = {styles.pic} source = {require('../resource/groupAvator.png')}></Image>
-            }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
-
-        }else{
-            return null
-        }
-    }
     _renderItem = (info) => {
-        var txt = '  ' + info.item.Name;
         return (
             <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
                 <View  style={styles.itemBox} >
-                    {this._renderAvator(info.item)}
-                    <Text style={styles.itemText}>{txt}</Text>
+                    <ImagePlaceHolder style = {styles.pic} imageUrl = {require('../resource/groupAvator.png')}/>
+                    <Text style={styles.itemText}>{info.item.Name}</Text>
                 </View>
             </TouchableHighlight>
         )
-    }
+    };
 
     _renderHeader = () => {
         return (
@@ -93,21 +77,18 @@ class GroupList extends AppComponent {
                     <TextInput
                         style={styles.search}
                         underlineColorAndroid = 'transparent'
-                    >
-                    </TextInput>
+                    />
                 </View>
             </View>
         )
-    }
+    };
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}/>
-    }
+    };
     _renderFooter = () =>{
         return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'个群聊'}</Text></View>
-    }
+    };
 
-
-    
     render() {
         this.relationStore = initFlatListData(this.state.contacts);
         return (
@@ -127,7 +108,6 @@ class GroupList extends AppComponent {
             </View>
         );
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -154,12 +134,13 @@ const styles = StyleSheet.create({
     pic:{
         width:40,
         height:40,
-        resizeMode:'stretch'
+        borderRadius:20
     },
     itemText:{
         textAlignVertical: 'center',
-        color: '#5C5C5C',
-        fontSize: 15
+        color: '#000',
+        fontSize: 15,
+        marginLeft:10
     },
     ItemSeparator:{
         marginHorizontal:15,

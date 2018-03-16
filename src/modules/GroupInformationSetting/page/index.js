@@ -101,20 +101,20 @@ class GroupInformationSetting extends AppComponent {
         this.setState({
             isStickyChat:!this.state.isStickyChat
         })
-    }
+    };
     changeNotDisturb = ()=>{
         imController.setNoDisturb(!this.state.notDisturb);
         this.setState({
             notDisturb:!this.state.notDisturb
         })
-    }
+    };
 
     addOrRemoveTheContacts = () =>{
         currentObj.setState({
             isSave:!this.state.isSave
         });
         userController.addOrRemoveContacts(this.props.groupId,!this.state.isSave);
-    }
+    };
     _changeIsNickname = (value)=>{
         currentObj.setState({
             isNickname:value
@@ -174,18 +174,22 @@ class GroupInformationSetting extends AppComponent {
     }
 
     _footer = () => {
-        return  <TouchableOpacity onPress={()=>{this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{groupId:this.props.groupId}})}}>
-                    <View style={styles.listFooter}>
-                        <Text style={styles.listFooterText}>查看更多群成员</Text>
-                        <Icon name="angle-right" size={20} color="#aaa" />
-                    </View>
-                </TouchableOpacity>
+        if(this.state.members.length<=12) return null;
+        return  (
+            <TouchableOpacity onPress={this.goToMoreGroupList}>
+                <View style={styles.listFooter}>
+                    <Text style={styles.listFooterText}>查看更多群成员</Text>
+                    <Icon name="angle-right" size={20} color="#aaa" />
+                </View>
+            </TouchableOpacity>
+        )
+    };
 
-    }
-
-
-    searchUser = (Account)=>{
-        currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
+    goToMoreGroupList = (groupId)=>{
+        this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{groupId:this.props.groupId}})
+    };
+    goToClientInfo = (Account)=>{
+        this.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
     };
 
     //跳转加添群成员页面
@@ -195,55 +199,51 @@ class GroupInformationSetting extends AppComponent {
         });
         let groupId = this.props.groupId;
         this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,"UpdateHeadName":this.props.onUpdateHeadName}})
-    }
+    };
 
     goToDeleteClient = ()=>{
         this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{groupId:this.props.groupId,"UpdateHeadName":this.props.onUpdateHeadName}})
-    }
+    };
     _renderItem = (item) => {
         //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
         if(item.index == this.state.members.length-2){
-
-                return  <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
-                            <View style={styles.itemBox}>
-                                <View style={styles.lastItemBox}>
-                                    <Text style={styles.lastItemText}>+</Text>
-                                </View>
+                return (
+                    <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
+                        <View style={styles.itemBox}>
+                            <View style={styles.lastItemBox}>
+                                <Text style={styles.lastItemText}>+</Text>
                             </View>
-                        </TouchableWithoutFeedback>
-
-
+                        </View>
+                    </TouchableWithoutFeedback>
+                )
         }else if(item.index == this.state.members.length-1){
             if(this.state.groupInformation.Owner === currentAccount.Account){
-                return  <TouchableWithoutFeedback onPress={()=>{this.goToDeleteClient()}}>
-                    <View style={styles.itemBox}>
-                        <View style={styles.lastItemBox}>
-                            <Text style={styles.lastItemText}>-</Text>
+                return (
+                    <TouchableWithoutFeedback onPress={()=>{this.goToDeleteClient()}}>
+                        <View style={styles.itemBox}>
+                            <View style={styles.lastItemBox}>
+                                <Text style={styles.lastItemText}>-</Text>
+                            </View>
                         </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    </TouchableWithoutFeedback>
+                )
             }else{
                 return null;
             }
-
         }
         else{
             let path = userController.getAccountHeadImagePath(item.item.Account);
             let name = item.item.Remark != "" ? item.item.Remark:item.item.Nickname;
-            return <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
-                        <View style={styles.itemBox}>
-                            {/*{item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}*/}
-                            <ImagePlaceHolder style={styles.itemImage}
-                                              imageUrl ={path}
-                            />
-                            <Text style={styles.itemText}>{name}</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
+            return (
+                <TouchableWithoutFeedback onPress={()=>{this.goToClientInfo(item.item.Account)}}>
+                    <View style={styles.itemBox}>
+                        <ImagePlaceHolder style={styles.itemImage} imageUrl={path}/>
+                        <Text style={styles.itemText} numberOfLines={1}>{name}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+            )
         }
-
-
-
-    }
+    };
     gotoGroupAnnouncement = ()=>{
         let {Owner} = this.state.groupInformation;
         if(Owner!==currentAccount.Account){
@@ -251,10 +251,10 @@ class GroupInformationSetting extends AppComponent {
         }else{
             this.route.push(this.props,{key:'GroupAnnouncement',routeId:'GroupAnnouncement',params:{...this.state.groupInformation}});
         }
-    }
+    };
     gotoGroupName = ()=>{
             this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
-    }
+    };
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -271,14 +271,14 @@ class GroupInformationSetting extends AppComponent {
                         <FlatList
                             ListFooterComponent={this._footer}
                             renderItem={this._renderItem}
-                            //每行有3列。每列对应一个item
+                            //每行有5列。每列对应一个item
                             numColumns ={5}
                             //多列的行容器的样式
                             columnWrapperStyle={{marginTop:10}}
                             //要想numColumns有效必须设置horizontal={false}
                             horizontal={false}
                             keyExtractor={(item,index)=>(index)}
-                            style={{backgroundColor:'#fff'}}
+                            style={{backgroundColor:'#fff',paddingBottom:10}}
                             data={this.state.members}>
                         </FlatList>
                     </View>
@@ -377,12 +377,6 @@ class GroupInformationSetting extends AppComponent {
                             <Text style={styles.remarks}>清空聊天记录</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>投诉</Text>
-                            <Icon name="angle-right" size={35} color="#aaa" />
-                        </View>
-                    </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={[styles.sendMessageBox,{marginBottom:20}]}>
                         <Text style={styles.sendMessage}>删除并退出</Text>
                     </TouchableHighlight>
@@ -406,7 +400,7 @@ class GroupInformationSetting extends AppComponent {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#eee',
+        backgroundColor: '#ebebeb',
 
     },
     back:{
@@ -462,31 +456,35 @@ const styles = StyleSheet.create({
     },
     itemBox:{
         width:width/5,
-        height:70,
         alignItems:'center',
     },
     itemImage:{
         width:50,
         height:50,
-        borderRadius:5
+        borderRadius:25
     },
     itemText:{
-        fontSize:12,
-        color:'#000',
-        marginTop:3
+        color:'#989898',
+        fontSize:13,
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        maxWidth:50,
+        marginTop:3,
     },
     lastItemBox:{
-        width:49,
-        height:49,
-        borderWidth:1,
-        borderColor:'#aaa',
-        borderRadius:5,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        height:50,
+        width:50,
+        borderWidth:1,
+        borderColor:'#d9d9d9',
+        borderRadius:25
     },
     lastItemText:{
-        fontSize:25,
-        color:'#ccc'
+        color:'#989898',
+        fontSize:30,
+        textAlignVertical:'center',
+        includeFontPadding:false,
     },
     listFooter:{
         height:50,

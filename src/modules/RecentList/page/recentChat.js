@@ -9,8 +9,6 @@ import {
     TouchableHighlight,
     Platform,
     StyleSheet,
-    Alert,
-    AsyncStorage,
     InteractionManager,
     ActivityIndicator
 } from 'react-native';

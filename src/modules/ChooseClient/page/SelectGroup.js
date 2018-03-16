@@ -2,13 +2,12 @@
  * Created by Hsu. on 2018/2/28.
  */
 import React, {Component} from 'react';
-import {StyleSheet,Image,AsyncStorage,Platform,Alert,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
+import {StyleSheet,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import UserController from '../../../TSController/UserController'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
-import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
-import {Navigator} from 'react-native-deprecated-custom-components';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let userController = undefined;
 let imLogicController = undefined;
@@ -42,12 +41,11 @@ export default class SelectGroup extends AppComponent {
     /*渲染每个记录*/
     _renderItem = (item) => { //item:{item:{},index:number,separators:{}}
         let content = item.item;
-        let index = item.index;
         return (
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
-                        {this._renderAvator(content.HeadImagePath, content.HeadImageUrl)}
+                        <ImagePlaceHolder style = {styles.itemImage} imageUrl = {require('../resource/groupAvator.png')}/>
                         <View style={styles.itemTextView}>
                             <Text style={styles.itemText}  numberOfLines={1}>{content.Name}</Text>
                         </View>
@@ -81,17 +79,6 @@ export default class SelectGroup extends AppComponent {
             </View>
         )
     }
-
-    /*渲染头像*/
-    _renderAvator = (HeadImagePath, HeadImageUrl, group) => {
-        if (HeadImagePath != null && HeadImagePath != '') {
-            return <Image style={styles.itemImage} source={{uri: HeadImagePath}}/>
-        }
-        if (HeadImageUrl != null && HeadImageUrl != '') {
-            return <Image style={styles.itemImage} source={{uri: HeadImageUrl}}/>
-        }
-        return <Image style={styles.itemImage} source={require('../resource/groupHeader.png')}/>
-    };
 
     /*item点击事件*/
     _itemTouch=(content)=>{
@@ -128,7 +115,8 @@ const styles = StyleSheet.create({
     },
     itemImage:{
         width:40,
-        height:40
+        height:40,
+        borderRadius:20
     },
     itemTextView:{
         marginLeft:15,

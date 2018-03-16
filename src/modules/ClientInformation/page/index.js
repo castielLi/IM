@@ -144,7 +144,7 @@ class ClientInformation extends AppComponent {
                 <View style={styles.basicBoxRight}>
                     <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
                     <View>
-                        <Text style={styles.id}>{'奇信号：'+Account}</Text>
+                        <Text style={styles.id}>{'云信号：'+Account}</Text>
                         {hasRemark ? <Text style={styles.id}>{'昵称：'+Nickname}</Text> : null}
                     </View>
                 </View>
@@ -159,35 +159,29 @@ class ClientInformation extends AppComponent {
                 <TouchableHighlight>
                     <View style={styles.dataRowBox}>
                         <Text style={styles.dataTitle}>地区</Text>
-                        <Text style={styles.dataText}>重庆 大渡口</Text>
+                        <Text style={styles.dataText}>中国 中国大陆</Text>
                     </View>
                 </TouchableHighlight>
-                {this.state.isFriend ? null :
-                    <TouchableHighlight>
-                        <View style={[styles.dataRowBox,styles.noBorder]}>
-                            <Text style={styles.dataTitle}>个性签名</Text>
-                            <Text style={styles.dataText}>签名内容</Text>
-                        </View>
-                    </TouchableHighlight>
-                }
+                {/*{this.state.isFriend ? null :*/}
+                    {/*<TouchableHighlight>*/}
+                        {/*<View style={[styles.dataRowBox,styles.noBorder]}>*/}
+                            {/*<Text style={styles.dataTitle}>个性签名</Text>*/}
+                            {/*<Text style={styles.dataText}>签名内容</Text>*/}
+                        {/*</View>*/}
+                    {/*</TouchableHighlight>*/}
+                {/*}*/}
                 {this.state.isFriend ?
                     <TouchableHighlight>
                         <View style={styles.dataRowBox}>
                             <Text style={styles.dataTitle}>个性相册</Text>
                             <View style={styles.dataPhotos}>
-                                <Image style={styles.dataPhoto} source={require('../resource/other.jpg')}/>
-                                <Image style={styles.dataPhoto} source={require('../resource/other.jpg')}/>
-                                <Image style={styles.dataPhoto} source={require('../resource/other.jpg')}/>
+                                <Image style={styles.dataPhoto} source={require('../resource/test1.jpg')}/>
+                                <Image style={styles.dataPhoto} source={require('../resource/test2.jpg')}/>
+                                <Image style={styles.dataPhoto} source={require('../resource/test3.jpg')}/>
                             </View>
                         </View>
                     </TouchableHighlight> : null
                 }
-                {this.state.isFriend ?
-                    <TouchableHighlight>
-                        <View style={[styles.dataRowBox,styles.noBorder]}>
-                            <Text style={styles.dataTitle}>更多</Text>
-                        </View>
-                    </TouchableHighlight> : null}
             </View>
         )
     };
@@ -197,12 +191,11 @@ class ClientInformation extends AppComponent {
         if(this.state.oneself){
             return null;
         }
-
         return (
             <View>
                 <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToRemarkInfo(Account,Remark)} style={{marginTop:15}}>
                     <View  style={styles.remarksBox}>
-                        <Text style={styles.remarks}>设置备注和标签</Text>
+                        <Text style={styles.remarks}>设置备注</Text>
                     </View>
                 </TouchableHighlight>
                 {(!this.state.isFriend && this.state.applyKey) ?
@@ -302,13 +295,13 @@ const styles = StyleSheet.create({
         paddingVertical:10,
         paddingHorizontal:15,
         backgroundColor:'#fff',
-        flexDirection:'row'
+        flexDirection:'row',
+        alignItems:'center'
     },
     headPic:{
-        height:70,
-        width:70,
-        borderRadius:7,
-        //resizeMode:'stretch'
+        height:60,
+        width:60,
+        borderRadius:30,
     },
     basicBoxRight:{
         marginLeft:15,

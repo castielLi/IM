@@ -6,14 +6,8 @@ import React, {Component} from 'react';
 import {Text,
     StyleSheet,
     View,
-    TextInput,
-    TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform,
     Image,
-    TouchableHighlight,
     Dimensions,
-    Switch,
     FlatList,
     TouchableWithoutFeedback,
     ScrollView
@@ -21,7 +15,7 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import UserController from '../../../TSController/UserController';
 let userController = undefined;
 
@@ -54,20 +48,22 @@ class MoreGroupList extends AppComponent {
         super.componentWillUnmount();
     }
 
-    searchUser = (keyword)=>{
+    _goToClientInfo = (keyword)=>{
         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
-    }
+    };
 
     _renderItem = (item) => {
-
-            return   <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
-                        <View style={styles.itemBox}>
-                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
-                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
-
-    }
+        let path = userController.getAccountHeadImagePath(item.item.Account);
+        let name = item.item.Remark != "" ? item.item.Remark:item.item.Nickname;
+            return (
+                <TouchableWithoutFeedback onPress={()=>{this._goToClientInfo(item.item.Account)}}>
+                    <View style={styles.itemBox}>
+                        <ImagePlaceHolder style={styles.itemImage} imageUrl={path}/>
+                        <Text style={styles.itemText} numberOfLines={1}>{name}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+            )
+    };
     render() {
         
         let Popup = this.PopContent;
@@ -78,13 +74,13 @@ class MoreGroupList extends AppComponent {
                     heading={"群成员"}
                     left={{func:()=>{this.route.pop(this.props)},text:'返回'}}
                 />
-                <View style={styles.listHeaderBox}>
-                    <TextInput
-                        style={styles.search}
-                        underlineColorAndroid = 'transparent'
-                    >
-                    </TextInput>
-                </View>
+                {/*<View style={styles.listHeaderBox}>*/}
+                    {/*<TextInput*/}
+                        {/*style={styles.search}*/}
+                        {/*underlineColorAndroid = 'transparent'*/}
+                    {/*>*/}
+                    {/*</TextInput>*/}
+                {/*</View>*/}
                 <View  style={{flex:1,backgroundColor:'#fff'}}>
                     <View  style={{flex:1,backgroundColor:'#fff'}}>
                         <FlatList
@@ -181,30 +177,35 @@ const styles = StyleSheet.create({
     },
     itemBox:{
         width:width/5,
-        height:70,
         alignItems:'center',
     },
     itemImage:{
         width:50,
         height:50,
-        borderRadius:5
+        borderRadius:25
     },
     itemText:{
-        fontSize:14,
-        color:'#000'
+        color:'#989898',
+        fontSize:13,
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        maxWidth:50,
+        marginTop:3,
     },
     lastItemBox:{
-        width:49,
-        height:49,
-        borderWidth:1,
-        borderColor:'#aaa',
-        borderRadius:5,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        height:50,
+        width:50,
+        borderWidth:1,
+        borderColor:'#d9d9d9',
+        borderRadius:25
     },
     lastItemText:{
-        fontSize:25,
-        color:'#ccc'
+        color:'#989898',
+        fontSize:30,
+        textAlignVertical:'center',
+        includeFontPadding:false,
     },
     listFooter:{
         height:50,

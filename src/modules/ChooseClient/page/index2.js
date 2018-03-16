@@ -153,7 +153,7 @@ class ChooseClientt extends AppComponent {
         let accountStr = this.selectData.join(',') +','+ this.defaulData.join(',');//'wg003724,wg003723'
 
         if(this.props.build){
-            if(this.selectData.length == 1){
+            if((this.selectData.length+this.defaulData.length) == 1){
                 let client = this.selectData[0].Account;
                 let Nick = this.selectData[0].Remark != '' ?　this.selectData[0].Remark : this.selectData[0].Nickname;
                 this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client,type:'private',Nick}});
@@ -164,8 +164,7 @@ class ChooseClientt extends AppComponent {
             userController.createGroup(groupName,accountStr,(result)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
-
+                    currentObj.route.pushifExistRoute(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
                 }else{
                     this.alert('创建失败');
                 }

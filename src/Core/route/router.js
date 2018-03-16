@@ -211,26 +211,15 @@ class Route {
 
     static pushifExistRoute(props,existRoute){
         let routes = props.navigator.getCurrentRoutes();
-        let route = null;
         for (let i = 0; i < routes.length; i++) {
             if (routes[i]["key"] == existRoute["key"] && routes[i]["routeId"] == existRoute["routeId"]) {
-
-                props.navigator.replaceAtIndex(existRoute,i);
-                // if(i - 1 > 0) {
-                    route = routes[i];
-                // }
-                break;
+                props.navigator.replaceAtIndex(existRoute,i,()=>{
+                    props.navigator.popToRoute(props.navigator.getCurrentRoutes()[i]);
+                });
+                return;
             }
         }
-
-        if(route != null) {
-            // props.navigator.jumpTo(route)
-            props.navigator.popToRoute(route);
-        }else{
-            props.navigator.push(existRoute);
-        }
-
-
+        props.navigator.push(existRoute);
     }
 
     static ToLogin(props) {

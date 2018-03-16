@@ -72,11 +72,11 @@ class ChatSetting extends AppComponent {
                             <Text style={styles.userName} numberOfLines={1}>{this.props.Name}</Text>
                         </View>
                     </TouchableHighlight>
-                    {/*<TouchableHighlight onPress={this._createGroup} underlayColor={'transparent'}>*/}
-                        {/*<View style={styles.addBox}>*/}
-                            {/*<Text style={styles.addIcon}>+</Text>*/}
-                        {/*</View>*/}
-                    {/*</TouchableHighlight>*/}
+                    <TouchableHighlight onPress={this._createGroup} underlayColor={'transparent'}>
+                        <View style={styles.addBox}>
+                            <Text style={styles.addIcon}>+</Text>
+                        </View>
+                    </TouchableHighlight>
                 </View>
                 <View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
@@ -102,12 +102,12 @@ class ChatSetting extends AppComponent {
                             <Text style={styles.remarks}>清空聊天记录</Text>
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>投诉</Text>
-                            <Icon name="angle-right" size={20} color="#aaa" />
-                        </View>
-                    </TouchableHighlight>
+                    {/*<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>*/}
+                        {/*<View  style={styles.remarksBox}>*/}
+                            {/*<Text style={styles.remarks}>投诉</Text>*/}
+                            {/*<Icon name="angle-right" size={20} color="#aaa" />*/}
+                        {/*</View>*/}
+                    {/*</TouchableHighlight>*/}
 
                 </View>
             </View>
@@ -135,7 +135,8 @@ const styles = StyleSheet.create({
     },
     userHeadImage:{
         width:50,
-        height:50
+        height:50,
+        borderRadius:25
     },
     userName:{
         color:'#989898',
@@ -152,7 +153,8 @@ const styles = StyleSheet.create({
         width:50,
         borderWidth:1,
         borderColor:'#d9d9d9',
-        marginLeft:30
+        marginLeft:30,
+        borderRadius:25
     },
     addIcon:{
         color:'#989898',

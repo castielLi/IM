@@ -177,7 +177,7 @@ class ChooseClient extends AppComponent {
 	}
 
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.Nickname;
+		let txt = '  ' + info.item.Nickname;
 		let hasMember;
         if(this.hasGroup){
             hasMember = this.props.members.indexOf(info.item.Account);
@@ -187,9 +187,7 @@ class ChooseClient extends AppComponent {
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
 					<View  style={[styles.itemBox,this.state.isShowFlatList?{borderBottomWidth:1,borderColor:'#bbb'}:{}]} >
 						{this.circleStyle(info,hasMember)}
-						<ImagePlaceHolder style={styles.pic}
-										  imageUrl ={path}
-						/>
+						<ImagePlaceHolder style={styles.pic} imageUrl ={path}/>
 						<Text style={styles.itemText}>{txt}</Text>
 					</View>
 			   </TouchableHighlight>
@@ -406,8 +404,8 @@ const styles = StyleSheet.create({
 	pic:{
 		width:40,
 		height:40,
-		resizeMode:'stretch',
-		marginLeft:10
+		marginLeft:10,
+		borderRadius:20
 	},
 	itemText:{		
 		textAlignVertical: 'center',
