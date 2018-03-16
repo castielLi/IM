@@ -61,6 +61,7 @@ import Gender from './Profile/page/More/RadioCollection'
 import GroupQRCodeContent from './GroupInformationSetting/page/QRCode'
 import GroupBackgroundImage from './GroupInformationSetting/page/BackgroundImage'
 import PrivateChatBackgroundImage from './ChatSetting/page/BackgroundImage'
+import Setting from './Me/page/setting'
 
 
 export const MainPage = {
@@ -232,6 +233,10 @@ export const RouteMap = {
         'Me': {
             component: Me,
             params: {"name":"Me"}
+        },
+        'Setting':{
+            component:Setting,
+            params:{}
         }
     },
     'Validate': {
