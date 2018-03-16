@@ -30,6 +30,7 @@ let originData = [
 export default class Setting extends AppComponent {
     constructor(props){
         super(props);
+        this._toDoSome = this._toDoSome.bind(this);
     }
 
     componentWillUnmount(){
@@ -66,6 +67,7 @@ export default class Setting extends AppComponent {
     _toDoSome = (name)=>{
         switch (name){
             case '修改密码':
+                this.route.push(this.props,{key: 'Me',routeId: 'ChangePassword',params:{}});
                 break;
             case '设置服务器地址':
                 break;

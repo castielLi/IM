@@ -18,7 +18,6 @@ import PhoneLogin from './Login/page/phoneLogin'
 import EmailLogin from './Login/page/emailLogin'
 import Register from './Login/page/register'
 import FindPassword from './Login/page/findPassword'
-import ChangePassword from './Login/page/changePassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Start from './Start/page'
@@ -62,6 +61,7 @@ import GroupQRCodeContent from './GroupInformationSetting/page/QRCode'
 import GroupBackgroundImage from './GroupInformationSetting/page/BackgroundImage'
 import PrivateChatBackgroundImage from './ChatSetting/page/BackgroundImage'
 import Setting from './Me/page/setting'
+import ChangePassword from './Me/page/setting/changePassword'
 
 
 export const MainPage = {
@@ -150,12 +150,6 @@ export const RouteMap = {
             params: {"name":"FindPassword"}
         }
     },
-    'ChangePassword':{
-         'ChangePassword': {
-            component: ChangePassword,
-            params: {"name":"ChangePassword"}
-        }
-    },
     'ChatDetail': {
         'ChatDetail': {
             component: ChatDetail,
@@ -236,6 +230,10 @@ export const RouteMap = {
         },
         'Setting':{
             component:Setting,
+            params:{}
+        },
+        'ChangePassword':{
+            component:ChangePassword,
             params:{}
         }
     },
