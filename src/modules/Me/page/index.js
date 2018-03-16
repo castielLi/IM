@@ -38,34 +38,180 @@ let currentObj = undefined;
 let appManagement = undefined;
 
 
-var originData = [
+let originData = [
     {
         'key':'1',
         'data': [{
-            'name': "钱包",
+            'name': "昵称",
+        },{
+            'name': "二维码",
         }]
     },
     {
         'key':'2',
         'data': [{
-            'name': "卡包",
-        }, {
-            'name': "收藏",
-        }, {
-            'name': "相册",
-        }, {
-            'name': "表情",
-        }]
-    },
-    {
-        'key':'3',
-        'data': [{
-            'name': "退出登录",
+            'name': "设置",
         }]
     },
 
-]
+];
 
+class Me extends AppComponent {
+    constructor(props){
+        super(props);
+
+        // loginController = new LoginController();
+        // imController = IMControlelr.getSingleInstance();
+        userController = UserController.getSingleInstance();
+        currentAccount = userController.getCurrentAccount();
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        appManagement = new AppManagement();
+        this.state = {
+            showFeatures:false,//显示功能块组件
+            headImageUrl:headImagePath,
+            name : currentAccount.Nickname
+        };
+
+        currentObj = this;
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
+    _refreshUI(type,param){
+        switch (type){
+            case AppPageMarkEnum.ChangeHeadImage:
+                currentObj.setState({
+                    headImageUrl:param,
+                });
+                break;
+            case AppPageMarkEnum.ChangeNickname:
+                currentObj.setState({
+                    name:param
+                });
+                break;
+            break;
+        }
+    }
+
+
+    loginOut = ()=>{
+        let logoutState = new LogoutState();
+        logoutState.stateOpreation(appManagement);
+        this.route.ToLogin(this.props);
+    };
+
+    toDoSome = (name)=>{
+        let {name:nickname,headImageUrl} = this.state;
+        switch (name){
+            case '昵称':
+                this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
+                break;
+            case '二维码':
+                this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{nickname,headImageUrl}});
+                break;
+            case '设置':
+                this.loginOut();
+                break;
+            default:
+                break;
+        }
+    };
+
+    chooseImage = (name)=>{
+        switch (name){
+            case '设置':
+                return <Image source={require('../resource/set.png')} style={styles.pic} />;
+            default:
+                break;
+        }
+    };
+
+    _goToHeadImage = ()=>{
+        this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage'});
+    };
+
+    _fillingValue=(info)=>{
+        switch (info.item.name){
+            case '二维码':
+                return(
+                    <View style={styles.itemRightBox}>
+                        <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                );
+            default:
+                return(
+                    <View style={styles.itemRightBox}>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                )
+        }
+    };
+
+    _renderItem = (info)=>{
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toDoSome.bind(this,info.item.name)}>
+                <View style={styles.itemBox}>
+                    <View  style={styles.itemLeftBox} >
+                        {this.chooseImage(info.item.name)}
+                        <Text style={styles.itemText}>{info.item.name}</Text>
+                    </View>
+                    {this._fillingValue(info)}
+                </View>
+            </TouchableHighlight>
+        )
+    };
+    _renderSection = ()=>{
+        return <View style={styles.sction}/>
+    };
+    _renderSeparator = () =>{
+        return <View style={styles.ItemSeparator}/>
+    };
+    _renderHeader =()=>{
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToHeadImage}>
+                <View style={styles.topBox}>
+                    <View  style={styles.topLeftBox} >
+                        <ImagePlaceHolder style={styles.topPic} imageUrl ={this.state.headImageUrl}/>
+                        <View style={styles.topInfo}>
+                            <Text style={styles.headerText}>{this.state.name}</Text>
+                            <Text style={styles.itemSmallText}>{'云信号：'+currentAccount.Account}</Text>
+                        </View>
+                    </View>
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                </View>
+            </TouchableHighlight>
+        )
+    };
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <MyNavigationBar
+                    left = {'云信'}
+                    right={[
+                        {func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
+                        ]}
+                />
+                <SectionList
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    ListHeaderComponent={this._renderHeader}
+                    renderSectionHeader={this._renderSection}
+                    renderItem={this._renderItem}
+                    sections={originData}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    stickySectionHeadersEnabled={false}
+                />
+                <Features ref={e => this.features = e} navigator={this.props.navigator}/>
+            </View>
+            )
+    }
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -89,8 +235,8 @@ const styles = StyleSheet.create({
     topPic:{
         width:60,
         height:60,
-        resizeMode:'stretch',
-        marginRight:15
+        marginRight:15,
+        borderRadius:30
     },
     topInfo:{
         height:60,
@@ -126,6 +272,10 @@ const styles = StyleSheet.create({
         alignItems:'center',
 
     },
+    itemRightBox:{
+        flexDirection:'row',
+        alignItems:'center'
+    },
     pic:{
         width:25,
         height:25,
@@ -143,148 +293,10 @@ const styles = StyleSheet.create({
     },
     arrow:{
         fontSize:20,
-        color:'#aaa'
+        color:'#989898',
+        marginLeft:15
     },
 });
-class Me extends AppComponent {
-    constructor(props){
-        super(props);
-
-        // loginController = new LoginController();
-        // imController = IMControlelr.getSingleInstance();
-        userController = UserController.getSingleInstance();
-        currentAccount = userController.getCurrentAccount();
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
-        appManagement = new AppManagement();
-        this.state = {
-            showFeatures:false,//显示功能块组件
-            headImageUrl:headImagePath,
-            name : currentAccount.Nickname
-        };
-
-        currentObj = this;
-    }
-
-    componentWillUnmount(){
-        super.componentWillUnmount();
-    }
-
-    _refreshUI(type,param){
-        console.log("Me")
-        switch (type){
-            case AppPageMarkEnum.ChangeHeadImage:
-                currentObj.setState({
-                    headImageUrl:param,
-                });
-                break;
-            case AppPageMarkEnum.ChangeNickname:
-                currentObj.setState({
-                    name:param
-                });
-                break;
-            break;
-        }
-    }
-
-
-    loginOut = ()=>{
-        let logoutState = new LogoutState();
-        logoutState.stateOpreation(appManagement);
-        this.route.ToLogin(this.props);
-    }
-
-    toDoSome = (name)=>{
-        if(name == '退出登录'){
-            this.loginOut();
-        }
-    }
-
-    chooseImage = (name)=>{
-        switch (name){
-            case '钱包':
-                return <Image source={require('../resource/package.png')} style={styles.pic} />;
-            case '卡包':
-                return <Image source={require('../resource/pack.png')} style={styles.pic} />;
-            case '收藏':
-                return <Image source={require('../resource/souc.png')} style={styles.pic} />;
-            case '相册':
-                return <Image source={require('../resource/photo.png')} style={styles.pic} />;
-            case '表情':
-                return <Image source={require('../resource/smile.png')} style={styles.pic} />;
-            case '退出登录':
-                return <Image source={require('../resource/set.png')} style={styles.pic} />;
-        }
-    };
-
-    _goToProfile = ()=>{
-        this.route.push(this.props,{key:'Profile',routeId:'Profile'});
-    };
-
-    _renderItem = (info)=>{
-        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toDoSome.bind(this,info.item.name)}>
-            <View style={styles.itemBox}>
-                <View  style={styles.itemLeftBox} >
-                    {this.chooseImage(info.item.name)}
-                    <Text style={styles.itemText}>{info.item.name}</Text>
-                </View>
-                {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                <View>
-                    <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                </View>
-
-            </View>
-        </TouchableHighlight>
-    };
-    _renderSection = ()=>{
-        return <View style={styles.sction}/>
-    };
-    _renderSeparator = () =>{
-        return <View style={styles.ItemSeparator}/>
-    };
-    _renderHeader =()=>{
-        return (
-            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToProfile}>
-                <View style={styles.topBox}>
-                    <View  style={styles.topLeftBox} >
-                        <ImagePlaceHolder style={styles.topPic} imageUrl ={this.state.headImageUrl}/>
-                        <View style={styles.topInfo}>
-                            <Text style={styles.headerText}>{this.state.name}</Text>
-                            <Text style={styles.itemSmallText}>{'云信号：'+currentAccount.Account}</Text>
-                        </View>
-                    </View>
-                    <View style={{flexDirection:'row',alignItems:'center'}}>
-                        <Icon name="qrcode" size={25} color="#aaa" style={{textAlignVertical:'center',marginRight:10}}/>
-                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                    </View>
-                </View>
-            </TouchableHighlight>
-        )
-    };
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <MyNavigationBar
-                    left = {'云信'}
-                    right={[
-                        {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
-                        ]}
-                />
-                <SectionList
-                    keyExtractor={(item,index)=>("index"+index+item)}
-                    ListHeaderComponent={this._renderHeader}
-                    renderSectionHeader={this._renderSection}
-                    renderItem={this._renderItem}
-                    sections={originData}
-                    ItemSeparatorComponent={this._renderSeparator}
-                    stickySectionHeadersEnabled={false}
-                />
-                <Features ref={e => this.features = e} navigator={this.props.navigator}/>
-            </View>
-            )
-    }
-}
 
 const mapStateToProps = state => ({
 

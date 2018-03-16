@@ -313,7 +313,6 @@ let styles = StyleSheet.create({
         height: checkDeviceHeight(100),
         width: checkDeviceHeight(100),
         borderRadius: checkDeviceHeight(50),
-        resizeMode: 'cover',
     },
     ChatContent: {
         flex: 1,

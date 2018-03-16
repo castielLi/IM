@@ -37,26 +37,23 @@ var originData = [
 			'data': [{
 					'name': "扫一扫",
                 	'icon':'sao'
-				}, {
-					'name': "摇一摇",
-                	'icon':'yao'
 				}]
 			},
-			{
-			'key':'3',
-			'data': [{
-					'name': "附近的人",
-				}, {
-					'name': "购物",
-				}]
-			},
-			{
-			'key':'4',
-			'data': [{
-					'name': "游戏",
-				}]
-			},			
-	]
+			// {
+			// 'key':'3',
+			// 'data': [{
+			// 		'name': "附近的人",
+			// 	}, {
+			// 		'name': "购物",
+			// 	}]
+			// },
+			// {
+			// 'key':'4',
+			// 'data': [{
+			// 		'name': "游戏",
+			// 	}]
+			// },
+	];
 
 
 let styles = StyleSheet.create({
@@ -116,10 +113,6 @@ class Zoom extends AppComponent {
         styles = super.componentWillMount(styles)
 	}
 
-	changeShowFeature=(newState)=>{
-		this.setState({showFeatures:newState});
-	}
-
 	itemClick = (info)=>{
 		switch (info.item.name){
 			case "扫一扫":
@@ -131,19 +124,14 @@ class Zoom extends AppComponent {
 	}
 
     chooseImage = (name)=>{
-		if(name == '圈子'){
-			return	<Image source={require('../resource/zoom.png')} style={styles.pic} ></Image>
-        }else if(name == '扫一扫'){
-            return	<Image source={require('../resource/sao.png')} style={styles.pic} ></Image>
-        }else if(name == '摇一摇'){
-            return	<Image source={require('../resource/yao.png')} style={styles.pic} ></Image>
-        }else if(name == '附近的人'){
-            return	<Image source={require('../resource/place.png')} style={styles.pic} ></Image>
-        }else if(name == '购物'){
-            return	<Image source={require('../resource/shop.png')} style={styles.pic} ></Image>
-        }else if(name == '游戏'){
-            return	<Image source={require('../resource/game.png')} style={styles.pic} ></Image>
-        }
+        switch (name){
+			case '圈子':
+                return	<Image source={require('../resource/zoom.png')} style={styles.pic} />;
+            case '扫一扫':
+                return	<Image source={require('../resource/sao.png')} style={styles.pic} />;
+            default:
+                break;
+		}
 	}
 	_renderItem = (info)=>{
 		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.itemClick(info)}>
@@ -157,10 +145,10 @@ class Zoom extends AppComponent {
 			   </TouchableHighlight>
 	}
 	_renderSection = ()=>{
-		return <View style={styles.sction}></View>
+		return <View style={styles.sction}/>
 	}
 	_renderSeparator = () =>{
-		return <View style={styles.ItemSeparator}></View>
+		return <View style={styles.ItemSeparator}/>
 	}
 	render() {
 		let PopContent = this.PopContent;

@@ -166,17 +166,10 @@ class Contacts extends AppComponent {
 						   </View>
 					   </TouchableHighlight>
 						<View style={styles.ItemSeparator}/>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('即将推出...')}}>
 						   <View  style={styles.itemBox} >
 								<Image source={require('../resource/public.png')} style={styles.pic} />
 								<Text style={styles.itemText}>公众号</Text>
-						   </View>
-					   </TouchableHighlight>
-						<View style={styles.ItemSeparator}/>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View  style={styles.itemBox} >
-								<Image source={require('../resource/logo.png')} style={styles.pic} />
-								<Text style={styles.itemText}>标签</Text>
 						   </View>
 					   </TouchableHighlight>
 					</View>
@@ -257,7 +250,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 	},
 	itemBox:{
-		height: 60, 
+		height: 54,
 		flexDirection:'row',
 		alignItems:'center',
 		paddingHorizontal:15
@@ -265,7 +258,7 @@ const styles = StyleSheet.create({
 	pic:{
 		width:40,
 		height:40,
-		resizeMode:'stretch'
+		borderRadius:20
 	},
 	itemText:{		
 		textAlignVertical: 'center',

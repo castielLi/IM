@@ -114,10 +114,10 @@ const styles = StyleSheet.create({
 		position:'absolute',
 		right:0,
 		top:checkDeviceHeight(70),
-		height:checkDeviceHeight(450),
+		// height:checkDeviceHeight(450),
 		marginRight:checkDeviceWidth(20),
 		backgroundColor:'#35343a',
-		width:checkDeviceWidth(400)
+		width:checkDeviceWidth(300)
 	},
 	featureButton:{
 		flex:1,
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
 		borderBottomWidth:1,
 		borderColor:'#000000',
 		alignItems:'center',
+		paddingVertical:8
 	},
 
 	logo:{

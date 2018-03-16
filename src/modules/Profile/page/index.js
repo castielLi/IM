@@ -42,9 +42,7 @@ var originData = [
         'data': [{
             'name': "头像",
         },{
-            'name': "名字",
-        }, {
-            'name': "云信号",
+            'name': "昵称",
         }, {
             'name': "我的二维码",
         }, {
@@ -82,7 +80,6 @@ class Profile extends AppComponent {
     }
 
     _refreshUI(type,param){
-        console.log("Profile")
         switch (type){
             case AppPageMarkEnum.ChangeHeadImage:
                 currentObj.setState({
@@ -102,7 +99,7 @@ class Profile extends AppComponent {
             case '头像':
                 this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage'});
                 break;
-            case '名字':
+            case '昵称':
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
             case '我的二维码':
@@ -114,7 +111,7 @@ class Profile extends AppComponent {
             default:
                 break;
         }
-    }
+    };
 
     _renderItem = (info)=>{
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toDoSome.bind(this,info.item.name)}>
@@ -151,7 +148,7 @@ class Profile extends AppComponent {
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 );
-            case '名字':
+            case '昵称':
                 return(
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemText}>{this.state.nickname}</Text>
