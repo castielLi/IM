@@ -58,6 +58,9 @@ import MoreSetting from './Profile/page/More'
 import Signature from './Profile/page/More/Signature'
 import ScanUnknow from './ScanCode/page/ScanUnknowPage'
 import Gender from './Profile/page/More/RadioCollection'
+import GroupQRCodeContent from './GroupInformationSetting/page/QRCode'
+import GroupBackgroundImage from './GroupInformationSetting/page/BackgroundImage'
+import PrivateChatBackgroundImage from './ChatSetting/page/BackgroundImage'
 
 
 export const MainPage = {
@@ -156,7 +159,7 @@ export const RouteMap = {
         'ChatDetail': {
             component: ChatDetail,
             params: {"name":"ChatDetail"},
-            markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting]
+            markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting,Mark.ConversationDetailBackgroundImage]
         }
     },
     'RecentList': {
@@ -219,6 +222,10 @@ export const RouteMap = {
         'ChatSetting': {
             component: ChatSetting,
             params: {"name":"ChatSetting"}
+        },
+        'PrivateChatBackgroundImage':{
+            component:PrivateChatBackgroundImage,
+            params:{}
         }
     },
     'Me': {
@@ -250,6 +257,14 @@ export const RouteMap = {
             component: GroupInformationSetting,
             params: {"name":"GroupInformationSetting"},
             markType:Mark.ChangeRemark
+        },
+        "GroupQRCodeContent":{
+            component:GroupQRCodeContent,
+            params:{}
+        },
+        'GroupBackgroundImage':{
+            component:GroupBackgroundImage,
+            params:{}
         }
     },
     'MoreGroupList': {

@@ -183,6 +183,9 @@ class GroupInformationSetting extends AppComponent {
 
     }
 
+    goToGroupQRCode = ()=>{
+        currentObj.route.push(currentObj.props,{key:'GroupInformationSetting',routeId:'GroupQRCodeContent',params:{groupId:this.props.groupId,"name":this.state.groupInformation.Name}});
+    }
 
     searchUser = (Account)=>{
         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
@@ -255,6 +258,11 @@ class GroupInformationSetting extends AppComponent {
     gotoGroupName = ()=>{
             this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
     }
+
+    gotoGroupBackgroundImage = ()=>{
+        this.route.push(this.props,{key:'GroupInformationSetting',routeId:'GroupBackgroundImage'});
+    }
+
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
@@ -295,7 +303,7 @@ class GroupInformationSetting extends AppComponent {
                         </TouchableHighlight>
                     </View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
-                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                        <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToGroupQRCode}>
                             <View  style={styles.remarksBox}>
                                 <Text style={styles.remarks}>群二维码</Text>
                                 <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -363,7 +371,7 @@ class GroupInformationSetting extends AppComponent {
                             />
                         </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupBackgroundImage} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置当前聊天背景</Text>
                             <Icon name="angle-right" size={35} color="#aaa" />

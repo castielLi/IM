@@ -118,7 +118,8 @@ class RecentChat extends AppComponent {
             params: {
                 client: rowData.chatId,
                 type: type,
-                Nick: rowData.name
+                Nick: rowData.name,
+                conversationBackgroundImage:rowData.backgroundImage
             }
         });
     }

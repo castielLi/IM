@@ -38,6 +38,8 @@ class ChatSetting extends AppComponent {
                 notDisturb:setting.NoDisturb,//消息免打扰
             }
         }
+        
+        this.gotoGroupBackgroundImage = this.gotoGroupBackgroundImage.bind(this);
     }
 
     componentWillUnmount(){
@@ -50,6 +52,10 @@ class ChatSetting extends AppComponent {
             isStickyChat:!this.state.isStickyChat
         })
     };
+
+    gotoGroupBackgroundImage = ()=>{
+        this.route.push(this.props,{key:'ChatSetting',routeId:'PrivateChatBackgroundImage'});
+    }
 
     _goToClientInfo=()=>{
         this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:this.props.Account}});
@@ -88,7 +94,7 @@ class ChatSetting extends AppComponent {
                             />
                         </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupBackgroundImage} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>设置当前聊天背景</Text>
                             <Icon name="angle-right" size={20} color="#aaa" />
