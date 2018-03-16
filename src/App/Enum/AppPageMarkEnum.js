@@ -15,6 +15,7 @@ export default Mark = {
     ChangeHeadImage : 10,
     ChangeNickname : 11,
     ChangeRemark : 12,
+    ConversationDetailBackgroundImage:13,
 
     AppKickOutHandle:101
 }

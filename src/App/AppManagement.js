@@ -41,6 +41,7 @@ export default class AppManagement{
         this.ChangeHeadImage = {};
         this.ChangeNickname = {};
         this.ChangeRemark = {};
+        this.ConversationDetailBackgroundImage = {};
         this.AppStatus = {};
         this.InitReady = {"ConversationList":false,"Contact":false}
         this.ConnectState = false;
@@ -117,6 +118,11 @@ export default class AppManagement{
                 if(this.ChangeRemark[pageName])
                     return;
                 this.ChangeRemark[pageName] = handle;
+            case Mark.ConversationDetailBackgroundImage:
+                if(this.ConversationDetailBackgroundImage[pageName])
+                    return;
+                this.ConversationDetailBackgroundImage[pageName] = handle;
+                break
         }
     }
 
@@ -155,6 +161,9 @@ export default class AppManagement{
             case Mark.ChangeRemark:
                 delete this.ChangeRemark[name];
                 break;
+            case Mark.ConversationDetailBackgroundImage:
+                delete this.ConversationDetailBackgroundImage[name];
+                break
         }
     }
 
@@ -231,6 +240,11 @@ export default class AppManagement{
             case Mark.ChangeRemark:
                 for(let item in currentApp.ChangeRemark){
                     currentApp.ChangeRemark[item] && currentApp.ChangeRemark[item](type,params);
+                }
+                break
+            case Mark.ConversationDetailBackgroundImage:
+                for(let item in currentApp.ConversationDetailBackgroundImage){
+                    currentApp.ConversationDetailBackgroundImage[item] && currentApp.ConversationDetailBackgroundImage[item](type,params);
                 }
                 break
         }

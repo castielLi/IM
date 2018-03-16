@@ -43,7 +43,8 @@ class ChatDetail extends AppComponent {
             name: props.Nick,
             settingButtonDisplay: false,
             chatRecord:[],
-            isMore:false
+            isMore:false,
+            conversationBackgroundImage:this.props.conversationBackgroundImage
         };
         currentObj = this;
         this.isDisabled = false;
@@ -102,6 +103,11 @@ class ChatDetail extends AppComponent {
             case AppPageMarkEnum.ModifyGroupSetting:
                 currentObj.setState({
                     settingButtonDisplay:!params
+                })
+                break;
+            case AppPageMarkEnum.ConversationDetailBackgroundImage:
+                currentObj.setState({
+                    conversationBackgroundImage:params
                 })
                 break;
         }
@@ -192,6 +198,7 @@ class ChatDetail extends AppComponent {
                               isMore = {this.state.isMore}
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
+                              conversationBackgroundImage = {this.state.conversationBackgroundImage}
                               getHistoryChatRecord={this.getHistoryChatRecord}
                               deleteMessage={this.deleteChatMessage}
                               retactMessage={this.retactMessage}

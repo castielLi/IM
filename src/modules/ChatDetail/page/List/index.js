@@ -81,6 +81,8 @@ class Chat extends AppComponent {
         this.renderRow = this.renderRow.bind(this);
         userController = UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
+        this.ShowInvertibleList = this.ShowInvertibleList.bind(this);
+        this.InShowInvertibleList = this.InShowInvertibleList.bind(this);
     }
 
 
@@ -635,54 +637,116 @@ class Chat extends AppComponent {
             return null;
         }
     }
+
+    ShowInvertibleList = ()=>{
+        if(this.props.conversationBackgroundImage != ""){
+            return <View style={styles.chatListView}>
+                <Image source={{uri:this.props.conversationBackgroundImage}} style={{flex:1,
+                    width:null,
+                    height:null,
+                    backgroundColor:'rgba(0,0,0,0)'}}>
+                    <ListView
+                        ref={(lv) => this.listView = lv}
+                        dataSource={this.state.dataSourceO}
+                        removeClippedSubviews={false}
+                        renderRow={this.renderRow}
+                        style={{paddingHorizontal:10, backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
+                        pageSize={10}
+
+                        onEndReached={this.oldMsg}
+                        onEndReachedThreshold={5}
+
+                        renderFooter={this.myRenderFooter.bind(this)}
+                        onLayout={this._onListViewLayout}
+
+                        renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
+                    />
+                    <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
+                    {this._PopupMenu()}
+                </Image>
+            </View>
+        }else{
+            return <View style={styles.chatListView}>
+                    <ListView
+                        ref={(lv) => this.listView = lv}
+                        dataSource={this.state.dataSourceO}
+                        removeClippedSubviews={false}
+                        renderRow={this.renderRow}
+                        style={{paddingHorizontal:10, backgroundColor: 'rgba(52, 52, 52, 0.0)'}}
+                        pageSize={10}
+
+                        onEndReached={this.oldMsg}
+                        onEndReachedThreshold={5}
+
+                        renderFooter={this.myRenderFooter.bind(this)}
+                        onLayout={this._onListViewLayout}
+
+                        renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
+                    />
+                    <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
+                    {this._PopupMenu()}
+            </View>
+        }
+
+    }
+
+    InShowInvertibleList = ()=>{
+        if(this.props.conversationBackgroundImage != ""){
+            return <View style={styles.chatListView}>
+                <Image source={{uri:this.props.conversationBackgroundImage}} style={{flex:1,
+                    width:null,
+                    height:null,
+                    backgroundColor:'rgba(0,0,0,0)'}}>
+                <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
+                    <ListView
+                        ref={(lv) => this.listView = lv}
+                        dataSource={this.state.dataSource}
+                        removeClippedSubviews={false}
+                        renderRow={this.renderRow}
+                        style={{paddingHorizontal:10}}
+
+                        renderFooter={this.myRenderFooter.bind(this)}
+                        renderHeader={()=>this.myRenderHeader()}
+                        onLayout={this._onListViewLayout}
+                        enableEmptySections={true}
+
+                        //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
+                    />
+                </View>
+                <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
+                {this._PopupMenu()}
+                </Image>
+            </View>
+        }else{
+            return <View style={styles.chatListView}>
+                <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
+                    <ListView
+                        ref={(lv) => this.listView = lv}
+                        dataSource={this.state.dataSource}
+                        removeClippedSubviews={false}
+                        renderRow={this.renderRow}
+                        style={{paddingHorizontal:10}}
+
+                        renderFooter={this.myRenderFooter.bind(this)}
+                        renderHeader={()=>this.myRenderHeader()}
+                        onLayout={this._onListViewLayout}
+                        enableEmptySections={true}
+
+                        //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
+                    />
+                </View>
+                <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
+                {this._PopupMenu()}
+            </View>
+        }
+    }
+
     render() {
         const {showInvertible}=this.state
         if(!showInvertible){
-            return (
-                    <View style={styles.chatListView}>
-                        <View {...this._panResponder.panHandlers} style={{...StyleSheet.absoluteFillObject}}>
-                            <ListView
-                                ref={(lv) => this.listView = lv}
-                                dataSource={this.state.dataSource}
-                                removeClippedSubviews={false}
-                                renderRow={this.renderRow}
-                                style={{paddingHorizontal:10}}
-
-                                renderFooter={this.myRenderFooter.bind(this)}
-                                renderHeader={()=>this.myRenderHeader()}
-                                onLayout={this._onListViewLayout}
-                                enableEmptySections={true}
-
-                                //renderScrollComponent={props => <InvertibleScrollView {...props} inverted />}
-                            />
-                        </View>
-                        <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
-                        {this._PopupMenu()}
-                    </View>
-            );
+           return this.InShowInvertibleList();
         }else{
-            return(
-                    <View style={styles.chatListView}>
-                        <ListView
-                            ref={(lv) => this.listView = lv}
-                            dataSource={this.state.dataSourceO}
-                            removeClippedSubviews={false}
-                            renderRow={this.renderRow}
-                            style={{paddingHorizontal:10}}
-                            pageSize={10}
-
-                            onEndReached={this.oldMsg}
-                            onEndReachedThreshold={5}
-
-                            renderFooter={this.myRenderFooter.bind(this)}
-                            onLayout={this._onListViewLayout}
-
-                            renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
-                        />
-                        <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
-                        {this._PopupMenu()}
-                    </View>
-                )
+           return this.ShowInvertibleList();
         }
     }
 }
