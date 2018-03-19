@@ -108,7 +108,7 @@ export default class Setting extends AppComponent {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#eee',
+        backgroundColor:'#ebebeb',
         flex:1,
     },
     SectionListBox:{

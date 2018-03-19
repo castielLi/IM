@@ -95,7 +95,7 @@ class ChatDetail extends AppComponent {
     }
 
     componentWillUnmount(){
-        imController.exitCurrentConversation();
+        imController.exitOrResetCurrentConversation(this.props.client);
         super.componentWillUnmount();
     }
 

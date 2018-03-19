@@ -6,21 +6,28 @@ import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimension
 import {checkDeviceHeight,checkDeviceWidth} from '../../../../../Core/Helper/UIAdapter';
 import AppComponent from '../../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
+import SystemManager from '../../../../../TSController/SystemManager'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class ConfigSetting extends AppComponent {
     constructor(props) {
         super(props);
-
         this.state = {
             configSetting:''
         };
 
         this.finished = this.finished.bind(this);
-
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+    }
+
+    componentDidMount(){
+        let address = SystemManager.getConfigSetting();
+        this.setState({
+            configSetting:address
+        })
     }
 
     finished = ()=>{
