@@ -16,6 +16,7 @@ export default class ConfigSetting extends AppComponent {
         };
 
         this.finished = this.finished.bind(this);
+
     }
 
     componentWillUnmount(){
