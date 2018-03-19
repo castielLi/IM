@@ -17,7 +17,9 @@ export default class RemarkInfo extends AppComponent {
         super(props);
         this.state = {
             remark:props.remark,
+            disabled:true,
         };
+        this.cache = props.remark;
         userController = UserController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
     }
@@ -46,13 +48,22 @@ export default class RemarkInfo extends AppComponent {
         this.route.pop(this.props);
     };
 
+   _onChangeText=(value)=>{
+       let disabled = false;
+       if(value ==  this.cache) disabled = true;
+       this.setState({
+           remark:value,
+           disabled
+       })
+   };
+
     render(){
         return (
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
                     heading={'备注信息'}
-                    right={{func:()=>{this._modifyRemark()},text:'完成'}}
+                    right={{func:()=>{this._modifyRemark()},text:'完成',disabled:this.state.disabled}}
                 />
                 <View style={styles.RemarkModule}>
                     <Text style={styles.titleName}>备注名</Text>
@@ -60,9 +71,9 @@ export default class RemarkInfo extends AppComponent {
                         <TextInput
                             style={styles.inputBox}
                             underlineColorAndroid="transparent"
-                            onBlur={()=>this._onBlur()}
-                            onFocus={()=>this._onFocus()}
-                            onChangeText={(v)=>{this.setState({remark:v})}}
+                            onBlur={this._onBlur}
+                            onFocus={this._onFocus}
+                            onChangeText={this._onChangeText}
                             value={this.state.remark}
                         />
                         {this.state.remark.length ?
@@ -71,7 +82,7 @@ export default class RemarkInfo extends AppComponent {
                                     name="remove"
                                     size={24}
                                     color="#aaa"
-                                    onPress={()=>{this.setState({remark:''})}}
+                                    onPress={()=>this._onChangeText('')}
                                     style={styles.inputIcon}
                                 />
                             </View> : null

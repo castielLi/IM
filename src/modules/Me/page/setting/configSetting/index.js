@@ -7,7 +7,7 @@ import {checkDeviceHeight,checkDeviceWidth} from '../../../../../Core/Helper/UIA
 import AppComponent from '../../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
 
-export default class ChangePassword extends AppComponent {
+export default class ConfigSetting extends AppComponent {
     constructor(props) {
         super(props);
 
