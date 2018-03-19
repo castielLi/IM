@@ -44,9 +44,9 @@ export default class ChatMessageText extends Component {
                                         return <Text collapsable={false} key={i} style = {styles.contentText}>{v["Resources"]}</Text>
                                     }
                                     return <Image
-                                                key = {i}
-                                                style = {styles.emoji}
-                                                source={EMOJI_ENUM[v["Resources"]]}
+                                        key = {i}
+                                        style = {styles.emoji}
+                                        source={EMOJI_ENUM[v["Resources"]]}
                                     />
                                 }
                             })
@@ -63,16 +63,17 @@ const styles = StyleSheet.create({
         maxWidth:width-100,
         borderRadius:5,
         paddingHorizontal:10,
-        paddingVertical:10,
         flexDirection:'row',
         flexWrap:'wrap',
-        alignItems:'center'
+        alignItems:'center',
+        paddingVertical:10
     },
     contentText:{
         includeFontPadding:false,
         fontSize:16,
-        lineHeight:20,
-        color:'#000'
+        color:'#000',
+        fontWeight:'normal',
+        textAlignVertical:'center',
     },
     emoji:{
         width:20,
