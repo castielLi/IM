@@ -25,12 +25,11 @@ import Chat from './List/index'
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import UserController from '../../../TSController/UserController';
-import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import AppManagement from '../../../App/AppManagement';
 import AppPageRequestEnum from '../../../App/Enum/AppPageRequestEnum';
 
 let userController = undefined;
-let settingButton = undefined;
 let imController = undefined;
 let currentObj = undefined;
 let group = undefined;
@@ -44,7 +43,7 @@ class ChatDetail extends AppComponent {
             settingButtonDisplay: false,
             chatRecord:[],
             isMore:false,
-            conversationBackgroundImage:this.props.conversationBackgroundImage
+            BackgroundImage:'',
         };
         currentObj = this;
         this.isDisabled = false;
@@ -60,23 +59,38 @@ class ChatDetail extends AppComponent {
 
 	}
 
+    componentWillMount(){
+        // if (group) {
+        //     userController.getGroupInfo(this.props.client, false, (result) => {
+        //         this.setState({
+        //             settingButtonDisplay: result.Exited
+        //         })
+        //     })
+        // }
+        imController.setCurrentConversation(this.props.client, group);
+        let setting = imController.getChatSetting();
+        if(setting){
+            this.setState({
+                BackgroundImage:setting.BackgroundImagePath
+            });
+        }
+    }
 
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
             if (group) {
                 userController.getGroupInfo(this.props.client, false, (result) => {
-                    let settingButton = result.Exited;
-                    if (settingButton == true || settingButton == 'true') {
-                        settingButton = true;
-                    } else {
-                        settingButton = false;
-                    }
                     this.setState({
-                        settingButtonDisplay: settingButton
+                        settingButtonDisplay: result.Exited
                     })
                 })
             }
-            imController.setCurrentConversation(this.props.client, group);
+            // imController.setCurrentConversation(this.props.client, group);
+            // let setting = imController.getChatSetting();
+            // if(setting){
+            //     this.BackgroundImage = setting.BackgroundImagePath;
+            // }
+
         });
     }
 
@@ -107,7 +121,7 @@ class ChatDetail extends AppComponent {
                 break;
             case AppPageMarkEnum.ConversationDetailBackgroundImage:
                 currentObj.setState({
-                    conversationBackgroundImage:params
+                    BackgroundImage:params
                 })
                 break;
         }
@@ -133,7 +147,7 @@ class ChatDetail extends AppComponent {
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{'Name': this.state.name,'Account':client}});
 
         }else if(type === 'group'){
-            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client,"onUpdateHeadName":this.onUpdateHeadName.bind(this)}});
+            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client}});
 
         }
     }
@@ -198,7 +212,7 @@ class ChatDetail extends AppComponent {
                               isMore = {this.state.isMore}
                               chatRecord = {this.state.chatRecord}
                               client={this.props.client}
-                              conversationBackgroundImage = {this.state.conversationBackgroundImage}
+                              conversationBackgroundImage = {this.state.BackgroundImage}
                               getHistoryChatRecord={this.getHistoryChatRecord}
                               deleteMessage={this.deleteChatMessage}
                               retactMessage={this.retactMessage}
