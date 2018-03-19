@@ -17,13 +17,12 @@ export class InitState extends IAppManagementState{
 
     constructor(){
         super();
-        this.systemManager = new SystemManager();
     }
 
     stateOpreation(appManagementObj) {
 
         SystemManager.initConfig(() => {
-            this.systemManager.init(() => {
+            SystemManager.init(() => {
                 appManagementObj.validateManager = ValidateManager.getSingleInstance();
                 appManagementObj.validateManager.init(
                     appManagementObj.dispatchAppTokenState,

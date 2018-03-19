@@ -2,6 +2,7 @@
  * Created by apple on 2017/6/6.
  */
 'use strict';
+require('react-native')
 import React, {
     Component
 } from 'react';
@@ -18,6 +19,7 @@ import AppPageMarkEnum from './App/Enum/AppPageMarkEnum'
 import AppManagement from './App/AppManagement'
 import AppStatusEnum from './App/Enum/AppStatusEnum'
 import Orientation from 'react-native-orientation';
+import SystemManager from './TSController/SystemManager';
 
 export default function App() {
 
@@ -30,6 +32,14 @@ export default function App() {
     //初始化路由表
     Route.initRouteMap(router);
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
+
+
+    require('ErrorUtils').setGlobalHandler((err)=> {
+        alert(err.stack);
+        let errorString = "==================================错误=================================== "
+            + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
+        SystemManager.ErrorLog(errorString);
+    });
 
     class InitApp extends Component {
         constructor() {
