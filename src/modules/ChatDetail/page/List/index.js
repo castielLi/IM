@@ -824,7 +824,7 @@ const styles = StyleSheet.create({
     bubbleViewRight:{
         alignSelf:'flex-start',
         marginRight:10,
-        backgroundColor: '#98E165',
+        backgroundColor: '#a0e75b',
     },
     contentText:{
         includeFontPadding:false,

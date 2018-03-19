@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     emoji:{
         width:20,
         height:20,
-        resizeMode:'cover'
     }
 });
 

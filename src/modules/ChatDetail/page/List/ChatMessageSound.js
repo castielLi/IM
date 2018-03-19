@@ -73,18 +73,18 @@ export default class ChatMessageSound extends Component {
         return soundWidth;
     };
 
-    defaultSound(LocalSource,Time,status){
-        if(status == 4){
-            return(
-                <View style={styles.defaultSound}>
-                    <Text style={styles.defaultText}>音频下载中。。。</Text>
-                </View>
-            )
-        }
-        return (
-                <Text>{Time}"</Text>
-        )
-    }
+    // defaultSound(LocalSource,Time,status){
+    //     if(status == 4){
+    //         return(
+    //             <View style={styles.defaultSound}>
+    //                 <Text style={styles.defaultText}>音频下载中...</Text>
+    //             </View>
+    //         )
+    //     }
+    //     return (
+    //             <Text>{Time}"</Text>
+    //     )
+    // }
 /*
 * <Thouch onPress={()=>this.playSound(LocalSource)}>
                 <Text>{Time}"</Text>
@@ -96,14 +96,23 @@ export default class ChatMessageSound extends Component {
         let {status} = data;
         let soundObjConfig = this.getSoundTime(Time);
 
-        return(
-            <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                {/*<Thouch onPress={()=>this.playSound(LocalSource)}>*/}
+        if(status == 4){
+            return(
+                <View style={styles.defaultSound}>
+                    <Text style={styles.defaultText}>音频下载中...</Text>
+                </View>
+            )
+        }else{
+            return(
+                <View style={[style,{width:soundObjConfig},styles.bubble]}>
+                    <Text>{Time}"</Text>
+                    {/*<Thouch onPress={()=>this.playSound(LocalSource)}>*/}
                     {/*<Text>{Time}"</Text>*/}
-                {/*</Thouch>*/}
-                {this.defaultSound(LocalSource,Time,status)}
-            </View>
-        )
+                    {/*</Thouch>*/}
+                    {/*{this.defaultSound(LocalSource,Time,status)}*/}
+                </View>
+            )
+        }
     }
 }
 
@@ -120,7 +129,6 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     defaultSound:{
-        width:200,
         alignItems:'center',
         justifyContent:'center',
     },

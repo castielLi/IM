@@ -308,6 +308,7 @@ const styles = StyleSheet.create({
     pic:{
         width:40,
         height:40,
+        borderRadius:20,
     },
     itemText:{
         textAlignVertical: 'center',
