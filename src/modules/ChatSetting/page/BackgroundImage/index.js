@@ -32,6 +32,8 @@ let originData = [
             'name': "从手机相册选择",
         },{
             'name': "拍一张",
+        },{
+            'name': "清除背景图片",
         }]
     }
 ];
@@ -93,6 +95,9 @@ export default class PrivateChatBackgroundImage extends AppComponent {
                 break;
             case '从手机相册选择':
                 this.useLocal();
+                break;
+            case '清除背景图片':
+                imController.setConversationBackgroundImage("");
                 break;
             default:
                 break;
