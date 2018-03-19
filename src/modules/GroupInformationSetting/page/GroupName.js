@@ -77,25 +77,9 @@ class GroupName extends AppComponent {
             currentObj.hideLoading();
             if(result.Result == 1){
 
-                if(currentObj.props.UpdateHeadName != undefined){
-                    currentObj.props.UpdateHeadName(currentObj.state.text);
-                }
-                //路由跳转
-                let routes = navigator.getCurrentRoutes();
-                let index;
-                for (let i = 0; i < routes.length; i++) {
-                    if (routes[i]["key"] == "GroupInformationSetting") {
-                        index = i;
-                        break;
-                    }
-                }
-                //跳转到群设置
-                currentObj.route.replaceAtIndex(currentObj.props,{
-                    key:'GroupInformationSetting',
-                    routeId: 'GroupInformationSetting',
-                    params:{"groupId":Id,onUpdateHeadName:currentObj.props.UpdateHeadName},
 
-                },index)
+                //跳转到群设置
+                currentObj.route.pop(currentObj.props)
             }else{
                 alert('修改失败');
             }

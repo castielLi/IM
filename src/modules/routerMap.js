@@ -256,7 +256,7 @@ export const RouteMap = {
         'GroupInformationSetting': {
             component: GroupInformationSetting,
             params: {"name":"GroupInformationSetting"},
-            markType:Mark.ChangeRemark
+            markType:[Mark.ChangeRemark,Mark.ModifyGroupName]
         },
         "GroupQRCodeContent":{
             component:GroupQRCodeContent,

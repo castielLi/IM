@@ -155,7 +155,7 @@ class DeleteGroupMember extends AppComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+                    params:{"groupId":groupId},
 
                 },index)
             }else{

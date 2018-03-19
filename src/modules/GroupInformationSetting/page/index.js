@@ -91,8 +91,10 @@ class GroupInformationSetting extends AppComponent {
                 });
                 break;
             case AppPageMarkEnum.ModifyGroupName:
-                let name = params.name;
-                currentObj.onUpdateHeadName(name);
+                currentObj.state.groupInformation.Name = params.name;
+                currentObj.setState({
+                    groupInformation:currentObj.state.groupInformation
+                });
                 break;
         }
     }
@@ -194,39 +196,51 @@ class GroupInformationSetting extends AppComponent {
     goToGroupQRCode = ()=>{
         currentObj.route.push(currentObj.props,{key:'GroupInformationSetting',routeId:'GroupQRCodeContent',params:{groupId:this.props.groupId,"name":this.state.groupInformation.Name}});
     };
-
-
     goToMoreGroupList = (groupId)=>{
         this.route.push(this.props,{key:'MoreGroupList',routeId:'MoreGroupList',params:{groupId:this.props.groupId}})
     };
     goToClientInfo = (Account)=>{
         this.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
     };
-
     //跳转加添群成员页面
     goToChooseClient = ()=>{
         let members = this.state.members.map((item,index)=>{
             return item.Account;
         });
         let groupId = this.props.groupId;
-        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId,"UpdateHeadName":this.props.onUpdateHeadName}})
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId}})
+    };
+    goToDeleteClient = ()=>{
+        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{groupId:this.props.groupId}})
+    };
+    gotoGroupAnnouncement = ()=>{
+        let {Owner} = this.state.groupInformation;
+        if(Owner!==currentAccount.Account){
+            alert('只有群主才能设置公告')
+        }else{
+            this.route.push(this.props,{key:'GroupAnnouncement',routeId:'GroupAnnouncement',params:{...this.state.groupInformation}});
+        }
+    };
+    gotoGroupName = ()=>{
+            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation}});
+
+    };
+    gotoGroupBackgroundImage = ()=>{
+        this.route.push(this.props,{key:'GroupInformationSetting',routeId:'GroupBackgroundImage'});
     };
 
-    goToDeleteClient = ()=>{
-        this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{groupId:this.props.groupId,"UpdateHeadName":this.props.onUpdateHeadName}})
-    };
     _renderItem = (item) => {
         //var txt = '第' + item.index + '个' + ' title=' + item.item.title;
         if(item.index == this.state.members.length-2){
-                return (
-                    <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
-                        <View style={styles.itemBox}>
-                            <View style={styles.lastItemBox}>
-                                <Text style={styles.lastItemText}>+</Text>
-                            </View>
+            return (
+                <TouchableWithoutFeedback onPress={()=>{this.goToChooseClient()}}>
+                    <View style={styles.itemBox}>
+                        <View style={styles.lastItemBox}>
+                            <Text style={styles.lastItemText}>+</Text>
                         </View>
-                    </TouchableWithoutFeedback>
-                )
+                    </View>
+                </TouchableWithoutFeedback>
+            )
         }else if(item.index == this.state.members.length-1){
             if(this.state.groupInformation.Owner === currentAccount.Account){
                 return (
@@ -255,23 +269,6 @@ class GroupInformationSetting extends AppComponent {
             )
         }
     };
-    gotoGroupAnnouncement = ()=>{
-        let {Owner} = this.state.groupInformation;
-        if(Owner!==currentAccount.Account){
-            alert('只有群主才能设置公告')
-        }else{
-            this.route.push(this.props,{key:'GroupAnnouncement',routeId:'GroupAnnouncement',params:{...this.state.groupInformation}});
-        }
-    };
-    gotoGroupName = ()=>{
-            this.route.push(this.props,{key:'GroupName',routeId:'GroupName',params:{...this.state.groupInformation,"UpdateHeadName":this.props.onUpdateHeadName}});
-
-    };
-
-    gotoGroupBackgroundImage = ()=>{
-        this.route.push(this.props,{key:'GroupInformationSetting',routeId:'GroupBackgroundImage'});
-    };
-
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;

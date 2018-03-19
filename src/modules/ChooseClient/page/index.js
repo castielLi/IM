@@ -275,7 +275,7 @@ class ChooseClient extends AppComponent {
                     currentObj.route.replaceAtIndex(currentObj.props,{
                         key:'GroupInformationSetting',
                         routeId: 'GroupInformationSetting',
-                        params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+                        params:{"groupId":currentObj.props.groupId},
 
                     },index)
 				}else{
@@ -404,8 +404,8 @@ const styles = StyleSheet.create({
 	pic:{
 		width:40,
 		height:40,
-		marginLeft:10,
-		borderRadius:20
+        marginLeft:10,
+        borderRadius:20
 	},
 	itemText:{		
 		textAlignVertical: 'center',
