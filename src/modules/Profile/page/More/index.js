@@ -34,7 +34,7 @@ export default class MoreSetting extends AppComponent {
         super(props);
         userController = UserController.getSingleInstance();
         this.state = {
-            gender:this.props.account.Gender,
+            gender:props.account.Gender,
             signature:props.signature,
             address:props.address
         }
@@ -69,12 +69,23 @@ export default class MoreSetting extends AppComponent {
 
     };
 
+    _genderType = ()=>{
+        switch (this.state.gender){
+            case 1:
+                return '男';
+            case 2:
+                return '女';
+            default:
+                return '未设置';
+        }
+    };
+
     _fillingValue=(info)=>{
         switch (info.item.name){
             case '性別':
                 return (
                     <View style={styles.itemRightBox}>
-                        <Text style={styles.itemContent}>{this.state.gender ? '男' : '女'}</Text>
+                        <Text style={styles.itemContent}>{this._genderType()}</Text>
                     </View>
                 );
             case '地区':

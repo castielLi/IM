@@ -82,7 +82,7 @@ class Me extends AppComponent {
         // imController = IMControlelr.getSingleInstance();
         userController = UserController.getSingleInstance();
         currentAccount = userController.getCurrentAccount();
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account);
         appManagement = new AppManagement();
         this.state = {
             showFeatures:false,//显示功能块组件
@@ -167,6 +167,17 @@ class Me extends AppComponent {
         this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage'});
     };
 
+    _genderType = ()=>{
+        switch (this.state.gender){
+            case 1:
+                return '男';
+            case 2:
+                return '女';
+            default:
+                return '未设置';
+        }
+    };
+
     _fillingValue=(info)=>{
         switch (info.item.name){
             case '二维码':
@@ -179,7 +190,7 @@ class Me extends AppComponent {
             case '性别':
                 return (
                     <View style={styles.itemRightBox}>
-                        <Text style={styles.itemContent}>{this.state.gender ? '男' : '女'}</Text>
+                        <Text style={styles.itemContent}>{this._genderType()}</Text>
                     </View>
                 );
             default:

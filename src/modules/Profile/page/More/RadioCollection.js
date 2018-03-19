@@ -4,7 +4,6 @@
 import React, { Component } from 'react';
 import {
     StyleSheet,
-    Modal,
     View,
     TouchableHighlight,
     Text,
@@ -35,9 +34,11 @@ export default class RadioCollection extends AppComponent {
         super(props);
         this._checkIcon = this._checkIcon.bind(this);
         this.state = {
-            gender:this.props.gender
-        }
+            gender:props.gender
+        };
+        this.cache = props.gender;
         this.setGender = this.setGender.bind(this);
+        userController = UserController.getSingleInstance();
     }
 
     componentWillUnmount(){
@@ -54,13 +55,13 @@ export default class RadioCollection extends AppComponent {
         switch (name){
             case '女':
                 this.setState({
-                    gender:0
-                })
+                    gender:2
+                });
                 break;
             case '男':
                 this.setState({
                     gender:1
-                })
+                });
                 break;
             default:
                 break;
@@ -68,16 +69,19 @@ export default class RadioCollection extends AppComponent {
     };
 
     setGender = ()=>{
-        this.props.onChangeGender(this.state.gender);
+        if(this.state.gender != this.cache){
+            userController.modifyGender(this.state.gender);
+            this.props.onChangeGender(this.state.gender);
+        }
         this.route.pop(this.props)
-    }
+    };
 
     _renderSection = ()=>{
         return <View style={styles.sectionHead}/>
     };
 
     _checkIcon = (name) =>{
-        if((this.state.gender == 1 && name == "男") || (this.state.gender == 0 && name == "女")){
+        if((this.state.gender == 1 && name == "男") || (this.state.gender == 2 && name == "女")){
             return <View style={styles.itemRightBox}>
                 <Icon name="check" size={35} color="#fff" style={styles.arrow}/>
             </View>

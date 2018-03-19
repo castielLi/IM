@@ -6,6 +6,10 @@ import {
 } from 'react-native-deprecated-custom-components';
 import AppComponent from '../../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
+import UserController from '../../../../../TSController/UserController';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+let userController = undefined;
 
 export default class ChangePassword extends AppComponent {
 	constructor(props) {
@@ -13,11 +17,13 @@ export default class ChangePassword extends AppComponent {
 	
 	  this.state = {
 	  	phoneText:'',//账号框的内容
-		passWordText:'',//密码框的内容
+		oldPassWord:'',//旧密码
+		newPassWord:'',//新密码
+        confirmPassWord:'',//确认密码
 		showConfirm:false,//是否显示确认电话号码组件 false:不显示 true:显示
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
-
+        userController = UserController.getSingleInstance();
 	  this.finished = this.finished.bind(this);
 	}
 
@@ -37,18 +43,23 @@ export default class ChangePassword extends AppComponent {
 	}
 
     finished = ()=>{
-		if(this.state.phoneText === this.state.passWordText){
+    	let {oldPassWord,newPassWord,confirmPassWord} = this.state;
+		if(newPassWord === confirmPassWord){
 			//修改数据库里面的对应账号的密码
-
-
-			//修改成功，页面跳转到登录页面
-			alert('密码修改成功，请重新登录!')
-			Keyboard.dismiss();
-			this.route.push(this.props,{
-				key:'Login',
-            	routeId: 'PhoneLogin',
-            	sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-			});
+			// userController.modifyPassword(oldPassWord,newPassWord,(response)=>{
+			// 	if(response.Result === 1){
+             //        //修改成功，页面跳转到登录页面
+             //        // alert('密码修改成功，请重新登录!');
+             //        Keyboard.dismiss();
+             //        this.route.push(this.props,{
+             //            key:'Login',
+             //            routeId: 'PhoneLogin',
+             //            sceneConfig: Navigator.SceneConfigs.FloatFromLeft
+             //        });
+			// 	}else{
+             //        alert('修改密码失败');
+			// 	}
+			// });
 		}else {
 			alert('两次输入密码不匹配');
 		}
@@ -73,10 +84,10 @@ export default class ChangePassword extends AppComponent {
 							autoFocus={true}
 							style={styles.textInput}
 							underlineColorAndroid="transparent"
-							onChangeText={(v)=>{this.setState({phoneText:v})}}
-							value={this.state.phoneText}
+							onChangeText={(v)=>{this.setState({oldPassWord:v})}}
+							value={this.state.oldPassWord}
 						/>
-                        {this.state.phoneText.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({phoneText:''})}} style={{marginRight:10}}/> : null}
+                        {this.state.oldPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({oldPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
 				</View>
 
@@ -89,10 +100,10 @@ export default class ChangePassword extends AppComponent {
 							ref=""
 							style={styles.textInput}
 							underlineColorAndroid="transparent"
-							onChangeText={(v)=>{this.setState({phoneText:v})}}
-							value={this.state.phoneText}
+							onChangeText={(v)=>{this.setState({newPassWord:v})}}
+							value={this.state.newPassWord}
 						/>
-                        {this.state.phoneText.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({phoneText:''})}} style={{marginRight:10}}/> : null}
+                        {this.state.newPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({newPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
 				</View>
 
@@ -104,10 +115,10 @@ export default class ChangePassword extends AppComponent {
 						<TextInput
 							style={styles.textInput}
 							underlineColorAndroid="transparent"
-							onChangeText={(v)=>{this.setState({passWordText:v})}}
-							value={this.state.passWordText}
+							onChangeText={(v)=>{this.setState({confirmPassWord:v})}}
+							value={this.state.confirmPassWord}
 						/>
-                        {this.state.passWordText.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({passWordText:''})}} style={{marginRight:10}}/> : null}
+                        {this.state.confirmPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({confirmPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
 				</View>
 
