@@ -168,66 +168,6 @@ class MoreUseBox extends Component {
                                 </TouchableHighlight>
                                 <Text style={styles.plusItemTit}>录像</Text>
                             </View>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="video-camera" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>视频聊天</Text>
-                            </View>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="map-marker" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>位置</Text>
-                            </View>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="envelope" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>红包</Text>
-                            </View>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="envelope" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>红包</Text>
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                    <TouchableWithoutFeedback>
-                        <View style={styles.swiperSlide}>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="map-marker" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>位置</Text>
-                            </View>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="envelope" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>红包</Text>
-                            </View>
-                            <View style={styles.plusItemBox}>
-                                <TouchableHighlight style={styles.plusItemImgBox} underlayColor={'#bbb'}
-                                                    activeOpacity={0.5} onPress={() => {
-                                }}>
-                                    <Icon name="picture-o" size={30} color="#aaa"/>
-                                </TouchableHighlight>
-                                <Text style={styles.plusItemTit}>照片</Text>
-                            </View>
                         </View>
                     </TouchableWithoutFeedback>
                 </Swiper>

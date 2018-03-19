@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
         flexDirection:'row'
     },
     userHeadImage:{
-        width:55,
-        height:55,
-        borderRadius: 4,
+        width:54,
+        height:54,
+        borderRadius: 27,
     },
     userDataBox:{
         marginLeft:10,

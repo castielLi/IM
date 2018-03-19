@@ -26,7 +26,6 @@ import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
 import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic';
-// import ReactNativeComponentTree from 'react-native/Libraries/Renderer/shims/ReactNativeComponentTree';
 
 let imControllerLogic = undefined;
 let stopSoundObj = null;
@@ -111,8 +110,6 @@ export default class ChatMessage extends AppComponent {
                 // this._top = this.state.top
                 // this._left = this.state.left
                 // this.setState({bg: 'red'})
-                // console.log(ReactNativeComponentTree.getInstanceFromNode(evt.currentTarget));
-                // console.log(ReactNativeComponentTree.getInstanceFromNode(evt.target));
                 let currentTarget = evt.currentTarget;
                 this.press_time = new Date().getTime();
                 this.long_press_timeout = setTimeout(()=>{
@@ -194,6 +191,7 @@ export default class ChatMessage extends AppComponent {
             }
         }
     };
+
     componentDidMount() {
         AppState.addEventListener('change', this._handleAppStateChange);
     }
