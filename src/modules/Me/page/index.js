@@ -27,7 +27,6 @@ import UserController from '../../../TSController/UserController';
 import AppManagement from '../../../App/AppManagement';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import {LogoutState} from '../../../App/AppManagementState'
 
 // let loginController = undefined;
 let userController = undefined;
@@ -122,9 +121,7 @@ class Me extends AppComponent {
     };
 
     loginOut = ()=>{
-        let logoutState = new LogoutState();
-        logoutState.stateOpreation(appManagement);
-        this.route.ToLogin(this.props);
+        // this.route.ToLogin(this.props);
     };
 
     toDoSome = (name)=>{

@@ -70,14 +70,16 @@ export default class Setting extends AppComponent {
                 this.route.push(this.props,{key: 'Me',routeId: 'ChangePassword',params:{}});
                 break;
             case '设置服务器地址':
+                this.route.push(this.props,{key: 'Me',routeId: 'ConfigSetting',params:{}});
                 break;
             default:
                 break;
         }
     };
 
-    logout = () =>{
-
+    loginOut = ()=>{
+        this.appManagement.systemLogout();
+        this.route.ToLogin(this.props);
     };
 
 
@@ -96,7 +98,7 @@ export default class Setting extends AppComponent {
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />
-                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.logout} style={[styles.sendMessageBox,{marginBottom:20}]}>
+                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.loginOut} style={[styles.sendMessageBox,{marginBottom:20}]}>
                     <Text style={styles.sendMessage}>退出登录</Text>
                 </TouchableHighlight>
             </View>

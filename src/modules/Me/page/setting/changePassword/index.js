@@ -4,10 +4,8 @@ import {checkDeviceHeight,checkDeviceWidth} from '../../../../../Core/Helper/UIA
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
-import Confirm from '../../../../Login/page/confirm';
-import PhoneLogin from '../../../../Login/page/phoneLogin';
 import AppComponent from '../../../../../Core/Component/AppComponent';
-
+import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
 
 export default class ChangePassword extends AppComponent {
 	constructor(props) {
@@ -19,6 +17,8 @@ export default class ChangePassword extends AppComponent {
 		showConfirm:false,//是否显示确认电话号码组件 false:不显示 true:显示
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
+
+	  this.finished = this.finished.bind(this);
 	}
 
     componentWillUnmount(){
@@ -36,7 +36,7 @@ export default class ChangePassword extends AppComponent {
 		}
 	}
 
-	newPassword = ()=>{
+    finished = ()=>{
 		if(this.state.phoneText === this.state.passWordText){
 			//修改数据库里面的对应账号的密码
 
@@ -58,75 +58,59 @@ export default class ChangePassword extends AppComponent {
 
 	render(){
 		return (
-
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
-					key:'Login',
-					routeId:'PhoneLogin',
-					sceneConfig: Navigator.SceneConfigs.FloatFromLeft,
-				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
-				<View style = {styles.content}>
-					<Text style= {styles.loginTitle}>找回密码</Text>	
-					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
-						<View style = {styles.area}>
-							<Text style = {styles.areaTitle}>国家/地区</Text>
-							<Text style = {styles.country}>中国</Text>
-							<Image style= {styles.rightLogo} source = {require('../../../../Login/resource/jiantou.png')}></Image>
-						</View>
-					</TouchableOpacity>
-					<View style= {styles.inputBox}>
-						<View style={styles.imageBox}>
-							<Image style = {styles.loginImage} source = {require('../../../../Login/resource/password.png')}></Image>
-						</View>
-						<TextInput
-						style = {styles.textInput}
-						maxLength = {11}
-						placeholderTextColor = '#cecece' 
-						placeholder = '输入新的密码' 
-						underlineColorAndroid= {'transparent'}
-						secureTextEntry = {true}
-						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
-						></TextInput>
-						
+				<MyNavigationBar
+					left = {{func:()=>{this.route.pop(this.props)}}}
+					heading={'修改密码'}
+					right={{func:this.finished,text:'完成'}}
+				/>
+				<View>
+					<View style={styles.textBox}>
+						<Text style={styles.rowTitle}>输入旧的密码</Text>
 					</View>
-					<View style = {styles.inputBox}>
-						<View style={styles.imageBox}>
-							<Image style = {styles.loginImage} source = {require('../../../../Login/resource/password.png')}></Image>
-						</View>	
+					<View style={styles.validateView}>
 						<TextInput
-						ref = {(c)=>{this._textInput = c}}
-						maxLength = {16}
-						style = {[styles.textInput,]} 
-						placeholderTextColor = '#cecece' 
-						secureTextEntry = {true} 
-						placeholder = '再次输入新密码' 
-						underlineColorAndroid= {'transparent'}
-						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
-						></TextInput>
+							autoFocus={true}
+							style={styles.textInput}
+							underlineColorAndroid="transparent"
+							onChangeText={(v)=>{this.setState({phoneText:v})}}
+							value={this.state.phoneText}
+						/>
+                        {this.state.phoneText.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({phoneText:''})}} style={{marginRight:10}}/> : null}
 					</View>
-					<Text>密码由8-12位组成,其中至少包括一个字母和数字,不能使用符号</Text>
-					{
-						this.state.phoneText && this.state.passWordText?
-						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.newPassword()}}>
-								<Text style = {styles.loginText}>确定</Text>
-							</TouchableOpacity>)
-						:(
-							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../../../../Login/resource/notSure.png')}></Image>
-							)
-					}
-				<View style= {styles.footer}>
-					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'EmailLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
-					<TouchableOpacity  activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
 				</View>
+
+				<View>
+					<View style={styles.textBox}>
+						<Text style={styles.rowTitle}>输入新的密码</Text>
+					</View>
+					<View style={styles.validateView}>
+						<TextInput
+							ref=""
+							style={styles.textInput}
+							underlineColorAndroid="transparent"
+							onChangeText={(v)=>{this.setState({phoneText:v})}}
+							value={this.state.phoneText}
+						/>
+                        {this.state.phoneText.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({phoneText:''})}} style={{marginRight:10}}/> : null}
+					</View>
 				</View>
-				{
-					this.state.showConfirm?
-					<Confirm 
-					phoneText = {this.state.phoneText}
-					cancelSend = {this.cancelSend}
-					></Confirm>:null
-				}
+
+				<View>
+					<View style={styles.textBox}>
+						<Text style={styles.rowTitle}>再次输入新密码</Text>
+					</View>
+					<View style={styles.validateView}>
+						<TextInput
+							style={styles.textInput}
+							underlineColorAndroid="transparent"
+							onChangeText={(v)=>{this.setState({passWordText:v})}}
+							value={this.state.passWordText}
+						/>
+                        {this.state.passWordText.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({passWordText:''})}} style={{marginRight:10}}/> : null}
+					</View>
+				</View>
+
 			</View>
 			
 		)
@@ -144,8 +128,7 @@ function mapStateToProps(store) {
 const styles = StyleSheet.create({
 	container:{
 		flex:1,
-		alignItems:'center',
-		backgroundColor:'#ffffff',
+		backgroundColor:'#ebebeb',
 	},
 	goBack:{
 		fontSize:checkDeviceHeight(32),
@@ -163,9 +146,10 @@ const styles = StyleSheet.create({
 		marginBottom:checkDeviceHeight(110),
 	},
 	content:{
+        flex:1,
 		alignItems:'center',
 		width:Dimensions.get('window').width - checkDeviceHeight(80),
-		flex:1,
+
 	},
 	area:{
 		width:Dimensions.get('window').width - checkDeviceHeight(80),
@@ -270,4 +254,36 @@ const styles = StyleSheet.create({
 		color:'#6e7c99',
 		fontSize:checkDeviceHeight(28),
 	},
+    validateView:{
+        height:40,
+        backgroundColor:'white',
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    textInput:{
+        flex:1,
+        fontSize:17,
+        paddingLeft:5,
+    },
+    textBox:{
+        height:30,
+        justifyContent:'center'
+    },
+    rowTitle:{
+        fontSize:14,
+        color:'#999',
+
+    },
+    rowSetting:{
+        flexDirection:'row',
+        justifyContent:'space-between',
+        alignItems:'center',
+        backgroundColor:'#fff',
+        height:50,
+        paddingHorizontal:15
+    },
+    rowText:{
+        fontSize:16,
+        color:'#000',
+    },
 });

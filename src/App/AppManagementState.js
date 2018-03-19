@@ -130,6 +130,10 @@ export class TokenValidateSuccessState extends IAppManagementState{
 export class TokenValidateFailedState extends IAppManagementState{
     stateOpreation(appManagementObj){
         appManagementObj.applyController.getUncheckApplyFriendCount();
+        // appManagementObj.root.route.push(appManagementObj.root,{
+        //     key:'Login',
+        //     routeId: 'PhoneLogin'
+        // });
         appManagementObj.setState(this)
     }
 }

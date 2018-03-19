@@ -8,6 +8,10 @@
 import {
     AppRegistry,
 } from 'react-native';
+require('react-native')
+require('ErrorUtils').setGlobalHandler((err)=> {
+    console.log('Just ignore');
+});
 
 import App from './src/App'
 

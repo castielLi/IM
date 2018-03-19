@@ -62,6 +62,7 @@ import GroupBackgroundImage from './GroupInformationSetting/page/BackgroundImage
 import PrivateChatBackgroundImage from './ChatSetting/page/BackgroundImage'
 import Setting from './Me/page/setting'
 import ChangePassword from './Me/page/setting/changePassword'
+import ConfigSetting from './Me/page/setting/configSetting'
 
 
 export const MainPage = {
@@ -234,6 +235,10 @@ export const RouteMap = {
         },
         'ChangePassword':{
             component:ChangePassword,
+            params:{}
+        },
+        'ConfigSetting':{
+            component:ConfigSetting,
             params:{}
         }
     },
