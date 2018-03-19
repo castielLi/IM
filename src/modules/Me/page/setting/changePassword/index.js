@@ -1,15 +1,15 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
-import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
+import {checkDeviceHeight,checkDeviceWidth} from '../../../../../Core/Helper/UIAdapter';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
-import Confirm from './confirm';
-import PhoneLogin from './phoneLogin';
-import AppComponent from '../../../Core/Component/AppComponent';
+import Confirm from '../../../../Login/page/confirm';
+import PhoneLogin from '../../../../Login/page/phoneLogin';
+import AppComponent from '../../../../../Core/Component/AppComponent';
 
 
-export default class Login extends AppComponent {
+export default class ChangePassword extends AppComponent {
 	constructor(props) {
 	  super(props);
 	
@@ -71,12 +71,12 @@ export default class Login extends AppComponent {
 						<View style = {styles.area}>
 							<Text style = {styles.areaTitle}>国家/地区</Text>
 							<Text style = {styles.country}>中国</Text>
-							<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}></Image>
+							<Image style= {styles.rightLogo} source = {require('../../../../Login/resource/jiantou.png')}></Image>
 						</View>
 					</TouchableOpacity>
 					<View style= {styles.inputBox}>
 						<View style={styles.imageBox}>
-							<Image style = {styles.loginImage} source = {require('../resource/password.png')}></Image>
+							<Image style = {styles.loginImage} source = {require('../../../../Login/resource/password.png')}></Image>
 						</View>
 						<TextInput
 						style = {styles.textInput}
@@ -91,7 +91,7 @@ export default class Login extends AppComponent {
 					</View>
 					<View style = {styles.inputBox}>
 						<View style={styles.imageBox}>
-							<Image style = {styles.loginImage} source = {require('../resource/password.png')}></Image>
+							<Image style = {styles.loginImage} source = {require('../../../../Login/resource/password.png')}></Image>
 						</View>	
 						<TextInput
 						ref = {(c)=>{this._textInput = c}}
@@ -112,7 +112,7 @@ export default class Login extends AppComponent {
 								<Text style = {styles.loginText}>确定</Text>
 							</TouchableOpacity>)
 						:(
-							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notSure.png')}></Image>
+							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../../../../Login/resource/notSure.png')}></Image>
 							)
 					}
 				<View style= {styles.footer}>

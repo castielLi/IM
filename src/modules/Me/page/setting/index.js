@@ -1,91 +1,45 @@
 /**
+ * Created by apple on 2018/3/16.
+ */
+/**
  * Created by Hsu. on 2018/3/6.
  */
 import React, { Component } from 'react';
 import {
     StyleSheet,
-    Modal,
-    View,
-    TouchableHighlight,
     Text,
+    View,
     Dimensions,
-    TouchableWithoutFeedback,
-    SectionList
+    SectionList,
+    TouchableHighlight,
 } from 'react-native';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
-let currentObj;
-let userController = undefined;
-let {width, height} = Dimensions.get('window');
-
 let originData = [
     {
         'key':'1',
         'data': [{
-            'name': "男",
+            'name': "修改密码",
         },{
-            'name': "女",
+            'name': "设置服务器地址",
         }]
     }
 ];
-export default class RadioCollection extends AppComponent {
+
+export default class Setting extends AppComponent {
     constructor(props){
         super(props);
-        this._checkIcon = this._checkIcon.bind(this);
-        this.state = {
-            gender:this.props.gender
-        }
-        this.setGender = this.setGender.bind(this);
+        this._toDoSome = this._toDoSome.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
     }
 
-
-    _onTouchOption=(value)=>{
-        let {onPress} = this.props;
-        onPress && onPress(value);
-    };
-
-    _toDoSome = (name)=>{
-        switch (name){
-            case '女':
-                this.setState({
-                    gender:0
-                })
-                break;
-            case '男':
-                this.setState({
-                    gender:1
-                })
-                break;
-            default:
-                break;
-        }
-    };
-
-    setGender = ()=>{
-        this.props.onChangeGender(this.state.gender);
-        this.route.pop(this.props)
-    }
-
     _renderSection = ()=>{
         return <View style={styles.sectionHead}/>
     };
-
-    _checkIcon = (name) =>{
-        if((this.state.gender == 1 && name == "男") || (this.state.gender == 0 && name == "女")){
-            return <View style={styles.itemRightBox}>
-                <Icon name="check" size={35} color="#fff" style={styles.arrow}/>
-            </View>
-        }else{
-            return null;
-        }
-    }
-
 
     _renderItem = (info)=>{
         return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._toDoSome.bind(this,info.item.name)}>
@@ -93,41 +47,58 @@ export default class RadioCollection extends AppComponent {
                 <View  style={styles.itemLeftBox} >
                     <Text style={styles.itemText}>{info.item.name}</Text>
                 </View>
-                {
-                    this._checkIcon(info.item.name)
-                }
-
+                <View style={{flexDirection:'row',alignItems:'center'}}>
+                    <Icon name="angle-right" size={35} color="#aaa" />
+                </View>
             </View>
         </TouchableHighlight>
     };
 
     _renderSeparator = () =>{
-        return (
+        return(
             <View style={styles.ItemSeparatorBox}>
                 <View style={styles.ItemSeparator}/>
             </View>
         )
+
+
+    };
+
+    _toDoSome = (name)=>{
+        switch (name){
+            case '修改密码':
+                this.route.push(this.props,{key: 'Me',routeId: 'ChangePassword',params:{}});
+                break;
+            case '设置服务器地址':
+                break;
+            default:
+                break;
+        }
+    };
+
+    logout = () =>{
+
     };
 
 
-    render(){
-        return (
+    render() {
+        return(
             <View style={styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{this.route.pop(this.props)}}}
-                    heading={'设置性别'}
-                    right={{func:()=>{this.setGender()},text:'完成'}}
+                    heading={'设置'}
                 />
-
                 <SectionList
                     keyExtractor={(item,index)=>("index"+index+item)}
-                    // ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
                     sections={originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />
+                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.logout} style={[styles.sendMessageBox,{marginBottom:20}]}>
+                    <Text style={styles.sendMessage}>退出登录</Text>
+                </TouchableHighlight>
             </View>
         )
     }
@@ -135,15 +106,20 @@ export default class RadioCollection extends AppComponent {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#ebebeb',
+        backgroundColor:'#eee',
         flex:1,
     },
     SectionListBox:{
         backgroundColor:'#fff',
     },
+    sendMessage:{
+        textAlignVertical:'center',
+        color:'#fff',
+        fontSize:20,
+    },
     sectionHead:{
         height:20,
-        backgroundColor:'#ebebeb',
+        backgroundColor:'#eee',
     },
     ItemSeparatorBox:{
         backgroundColor: '#fff',
@@ -190,10 +166,14 @@ const styles = StyleSheet.create({
         includeFontPadding:false,
         textAlign:'right',
     },
-    arrow:{
-        fontSize:20,
-        color:'#aaa',
-        marginLeft:15
-    },
+    sendMessageBox:{
+        height:55,
+        borderRadius:5,
+        marginTop:15,
+        marginHorizontal:20,
+        backgroundColor:'#dc0000',
+        justifyContent:'center',
+        alignItems:'center'
+    }
 
 });

@@ -61,7 +61,8 @@ let originData = [
         'key':'1',
         'data': [{
             'name': "昵称",
-        },{
+        },{'name':'性别'}
+        ,{
             'name': "二维码",
         }]
     },
@@ -87,7 +88,8 @@ class Me extends AppComponent {
         this.state = {
             showFeatures:false,//显示功能块组件
             headImageUrl:headImagePath,
-            name : currentAccount.Nickname
+            name : currentAccount.Nickname,
+            gender: currentAccount.Gender
         };
 
         currentObj = this;
@@ -113,6 +115,11 @@ class Me extends AppComponent {
         }
     }
 
+    onChangGender=(gender)=>{
+        this.setState({
+            gender
+        })
+    };
 
     loginOut = ()=>{
         let logoutState = new LogoutState();
@@ -126,11 +133,14 @@ class Me extends AppComponent {
             case '昵称':
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
+            case '性别':
+                this.route.push(this.props,{key: 'Profile',routeId: 'GenderChange',params:{"gender":this.state.gender,"onChangeGender":this.onChangGender}});
+                break;
             case '二维码':
                 this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{nickname,headImageUrl}});
                 break;
             case '设置':
-                this.loginOut();
+                this.route.push(this.props,{key: 'Me',routeId: 'Setting',params:{}});
                 break;
             default:
                 break;
@@ -167,6 +177,12 @@ class Me extends AppComponent {
                     <View style={styles.itemRightBox}>
                         <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                );
+            case '性别':
+                return (
+                    <View style={styles.itemRightBox}>
+                        <Text style={styles.itemContent}>{this.state.gender ? '男' : '女'}</Text>
                     </View>
                 );
             default:
