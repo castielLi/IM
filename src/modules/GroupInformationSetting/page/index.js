@@ -204,11 +204,11 @@ class GroupInformationSetting extends AppComponent {
     };
     //跳转加添群成员页面
     goToChooseClient = ()=>{
-        let members = this.state.members.map((item,index)=>{
+        let Accounts = this.state.members.map((item,index)=>{
             return item.Account;
         });
         let groupId = this.props.groupId;
-        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{members,groupId}})
+        this.route.push(this.props,{key:'ChooseClient',routeId:'ChooseClient',params:{build:false,Accounts,groupId}})
     };
     goToDeleteClient = ()=>{
         this.route.push(this.props,{key:'DeleteGroupMember',routeId:'DeleteGroupMember',params:{groupId:this.props.groupId}})

@@ -34,8 +34,7 @@ import Me from './Me/page'
 import GroupList from './Contacts/page/GroupList'
 
 import Validate from './AddFriends/validate'
-import ChooseClient from './ChooseClient/page'
-import ChooseClientt from './ChooseClient/page/index2'
+import ChooseClient from './ChooseClient/page/index'
 import GroupInformationSetting from './GroupInformationSetting/page'
 import MoreGroupList from './GroupInformationSetting/page/MoreGroupList'
 import GroupAnnouncement from './GroupInformationSetting/page/GroupAnnouncement'
@@ -252,12 +251,6 @@ export const RouteMap = {
         'ChooseClient': {
             component: ChooseClient,
             params: {"name":"ChooseClient"}
-        }
-    },
-    'ChooseClientt': {
-        'ChooseClientt': {
-            component: ChooseClientt,
-            params: {"name":"ChooseClientt"}
         }
     },
     'GroupInformationSetting': {

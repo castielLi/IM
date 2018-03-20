@@ -2,19 +2,18 @@
  * Created by apple on 2018/2/9.
  */
 import React, {Component} from 'react';
-import {StyleSheet,Image,AsyncStorage,Platform,Alert,SectionList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
+import {StyleSheet,Image,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import UserController from '../../../TSController/UserController';
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
-import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
-import {Navigator} from 'react-native-deprecated-custom-components';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListData';
-import MySectionList from '../../Common/Component/MySectionList/'
+import MySectionList from '../../Common/Component/MySectionList/';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let userController = undefined;
 let imLogicController = undefined;
@@ -74,11 +73,12 @@ class ContactsChoose extends AppComponent {
         let key = item.section.key;
         let checked = this.props.selectRecord[content.Account] ? 1 : 2;
         let name = content.Remark != "" ? content.Remark:content.Nickname;
+        let path = userController.getAccountHeadImagePath(content.Account);
         return (
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index,key)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
-                        {this._renderAvator(content.HeadImagePath, content.HeadImageUrl)}
+                        <ImagePlaceHolder style={styles.itemImage} imageUrl ={path}/>
                         <View style={styles.itemTextView}>
                             <Text style={styles.itemText}  numberOfLines={1}>{name}</Text>
                         </View>
@@ -126,15 +126,15 @@ class ContactsChoose extends AppComponent {
     }
 
     /*渲染头像*/
-    _renderAvator = (localUri, remoteUri, group) => {
-        if (localUri != null && localUri != '') {
-            return <Image style={styles.itemImage} source={{uri: localUri}}/>
-        }
-        if (remoteUri != null && remoteUri != '') {
-            return <Image style={styles.itemImage} source={{uri: remoteUri}}/>
-        }
-        return <Image style={styles.itemImage} source={require('../resource/avator.jpg')}/>
-    };
+    // _renderAvator = (localUri, remoteUri, group) => {
+    //     if (localUri != null && localUri != '') {
+    //         return <Image style={styles.itemImage} source={{uri: localUri}}/>
+    //     }
+    //     if (remoteUri != null && remoteUri != '') {
+    //         return <Image style={styles.itemImage} source={{uri: remoteUri}}/>
+    //     }
+    //     return <Image style={styles.itemImage} source={require('../resource/avator.jpg')}/>
+    // };
 
     /*item点击事件*/
     _itemTouch=(content,index,key)=>{
@@ -225,7 +225,8 @@ const styles = StyleSheet.create({
     },
     itemImage:{
         width:40,
-        height:40
+        height:40,
+        borderRadius:20
     },
     itemTextView:{
         marginLeft:15,

@@ -74,25 +74,32 @@ class ChatDetail extends AppComponent {
                 BackgroundImage:setting.BackgroundImagePath
             });
         }
-    }
-
-    componentDidMount(){
-        InteractionManager.runAfterInteractions(()=> {
-            if (group) {
-                userController.getGroupInfo(this.props.client, false, (result) => {
-                    this.setState({
-                        settingButtonDisplay: result.Exited
-                    })
+        if (group) {
+            userController.getGroupInfo(this.props.client, false, (result) => {
+                this.setState({
+                    settingButtonDisplay: result.Exited
                 })
-            }
-            // imController.setCurrentConversation(this.props.client, group);
-            // let setting = imController.getChatSetting();
-            // if(setting){
-            //     this.BackgroundImage = setting.BackgroundImagePath;
-            // }
-
-        });
+            })
+        }
     }
+
+    // componentDidMount(){
+    //     InteractionManager.runAfterInteractions(()=> {
+    //         if (group) {
+    //             userController.getGroupInfo(this.props.client, false, (result) => {
+    //                 this.setState({
+    //                     settingButtonDisplay: result.Exited
+    //                 })
+    //             })
+    //         }
+    //         // imController.setCurrentConversation(this.props.client, group);
+    //         // let setting = imController.getChatSetting();
+    //         // if(setting){
+    //         //     this.BackgroundImage = setting.BackgroundImagePath;
+    //         // }
+    //
+    //     });
+    // }
 
     componentWillUnmount(){
         imController.exitOrResetCurrentConversation(this.props.client);

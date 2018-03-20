@@ -52,7 +52,7 @@ class Features extends ContainerComponent {
 		this.props.hideFeatures();
 	}
     goToChooseClient = ()=>{
-        this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{}});
+        this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{build:true}});
 
     }
     goToAddFriends = ()=>{

@@ -6,17 +6,16 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet,Image,AsyncStorage,Platform,Alert,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
+import {StyleSheet,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import UserController from '../../../TSController/UserController'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
-import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
-import {Navigator} from 'react-native-deprecated-custom-components';
+import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let userController = undefined;
 let imLogicController = undefined;
@@ -58,7 +57,7 @@ class GroupsChoose extends AppComponent {
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
-                        {this._renderAvator(content.HeadImagePath, content.HeadImageUrl)}
+                        <ImagePlaceHolder style={styles.itemImage} imageUrl = {require('../../Common/resource/groupAvator.png')}/>
                         <View style={styles.itemTextView}>
                             <Text style={styles.itemText}  numberOfLines={1}>{content.Name}</Text>
                         </View>
@@ -99,15 +98,15 @@ class GroupsChoose extends AppComponent {
     }
 
     /*渲染头像*/
-    _renderAvator = (HeadImagePath, HeadImageUrl, group) => {
-        if (HeadImagePath != null && HeadImagePath != '') {
-            return <Image style={styles.itemImage} source={{uri: HeadImagePath}}/>
-        }
-        if (HeadImageUrl != null && HeadImageUrl != '') {
-            return <Image style={styles.itemImage} source={{uri: HeadImageUrl}}/>
-        }
-        return <Image style={styles.itemImage} source={require('../resource/groupAvator.png')}/>
-    };
+    // _renderAvator = (HeadImagePath, HeadImageUrl, group) => {
+    //     if (HeadImagePath != null && HeadImagePath != '') {
+    //         return <Image style={styles.itemImage} source={{uri: HeadImagePath}}/>
+    //     }
+    //     if (HeadImageUrl != null && HeadImageUrl != '') {
+    //         return <Image style={styles.itemImage} source={{uri: HeadImageUrl}}/>
+    //     }
+    //     return <Image style={styles.itemImage} source={require('../resource/groupAvator.png')}/>
+    // };
 
     /*item点击事件*/
     _itemTouch=(content,index)=>{
@@ -177,7 +176,8 @@ const styles = StyleSheet.create({
     },
     itemImage:{
         width:40,
-        height:40
+        height:40,
+        borderRadius:20
     },
     itemTextView:{
         marginLeft:15,

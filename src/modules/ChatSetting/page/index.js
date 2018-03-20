@@ -62,7 +62,7 @@ class ChatSetting extends AppComponent {
     };
 
     _createGroup=()=>{
-        this.route.push(this.props,{key: 'ChooseClientt',routeId: 'ChooseClientt',params:{Accounts:[this.props.Account],build:true}});
+        this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{Accounts:[this.props.Account],build:true}});
     };
     render() {
         let path = userController.getAccountHeadImagePath(this.props.Account);

@@ -6,18 +6,20 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet,Image,AsyncStorage,Platform,Alert,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
+import {StyleSheet,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
-import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
-import {Navigator} from 'react-native-deprecated-custom-components';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
-import ForwardConfirm from './ForwardConfirm'
+import ForwardConfirm from './ForwardConfirm';
+import UserController from '../../../TSController/UserController';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
+let userController = undefined;
 let imLogicController = undefined;
 let currentObj = undefined;
 let {width,height} = Dimensions.get('window');
@@ -32,6 +34,7 @@ class ForwardChoose extends AppComponent {
         this.HasData = 0;//是否有选择数据
         this.RecordDto = null;//是有单选记录
         currentObj = this;
+        userController = UserController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
     }
 
@@ -74,7 +77,7 @@ class ForwardChoose extends AppComponent {
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index)}>
                 <View style={styles.itemView}>
                     <View style={styles.itemContent}>
-                        {this._renderAvator(content.HeadImageUrl,content.group)}
+                        {this._renderAvator(content.chatId,content.group)}
                         <View style={styles.itemTextView}>
                             <Text style={styles.itemText}  numberOfLines={1}>{content.name}</Text>
                         </View>
@@ -139,14 +142,13 @@ class ForwardChoose extends AppComponent {
     }
 
     /*渲染头像*/
-    _renderAvator = (Uri, group) => {
-        if (Uri != null && Uri != '') {
-            return <Image style={styles.itemImage} source={{uri: Uri}}/>
-        }
+    _renderAvator = (Account, group) => {
         if (group) {
-            return <Image style={styles.itemImage} source={require('../resource/groupAvator.png')}/>
+            return <ImagePlaceHolder style={styles.itemImage} imageUrl = {require('../../Common/resource/groupAvator.png')}/>
+
         } else {
-            return <Image style={styles.itemImage} source={require('../resource/avator.jpg')}/>
+            let path = userController.getAccountHeadImagePath(Account);
+            return <ImagePlaceHolder style={styles.itemImage} imageUrl ={path}/>
         }
     };
 
@@ -301,7 +303,8 @@ const styles = StyleSheet.create({
     },
     itemImage:{
         width:40,
-        height:40
+        height:40,
+        borderRadius:20
     },
     itemTextView:{
         marginLeft:15,
