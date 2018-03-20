@@ -8,7 +8,7 @@ import AppComponent from '../../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
 import SystemManager from '../../../../../TSController/SystemManager'
 import Icon from 'react-native-vector-icons/FontAwesome';
-
+let address = undefined;
 export default class ConfigSetting extends AppComponent {
     constructor(props) {
         super(props);
@@ -24,7 +24,7 @@ export default class ConfigSetting extends AppComponent {
     }
 
     componentDidMount(){
-        let address = SystemManager.getConfigSetting();
+        address = SystemManager.getConfigSetting();
         this.setState({
             configSetting:address
         })
@@ -32,9 +32,29 @@ export default class ConfigSetting extends AppComponent {
 
     finished = ()=>{
 
+        if(address == this.state.configSetting){
+            this.route.pop(this.props);
+            return;
+        }
+
+        SystemManager.setConfigSetting(this.state.configSetting,(result)=>{
+            if(result.success){
+                this.appManagement.systemLogout();
+            }else{
+                switch (result.errorType){
+                    case 1:
+                        this.alert("文件保存出错,请重新再试","错误")
+                        break;
+                    case 2:
+                        this.alert("服务器地址输入不正确请重新输入","错误")
+                        break;
+                }
+            }
+        })
     }
 
     render(){
+        let Popup = this.PopContent;
         return (
             <View style= {styles.container}>
                 <MyNavigationBar
@@ -57,6 +77,7 @@ export default class ConfigSetting extends AppComponent {
                         {this.state.configSetting.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({configSetting:''})}} style={{marginRight:10}}/> : null}
                     </View>
                 </View>
+                <Popup ref={ popup => this.popup = popup}/>
             </View>
 
         )
