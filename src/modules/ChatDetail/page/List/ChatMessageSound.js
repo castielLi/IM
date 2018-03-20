@@ -18,6 +18,9 @@ let {width, height} = Dimensions.get('window');
 export default class ChatMessageSound extends Component {
     constructor(props){
         super(props)
+        this.state={
+            
+        }
     }
 
     static defaultProps = {

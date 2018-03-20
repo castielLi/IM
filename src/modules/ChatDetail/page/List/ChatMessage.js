@@ -136,6 +136,7 @@ export default class ChatMessage extends AppComponent {
             case 1: {
                 return (
                         <ChatMessageText
+                            ref = { chatContent => this.chatContent = chatContent}
                             data={message} //聊天数据
                             {...this.props}
                         />
@@ -151,6 +152,7 @@ export default class ChatMessage extends AppComponent {
                     case 1:
                         return (
                             <ChatMessageImage
+                                ref = { chatContent => this.chatContent = chatContent}
                                 data={rowData}
                                 // onLongPress={this._OnLongPress()}
                                 {...this.props}
@@ -159,6 +161,7 @@ export default class ChatMessage extends AppComponent {
                     case 2:
                         return (
                             <ChatMessageVideo
+                                ref = { chatContent => this.chatContent = chatContent}
                                 data={rowData}
                                 {...this.props}
                             />
@@ -166,6 +169,7 @@ export default class ChatMessage extends AppComponent {
                     case 3:
                         return (
                             <ChatMessageSound
+                                ref = { chatContent => this.chatContent = chatContent}
                                 data={rowData}
                                 {...this.props}
                             />
