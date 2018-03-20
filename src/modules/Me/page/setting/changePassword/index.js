@@ -46,20 +46,20 @@ export default class ChangePassword extends AppComponent {
     	let {oldPassWord,newPassWord,confirmPassWord} = this.state;
 		if(newPassWord === confirmPassWord){
 			//修改数据库里面的对应账号的密码
-			// userController.modifyPassword(oldPassWord,newPassWord,(response)=>{
-			// 	if(response.Result === 1){
-             //        //修改成功，页面跳转到登录页面
-             //        // alert('密码修改成功，请重新登录!');
-             //        Keyboard.dismiss();
-             //        this.route.push(this.props,{
-             //            key:'Login',
-             //            routeId: 'PhoneLogin',
-             //            sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-             //        });
-			// 	}else{
-             //        alert('修改密码失败');
-			// 	}
-			// });
+			userController.modifyPassword(oldPassWord,newPassWord,(result)=>{
+				if(result &&　result.Result === 1){
+                    //修改成功，页面跳转到登录页面
+                    // alert('密码修改成功，请重新登录!');
+                    Keyboard.dismiss();
+                    this.route.push(this.props,{
+                        key:'Login',
+                        routeId: 'PhoneLogin',
+                        sceneConfig: Navigator.SceneConfigs.FloatFromLeft
+                    });
+				}else{
+                    alert('修改密码失败'+JSON.stringify(result));
+				}
+			});
 		}else {
 			alert('两次输入密码不匹配');
 		}

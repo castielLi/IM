@@ -293,7 +293,7 @@ class ThouchBarBoxTopBox extends Component {
                                       emojiText={this.props.emojiText} emojiId={this.props.emojiId}
                                       setTextInputData={this.setTextInputData} client={this.props.client}
                                       type={this.props.type} Nick={this.props.Nick}
-                                      HeadImageUrl={this.props.HeadImageUrl}></AutoExpandingTextInput>
+                                      HeadImageUrl={this.props.HeadImageUrl}/>
             </View>
         )
     }

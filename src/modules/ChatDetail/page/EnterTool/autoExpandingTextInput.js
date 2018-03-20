@@ -142,13 +142,17 @@ const styles = StyleSheet.create({
   textInputStyle:{ 
     position:'absolute',
     left:Platform.OS === 'android'?90:50,
-      bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
-    lineHeight:pxToPt(35),
+    bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
+    ...Platform.select({
+      ios: {
+          lineHeight:pxToPt(35),
+      }
+    }),
     width:Platform.OS === 'android'?width-185:width-140,
     height:pxToPt(35),
     borderColor:'#ccc',
-    borderWidth:pxToPt(1),   
-    backgroundColor:'#fff',  
+    borderWidth:pxToPt(1),
+    backgroundColor:'#fff',
     borderRadius:5,
     //overflow:'hidden',
     padding:0,

@@ -2,31 +2,25 @@ import React, {
     Component
 } from 'react';
 import {
-    AppRegistry,
     View,
     Text,
-    SectionList,
     StyleSheet,
     Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
     TextInput,
     Dimensions,
-    TouchableOpacity,
     FlatList
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
-import AppManagement from '../../../App/AppManagement'
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-
 import UserController from '../../../TSController/UserController';
+
 let userController = undefined;
-
-var {height, width} = Dimensions.get('window');
-
+let {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
 
@@ -63,13 +57,13 @@ class DeleteGroupMember extends AppComponent {
 
     }
 
-    _renderAvator= (HeadImageUrl)=>{
-        if(!HeadImageUrl||HeadImageUrl === ''){
-            return <Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
-        }else{
-            return <Image style = {styles.pic} source = {{uri:HeadImageUrl}}></Image>
-        }
-    }
+    // _renderAvator= (HeadImageUrl)=>{
+    //     if(!HeadImageUrl||HeadImageUrl === ''){
+    //         return <Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
+    //     }else{
+    //         return <Image style = {styles.pic} source = {{uri:HeadImageUrl}}></Image>
+    //     }
+    // }
 
     choose = (item) =>{
         //修改this.state.needData
@@ -115,34 +109,32 @@ class DeleteGroupMember extends AppComponent {
     }
 
     _renderItem = (info) => {
-        var txt = '  ' + info.item.Nickname;
+        let txt = '  ' + info.item.Nickname;
+        let path = userController.getAccountHeadImagePath(info.item.Account);
         if(info.item.Account === this.props.accountId) return null;
         if(txt.indexOf(this.state.text) >= 0){
             return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
                         <View  style={styles.itemBox} >
                             {this.circleStyle(info.item.isChoose)}
-                            {this._renderAvator(info.item.HeadImageUrl)}
+                            <ImagePlaceHolder style={styles.pic} imageUrl ={path}/>
                             <Text style={styles.itemText}>{txt}</Text>
                         </View>
                     </TouchableHighlight>
         }
-    }
+    };
+
+    _renderSeparator=()=>{
+        return <View style={styles.ItemSeparator}/>
+    };
 
 
     //定义上导航的右按钮
-    _rightButton() {
+    _removeGroupMember=()=> {
         let {groupId,navigator} = this.props;
-        let close = currentObj.state.data.length-currentObj.state.needData.length<=1 ? true : false;
         currentObj.showLoading();
-        userController.removeGroupMember(groupId,close,this.needStr,(result)=>{
+        userController.removeGroupMember(groupId,this.needStr,(result)=>{
             currentObj.hideLoading();
-            if(result.Result == 1){
-                if(close)
-                {
-                    currentObj.alert('群解散了');
-                    currentObj.route.toMain(currentObj.props);
-                    return;
-                }
+            if(result &&　result.Result == 1){
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -163,7 +155,11 @@ class DeleteGroupMember extends AppComponent {
             }
 
         });
-    }
+    };
+
+    _rightButton = ()=>{
+        this.confirm('确定要删除指定成员？','','确定',this._removeGroupMember,'取消')
+    };
 
 
     render() {
@@ -175,7 +171,7 @@ class DeleteGroupMember extends AppComponent {
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
                     heading={title}
-                    right={{func:()=>{this.confirm(this.state.data.length-currentObj.state.needData.length<=1?'确定要解散该群吗？':'确定要删除指定成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
+                    right={{func:()=>{this._rightButton()},text:'完成',disabled:needData.length>0?false:true}}
                 />
                 <View style={styles.listHeaderBox}>
                     <TextInput
@@ -194,8 +190,9 @@ class DeleteGroupMember extends AppComponent {
                 <FlatList
                     ref={(flatList)=>this._flatList = flatList}
                     renderItem={this._renderItem}
-                    data={this.state.data}>
-                </FlatList>
+                    data={this.state.data}
+                    ItemSeparatorComponent={this._renderSeparator}
+                />
 
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
@@ -221,12 +218,10 @@ const styles = StyleSheet.create({
     },
     itemBox:{
         flex:1,
-        height: 60,
+        height: 54,
         flexDirection:'row',
         alignItems:'center',
-        paddingLeft:10,
-        borderBottomWidth:1,
-        borderColor:'#aaa'
+        paddingHorizontal:15
     },
     circle:{
         width:20,
@@ -239,8 +234,8 @@ const styles = StyleSheet.create({
     pic:{
         width:40,
         height:40,
-        resizeMode:'stretch',
-        marginLeft:10
+        marginLeft:10,
+        borderRadius:20
     },
     itemText:{
         textAlignVertical: 'center',
@@ -312,7 +307,7 @@ const styles = StyleSheet.create({
         fontSize:20,
         textAlign: 'center',
         textAlignVertical: 'center',
-    }
+    },
 })
 
 const mapStateToProps = state => ({
