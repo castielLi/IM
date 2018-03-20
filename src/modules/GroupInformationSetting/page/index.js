@@ -169,10 +169,12 @@ class GroupInformationSetting extends AppComponent {
         //退出群组
         if(1 == i){
             currentObj.showLoading();
+            imController.removeConverse(this.props.groupId,true);
             userController.removeGroup(this.props.groupId,()=>{
                 currentObj.hideLoading();
                 currentObj.route.toMain(currentObj.props);
             });
+
         }
     }
 

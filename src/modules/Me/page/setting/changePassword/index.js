@@ -57,7 +57,7 @@ export default class ChangePassword extends AppComponent {
                         sceneConfig: Navigator.SceneConfigs.FloatFromLeft
                     });
 				}else{
-                    alert('修改密码失败'+JSON.stringify(result));
+                    alert('修改密码失败');
 				}
 			});
 		}else {
@@ -86,6 +86,7 @@ export default class ChangePassword extends AppComponent {
 							underlineColorAndroid="transparent"
 							onChangeText={(v)=>{this.setState({oldPassWord:v})}}
 							value={this.state.oldPassWord}
+							secureTextEntry={true}
 						/>
                         {this.state.oldPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({oldPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
@@ -102,6 +103,7 @@ export default class ChangePassword extends AppComponent {
 							underlineColorAndroid="transparent"
 							onChangeText={(v)=>{this.setState({newPassWord:v})}}
 							value={this.state.newPassWord}
+							secureTextEntry={true}
 						/>
                         {this.state.newPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({newPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
@@ -117,6 +119,7 @@ export default class ChangePassword extends AppComponent {
 							underlineColorAndroid="transparent"
 							onChangeText={(v)=>{this.setState({confirmPassWord:v})}}
 							value={this.state.confirmPassWord}
+							secureTextEntry={true}
 						/>
                         {this.state.confirmPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({confirmPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
