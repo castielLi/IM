@@ -1,9 +1,5 @@
 export default EmojiEnum = {
 
-   // "[呲牙]": require('../../resource/phiz/1.png')'../../resource/sm.png'),
-   // "[微笑]":require('../../resource/phiz/1.png')'../../resource/weixiao.png'),
-   // "[屎]":require('../../resource/phiz/1.png')'../../resource/poo.png'),
-
     "[微笑]":require('../../resource/phiz/1.png'),
     "[发呆]": require('../../resource/phiz/2.png'),
     "[大笑]":require('../../resource/phiz/3.png'),
