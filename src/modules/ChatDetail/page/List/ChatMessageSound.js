@@ -13,11 +13,7 @@ import {
     Platform
 } from 'react-native';
 
-import Sound from 'react-native-sound';
-import Thouch from '../../../Common/Thouch/index'
-
 let {width, height} = Dimensions.get('window');
-let stopSoundObj = null;
 
 export default class ChatMessageSound extends Component {
     constructor(props){
@@ -30,40 +26,6 @@ export default class ChatMessageSound extends Component {
     static propTypes = {
     };
 
-    playSound = (SoundUrl) => {
-
-        if (Platform.OS === 'ios') {
-            Sound.enable(true);
-        }
-
-        const callback = (error, sound) => {
-            if (error) {
-                Alert.alert('error', error.message);
-            }
-            if(stopSoundObj){
-                stopSoundObj.stop(()=>{
-                    if(stopSoundObj && sound._filename == stopSoundObj._filename){
-                        stopSoundObj = null;
-                        return;
-                    }
-                    stopSoundObj = sound;
-                    sound.play(() => {
-                        stopSoundObj = null;
-                        sound.release();
-                    });
-
-                }).release()
-            }
-            else{
-                stopSoundObj = sound;
-                sound.play(() => {
-                    stopSoundObj = null;
-                    sound.release();
-                });
-            }
-        };
-        const sound = new Sound(SoundUrl,'', error => callback(error, sound));
-    };
 
     getSoundTime = (Time)=>{
         let soundWidth = 50;
@@ -73,23 +35,6 @@ export default class ChatMessageSound extends Component {
         return soundWidth;
     };
 
-    // defaultSound(LocalSource,Time,status){
-    //     if(status == 4){
-    //         return(
-    //             <View style={styles.defaultSound}>
-    //                 <Text style={styles.defaultText}>音频下载中...</Text>
-    //             </View>
-    //         )
-    //     }
-    //     return (
-    //             <Text>{Time}"</Text>
-    //     )
-    // }
-/*
-* <Thouch onPress={()=>this.playSound(LocalSource)}>
-                <Text>{Time}"</Text>
-            </Thouch>
-* */
     render() {
         let {data,style} = this.props;
         let {LocalSource,RemoteSource,Time} = data.message;
@@ -106,10 +51,6 @@ export default class ChatMessageSound extends Component {
             return(
                 <View style={[style,{width:soundObjConfig},styles.bubble]}>
                     <Text>{Time}"</Text>
-                    {/*<Thouch onPress={()=>this.playSound(LocalSource)}>*/}
-                    {/*<Text>{Time}"</Text>*/}
-                    {/*</Thouch>*/}
-                    {/*{this.defaultSound(LocalSource,Time,status)}*/}
                 </View>
             )
         }

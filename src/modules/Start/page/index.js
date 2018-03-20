@@ -3,10 +3,11 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Image,AsyncStorage,Platform,Alert} from 'react-native';
+import {StyleSheet, Image,AsyncStorage,Platform,Alert,View,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+let {width,height} = Dimensions.get('window');
 let currentObj = undefined;
 
 class Start extends AppComponent {
@@ -27,24 +28,32 @@ class Start extends AppComponent {
 
 
     componentDidMount(){
+        this.loading.show();
     }
 
     render() {
-
+        let Loading = this.Loading;
         return (
-            <Image source={require('../resource/earth.jpg')} style={styles.img}>
-            </Image>
-
+            <View style={styles.container}>
+                <Image source={require('../resource/earth.jpg')} style={styles.img}>
+                </Image>
+                <Loading ref = { loading => this.loading = loading}/>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    container:{
+        flex:1,
+        alignItems:'center',
+        backgroundColor:'#ffffff',
+    },
     img:{
-    flex:1,
-    width:null,
-    height:null,
-    resizeMode:'stretch',
+        flex:1,
+        width:width,
+        height,height,
+        resizeMode:'cover',
     }
 });
 

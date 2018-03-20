@@ -383,6 +383,9 @@ class Chat extends AppComponent {
                             type={this.props.type}
                             navigator={this.props.navigator}
                             onPress={this.ShowPopupMenu}
+                            goToGallery = {this.props.goToGallery}
+                            playVideo = {this.props.playVideo}
+                            playSound = {this.props.playSound}
                             // onLongPress={this.ShowPopupMenu}
                         />
                         {/*{this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
@@ -413,6 +416,9 @@ class Chat extends AppComponent {
                                 type={this.props.type}
                                 navigator={this.props.navigator}
                                 onPress={this.ShowPopupMenu}
+                                goToGallery = {this.props.goToGallery}
+                                playVideo = {this.props.playVideo}
+                                playSound = {this.props.playSound}
                                 // onLongPress={this.ShowPopupMenu}
                             />
                         </View>

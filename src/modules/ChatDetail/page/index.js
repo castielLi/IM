@@ -11,7 +11,9 @@ import {
 	Platform,
 	TouchableWithoutFeedback,
     InteractionManager,
-    Dimensions
+    Dimensions,
+    Alert,
+    AppState
 } from 'react-native';
 var {height} = Dimensions.get('window');
 import {
@@ -26,9 +28,12 @@ import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import UserController from '../../../TSController/UserController';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
-import AppManagement from '../../../App/AppManagement';
-import AppPageRequestEnum from '../../../App/Enum/AppPageRequestEnum';
-
+import Sound from 'react-native-sound';
+import RNFS from 'react-native-fs';
+import {
+    Navigator,
+} from 'react-native-deprecated-custom-components';
+let stopSoundObj = null;
 let userController = undefined;
 let imController = undefined;
 let currentObj = undefined;
@@ -51,6 +56,12 @@ class ChatDetail extends AppComponent {
 
         imController = IMController.getSingleInstance();
         userController = UserController.getSingleInstance();
+        this._handleAppStateChange = this._handleAppStateChange.bind(this);
+        this._goToGallery = this._goToGallery.bind(this);
+        this._playVideo = this._playVideo.bind(this);
+        this.goToClientInfo = this.goToClientInfo.bind(this);
+        this.goToChatSeeting = this.goToChatSeeting.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this);
     }
 
 
@@ -67,6 +78,7 @@ class ChatDetail extends AppComponent {
         //         })
         //     })
         // }
+        AppState.addEventListener('change', this._handleAppStateChange);
         imController.setCurrentConversation(this.props.client, group);
         let setting = imController.getChatSetting();
         if(setting){
@@ -102,6 +114,8 @@ class ChatDetail extends AppComponent {
     // }
 
     componentWillUnmount(){
+        AppState.removeEventListener('change', this._handleAppStateChange);
+        this.releaseSound();
         imController.exitOrResetCurrentConversation(this.props.client);
         super.componentWillUnmount();
     }
@@ -141,6 +155,7 @@ class ChatDetail extends AppComponent {
     }
 
     goToClientInfo = (Account)=>{
+        this.releaseSound();
         // let {type} = this.props;
         // if(type === 'group'){
             this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account,existChatDetailId:this.props.client}});
@@ -148,6 +163,7 @@ class ChatDetail extends AppComponent {
     }
 
     goToChatSeeting = ()=>{
+        this.releaseSound();
         let {client,type} = this.props;
 
         if(type === 'private'){
@@ -159,7 +175,73 @@ class ChatDetail extends AppComponent {
         }
     }
 
-    //复制文字消息
+    releaseSound = () =>{
+        if(stopSoundObj){
+            stopSoundObj.stop(()=>{
+                stopSoundObj = null;
+            }).release();
+        }
+    }
+
+    _handleAppStateChange=(nextAppState)=>{
+        if(nextAppState !== 'active'){
+            this.releaseSound();
+        }
+    };
+
+    //Image
+    _goToGallery = (chatId,type,data)=>{
+        this.releaseSound();
+        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+    };
+    //Audio
+    _playSound = (SoundUrl) => {
+        if (Platform.OS === 'ios') {
+            Sound.enable(true);
+        }
+        const callback = (error, sound) => {
+            if (error) {
+                Alert.alert('error', error.message);
+            }
+            if(stopSoundObj){
+                stopSoundObj.stop(()=>{
+                    if(stopSoundObj && sound._filename == stopSoundObj._filename){
+                        stopSoundObj = null;
+                        return;
+                    }
+                    stopSoundObj = sound;
+                    sound.play(() => {
+                        stopSoundObj = null;
+                        sound.release();
+                    });
+
+                }).release()
+            }
+            else{
+                stopSoundObj = sound;
+                sound.play(() => {
+                    stopSoundObj = null;
+                    sound.release();
+                });
+            }
+        };
+        const sound = new Sound(SoundUrl,'', error => callback(error, sound));
+    };
+    //video
+    _playVideo = (Local,Remote,data)=>{
+        this.releaseSound();
+        let {messageId,message} = data;
+        RNFS.exists(Local).then((success) => {
+            if(!success){
+                imController.manualDownloadResource(this.props.chatId,messageId,group,message);
+            }
+            else{
+                this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+            }
+        }).catch((err) => {
+            console.log(err.message);
+        });
+    };
 
     //删除聊天信息
     deleteChatMessage = (rowData)=>{
@@ -176,11 +258,6 @@ class ChatDetail extends AppComponent {
     //转发消息
     forwardMessage = (rowData)=>{
         this.route.push(this.props,{key:'ForwardChoose',routeId:'ForwardChoose',params:{rowData}});
-        // let receives = [];
-        // receives.push({"receiveId":"wg003723","group":false});
-        // receives.push({"receiveId":"wg003744","group":false});
-        // receives.push({"receiveId":"wg003735","group":false});
-        // imController.ForwardMessage(rowData,receives)
     };
 
 
@@ -224,6 +301,9 @@ class ChatDetail extends AppComponent {
                               deleteMessage={this.deleteChatMessage}
                               retactMessage={this.retactMessage}
                               forwardMessage={this.forwardMessage}
+                              goToGallery = {this._goToGallery}
+                              playVideo = {this._playVideo}
+                              playSound = {this._playSound}
                               goToClientInfo = {this.goToClientInfo}
                               type={this.props.type}
                               navigator={this.props.navigator}/>
