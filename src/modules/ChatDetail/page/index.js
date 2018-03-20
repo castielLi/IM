@@ -233,7 +233,7 @@ class ChatDetail extends AppComponent {
         let {messageId,message} = data;
         RNFS.exists(Local).then((success) => {
             if(!success){
-                imController.manualDownloadResource(this.props.chatId,messageId,group,message);
+                imController.manualDownloadResource(this.props.client,messageId,group,message);
             }
             else{
                 this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
