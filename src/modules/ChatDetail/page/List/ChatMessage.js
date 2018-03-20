@@ -12,7 +12,6 @@ import {
     UIManager,
     Alert,
     Platform,
-    AppState
 } from 'react-native';
 import {connect} from 'react-redux';
 import ChatMessageText from './ChatMessageText';
@@ -20,15 +19,7 @@ import ChatMessageImage from './ChatMessageImage';
 import ChatMessageSound from './ChatMessageSound';
 import ChatMessageVideo from './ChatMessageVideo';
 import AppComponent from '../../../../Core/Component/AppComponent'
-import Sound from 'react-native-sound';
-import RNFS from 'react-native-fs';
-import {
-    Navigator,
-} from 'react-native-deprecated-custom-components';
-import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic';
 
-let imControllerLogic = undefined;
-let stopSoundObj = null;
 let {width, height} = Dimensions.get('window');
 
 export default class ChatMessage extends AppComponent {
@@ -40,66 +31,12 @@ export default class ChatMessage extends AppComponent {
             left: 0
         };
         this.long_press_timeout = -1;
-        imControllerLogic = IMControllerLogic.getSingleInstance();
     }
 
     static defaultProps = {
     };
 
     static propTypes = {
-    };
-
-    //Image
-    _goToGallery = (chatId,type,data)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-    };
-    //Audio
-    _playSound = (SoundUrl) => {
-        if (Platform.OS === 'ios') {
-            Sound.enable(true);
-        }
-        const callback = (error, sound) => {
-            if (error) {
-                Alert.alert('error', error.message);
-            }
-            if(stopSoundObj){
-                stopSoundObj.stop(()=>{
-                    if(stopSoundObj && sound._filename == stopSoundObj._filename){
-                        stopSoundObj = null;
-                        return;
-                    }
-                    stopSoundObj = sound;
-                    sound.play(() => {
-                        stopSoundObj = null;
-                        sound.release();
-                    });
-
-                }).release()
-            }
-            else{
-                stopSoundObj = sound;
-                sound.play(() => {
-                    stopSoundObj = null;
-                    sound.release();
-                });
-            }
-        };
-        const sound = new Sound(SoundUrl,'', error => callback(error, sound));
-    };
-    //video
-   _playVideo = (Local,Remote,data)=>{
-        let {messageId,message} = data;
-        let group = this.props.type == 'group' ? true : false;
-        RNFS.exists(Local).then((success) => {
-            if(!success){
-                imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
-            }
-            else{
-                this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-            }
-        }).catch((err) => {
-            console.log(err.message);
-        });
     };
 
     componentWillMount(){
@@ -119,7 +56,7 @@ export default class ChatMessage extends AppComponent {
                         let popupMenu = {top,left,componentWidth:width,componentHeight:height};
                         this.props.onPress(popupMenu,this.props.rowData);
                     });   
-                },500);
+                }, Platform.OS==='ios'?1500:500);
 
             },
             onPanResponderMove: (evt,gs)=>{
@@ -151,13 +88,13 @@ export default class ChatMessage extends AppComponent {
                         case 2: {
                             switch (message.Type){
                                 case 1:
-                                    this._goToGallery(this.props.chatId,this.props.type,rowData);
+                                    this.props.goToGallery(this.props.chatId,this.props.type,rowData);
                                     break;
                                 case 2:
-                                    this._playVideo(message.LocalSource,message.RemoteSource,rowData);
+                                    this.props.playVideo(message.LocalSource,message.RemoteSource,rowData);
                                     break;
                                 case 3:
-                                    this._playSound(message.LocalSource);
+                                    this.props.playSound(message.LocalSource);
                                     break;
                                 default:
                                     break;
@@ -182,26 +119,10 @@ export default class ChatMessage extends AppComponent {
         })
     }
 
-    _handleAppStateChange=(nextAppState)=>{
-        if(nextAppState !== 'active'){
-            if(stopSoundObj){
-                stopSoundObj.stop(()=>{
-                    stopSoundObj = null;
-                }).release();
-            }
-        }
-    };
-
     componentDidMount() {
-        AppState.addEventListener('change', this._handleAppStateChange);
+
     }
     componentWillUnmount(){
-        AppState.removeEventListener('change', this._handleAppStateChange);
-        if(stopSoundObj){
-            stopSoundObj.stop(()=>{
-                stopSoundObj = null;
-            }).release();
-        }
     }
 
     typeOption = (rowData)=> {
