@@ -19,8 +19,9 @@ export default class ChatMessageSound extends Component {
     constructor(props){
         super(props)
         this.state={
-            
+            hidden:true
         }
+        this.changeVolumeHidden = this.changeVolumeHidden.bind(this);
     }
 
     static defaultProps = {
@@ -29,11 +30,17 @@ export default class ChatMessageSound extends Component {
     static propTypes = {
     };
 
+    changeVolumeHidden = (value)=>{
+        this.setState({
+            hidden:value
+        })
+    }
+
 
     getSoundTime = (Time)=>{
-        let soundWidth = 50;
+        let soundWidth = 70;
         if(Time>5){
-            soundWidth = (width-260)*((Time-5)/55)+50;
+            soundWidth = (width-260)*((Time-5)/55)+70;
         }
         return soundWidth;
     };
@@ -53,7 +60,12 @@ export default class ChatMessageSound extends Component {
         }else{
             return(
                 <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                    <Text>{Time}"</Text>
+                    <Text>{Time}"
+                    </Text>
+                    <Image
+                        source={require('../../resource/volumeRight.png')} style={styles.img} hidden={this.state.hidden}>
+                    </Image>
+
                 </View>
             )
         }
@@ -64,6 +76,7 @@ export default class ChatMessageSound extends Component {
 
 const styles = StyleSheet.create({
     bubble:{
+        flex:1,
         maxWidth:width-100,
         borderRadius:5,
         paddingHorizontal:10,
@@ -81,5 +94,11 @@ const styles = StyleSheet.create({
         fontSize:16,
         lineHeight:20,
         color:'#000'
-    }
+    },
+    img:{
+        alignItems: 'flex-end',
+        left:5,
+        height:18,
+        width:14,
+    },
 });
