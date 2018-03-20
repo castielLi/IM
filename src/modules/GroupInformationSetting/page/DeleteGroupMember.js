@@ -45,7 +45,7 @@ class DeleteGroupMember extends AppComponent {
     componentWillMount(){
         userController.getGroupMembersInfo(this.props.groupId,(result)=>{
             this.setState({
-                data:JSON.parse(JSON.stringify(result))
+                data:result
             })
         })
     }

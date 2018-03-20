@@ -30,10 +30,13 @@ let originData = [
         'key':'1',
         'data': [{
             'name': "从手机相册选择",
+            'icon': true,
         },{
             'name': "拍一张",
+            'icon': true,
         },{
             'name': "清除背景图片",
+            'icon': false,
         }]
     }
 ];
@@ -117,9 +120,10 @@ export default class PrivateChatBackgroundImage extends AppComponent {
                 <View  style={styles.itemLeftBox} >
                     <Text style={styles.itemText}>{info.item.name}</Text>
                 </View>
-                <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <Icon name="angle-right" size={35} color="#aaa" />
-                </View>
+                {info.item.icon ?
+                    <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <Icon name="angle-right" size={35} color="#aaa" />
+                    </View> : null}
             </View>
         </TouchableHighlight>
     };
