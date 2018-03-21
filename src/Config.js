@@ -11,4 +11,6 @@ Config.DBType = "sqlite";
 Config.BaseUrl = "http://qic-web.s1.natapp.cc/";
 // public static BaseUrl: string = "http://qic-web.s1.natapp.cc/"
 Config.Host = "http://qic-web.s1.natapp.cc/";
+Config.DeviceType = "1";
+Config.DeviceId = "";
 //# sourceMappingURL=Config.js.map
