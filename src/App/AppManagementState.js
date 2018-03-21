@@ -1,14 +1,13 @@
 /**
  * Created by apple on 2018/3/13.
  */
+import {Alert} from 'react-native'
 import IAppManagementState from './interface/IAppManagementState'
-
 //controller
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
 import LoginController from '../TSController/LoginController'
 import IMLogicController from '../TSController/IMLogic/IMControllerLogic'
-
 import ValidateManager from '../TSController/ValidateManager'
 import SystemManager from '../TSController/SystemManager'
 
@@ -129,7 +128,7 @@ export class TokenValidateSuccessState extends IAppManagementState{
 export class TokenValidateFailedState extends IAppManagementState{
     stateOpreation(appManagementObj){
         appManagementObj.applyController.getUncheckApplyFriendCount();
-        appManagementObj.root.alert("错误","登录信息已经失效，请重新登录")
+        Alert.alert("错误","登录信息已经失效，请重新登录");
         appManagementObj.root.route.push(appManagementObj.root,{
             key:'Login',
             routeId: 'PhoneLogin'
