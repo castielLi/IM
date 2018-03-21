@@ -48,7 +48,7 @@ export class NoTokenState extends IAppManagementState{
 
 export class WaitValidateTokenState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
+        appManagementObj.imLogicController = IMLogicController.getSingleInstance(appManagementObj.uniqueId);
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
         appManagementObj.imLogicController.init(
@@ -75,7 +75,8 @@ export class WaitValidateTokenState extends IAppManagementState{
 
 export class LoginedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
+
+        appManagementObj.imLogicController = IMLogicController.getSingleInstance(appManagementObj.uniqueId);
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
         appManagementObj.imLogicController.init(
