@@ -31,6 +31,7 @@ export default class ChatMessage extends AppComponent {
             left: 0
         };
         this.long_press_timeout = -1;
+        this.chatContent = null;
     }
 
     static defaultProps = {
@@ -94,7 +95,7 @@ export default class ChatMessage extends AppComponent {
                                     this.props.playVideo(message.LocalSource,message.RemoteSource,rowData);
                                     break;
                                 case 3:
-                                    this.props.playSound(message.LocalSource);
+                                    this.props.playSound(message.LocalSource,this.chatContent,message.Time);
                                     break;
                                 default:
                                     break;

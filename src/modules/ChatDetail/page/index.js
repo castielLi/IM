@@ -195,7 +195,15 @@ class ChatDetail extends AppComponent {
         this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"chatId":chatId,"type":type,"data":data,},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
     };
     //Audio
-    _playSound = (SoundUrl) => {
+    _playSound = (SoundUrl,component,durant) => {
+
+        if(component!=null){
+            component.changeVolumeHidden(false);
+            setTimeout(()=>{
+                component.changeVolumeHidden(true)
+            },durant * 1000);
+        }
+
         if (Platform.OS === 'ios') {
             Sound.enable(true);
         }

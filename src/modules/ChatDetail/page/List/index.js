@@ -69,7 +69,6 @@ class Chat extends AppComponent {
             longPressMessageData:null
         }
         currentObj = this;
-
         this.data = [];
         this.data2 = [];
         this.chatRecord = [];

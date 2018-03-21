@@ -62,9 +62,12 @@ export default class ChatMessageSound extends Component {
                 <View style={[style,{width:soundObjConfig},styles.bubble]}>
                     <Text>{Time}"
                     </Text>
-                    <Image
-                        source={require('../../resource/volumeRight.png')} style={styles.img} hidden={this.state.hidden}>
-                    </Image>
+                    {
+                        this.state.hidden?null: <Image
+                            source={require('../../resource/volumeRight.png')} style={styles.img}>
+                        </Image>
+                    }
+
 
                 </View>
             )
