@@ -65,7 +65,7 @@ export default function App() {
             AppState.addEventListener('change', this._handleAppStateChange);
             AppState.addEventListener('memoryWarning', this._handleMemoryWarning);
 
-            if(Platform.OS === 'android'){
+            // if(Platform.OS === 'android'){
                 NetInfo.isConnected.fetch().done((isConnected) => {
                     console.log('First, is ' + (isConnected ? 'online' : 'offline'));
                     //im.setNetEnvironment(isConnected);
@@ -75,7 +75,7 @@ export default function App() {
                         window["network"] =  "none"
                     }
                 });
-            }
+            // }
 
 
             NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
@@ -105,9 +105,9 @@ export default function App() {
         _handleConnectionInfoChange(connectionInfo) {
 
             console.log(connectionInfo);
-            window["network"] =  connectionInfo.effectiveType;
+            window["network"] =  connectionInfo.type;
 
-            if(connectionInfo.effectiveType == "NONE" || connectionInfo.effectiveType == "none"){
+            if(connectionInfo.type == "NONE" || connectionInfo.type == "none"){
                 appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
                 appManagement.normalNetwork = false;
             }else{
