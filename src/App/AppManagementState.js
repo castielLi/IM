@@ -2,7 +2,6 @@
  * Created by apple on 2018/3/13.
  */
 import IAppManagementState from './interface/IAppManagementState'
-
 //controller
 import UserController from '../TSController/UserController'
 import ApplyController from '../TSController/ApplyController'
@@ -49,7 +48,7 @@ export class NoTokenState extends IAppManagementState{
 
 export class WaitValidateTokenState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
+        appManagementObj.imLogicController = IMLogicController.getSingleInstance(appManagementObj.uniqueId);
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
         appManagementObj.imLogicController.init(
@@ -76,7 +75,8 @@ export class WaitValidateTokenState extends IAppManagementState{
 
 export class LoginedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
+
+        appManagementObj.imLogicController = IMLogicController.getSingleInstance(appManagementObj.uniqueId);
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
         appManagementObj.imLogicController.init(
