@@ -12,8 +12,8 @@ import {InitState,NoTokenState,WaitValidateTokenState,TokenValidateSuccessState
     ,TokenValidateFailedState,LogoutState
     ,LoginedState}
 from './AppManagementState'
-import AppTokenStateEnum from './Enum/AppTokenStateEnum'
-var DeviceInfo = require('react-native-device-info');
+import AppTokenStateEnum from './Enum/AppTokenStateEnum';
+import * as DeviceInfo from 'react-native-device-info';
 let currentApp = undefined;
 
 let __instance = (function () {
