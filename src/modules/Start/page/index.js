@@ -35,8 +35,7 @@ class Start extends AppComponent {
         let Loading = this.Loading;
         return (
             <View style={styles.container}>
-                <Image source={require('../resource/earth.jpg')} style={styles.img}>
-                </Image>
+                <Image source={require('../resource/earth.jpg')} style={styles.img}/>
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
         )
@@ -52,8 +51,7 @@ const styles = StyleSheet.create({
     img:{
         flex:1,
         width:width,
-        height,height,
-        resizeMode:'cover',
+        height:height,
     }
 });
 
