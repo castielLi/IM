@@ -13,7 +13,7 @@ import {InitState,NoTokenState,WaitValidateTokenState,TokenValidateSuccessState
     ,LoginedState}
 from './AppManagementState'
 import AppTokenStateEnum from './Enum/AppTokenStateEnum';
-import * as DeviceInfo from 'react-native-device-info';
+import DeviceInfo from 'react-native-device-info';
 let currentApp = undefined;
 
 let __instance = (function () {
@@ -53,10 +53,10 @@ export default class AppManagement{
         this.loginController = undefined;
         this.validateManager = undefined;
         this.normalNetwork = true;
+        this.uniqueId = DeviceInfo.getUniqueID();
         let initState = new InitState()
         initState.stateOpreation(this);
         currentApp = this;
-        this.uniqueId = DeviceInfo.getUniqueID();
     }
 
     setRoot(rootComponent){

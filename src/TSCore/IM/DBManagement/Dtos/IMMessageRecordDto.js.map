@@ -1,0 +1,1 @@
+{"version":3,"file":"IMMessageRecordDto.js","sourceRoot":"","sources":["../../../../../TSCore/IM/DBManagement/Dtos/IMMessageRecordDto.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,MAAM,CAAC,OAAO;IAKV;QACI,IAAI,CAAC,MAAM,GAAG,CAAC,CAAC;QAChB,IAAI,CAAC,SAAS,GAAG,EAAE,CAAC;QACpB,IAAI,CAAC,OAAO,GAAG,EAAE,CAAC;IACtB,CAAC;CACJ"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"RemoveRecordDto.js","sourceRoot":"","sources":["../../../../TSCore/FileMessageManagement/Dtos/RemoveRecordDto.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO;IAKV;QACI,IAAI,CAAC,MAAM,GAAG,EAAE,CAAC;QACjB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,SAAS,GAAG,EAAE,CAAC;IACxB,CAAC;CACJ"}

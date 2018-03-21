@@ -1,0 +1,1 @@
+{"version":3,"file":"HttpRequestDBDto.js","sourceRoot":"","sources":["../../../../../TSCore/HttpMangement/DBManagement/Dtos/HttpRequestDBDto.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,MAAM,CAAC,OAAO;IAIV;QACI,IAAI,CAAC,SAAS,GAAG,EAAE,CAAC;QACpB,IAAI,CAAC,OAAO,GAAG,EAAE,CAAC;QAClB,IAAI,CAAC,WAAW,GAAG,CAAC,CAAC;IACzB,CAAC;CACJ"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"UploadRecordDto.js","sourceRoot":"","sources":["../../../../TSCore/FileMessageManagement/Dtos/UploadRecordDto.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO;IAOV;QACI,IAAI,CAAC,MAAM,GAAG,EAAE,CAAC;QACjB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,SAAS,GAAG,EAAE,CAAC;QACpB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;QACjB,IAAI,CAAC,OAAO,GAAG,EAAE,CAAC;IACtB,CAAC;CACJ"}

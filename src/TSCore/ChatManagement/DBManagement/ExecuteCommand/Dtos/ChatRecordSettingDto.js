@@ -7,6 +7,7 @@ export default class ChatRecordSettingDto {
         this.group = false;
         this.StickToTheTop = false;
         this.NoDisturb = false;
+        this.BackgroundImagePath = "";
     }
 }
 //# sourceMappingURL=ChatRecordSettingDto.js.map

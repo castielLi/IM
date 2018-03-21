@@ -1,0 +1,1 @@
+{"version":3,"file":"DBMessageDto.js","sourceRoot":"","sources":["../../../../TSCore/IM/Dtos/DBMessageDto.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO;IAGV,YAAY,SAAiB,EAAE,OAAe;QAC1C,IAAI,CAAC,SAAS,GAAG,SAAS,CAAC;QAC3B,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;IAC3B,CAAC;CACJ"}

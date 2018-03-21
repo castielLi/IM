@@ -1,0 +1,1 @@
+{"version":3,"file":"SocktParam.js","sourceRoot":"","sources":["../../../TSCore/Socket/SocktParam.ts"],"names":[],"mappings":"AACA,aAAa;AACb,MAAM,CAAC,OAAO;IAGV,YAAY,IAAiB,EAAE,eAAwB,IAAI;QACvD,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;QACjB,IAAI,CAAC,YAAY,GAAG,YAAY,CAAC;IACrC,CAAC;CACJ"}

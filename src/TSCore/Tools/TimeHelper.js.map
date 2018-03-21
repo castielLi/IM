@@ -1,0 +1,1 @@
+{"version":3,"file":"TimeHelper.js","sourceRoot":"","sources":["../../../TSCore/Tools/TimeHelper.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO;IACV,MAAM,CAAC,YAAY;QACf,IAAI,SAAS,GAAG,CAAC,IAAI,IAAI,EAAE,CAAC,CAAC,OAAO,EAAE,CAAC;QACvC,MAAM,CAAC,SAAS,CAAC;IACrB,CAAC;CACJ"}
