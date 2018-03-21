@@ -382,6 +382,7 @@ class Chat extends AppComponent {
                             type={this.props.type}
                             navigator={this.props.navigator}
                             onPress={this.ShowPopupMenu}
+                            sender={true}
                             goToGallery = {this.props.goToGallery}
                             playVideo = {this.props.playVideo}
                             playSound = {this.props.playSound}
@@ -415,6 +416,7 @@ class Chat extends AppComponent {
                                 type={this.props.type}
                                 navigator={this.props.navigator}
                                 onPress={this.ShowPopupMenu}
+                                sender={false}
                                 goToGallery = {this.props.goToGallery}
                                 playVideo = {this.props.playVideo}
                                 playSound = {this.props.playSound}

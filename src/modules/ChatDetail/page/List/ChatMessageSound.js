@@ -46,7 +46,7 @@ export default class ChatMessageSound extends Component {
     };
 
     render() {
-        let {data,style} = this.props;
+        let {data,style,sender} = this.props;
         let {LocalSource,RemoteSource,Time} = data.message;
         let {status} = data;
         let soundObjConfig = this.getSoundTime(Time);
@@ -58,19 +58,29 @@ export default class ChatMessageSound extends Component {
                 </View>
             )
         }else{
-            return(
-                <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                    <Text>{Time}"
-                    </Text>
-                    {
-                        this.state.hidden?null: <Image
-                            source={require('../../resource/volumeRight.png')} style={styles.img}>
-                        </Image>
-                    }
-
-
-                </View>
-            )
+            if(sender){
+                return(
+                    <View style={[style,{width:soundObjConfig},styles.bubble]}>
+                        <View style={styles.rightText}>
+                            <Text>{Time}"</Text>
+                        </View>
+                        {
+                            this.state.hidden?null: <Image source={require('../../resource/volumeRight.png')} style={styles.img}/>
+                        }
+                    </View>
+                )
+            }else{
+                return(
+                    <View style={[style,{width:soundObjConfig},styles.bubble]}>
+                        {
+                            this.state.hidden?null: <Image source={require('../../resource/volumeLeft.png')} style={styles.img}/>
+                        }
+                        <View style={styles.leftText}>
+                            <Text>{Time}"</Text>
+                        </View>
+                    </View>
+                )
+            }
         }
     }
 }
@@ -85,8 +95,8 @@ const styles = StyleSheet.create({
         paddingHorizontal:10,
         paddingVertical:10,
         flexDirection:'row',
-        flexWrap:'wrap',
-        alignItems:'center'
+        alignItems:'center',
+        justifyContent:'space-between'
     },
     defaultSound:{
         alignItems:'center',
@@ -100,8 +110,15 @@ const styles = StyleSheet.create({
     },
     img:{
         alignItems: 'flex-end',
-        left:5,
         height:18,
         width:14,
     },
+    leftText:{
+        alignItems:'flex-end',
+        flex:1
+    },
+    rightText:{
+        alignItems:'flex-start',
+        flex:1
+    }
 });

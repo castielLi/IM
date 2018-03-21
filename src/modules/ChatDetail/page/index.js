@@ -34,6 +34,7 @@ import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
 let stopSoundObj = null;
+let soundComponent = null;
 let userController = undefined;
 let imController = undefined;
 let currentObj = undefined;
@@ -179,6 +180,7 @@ class ChatDetail extends AppComponent {
         if(stopSoundObj){
             stopSoundObj.stop(()=>{
                 stopSoundObj = null;
+                if(soundComponent) soundComponent.changeVolumeHidden(true);
             }).release();
         }
     }
@@ -199,9 +201,9 @@ class ChatDetail extends AppComponent {
 
         if(component!=null){
             component.changeVolumeHidden(false);
-            setTimeout(()=>{
-                component.changeVolumeHidden(true)
-            },durant * 1000);
+            // setTimeout(()=>{
+            //     component.changeVolumeHidden(true)
+            // },durant * 1000);
         }
 
         if (Platform.OS === 'ios') {
@@ -212,14 +214,19 @@ class ChatDetail extends AppComponent {
                 Alert.alert('error', error.message);
             }
             if(stopSoundObj){
+                if(soundComponent) soundComponent.changeVolumeHidden(true);
                 stopSoundObj.stop(()=>{
                     if(stopSoundObj && sound._filename == stopSoundObj._filename){
                         stopSoundObj = null;
+                        soundComponent = null;
                         return;
                     }
                     stopSoundObj = sound;
+                    soundComponent = component;
                     sound.play(() => {
+                        component.changeVolumeHidden(true);
                         stopSoundObj = null;
+                        soundComponent = null;
                         sound.release();
                     });
 
@@ -227,8 +234,11 @@ class ChatDetail extends AppComponent {
             }
             else{
                 stopSoundObj = sound;
+                soundComponent = component;
                 sound.play(() => {
+                    component.changeVolumeHidden(true);
                     stopSoundObj = null;
+                    soundComponent = null;
                     sound.release();
                 });
             }
