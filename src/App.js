@@ -72,6 +72,7 @@ export default function App() {
                     if(!isConnected){
                         appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
                         appManagement.normalNetwork = false;
+                        window["network"] =  "none"
                     }
                 });
             }
@@ -104,8 +105,9 @@ export default function App() {
         _handleConnectionInfoChange(connectionInfo) {
 
             console.log(connectionInfo);
+            window["network"] =  connectionInfo.effectiveType;
 
-            if(connectionInfo.type == "NONE" || connectionInfo.type == "none"){
+            if(connectionInfo.effectiveType == "NONE" || connectionInfo.effectiveType == "none"){
                 appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
                 appManagement.normalNetwork = false;
             }else{
