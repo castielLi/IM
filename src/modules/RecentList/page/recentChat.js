@@ -34,7 +34,6 @@ import {SwipeListView} from 'react-native-swipe-list-view'
 import UserController from '../../../TSController/UserController'
 import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
-import AppManagement from '../../../App/AppManagement'
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import LoginController from '../../../TSController/LoginController'
@@ -120,8 +119,9 @@ class RecentChat extends AppComponent {
             }
         });
     }
-    _deleteSomeRow = (data)=> {
+    _deleteSomeRow = (data,rowMap)=> {
         let oKCallback = () => {
+            rowMap[data.chatId].closeRow();
             imLogicController.removeConverse(data.chatId,data.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
@@ -259,7 +259,7 @@ class RecentChat extends AppComponent {
                         useFlatList={true}
                         data={this.state.ConverseList}
                         rightOpenValue={-70}
-                        keyExtractor={(item,index)=>('index'+index)}
+                        keyExtractor={(item,index)=>(item.chatId)}
                         disableRightSwipe={true}//关闭右滑
                         closeOnRowPress={true}//按下某一行时是否应关闭打开的行
                         closeOnScroll={true}//当listView开始滚动时应该关闭打开的行
@@ -267,7 +267,7 @@ class RecentChat extends AppComponent {
                         renderItem={this._renderRow}
                         renderHiddenItem={ (data, rowMap) => (
                             <View style={{alignItems:'flex-end'}}>
-                                <TouchableHighlight onPress={()=>this._deleteSomeRow(data.item)}>
+                                <TouchableHighlight onPress={()=>this._deleteSomeRow(data.item,rowMap)}>
                                     <View style={{backgroundColor:'red',justifyContent:'center', alignItems:'center',width:70,flex:1}}>
                                         <Text style={{fontSize:14, color:'#fff'}}>删除</Text>
                                     </View>

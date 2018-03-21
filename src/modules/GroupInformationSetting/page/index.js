@@ -132,7 +132,7 @@ class GroupInformationSetting extends AppComponent {
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
             currentAccount = userController.getCurrentAccount();
-            userController.getGroupAndMembersInfo(this.props.groupId, 10, (result) => {
+            userController.getGroupAndMembersInfo(this.props.groupId, (result) => {
                 // let save = result.Save ? true : false;
                 // if (!result.Note || result.Note == 'null') {
                 //     result.Note = null;
@@ -155,7 +155,7 @@ class GroupInformationSetting extends AppComponent {
                     groupInformation,
                     isSave: result.Save
                 })
-            });
+            },10);
             userController.getGroupSetting(this.props.groupId,(result)=>{
                 this.setState({
                     isNickname:result.Nickname,
