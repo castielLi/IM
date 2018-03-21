@@ -36,6 +36,7 @@ import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import ValidateManager from '../../../TSController/ValidateManager'
 import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppStatusEnum from '../../../App/Enum/AppStatusEnum'
@@ -44,6 +45,7 @@ let applyController = undefined;
 let imLogicController = undefined;
 let loginController = undefined;
 let currentObj= undefined;
+let validateManager = undefined;
 
 class RecentChat extends AppComponent {
     constructor(props) {
@@ -66,6 +68,7 @@ class RecentChat extends AppComponent {
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
         loginController = LoginController.getSingleInstance();
+        validateManager = ValidateManager.getSingleInstance();
         this._changeAppStatus = this._changeAppStatus.bind(this);
     }
 
@@ -106,6 +109,9 @@ class RecentChat extends AppComponent {
 
     }
 
+    _reValidateTokenLogin =()=>{
+        validateManager.reloginWithToken();
+    }
 
     goToChatDetail(rowData) {
         let type = rowData.group ? 'group' : 'private';
@@ -145,10 +151,12 @@ class RecentChat extends AppComponent {
                 break;
             case AppStatusEnum.NetworkError:
                 return (
+                    <TouchableHighlight onPress = {this._reValidateTokenLogin}>
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
                         <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络连接不可用</Text></View>
                     </View>
+                    </TouchableHighlight>
                 );
             case AppStatusEnum.SocketConnectError:
                 return (
