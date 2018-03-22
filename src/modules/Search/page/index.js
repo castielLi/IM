@@ -37,6 +37,7 @@ export default class Search extends AppComponent {
         }
         currentObj = this;
         userController =  UserController.getSingleInstance();
+        this._goToChatDetail = this._goToChatDetail.bind(this);
     }
 
     _refreshUI(type,params){
@@ -61,6 +62,19 @@ export default class Search extends AppComponent {
         userController.searchUserOrGroupByKeyword(keyword)
     }
 
+    _goToChatDetail(info){
+        let type = info.group ? 'group' : 'private';
+        this.route.push(this.props, {
+            key: 'ChatDetail',
+            routeId: 'ChatDetail',
+            params: {
+                client: info.chatId,
+                type: type,
+                Nick: info.name,
+            }
+        });
+    }
+
     _renderItem = (info) => {
         let path = "";
         let name = info.remark != "" ? info.remark:info.name;
@@ -68,7 +82,7 @@ export default class Search extends AppComponent {
             path = userController.getAccountHeadImagePath(info.chatId);
         }
         return (
-            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5}>
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this._goToChatDetail(info)}}>
                 <View  style={styles.itemBox} >
                     { info.group?<ImagePlaceHolder style = {styles.pic} imageUrl = {require('../resource/groupAvator.png')}/>:
                         <ImagePlaceHolder styles={styles.pic} imageUrl ={path}/>}
