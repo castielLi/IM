@@ -70,7 +70,6 @@ export default function App() {
                     console.log('First, is ' + (isConnected ? 'online' : 'offline'));
                     //im.setNetEnvironment(isConnected);
                     if(!isConnected){
-                        appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
                         appManagement.normalNetwork = false;
                         window["network"] =  "none"
                     }
@@ -111,6 +110,7 @@ export default function App() {
                 appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkError,info:''})
                 appManagement.normalNetwork = false;
             }else{
+                appManagement.dispatchMessageToMarkPage(AppPageMarkEnum.AppStatus,{appStatus:AppStatusEnum.NetworkNormal,info:''})
                 appManagement.normalNetwork = true;
             }
         }
