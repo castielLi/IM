@@ -62,6 +62,7 @@ import PrivateChatBackgroundImage from './ChatSetting/page/BackgroundImage'
 import Setting from './Me/page/setting'
 import ChangePassword from './Me/page/setting/changePassword'
 import ConfigSetting from './Me/page/setting/configSetting'
+import Search from './Search/page'
 
 
 export const MainPage = {
@@ -375,9 +376,16 @@ export const RouteMap = {
         },
         'ScanUnknow':{
             component:ScanUnknow,
-            params:{}
+            params:{"name":"ScanUnknow"}
         }
-    }
+    },
+    'Search':{
+        'Search': {
+            component: Search,
+            params: {"name":"Search"},
+            markType:Mark.SearchByKeyword
+        }
+    },
 
 };
 

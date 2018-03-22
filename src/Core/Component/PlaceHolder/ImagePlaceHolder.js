@@ -42,7 +42,7 @@ export default class ImagePlaceHolder extends Component {
     // }
 
     render() {
-        let _style = this.props.style ? this.props.style : this.styles.avatar;
+        let _style = this.props.style ? this.props.style : styles.avatar;
         // alert(this.props.imageUrl + "?v=" + new Date().getTime()+this.state.show)
         // let _default = require('./resource/avator.jpg');
         let url = (typeof this.props.imageUrl === 'string') ? {uri:this.props.imageUrl } : this.props.imageUrl;

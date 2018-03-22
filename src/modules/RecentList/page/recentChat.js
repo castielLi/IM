@@ -163,6 +163,8 @@ class RecentChat extends AppComponent {
                             </View>
                         </TouchableHighlight>
                     );
+                }else{
+                    return null;
                 }
             case AppStatusEnum.NetworkError:
                 return (
@@ -270,7 +272,12 @@ class RecentChat extends AppComponent {
 				<MyNavigationBar
 					left = {'云信'}
 					right = {[
-                        {func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{
+                            this.route.push(this.props, {
+                                key: 'Search',
+                                routeId: 'Search'
+                            });
+                        },icon:'search'},
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>

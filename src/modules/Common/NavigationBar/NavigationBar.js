@@ -20,8 +20,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as NavigationBottomAction from './reducer/action';
+import AppComponent from '../../../Core/Component/AppComponent'
 
-class MyNavigationBar extends Component {
+class MyNavigationBar extends AppComponent {
     constructor(props){
         super(props)
     }
@@ -119,12 +120,6 @@ class MyNavigationBar extends Component {
                     {...this.props}
                 >
                 </NavigationBar>
-                {/*{this.props.NavigationBottomStore ?*/}
-                    {/*<View style={{justifyContent:'center',alignItems:'center',height:30}}>*/}
-                        {/*<Text style={{}}>Loading...</Text>*/}
-                    {/*</View>*/}
-                    {/*: null*/}
-                {/*}*/}
             </View>
         )
     }
