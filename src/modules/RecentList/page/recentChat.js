@@ -163,6 +163,8 @@ class RecentChat extends AppComponent {
                             </View>
                         </TouchableHighlight>
                     );
+                }else{
+                    return null;
                 }
             case AppStatusEnum.NetworkError:
                 return (
