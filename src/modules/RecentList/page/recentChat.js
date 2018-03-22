@@ -110,7 +110,9 @@ class RecentChat extends AppComponent {
     }
 
     _reValidateTokenLogin =()=>{
-        validateManager.reloginWithToken();
+        if(!this.appManagement.Logined) {
+            validateManager.reloginWithToken();
+        }
     }
 
     goToChatDetail(rowData) {
