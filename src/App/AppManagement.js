@@ -176,10 +176,10 @@ export default class AppManagement{
                     "该账号在其他设备上登录,请确认是本人操作并且确保账号安全!",
                     [
                         {text: '确定', onPress: () => {
-                            currentApp.root.root.ToLogin();
+                            currentApp.root.route.ToLogin();
                         }},
                         {text: '不是本人操作',style:{color:"red"}, onPress: () => {
-                            currentApp.root.root.ToLogin();
+                            currentApp.root.route.ToLogin();
                         }},
                     ]);
                 break;
