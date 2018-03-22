@@ -101,6 +101,7 @@ class ContactsChoose extends AppComponent {
         this.HasData = Object.keys(this.props.selectRecord).length;
         optionText = this.HasData ? '发送('+this.HasData+')' : optionText;
         this.ContactsData = SectionDataFormate(this.state.ContactsData);
+        this.CheckBoxData = [];
         return (
             <View style={styles.container}>
                 <MyNavigationBar

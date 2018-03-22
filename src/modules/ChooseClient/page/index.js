@@ -133,7 +133,7 @@ class ChooseClient extends AppComponent {
     };
 
     _itemTouch=(Account,index,key)=>{
-        // alert(Account+index+key)
+         // alert(Account+'/'+index+'/'+key+'/'+this.CheckBoxData[key][index])
         if(this.defaulData && this.defaulData.indexOf(Account) !== -1) return;//为默认跳过
         this.CheckBoxData[key][index].onChange();//改变选中框样式
         let Sub = this.selectData.indexOf(Account);
@@ -205,6 +205,7 @@ class ChooseClient extends AppComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         this.contactsData = SectionDataFormate(this.state.contacts);
+        this.CheckBoxData = [];
         return (
             <View style={styles.container}>
                 <MyNavigationBar
