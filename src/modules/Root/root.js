@@ -14,7 +14,6 @@ import {
 } from 'react-native'
 import {
     Navigator,
-    NavigationBar
 } from 'react-native-deprecated-custom-components';
 import {
     connect

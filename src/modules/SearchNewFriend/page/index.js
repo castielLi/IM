@@ -110,7 +110,7 @@ class SearchNewFriend extends AppComponent {
                 </View>
             </View>
             )
-            
+
     }
 }
 

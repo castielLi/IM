@@ -39,6 +39,7 @@ export default class AppManagement{
         this.ModifyGroupName = {};
         this.ModifyGroupSetting = {};
         this.ChangeHeadImage = {};
+        this.SearchKeyword = {};
         this.ChangeNickname = {};
         this.ChangeRemark = {};
         this.ConversationDetailBackgroundImage = {};
@@ -124,6 +125,11 @@ export default class AppManagement{
                     return;
                 this.ConversationDetailBackgroundImage[pageName] = handle;
                 break
+            case Mark.SearchByKeyword:
+                if(this.SearchKeyword[pageName])
+                    return;
+                this.SearchKeyword[pageName] = handle;
+                break
         }
     }
 
@@ -164,6 +170,9 @@ export default class AppManagement{
                 break;
             case Mark.ConversationDetailBackgroundImage:
                 delete this.ConversationDetailBackgroundImage[name];
+                break
+            case Mark.SearchByKeyword:
+                delete this.SearchKeyword[name];
                 break
         }
     }
@@ -217,37 +226,45 @@ export default class AppManagement{
                 for(let item in currentApp.ModifyGroupName){
                     currentApp.ModifyGroupName[item] && currentApp.ModifyGroupName[item](type,params);
                 }
-                break
+                break;
             case Mark.ModifyGroupSetting:
                 for(let item in currentApp.ModifyGroupSetting){
                     currentApp.ModifyGroupSetting[item] && currentApp.ModifyGroupSetting[item](type,params);
                 }
-                break
+                break;
             case Mark.AppStatus:
                 for(let item in currentApp.AppStatus){
                     currentApp.AppStatus[item] && currentApp.AppStatus[item](type,params);
                 }
-                break
+                break;
             case Mark.ChangeHeadImage:
                 for(let item in currentApp.ChangeHeadImage){
                     currentApp.ChangeHeadImage[item] && currentApp.ChangeHeadImage[item](type,params);
                 }
-                break
+                break;
             case Mark.ChangeNickname:
                 for(let item in currentApp.ChangeNickname){
                     currentApp.ChangeNickname[item] && currentApp.ChangeNickname[item](type,params);
                 }
-                break
+                break;
             case Mark.ChangeRemark:
                 for(let item in currentApp.ChangeRemark){
                     currentApp.ChangeRemark[item] && currentApp.ChangeRemark[item](type,params);
                 }
-                break
+                break;
             case Mark.ConversationDetailBackgroundImage:
                 for(let item in currentApp.ConversationDetailBackgroundImage){
                     currentApp.ConversationDetailBackgroundImage[item] && currentApp.ConversationDetailBackgroundImage[item](type,params);
                 }
-                break
+                break;
+            case Mark.SearchByKeyword:
+                for(let item in currentApp.SearchKeyword){
+                    currentApp.SearchKeyword[item] && currentApp.SearchKeyword[item](type,params);
+                }
+                break;
+            default:
+                console.log(type);
+                break;
         }
     }
 
