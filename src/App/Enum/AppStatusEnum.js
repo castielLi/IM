@@ -15,5 +15,7 @@ export default AppStatusEnum={
     //正在登录
     Loginning : 5,
     //网络错误
-    NetworkError : 6
+    NetworkError : 6,
+
+    NetworkNormal : 7
 }

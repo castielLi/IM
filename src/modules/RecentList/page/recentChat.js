@@ -110,9 +110,7 @@ class RecentChat extends AppComponent {
     }
 
     _reValidateTokenLogin =()=>{
-        if(!this.appManagement.Logined) {
-            validateManager.reloginWithToken();
-        }
+        validateManager.reloginWithToken();
     }
 
     goToChatDetail(rowData) {
@@ -151,14 +149,27 @@ class RecentChat extends AppComponent {
             case AppStatusEnum.SocketConnect:
                 return null;
                 break;
+            case AppStatusEnum.NetworkNormal:
+                if(!this.appManagement.Logined){
+                    return (
+                        <TouchableHighlight onPress = {this._reValidateTokenLogin}>
+                            <View style={{backgroundColor:'white',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
+                                <ActivityIndicator
+                                    size="small"
+                                    color="black"
+                                    style={{width:20,height:20}}
+                                />
+                                <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>登录验证中...</Text></View>
+                            </View>
+                        </TouchableHighlight>
+                    );
+                }
             case AppStatusEnum.NetworkError:
                 return (
-                    <TouchableHighlight onPress = {this._reValidateTokenLogin}>
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
                         <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络连接不可用</Text></View>
                     </View>
-                    </TouchableHighlight>
                 );
             case AppStatusEnum.SocketConnectError:
                 return (
