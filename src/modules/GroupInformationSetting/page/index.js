@@ -55,7 +55,7 @@ class GroupInformationSetting extends AppComponent {
                 notDisturb:false,//消息免打扰
                 isSave:false,
                 searchResult:true,
-                isNickname:false,
+                isNickname:props.Nickname,
                 members:[],
                 realMemberList:[],
                 groupInformation:{}
@@ -66,7 +66,7 @@ class GroupInformationSetting extends AppComponent {
                 notDisturb:setting.NoDisturb,//消息免打扰
                 isSave:false,
                 searchResult:true,
-                isNickname:false,
+                isNickname:props.Nickname,
                 members:[],
                 realMemberList:[],
                 groupInformation:{}
@@ -156,11 +156,13 @@ class GroupInformationSetting extends AppComponent {
                     isSave: result.Save
                 })
             },10);
-            userController.getGroupSetting(this.props.groupId,(result)=>{
-                this.setState({
-                    isNickname:result.Nickname,
-                })
-            })
+            // userController.getGroupSetting(this.props.groupId,(result)=>{
+            //     if(result){
+            //         this.setState({
+            //             isNickname:result.Nickname,
+            //         })
+            //     }
+            // })
         });
     }
 

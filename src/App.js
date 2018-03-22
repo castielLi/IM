@@ -9,17 +9,19 @@ import React, {
 import {
     Provider
 } from 'react-redux';
-import { AppState , NetInfo,Platform,Alert} from 'react-native'
-import Root from './modules/Root/root'
-import Store from './store'
-import Route from './Core/route/router'
-import * as router from './modules/routerMap'
+import { AppState , NetInfo,Platform,Alert} from 'react-native';
+import Root from './modules/Root/root';
+import Store from './store';
+import Route from './Core/route/router';
+import * as router from './modules/routerMap';
 import {changeTabBar} from './modules/MainTabbar/reducer/action';
-import AppPageMarkEnum from './App/Enum/AppPageMarkEnum'
-import AppManagement from './App/AppManagement'
-import AppStatusEnum from './App/Enum/AppStatusEnum'
+import AppPageMarkEnum from './App/Enum/AppPageMarkEnum';
+import AppManagement from './App/AppManagement';
+import AppStatusEnum from './App/Enum/AppStatusEnum';
 import Orientation from 'react-native-orientation';
 import SystemManager from './TSController/SystemManager';
+import SplashScreen from 'react-native-splash-screen';
+
 
 export default function App() {
 
@@ -62,6 +64,7 @@ export default function App() {
         }
 
         componentDidMount() {
+            SplashScreen.hide();
             AppState.addEventListener('change', this._handleAppStateChange);
             AppState.addEventListener('memoryWarning', this._handleMemoryWarning);
 

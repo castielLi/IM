@@ -16,6 +16,7 @@ export default Mark = {
     ChangeNickname : 11,
     ChangeRemark : 12,
     ConversationDetailBackgroundImage:13,
+    GroupMemberName : 14,
 
     AppKickOutHandle:101
 }

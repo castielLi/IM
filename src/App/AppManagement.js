@@ -42,6 +42,7 @@ export default class AppManagement{
         this.ChangeNickname = {};
         this.ChangeRemark = {};
         this.ConversationDetailBackgroundImage = {};
+        this.GroupMemberName = {};
         this.AppStatus = {};
         this.InitReady = {"ConversationList":false,"Contact":false}
         this.ConnectState = false;
@@ -119,11 +120,17 @@ export default class AppManagement{
                 if(this.ChangeRemark[pageName])
                     return;
                 this.ChangeRemark[pageName] = handle;
+                break;
             case Mark.ConversationDetailBackgroundImage:
                 if(this.ConversationDetailBackgroundImage[pageName])
                     return;
                 this.ConversationDetailBackgroundImage[pageName] = handle;
-                break
+                break;
+            case Mark.GroupMemberName:
+                if(this.GroupMemberName[pageName])
+                    return;
+                this.GroupMemberName[pageName] = handle;
+                break;
         }
     }
 
@@ -164,7 +171,10 @@ export default class AppManagement{
                 break;
             case Mark.ConversationDetailBackgroundImage:
                 delete this.ConversationDetailBackgroundImage[name];
-                break
+                break;
+            case Mark.GroupMemberName:
+                delete this.GroupMemberName[name];
+                break;
         }
     }
 
@@ -246,6 +256,11 @@ export default class AppManagement{
             case Mark.ConversationDetailBackgroundImage:
                 for(let item in currentApp.ConversationDetailBackgroundImage){
                     currentApp.ConversationDetailBackgroundImage[item] && currentApp.ConversationDetailBackgroundImage[item](type,params);
+                }
+                break
+            case Mark.GroupMemberName:
+                for(let item in currentApp.GroupMemberName){
+                    currentApp.GroupMemberName[item] && currentApp.GroupMemberName[item](type,params);
                 }
                 break
         }

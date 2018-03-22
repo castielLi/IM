@@ -44,11 +44,12 @@ let userController = undefined;
 let applyController = undefined;
 let currentObj;
 let {width,height} = Dimensions.get('window');
+let forceRefresh = false;//强刷list
 class Chat extends AppComponent {
     constructor(props){
         super(props);
-
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
+            if (forceRefresh) return true;
             if(r1.messageType === 2)
             {
                 let r1Local = r1.message.LocalSource;
@@ -88,6 +89,9 @@ class Chat extends AppComponent {
     componentWillReceiveProps(nextProps){
         let {chatRecord,isMore} = nextProps;
         let {msgState} = ListConst;
+        if(this.props.Nickname !== nextProps.Nickname){
+            forceRefresh = true;
+        }
         // if(!chatRecord
         //     || !chatRecord.length
         // ) return;
@@ -173,7 +177,7 @@ class Chat extends AppComponent {
             let prevTime;
             let index = this.data2.blob[rowid].index;
             this.chatRecord2[index+1] ?
-                prevTime = parseInt(this.chatRecord2[index+1].sendTime) : prevTime = 0;
+                prevTime = parseInt(this.chatRecord2[index+1].messageTime) : prevTime = 0;
             if((LocalTime - prevTime) > 180000){
                 timer = TimeHelper.DateFormat(LocalTime,true,'h:mm');
             }
@@ -182,8 +186,8 @@ class Chat extends AppComponent {
         else{
             let prevTime;
             let index = this.data.blob[rowid].index;
-            this.chatRecord[index-1] ?
-                prevTime = parseInt(this.chatRecord[index-1].sendTime) : prevTime = 0;
+            prevTime = this.chatRecord[index-1] ?
+               parseInt(this.chatRecord[index-1].messageTime) : 0;
             if((LocalTime - prevTime) > 180000){
                 timer = TimeHelper.DateFormat(LocalTime,true,'h:mm');
             }
@@ -408,7 +412,7 @@ class Chat extends AppComponent {
                         <ImagePlaceHolder style={styles.userImage} imageUrl={headImagePath}/>
                         </TouchableOpacity>
                         <View>
-                            {this.props.type === 'group' ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
+                            {(this.props.type === 'group' && this.props.Nickname) ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
                             <ChatMessage
                                 style={styles.bubbleView}
                                 rowData={row}

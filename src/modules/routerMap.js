@@ -154,7 +154,7 @@ export const RouteMap = {
         'ChatDetail': {
             component: ChatDetail,
             params: {"name":"ChatDetail"},
-            markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting,Mark.ConversationDetailBackgroundImage]
+            markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting,Mark.ConversationDetailBackgroundImage,Mark.GroupMemberName]
         }
     },
     'RecentList': {

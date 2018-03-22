@@ -28,6 +28,7 @@
     "react-native-qrcode": "^0.2.6",
     "react-native-slider": "^0.11.0",
     "react-native-sound": "^0.10.4",
+    "react-native-splash-screen": "^3.0.6",
     "react-native-sqlite-storage": "^3.3.3",
     "react-native-storage": "^0.2.2",
     "react-native-swipe-list-view": "^1.0.6",

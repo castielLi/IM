@@ -50,6 +50,7 @@ class ChatDetail extends AppComponent {
             chatRecord:[],
             isMore:false,
             BackgroundImage:'',
+            Nickname:true,
         };
         currentObj = this;
         this.isDisabled = false;
@@ -89,9 +90,13 @@ class ChatDetail extends AppComponent {
         }
         if (group) {
             userController.getGroupInfo(this.props.client, false, (result) => {
-                this.setState({
-                    settingButtonDisplay: result.Exited
-                })
+                userController.getGroupSetting(this.props.client,(Setting)=>{
+                    let Nickname = Setting ? Setting.Nickname : this.state.Nickname;
+                    this.setState({
+                        settingButtonDisplay: result.Exited,
+                        Nickname
+                    })
+                });
             })
         }
     }
@@ -146,6 +151,12 @@ class ChatDetail extends AppComponent {
                     BackgroundImage:params
                 })
                 break;
+            case AppPageMarkEnum.GroupMemberName:
+                // alert(params)
+                currentObj.setState({
+                    Nickname:params
+                })
+                break;
         }
 	}
 
@@ -171,7 +182,7 @@ class ChatDetail extends AppComponent {
             this.route.push(this.props,{key: 'ChatSetting',routeId: 'ChatSetting',params:{'Name': this.state.name,'Account':client}});
 
         }else if(type === 'group'){
-            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client}});
+            this.route.push(this.props,{key: 'GroupInformationSetting',routeId: 'GroupInformationSetting',params:{"groupId":client,'Nickname':this.state.Nickname}});
 
         }
     }
@@ -324,6 +335,7 @@ class ChatDetail extends AppComponent {
                               playSound = {this._playSound}
                               goToClientInfo = {this.goToClientInfo}
                               type={this.props.type}
+                              Nickname={this.state.Nickname}
                               navigator={this.props.navigator}/>
                     </View>
 				</TouchableWithoutFeedback>
