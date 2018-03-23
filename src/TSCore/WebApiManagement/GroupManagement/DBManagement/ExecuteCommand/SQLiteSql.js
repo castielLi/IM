@@ -37,7 +37,7 @@ SQLiteSql.getGroupMember = "select * from {tableName}";
 //批量获取群信息
 SQLiteSql.getGroups = "select * from GroupList where Id in ({groups})";
 //修改群昵称设置
-SQLiteSql.modifyNicknameSetting = "update GroupSetting set Nickname = {Value} where Id = {Id}";
+SQLiteSql.modifyNicknameSetting = "insert or replace into GroupSetting(Id,Nickname) values({Id},{Nickname})"; //"update GroupSetting set Nickname = {Nickname} where Id = {Id}";
 //获取群设置
 SQLiteSql.getGroupSetting = "select * from GroupSetting where Id = {Id}";
 SQLiteSql.addGroupSetting = "insert or replace into GroupSetting(Id,Nickname) values({Id},{Nickname})";

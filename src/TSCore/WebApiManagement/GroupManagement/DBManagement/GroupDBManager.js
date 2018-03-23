@@ -156,7 +156,7 @@ export default class GroupDBManager {
     //修改群昵称设置
     modifyNicknameSetting(groupId, nicknameSetting) {
         let modifySingleDto = new ModifySingleDto();
-        modifySingleDto.Value = nicknameSetting;
+        modifySingleDto.Nickname = nicknameSetting;
         modifySingleDto.Id = groupId;
         let sql = SQLiteHelper.sqlStringFormat(SQLiteSql.modifyNicknameSetting, modifySingleDto);
         this.sql.ExecuteSQL(sql);

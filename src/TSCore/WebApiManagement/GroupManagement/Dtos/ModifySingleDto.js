@@ -4,7 +4,7 @@
 export default class ModifySingleDto {
     constructor() {
         this.Id = "";
-        this.Value = false;
+        this.Nickname = true;
     }
 }
 //# sourceMappingURL=ModifySingleDto.js.map
