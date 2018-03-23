@@ -146,9 +146,9 @@ class Me extends AppComponent {
 
     chooseImage = (name)=>{
         switch (name){
-            case '设置':
-                return <Image source={require('../resource/set.png')} style={styles.pic} />;
-            // case '钱包':
+            // case '设置':
+            //     return <Image source={require('../resource/set.png')} style={styles.pic} />;
+            // // case '钱包':
             //     return <Image source={require('../resource/package.png')} style={styles.pic} />;
             // case '卡包':
             //     return <Image source={require('../resource/pack.png')} style={styles.pic} />;
@@ -207,7 +207,7 @@ class Me extends AppComponent {
             <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.toDoSome.bind(this,info.item.name)}>
                 <View style={styles.itemBox}>
                     <View  style={styles.itemLeftBox} >
-                        {this.chooseImage(info.item.name)}
+                        {/*{this.chooseImage(info.item.name)}*/}
                         <Text style={styles.itemText}>{info.item.name}</Text>
                     </View>
                     {this._fillingValue(info)}

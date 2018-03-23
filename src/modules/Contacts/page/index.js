@@ -49,7 +49,7 @@ class Contacts extends AppComponent {
 			//右边title导航
 			rightSectionItemModalIndex:'',
 
-			isShowSearchInput:false,
+			// isShowSearchInput:false,
 			text:'',//textInput文字
 
             contacts:[],
@@ -116,35 +116,35 @@ class Contacts extends AppComponent {
 	};
 	_renderHeader = () => {
 		return  <View>
-					<View style={styles.listHeaderBox}>
-						<View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',alignItems:'center',borderRadius:5,}}>
-                            {this.state.isShowSearchInput ?
-								<TextInput
-									style={styles.search}
-									underlineColorAndroid='transparent'
-									placeholder = '搜索'
-									autoFocus = {true}
-									defaultValue = {this.state.text}
-									onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}
-									onChangeText={(v)=>{
-										if(v===''){
-											this.setState({isShowSearchInput:false})
-										}
-                                        this.setState({text:v})
-									}
-									}
-								>
-								</TextInput>:
-								<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>
-									<View style={styles.searchView}>
-										<Icon name="search" size={14} color="#aaa" /><Text style={{color:'#aaa',marginLeft:10,fontSize:14}}>搜索</Text>
-									</View>
-								</TouchableWithoutFeedback>
-                            }
-                            {this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:'',isShowSearchInput:false})}} style={{marginHorizontal:10}}/>}
-						</View>
+					{/*<View style={styles.listHeaderBox}>*/}
+						{/*<View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',alignItems:'center',borderRadius:5,}}>*/}
+                            {/*{this.state.isShowSearchInput ?*/}
+								{/*<TextInput*/}
+									{/*style={styles.search}*/}
+									{/*underlineColorAndroid='transparent'*/}
+									{/*placeholder = '搜索'*/}
+									{/*autoFocus = {true}*/}
+									{/*defaultValue = {this.state.text}*/}
+									{/*onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}*/}
+									{/*onChangeText={(v)=>{*/}
+										{/*if(v===''){*/}
+											{/*this.setState({isShowSearchInput:false})*/}
+										{/*}*/}
+                                        {/*this.setState({text:v})*/}
+									{/*}*/}
+									{/*}*/}
+								{/*>*/}
+								{/*</TextInput>:*/}
+								{/*<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>*/}
+									{/*<View style={styles.searchView}>*/}
+										{/*<Icon name="search" size={14} color="#aaa" /><Text style={{color:'#aaa',marginLeft:10,fontSize:14}}>搜索</Text>*/}
+									{/*</View>*/}
+								{/*</TouchableWithoutFeedback>*/}
+                            {/*}*/}
+                            {/*{this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:'',isShowSearchInput:false})}} style={{marginHorizontal:10}}/>}*/}
+						{/*</View>*/}
 
-					</View>
+					{/*</View>*/}
 					<View style={styles.listOtherUseBox}>
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
 							<View  style={styles.itemBox} >
