@@ -16,6 +16,13 @@ import {
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+    connect
+} from 'react-redux';
+import {
+    bindActionCreators
+} from 'redux';
+import * as unReadMessageActions from '../../../../modules/MainTabbar/reducer/action';
 let originData = [
     {
         'key':'1',
@@ -27,7 +34,7 @@ let originData = [
     }
 ];
 
-export default class Setting extends AppComponent {
+class Setting extends AppComponent {
     constructor(props){
         super(props);
         this._toDoSome = this._toDoSome.bind(this);
@@ -78,6 +85,7 @@ export default class Setting extends AppComponent {
     };
 
     loginOut = ()=>{
+        this.props.changeUnReadMessageNumber(0);
         this.appManagement.systemLogout();
         this.route.ToLogin(this.props);
     };
@@ -179,3 +187,14 @@ const styles = StyleSheet.create({
     }
 
 });
+
+const mapStateToProps = state => ({
+});
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        ...bindActionCreators(unReadMessageActions, dispatch),
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Setting);
