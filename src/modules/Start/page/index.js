@@ -7,6 +7,7 @@ import {StyleSheet, Image,AsyncStorage,Platform,Alert,View,Dimensions} from 'rea
 import AppComponent from '../../../Core/Component/AppComponent';
 import AppTokenStateEnum from '../../../App/Enum/AppTokenStateEnum'
 import {connect} from 'react-redux';
+
 import {bindActionCreators} from 'redux';
 let {width,height} = Dimensions.get('window');
 let currentObj = undefined;
@@ -19,12 +20,16 @@ class Start extends AppComponent {
             selectedTab: 'home',
             isLogged: false
         }
+
+
+         // alert('Start')
         currentObj = this;
 
     }
 
     componentWillMount(){
         // this.appManagement.dispatchAppTokenState(AppTokenStateEnum.Init)
+        this.appManagement.Init()
     }
 
     componentWillUnmount(){

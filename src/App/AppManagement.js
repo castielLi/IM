@@ -56,10 +56,16 @@ export default class AppManagement{
         this.validateManager = undefined;
         this.normalNetwork = true;
         this.uniqueId = DeviceInfo.getUniqueID();
-        let initState = new InitState()
-        initState.stateOpreation(this);
         currentApp = this;
     }
+
+    Init(){
+        let initState = new InitState()
+        initState.stateOpreation(this);
+    }
+
+
+
 
     setRoot(rootComponent){
         this.root = rootComponent;
@@ -331,7 +337,6 @@ export default class AppManagement{
                     return;
                 }
             }
-
             if(!this.ConnectState) {
                 this.imLogicController.initSocket();
                 this.ConnectState = true;
