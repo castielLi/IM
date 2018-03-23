@@ -345,11 +345,15 @@ export default class AppManagement{
     }
 
     systemBackGround(){
-        this.imLogicController.stopSocket();
+        if(this.imLogicController!=undefined) {
+            this.imLogicController.stopSocket();
+        }
     }
 
     systemActive(){
-        this.imLogicController.initSocket();
+        if(this.imLogicController!=undefined) {
+            this.imLogicController.initSocket();
+        }
     }
 
     systemLogin(){
