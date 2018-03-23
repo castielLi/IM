@@ -288,12 +288,14 @@ class ThouchBarBoxTopBox extends Component {
               }]}>
                 <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
               </View>
-              <AutoExpandingTextInput ref={e => this.input = e} getInputObject={this.getInputObject}
-                                      changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight}
-                                      emojiText={this.props.emojiText} emojiId={this.props.emojiId}
-                                      setTextInputData={this.setTextInputData} client={this.props.client}
-                                      type={this.props.type} Nick={this.props.Nick}
-                                      HeadImageUrl={this.props.HeadImageUrl}/>
+              <AutoExpandingTextInput
+                  ref={e => this.input = e} getInputObject={this.getInputObject}
+                  changeThouchBarTopBoxHeight={this.changeThouchBarTopBoxHeight}
+                  emojiText={this.props.emojiText} emojiId={this.props.emojiId}
+                  setTextInputData={this.setTextInputData} client={this.props.client}
+                  type={this.props.type} Nick={this.props.Nick}
+                  HeadImageUrl={this.props.HeadImageUrl}
+              />
             </View>
         )
     }

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Swiper from 'react-native-swiper';
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-let {width} = Dimensions.get('window');
+let {width, height} = Dimensions.get('window');
   
 let phizData = [
     [
@@ -38,6 +38,8 @@ let phizData = [
         {name:'[爱心]',url:require('../../resource/phiz/19.png')},
         {name:'[心碎]',url:require('../../resource/phiz/20.png')},
         {name:'[花]',url:require('../../resource/phiz/21.png')},
+    ],
+    [
         {name:'[7]',url:require('../../resource/phiz/22.png')},
         {name:'[拳头]',url:require('../../resource/phiz/23.png')},
         {name:'[8]',url:require('../../resource/phiz/24.png')},
@@ -45,8 +47,6 @@ let phizData = [
         {name:'[9]',url:require('../../resource/phiz/28.png')},
         {name:'[强]',url:require('../../resource/phiz/29.png')},
         {name:'[弱]',url:require('../../resource/phiz/30.png')},
-    ],
-    [
         {name:'[握手]',url:require('../../resource/phiz/32.png')},
         {name:'[10]',url:require('../../resource/phiz/33.png')},
         {name:'[胜利]',url:require('../../resource/phiz/34.png')},
@@ -97,7 +97,9 @@ render(){
                                       {current.map((current,index)=>{
                                           return (
                                               <TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,current.name)}>
-                                                  <Image source={current.url} style={styles.img}/>
+                                                  <View style={styles.imgView}>
+                                                      <Image source={current.url} style={styles.img}/>
+                                                  </View>
                                               </TouchableWithoutFeedback>
                                           )
                                       })}
@@ -120,7 +122,7 @@ render(){
                   </View>:
                       null
                       }
-        </View>
+          </View>
         )
     }
 }
@@ -155,6 +157,12 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center'
   },
+    imgView:{
+      justifyContent:'center',
+        alignItems:'center',
+        width:width/7,
+        height:width/7,
+    },
   img:{
     height:pxToPt(30),
     width:pxToPt(30),
