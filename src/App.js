@@ -98,9 +98,9 @@ export default function App() {
             });
 
             if(appState == 'background'){
-                 // im.stopIM();
+                 appManagement.systemBackGround();
             }else if(appState == "active"){
-                // im.startIM();
+                appManagement.systemActive();
             }
         }
 

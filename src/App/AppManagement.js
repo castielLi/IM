@@ -344,6 +344,14 @@ export default class AppManagement{
         }
     }
 
+    systemBackGround(){
+        this.imLogicController.stopSocket();
+    }
+
+    systemActive(){
+        this.imLogicController.initSocket();
+    }
+
     systemLogin(){
         let loginState = new LoginedState();
         loginState.stateOpreation(this);
