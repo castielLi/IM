@@ -21,6 +21,25 @@ export class InitState extends IAppManagementState{
     stateOpreation(appManagementObj) {
 
         SystemManager.initConfig(() => {
+
+            if(appManagementObj.imLogicController != undefined){
+                appManagementObj.imLogicController.destroyInstance();
+            }
+            if(appManagementObj.userController != undefined){
+                appManagementObj.userController.destroyInstance();
+            }
+            if(appManagementObj.applyController != undefined){
+                appManagementObj.applyController.destroyInstance();
+            }
+
+            if(appManagementObj.validateManager != undefined){
+                appManagementObj.validateManager = undefined;
+            }
+
+            if(appManagementObj.loginController != undefined){
+                appManagementObj.loginController = undefined;
+            }
+
             SystemManager.init(() => {
                 appManagementObj.validateManager = new ValidateManager();
                 appManagementObj.validateManager.init(
