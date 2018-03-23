@@ -46,7 +46,7 @@ export default class WebSocketManager {
         this.webSocket.addEventListener('error', this.onError);
         //关闭连接
         this.webSocket.addEventListener('close', this.onClose);
-        this.checkStatus();
+        // this.checkStatus();
     }
     //关闭连接
     close() {

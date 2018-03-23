@@ -128,12 +128,19 @@ export class TokenValidateSuccessState extends IAppManagementState{
 
 export class TokenValidateFailedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.applyController.getUncheckApplyFriendCount();
         Alert.alert("错误","登录信息已经失效，请重新登录");
-        appManagementObj.root.route.push(appManagementObj.root,{
-            key:'Login',
-            routeId: 'PhoneLogin'
-        });
+        appManagementObj.ConnectState = false;
+        appManagementObj.Logined = false;
+        if(appManagementObj.imLogicController != undefined){
+            appManagementObj.imLogicController.destroyInstance();
+        }
+        if(appManagementObj.userController != undefined){
+            appManagementObj.userController.destroyInstance();
+        }
+        if(appManagementObj.applyController != undefined){
+            appManagementObj.applyController.destroyInstance();
+        }
+        appManagementObj.root.route.ToLogin();
         appManagementObj.setState(this)
     }
 }
