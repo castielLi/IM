@@ -8,12 +8,6 @@ export default class ScanController {
         this.codeTool = QRCodeTool.getSingleInstance();
         this.codeTool.init(this);
     }
-    static getSingleInstance() {
-        if (ScanController.SingleInstance == null) {
-            ScanController.SingleInstance = new ScanController();
-        }
-        return ScanController.SingleInstance;
-    }
     init(uihandle) {
         this.callback = uihandle;
     }

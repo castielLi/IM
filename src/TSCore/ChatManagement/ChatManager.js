@@ -6,12 +6,6 @@ export default class ChatManager {
             this.dbManager = new DBManager();
         }
     }
-    static getSingleInstance(isDB) {
-        if (ChatManager.SingleInstance == null) {
-            ChatManager.SingleInstance = new ChatManager(isDB);
-        }
-        return ChatManager.SingleInstance;
-    }
     addMessage(chatId, group, message, inConversation, callback) {
         if (this.dbManager != null)
             this.dbManager.addMessage(chatId, group, message, inConversation, callback);
@@ -75,11 +69,6 @@ export default class ChatManager {
     }
     setChatBackgroundImage(chatId, group, path) {
         this.dbManager.setChatBackGroundImage(chatId, group, path);
-    }
-    destroyInstance() {
-        // if(this.dbManager != null)
-        //     this.dbManager.logout();
-        ChatManager.SingleInstance = null;
     }
 }
 //# sourceMappingURL=ChatManager.js.map

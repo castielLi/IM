@@ -10,6 +10,9 @@ export default class ReceiveManager {
         this.dbManager = dbManager;
         this.start();
     }
+    destory() {
+        clearInterval(this.timerId);
+    }
     start() {
         if (this.timerId == 0) {
             let currentObj = this;

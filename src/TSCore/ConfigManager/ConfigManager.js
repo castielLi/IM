@@ -22,6 +22,9 @@ export default class ConfigManager {
         if (ConfigManager.SingleInstance == null) {
             ConfigManager.SingleInstance = new ConfigManager(callback);
         }
+        else {
+            callback();
+        }
         return ConfigManager.SingleInstance;
     }
     setConfigSetting(url, callback) {

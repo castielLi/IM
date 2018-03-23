@@ -42,11 +42,11 @@ export default class LogicManager {
         }
         this.socket.connect(socketUrl);
     }
-    static getSingleInstance(messageManager, isDB, socketUrl) {
-        if (LogicManager.SingleInstance == null) {
-            LogicManager.SingleInstance = new LogicManager(messageManager, isDB, socketUrl);
-        }
-        return LogicManager.SingleInstance;
+    destroy() {
+        this.socket.close();
+        this.socket = null;
+        this.sendManager.destory();
+        this.receiveManager.destory();
     }
     //连接成功
     onConnect() {
@@ -176,11 +176,6 @@ export default class LogicManager {
     //关闭连接
     close() {
         this.socket.close();
-    }
-    destroyInstance() {
-        // if(this.dbManager != null)
-        //     this.dbManager.logout();
-        LogicManager.SingleInstance = null;
     }
     //TODO: 测试大量接收消息时对界面是否有影响, 如果有影响就把ACK放到发送队列中处理
     sendReceiveAck(messageId) {

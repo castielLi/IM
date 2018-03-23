@@ -5,12 +5,6 @@ export default class ApplyFriendManager {
         if (isDB)
             this.dbManager = new DBManager();
     }
-    static getSingleInstance(isDB) {
-        if (ApplyFriendManager.SingleInstance == null) {
-            ApplyFriendManager.SingleInstance = new ApplyFriendManager(isDB);
-        }
-        return ApplyFriendManager.SingleInstance;
-    }
     addNewApply(message) {
         if (this.dbManager != null)
             this.dbManager.addNewApply(message);
@@ -49,11 +43,6 @@ export default class ApplyFriendManager {
         if (this.dbManager != null) {
             this.dbManager.clear();
         }
-    }
-    destroyInstance() {
-        // if(this.dbManager != null)
-        //     this.dbManager.logout();
-        ApplyFriendManager.SingleInstance = null;
     }
 }
 //# sourceMappingURL=ApplyFriendManager.js.map

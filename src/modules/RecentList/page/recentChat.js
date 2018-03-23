@@ -36,16 +36,13 @@ import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import ValidateManager from '../../../TSController/ValidateManager'
-import LoginController from '../../../TSController/LoginController'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppStatusEnum from '../../../App/Enum/AppStatusEnum'
 let userController = undefined;
 let applyController = undefined;
 let imLogicController = undefined;
-let loginController = undefined;
 let currentObj= undefined;
-let validateManager = undefined;
+
 
 class RecentChat extends AppComponent {
     constructor(props) {
@@ -67,8 +64,6 @@ class RecentChat extends AppComponent {
         userController =  UserController.getSingleInstance();
         applyController = ApplyController.getSingleInstance();
         imLogicController = IMControllerLogic.getSingleInstance();
-        loginController = LoginController.getSingleInstance();
-        validateManager = ValidateManager.getSingleInstance();
         this._changeAppStatus = this._changeAppStatus.bind(this);
     }
 

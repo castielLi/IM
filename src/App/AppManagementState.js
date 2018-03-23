@@ -22,7 +22,7 @@ export class InitState extends IAppManagementState{
 
         SystemManager.initConfig(() => {
             SystemManager.init(() => {
-                appManagementObj.validateManager = ValidateManager.getSingleInstance();
+                appManagementObj.validateManager = new ValidateManager();
                 appManagementObj.validateManager.init(
                     appManagementObj.dispatchAppTokenState,
                     appManagementObj.dispatchMessageToMarkPage
@@ -36,7 +36,7 @@ export class InitState extends IAppManagementState{
 
 export class NoTokenState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        appManagementObj.loginController = LoginController.getSingleInstance();
+        appManagementObj.loginController = new LoginController();
         appManagementObj.root.route.push(appManagementObj.root,{
             key:'Login',
             routeId: 'PhoneLogin'
@@ -121,7 +121,7 @@ export class TokenValidateSuccessState extends IAppManagementState{
         })
 
         appManagementObj.applyController.getUncheckApplyFriendCount();
-        appManagementObj.validateManager.destroyInstance();
+        appManagementObj.validateManager = null;
         appManagementObj.setState(this)
     }
 }
@@ -131,6 +131,7 @@ export class TokenValidateFailedState extends IAppManagementState{
         Alert.alert("错误","登录信息已经失效，请重新登录");
         appManagementObj.ConnectState = false;
         appManagementObj.Logined = false;
+        appManagementObj.validateManager = null;
         if(appManagementObj.imLogicController != undefined){
             appManagementObj.imLogicController.destroyInstance();
         }
@@ -148,6 +149,10 @@ export class TokenValidateFailedState extends IAppManagementState{
 
 export class LogoutState extends IAppManagementState{
     stateOpreation(appManagementObj){
+        if(appManagementObj.loginController == undefined){
+            appManagementObj.loginController = new LoginController();
+        }
+        appManagementObj.loginController.logout();
         appManagementObj.ConnectState = false;
         appManagementObj.Logined = false;
         if(appManagementObj.imLogicController != undefined){

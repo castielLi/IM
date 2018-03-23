@@ -35,7 +35,7 @@ class ScanCode extends AppComponent {
         super(props);
 
         this.render = this.render.bind(this);
-        scanController = ScanController.getSingleInstance();
+        scanController = new ScanController();
         scanController.init(this.appManagement.requestPageManagement)
         this.scanSuccess = false;
     }

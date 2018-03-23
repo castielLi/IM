@@ -18,6 +18,9 @@ export default class SendManager {
             delete this.waitSendMessages[messageId];
         }
     }
+    destory() {
+        clearInterval(this.timerId);
+    }
     start() {
         if (this.timerId == 0) {
             let currentObj = this;

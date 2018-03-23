@@ -33,12 +33,6 @@ export default class FileTaskManager {
             }
         }
     }
-    static getSingleInstance(isDB, account) {
-        if (FileTaskManager.SingleInstance == null) {
-            FileTaskManager.SingleInstance = new FileTaskManager(isDB, account);
-        }
-        return FileTaskManager.SingleInstance;
-    }
     init(callback) {
         this.callbackManager = callback;
     }
@@ -121,11 +115,6 @@ export default class FileTaskManager {
             this.dbManager.removeDownloadData(callBackParam.chatId, callBackParam.group, callBackParam.messageId);
         }
         this.callbackManager.DownloadSuccess(callBackParam.chatId, callBackParam.group, callBackParam.messageId, url);
-    }
-    destroyInstance() {
-        // if(this.dbManager != null)
-        //     this.dbManager.logout();
-        FileTaskManager.SingleInstance = null;
     }
     addUpload(param) {
         if (param == null)

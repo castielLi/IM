@@ -28,7 +28,7 @@ class PhoneLogin extends AppComponent {
         this.addUser = this.addUser.bind(this)
         currentObj = this;
 
-        loginController = LoginController.getSingleInstance();
+        loginController = new LoginController();
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{

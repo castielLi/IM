@@ -7,7 +7,6 @@ import GetCaptchaDto from './Request/Dtos/GetCaptchaDto';
 import RegisteredDto from './Request/Dtos/RegisteredDto';
 import ResultError from '../Enums/ResultError';
 import LoginDBManager from "./DBManagement/LoginDBManager";
-import SQLiteFactory from '../../Tools/SQLite/SQLiteFactory';
 import Config from "../../../Config";
 import WebApiConfig from "../WebApiConfig";
 export default class LoginManager {
@@ -23,12 +22,6 @@ export default class LoginManager {
         //http不需要存到db中去
         this.httpManager = new RequestManager(isDB);
     }
-    static getSingleInstance(isDB) {
-        if (LoginManager.SingleInstance == null) {
-            LoginManager.SingleInstance = new LoginManager(isDB);
-        }
-        return LoginManager.SingleInstance;
-    }
     getCurrentUser() {
         return this.loginCache;
     }
@@ -36,6 +29,18 @@ export default class LoginManager {
         this.loginCache = info;
         if (this.dbManager)
             this.dbManager.addUser(info);
+    }
+    logout() {
+        if (this.dbManager) {
+            this.dbManager.removeUser(this.loginCache);
+        }
+        this.loginCache = null;
+    }
+    deleteCurrentLoginToken() {
+        if (this.dbManager) {
+            this.dbManager.removeUser(this.loginCache);
+        }
+        this.loginCache = null;
     }
     login(Account, Password, callback) {
         let params = new LoginDto();
@@ -112,13 +117,6 @@ export default class LoginManager {
         params.Nickname = nickname;
         params.Captcha = captcha;
         this.httpManager.Registered(params, callback);
-    }
-    destroyInstance() {
-        let user = this.getCurrentUser();
-        this.dbManager.removeUser(user);
-        //销毁数据库
-        SQLiteFactory.DestroySQLite("IM");
-        this.loginCache = null;
     }
     //处理登陆成功返回的用户信息
     LoginSuccessHandle(loginResult, user) {

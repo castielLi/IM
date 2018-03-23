@@ -42,12 +42,6 @@ export default class HeadImageManager {
         this.currentAccount = Account.Account;
         this.start();
     }
-    static getSingleInstance(isDB, Account) {
-        if (HeadImageManager.SingleInstance == null) {
-            HeadImageManager.SingleInstance = new HeadImageManager(isDB, Account);
-        }
-        return HeadImageManager.SingleInstance;
-    }
     init(handle) {
         this.handle = handle;
     }
