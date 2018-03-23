@@ -24,7 +24,7 @@ class Start extends AppComponent {
     }
 
     componentWillMount(){
-        this.appManagement.dispatchAppTokenState(AppTokenStateEnum.Init)
+        // this.appManagement.dispatchAppTokenState(AppTokenStateEnum.Init)
     }
 
     componentWillUnmount(){
