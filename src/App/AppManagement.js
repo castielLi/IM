@@ -56,6 +56,7 @@ export default class AppManagement{
         this.validateManager = undefined;
         this.normalNetwork = true;
         this.uniqueId = DeviceInfo.getUniqueID();
+        this.androidChoosing = false;
         currentApp = this;
     }
 
@@ -291,6 +292,10 @@ export default class AppManagement{
 
     setState(state){
         this.state = state;
+    }
+
+    setAndroidChoosePhotoOrVideo(value){
+        this.androidChoosing = value;
     }
 
     pageInitReady(type){

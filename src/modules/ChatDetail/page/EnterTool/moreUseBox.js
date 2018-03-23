@@ -21,6 +21,7 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import CameraConfig from './cameraConfig';
 import IMController from '../../../../TSController/IMLogic/IMControllerLogic'
+import AppComponent from '../../../../Core/Component/AppComponent';
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var ImagePicker = require('react-native-image-picker');
 var {width} = Dimensions.get('window');
@@ -48,7 +49,7 @@ let videoOptions = {
     }
 }
 
-class MoreUseBox extends Component {
+class MoreUseBox extends AppComponent {
     constructor(props) {
         super(props);
         this.useCamera = this.useCamera.bind(this);
@@ -58,6 +59,10 @@ class MoreUseBox extends Component {
         this.imagePikerCallBack = this.imagePikerCallBack.bind(this);
 
         imController = IMController.getSingleInstance();
+        this.useCamera = this.useCamera.bind(this);
+        this.useLocal = this.useLocal.bind(this);
+        this.useCameraVideo = this.useCameraVideo.bind(this);
+        this.useLocalVideo = this.useLocalVideo.bind(this);
     }
 
     imagePikerCallBack(response) {
@@ -80,19 +85,23 @@ class MoreUseBox extends Component {
             let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
             imController.SendFile(1, responsePath);
+            this.appManagement.setAndroidChoosePhotoOrVideo(false);
         }
     }
 
 
     useCamera() {
+        this.appManagement.setAndroidChoosePhotoOrVideo(true);
         ImagePicker.launchCamera(options, this.imagePikerCallBack);
     }
 
     useLocal() {
+        this.appManagement.setAndroidChoosePhotoOrVideo(true);
         ImagePicker.launchImageLibrary(options, this.imagePikerCallBack);
     }
 
     useCameraVideo() {
+        this.appManagement.setAndroidChoosePhotoOrVideo(true);
         ImagePicker.launchCamera(videoOptions, (response) => {
             console.log('Response = ', response);
 
@@ -109,11 +118,13 @@ class MoreUseBox extends Component {
                 let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
                 imController.SendFile(2,responsePath);
+                this.appManagement.setAndroidChoosePhotoOrVideo(false);
             }
         });
     }
 
     useLocalVideo() {
+        this.appManagement.setAndroidChoosePhotoOrVideo(true);
         ImagePicker.launchImageLibrary(videoOptions, (response) => {
             console.log('Response = ', response);
 
@@ -130,6 +141,7 @@ class MoreUseBox extends Component {
                 let responsePath = 'file://' + response.path;
 
                 imController.SendFile(2,responsePath);
+                this.appManagement.setAndroidChoosePhotoOrVideo(false);
             }
         });
     }
