@@ -61,16 +61,16 @@ class GroupsChoose extends AppComponent {
                         <View style={styles.itemTextView}>
                             <Text style={styles.itemText}  numberOfLines={1}>{content.Name}</Text>
                         </View>
-                    </View>
-                    {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e)} checked={checked}/> : null}
-                </View>
-            </TouchableHighlight>
-        )
+    </View>
+        {this.props.optionsType ? <CheckBox ref={e=>this._initCheckBoxData(e)} checked={checked}/> : null}
+    </View>
+    </TouchableHighlight>
+    )
     };
-    /*渲染分隔线组件不会出现在第一行之前和最后一行之后*/
+        /*渲染分隔线组件不会出现在第一行之前和最后一行之后*/
     _renderSeparator = () => {
         return (
-            <View style={styles.separator}/>
+        <View style={styles.separator}/>
         )
     };
 
@@ -79,18 +79,18 @@ class GroupsChoose extends AppComponent {
         this.HasData = Object.keys(this.props.selectRecord).length;
         optionText = this.HasData ? '发送('+this.HasData+')' : optionText;
         return (
-            <View style={styles.container}>
-                <MyNavigationBar
-                    left={{func:()=>{this.route.pop(this.props)}}}
-                    heading={'选择群聊'}
-                    right={{func:()=>{this._forwardMessage()},text:optionText}}
-                />
-                <FlatList
-                    data={this.state.GroupsData}
-                    extraData={this.state}
-                    keyExtractor={this._keyExtractor}
-                    ListHeaderComponent={this._renderHeader}
-                    renderItem={this._renderItem}
+        <View style={styles.container}>
+        <MyNavigationBar
+        left={{func:()=>{this.route.pop(this.props)}}}
+        heading={'选择群聊'}
+        right={{func:()=>{this._forwardMessage()},text:optionText}}
+        />
+        <FlatList
+        data={this.state.GroupsData}
+        extraData={{data:this.state,props:this.props}}
+        keyExtractor={this._keyExtractor}
+        ListHeaderComponent={this._renderHeader}
+        renderItem={this._renderItem}
                     ItemSeparatorComponent={this._renderSeparator}
                 />
             </View>
