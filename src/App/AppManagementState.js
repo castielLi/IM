@@ -48,7 +48,7 @@ export class NoTokenState extends IAppManagementState{
 
 export class WaitValidateTokenState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        alert("等待token")
+        alert("wait token")
         appManagementObj.imLogicController = IMLogicController.getSingleInstance();
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
@@ -113,7 +113,7 @@ export class LoginedState extends IAppManagementState{
 
 export class TokenValidateSuccessState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        alert("验证成功")
+        alert("token success")
         appManagementObj.Logined = true;
         appManagementObj.systemLoginSuccess();
         //获取网络数据
@@ -130,7 +130,7 @@ export class TokenValidateSuccessState extends IAppManagementState{
 
 export class TokenValidateFailedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        alert("验证失败")
+        alert("token failed")
         appManagementObj.applyController.getUncheckApplyFriendCount();
         Alert.alert("错误","登录信息已经失效，请重新登录");
         appManagementObj.root.route.push(appManagementObj.root,{

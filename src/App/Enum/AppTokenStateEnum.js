@@ -7,4 +7,5 @@ export default AppTokenStateEnum = {
     WaitValidateToken: 2,
     ValidateTokenSuccess : 3,
     ValidateTokenFailed : 4,
+    Init:5
 }

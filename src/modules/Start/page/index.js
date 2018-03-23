@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Image,AsyncStorage,Platform,Alert,View,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
+import AppTokenStateEnum from '../../../App/Enum/AppTokenStateEnum'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 let {width,height} = Dimensions.get('window');
@@ -20,6 +21,10 @@ class Start extends AppComponent {
         }
         currentObj = this;
 
+    }
+
+    componentWillMount(){
+        this.appManagement.dispatchAppTokenState(AppTokenStateEnum.Init)
     }
 
     componentWillUnmount(){

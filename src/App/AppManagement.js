@@ -56,8 +56,6 @@ export default class AppManagement{
         this.validateManager = undefined;
         this.normalNetwork = true;
         this.uniqueId = DeviceInfo.getUniqueID();
-        let initState = new InitState()
-        initState.stateOpreation(this);
         currentApp = this;
     }
 
@@ -301,6 +299,10 @@ export default class AppManagement{
 
     dispatchAppTokenState(type){
         switch (type){
+            case AppTokenStateEnum.Init:
+                let initState = new InitState()
+                initState.stateOpreation(this);
+                break;
             case AppTokenStateEnum.NoToken:
                 let noToken = new NoTokenState()
                 noToken.stateOpreation(currentApp);
