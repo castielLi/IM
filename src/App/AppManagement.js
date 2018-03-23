@@ -351,7 +351,9 @@ export default class AppManagement{
 
     systemBackGround(){
         if(this.imLogicController!=undefined) {
-            this.imLogicController.stopSocket();
+            if(!this.androidChoosing) {
+                this.imLogicController.stopSocket();
+            }
         }
     }
 
