@@ -141,7 +141,10 @@ export class TokenValidateFailedState extends IAppManagementState{
         if(appManagementObj.applyController != undefined){
             appManagementObj.applyController.destroyInstance();
         }
-        appManagementObj.root.route.ToLogin();
+        appManagementObj.root.route.push(appManagementObj.root,{
+            key:'Login',
+            routeId: 'PhoneLogin'
+            })
         appManagementObj.setState(this)
     }
 }
