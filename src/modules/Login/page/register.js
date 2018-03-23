@@ -21,7 +21,7 @@ export default class Register extends AppComponent {
         }
 
         currentObj = this;
-        loginController = LoginController.getSingleInstance();
+        loginController = new LoginController();
 	}
 
     componentWillUnmount(){
