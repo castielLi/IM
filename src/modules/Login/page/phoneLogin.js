@@ -79,6 +79,12 @@ class PhoneLogin extends AppComponent {
                 currentObj.hideLoading()
 
                 switch (response.Result){
+                    case 1001:
+                        currentObj.alert("账号或者密码错误","错误");
+                        break;
+                    case 1002:
+                        currentObj.alert("账号被冻结,请您联系工作人员","错误");
+                        break;
                     case 1003:
                         currentObj.alert("账号或者密码错误","错误");
                         break;
