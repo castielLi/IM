@@ -148,6 +148,10 @@ export class TokenValidateSuccessState extends IAppManagementState{
 export class TokenValidateFailedState extends IAppManagementState{
     stateOpreation(appManagementObj){
         Alert.alert("错误","登录信息已经失效，请重新登录");
+        appManagementObj.root.route.push(appManagementObj.root,{
+            key:'Login',
+            routeId: 'PhoneLogin'
+        })
         appManagementObj.ConnectState = false;
         appManagementObj.Logined = false;
         appManagementObj.validateManager = null;
@@ -160,10 +164,6 @@ export class TokenValidateFailedState extends IAppManagementState{
         if(appManagementObj.applyController != undefined){
             appManagementObj.applyController.destroyInstance();
         }
-        appManagementObj.root.route.push(appManagementObj.root,{
-            key:'Login',
-            routeId: 'PhoneLogin'
-            })
         appManagementObj.setState(this)
     }
 }
