@@ -91,7 +91,8 @@ class AutoExpandingTextInput extends Component {
         }
 
         //限制高度
-        if (height > (30 + 26 * 3)) return;
+        if (height > (30 + 26 * 3))
+            return;
         this.setState({
             inputHeight: height
         })
