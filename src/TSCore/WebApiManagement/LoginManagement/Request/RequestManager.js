@@ -20,6 +20,27 @@ export default class RequestManager {
             callback && callback(result);
         });
     }
+    forgetPassword(param, callback) {
+        if (param == null) {
+            callback(null);
+            return;
+        }
+        this.requestInfo("forgetPassword", '', param, RequestURL.ForgetPassword, false, callback);
+    }
+    retrievePassword(param, callback) {
+        if (param == null) {
+            callback(null);
+            return;
+        }
+        this.requestInfo("retrievePassword", '', param, RequestURL.RetrievePassword, false, callback);
+    }
+    resetPassword(param, callback) {
+        if (param == null) {
+            callback(null);
+            return;
+        }
+        this.requestInfo("resetPassword", '', param, RequestURL.ResetPassword, false, callback);
+    }
     loginWithToken(param, callback) {
         if (param == null) {
             callback(null);

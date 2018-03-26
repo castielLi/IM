@@ -9,6 +9,9 @@ import ResultError from '../Enums/ResultError';
 import LoginDBManager from "./DBManagement/LoginDBManager";
 import Config from "../../../Config";
 import WebApiConfig from "../WebApiConfig";
+import ForgetpasswordDto from "./Request/Dtos/ForgetpasswordDto";
+import RetrievePasswordDto from "./Request/Dtos/RetrievePasswordDto";
+import ResetPasswordDto from "./Request/Dtos/ResetPasswordDto";
 export default class LoginManager {
     constructor(isDB) {
         //TODO:没有初始化
@@ -29,6 +32,63 @@ export default class LoginManager {
         this.loginCache = info;
         if (this.dbManager)
             this.dbManager.addUser(info);
+    }
+    ForgetPassword(phone, callback) {
+        let params = new ForgetpasswordDto();
+        params.PhoneNumber = phone;
+        this.httpManager.forgetPassword(params, (response) => {
+            if (response.success && response.data != null) {
+                let result = response.data;
+                if (result.Result == ResultError.Success) {
+                    callback && callback(response);
+                }
+                else {
+                    response.success = false;
+                    callback && callback(response);
+                }
+            }
+            else
+                callback && callback(response);
+        });
+    }
+    RetrievePassword(phone, captcha, callback) {
+        let params = new RetrievePasswordDto();
+        params.Captcha = captcha;
+        params.PhoneNumber = phone;
+        this.httpManager.retrievePassword(params, (response) => {
+            if (response.success && response.data != null) {
+                let result = response.data;
+                if (result.Result == ResultError.Success) {
+                    callback && callback(response);
+                }
+                else {
+                    response.success = false;
+                    callback && callback(response);
+                }
+            }
+            else
+                callback && callback(response);
+        });
+    }
+    ResetPassword(password, key, phone, callback) {
+        let params = new ResetPasswordDto();
+        params.Key = key;
+        params.Password = password;
+        params.PhoneNumber = phone;
+        this.httpManager.resetPassword(params, (response) => {
+            if (response.success && response.data != null) {
+                let result = response.data;
+                if (result.Result == ResultError.Success) {
+                    callback && callback(response);
+                }
+                else {
+                    response.success = false;
+                    callback && callback(response);
+                }
+            }
+            else
+                callback && callback(response);
+        });
     }
     logout() {
         if (this.dbManager) {
