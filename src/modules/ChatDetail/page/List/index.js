@@ -106,6 +106,18 @@ class Chat extends AppComponent {
         })
     }
 
+    componentWillUnmount(){
+        _listHeight = 0; //list显示高度
+        _footerY = 0; //foot距离顶部距离
+        scrollDistance = 0;//滚动距离
+        _MaxListHeight = 0; //记录最大list高度
+        FooterLayout = false;
+        ListLayout = false;
+        userController = undefined;
+        applyController = undefined;
+    }
+
+
     componentWillMount() {
         this.currentAccount = userController.getCurrentAccount();
         let {type,client} = this.props;
@@ -149,6 +161,7 @@ class Chat extends AppComponent {
             },
         })
     }
+
 
     componentDidMount(){
         this.props.onRef(this)
