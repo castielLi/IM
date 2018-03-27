@@ -113,7 +113,7 @@ class PhoneLogin extends AppComponent {
                 {/*</TouchableOpacity>*/}
 				<View  style  = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>
-					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
+					<TouchableOpacity>
 						<View style = {styles.area}>
 							<Text style = {styles.areaTitle}>国家/地区</Text>
 							<Text style = {styles.country}>中国</Text>

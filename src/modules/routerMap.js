@@ -64,6 +64,7 @@ import ChangePassword from './Me/page/setting/changePassword'
 import ConfigSetting from './Me/page/setting/configSetting'
 import Search from './Search/page'
 import JoinGroup from './GroupInformationSetting/page/JoinGroup'
+import ResetPassword from './Login/page/resetPassrod'
 
 
 export const MainPage = {
@@ -126,18 +127,10 @@ export const RouteMap = {
         }
     },
     'Login': {
-        'Login': {
-            component: Login,
-            params: {"name":"Login"}
-        },
         'PhoneLogin':{
             component: PhoneLogin,
             params: {"name":"PhoneLogin"},
             markType:Mark.ConversationDetail
-        },
-        'EmailLogin':{
-            component: EmailLogin,
-            params: {"name":"EmailLogin"}
         }
     },
     'Register':{
@@ -150,6 +143,12 @@ export const RouteMap = {
          'FindPassword': {
             component: FindPassword,
             params: {"name":"FindPassword"}
+        }
+    },
+    'ResetPassword':{
+        'ResetPassword': {
+            component: ResetPassword,
+            params: {"name":"ResetPassword"}
         }
     },
     'ChatDetail': {

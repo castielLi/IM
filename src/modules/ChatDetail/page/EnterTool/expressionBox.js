@@ -74,54 +74,42 @@ render(){
 
       return(
           <View style={styles.ThouchBarBoxBottomBox}>
-              <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false} autoplay={false}>
-                  {/*<TouchableWithoutFeedback>*/}
-                     {/*<View style={styles.swiperSlide}>*/}
-                          {/*/!*<TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,'[微笑]')}>*!/*/}
-                            {/*/!*<Image source={require('../../resource/phiz/1.png')} style={styles.img}/>*!/*/}
-                          {/*/!*</TouchableWithoutFeedback>*!/*/}
-                         {/*{phizData.map((current,index)=>{*/}
-                             {/*return (*/}
-                                 {/*<TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,current.name)}>*/}
-                                     {/*<Image source={current.url} style={styles.img}/>*/}
-                                 {/*</TouchableWithoutFeedback>*/}
-                             {/*)*/}
-                         {/*})}*/}
-                     {/*</View>*/}
-                  {/*</TouchableWithoutFeedback>*/}
-                  {
-                      phizData.map((current,index)=>{
-                          return (
-                              <TouchableWithoutFeedback>
-                                  <View style={styles.swiperSlide}>
-                                      {current.map((current,index)=>{
-                                          return (
-                                              <TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,current.name)}>
-                                                  <View style={styles.imgView}>
-                                                      <Image source={current.url} style={styles.img}/>
-                                                  </View>
-                                              </TouchableWithoutFeedback>
-                                          )
-                                      })}
-                                  </View>
-                              </TouchableWithoutFeedback>
-                          )
-                      })
-                  }
-              </Swiper>
-
+              <View style={styles.swiperBottomBox}>
+                  <Swiper style={styles.wrapper} showsButtons={false} activeDotColor={'#434343'} loop={false} autoplay={false}
+                          showsPagination={phizData.length>24?true:false}>
+                      {
+                          phizData.map((current,index)=>{
+                              return (
+                                  <TouchableWithoutFeedback>
+                                      <View style={styles.swiperSlide}>
+                                          {current.map((current,index)=>{
+                                              return (
+                                                  <TouchableWithoutFeedback onPress={this.onPressEmoji.bind(this,current.name)}>
+                                                      <View style={styles.imgView}>
+                                                          <Image source={current.url} style={styles.img}/>
+                                                      </View>
+                                                  </TouchableWithoutFeedback>
+                                              )
+                                          })}
+                                      </View>
+                                  </TouchableWithoutFeedback>
+                              )
+                          })
+                      }
+                  </Swiper>
+              </View>
               {Platform.OS === 'ios'?
                   <View style={styles.sendBox}>
 
-                          <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
+                      <TouchableWithoutFeedback onPress={this.props._onSubmitEditing}>
                           <View style={[styles.send,{backgroundColor:this.props.textInputData?'#3399ff':'#fff'}]}>
                               <Text style={[styles.sendText,{color:this.props.textInputData?'#fff':'#aaa'}]}>发送</Text>
                           </View>
                       </TouchableWithoutFeedback>
 
                   </View>:
-                      null
-                      }
+                  null
+              }
           </View>
         )
     }
@@ -133,6 +121,11 @@ const styles = StyleSheet.create({
     borderColor:'#ccc',
     borderTopWidth:1
   },
+    swiperBottomBox:{
+        height:Platform.OS === 'ios'?190:230,
+        borderColor:'#ccc',
+        borderTopWidth:1
+    },
   wrapper:{
     flex:1,
   },
@@ -160,13 +153,14 @@ const styles = StyleSheet.create({
     imgView:{
       justifyContent:'center',
         alignItems:'center',
-        width:width/7,
-        height:width/7,
+        width:Platform.OS === 'ios'?width/8:width/7,
+        //正常高度android是230 - swiper 40    ios 正常高度230 - send高度40 减swiper高度 40
+        height:Platform.OS === 'ios'?150/3:190/3,
     },
   img:{
-    height:pxToPt(30),
-    width:pxToPt(30),
-    margin:10
+    height:Platform.OS === 'ios'?pxToPt(25):pxToPt(30),
+    width:Platform.OS === 'ios'?pxToPt(25):pxToPt(30),
+    margin:Platform.OS === 'ios'?6:10
   },
   plusItemTit:{
     fontSize:12,
