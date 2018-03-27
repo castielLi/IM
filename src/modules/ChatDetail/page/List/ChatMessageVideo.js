@@ -51,32 +51,44 @@ class ChatMessageVideo extends AppComponent {
         let currentObj = this;
         let {messageId,message} = data;
         let group = this.props.type == 'group' ? true : false;
-        RNFS.exists(Local).then((success) => {
-            if(!success){
-                imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
-            }
-            else{
-                this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-            }
-        }).catch((err) => {
-            console.log(err.message);
-        });
+        this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
+
     };
 
-    render() {
-        let {data, style} = this.props;
-        let {LocalSource,RemoteSource} = data.message;
-        return(
-            <View style={[style,styles.bubble]}>
-                {/*<Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>*/}
-                    {true ? <Image source={require('../../resource/已经下载2.png')} style={{width:70,height:40}}/> :
-                        <Image source={require('../../resource/未下载.png')} style={{width:70,height:40}}/>}
+    downloadVideo =(data)=>{
+        let {messageId,message} = data;
+        let group = this.props.type == 'group' ? true : false;
+        imControllerLogic.manualDownloadResource(this.props.chatId,messageId,group,message);
+    }
+
+    videoRender = (status,LocalSource,RemoteSource,data)=>{
+        switch (status){
+            case 4:
+            case 3:
+                return <Thouch onPress={()=>this.downloadVideo(data)} disabled={this.state.download}>
+                    <Image source={require('../../resource/未下载.png')} style={{width:70,height:40}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
                             <Text style={styles.progressText}>{Math.ceil(this.state.progress)}%</Text>
                         </View> :null
                     }
-                {/*</Thouch>*/}
+                </Thouch>
+            case 1:
+                return <Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>
+                    <Image source={require('../../resource/已经下载2.png')} style={{width:70,height:40}}/>
+                </Thouch>
+        }
+    }
+
+    render() {
+        let {data, style} = this.props;
+        let {LocalSource,RemoteSource} = data.message;
+        let {status} = data;
+        return(
+            <View style={[style,styles.bubble]}>
+                {
+                    this.videoRender(status,LocalSource,RemoteSource,data)
+                }
             </View>
         )
     }

@@ -21,18 +21,15 @@ import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-// import LoginController from '../../../TSController/LoginController';
 import UserController from '../../../TSController/UserController';
-// import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
 import AppManagement from '../../../App/AppManagement';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import SystemManager from '../../../TSController/SystemManager'
 
-// let loginController = undefined;
 let userController = undefined;
 let currentAccount = undefined;
 let headImagePath = undefined;
-// let imController = undefined;
 let currentObj = undefined;
 let appManagement = undefined;
 
@@ -68,6 +65,8 @@ let originData = [
     {
         'key':'2',
         'data': [{
+            'name': "版本",
+        },{
             'name': "设置",
         }]
     },
@@ -112,6 +111,10 @@ class Me extends AppComponent {
                 break;
             break;
         }
+    }
+
+    getVersion = ()=>{
+        return SystemManager.getCurrentAppVersion();
     }
 
     onChangGender=(gender)=>{
@@ -191,6 +194,12 @@ class Me extends AppComponent {
                 return (
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemContent}>{this._genderType()}</Text>
+                    </View>
+                );
+            case '版本':
+                return(
+                    <View style={styles.itemRightBox}>
+                        <Text style={styles.itemContent}>{this.getVersion()}</Text>
                     </View>
                 );
             default:
