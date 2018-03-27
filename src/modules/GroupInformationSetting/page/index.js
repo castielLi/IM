@@ -130,7 +130,7 @@ class GroupInformationSetting extends AppComponent {
     };
 
     componentDidMount(){
-        InteractionManager.runAfterInteractions(()=> {
+        // InteractionManager.runAfterInteractions(()=> {
             currentAccount = userController.getCurrentAccount();
             userController.getGroupAndMembersInfo(this.props.groupId, (result) => {
                 // let save = result.Save ? true : false;
@@ -163,7 +163,7 @@ class GroupInformationSetting extends AppComponent {
             //         })
             //     }
             // })
-        });
+        // });
     }
 
 
