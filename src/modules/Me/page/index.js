@@ -25,7 +25,6 @@ import UserController from '../../../TSController/UserController';
 import AppManagement from '../../../App/AppManagement';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import SystemManager from '../../../TSController/SystemManager'
 
 let userController = undefined;
 let currentAccount = undefined;
@@ -65,8 +64,6 @@ let originData = [
     {
         'key':'2',
         'data': [{
-            'name': "版本",
-        },{
             'name': "设置",
         }]
     },
@@ -111,10 +108,6 @@ class Me extends AppComponent {
                 break;
             break;
         }
-    }
-
-    getVersion = ()=>{
-        return SystemManager.getCurrentAppVersion();
     }
 
     onChangGender=(gender)=>{
@@ -194,12 +187,6 @@ class Me extends AppComponent {
                 return (
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemContent}>{this._genderType()}</Text>
-                    </View>
-                );
-            case '版本':
-                return(
-                    <View style={styles.itemRightBox}>
-                        <Text style={styles.itemContent}>{this.getVersion()}</Text>
                     </View>
                 );
             default:

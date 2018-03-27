@@ -16,6 +16,7 @@ import {
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import SystemManager from '../../../../TSController/SystemManager';
 import {
     connect
 } from 'react-redux';
@@ -30,6 +31,8 @@ let originData = [
             'name': "修改密码",
         },{
             'name': "设置服务器地址",
+        },{
+            'name': "版本",
         }]
     }
 ];
@@ -54,9 +57,7 @@ class Setting extends AppComponent {
                 <View  style={styles.itemLeftBox} >
                     <Text style={styles.itemText}>{info.item.name}</Text>
                 </View>
-                <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <Icon name="angle-right" size={35} color="#aaa" />
-                </View>
+                {this._fillingValue(info)}
             </View>
         </TouchableHighlight>
     };
@@ -83,6 +84,27 @@ class Setting extends AppComponent {
                 break;
         }
     };
+
+    _fillingValue=(info)=>{
+        switch (info.item.name){
+            case '版本':
+                return(
+                    <View style={styles.itemRightBox}>
+                        <Text style={styles.itemContent}>{this.getVersion()}</Text>
+                    </View>
+                );
+            default:
+                return(
+                    <View style={styles.itemRightBox}>
+                        <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+                    </View>
+                )
+        }
+    };
+
+    getVersion = ()=>{
+        return SystemManager.getCurrentAppVersion();
+    }
 
     loginOut = ()=>{
         this.props.changeUnReadMessageNumber(0);
@@ -184,7 +206,12 @@ const styles = StyleSheet.create({
         backgroundColor:'#dc0000',
         justifyContent:'center',
         alignItems:'center'
-    }
+    },
+    arrow:{
+        fontSize:20,
+        color:'#989898',
+        marginLeft:15
+    },
 
 });
 
