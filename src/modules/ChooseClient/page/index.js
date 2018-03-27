@@ -154,11 +154,12 @@ class ChooseClient extends AppComponent {
     _rightButton=()=>{
         let accountStr = this.selectData.join(',');//'wg003724,wg003723'
         let AccountsNum = this.selectData.length;
-        if(this.defaulData){
-            accountStr += ','+ this.defaulData.join(',');
-            AccountsNum += this.defaulData.length;
-        }
+
         if(this.props.build){
+            if(this.defaulData){
+                accountStr += ','+ this.defaulData.join(',');
+                AccountsNum += this.defaulData.length;
+            }
             if(AccountsNum === 1){
                 let client = this.selectData[0].Account;
                 let Nick = this.selectData[0].Remark != '' ?　this.selectData[0].Remark : this.selectData[0].Nickname;
