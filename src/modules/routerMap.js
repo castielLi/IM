@@ -63,6 +63,7 @@ import Setting from './Me/page/setting'
 import ChangePassword from './Me/page/setting/changePassword'
 import ConfigSetting from './Me/page/setting/configSetting'
 import Search from './Search/page'
+import JoinGroup from './GroupInformationSetting/page/JoinGroup'
 
 
 export const MainPage = {
@@ -267,6 +268,12 @@ export const RouteMap = {
         'GroupBackgroundImage':{
             component:GroupBackgroundImage,
             params:{}
+        }
+    },
+    'JoinGroup':{
+        'JoinGroup': {
+            component: JoinGroup,
+            params: {"name":"JoinGroup"}
         }
     },
     'MoreGroupList': {

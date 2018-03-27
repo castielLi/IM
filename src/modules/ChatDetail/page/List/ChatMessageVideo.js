@@ -34,7 +34,6 @@ class ChatMessageVideo extends AppComponent {
             play:false,
             download:false,
         }
-
         imControllerLogic = IMControllerLogic.getSingleInstance();
     }
     componentWillReceiveProps(nextProps){
@@ -63,13 +62,15 @@ class ChatMessageVideo extends AppComponent {
             console.log(err.message);
         });
     };
+
     render() {
         let {data, style} = this.props;
         let {LocalSource,RemoteSource} = data.message;
         return(
-            <View style={styles.bubble}>
+            <View style={[style,styles.bubble]}>
                 {/*<Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>*/}
-                    <Image source={require('../../resource/play.png')} style={{width:70,height:70}}/>
+                    {true ? <Image source={require('../../resource/已经下载2.png')} style={{width:70,height:40}}/> :
+                        <Image source={require('../../resource/未下载.png')} style={{width:70,height:40}}/>}
                     {this.state.download ?
                         <View style={styles.progressView}>
                             <Text style={styles.progressText}>{Math.ceil(this.state.progress)}%</Text>
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     progressView:{
         position:'absolute',
         width:70,
-        height:70,
+        height:40,
         backgroundColor:'rgba(0,0,0,.5)',
         alignItems:'center',
         justifyContent:'center'

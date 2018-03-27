@@ -10,7 +10,7 @@ import {
     Platform,
     StyleSheet,
     InteractionManager,
-    ActivityIndicator
+    ActivityIndicator,
 } from 'react-native';
 import Swipeout from 'react-native-swipeout';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -96,7 +96,6 @@ class RecentChat extends AppComponent {
 
     componentDidMount() {
         // this.props.showNavigationBottom();
-
         InteractionManager.runAfterInteractions(()=>{
             imLogicController.getConversationList();
         })

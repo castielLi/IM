@@ -384,6 +384,20 @@ export default class AppManagement{
                    params:{"clientId":data,"scan":true}
                });
                break;
+           case AppPushSpecifyPageEnum.JoinGroup:
+               currentApp.root.route.replaceTop(currentApp.root,{
+                   key:'JoinGroup',
+                   routeId: 'JoinGroup',
+                   params:{"groupId":data}
+               });
+               break;
+           case AppPushSpecifyPageEnum.GroupChat:
+               currentApp.root.route.replaceTop(currentApp.root,{
+                   key:'ChatDetail',
+                   routeId: 'ChatDetail',
+                   params:{"groupId":data,"type":'group'}
+               });
+               break;
            case AppPushSpecifyPageEnum.UnKnow:
                currentApp.root.route.replaceTop(currentApp.root,{
                    key:'ScanCode',

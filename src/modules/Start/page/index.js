@@ -3,7 +3,7 @@
  */
 
 import React, {Component} from 'react';
-import {StyleSheet, Image,AsyncStorage,Platform,Alert,View,Dimensions} from 'react-native';
+import {StyleSheet, Image,AsyncStorage,NativeModules,Alert,View,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import AppTokenStateEnum from '../../../App/Enum/AppTokenStateEnum'
 import {connect} from 'react-redux';
