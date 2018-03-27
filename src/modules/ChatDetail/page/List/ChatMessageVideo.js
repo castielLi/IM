@@ -66,7 +66,7 @@ class ChatMessageVideo extends AppComponent {
             case 4:
             case 3:
                 return <Thouch onPress={()=>this.downloadVideo(data)} disabled={this.state.download}>
-                    <Image source={require('../../resource/未下载.png')} style={{width:70,height:40}}/>
+                    <Image source={require('../../resource/download.png')} style={{width:70,height:40}}/>
                     {this.state.download ?
                         <View style={styles.progressView}>
                             <Text style={styles.progressText}>{Math.ceil(this.state.progress)}%</Text>
@@ -75,7 +75,7 @@ class ChatMessageVideo extends AppComponent {
                 </Thouch>
             case 1:
                 return <Thouch onPress={()=>this.playVideo(LocalSource,RemoteSource,data)} disabled={this.state.download}>
-                    <Image source={require('../../resource/已经下载2.png')} style={{width:70,height:40}}/>
+                    <Image source={require('../../resource/play.png')} style={{width:70,height:40}}/>
                 </Thouch>
         }
     }

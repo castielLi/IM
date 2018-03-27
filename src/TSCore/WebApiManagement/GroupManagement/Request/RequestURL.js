@@ -1,6 +1,7 @@
 /**
  * Created by apple on 2017/12/25.
  */
+export const joinGroupUrl = "Member/EnterGroup";
 //创建群
 export const createGroupUrl = "Member/CreateGroup";
 //添加群成员

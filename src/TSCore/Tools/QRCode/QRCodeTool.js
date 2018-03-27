@@ -20,6 +20,12 @@ export default class QRCodeTool {
                 case QRCodeType.UserInfoCard:
                     this.callback.scanFinished && this.callback.scanFinished(type, tempArray[1]);
                     break;
+                case QRCodeType.GroupChat:
+                    this.callback.scanFinished && this.callback.scanFinished(type, tempArray[1]);
+                    break;
+                case QRCodeType.JoinGroup:
+                    this.callback.scanFinished && this.callback.scanFinished(type, tempArray[1]);
+                    break;
                 default:
                     //显示一个字符串
                     this.callback.scanFinished && this.callback.scanFinished(QRCodeType.UnKnow, data);

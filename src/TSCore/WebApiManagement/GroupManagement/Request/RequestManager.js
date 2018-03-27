@@ -9,6 +9,13 @@ export default class RequestManager {
     constructor(isDB) {
         this.request = HttpManager.getSingleInstance(isDB);
     }
+    joinGroup(param, callback) {
+        if (param == null) {
+            callback(null);
+            return;
+        }
+        this.requestInfo("joinGroup", "", param, groupRequest.joinGroupUrl, false, callback);
+    }
     getContactList(callback) {
         this.requestInfo("getContactList", "", null, groupRequest.getGroupListUrl, false, callback);
     }
