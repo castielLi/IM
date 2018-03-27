@@ -94,7 +94,8 @@ class ChatDetail extends AppComponent {
                     let Nickname = Setting ? Setting.Nickname : this.state.Nickname;
                     this.setState({
                         settingButtonDisplay: result.Exited,
-                        Nickname
+                        Nickname,
+                        name: result.Name,
                     })
                 });
             })

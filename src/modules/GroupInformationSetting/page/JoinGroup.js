@@ -17,7 +17,6 @@ import {Text,
     ScrollView
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
-import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import UserController from '../../../TSController/UserController';
@@ -30,9 +29,9 @@ let {height,width} = Dimensions.get('window');
 let currentObj = undefined;
 let currentAccount = undefined;
 
-class GroupName extends AppComponent {
+export default class JoinGroup extends AppComponent {
     constructor(props){
-        super(props)
+        super(props);
         this.state = {
             members
         };
@@ -57,7 +56,7 @@ class GroupName extends AppComponent {
     }
 
     _joinGroup=()=>{
-        userController.joinGroup(this.props.groupId,null,(result)=>{
+        userController.joinGroup(this.props.groupId,this.props.source,(result)=>{
             if(result.Result === 1){
                 //跳转界面
             }else{
