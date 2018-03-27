@@ -40,6 +40,18 @@ export default class ResetPassword extends AppComponent {
         }
     }
 
+    passwordEndEditing = ()=>{
+        if(this.state.NewPasswordText.length < 8){
+            this.alert("密码必须超过8位","错误");
+        }
+    }
+
+    confirmEndEditing = ()=>{
+        if((this.state.ConfirmPasswordText != this.state.NewPasswordText)){
+            this.alert("两次输入密码不一致,请重新输入","错误");
+        }
+    }
+
     componentWillUpdate() {
         console.log(this.props.loading)
         if(!this.state.textMessage){
@@ -70,6 +82,7 @@ export default class ResetPassword extends AppComponent {
                             secureTextEntry = {true}
                             underlineColorAndroid= {'transparent'}
                             onChangeText={(Text)=>{this.setState({NewPasswordText:Text})}}
+                            onEndEditing={()=>{this.passwordEndEditing()}}
                         ></TextInput>
 
                     </View>

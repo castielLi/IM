@@ -55,7 +55,6 @@ export default class FindPassword extends AppComponent {
         }else{
             alert('手机号码错误');
         }
-
 	}
 
 	componentWillUpdate() {
