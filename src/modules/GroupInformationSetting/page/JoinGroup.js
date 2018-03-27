@@ -33,7 +33,6 @@ export default class JoinGroup extends AppComponent {
     constructor(props){
         super(props);
         this.state = {
-            members
         };
         currentObj = this;
         userController =  UserController.getSingleInstance();
@@ -46,42 +45,27 @@ export default class JoinGroup extends AppComponent {
 
 
     componentDidMount(){
-        userController.getGroupMembersInfo(this.props.groupId, (result) => {
-            if(result){
-                currentObj.setState({
-                    members:result,
-                })
-            }
-        });
+
     }
 
     _joinGroup=()=>{
         userController.joinGroup(this.props.groupId,this.props.source,(result)=>{
             if(result.Result === 1){
                 //跳转界面
+                this.route.push(this.props,{
+                    key:'ChatDetail',
+                    routeId: 'ChatDetail',
+                    params:{"client":this.props.groupId,"type":'group'}
+                });
             }else{
-                alert('加入失败')
+                 // alert('加入失败')
             }
         })
     };
 
-    _getInfo = ()=>{
-        let membersNumber = this.state.members.length;
-        let membersName = '';
-        for(current of this.state.members){
-            if(current.Remark != ''){
-                membersName += current.Remark+'、';
-                continue;
-            }
-            membersName += current.Nickname+'、';
-        }
-        membersName = membersName.slice(0,-1);
-        return {membersNumber,membersName}
-    };
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let info = this._getInfo();
 
         return (
             <View style={styles.container}>
@@ -92,13 +76,13 @@ export default class JoinGroup extends AppComponent {
                 <View style={styles.content}>
                     <View style={styles.InfoContent}>
                         <ImagePlaceHolder style = {styles.pic} imageUrl = {require('../resource/groupAvator.png')}/>
-                        <Text style={styles.membersName} numberOfLines={1}>{info.membersName}</Text>
-                        <Text style={styles.membersNumber}>(共{info.membersNumber}人)</Text>
+                        <Text style={styles.membersName} numberOfLines={1}>{'阿斯顿、曹德旺、班得瑞、阿瓦隆'}</Text>
+                        <Text style={styles.membersNumber}>(共{'***'}人)</Text>
                     </View>
                     <View style={styles.joinContent}>
-                        <TouchableHighlight onPress={this._joinGroup}>
-                            <View style={touchView}>
-                                    <Text style={touchText}>加入群聊</Text>
+                        <TouchableHighlight onPress={this._joinGroup} style={styles.touch}>
+                            <View style={styles.touchView}>
+                                    <Text style={styles.touchText}>加入群聊</Text>
                             </View>
                         </TouchableHighlight>
                     </View>
@@ -130,23 +114,30 @@ const styles = StyleSheet.create({
         color:'#000',
         textAlign:'center',
         includeFontPadding:false,
-        maxWidth:200
+        maxWidth:200,
+        marginTop:10
     },
     membersNumber:{
         fontSize:14,
         color:'#989898',
         textAlign:'center',
         includeFontPadding:false,
+        marginTop:10
     },
     joinContent:{
-
+        alignItems:'center'
+    },
+    touch:{
+        borderRadius:5
     },
     touchView:{
         justifyContent:'center',
         alignItems:'center',
         paddingHorizontal:50,
-        paddingVertical:5,
-        backgroundColor:'#a0e75b'
+        paddingVertical:10,
+        backgroundColor:'#a0e75b',
+        width:200,
+        borderRadius:5
     },
     touchText:{
         fontSize:16,
