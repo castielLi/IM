@@ -80,11 +80,6 @@ class ChatDetail extends AppComponent {
         InteractionManager.runAfterInteractions(()=> {
             imController.setCurrentConversation(this.props.client, group);
             let setting = imController.getChatSetting();
-            if(setting){
-                this.setState({
-                    BackgroundImage:setting.BackgroundImagePath
-                });
-            }
             if (group) {
                 userController.getGroupInfo(this.props.client, false, (result) => {
                     userController.getGroupSetting(this.props.client,(Setting)=>{
@@ -93,9 +88,16 @@ class ChatDetail extends AppComponent {
                             settingButtonDisplay: result.Exited,
                             Nickname,
                             name: result.Name,
+                            BackgroundImage:setting?"":setting.BackgroundImagePath
                         })
                     });
                 })
+            }else{
+                if(setting){
+                    this.setState({
+                        BackgroundImage:setting.BackgroundImagePath
+                    });
+                }
             }
         });
     }
@@ -288,6 +290,7 @@ class ChatDetail extends AppComponent {
 		}
 	}
 	render() {
+	    console.log(new Date().getTime());
 		const MyView = Platform.OS === 'ios' ? KeyboardAvoidingView : View;
 		return (
 			<MyView style={styles.container} behavior='padding'  keyboardVerticalOffset={0}>
@@ -320,7 +323,7 @@ class ChatDetail extends AppComponent {
                     </View>
 				</TouchableWithoutFeedback>
 				<ThouchBar client={this.props.client} type={this.props.type} Nick={this.props.Nick} HeadImageUrl={this.props.HeadImageUrl}></ThouchBar>
-    		</MyView>
+            </MyView>
 
 		);
 	}

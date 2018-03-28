@@ -57,7 +57,8 @@ class Root extends AppComponent {
         return ({
             ...Navigator.SceneConfigs.FloatFromRight,
             //禁止手势
-            gestures: null
+            gestures: null,
+            defaultTransitionVelocity:10
         });
     }
     
