@@ -7,35 +7,24 @@ import {
     Text,
     View,
     Dimensions,
-    TouchableOpacity,
     Image,
-    Alert,
-    Platform
 } from 'react-native';
 
 let {width, height} = Dimensions.get('window');
 
 export default class ChatMessageSound extends PureComponent {
     constructor(props){
-        super(props)
+        super(props);
         this.state={
             hidden:true
-        }
-        this.changeVolumeHidden = this.changeVolumeHidden.bind(this);
+        };
     }
-
-    static defaultProps = {
-    };
-
-    static propTypes = {
-    };
 
     changeVolumeHidden = (value)=>{
         this.setState({
             hidden:value
         })
-    }
-
+    };
 
     getSoundTime = (Time)=>{
         let soundWidth = 70;
