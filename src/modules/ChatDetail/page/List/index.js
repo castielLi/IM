@@ -113,8 +113,6 @@ class Chat extends AppComponent {
         _MaxListHeight = 0; //记录最大list高度
         FooterLayout = false;
         ListLayout = false;
-        userController = undefined;
-        applyController = undefined;
     }
 
 
