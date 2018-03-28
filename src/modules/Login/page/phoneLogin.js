@@ -72,12 +72,9 @@ class PhoneLogin extends AppComponent {
         currentObj.showLoading();
         Keyboard.dismiss();//关闭软键盘
 
-
-
         loginController.login(currentObj.state.phoneText,currentObj.state.passWordText,(response)=>{
+            currentObj.hideLoading()
             if(response.Result !== 1){
-                currentObj.hideLoading()
-
                 switch (response.Result){
                     case 1001:
                         currentObj.alert("账号或者密码错误","错误");
@@ -98,6 +95,12 @@ class PhoneLogin extends AppComponent {
                 return;
             }
             this.props.signDoing();
+            this.setState({
+                phoneText:"",
+                passWordText:""
+            })
+            this.phone.setNativeProps({text:""})
+            this._textInput.setNativeProps({text:""})
             this.appManagement.systemLogin();
         });
     }
@@ -126,6 +129,9 @@ class PhoneLogin extends AppComponent {
 						</View>
 						<Text style = {styles.NumberBefore}>+86</Text>
 						<TextInput
+                            ref={element => {
+                                this.phone = element
+                            }}
 							style = {styles.textInput}
 							keyboardType = {'numeric'}
 							maxLength = {11}
@@ -144,6 +150,7 @@ class PhoneLogin extends AppComponent {
                             }
 						</View>
 						<TextInput
+
 							ref = {(c)=>{this._textInput = c}}
 							maxLength = {16}
 							style = {[styles.textInput,{marginLeft:-10,}]}

@@ -84,7 +84,7 @@ export const RootRoute = {
 
 export const LoginRoute = {
     key: 'Login',
-    routeId: 'Login'
+    routeId: 'PhoneLogin'
 }
 
 export const RouteMap = {

@@ -109,7 +109,6 @@ class Setting extends AppComponent {
     loginOut = ()=>{
         this.props.changeUnReadMessageNumber(0);
         this.appManagement.systemLogout();
-        this.route.ToLogin(this.props);
     };
 
 

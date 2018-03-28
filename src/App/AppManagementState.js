@@ -186,7 +186,7 @@ export class LogoutState extends IAppManagementState{
         if(appManagementObj.applyController != undefined){
             appManagementObj.applyController.destroyInstance();
         }
-        appManagementObj.root.route.ToLogin();
+        appManagementObj.root.route.ToLogin(appManagementObj.root);
         appManagementObj.setState(this);
     }
 
