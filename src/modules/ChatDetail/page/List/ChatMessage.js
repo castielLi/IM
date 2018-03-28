@@ -1,7 +1,7 @@
 /**
  * Created by Hsu. on 2017/9/8.
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     StyleSheet,
     Text,
@@ -22,7 +22,7 @@ import AppComponent from '../../../../Core/Component/AppComponent'
 
 let {width, height} = Dimensions.get('window');
 
-export default class ChatMessage extends AppComponent {
+export default class ChatMessage extends PureComponent {
     constructor(props){
         super(props);
         this.state = {

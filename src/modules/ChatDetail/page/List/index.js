@@ -1,7 +1,7 @@
 /**
  * Created by Hsu. on 2017/8/29.
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     StyleSheet,
     Text,
@@ -19,7 +19,6 @@ import {
     Button,
     TouchableWithoutFeedback,
     Clipboard
-
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -45,7 +44,7 @@ let applyController = undefined;
 let currentObj;
 let {width,height} = Dimensions.get('window');
 let forceRefresh = false;//强刷list
-class Chat extends AppComponent {
+class Chat extends PureComponent {
     constructor(props){
         super(props);
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {

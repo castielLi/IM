@@ -1,4 +1,4 @@
-import React, { Component } from 'react';  
+import React, { PureComponent } from 'react';
 import {  
   StyleSheet,  
   Text,  
@@ -20,7 +20,7 @@ let isIos = (Platform.OS === 'ios') ? true : false;
 
 var imController = undefined;
 
-class AutoExpandingTextInput extends Component {
+class AutoExpandingTextInput extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {

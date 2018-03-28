@@ -1,7 +1,7 @@
 /**
  * Created by Hsu. on 2017/11/6.
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     StyleSheet,
     Text,
@@ -26,7 +26,7 @@ let imControllerLogic = undefined;
 
 let {width, height} = Dimensions.get('window');
 
-class ChatMessageVideo extends AppComponent {
+class ChatMessageVideo extends PureComponent {
     constructor(props){
         super(props)
         this.state = {

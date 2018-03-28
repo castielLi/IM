@@ -4,7 +4,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
 StyleSheet,
 View,
@@ -14,7 +14,7 @@ import ThouchBarBoxTopBox from './thouchBarBoxTopBox';
 import ThouchBarBoxBottomBox from './thouchBarBoxBottomBox';
 
 
-export default class ThouchBar extends Component {
+export default class ThouchBar extends PureComponent {
   constructor(props) {  
     super(props);
     this.state = {

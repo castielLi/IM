@@ -1,4 +1,4 @@
-import React, { Component } from 'react';  
+import React, { PureComponent } from 'react';
 import {  
   StyleSheet,  
   Text,  
@@ -59,7 +59,7 @@ let phizData = [
     ]
     ];
 
-export default class ExpressionBox extends Component {  
+export default class ExpressionBox extends PureComponent {
   constructor(props) {  
     super(props); 
     this.onPressEmoji = this.onPressEmoji.bind(this);

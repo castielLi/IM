@@ -1,4 +1,4 @@
-import React, { Component } from 'react';  
+import React, { PureComponent } from 'react';
 import {  
   StyleSheet,  
   Text,  
@@ -20,7 +20,7 @@ import * as Actions from '../../reducer/action';
   
 
 
-class ThouchBarBoxBottomBox extends Component {  
+class ThouchBarBoxBottomBox extends PureComponent {
   constructor(props) {  
     super(props); 
 

@@ -1,5 +1,5 @@
 import React, {
-  Component
+    PureComponent
 } from 'react';
 import {
   StyleSheet,
@@ -40,7 +40,7 @@ var {
   width
 } = Dimensions.get('window');
 var audio, startTime, recordTimer, modalTimer,checkMaxRecordTimeInterval,delayStopTimer;
-class ThouchBarBoxTopBox extends Component {
+class ThouchBarBoxTopBox extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {

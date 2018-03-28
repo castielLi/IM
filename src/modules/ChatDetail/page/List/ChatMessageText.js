@@ -1,7 +1,7 @@
 /**
  * Created by Hsu. on 2017/9/8.
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     StyleSheet,
     Text,
@@ -16,7 +16,7 @@ import Thouch from '../../../Common/Thouch/index'
 
 let {width, height} = Dimensions.get('window');
 
-export default class ChatMessageText extends Component {
+export default class ChatMessageText extends PureComponent {
     constructor(props){
         super(props)
 
