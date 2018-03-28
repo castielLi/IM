@@ -129,7 +129,6 @@ class ChatDetail extends AppComponent {
 
 
     _refreshUI(type,params){
-        console.log("children refreshUI"+ new Date().getTime());
         switch (type){
             case AppPageMarkEnum.ConversationDetail:
                 let chatRecord = params.list;
