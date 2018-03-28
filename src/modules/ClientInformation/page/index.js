@@ -65,6 +65,7 @@ class ClientInformation extends AppComponent {
                     isFriend,
                     oneself:false
                 })
+
             });
         }
     }

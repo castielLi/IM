@@ -352,7 +352,7 @@ export default class AppManagement{
     }
 
     systemBackGround(){
-        if(this.imLogicController!=undefined) {
+        if(this.imLogicController!=undefined && this.Logined) {
             if(!this.androidChoosing) {
                 this.imLogicController.stopSocket();
             }
@@ -360,7 +360,7 @@ export default class AppManagement{
     }
 
     systemActive(){
-        if(this.imLogicController!=undefined) {
+        if(this.imLogicController!=undefined && this.Logined) {
             this.imLogicController.initSocket();
         }
     }

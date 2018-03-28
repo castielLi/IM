@@ -73,52 +73,32 @@ class ChatDetail extends AppComponent {
 	}
 
     componentWillMount(){
-        // if (group) {
-        //     userController.getGroupInfo(this.props.client, false, (result) => {
-        //         this.setState({
-        //             settingButtonDisplay: result.Exited
-        //         })
-        //     })
-        // }
         AppState.addEventListener('change', this._handleAppStateChange);
-        imController.setCurrentConversation(this.props.client, group);
-        let setting = imController.getChatSetting();
-        if(setting){
-            this.setState({
-                BackgroundImage:setting.BackgroundImagePath
-            });
-        }
-        if (group) {
-            userController.getGroupInfo(this.props.client, false, (result) => {
-                userController.getGroupSetting(this.props.client,(Setting)=>{
-                    let Nickname = Setting ? Setting.Nickname : this.state.Nickname;
-                    this.setState({
-                        settingButtonDisplay: result.Exited,
-                        Nickname,
-                        name: result.Name,
-                    })
-                });
-            })
-        }
     }
 
-    // componentDidMount(){
-    //     InteractionManager.runAfterInteractions(()=> {
-    //         if (group) {
-    //             userController.getGroupInfo(this.props.client, false, (result) => {
-    //                 this.setState({
-    //                     settingButtonDisplay: result.Exited
-    //                 })
-    //             })
-    //         }
-    //         // imController.setCurrentConversation(this.props.client, group);
-    //         // let setting = imController.getChatSetting();
-    //         // if(setting){
-    //         //     this.BackgroundImage = setting.BackgroundImagePath;
-    //         // }
-    //
-    //     });
-    // }
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            imController.setCurrentConversation(this.props.client, group);
+            let setting = imController.getChatSetting();
+            if(setting){
+                this.setState({
+                    BackgroundImage:setting.BackgroundImagePath
+                });
+            }
+            if (group) {
+                userController.getGroupInfo(this.props.client, false, (result) => {
+                    userController.getGroupSetting(this.props.client,(Setting)=>{
+                        let Nickname = Setting ? Setting.Nickname : this.state.Nickname;
+                        this.setState({
+                            settingButtonDisplay: result.Exited,
+                            Nickname,
+                            name: result.Name,
+                        })
+                    });
+                })
+            }
+        });
+    }
 
     componentWillUnmount(){
         AppState.removeEventListener('change', this._handleAppStateChange);
