@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import {  
   StyleSheet,  
   Text,  
@@ -49,7 +49,7 @@ let videoOptions = {
     }
 }
 
-class MoreUseBox extends PureComponent {
+class MoreUseBox extends AppComponent {
     constructor(props) {
         super(props);
         this.useCamera = this.useCamera.bind(this);
