@@ -2,7 +2,7 @@
  * Created by apple on 2018/3/19.
  */
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,InteractionManager,StyleSheet,Dimensions,Alert}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../../../Core/Helper/UIAdapter';
 import AppComponent from '../../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
@@ -24,6 +24,11 @@ export default class ConfigSetting extends AppComponent {
     }
 
     componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
         address = SystemManager.getConfigSetting();
         this.setState({
             configSetting:address
@@ -68,7 +73,7 @@ export default class ConfigSetting extends AppComponent {
                     </View>
                     <View style={styles.validateView}>
                         <TextInput
-                            autoFocus={true}
+                            ref={e=>this._TextInput = e}
                             style={styles.textInput}
                             underlineColorAndroid="transparent"
                             onChangeText={(v)=>{this.setState({configSetting:v})}}

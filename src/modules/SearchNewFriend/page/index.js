@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -39,6 +39,13 @@ class SearchNewFriend extends AppComponent {
         super.componentWillUnmount();
     }
 
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
+    }
 
     backToAddFriends = ()=>{
         this.route.pop(this.props);
@@ -76,9 +83,9 @@ class SearchNewFriend extends AppComponent {
                         <View style={styles.searchBox}>
                             <Icon name="search" size={20} color="#aaa" />
                             <TextInput
+                                ref={e=>this._TextInput = e}
                                 style={styles.search}
                                 underlineColorAndroid = 'transparent'
-                                autoFocus = {true}
                                 placeholder = '奇信号/手机号'
                                 defaultValue = {this.state.text}
                                 onChangeText={(v)=>{this.setState({text:v})}}

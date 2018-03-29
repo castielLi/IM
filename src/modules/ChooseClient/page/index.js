@@ -12,7 +12,6 @@ import {
     StyleSheet,
     Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
     TextInput,
     Dimensions,
     FlatList,
@@ -219,7 +218,6 @@ class ChooseClient extends AppComponent {
                         style={styles.search}
                         underlineColorAndroid = 'transparent'
                         placeholder = '搜索'
-                        autoFocus = {false}
                         defaultValue = {this.state.text}
                         onChangeText={(v)=>{this.setState({text:v,isShowFlatList:v?true:false})}}
                     />

@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -53,6 +53,12 @@ class GroupName extends AppComponent {
         // if(this.state.isChangeText===false){
         //     this.setState({rightButtonDisabled:true})
         // }
+        //完成导航动画在获取输入框焦点
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
     }
 
 
@@ -84,7 +90,7 @@ class GroupName extends AppComponent {
                 alert('修改失败');
             }
         });
-    }
+    };
 
     render() {
         let Popup = this.PopContent;
@@ -104,8 +110,8 @@ class GroupName extends AppComponent {
                         </View>
                         <View style={styles.inputBox}>
                             <TextInput
+                                ref={e=>this._TextInput = e}
                                 underlineColorAndroid = {'transparent'}
-                                autoFocus = {true}
                                 value={this.state.text}
                                 maxLength = {20}
                                 onChangeText={(v)=>{this._onChangeText(v)}}

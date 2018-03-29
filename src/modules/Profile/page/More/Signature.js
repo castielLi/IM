@@ -6,6 +6,7 @@ import {
     StyleSheet,
     TextInput,
     View,
+    InteractionManager
 } from 'react-native';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
@@ -27,6 +28,15 @@ export default class Signature extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+    }
+
+    componentDidMount(){
+        //完成导航动画在获取输入框焦点
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
     }
 
     _onFocus=()=>{
@@ -84,7 +94,6 @@ export default class Signature extends AppComponent {
                             onChangeText={this._onChangeText}
                             onContentSizeChange={this._onChangeSize}
                             value={Signature}
-                            autoFocus={true}
                             multiline={true}
                         />
                         {(Signature && Signature.length) ?

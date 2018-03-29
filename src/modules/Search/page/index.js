@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -40,6 +40,18 @@ export default class Search extends AppComponent {
         this._goToChatDetail = this._goToChatDetail.bind(this);
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
+    }
+
     _refreshUI(type,params){
         //这里如果没有点击通讯录界面是不会进行初始化的，不会初始化就会导致下层通知上层的时候不会显示contact 申请的红点
         switch (type){
@@ -50,12 +62,6 @@ export default class Search extends AppComponent {
                 break;
         }
     }
-
-
-    componentWillUnmount(){
-        super.componentWillUnmount();
-    }
-
 
     searchInfo = (keyword)=>{
         Keyboard.dismiss();
@@ -106,9 +112,9 @@ export default class Search extends AppComponent {
                     <View style={styles.searchBox}>
                         <Icon name="search" size={20} color="#aaa" />
                         <TextInput
+                            ref={e=>this._TextInput = e}
                             style={styles.search}
                             underlineColorAndroid = 'transparent'
-                            autoFocus = {true}
                             placeholder = '好友昵称/好友云信号/群昵称'
                             defaultValue = {this.state.text}
                             onChangeText={(v)=>{this.setState({text:v})}}

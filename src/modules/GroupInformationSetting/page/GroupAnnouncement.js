@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -44,6 +44,11 @@ class GroupAnnouncement extends AppComponent {
     }
 
     componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
         if(this.props.Owner===currentAccount.Account){
             this.setState({
                 rightButtonText:'编辑'
@@ -113,9 +118,9 @@ class GroupAnnouncement extends AppComponent {
                         {this.state.rightButtonText ==='编辑'||this.state.rightButtonText ===''?
                             <Text style={styles.content}>{this.state.text}</Text>:
                             <TextInput
+                                ref={e=>this._TextInput = e}
                                 underlineColorAndroid = {'transparent'}
                                 multiline={true}
-                                autoFocus = {true}
                                 defaultValue={this.state.text}
                                 maxLength = {150}
                                 onChangeText={(v)=>{this._onChangeText(v)}}

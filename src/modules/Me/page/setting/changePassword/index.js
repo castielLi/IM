@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,InteractionManager,StyleSheet,Dimensions,Alert}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../../../Core/Helper/UIAdapter';
 import {
     Navigator
@@ -29,6 +29,15 @@ export default class ChangePassword extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+    }
+
+    componentDidMount(){
+        //完成导航动画在获取输入框焦点
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
     }
 
 	//当点击短信验证的时候检测手机号码的方法
@@ -80,7 +89,7 @@ export default class ChangePassword extends AppComponent {
 					</View>
 					<View style={styles.validateView}>
 						<TextInput
-							autoFocus={true}
+							ref={e=>this._TextInput = e}
 							style={styles.textInput}
 							underlineColorAndroid="transparent"
 							onChangeText={(v)=>{this.setState({oldPassWord:v})}}
