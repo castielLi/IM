@@ -88,7 +88,7 @@ class ChatDetail extends AppComponent {
                             settingButtonDisplay: result.Exited,
                             Nickname,
                             name: result.Name,
-                            BackgroundImage:setting?"":setting.BackgroundImagePath
+                            BackgroundImage:!setting?"":setting.BackgroundImagePath
                         })
                     });
                 })

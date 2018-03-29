@@ -48,6 +48,7 @@ export default class ChatMessageVideo extends PureComponent {
                         </View> :null
                     }
                 </View>
+            case 0:
             case 1:
                 return <View >
                     <Image source={require('../../resource/play.png')} style={{width:70,height:40}}/>

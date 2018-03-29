@@ -55,7 +55,7 @@ export default class JoinGroup extends AppComponent {
                 this.route.push(this.props,{
                     key:'ChatDetail',
                     routeId: 'ChatDetail',
-                    params:{"client":this.props.groupId,"type":'group'}
+                    params:{"client":this.props.groupId,"type":'group',Nick: this.props.Name}
                 });
             }else{
                  // alert('加入失败')

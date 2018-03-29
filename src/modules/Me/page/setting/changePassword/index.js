@@ -51,24 +51,23 @@ export default class ChangePassword extends AppComponent {
                     //修改成功，页面跳转到登录页面
                     // alert('密码修改成功，请重新登录!');
                     Keyboard.dismiss();
-                    this.route.push(this.props,{
-                        key:'Login',
-                        routeId: 'PhoneLogin',
-                        sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-                    });
+                    this.route.ToLogin(this.props);
 				}else{
-                    alert('修改密码失败');
+                    this.alert('修改密码失败',"错误");
 				}
 			});
 		}else {
-			alert('两次输入密码不匹配');
+			this.alert('两次输入密码不匹配',"错误");
 		}
 
 		
 	}
 
 	render(){
-		return (
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
+
+        return (
 			<View style= {styles.container}>
 				<MyNavigationBar
 					left = {{func:()=>{this.route.pop(this.props)}}}
@@ -124,7 +123,8 @@ export default class ChangePassword extends AppComponent {
                         {this.state.confirmPassWord.length ? <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({confirmPassWord:''})}} style={{marginRight:10}}/> : null}
 					</View>
 				</View>
-
+				<Popup ref={ popup => this.popup = popup}/>
+				<Loading ref = { loading => this.loading = loading}/>
 			</View>
 			
 		)

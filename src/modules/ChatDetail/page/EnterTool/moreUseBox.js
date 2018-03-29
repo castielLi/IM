@@ -138,7 +138,7 @@ class MoreUseBox extends AppComponent {
                 console.log('UserGroup tapped custom button: ', response.customButton);
             }
             else {
-                let responsePath = 'file://' + response.path;
+                let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
                 imController.SendFile(2,responsePath);
                 this.appManagement.setAndroidChoosePhotoOrVideo(false);

@@ -389,7 +389,7 @@ class GroupInformationSetting extends AppComponent {
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
                         imController.removeAllMessage(Id,true)
-                        alert("清空聊天记录成功")
+                        this.alert("清空聊天记录成功","提醒")
                     }} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>清空聊天记录</Text>

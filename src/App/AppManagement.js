@@ -395,7 +395,7 @@ export default class AppManagement{
                    currentApp.root.route.replaceTop(currentApp.root,{
                        key:'JoinGroup',
                        routeId: 'JoinGroup',
-                       params:{"groupId":data.GroupId,'source':data.Source}
+                       params:{"groupId":data.GroupId,'source':data.Source,'Name':data.Name}
                    });
                }
                break;
