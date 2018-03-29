@@ -71,15 +71,16 @@ export default class Register extends AppComponent {
                 switch (response.data.Result){
                     case 1:
                         currentObj.alert("注册成功!");
+                        currentObj.route.pop(currentObj.props)
                         break;
                     case 5005:
-                        currentObj.alert("验证码无效!");
+                        currentObj.alert("错误","验证码无效!");
                         break;
 
                 }
 			});
 		}else{
-			alert('信息不能为空!');
+            currentObj.alert("错误",'信息不能为空!');
 		}
 	}
 	cancelSend = (hideConfirm)=>{
@@ -126,6 +127,7 @@ export default class Register extends AppComponent {
 						<Text style = {styles.NumberBefore}>+86</Text>
 						<TextInput
 						style = {styles.textInput}
+						keyboardType = {'numeric'}
 						maxLength = {11}
 						placeholderTextColor = '#bebebe' 
 						placeholder = '请输入手机号码' 
@@ -154,7 +156,8 @@ export default class Register extends AppComponent {
 						maxLength = {6}
 						style = {[styles.textInput,{marginLeft:-10}]} 
 						placeholderTextColor = '#bebebe' 
-						placeholder = '请输入验证码' 
+						placeholder = '请输入验证码'
+						keyboardType = {'numeric'}
 						onChangeText={(Text)=>{this.setState({codeText:Text})}}
 						underlineColorAndroid= {'transparent'}></TextInput>
 						<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.getValidateCode()}}>
