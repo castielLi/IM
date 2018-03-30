@@ -46,6 +46,12 @@ export default class ChatMessageSound extends PureComponent {
                     <Text style={styles.defaultText}>音频下载中...</Text>
                 </View>
             )
+        }if(status == 2){
+            return(
+                <View style={styles.defaultSound}>
+                    <Text style={styles.defaultText}>音频重新下载中...</Text>
+                </View>
+            )
         }else{
             if(sender){
                 return(
