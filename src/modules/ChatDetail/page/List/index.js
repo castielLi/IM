@@ -417,10 +417,8 @@ class Chat extends PureComponent {
                         {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={styles.infoView}>
-                        <TouchableOpacity onPress = {()=>{
-                            this.props.goToClientInfo(sender.account);
-                        }}>
-                        <ImagePlaceHolder style={styles.userImage} imageUrl={headImagePath}/>
+                        <TouchableOpacity onPress = {()=>{this.props.goToClientInfo(sender.account);}}>
+                            <ImagePlaceHolder style={styles.userImage} imageUrl={headImagePath}/>
                         </TouchableOpacity>
                         <View>
                             {(this.props.type === 'group' && this.props.Nickname) ? <Text style={{fontSize:12,color:'#666',marginLeft:10,marginBottom:3}}>{sender.name}</Text> : null}
@@ -437,11 +435,11 @@ class Chat extends PureComponent {
                                 playSound = {this.props.playSound}
                                 // onLongPress={this.ShowPopupMenu}
                             />
-                            <View style={styles.msgStatusLeft}>
-                                <TouchableOpacity>
-                                    {this.messagesStatus(status)}
-                                </TouchableOpacity>
-                            </View>
+                        </View>
+                        <View style={styles.msgStatusLeft}>
+                            <TouchableOpacity>
+                                {this.messagesStatus(status)}
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
