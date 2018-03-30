@@ -47,13 +47,9 @@ let currentObj= undefined;
 class RecentChat extends AppComponent {
     constructor(props) {
         super(props);
-        var ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2,
-        })
         this.state = {
             sectionID: '',
             rowID: '',
-            dataSource: ds,
             socket:AppStatusEnum.Normal,//socket连接状态
             socketError:'',//socket错误提示
             ConverseList:[]
@@ -290,7 +286,7 @@ class RecentChat extends AppComponent {
                         renderHiddenItem={ (data, rowMap) => (
                             <View style={{alignItems:'flex-end'}}>
                                 <TouchableHighlight onPress={()=>this._deleteSomeRow(data.item,rowMap)}>
-                                    <View style={{backgroundColor:'red',justifyContent:'center', alignItems:'center',width:70,flex:1}}>
+                                    <View style={{backgroundColor:'red',justifyContent:'center', alignItems:'center',width:70,flex:1,marginVertical:1}}>
                                         <Text style={{fontSize:14, color:'#fff'}}>删除</Text>
                                     </View>
                                 </TouchableHighlight>
