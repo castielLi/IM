@@ -66,7 +66,7 @@ export default class JoinGroup extends AppComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-
+        let {Name,MemberCount} = this.props;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -76,8 +76,8 @@ export default class JoinGroup extends AppComponent {
                 <View style={styles.content}>
                     <View style={styles.InfoContent}>
                         <ImagePlaceHolder style = {styles.pic} imageUrl = {require('../resource/groupAvator.png')}/>
-                        <Text style={styles.membersName} numberOfLines={1}>{'阿斯顿、曹德旺、班得瑞、阿瓦隆'}</Text>
-                        <Text style={styles.membersNumber}>(共{'***'}人)</Text>
+                        <Text style={styles.membersName} numberOfLines={1}>{Name}</Text>
+                        <Text style={styles.membersNumber}>(共{MemberCount}人)</Text>
                     </View>
                     <View style={styles.joinContent}>
                         <TouchableHighlight onPress={this._joinGroup} style={styles.touch}>
