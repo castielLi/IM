@@ -70,7 +70,7 @@ export default class Register extends AppComponent {
                 currentObj.hideLoading();
                 switch (response.data.Result){
                     case 1:
-                        currentObj.alert("注册成功!");
+                        Alert.alert("成功","注册成功!");
                         currentObj.route.pop(currentObj.props)
                         break;
                     case 5005:

@@ -74,9 +74,9 @@ class NewFriend extends AppComponent {
         let callback = (result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
-                alert('接受好友申請成功')
+                this.alert('接受好友申請成功',"提醒")
             }else{
-                alert('接受好友申請失败')
+                this.alert('接受好友申請失败',"错误")
             }
         };
         applyController.acceptFriend(key,callback);
@@ -84,7 +84,7 @@ class NewFriend extends AppComponent {
     }
 
     deleteApply = (index)=>{
-        alert('删除好友申请')
+        this.alert('删除好友申请',"提醒")
     };
 
     applyMsgStyle = (rowID,rowData)=>{
@@ -170,6 +170,7 @@ class NewFriend extends AppComponent {
     };
 
     render() {
+        let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
             <View style={styles.container}>
@@ -195,6 +196,7 @@ class NewFriend extends AppComponent {
                     </ListView>
 
                 </ScrollView>
+                <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
