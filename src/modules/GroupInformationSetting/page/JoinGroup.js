@@ -71,7 +71,7 @@ export default class JoinGroup extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
-                    heading={"扫码加群"}
+                    heading={"加群"}
                 />
                 <View style={styles.content}>
                     <View style={styles.InfoContent}>
