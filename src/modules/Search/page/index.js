@@ -56,9 +56,13 @@ export default class Search extends AppComponent {
         //这里如果没有点击通讯录界面是不会进行初始化的，不会初始化就会导致下层通知上层的时候不会显示contact 申请的红点
         switch (type){
             case AppPageMarkEnum.SearchByKeyword:
-                currentObj.setState({
-                    searchResult:params
-                })
+                if(params.length > 0){
+                    currentObj.setState({
+                        searchResult:params
+                    })
+                }else{
+                    currentObj.alert("没有搜索到本地相应的用户(群)信息","提醒")
+                }
                 break;
         }
     }
