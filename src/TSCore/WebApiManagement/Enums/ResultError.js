@@ -31,6 +31,8 @@ var ResultError;
     ResultError[ResultError["AccountInvalid"] = 2007] = "AccountInvalid";
     //拒绝游客
     ResultError[ResultError["RefuseTourist"] = 2008] = "RefuseTourist";
+    //Token为空
+    ResultError[ResultError["OtherLogin"] = 2010] = "OtherLogin";
     /*****************好友操作错误码*****************/
     ///好友申请记录不存在
     ResultError[ResultError["AcceptRecordNotExist"] = 3001] = "AcceptRecordNotExist";
