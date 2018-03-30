@@ -242,8 +242,9 @@ class ChatDetail extends AppComponent {
     _playVideo = (Local,Remote,data)=>{
         this.releaseSound();
         let {messageId,message} = data;
-        RNFS.exists(Local).then((success) => {
-            if(!success){
+        RNFS.exists(Local).then((exist) => {
+            //如果不存在，或者是文件存在但是消息状态为下载失败或者正在下载的情况
+            if(!exist || message.status == 2 || message.status == 4){
                 imController.manualDownloadResource(this.props.client,messageId,group,message);
             }
             else{

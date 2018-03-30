@@ -228,7 +228,10 @@ class Chat extends PureComponent {
             )
         }
         else if(status === 1){
-            return null;
+            // return null;
+            return (
+                <Image source={require('../../resource/fail.png')} style={{width:20,height:20}}/>
+            )
         }
         else{
             return (
@@ -402,7 +405,6 @@ class Chat extends PureComponent {
                             playSound = {this.props.playSound}
                             // onLongPress={this.ShowPopupMenu}
                         />
-                        {/*{this.currentAccount.HeadImagePath&&this.currentAccount.HeadImagePath!==''?<Image source={{uri:this.currentAccount.HeadImagePath}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
                         <ImagePlaceHolder style={styles.userImage} imageUrl={headImagePath}/>
                     </View>
                 </View>
@@ -415,7 +417,6 @@ class Chat extends PureComponent {
                         {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
                     </View>
                     <View style={styles.infoView}>
-                        {/*{this.props.HeadImageUrl&&this.props.HeadImageUrl!==''?<Image source={{uri:this.props.HeadImageUrl}} style={styles.userImage}/>:<Image source={require('../../resource/avator.jpg')} style={styles.userImage}/>}*/}
                         <TouchableOpacity onPress = {()=>{
                             this.props.goToClientInfo(sender.account);
                         }}>
@@ -436,6 +437,11 @@ class Chat extends PureComponent {
                                 playSound = {this.props.playSound}
                                 // onLongPress={this.ShowPopupMenu}
                             />
+                            <View style={styles.msgStatusLeft}>
+                                <TouchableOpacity>
+                                    {this.messagesStatus(status)}
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -809,6 +815,10 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         marginRight:10
     },
+    msgStatusLeft:{
+        justifyContent:'center',
+        marginLeft:10,
+    },
     itemView:{
         marginBottom:10,
     },
@@ -827,6 +837,7 @@ const styles = StyleSheet.create({
     },
     infoView:{
         flexDirection:'row',
+        justifyContent:'flex-start',
     },
     infoViewRight:{
         flexDirection:'row',

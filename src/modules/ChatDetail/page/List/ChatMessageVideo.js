@@ -40,6 +40,7 @@ export default class ChatMessageVideo extends PureComponent {
         switch (status){
             case 4:
             case 3:
+            case 2:
                 return <View >
                     <Image source={require('../../resource/download.png')} style={{width:70,height:40}}/>
                     {this.state.download ?
