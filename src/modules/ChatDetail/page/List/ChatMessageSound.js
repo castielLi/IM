@@ -40,10 +40,16 @@ export default class ChatMessageSound extends PureComponent {
         let {status} = data;
         let soundObjConfig = this.getSoundTime(Time);
 
-        if(status == 4 || status == 2){
+        if(status == 4){
             return(
                 <View style={styles.defaultSound}>
                     <Text style={styles.defaultText}>音频下载中...</Text>
+                </View>
+            )
+        }if(status == 2){
+            return(
+                <View style={styles.defaultSound}>
+                    <Text style={styles.defaultText}>音频重新下载中...</Text>
                 </View>
             )
         }else{
