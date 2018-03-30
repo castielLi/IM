@@ -40,6 +40,7 @@ class ChatSetting extends AppComponent {
         }
         
         this.gotoGroupBackgroundImage = this.gotoGroupBackgroundImage.bind(this);
+        this._clearMessages = this._clearMessages.bind(this);
     }
 
     componentWillUnmount(){
@@ -61,10 +62,17 @@ class ChatSetting extends AppComponent {
         this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:this.props.Account}});
     };
 
+    _clearMessages = ()=> {
+        imController.removeAllMessage(this.props.Account,false);
+        this.alert("清空聊天记录成功","提醒")
+    }
+
     _createGroup=()=>{
         this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{Accounts:[this.props.Account],build:true}});
     };
     render() {
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
         let path = userController.getAccountHeadImagePath(this.props.Account);
         return (
             <View style={styles.container}>
@@ -100,22 +108,14 @@ class ChatSetting extends AppComponent {
                             <Icon name="angle-right" size={20} color="#aaa" />
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-                        imController.removeAllMessage(Id,false);
-                        alert("清空聊天记录成功")
-                    }} style={{marginTop:15}}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._clearMessages} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>清空聊天记录</Text>
                         </View>
                     </TouchableHighlight>
-                    {/*<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>*/}
-                        {/*<View  style={styles.remarksBox}>*/}
-                            {/*<Text style={styles.remarks}>投诉</Text>*/}
-                            {/*<Icon name="angle-right" size={20} color="#aaa" />*/}
-                        {/*</View>*/}
-                    {/*</TouchableHighlight>*/}
-
                 </View>
+                <Popup ref={ popup => this.popup = popup}/>
+                <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
             
