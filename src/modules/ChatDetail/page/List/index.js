@@ -237,6 +237,38 @@ class Chat extends PureComponent {
         }
     }
 
+    receiveMessagesStatus = (status)=>{
+
+        // //正在发送
+        // SENDING = 0,
+        //     //接收成功/发送成功
+        //     SUCCESS = 1,
+        //     //下载失败/发送失败
+        //     FAIL = 2,
+        //     //等待下载(如果是文件类型)
+        //     WAIT_DOWNLOAD = 3,
+        //     //正在下载(如果是文件类型)
+        //     DOWNLOADING = 4,
+        //     RETACTING = 5
+
+        if(status === 4){
+            return (
+                <ActivityIndicator
+                    size="small"
+                />
+            )
+        }
+        else if(status === 1){
+            return null;
+        }
+        else if(status == 2){
+            return (
+                <Image source={require('../../resource/fail.png')} style={{width:20,height:20}}/>
+            )
+        }
+    }
+
+
     //发送好友申请信息
     _sendApplyMessage=(value)=>{
         // Keyboard.dismiss();
@@ -435,7 +467,7 @@ class Chat extends PureComponent {
                         </View>
                         <View style={styles.msgStatusLeft}>
                             <TouchableOpacity>
-                                {this.messagesStatus(status)}
+                                {this.receiveMessagesStatus(status)}
                             </TouchableOpacity>
                         </View>
                     </View>
