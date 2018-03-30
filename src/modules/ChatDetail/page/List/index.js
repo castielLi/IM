@@ -228,10 +228,7 @@ class Chat extends PureComponent {
             )
         }
         else if(status === 1){
-            // return null;
-            return (
-                <Image source={require('../../resource/fail.png')} style={{width:20,height:20}}/>
-            )
+            return null;
         }
         else{
             return (
