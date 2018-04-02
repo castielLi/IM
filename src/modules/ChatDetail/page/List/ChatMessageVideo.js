@@ -49,6 +49,7 @@ export default class ChatMessageVideo extends PureComponent {
                         </View> :null
                     }
                 </View>
+            case 5:
             case 0:
             case 1:
                 return <View >
