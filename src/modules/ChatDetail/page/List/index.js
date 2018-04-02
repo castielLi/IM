@@ -508,6 +508,11 @@ class Chat extends PureComponent {
             retract = true;
             optionNumber+=1;
         }
+
+        if(this.state.longPressMessageData.status != 1){
+            retract = false;
+        }
+
         if(this.state.longPressMessageData.messageType == 1){
             copy = true;
             optionNumber+=1;
