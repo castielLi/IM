@@ -45,7 +45,7 @@ export default class ImagePlaceHolder extends Component {
                 />
                 <Image
                     ref={ defaultImage => this.defaultImage = defaultImage}
-                    source={require('./resource/avator.jpg')} style={[_style,styles.hide]}/>
+                    source={require('./resource/avator.jpg')} style={styles.defaultAvator}/>
 
             </View>
         );
@@ -60,5 +60,9 @@ const styles = StyleSheet.create({
         height: checkDeviceHeight(100),
         width: checkDeviceHeight(100),
         borderRadius: checkDeviceHeight(50),
+    },
+    defaultAvator:{
+        height: 0,
+        width: 0,
     }
 });
