@@ -36,7 +36,12 @@ export default class ChatMessageVideo extends PureComponent {
         });
     }
 
-    videoRender = (status,LocalSource,RemoteSource,data)=>{
+    videoRender = (status,sender)=>{
+        if(sender){
+            return <View >
+                <Image source={require('../../resource/play.png')} style={{width:70,height:40}}/>
+            </View>
+        }
         switch (status){
             case 4:
             case 3:
@@ -59,13 +64,13 @@ export default class ChatMessageVideo extends PureComponent {
     };
 
     render() {
-        let {data, style} = this.props;
+        let {data, style,sender} = this.props;
         let {LocalSource,RemoteSource} = data.message;
         let {status} = data;
         return(
             <View style={[style,styles.bubble]}>
                 {
-                    this.videoRender(status,LocalSource,RemoteSource,data)
+                    this.videoRender(status,sender)
                 }
             </View>
         )

@@ -48,6 +48,16 @@ export default class ChatMessage extends PureComponent {
                 // this._top = this.state.top
                 // this._left = this.state.left
                 // this.setState({bg: 'red'})
+                if(this.disabledTimer){
+                   return;
+                }
+                this.disabledTimer = setTimeout(()=>{
+                    this.disabled = false;
+                    this.disabledTimer = 0;
+                },200);
+                if(this.disabled) return;
+                this.disabled = true;
+
                 let currentTarget = evt.currentTarget;
                 this.press_time = new Date().getTime();
                 this.long_press_timeout = setTimeout(()=>{
@@ -77,6 +87,7 @@ export default class ChatMessage extends PureComponent {
                 let currentTime = new Date().getTime();
                 if(currentTime - this.press_time >500){
                 }else{
+
                     clearTimeout(this.long_press_timeout);
                     let rowData = this.props.rowData;
                     let {message,messageType} = rowData;
