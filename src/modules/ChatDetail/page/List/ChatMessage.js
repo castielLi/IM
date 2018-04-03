@@ -92,7 +92,8 @@ export default class ChatMessage extends PureComponent {
                     let rowData = this.props.rowData;
                     let {message,messageType} = rowData;
                     //如果在下载状态禁止点击
-                    if(rowData.status == 4) return;
+                    if(rowData.status == 4)
+                        return;
                     switch (messageType) {
                         case 1:
 
