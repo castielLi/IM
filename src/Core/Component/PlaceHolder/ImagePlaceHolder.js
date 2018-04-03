@@ -25,22 +25,27 @@ export default class ImagePlaceHolder extends Component {
         return (
             <View>
                 <Image ref={ image => this.image = image}
-                    source={url} style={[_style,styles.hide]}
+                    source={url} style={[_style]}
                        onError={()=>{
-
-                       }}
-                       onLoad={()=>{
                            this.defaultImage.setNativeProps({
-                               style:styles.hide
-                           })
-                           this.image.setNativeProps({
                                style:_style
                            })
+                           this.image.setNativeProps({
+                               style:styles.hide
+                           })
+                       }}
+                       onLoad={()=>{
+                           // this.defaultImage.setNativeProps({
+                           //     style:styles.hide
+                           // })
+                           // this.image.setNativeProps({
+                           //     style:_style
+                           // })
                        }}
                 />
                 <Image
                     ref={ defaultImage => this.defaultImage = defaultImage}
-                    source={require('./resource/avator.jpg')} style={[_style]}/>
+                    source={require('./resource/avator.jpg')} style={[_style,styles.hide]}/>
 
             </View>
         );
