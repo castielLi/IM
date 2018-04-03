@@ -93,7 +93,9 @@ class RecentChat extends AppComponent {
     componentDidMount() {
         // this.props.showNavigationBottom();
         InteractionManager.runAfterInteractions(()=>{
-            imLogicController.getConversationList();
+            if(imLogicController!= undefined && imLogicController!=null){
+                imLogicController.getConversationList();
+            }
         })
 
 
