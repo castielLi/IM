@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
 	goBackBtn:{
 		position:'absolute',
 		left:0,
-		marginTop:checkDeviceHeight(40),
+		marginTop:checkDeviceHeight(50),
 		marginLeft:checkDeviceWidth(20),
 		alignSelf:'flex-start',
 	},
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
 		color:'#333333',
 		fontSize:checkDeviceHeight(50),
 		alignSelf:'center',
-        marginTop:checkDeviceHeight(50),
+        marginTop:checkDeviceHeight(60),
 	},
 	content:{
 		alignItems:'center',

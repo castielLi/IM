@@ -155,11 +155,11 @@ const styles = StyleSheet.create({
 	goBackBtn:{
 		alignSelf:'flex-start',
 		marginLeft:checkDeviceWidth(20),
-		marginTop:checkDeviceHeight(35),
+		marginTop:checkDeviceHeight(50),
 	},
 	loginTitle:{
 		fontSize:checkDeviceHeight(50),
-		marginTop:checkDeviceHeight(20),
+		marginTop:checkDeviceHeight(60),
 		color:'#333333',
 		marginBottom:checkDeviceHeight(110),
 	},

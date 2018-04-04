@@ -73,12 +73,12 @@ export default class ResetPassword extends AppComponent {
                     <TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}>
                         <Text style = {styles.goBack}>返回</Text>
                     </TouchableOpacity>
+                    <Text style= {styles.phoneTitle}>重置密码</Text>
                 </View>
 
 
 
                 <View style = {styles.content}>
-                    <Text style= {styles.loginTitle}>重置密码</Text>
                     <View style= {styles.inputBox}>
                         <View style={styles.imageBox}>
                             <Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/password.png')}></Image>
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         width:Dimensions.get('window').width,
         justifyContent:'center',
-        paddingTop:checkDeviceHeight(40),
+        paddingTop:checkDeviceHeight(35),
         marginBottom:checkDeviceHeight(50),
     },
     goBack:{
@@ -156,15 +156,15 @@ const styles = StyleSheet.create({
     goBackBtn:{
         position:'absolute',
         left:0,
-        marginTop:checkDeviceHeight(40),
+        marginTop:checkDeviceHeight(50),
         marginLeft:checkDeviceWidth(20),
         alignSelf:'flex-start',
     },
-    loginTitle:{
-        fontSize:checkDeviceHeight(50),
-        marginTop:checkDeviceHeight(40),
+    phoneTitle:{
         color:'#333333',
-        marginBottom:checkDeviceHeight(110),
+        fontSize:checkDeviceHeight(50),
+        alignSelf:'center',
+        marginTop:checkDeviceHeight(60),
     },
     content:{
         alignItems:'center',

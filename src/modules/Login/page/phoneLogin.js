@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     },
     loginTitle:{
         fontSize:checkDeviceHeight(50),
-        marginTop:checkDeviceHeight(50),
+        marginTop:checkDeviceHeight(70),
         color:'#333333',
         marginBottom:checkDeviceHeight(110),
     },
