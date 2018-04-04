@@ -1,6 +1,6 @@
 import React,{Component}from 'react';
 import {View,TextInput,Text,Image,TouchableOpacity,
-    StyleSheet,Dimensions,Alert,Keyboard,KeyboardAvoidingView}from 'react-native';
+    StyleSheet,Dimensions,Alert,Keyboard,KeyboardAvoidingView,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import {connect} from 'react-redux';
 import checkReg from './regExp';
@@ -110,10 +110,8 @@ class PhoneLogin extends AppComponent {
         let Loading = this.Loading;
 
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<KeyboardAvoidingView behavior="position" style={styles.container}   keyboardVerticalOffset={-150}>
-                {/*<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props);}}>*/}
-					{/*<Text style = {styles.goBack}>返回</Text>*/}
-                {/*</TouchableOpacity>*/}
 				<View  style  = {styles.content}>
 					<Text style= {styles.loginTitle}>使用手机号登录</Text>
 					<TouchableOpacity>
@@ -167,13 +165,6 @@ class PhoneLogin extends AppComponent {
 								</TouchableOpacity>):null
                         }
 					</View>
-					{/*<TouchableOpacity activeOpacity = {0.8} onPress = {()=>{this.setState({textMessage:!this.state.textMessage})}} >*/}
-                        {/*{this.state.textMessage?<Text style = {styles.changeLogin}>通过短信验证码登录</Text>:*/}
-							{/*<Text style = {styles.changeLogin}>通过密码登录</Text>*/}
-                        {/*}*/}
-					{/*</TouchableOpacity>*/}
-
-
 					<TouchableOpacity activeOpacity = {0.8} style={[styles.Login,{backgroundColor:this.state.phoneText && this.state.passWordText?'#1aad19':'#ccc'}]} onPress = {()=>{this.addUser()}} disabled={!(this.state.phoneText && this.state.passWordText)}>
 						<Text style = {styles.loginText}>登录</Text>
 					</TouchableOpacity>
@@ -199,6 +190,7 @@ class PhoneLogin extends AppComponent {
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
 			</KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
 
         )
     }
@@ -229,7 +221,7 @@ const styles = StyleSheet.create({
     },
     loginTitle:{
         fontSize:checkDeviceHeight(50),
-        marginTop:checkDeviceHeight(20),
+        marginTop:checkDeviceHeight(50),
         color:'#333333',
         marginBottom:checkDeviceHeight(110),
     },

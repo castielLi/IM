@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import Confirm from './confirm';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -66,8 +66,17 @@ export default class ResetPassword extends AppComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style= {styles.container}>
-                <TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+
+                <View style = {styles.Title}>
+                    <TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}>
+                        <Text style = {styles.goBack}>返回</Text>
+                    </TouchableOpacity>
+                </View>
+
+
+
                 <View style = {styles.content}>
                     <Text style= {styles.loginTitle}>重置密码</Text>
                     <View style= {styles.inputBox}>
@@ -115,6 +124,7 @@ export default class ResetPassword extends AppComponent {
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
+            </TouchableWithoutFeedback>
         )
     }
 
@@ -132,18 +142,27 @@ const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:'#ffffff',
     },
+    Title:{
+        flexDirection:'row',
+        width:Dimensions.get('window').width,
+        justifyContent:'center',
+        paddingTop:checkDeviceHeight(40),
+        marginBottom:checkDeviceHeight(50),
+    },
     goBack:{
         fontSize:checkDeviceHeight(32),
         color:'#0ebe0c',
     },
     goBackBtn:{
-        alignSelf:'flex-start',
+        position:'absolute',
+        left:0,
+        marginTop:checkDeviceHeight(40),
         marginLeft:checkDeviceWidth(20),
-        marginTop:checkDeviceHeight(35),
+        alignSelf:'flex-start',
     },
     loginTitle:{
         fontSize:checkDeviceHeight(50),
-        marginTop:checkDeviceHeight(20),
+        marginTop:checkDeviceHeight(40),
         color:'#333333',
         marginBottom:checkDeviceHeight(110),
     },
