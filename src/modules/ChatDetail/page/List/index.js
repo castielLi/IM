@@ -859,6 +859,7 @@ const styles = StyleSheet.create({
     },
     timestampView:{
         alignItems:'center',
+        borderRadius:3
     },
     timestamp:{
         backgroundColor:'#cfcfcf',
