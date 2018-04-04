@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,KeyboardAvoidingView}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,KeyboardAvoidingView,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import Confirm from './confirm';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -75,7 +75,7 @@ export default class FindPassword extends AppComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
 		return (
-
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 				<View style= {styles.container}>
 					<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 					<View style = {styles.content}>
@@ -136,7 +136,7 @@ export default class FindPassword extends AppComponent {
 					<Popup ref={ popup => this.popup = popup}/>
 					<Loading ref = { loading => this.loading = loading}/>
 				</View>
-
+			</TouchableWithoutFeedback>
 		)
 	}
 
@@ -155,11 +155,11 @@ const styles = StyleSheet.create({
 	goBackBtn:{
 		alignSelf:'flex-start',
 		marginLeft:checkDeviceWidth(20),
-		marginTop:checkDeviceHeight(35),
+		marginTop:checkDeviceHeight(50),
 	},
 	loginTitle:{
 		fontSize:checkDeviceHeight(50),
-		marginTop:checkDeviceHeight(20),
+		marginTop:checkDeviceHeight(60),
 		color:'#333333',
 		marginBottom:checkDeviceHeight(110),
 	},

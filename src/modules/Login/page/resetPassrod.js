@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import Confirm from './confirm';
 import AppComponent from '../../../Core/Component/AppComponent';
@@ -66,10 +66,19 @@ export default class ResetPassword extends AppComponent {
         let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style= {styles.container}>
-                <TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+
+                <View style = {styles.Title}>
+                    <TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}>
+                        <Text style = {styles.goBack}>返回</Text>
+                    </TouchableOpacity>
+                    <Text style= {styles.phoneTitle}>重置密码</Text>
+                </View>
+
+
+
                 <View style = {styles.content}>
-                    <Text style= {styles.loginTitle}>重置密码</Text>
                     <View style= {styles.inputBox}>
                         <View style={styles.imageBox}>
                             <Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/password.png')}></Image>
@@ -115,6 +124,7 @@ export default class ResetPassword extends AppComponent {
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
+            </TouchableWithoutFeedback>
         )
     }
 
@@ -132,20 +142,29 @@ const styles = StyleSheet.create({
         alignItems:'center',
         backgroundColor:'#ffffff',
     },
+    Title:{
+        flexDirection:'row',
+        width:Dimensions.get('window').width,
+        justifyContent:'center',
+        paddingTop:checkDeviceHeight(35),
+        marginBottom:checkDeviceHeight(50),
+    },
     goBack:{
         fontSize:checkDeviceHeight(32),
         color:'#0ebe0c',
     },
     goBackBtn:{
-        alignSelf:'flex-start',
+        position:'absolute',
+        left:0,
+        marginTop:checkDeviceHeight(50),
         marginLeft:checkDeviceWidth(20),
-        marginTop:checkDeviceHeight(35),
+        alignSelf:'flex-start',
     },
-    loginTitle:{
-        fontSize:checkDeviceHeight(50),
-        marginTop:checkDeviceHeight(20),
+    phoneTitle:{
         color:'#333333',
-        marginBottom:checkDeviceHeight(110),
+        fontSize:checkDeviceHeight(50),
+        alignSelf:'center',
+        marginTop:checkDeviceHeight(60),
     },
     content:{
         alignItems:'center',

@@ -1,5 +1,5 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
 import AppComponent from '../../../Core/Component/AppComponent';
 import LoginController from '../../../TSController/LoginController';
@@ -93,6 +93,7 @@ export default class Register extends AppComponent {
         let Loading = this.Loading;
 
 		return (
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<View style={styles.container}>
 				<View style = {styles.Title}>
 					<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.pop(this.props);}}>
@@ -155,7 +156,7 @@ export default class Register extends AppComponent {
 						<TextInput
 						maxLength = {6}
 						style = {[styles.textInput,{marginLeft:-10}]} 
-						placeholderTextColor = '#bebebe' 
+						placeholderTextColor = '#bebebe'
 						placeholder = '请输入验证码'
 						keyboardType = {'numeric'}
 						onChangeText={(Text)=>{this.setState({codeText:Text})}}
@@ -177,16 +178,10 @@ export default class Register extends AppComponent {
 						</Text>
 					</View>
 				</View>
-				{/*{*/}
-					{/*this.state.showConfirm?*/}
-					{/*<Confirm */}
-					{/*phoneText = {this.state.phoneText}*/}
-					{/*cancelSend = {this.cancelSend}*/}
-					{/*></Confirm>:null*/}
-				{/*}*/}
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
 			</View>
+			</TouchableWithoutFeedback>
 		)
 	}
 } 
@@ -210,14 +205,15 @@ const styles = StyleSheet.create({
 	goBackBtn:{
 		position:'absolute',
 		left:0,
-		marginTop:checkDeviceHeight(35),
+		marginTop:checkDeviceHeight(50),
 		marginLeft:checkDeviceWidth(20),
 		alignSelf:'flex-start',
 	},
 	phoneTitle:{
 		color:'#333333',
-		fontSize:checkDeviceHeight(32),
+		fontSize:checkDeviceHeight(50),
 		alignSelf:'center',
+        marginTop:checkDeviceHeight(60),
 	},
 	content:{
 		alignItems:'center',
