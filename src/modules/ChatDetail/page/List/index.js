@@ -612,7 +612,7 @@ class Chat extends PureComponent {
 
                         onEndReachedThreshold={5}
                         onEndReached={this._getHistoryMessage}
-                        ListFooterComponent={this._listFooterComponent}
+                        renderFooter={this._listFooterComponent}
                         // keyboardDismissMode={'on-drag'}
                     />
                     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
