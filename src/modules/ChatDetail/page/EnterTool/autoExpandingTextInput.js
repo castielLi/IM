@@ -94,9 +94,9 @@ class AutoExpandingTextInput extends PureComponent {
         if (height > (30 + 26 * 3))
             return;
         this.setState({
-            inputHeight: height
+            inputHeight: height + 5
         })
-        this.props.changeThouchBarTopBoxHeight(height);
+        this.props.changeThouchBarTopBoxHeight(height + 5);
     }
 
     componentWillMount() {
@@ -129,7 +129,6 @@ class AutoExpandingTextInput extends PureComponent {
             </TextInput>
         );
     }
-
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.emojiText && nextProps.emojiId !== this.props.emojiId) {
