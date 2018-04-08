@@ -49,7 +49,7 @@ export default class ChangePassword extends AppComponent {
 		}else{
 			alert('手机号码错误');
 		}
-	}
+	};
 
     finished = ()=>{
     	let {oldPassWord,newPassWord,confirmPassWord} = this.state;
@@ -58,7 +58,7 @@ export default class ChangePassword extends AppComponent {
 			userController.modifyPassword(oldPassWord,newPassWord,(result)=>{
 				if(result &&　result.Result === 1){
                     //修改成功，页面跳转到登录页面
-                    // alert('密码修改成功，请重新登录!');
+                    alert('密码修改成功，请重新登录!');
                     Keyboard.dismiss();
                     this.route.ToLogin(this.props);
 				}else{
@@ -68,9 +68,7 @@ export default class ChangePassword extends AppComponent {
 		}else {
 			this.alert('两次输入密码不匹配',"错误");
 		}
-
-		
-	}
+	};
 
 	render(){
         let Popup = this.PopContent;
@@ -227,9 +225,9 @@ const styles = StyleSheet.create({
 		fontSize:checkDeviceHeight(30),
 	},
 	textInput:{
-		padding:0,
 		fontSize:checkDeviceHeight(30),
 		flex:1,
+		paddingVertical:0,
 	},
 	codeBtn:{
 		width:checkDeviceWidth(120),
@@ -282,11 +280,6 @@ const styles = StyleSheet.create({
         backgroundColor:'white',
         flexDirection:'row',
         alignItems:'center',
-    },
-    textInput:{
-        flex:1,
-        fontSize:17,
-        paddingLeft:5,
     },
     textBox:{
         height:30,
