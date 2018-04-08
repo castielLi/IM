@@ -47,6 +47,12 @@ class ModifyNickName extends AppComponent {
 
 
     finished = ()=>{
+        if(this.state.nickname == ""){
+            this.alert("昵称不能为空",'错误');
+            return;
+        }
+
+
         if(currentAccount.Nickname != this.state.nickname){
            userController.modifyNickname(this.state.nickname);
            this.route.pop(this.props);
