@@ -609,7 +609,7 @@ class Chat extends PureComponent {
                         renderRow={this._renderRow}
                         renderScrollComponent={props => <InvertibleScrollView ref={e => this._invertibleScrollViewRef = e} {...props} inverted />}
                         pageSize={10}
-
+                        removeClippedSubviews={false}
                         onEndReachedThreshold={5}
                         onEndReached={this._getHistoryMessage}
                         renderFooter={this._listFooterComponent}
