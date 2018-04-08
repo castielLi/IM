@@ -331,10 +331,11 @@ class Chat extends PureComponent {
             return (
                 <View key={rowid}
                       style={[styles.informView, {marginHorizontal: 40, alignItems: 'center', marginBottom: 10}]}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                    <View style={{alignItems:'center'}}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                        </View>
                     </View>
-
                     {this.analysisInfo(message)}
 
                 </View>
@@ -344,8 +345,10 @@ class Chat extends PureComponent {
             return (
                 <View key={rowid}
                       style={[styles.informView, {marginHorizontal: 40, alignItems: 'center', marginBottom: 10}]}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                    <View style={{alignItems:'center'}}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                        </View>
                     </View>
                     <View style={{
                         backgroundColor: '#cfcfcf',
@@ -372,8 +375,10 @@ class Chat extends PureComponent {
         else if (sender.account == this.currentAccount.Account) {
             return (
                 <View key={rowid} style={styles.itemViewRight}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                    <View style={{alignItems:'center'}}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                        </View>
                     </View>
                     <View style={styles.infoViewRight}>
                         <View style={styles.msgStatus}>
@@ -402,9 +407,12 @@ class Chat extends PureComponent {
         else {
             return (
                 <View key={rowid} style={styles.itemView}>
-                    <View style={styles.timestampView}>
-                        {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                    <View style={{alignItems:'center'}}>
+                        <View style={styles.timestampView}>
+                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
+                        </View>
                     </View>
+
                     <View style={styles.infoView}>
                         <TouchableOpacity onPress={() => {
                             this.props.goToClientInfo(sender.account);
@@ -672,13 +680,15 @@ const styles = StyleSheet.create({
     },
     timestampView:{
         alignItems:'center',
-        borderRadius:3
+        borderRadius:3,
+        backgroundColor:'#cfcfcf',
+        marginVertical:10,
+        width:50
     },
     timestamp:{
         backgroundColor:'#cfcfcf',
         paddingHorizontal:5,
         borderRadius:3,
-        marginVertical:10,
         color:"white"
     },
     infoView:{
