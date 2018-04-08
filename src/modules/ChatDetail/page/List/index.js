@@ -615,7 +615,7 @@ class Chat extends PureComponent {
             <View style={styles.container}>
                 <MyImage source={{uri: this.props.conversationBackgroundImage}} style={{flex:1,width:null,height:null,backgroundColor:'rgba(0,0,0,0)'}}>
                     <ListView
-                        style={{paddingHorizontal: 10,margin:0,flexGrow: 0, width: width}}
+                        style={{paddingHorizontal: 8,margin:0,flexGrow: 0, width: width}}
                         ref={e => this._FlatList = e}
                         dataSource={this.state.dataSource}
                         renderRow={this._renderRow}
