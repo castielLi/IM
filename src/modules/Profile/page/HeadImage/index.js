@@ -35,7 +35,7 @@ let currentAccount = undefined;
 
 let currentObj = undefined;
 
-const options = ['取消','拍照','从手机相册选择','保存图片']
+const options = ['取消','拍照','从手机相册选择']
 const title = '更改你的头像'
 
 var cameraOptions = {
