@@ -42,6 +42,11 @@ export default class ConfigSetting extends AppComponent {
             return;
         }
 
+        if(this.state.configSetting == ""){
+            this.alert("服务器地址不能为空","错误")
+            return;
+        }
+
         SystemManager.setConfigSetting(this.state.configSetting,(result)=>{
             if(result.success){
                 this.appManagement.systemLogout();
