@@ -48,8 +48,6 @@ export default class ChatMessage extends PureComponent {
                 // this._top = this.state.top
                 // this._left = this.state.left
                 // this.setState({bg: 'red'})
-
-
                 let currentTarget = evt.currentTarget;
                 this.press_time = new Date().getTime();
                 this.long_press_timeout = setTimeout(()=>{
@@ -60,7 +58,6 @@ export default class ChatMessage extends PureComponent {
                         this.props.onPress(popupMenu,this.props.rowData);
                     });   
                 }, Platform.OS==='ios'?1500:500);
-
             },
             onPanResponderMove: (evt,gs)=>{
                 // console.log(gs.dx+' '+gs.dy)
@@ -76,21 +73,22 @@ export default class ChatMessage extends PureComponent {
                 //     left: this._left+gs.dx
                 // })
                 // alert(evt.target)
-                if(this.disabledTimer){
-                    return;
-                }
-                this.disabledTimer = setTimeout(()=>{
-                    this.disabled = false;
-                    this.disabledTimer = 0;
-                },500);
-                if(this.disabled) return;
-                this.disabled = true;
 
                 let currentTime = new Date().getTime();
                 if(currentTime - this.press_time >500){
                 }else{
-
                     clearTimeout(this.long_press_timeout);
+
+                    if(this.disabledTimer){
+                        return;
+                    }
+                    this.disabledTimer = setTimeout(()=>{
+                        this.disabled = false;
+                        this.disabledTimer = 0;
+                    },500);
+                    if(this.disabled) return;
+                    this.disabled = true;
+
                     let rowData = this.props.rowData;
                     let {message,messageType} = rowData;
                     //如果在下载状态禁止点击

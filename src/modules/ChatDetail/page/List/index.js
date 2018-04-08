@@ -449,8 +449,9 @@ class Chat extends PureComponent {
                 </View>
             )
         }
-    }
+    };
 
+    /*弹出菜单模块*/
     ShowPopupMenu = (loaction, rowData) => {
         this._FlatList.setNativeProps({scrollEnabled: false});
         // InteractionManager.runAfterInteractions(()=>{
@@ -561,7 +562,7 @@ class Chat extends PureComponent {
                 </View>
             </Modal>
         )
-    }
+    };
 
     copyTextMessage() {
         this.HidePopupMenu()
@@ -586,6 +587,9 @@ class Chat extends PureComponent {
         const {longPressMessageData} = this.state;
         this.props.forwardMessage(longPressMessageData)
     }
+    /*弹出菜单模块结束*/
+
+
 
     /*历史消息加载*/
     _getHistoryMessage = () => {
@@ -683,13 +687,10 @@ const styles = StyleSheet.create({
         borderRadius:3,
         backgroundColor:'#cfcfcf',
         marginVertical:10,
-        width:50
     },
     timestamp:{
-        backgroundColor:'#cfcfcf',
         paddingHorizontal:5,
-        borderRadius:3,
-        color:"white"
+        color:"white",
     },
     infoView:{
         flexDirection:'row',
@@ -781,17 +782,12 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state,props) => ({
-
-    accountId:state.loginStore.accountMessage.Account,
-    myAvator:state.loginStore.accountMessage.HeadImageUrl,
-    accountName:state.loginStore.accountMessage.Nickname
 });
 
 const mapDispatchToProps = dispatch => ({
     ...bindActionCreators(Actions, dispatch),
-
 });
 
-    export default connect(mapStateToProps, mapDispatchToProps,null,{withRef : true})(Chat);
+export default connect(mapStateToProps, mapDispatchToProps,null,{withRef : true})(Chat);
 //通过connect连接后 父组件中ref取不到子组件 方法
 // 需添加{withRef : true}配置 并在 父组件中设置 ref={e => this.chat = e.getWrappedInstance()}
