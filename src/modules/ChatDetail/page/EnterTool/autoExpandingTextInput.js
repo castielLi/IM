@@ -94,9 +94,9 @@ class AutoExpandingTextInput extends PureComponent {
         if (height > (30 + 26 * 3))
             return;
         this.setState({
-            inputHeight: height + 8
+            inputHeight: height + (Platform.OS === 'android' ? 0 : 8)
         })
-        this.props.changeThouchBarTopBoxHeight(height + 8);
+        this.props.changeThouchBarTopBoxHeight(height + (Platform.OS === 'android' ? 0 : 8));
     }
 
     componentWillMount() {
