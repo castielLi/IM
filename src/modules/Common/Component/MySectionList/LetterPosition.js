@@ -46,7 +46,7 @@ export default class LetterPosition extends Component {
                     style:styles.focusContainer
                 });
                 this._LetterView.setNativeProps({
-                    style:[styles.letterView,styles.focusLetterView]
+                    style:styles.focusLetterView
                 });
             },
             //移动时作出的动作
