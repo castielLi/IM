@@ -30,7 +30,7 @@ export default class ChatMessageImage extends PureComponent {
     defaultPicture=(data)=>{
         let {LocalSource,RemoteSource} = data.message;
         let {status} = data;
-        if(status == 4){
+        if(status == 4 || status == 2){
             return(
                 <Image
                     resizeMode={Image.resizeMode.cover}
