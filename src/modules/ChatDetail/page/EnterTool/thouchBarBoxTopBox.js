@@ -283,7 +283,7 @@ class ThouchBarBoxTopBox extends PureComponent {
         return (
             <View style={{overflow: "hidden", flex: 1}}>
               <View ref={(com) => this.re = com} {...this._gestureHandlers} style={[styles.speakBox, {
-                  left: this.props.thouchBarStore.isRecordPage ? (Platform.OS === 'android' ? 65 : 50) : -999,
+                  left: this.props.thouchBarStore.isRecordPage ? (Platform.OS === 'android' ? 55 : 50) : -999,
                   backgroundColor: this.state.isOnPressSpeakBox ? '#bbb' : 'transparent'
               }]}>
                 <Text style={styles.speakTxt}>{this.state.speakTxt}</Text>
@@ -433,7 +433,7 @@ class ThouchBarBoxTopBox extends PureComponent {
         return (
             <View>
               <View
-                  style={[styles.thouchBarBoxTop, {height: this.props.thouchBarStore.isRecordPage ? pxToPt(52) : Math.max(pxToPt(52), pxToPt(this.state.thouchBarTopBoxHeight + 20))}]}>
+                  style={[styles.thouchBarBoxTop, {height: this.props.thouchBarStore.isRecordPage ? pxToPt(47) : Math.max(pxToPt(47), pxToPt(this.state.thouchBarTopBoxHeight + 20))}]}>
                   {this.renderEnterBox()}
                 <TouchableHighlight style={[styles.button, styles.voiceButton]} underlayColor={'#bbb'}
                                     activeOpacity={0.5} onPress={this.toRecord}>
@@ -481,13 +481,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
   },
   thouchBarBoxTop: {
-    height: pxToPt(52), //62
+    height: pxToPt(47), //62
 
   },
   button: {
     position: 'absolute',
-    height: Platform.OS === 'android'?pxToPt(40):pxToPt(30),
-    width: Platform.OS === 'android'?pxToPt(40):pxToPt(30),
+    height: Platform.OS === 'android'?pxToPt(35):pxToPt(30),
+    width: Platform.OS === 'android'?pxToPt(35):pxToPt(30),
     borderWidth: pxToPt(1),
     borderColor: '#aaa',
     borderRadius: pxToPt(20),
@@ -496,20 +496,20 @@ const styles = StyleSheet.create({
   },
   voiceButton: {
     bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
-    left: Platform.OS === 'android'?15:5,
+    left: Platform.OS === 'android'?12:5,
   },
   smileButton: {
     bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
-    right: Platform.OS === 'android'?70:50,
+    right: Platform.OS === 'android'?60:50,
   },
   plusButton: {
     bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
-    right: Platform.OS === 'android'?15:5,
+    right: Platform.OS === 'android'?12:5,
   },
     sendButton:{
         position: 'absolute',
-        height: pxToPt(40),
-        width: pxToPt(55),
+        height: pxToPt(35),
+        width: pxToPt(50),
         backgroundColor:'#3399ff',
         justifyContent: 'center',
         alignItems: 'center',
@@ -522,8 +522,8 @@ const styles = StyleSheet.create({
     },
   speakBox: {
     position: 'absolute',
-    height: pxToPt(40),
-    width: Platform.OS === 'android'?width-185:width-140,
+    height: pxToPt(35),
+    width: Platform.OS === 'android'?width-158:width-140,
     left: Platform.OS === 'android'?90:50,
       bottom: Platform.OS === 'android'?pxToPt(6):pxToPt(10),
     borderRadius: 5,
@@ -533,8 +533,7 @@ const styles = StyleSheet.create({
   },
   speakTxt: {
     textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold'
+    fontSize: 18,
   },
 
 

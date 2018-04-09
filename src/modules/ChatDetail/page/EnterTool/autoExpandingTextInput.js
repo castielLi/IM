@@ -123,7 +123,7 @@ class AutoExpandingTextInput extends PureComponent {
                 onContentSizeChange={this._onChange} //0.45.1 TextInput组件onContentSizeChange属性不可用
                 style={[styles.textInputStyle, {
                     height: Math.max(pxToPt(35), pxToPt(this.state.inputHeight)),
-                    left: this.props.thouchBarStore.isRecordPage ? -999 : (Platform.OS === 'android' ? 65 : 50)
+                    left: this.props.thouchBarStore.isRecordPage ? -999 : (Platform.OS === 'android' ? 55 : 50)
                 }]}
             >
             </TextInput>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
           lineHeight:pxToPt(35),
       }
     }),
-    width:Platform.OS === 'android'?width-185:width-140,
+    width:Platform.OS === 'android'?width-158:width-140,
     height:pxToPt(35),
     borderColor:'#ccc',
     borderWidth:pxToPt(1),
