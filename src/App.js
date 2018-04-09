@@ -96,6 +96,7 @@ export default function App() {
             this.setState({
                 appState : appState
             });
+            console.log("")
 
             if(appState == 'background'){
                  appManagement.systemBackGround();
