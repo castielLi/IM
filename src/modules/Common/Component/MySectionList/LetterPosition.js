@@ -43,7 +43,10 @@ export default class LetterPosition extends Component {
                     this.props.onPress && this.props.onPress(LetterSet[a]);
                 }
                 this._LetterPosition.setNativeProps({
-                    style:[styles.container,styles.focusContainer]
+                    style:styles.focusContainer
+                });
+                this._LetterView.setNativeProps({
+                    style:[styles.letterView,styles.focusLetterView]
                 });
             },
             //移动时作出的动作
@@ -63,6 +66,9 @@ export default class LetterPosition extends Component {
                 this._LetterPosition.setNativeProps({
                     style:styles.container
                 });
+                this._LetterView.setNativeProps({
+                    style:styles.letterView
+                });
 
             },
         })
@@ -80,13 +86,15 @@ export default class LetterPosition extends Component {
         return (
             <View ref={e=>this._LetterPosition = e} style={styles.container} {...this._panResponder.panHandlers}
                   onLayout={this._onLayout}>
-                {LetterSet.map((value,index)=>{
-                    return (
-                        <View style={styles.letterItem}>
-                            <Text style={styles.letterText}>{value}</Text>
-                        </View>
-                    )
-                })}
+                <View ref={e=>this._LetterView = e} style={styles.letterView}>
+                    {LetterSet.map((value,index)=>{
+                        return (
+                            <View style={styles.letterItem}>
+                                <Text style={styles.letterText}>{value}</Text>
+                            </View>
+                        )
+                    })}
+                </View>
             </View>
         )
     }
@@ -99,9 +107,17 @@ const styles = StyleSheet.create({
         top:0,
         bottom:0,
         width:25,
-        backgroundColor:'rgba(0,0,0,0)',
+        alignItems:'flex-end'
     },
     focusContainer:{
+        width:width,
+    },
+    letterView:{
+        flex:1,
+        width:25,
+        backgroundColor:'rgba(0,0,0,0)',
+    },
+    focusLetterView:{
         backgroundColor:'rgba(0,0,0,.4)',
     },
     letterItem:{
