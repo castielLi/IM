@@ -627,9 +627,9 @@ class Chat extends PureComponent {
                         renderFooter={this._listFooterComponent}
                         // keyboardDismissMode={'on-drag'}
                     />
-                    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                    {/*<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>*/}
                         <View ref={e => this._Filling = e} style={{flex: 1}}/>
-                    </TouchableWithoutFeedback>
+                    {/*</TouchableWithoutFeedback>*/}
                     <ApplyModal ref={e=>this.ApplyModal = e} onConfirm={this._sendApplyMessage}/>
                     {this._PopupMenu()}
                 </MyImage>

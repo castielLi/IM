@@ -2,7 +2,7 @@ import React, {
 	Component
 } from 'react';
 import {
-	Text,
+    Keyboard,
 	StyleSheet,
 	View,
 	TextInput,
@@ -302,7 +302,7 @@ class ChatDetail extends AppComponent {
 					}}}
 					right={{func:()=>{this.goToChatSeeting()},text:this.state.settingButtonDisplay?'':'设置',disabled:this.state.settingButtonDisplay}}
 					heading={this.state.name} />
-				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit()}}>
+				<TouchableWithoutFeedback disabled={this.state.isDisabled} onPressIn={()=>{if(this.props.thouchBarStore.isRecordPage){return;}this.props.changeThouchBarInit();Keyboard.dismiss()}}>
 					<View  style={{flex:1,backgroundColor:'#e8e8e8',overflow:'hidden'}}>
 
                         <Chat onRef={ref => (this.chat = ref)}
