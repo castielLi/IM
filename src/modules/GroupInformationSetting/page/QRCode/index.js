@@ -28,7 +28,7 @@ let userController = undefined;
 class GroupQRCodeContent extends AppComponent {
     constructor(props){
         super(props)
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillMount(){
@@ -41,6 +41,7 @@ class GroupQRCodeContent extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
 

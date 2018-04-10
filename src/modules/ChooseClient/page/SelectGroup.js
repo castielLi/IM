@@ -5,12 +5,8 @@ import React, {Component} from 'react';
 import {StyleSheet,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../TSController/UserController'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
-let userController = undefined;
-let imLogicController = undefined;
 let {width,height} = Dimensions.get('window');
 export default class SelectGroup extends AppComponent {
     constructor(props) {
@@ -18,16 +14,18 @@ export default class SelectGroup extends AppComponent {
         this.state = {
             GroupsData: [],
         };
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
+        this.userController = undefined;
+        this.imLogicController = undefined;
     }
 
     componentDidMount() {
-        userController.getGroupContactList(false,(contacts)=>{
+        this.userController.getGroupContactList(false,(contacts)=>{
             this.setState({
                 GroupsData:contacts
             })

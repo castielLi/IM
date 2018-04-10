@@ -47,12 +47,13 @@ class ChooseClient extends AppComponent {
         this.defaulData = props.Accounts;//默认选中用户
         this.CheckBoxData = {};
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount()
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     componentWillMount(){

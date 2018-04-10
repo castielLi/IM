@@ -65,7 +65,17 @@ export default class AppManagement{
         initState.stateOpreation(this);
     }
 
+    getIMLogicInstance(){
+        return this.imLogicController;
+    }
 
+    getUserLogicInstance(){
+        return this.userController;
+    }
+
+    getApplyLogicInstance(){
+        return this.applyController;
+    }
 
 
     setRoot(rootComponent){

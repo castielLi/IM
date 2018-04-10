@@ -2,21 +2,23 @@ import React, {Component} from 'react';
 import {StyleSheet,Image,Modal,Platform,Alert,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 
-import UserController from '../../../TSController/UserController'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 
-let userController = undefined;
-let imLogicController = undefined;
 let {width,height} = Dimensions.get('window');
-export default class ForwardConfirm extends Component {
+export default class ForwardConfirm extends AppComponent {
     constructor(props) {
         super(props);
         this.state = {
             visible:props.visible,//是否显示
         };
 
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+        this.imLogicController = undefined;
     }
 
     static defaultProps = {

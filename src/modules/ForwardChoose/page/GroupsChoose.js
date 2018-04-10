@@ -28,12 +28,14 @@ class GroupsChoose extends AppComponent {
         };
         this.CheckBoxData = [];//选择框组件
         this.HasData = 0;//是否有选择数据
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
+        imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
+        userController = undefined;
+        imLogicController = undefined;
     }
 
     componentDidMount() {

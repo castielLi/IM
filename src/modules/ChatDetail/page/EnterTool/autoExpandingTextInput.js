@@ -17,10 +17,11 @@ import IMController from '../../../../TSController/IMLogic/IMControllerLogic';
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var {width} = Dimensions.get('window');
 let isIos = (Platform.OS === 'ios') ? true : false;
+import AppComponent from '../../../../Core/Component/AppComponent'
 
 var imController = undefined;
 
-class AutoExpandingTextInput extends PureComponent {
+class AutoExpandingTextInput extends AppComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +33,12 @@ class AutoExpandingTextInput extends PureComponent {
         this._onChangeText = this._onChangeText.bind(this);
         this._onSubmitEditing = this._onSubmitEditing.bind(this);
         this._onChange = this._onChange.bind(this);
-        imController = IMController.getSingleInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.imController = undefined;
     }
 
     _onChangeText(data) {
@@ -65,7 +71,7 @@ class AutoExpandingTextInput extends PureComponent {
                 this.state.data.substring(0,this.state.data.length-1)
             }
 
-            imController.SendMessage(this.state.data);
+            this.imController.SendMessage(this.state.data);
             this.input.clear();
             if (isIos) {
                 //发送表情不会获得焦点

@@ -20,20 +20,18 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../../TSController/UserController';
 
 
 
 let currentObj;
 let currentAccount = undefined;
-let userController = undefined;
 
 class ModifyNickName extends AppComponent {
     constructor(props){
         super(props)
         currentObj = this;
-        userController = UserController.getSingleInstance();
-        currentAccount = userController.getCurrentAccount();
+        this.userController = this.appManagement.getUserLogicInstance();
+        currentAccount = this.userController.getCurrentAccount();
         this.state={
             privilege:false,
             nickname:currentAccount.Nickname
@@ -43,6 +41,7 @@ class ModifyNickName extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
     }
 
 
@@ -54,7 +53,7 @@ class ModifyNickName extends AppComponent {
 
 
         if(currentAccount.Nickname != this.state.nickname){
-           userController.modifyNickname(this.state.nickname);
+            this.userController.modifyNickname(this.state.nickname);
            this.route.pop(this.props);
         }
     }

@@ -34,14 +34,16 @@ class ForwardChoose extends AppComponent {
         this.HasData = 0;//是否有选择数据
         this.RecordDto = null;//是有单选记录
         currentObj = this;
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
+        imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
         //初始化缓存数据
         this.props.initSelect();
+        userController = undefined;
+        imLogicController = undefined;
     }
 
     componentDidMount() {

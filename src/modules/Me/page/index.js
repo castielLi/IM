@@ -76,7 +76,7 @@ class Me extends AppComponent {
 
         // loginController = new LoginController();
         // imController = IMControlelr.getSingleInstance();
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account);
         appManagement = new AppManagement();
@@ -92,6 +92,7 @@ class Me extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     _refreshUI(type,param){

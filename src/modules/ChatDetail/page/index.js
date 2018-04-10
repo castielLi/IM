@@ -35,8 +35,6 @@ import {
 } from 'react-native-deprecated-custom-components';
 let stopSoundObj = null;
 let soundComponent = null;
-let userController = undefined;
-let imController = undefined;
 let currentObj = undefined;
 let group = undefined;
 
@@ -56,19 +54,20 @@ class ChatDetail extends AppComponent {
         this.isDisabled = false;
         group = props.type == "private"?false:true;
 
-        imController = IMController.getSingleInstance();
-        userController = UserController.getSingleInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
         this._handleAppStateChange = this._handleAppStateChange.bind(this);
         this._goToGallery = this._goToGallery.bind(this);
         this._playVideo = this._playVideo.bind(this);
         this.goToClientInfo = this.goToClientInfo.bind(this);
         this.goToChatSeeting = this.goToChatSeeting.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
+        console.log("构造聊天详情的时间" + new Date().getTime());
     }
 
 
     getHistoryChatRecord(){
-         imController.getHistory();
+        this.imController.getHistory();
 
 	}
 
@@ -78,11 +77,11 @@ class ChatDetail extends AppComponent {
 
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
-            imController.setCurrentConversation(this.props.client, group);
-            let setting = imController.getChatSetting();
+            this.imController.setCurrentConversation(this.props.client, group);
+            let setting = this.imController.getChatSetting();
             if (group) {
-                userController.getGroupInfo(this.props.client, false, (result) => {
-                    userController.getGroupSetting(this.props.client,(Setting)=>{
+                this.userController.getGroupInfo(this.props.client, false, (result) => {
+                    this.userController.getGroupSetting(this.props.client,(Setting)=>{
                         let Nickname = Setting ? Setting.Nickname : this.state.Nickname;
                         this.setState({
                             settingButtonDisplay: result.Exited,
@@ -105,12 +104,15 @@ class ChatDetail extends AppComponent {
     componentWillUnmount(){
         AppState.removeEventListener('change', this._handleAppStateChange);
         this.releaseSound();
-        imController.exitOrResetCurrentConversation(this.props.client);
+        this.imController.exitOrResetCurrentConversation(this.props.client);
         super.componentWillUnmount();
+        this.imController = undefined;
+        this.userController = undefined;
     }
 
 
     _refreshUI(type,params){
+        console.log("真正的消息回来的时间" + new Date().getTime());
         switch (type){
             case AppPageMarkEnum.ConversationDetail:
                 let chatRecord = params.list;
@@ -245,7 +247,7 @@ class ChatDetail extends AppComponent {
         RNFS.exists(Local).then((exist) => {
             //如果不存在，或者是文件存在但是消息状态为下载失败或者正在下载的情况
             if(!exist || message.status == 2 || message.status == 4){
-                imController.manualDownloadResource(this.props.client,messageId,group,message);
+                this.imController.manualDownloadResource(this.props.client,messageId,group,message);
             }
             else{
                 this.route.push(this.props,{key: 'Player',routeId: 'Player',params:{"path":Local},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
@@ -258,13 +260,13 @@ class ChatDetail extends AppComponent {
     //删除聊天信息
     deleteChatMessage = (rowData)=>{
         const {messageId} = rowData;
-        imController.removeMessage(messageId)
+        this.imController.removeMessage(messageId)
     };
 
     //撤回聊天信息
     retactMessage = (rowData)=>{
         const {messageId} = rowData;
-        imController.RetactMessage(messageId)
+        this.imController.RetactMessage(messageId)
     };
 
     //转发消息

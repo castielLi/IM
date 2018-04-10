@@ -38,7 +38,7 @@ let applyController = undefined;
 let currentObj;
 let {width,height} = Dimensions.get('window');
 let forceRefresh = false;//强刷list
-class Chat extends PureComponent {
+class Chat extends AppComponent {
     constructor(props) {
         super(props);
         let ds = new ListView.DataSource({rowHasChanged: (r1, r2)=> {
@@ -64,9 +64,9 @@ class Chat extends PureComponent {
         this.data = {};
         currentObj = this;
 
-        userController = UserController.getSingleInstance();
-        this.currentAccount = userController.getCurrentAccount();
-        applyController = ApplyController.getSingleInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
+        this.applyController = this.appManagement.getApplyLogicInstance();
     }
 
 
@@ -84,6 +84,9 @@ class Chat extends PureComponent {
     }
 
     componentWillUnmount() {
+        super.componentWillUnmount();
+        this.applyController = undefined;
+        this.userController = undefined;
     }
 
     componentWillMount() {
@@ -193,7 +196,7 @@ class Chat extends PureComponent {
     _sendApplyMessage = (value) => {
         // Keyboard.dismiss();
         // currentObj.showLoading();
-        applyController.applyFriend(this.currentAccount.Account, this.props.client, value, (result) => {
+        this.applyController.applyFriend(this.currentAccount.Account, this.props.client, value, (result) => {
             // currentObj.hideLoading();
             if (result && result.Result === 1) {
                 alert("申请消息已经发送");
@@ -323,7 +326,7 @@ class Chat extends PureComponent {
     _renderRow = (row,sid,rowid) => {
         console.log('renderRow')
         let {sender, message, messageTime, messageSource, status} = row;
-        let headImagePath = userController.getAccountHeadImagePath(sender.account);
+        let headImagePath = this.userController.getAccountHeadImagePath(sender.account);
         let timer = this.getTimestamp(messageTime, rowid);
 
         //发送消息SEND = 1,接收消息RECEIVE = 2,系统消息SYSTEM = 3,ERROR = 4,FRIEND=5

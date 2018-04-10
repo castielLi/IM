@@ -16,8 +16,6 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import UserController from '../../../TSController/UserController';
-let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -33,11 +31,11 @@ class MoreGroupList extends AppComponent {
         this.render = this.render.bind(this);
 
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
     }
 
     componentWillMount(){
-        userController.getGroupMembersInfo(this.props.groupId,(result)=>{
+        this.userController.getGroupMembersInfo(this.props.groupId,(result)=>{
             this.setState({
                 memberList:result
             })
@@ -46,6 +44,7 @@ class MoreGroupList extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
     }
 
     _goToClientInfo = (keyword)=>{
@@ -53,7 +52,7 @@ class MoreGroupList extends AppComponent {
     };
 
     _renderItem = (item) => {
-        let path = userController.getAccountHeadImagePath(item.item.Account);
+        let path = this.userController.getAccountHeadImagePath(item.item.Account);
         let name = item.item.Remark != "" ? item.item.Remark:item.item.Nickname;
             return (
                 <TouchableWithoutFeedback onPress={()=>{this._goToClientInfo(item.item.Account)}}>

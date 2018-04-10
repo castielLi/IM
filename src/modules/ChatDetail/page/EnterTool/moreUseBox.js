@@ -26,8 +26,6 @@ const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var ImagePicker = require('react-native-image-picker');
 var {width} = Dimensions.get('window');
 
-let imController = undefined;
-
 var options = {
     allowsEditing:true,//允许编辑image
     quality:CameraConfig.PHOTO_QUALITY,
@@ -58,11 +56,16 @@ class MoreUseBox extends AppComponent {
         this.useLocalVideo = this.useLocalVideo.bind(this);
         this.imagePikerCallBack = this.imagePikerCallBack.bind(this);
 
-        imController = IMController.getSingleInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
         this.useCamera = this.useCamera.bind(this);
         this.useLocal = this.useLocal.bind(this);
         this.useCameraVideo = this.useCameraVideo.bind(this);
         this.useLocalVideo = this.useLocalVideo.bind(this);
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.imController = undefined;
     }
 
     imagePikerCallBack(response) {
@@ -84,7 +87,7 @@ class MoreUseBox extends AppComponent {
             //初始化消息
             let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
-            imController.SendFile(1, responsePath);
+            this.imController.SendFile(1, responsePath);
             this.appManagement.setAndroidChoosePhotoOrVideo(false);
         }
     }
@@ -117,7 +120,7 @@ class MoreUseBox extends AppComponent {
             else {
                 let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
-                imController.SendFile(2,responsePath);
+                this.imController.SendFile(2,responsePath);
                 this.appManagement.setAndroidChoosePhotoOrVideo(false);
             }
         });
@@ -140,7 +143,7 @@ class MoreUseBox extends AppComponent {
             else {
                 let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
 
-                imController.SendFile(2,responsePath);
+                this.imController.SendFile(2,responsePath);
                 this.appManagement.setAndroidChoosePhotoOrVideo(false);
             }
         });

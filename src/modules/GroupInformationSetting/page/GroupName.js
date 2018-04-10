@@ -18,10 +18,6 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import UserController from '../../../TSController/UserController';
-import AppManagement from '../../../App/AppManagement'
-
-let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 
@@ -40,12 +36,13 @@ class GroupName extends AppComponent {
         };
 
         currentObj = this;
-        userController =  UserController.getSingleInstance()
-        currentAccount = userController.getCurrentAccount();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        currentAccount = this.userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
     }
 
 
@@ -79,7 +76,7 @@ class GroupName extends AppComponent {
         let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result)=>{
+        this.userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
 

@@ -7,16 +7,12 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import UserController from '../../../TSController/UserController';
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListData';
 import MySectionList from '../../Common/Component/MySectionList/';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
-let userController = undefined;
-let imLogicController = undefined;
 let {width,height} = Dimensions.get('window');
 
 class ContactsChoose extends AppComponent {
@@ -28,12 +24,14 @@ class ContactsChoose extends AppComponent {
         // this.CheckBoxData = {};//选择框组件
         this.HasData = 0;//是否有选择数据
         this.ContactsData = [];//分组集合和数据
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
+        this.userController = undefined;
+        this.imLogicController = undefined;
     }
 
     componentDidMount() {
@@ -73,7 +71,7 @@ class ContactsChoose extends AppComponent {
         let key = item.section.key;
         let checked = this.props.selectRecord[content.Account] ? 1 : 2;
         let name = content.Remark != "" ? content.Remark:content.Nickname;
-        let path = userController.getAccountHeadImagePath(content.Account);
+        let path = this.userController.getAccountHeadImagePath(content.Account);
         return (
             <TouchableHighlight style={styles.itemTouch} underlayColor={'#333'} onPress={()=>this._itemTouch(content,index,key)}>
                 <View style={styles.itemView}>

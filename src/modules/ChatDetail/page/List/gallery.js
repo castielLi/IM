@@ -22,8 +22,6 @@ import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action'
 
 import AppComponent from '../../../../Core/Component/AppComponent'
-import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic'
-let imControllerLogic = undefined;
 
 class Gallery extends AppComponent {
     constructor(props) {
@@ -35,11 +33,15 @@ class Gallery extends AppComponent {
             thumbnail:props.data.message.LocalSource.indexOf('/thumbnail') !== -1 ? true : false
             //thumbnail:props.Remote.indexOf('#imageView2') !== -1 ? true : false
         }
-        imControllerLogic = IMControllerLogic.getSingleInstance();
+        this.imControllerLogic = this.appManagement.getIMLogicInstance();
     }
 
     componentWillMount(){
 
+    }
+
+    componentWillUnmount(){
+        this.imControllerLogic = undefined;
     }
 
     downOriginalImage = (chatId,type,data)=>{
@@ -50,7 +52,7 @@ class Gallery extends AppComponent {
         // let pathB = Path.slice(Path.lastIndexOf('/'));
         // let path = pathA+pathB;
 
-        imControllerLogic.manualDownloadResource(chatId,messageId,group,message)
+        this.imControllerLogic.manualDownloadResource(chatId,messageId,group,message)
     }
     render() {
         let {chatId,type,data} = this.props;

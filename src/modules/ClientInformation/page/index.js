@@ -38,14 +38,16 @@ class ClientInformation extends AppComponent {
         };
         currentObj = this;
 
-        userController =  UserController.getSingleInstance();
-        applyController =  ApplyController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
+        applyController =  this.appManagement.getApplyLogicInstance();
 
         this.changeAddFriendButton = this.changeAddFriendButton.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
+        applyController = undefined;
     }
 
     componentDidMount() {

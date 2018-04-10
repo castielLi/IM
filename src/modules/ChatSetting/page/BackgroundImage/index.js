@@ -59,11 +59,12 @@ export default class PrivateChatBackgroundImage extends AppComponent {
         this.useCamera = this.useCamera.bind(this);
         this.useLocal = this.useLocal.bind(this);
         this._toDoSome = this._toDoSome.bind(this);
-        imController = IMLogicController.getSingleInstance();
+        imController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        imController = undefined;
     }
 
     imagePikerCallBack(response) {

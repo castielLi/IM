@@ -62,8 +62,8 @@ class Profile extends AppComponent {
         super(props);
 
         loginController = new LoginController();
-        imController = IMControlelr.getSingleInstance();
-        userController = UserController.getSingleInstance();
+        imController = this.appManagement.getIMLogicInstance();
+        userController = this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         this.state = {
@@ -77,6 +77,8 @@ class Profile extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
+        imController = undefined;
     }
 
     _refreshUI(type,param){

@@ -55,7 +55,7 @@ class HeadImage extends AppComponent {
         super(props);
         this.handlePress = this.handlePress.bind(this);
         currentObj = this;
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount();
         headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
         this.state = {
@@ -65,7 +65,7 @@ class HeadImage extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-
+        userController = undefined;
     }
 
     _refreshUI(type,param){

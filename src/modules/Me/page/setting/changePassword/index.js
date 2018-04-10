@@ -6,10 +6,8 @@ import {
 } from 'react-native-deprecated-custom-components';
 import AppComponent from '../../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-let userController = undefined;
 
 export default class ChangePassword extends AppComponent {
 	constructor(props) {
@@ -23,12 +21,13 @@ export default class ChangePassword extends AppComponent {
 		showConfirm:false,//是否显示确认电话号码组件 false:不显示 true:显示
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
-        userController = UserController.getSingleInstance();
+	  this.userController = this.appManagement.getUserLogicInstance();
 	  this.finished = this.finished.bind(this);
 	}
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
     }
 
     componentDidMount(){
@@ -55,7 +54,7 @@ export default class ChangePassword extends AppComponent {
     	let {oldPassWord,newPassWord,confirmPassWord} = this.state;
 		if(newPassWord === confirmPassWord){
 			//修改数据库里面的对应账号的密码
-			userController.modifyPassword(oldPassWord,newPassWord,(result)=>{
+            this.userController.modifyPassword(oldPassWord,newPassWord,(result)=>{
 				if(result &&　result.Result === 1){
                     //修改成功，页面跳转到登录页面
                     alert('密码修改成功，请重新登录!');

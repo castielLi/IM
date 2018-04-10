@@ -32,7 +32,7 @@ let originData = [
 export default class MoreSetting extends AppComponent {
     constructor(props){
         super(props);
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
         this.state = {
             gender:props.account.Gender,
             signature:props.signature,
@@ -42,6 +42,7 @@ export default class MoreSetting extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     _renderSection = ()=>{

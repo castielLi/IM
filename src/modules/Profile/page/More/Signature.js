@@ -18,7 +18,7 @@ let userController = undefined;
 export default class Signature extends AppComponent {
     constructor(props){
         super(props);
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
         this.state = {
             Signature: props.Signature,
             Confirm:true,
@@ -28,6 +28,7 @@ export default class Signature extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     componentDidMount(){

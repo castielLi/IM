@@ -28,19 +28,17 @@ import {
 import * as Actions from '../../reducer/action';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AutoExpandingTextInput from './autoExpandingTextInput';
-import IMController from '../../../../TSController/IMLogic/IMControllerLogic';
-
+import AppComponent from '../../../../Core/Component/AppComponent'
 
 const ptToPx = pt => PixelRatio.getPixelSizeForLayoutSize(pt);
 const pxToPt = px => PixelRatio.roundToNearestPixel(px);
 
-var imController = undefined
 var {
   height,
   width
 } = Dimensions.get('window');
 var audio, startTime, recordTimer, modalTimer,checkMaxRecordTimeInterval,delayStopTimer;
-class ThouchBarBoxTopBox extends PureComponent {
+class ThouchBarBoxTopBox extends AppComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -76,7 +74,12 @@ class ThouchBarBoxTopBox extends PureComponent {
         this.renderModal = this.renderModal.bind(this);
         this._onRequestClose = this._onRequestClose.bind(this);
 
-        imController = IMController.getSingleInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.imController = undefined;
     }
 
     changeThouchBarTopBoxHeight(height) {
@@ -227,7 +230,7 @@ class ThouchBarBoxTopBox extends PureComponent {
                 // }]);
                 let Path = this.audioPath + '/' + this.state.fileName + '.aac';
                 let time = counTime ? counTime : 1;
-                imController.SendFile(3, Path, time);
+                this.imController.SendFile(3, Path, time);
                 //
                 this.shouldPressSpeakBox = true;
             });
@@ -375,7 +378,7 @@ class ThouchBarBoxTopBox extends PureComponent {
             },
         }
 
-        this.account = imController.getCurrentAccount();
+        this.account = this.imController.getCurrentAccount();
 
         let audioPath = RNFS.DocumentDirectoryPath + '/Files/' + this.account.accountId + '/Audio/';
         this.audioPath = audioPath;

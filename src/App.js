@@ -36,12 +36,12 @@ export default function App() {
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
 
 
-    require('ErrorUtils').setGlobalHandler((err)=> {
-        alert(err.stack);
-        let errorString = "==================================错误=================================== "
-            + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
-        SystemManager.ErrorLog(errorString);
-    });
+    // require('ErrorUtils').setGlobalHandler((err)=> {
+    //     alert(err.stack);
+    //     let errorString = "==================================错误=================================== "
+    //         + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
+    //     SystemManager.ErrorLog(errorString);
+    // });
 
     class InitApp extends Component {
         constructor() {

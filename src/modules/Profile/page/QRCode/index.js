@@ -25,7 +25,7 @@ let userController = undefined;
 class QRCodeContent extends AppComponent {
     constructor(props){
         super(props)
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillMount(){
@@ -38,6 +38,7 @@ class QRCodeContent extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
 

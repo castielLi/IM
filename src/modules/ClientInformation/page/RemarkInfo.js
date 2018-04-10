@@ -20,12 +20,14 @@ export default class RemarkInfo extends AppComponent {
             disabled:true,
         };
         this.cache = props.remark;
-        userController = UserController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
+        imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
+        userController = undefined;
+        imLogicController = undefined;
     }
 
     componentDidMount() {

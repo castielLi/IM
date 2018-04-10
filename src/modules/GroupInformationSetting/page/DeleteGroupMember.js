@@ -35,12 +35,13 @@ class DeleteGroupMember extends AppComponent {
         this.CheckBoxData = [];
         this.selectData = [];
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
     componentWillMount(){
         userController.getGroupMembersInfo(this.props.groupId,(result)=>{

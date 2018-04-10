@@ -31,16 +31,11 @@ import {
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import TimeHelper from '../../../Core/Helper/TimeHelper';
 import {SwipeListView} from 'react-native-swipe-list-view'
-import UserController from '../../../TSController/UserController'
-import ApplyController from '../../../TSController/ApplyController';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AppStatusEnum from '../../../App/Enum/AppStatusEnum'
-let userController = undefined;
-let applyController = undefined;
-let imLogicController = undefined;
+
 let currentObj= undefined;
 
 
@@ -57,14 +52,17 @@ class RecentChat extends AppComponent {
         this.goToChatDetail = this.goToChatDetail.bind(this);
         this.componentDidMount = this.componentDidMount.bind(this);
         currentObj = this;
-        userController =  UserController.getSingleInstance();
-        applyController = ApplyController.getSingleInstance();
-        imLogicController = IMControllerLogic.getSingleInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.applyController = this.appManagement.getApplyLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
         this._changeAppStatus = this._changeAppStatus.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
+        this.applyController = undefined;
+        this.imLogicController = undefined;
     }
 
     _refreshUI(type,params){
@@ -93,8 +91,8 @@ class RecentChat extends AppComponent {
     componentDidMount() {
         // this.props.showNavigationBottom();
         InteractionManager.runAfterInteractions(()=>{
-            if(imLogicController!= undefined && imLogicController!=null){
-                imLogicController.getConversationList();
+            if(this.imLogicController!= undefined && this.imLogicController!=null){
+                this.imLogicController.getConversationList();
             }
         })
 
@@ -120,7 +118,7 @@ class RecentChat extends AppComponent {
     _deleteSomeRow = (data,rowMap)=> {
         let oKCallback = () => {
             rowMap[data.chatId].closeRow();
-            imLogicController.removeConverse(data.chatId,data.group);
+            this.imLogicController.removeConverse(data.chatId,data.group);
         }
         this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
 
@@ -128,7 +126,7 @@ class RecentChat extends AppComponent {
     _renderAvator = (userId,group,nosound,unreadCount) => {
         let imageUrl = require('../resource/groupAvator.png');
         if(!group){
-            imageUrl = userController.getAccountHeadImagePath(userId);
+            imageUrl = this.userController.getAccountHeadImagePath(userId);
         }
         return <View style = {styles.avatar}>
             <ImagePlaceHolder style = {styles.avatar} imageUrl = {imageUrl}/>

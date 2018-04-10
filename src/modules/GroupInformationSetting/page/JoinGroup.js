@@ -35,12 +35,13 @@ export default class JoinGroup extends AppComponent {
         this.state = {
         };
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
 

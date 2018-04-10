@@ -35,12 +35,13 @@ class GroupAnnouncement extends AppComponent {
         };
 
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
         currentAccount = userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     componentDidMount(){

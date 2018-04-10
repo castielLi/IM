@@ -23,8 +23,8 @@ class ChatSetting extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
-        imController = IMController.getSingleInstance();
-        userController = UserController.getSingleInstance();
+        imController = this.appManagement.getIMLogicInstance();
+        userController = this.appManagement.getUserLogicInstance();
 
         let setting = imController.getChatSetting();
         if(setting == undefined){
@@ -45,6 +45,8 @@ class ChatSetting extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        imController = undefined;
+        userController = undefined;
     }
 
     changeIsStickyChat = ()=>{

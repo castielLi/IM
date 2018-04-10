@@ -23,11 +23,12 @@ let userController = undefined;
 export default class AddFriends extends AppComponent {
     constructor(props){
         super(props)
-        userController =  UserController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     static defaultProps = {

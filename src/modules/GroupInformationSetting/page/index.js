@@ -30,8 +30,6 @@ import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHold
 import UserController from '../../../TSController/UserController';
 import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
-let userController = undefined;
-let imController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
@@ -44,10 +42,10 @@ class GroupInformationSetting extends AppComponent {
         super(props)
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
-        userController =  UserController.getSingleInstance();
-        imController = IMController.getSingleInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
 
-        let setting = imController.getChatSetting();
+        let setting = this.imController.getChatSetting();
 
         if(setting == undefined){
             this.state = {
@@ -101,16 +99,18 @@ class GroupInformationSetting extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
+        this.imController = undefined;
     }
 
     changeIsStickyChat = ()=>{
-        imController.setStickToTheTop(!this.state.isStickyChat);
+        this.imController.setStickToTheTop(!this.state.isStickyChat);
         this.setState({
             isStickyChat:!this.state.isStickyChat
         })
     };
     changeNotDisturb = ()=>{
-        imController.setNoDisturb(!this.state.notDisturb);
+        this.imController.setNoDisturb(!this.state.notDisturb);
         this.setState({
             notDisturb:!this.state.notDisturb
         })
@@ -120,19 +120,19 @@ class GroupInformationSetting extends AppComponent {
         currentObj.setState({
             isSave:!this.state.isSave
         });
-        userController.addOrRemoveContacts(this.props.groupId,!this.state.isSave);
+        this.userController.addOrRemoveContacts(this.props.groupId,!this.state.isSave);
     };
     _changeIsNickname = (value)=>{
         currentObj.setState({
             isNickname:value
         });
-        userController.modifyNicknameSetting(this.props.groupId,value);
+        this.userController.modifyNicknameSetting(this.props.groupId,value);
     };
 
     componentDidMount(){
         // InteractionManager.runAfterInteractions(()=> {
-            currentAccount = userController.getCurrentAccount();
-            userController.getGroupAndMembersInfo(this.props.groupId, (result) => {
+            currentAccount = this.userController.getCurrentAccount();
+            this.userController.getGroupAndMembersInfo(this.props.groupId, (result) => {
                 // let save = result.Save ? true : false;
                 // if (!result.Note || result.Note == 'null') {
                 //     result.Note = null;
@@ -171,8 +171,8 @@ class GroupInformationSetting extends AppComponent {
         //退出群组
         if(1 == i){
             currentObj.showLoading();
-            imController.removeConverse(this.props.groupId,true);
-            userController.removeGroup(this.props.groupId,()=>{
+            this.imController.removeConverse(this.props.groupId,true);
+            this.userController.removeGroup(this.props.groupId,()=>{
                 currentObj.hideLoading();
                 currentObj.route.toMain(currentObj.props);
             });
@@ -261,7 +261,7 @@ class GroupInformationSetting extends AppComponent {
             }
         }
         else{
-            let path = userController.getAccountHeadImagePath(item.item.Account);
+            let path = this.userController.getAccountHeadImagePath(item.item.Account);
             let name = item.item.Remark != "" ? item.item.Remark:item.item.Nickname;
             return (
                 <TouchableWithoutFeedback onPress={()=>{this.goToClientInfo(item.item.Account)}}>
@@ -388,7 +388,7 @@ class GroupInformationSetting extends AppComponent {
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-                        imController.removeAllMessage(Id,true)
+                        this.imController.removeAllMessage(Id,true)
                         this.alert("清空聊天记录成功","提醒")
                     }} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>

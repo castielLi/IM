@@ -11,20 +11,25 @@ import {
 } from 'react-native';
 
 import AppComponent from '../../../../Core/Component/AppComponent';
-import IMControllerLogic from '../../../../TSController/IMLogic/IMControllerLogic';
-let imControllerLogic = undefined;
+
 
 let {width, height} = Dimensions.get('window');
 
-export default class ChatMessageVideo extends PureComponent {
+export default class ChatMessageVideo extends AppComponent {
     constructor(props){
         super(props);
         this.state = {
             progress:props.data.sourceRate,
             download:false,
         };
-        imControllerLogic = IMControllerLogic.getSingleInstance();
+        this.imControllerLogic = this.appManagement.getIMLogicInstance();
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.imControllerLogic = undefined;
+    }
+
     componentWillReceiveProps(nextProps){
         let sourceRate = nextProps.data.sourceRate;
         let status = nextProps.data.status;

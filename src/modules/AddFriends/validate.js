@@ -34,12 +34,14 @@ class Validate extends AppComponent {
             text:''
         }
         currentObj = this;
-        userController = UserController.getSingleInstance();
-        applyController = ApplyController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
+        applyController = this.appManagement.getApplyLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
+        applyController = undefined;
     }
 
     static defaultProps = {

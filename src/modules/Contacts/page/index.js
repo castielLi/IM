@@ -24,16 +24,12 @@ import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
 import * as applyActions from '../reducer/action';
-import UserController from '../../../TSController/UserController';
 import Features from '../../Common/menu/features';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
-import ApplyController from '../../../TSController/ApplyController';
 import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import MySectionList from '../../Common/Component/MySectionList/'
 let currentObj = undefined;
-let userController = undefined;
-let applyController = undefined;
 
 class Contacts extends AppComponent {
 
@@ -57,14 +53,14 @@ class Contacts extends AppComponent {
         this.relationStore = [];
         currentObj = this;
 
-        userController =  UserController.getSingleInstance();
-        applyController = ApplyController.getSingleInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.applyController = this.appManagement.getApplyLogicInstance();
 	}
 
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
-            userController.getUserContactList(false, null);
-            applyController.getUncheckApplyFriendCount();
+            this.userController.getUserContactList(false, null);
+            this.applyController.getUncheckApplyFriendCount();
         });
     }
 
@@ -91,12 +87,14 @@ class Contacts extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
+        this.applyController = undefined;
     }
 
     //todo:头像应该还有本地地址
 	_renderItem = (info) => {
 		let name = info.item.Remark != "" ? info.item.Remark:info.item.Nickname;
-		let path = userController.getAccountHeadImagePath(info.item.Account);
+		let path = this.userController.getAccountHeadImagePath(info.item.Account);
 		// let lastItem = (info.index + 1) == info.section.data.length?true:false;
 		return (
 			<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>

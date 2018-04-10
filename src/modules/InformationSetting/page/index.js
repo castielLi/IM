@@ -35,12 +35,14 @@ class InformationSetting extends AppComponent {
             joinBlackList:false,
         }
         currentObj = this;
-        userController = UserController.getSingleInstance();
-        imControllerLogic = IMControllerLogic.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
+        imControllerLogic = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
+        imControllerLogic = undefined;
     }
 
     componentWillMount(){

@@ -38,11 +38,12 @@ export default class RadioCollection extends AppComponent {
         };
         this.cache = props.gender;
         this.setGender = this.setGender.bind(this);
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
 

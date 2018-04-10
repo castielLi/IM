@@ -39,11 +39,12 @@ class GroupList extends AppComponent {
         }
         this.relationStore = [];
         currentObj = this;
-        userController = UserController.getSingleInstance();
+        userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     componentWillMount(){

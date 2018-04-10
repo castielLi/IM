@@ -42,12 +42,14 @@ class NewFriend extends AppComponent {
             applyRecord:[],
         };
         currentObj = this;
-        applyController =  ApplyController.getSingleInstance();
-        userController = UserController.getSingleInstance();
+        applyController =  this.appManagement.getApplyLogicInstance();
+        userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        applyController = undefined;
+        userController = undefined;
     }
 
     goToAddFriends = ()=>{

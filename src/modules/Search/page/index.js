@@ -36,12 +36,13 @@ export default class Search extends AppComponent {
             searchResult:[]
         }
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        userController =  this.appManagement.getUserLogicInstance();
         this._goToChatDetail = this._goToChatDetail.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        userController = undefined;
     }
 
     componentDidMount(){

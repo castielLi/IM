@@ -15,9 +15,6 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-
-import UserController from '../../../TSController/UserController';
-let userController = undefined;
 let currentAccount = undefined;
 
 let {height,width} = Dimensions.get('window');
@@ -32,11 +29,12 @@ class SearchNewFriend extends AppComponent {
             searchResult:true
         }
         currentObj = this;
-        userController =  UserController.getSingleInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
+        this.userController = undefined;
     }
 
     componentDidMount(){
@@ -55,13 +53,13 @@ class SearchNewFriend extends AppComponent {
 
 
     searchUser = (keyword)=>{
-        currentAccount = userController.getCurrentAccount();
+        currentAccount = this.userController.getCurrentAccount();
         currentObj.showLoading();
         if(currentAccount.Account == keyword || currentAccount.PhoneNumber == keyword){
             currentObj.hideLoading();
             this.alert('你不能添加自己到通讯录')
         }else{
-            userController.getUserInfo(keyword,true,(result)=>{
+            this.userController.getUserInfo(keyword,true,(result)=>{
                 currentObj.hideLoading();
                 if(result){
                     currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
