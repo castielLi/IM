@@ -16,19 +16,17 @@ import {
 import AppComponent from '../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
-import UserController from '../../TSController/UserController';
-let userController = undefined;
 
 
 export default class AddFriends extends AppComponent {
     constructor(props){
         super(props)
-        userController =  this.appManagement.getUserLogicInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     static defaultProps = {
@@ -57,7 +55,7 @@ export default class AddFriends extends AppComponent {
     }
 
     render() {
-        let AccountObj = userController.getCurrentAccount();
+        let AccountObj = this.userController.getCurrentAccount();
         return(
             <View style={styles.container}>
                 <MyNavigationBar

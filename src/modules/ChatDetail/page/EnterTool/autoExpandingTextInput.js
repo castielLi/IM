@@ -13,13 +13,11 @@ import {
     connect
 } from 'react-redux';
 import * as Actions from '../../reducer/action';
-import IMController from '../../../../TSController/IMLogic/IMControllerLogic';
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var {width} = Dimensions.get('window');
 let isIos = (Platform.OS === 'ios') ? true : false;
 import AppComponent from '../../../../Core/Component/AppComponent'
 
-var imController = undefined;
 
 class AutoExpandingTextInput extends AppComponent {
     constructor(props) {

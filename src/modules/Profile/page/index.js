@@ -22,17 +22,9 @@ import * as featuresAction from '../../Common/menu/reducer/action';
 import {bindActionCreators} from 'redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import LoginController from '../../../TSController/LoginController';
-import UserController from '../../../TSController/UserController';
-import IMControlelr from '../../../TSController/IMLogic/IMControllerLogic';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 
-let loginController = undefined;
-let userController = undefined;
-let currentAccount = undefined;
-let imController = undefined;
-let headImagePath = undefined;
 let currentObj = undefined;
 
 
@@ -60,25 +52,23 @@ var originData = [
 class Profile extends AppComponent {
     constructor(props){
         super(props);
-
-        loginController = new LoginController();
-        imController = this.appManagement.getIMLogicInstance();
-        userController = this.appManagement.getUserLogicInstance();
-        currentAccount = userController.getCurrentAccount();
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        this.imController = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
+        this.headImagePath = this.userController.getAccountHeadImagePath(this.currentAccount.Account)
         this.state = {
             showFeatures:false,//显示功能块组件
-            headImageUrl:headImagePath,
-            currentAccount:currentAccount,
-            nickname:currentAccount.Nickname
+            headImageUrl:this.headImagePath,
+            currentAccount:this.currentAccount,
+            nickname:this.currentAccount.Nickname
         };
         currentObj = this;
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
-        imController = undefined;
+        this.userController = undefined;
+        this.imController = undefined;
     }
 
     _refreshUI(type,param){

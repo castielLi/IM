@@ -22,10 +22,6 @@ import ApplyFriendEnum from '../Enum/ApplyFriendEnum'
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import ApplyController from '../../../TSController/ApplyController';
-import UserController from '../../../TSController/UserController';
-let applyController = undefined;
-let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj = undefined;
@@ -42,14 +38,14 @@ class NewFriend extends AppComponent {
             applyRecord:[],
         };
         currentObj = this;
-        applyController =  this.appManagement.getApplyLogicInstance();
-        userController = this.appManagement.getUserLogicInstance();
+        this.applyController =  this.appManagement.getApplyLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        applyController = undefined;
-        userController = undefined;
+        this.applyController = undefined;
+        this.userController = undefined;
     }
 
     goToAddFriends = ()=>{
@@ -57,8 +53,8 @@ class NewFriend extends AppComponent {
     }
 
     componentWillMount(){
-        applyController.setApplyFriendRecord();
-        applyController.clearUncheckCount();
+        this.applyController.setApplyFriendRecord();
+        this.applyController.clearUncheckCount();
     }
 
     _refreshUI(type,params){
@@ -81,7 +77,7 @@ class NewFriend extends AppComponent {
                 this.alert('接受好友申請失败',"错误")
             }
         };
-        applyController.acceptFriend(key,callback);
+        this.applyController.acceptFriend(key,callback);
 
     }
 

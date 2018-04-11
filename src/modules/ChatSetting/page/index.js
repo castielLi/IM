@@ -10,12 +10,8 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import IMController from '../../../TSController/IMLogic/IMControllerLogic';
-import UserController from '../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-let imController = undefined;
-let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 
@@ -23,10 +19,10 @@ class ChatSetting extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
-        imController = this.appManagement.getIMLogicInstance();
-        userController = this.appManagement.getUserLogicInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
 
-        let setting = imController.getChatSetting();
+        let setting = this.imController.getChatSetting();
         if(setting == undefined){
             this.state = {
                 isStickyChat:false,//置顶聊天
@@ -45,12 +41,12 @@ class ChatSetting extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        imController = undefined;
-        userController = undefined;
+        this.imController = undefined;
+        this.userController = undefined;
     }
 
     changeIsStickyChat = ()=>{
-        imController.setStickToTheTop(!this.state.isStickyChat);
+        this.imController.setStickToTheTop(!this.state.isStickyChat);
         this.setState({
             isStickyChat:!this.state.isStickyChat
         })
@@ -65,7 +61,7 @@ class ChatSetting extends AppComponent {
     };
 
     _clearMessages = ()=> {
-        imController.removeAllMessage(this.props.Account,false);
+        this.imController.removeAllMessage(this.props.Account,false);
         this.alert("清空聊天记录成功","提醒")
     }
 
@@ -75,7 +71,7 @@ class ChatSetting extends AppComponent {
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let path = userController.getAccountHeadImagePath(this.props.Account);
+        let path = this.userController.getAccountHeadImagePath(this.props.Account);
         return (
             <View style={styles.container}>
                 <MyNavigationBar

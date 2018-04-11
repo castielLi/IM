@@ -12,10 +12,8 @@ import {
 } from 'react-native';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../../TSController/UserController';
 import RadioCollection from './RadioCollection';
 let currentObj;
-let userController = undefined;
 let originData = [
     {
         'key':'1',
@@ -32,7 +30,7 @@ let originData = [
 export default class MoreSetting extends AppComponent {
     constructor(props){
         super(props);
-        userController = this.appManagement.getUserLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
         this.state = {
             gender:props.account.Gender,
             signature:props.signature,
@@ -42,7 +40,7 @@ export default class MoreSetting extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     _renderSection = ()=>{

@@ -20,9 +20,7 @@ import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
 var ImagePicker = require('react-native-image-picker');
-import IMLogicController from '../../../../TSController/IMLogic/IMControllerLogic'
 let currentObj;
-let imController = undefined;
 let {width, height} = Dimensions.get('window');
 
 let originData = [
@@ -56,12 +54,12 @@ export default class GroupBackgroundImage extends AppComponent {
         this.useCamera = this.useCamera.bind(this);
         this.useLocal = this.useLocal.bind(this);
         this._toDoSome = this._toDoSome.bind(this);
-        imController = this.appManagement.getIMLogicInstance();
+        this.imController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        imController = undefined;
+        this.imController = undefined;
     }
 
     imagePikerCallBack(response) {
@@ -77,7 +75,7 @@ export default class GroupBackgroundImage extends AppComponent {
         else {
 
             let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
-            imController.setConversationBackgroundImage(responsePath);
+            this.imController.setConversationBackgroundImage(responsePath);
         }
     }
 
@@ -98,7 +96,7 @@ export default class GroupBackgroundImage extends AppComponent {
                 this.useLocal();
                 break;
             case '清除背景图片':
-                imController.setConversationBackgroundImage("");
+                this.imController.setConversationBackgroundImage("");
                 break;
             default:
                 break;

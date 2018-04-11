@@ -5,12 +5,8 @@ import React, {Component} from 'react';
 import {StyleSheet,Image,TextInput,Platform,Alert,FlatList,TouchableHighlight,View,Text,Dimensions} from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../TSController/UserController'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-let userController = undefined;
-let imLogicController = undefined;
 let {width,height} = Dimensions.get('window');
 export default class RemarkInfo extends AppComponent {
     constructor(props) {
@@ -20,14 +16,14 @@ export default class RemarkInfo extends AppComponent {
             disabled:true,
         };
         this.cache = props.remark;
-        userController = this.appManagement.getUserLogicInstance();
-        imLogicController = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
-        userController = undefined;
-        imLogicController = undefined;
+        this.userController = undefined;
+        this.imLogicController = undefined;
     }
 
     componentDidMount() {
@@ -46,7 +42,7 @@ export default class RemarkInfo extends AppComponent {
 
    _modifyRemark=()=>{
        let {account} = this.props;
-        userController.modifyRemark(account,this.state.remark);
+       this.userController.modifyRemark(account,this.state.remark);
         this.route.pop(this.props);
     };
 

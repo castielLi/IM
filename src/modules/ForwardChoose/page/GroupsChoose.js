@@ -11,14 +11,9 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import UserController from '../../../TSController/UserController'
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-
-let userController = undefined;
-let imLogicController = undefined;
 let {width,height} = Dimensions.get('window');
 class GroupsChoose extends AppComponent {
     constructor(props) {
@@ -28,18 +23,18 @@ class GroupsChoose extends AppComponent {
         };
         this.CheckBoxData = [];//选择框组件
         this.HasData = 0;//是否有选择数据
-        userController = this.appManagement.getUserLogicInstance();
-        imLogicController = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
-        userController = undefined;
-        imLogicController = undefined;
+        this.userController = undefined;
+        this.imLogicController = undefined;
     }
 
     componentDidMount() {
-        userController.getGroupContactList(false,(contacts)=>{
+        this.userController.getGroupContactList(false,(contacts)=>{
             this.setState({
                 GroupsData:contacts
             })
@@ -126,7 +121,7 @@ class GroupsChoose extends AppComponent {
             this.CheckBoxData[index].onChange();
         }else{
             //调用发送方法
-            // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
+            // this.imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
             this.route.pop(this.props);
             this.props.forwardMethod(RecordDto);
         }
@@ -137,7 +132,7 @@ class GroupsChoose extends AppComponent {
         //是否有选中用户
         if(this.HasData){
             // let SelectRecord = Object.values(this.props.selectRecord);
-            // imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+            // this.imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
             this.route.pop(this.props);
             this.props.forwardMethod();
         }else{

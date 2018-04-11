@@ -17,11 +17,9 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
-import UserController from '../../../TSController/UserController';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 let {height, width} = Dimensions.get('window');
 
-let userController = undefined;
 let currentObj = undefined;
 
 class GroupList extends AppComponent {
@@ -39,17 +37,17 @@ class GroupList extends AppComponent {
         }
         this.relationStore = [];
         currentObj = this;
-        userController = this.appManagement.getUserLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     componentWillMount(){
         //通过回调改变页面显示
-        userController.getGroupContactList(false,(contacts)=>{
+        this.userController.getGroupContactList(false,(contacts)=>{
             currentObj.setState({
                 contacts
             })

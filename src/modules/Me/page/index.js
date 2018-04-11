@@ -21,16 +21,10 @@ import {bindActionCreators} from 'redux';
 import Features from '../../Common/menu/features';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import UserController from '../../../TSController/UserController';
-import AppManagement from '../../../App/AppManagement';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
-let userController = undefined;
-let currentAccount = undefined;
-let headImagePath = undefined;
 let currentObj = undefined;
-let appManagement = undefined;
 
 
 let originData = [
@@ -73,18 +67,14 @@ let originData = [
 class Me extends AppComponent {
     constructor(props){
         super(props);
-
-        // loginController = new LoginController();
-        // imController = IMControlelr.getSingleInstance();
-        userController = this.appManagement.getUserLogicInstance();
-        currentAccount = userController.getCurrentAccount();
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account);
-        appManagement = new AppManagement();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
+        this.headImagePath = this.userController.getAccountHeadImagePath(this.currentAccount.Account);
         this.state = {
             showFeatures:false,//显示功能块组件
-            headImageUrl:headImagePath,
-            name : currentAccount.Nickname,
-            gender: currentAccount.Gender
+            headImageUrl:this.headImagePath,
+            name : this.currentAccount.Nickname,
+            gender: this.currentAccount.Gender
         };
 
         currentObj = this;
@@ -92,7 +82,7 @@ class Me extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     _refreshUI(type,param){
@@ -226,7 +216,7 @@ class Me extends AppComponent {
                         <ImagePlaceHolder style={styles.topPic} imageUrl ={this.state.headImageUrl}/>
                         <View style={styles.topInfo}>
                             <Text style={styles.headerText}>{this.state.name}</Text>
-                            <Text style={styles.itemSmallText}>{'云信号：'+currentAccount.Account}</Text>
+                            <Text style={styles.itemSmallText}>{'云信号：'+this.currentAccount.Account}</Text>
                         </View>
                     </View>
                     <View style={{flexDirection:'row',alignItems:'center'}}>

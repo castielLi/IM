@@ -18,13 +18,9 @@ import {connect} from 'react-redux';
 import AppComponent from '../../Core/Component/AppComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 import {bindActionCreators} from 'redux';
-import UserController from '../../TSController/UserController';
-import ApplyController from '../../TSController/ApplyController';
-
 
 let currentObj;
-let userController = undefined;
-let applyController = undefined;
+
 
 class Validate extends AppComponent {
     constructor(props){
@@ -34,14 +30,14 @@ class Validate extends AppComponent {
             text:''
         }
         currentObj = this;
-        userController = this.appManagement.getUserLogicInstance();
-        applyController = this.appManagement.getApplyLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.applyController = this.appManagement.getApplyLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
-        applyController = undefined;
+        this.userController = undefined;
+        this.applyController = undefined;
     }
 
     static defaultProps = {
@@ -70,7 +66,7 @@ class Validate extends AppComponent {
         let {Applicant,Respondent} = this.props;
         Keyboard.dismiss();
 
-        applyController.applyFriend(Applicant,Respondent,this.state.text,(result)=>{
+        this.applyController.applyFriend(Applicant,Respondent,this.state.text,(result)=>{
             if(result && result.Result === 1){
                 if(result.Data instanceof Object){
                     currentObj.props.changeAddFriendButton(true);

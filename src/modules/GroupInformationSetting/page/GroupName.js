@@ -22,7 +22,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let currentAccount = undefined;
 
 class GroupName extends AppComponent {
     constructor(props){
@@ -37,7 +36,7 @@ class GroupName extends AppComponent {
 
         currentObj = this;
         this.userController =  this.appManagement.getUserLogicInstance();
-        currentAccount = this.userController.getCurrentAccount();
+        this.currentAccount = this.userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
@@ -76,7 +75,7 @@ class GroupName extends AppComponent {
         let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        this.userController.updateGroupName(currentAccount.Account,Id,this.state.text,(result)=>{
+        this.userController.updateGroupName(this.currentAccount.Account,Id,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
 

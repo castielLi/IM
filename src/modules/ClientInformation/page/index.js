@@ -15,16 +15,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
-import {bindActionCreators} from 'redux';
-
-import UserController from '../../../TSController/UserController';
-import ApplyController from '../../../TSController/ApplyController';
-let userController = undefined;
-let applyController = undefined;
-
 let {height,width} = Dimensions.get('window');
 let currentObj;
-let currentAccount = undefined;
 
 class ClientInformation extends AppComponent {
     constructor(props){
@@ -38,29 +30,29 @@ class ClientInformation extends AppComponent {
         };
         currentObj = this;
 
-        userController =  this.appManagement.getUserLogicInstance();
-        applyController =  this.appManagement.getApplyLogicInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.applyController =  this.appManagement.getApplyLogicInstance();
 
         this.changeAddFriendButton = this.changeAddFriendButton.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
-        applyController = undefined;
+        this.userController = undefined;
+        this.applyController = undefined;
     }
 
     componentDidMount() {
         //todo:更新问题  什么时候更新用户信息
-        currentAccount = userController.getCurrentAccount();
-        if(currentAccount.Account == this.props.clientId){
+        this.currentAccount = this.userController.getCurrentAccount();
+        if(this.currentAccount.Account == this.props.clientId){
             this.setState({
                 oneself:true,
                 isFriend:false,
-                userInfo:currentAccount
+                userInfo:this.currentAccount
             })
         }else{
-            userController.getUserInfo(this.props.clientId,false,(result)=>{
+            this.userController.getUserInfo(this.props.clientId,false,(result)=>{
                 let isFriend = result.Friend ? true : false;
                 this.setState({
                     userInfo:result,
@@ -126,7 +118,7 @@ class ClientInformation extends AppComponent {
 
     _acceptFriend = ()=>{
         this.showLoading();
-        applyController.acceptFriend(this.state.applyKey,()=>{
+        this.applyController.acceptFriend(this.state.applyKey,()=>{
             this.hideLoading();
             if(result.Result == 1){
                 this.setState({
@@ -141,7 +133,7 @@ class ClientInformation extends AppComponent {
 
     //用户信息控制
     _infoControl=(Account,Remark,Nickname)=>{
-        let path = userController.getAccountHeadImagePath(Account);
+        let path = this.userController.getAccountHeadImagePath(Account);
         let hasRemark = Remark != '' ? true : false;
         return (
             <View style={styles.basicBox}>
@@ -244,7 +236,7 @@ class ClientInformation extends AppComponent {
                 )
             }else{
                 return (
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(currentAccount.Account,Account)}} style={styles.sendMessageBox}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.addFriend(this.currentAccount.Account,Account)}} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>添加到通讯录</Text>
                     </TouchableHighlight>
                 )

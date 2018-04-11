@@ -30,10 +30,6 @@ import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListDat
 var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
-let currentAccount = undefined;
-
-import UserController from '../../../TSController/UserController';
-let userController = undefined;
 
 class ChooseClient extends AppComponent {
 
@@ -47,13 +43,13 @@ class ChooseClient extends AppComponent {
         this.defaulData = props.Accounts;//默认选中用户
         this.CheckBoxData = {};
         currentObj = this;
-        userController =  this.appManagement.getUserLogicInstance();
-        currentAccount = userController.getCurrentAccount()
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount()
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     componentWillMount(){
@@ -65,7 +61,7 @@ class ChooseClient extends AppComponent {
         }
     }
     componentDidMount(){
-        userController.getUserContactList(false,(contacts)=>{
+        this.userController.getUserContactList(false,(contacts)=>{
             this.setState({
                 contacts
             })
@@ -85,7 +81,7 @@ class ChooseClient extends AppComponent {
         let index = info.index;
         let key = info.section.key;
         let name = content.Remark != "" ? content.Remark:content.Nickname;
-        let path = userController.getAccountHeadImagePath(content.Account);
+        let path = this.userController.getAccountHeadImagePath(content.Account);
         let checked = this.selectData.indexOf(content.Account) != -1 ? 1 : 2;
         if(this.defaulData){
             checked = this.defaulData.indexOf(content.Account) != -1 ? 0 : checked;
@@ -167,8 +163,8 @@ class ChooseClient extends AppComponent {
                 return;
             }
             currentObj.showLoading();
-            let groupName = currentAccount.Nickname + "发起的群聊";
-            userController.createGroup(groupName,accountStr,(result)=>{
+            let groupName = this.currentAccount.Nickname + "发起的群聊";
+            this.userController.createGroup(groupName,accountStr,(result)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
                     currentObj.route.pushifExistRoute(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
@@ -178,7 +174,7 @@ class ChooseClient extends AppComponent {
             });
         }else{
             currentObj.showLoading();
-            userController.addGroupMember(this.props.groupId,accountStr,(result)=>{
+            this.userController.addGroupMember(this.props.groupId,accountStr,(result)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
                     let routes = currentObj.props.navigator.getCurrentRoutes();

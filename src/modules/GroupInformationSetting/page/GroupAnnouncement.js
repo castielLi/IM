@@ -17,11 +17,8 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import UserController from '../../../TSController/UserController';
 let {height,width} = Dimensions.get('window');
 
-let userController = undefined;
-let currentAccount = undefined;
 let currentObj = undefined;
 class GroupAnnouncement extends AppComponent {
     constructor(props){
@@ -35,13 +32,13 @@ class GroupAnnouncement extends AppComponent {
         };
 
         currentObj = this;
-        userController =  this.appManagement.getUserLogicInstance();
-        currentAccount = userController.getCurrentAccount();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     componentDidMount(){
@@ -50,7 +47,7 @@ class GroupAnnouncement extends AppComponent {
                 this._TextInput.focus();
             }
         });
-        if(this.props.Owner===currentAccount.Account){
+        if(this.props.Owner===this.currentAccount.Account){
             this.setState({
                 rightButtonText:'编辑'
             })
@@ -73,7 +70,7 @@ class GroupAnnouncement extends AppComponent {
         let {Id,navigator} = this.props;
         currentObj.showLoading();
 
-        userController.updateGroupBulletin(Id,this.state.text,(result)=>{
+        this.userController.updateGroupBulletin(Id,this.state.text,(result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
                 let routes = navigator.getCurrentRoutes();
@@ -129,7 +126,7 @@ class GroupAnnouncement extends AppComponent {
                             >
                             </TextInput>
                         }
-                        {this.props.Owner===currentAccount.Account?null:
+                        {this.props.Owner===this.currentAccount.Account?null:
                             <View style={{height:50,justifyContent:'center',alignItems:'center'}}>
                                 <Text>仅群主可编辑</Text>
                             </View>

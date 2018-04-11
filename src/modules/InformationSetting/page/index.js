@@ -15,11 +15,6 @@ import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 
-import UserController from '../../../TSController/UserController';
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic';
-let userController = undefined;
-let imControllerLogic = undefined;
-
 let currentObj = undefined;
 const options = ['取消','确认删除']
 const title = '你确定要删除这位好友么'
@@ -35,24 +30,24 @@ class InformationSetting extends AppComponent {
             joinBlackList:false,
         }
         currentObj = this;
-        userController = this.appManagement.getUserLogicInstance();
-        imControllerLogic = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imControllerLogic = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
-        imControllerLogic = undefined;
+        this.userController = undefined;
+        this.imControllerLogic = undefined;
     }
 
     componentWillMount(){
-        userController.getUserInfo(this.props.clientId,false,(result)=>{
+        this.userController.getUserInfo(this.props.clientId,false,(result)=>{
             let BlackList = result.BlackList ? true : false;
             this.setState({
                 joinBlackList:BlackList,
             })
         });
-        userController.getUserSetting(this.props.clientId,(result)=>{
+        this.userController.getUserSetting(this.props.clientId,(result)=>{
             this.setState({
                 notSeeHisZoom:result.ScanZoom,
                 notSeeMyZoom:result.ReScanZoom,
@@ -66,21 +61,21 @@ class InformationSetting extends AppComponent {
         this.setState({
             notSeeMyZoom:value
         });
-        userController.modifyScanZoom(this.props.clientId,value)
+        this.userController.modifyScanZoom(this.props.clientId,value)
     };
     //不看她朋友圈
     changeNotSeeHisZoom = (value)=>{
         this.setState({
             notSeeHisZoom:value
         });
-        userController.modifyReScanZoom(this.props.clientId,value)
+        this.userController.modifyReScanZoom(this.props.clientId,value)
     };
     //黑名单
     changeJoinBlackList = (value)=>{
         this.setState({
             joinBlackList:value
         });
-        userController.setBlackList(this.props.clientId,value,(result)=>{
+        this.userController.setBlackList(this.props.clientId,value,(result)=>{
         });
     };
 
@@ -90,14 +85,14 @@ class InformationSetting extends AppComponent {
         //删除好友
         if(1 == i){
             currentObj.showLoading();
-            userController.removeFriend(this.props.clientId,(result)=>{
+            this.userController.removeFriend(this.props.clientId,(result)=>{
                 currentObj.hideLoading();
                 let pages = currentObj.props.navigator.getCurrentRoutes();
                 let target = pages[pages.length - 3];
                 currentObj.route.popToSpecialRoute(currentObj.props,target);
             });
             //删除会话列表对应会话
-            imControllerLogic.removeConverse(this.props.clientId,false)
+            this.imControllerLogic.removeConverse(this.props.clientId,false)
         }
 
     }

@@ -27,8 +27,6 @@ import ActionSheet from 'react-native-actionsheet'
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import UserController from '../../../TSController/UserController';
-import IMController from '../../../TSController/IMLogic/IMControllerLogic'
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 
 let {height,width} = Dimensions.get('window');

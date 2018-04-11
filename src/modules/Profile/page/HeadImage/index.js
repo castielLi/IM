@@ -28,10 +28,7 @@ import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceH
 import AppPageMarkEnum from '../../../../App/Enum/AppPageMarkEnum';
 
 import AppComponent from '../../../../Core/Component/AppComponent'
-import UserController from '../../../../TSController/UserController'
-let userController = undefined;
-let headImagePath = undefined;
-let currentAccount = undefined;
+
 
 let currentObj = undefined;
 
@@ -55,17 +52,17 @@ class HeadImage extends AppComponent {
         super(props);
         this.handlePress = this.handlePress.bind(this);
         currentObj = this;
-        userController = this.appManagement.getUserLogicInstance();
-        currentAccount = userController.getCurrentAccount();
-        headImagePath = userController.getAccountHeadImagePath(currentAccount.Account)
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
+        this.headImagePath = this.userController.getAccountHeadImagePath(this.currentAccount.Account)
         this.state = {
-            headImageUrl:headImagePath
+            headImageUrl:this.headImagePath
         };
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     _refreshUI(type,param){
@@ -92,7 +89,7 @@ class HeadImage extends AppComponent {
         else {
 
             let data = Platform.OS === 'ios' ? response.data : response.data;
-            userController.modifyHeadImage(data)
+            this.userController.modifyHeadImage(data)
         }
     }
 

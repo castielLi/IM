@@ -21,19 +21,18 @@ import AppComponent from '../../../../Core/Component/AppComponent';
 import QRCode from 'react-native-qrcode';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-import UserController from '../../../../TSController/UserController';
 
-let userController = undefined;
+
 
 class GroupQRCodeContent extends AppComponent {
     constructor(props){
         super(props)
-        userController = this.appManagement.getUserLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
     }
 
-    componentWillMount(){
-        let currentUser = userController.getCurrentAccount();
-        let code = userController.getGroupQRCode(this.props.groupId,currentUser.Account);
+    componentDidMount(){
+        let currentUser = this.userController.getCurrentAccount();
+        let code = this.userController.getGroupQRCode(this.props.groupId,currentUser.Account);
         this.state = {
             code:code
         };
@@ -41,7 +40,7 @@ class GroupQRCodeContent extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
 

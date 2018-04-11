@@ -11,16 +11,12 @@ import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import IMControllerLogic from '../../../TSController/IMLogic/IMControllerLogic'
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 import CheckBox from '../../Common/Component/CheckBox';
 import * as SelectAction from '../reducer/action';
 import ForwardConfirm from './ForwardConfirm';
-import UserController from '../../../TSController/UserController';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
-let userController = undefined;
-let imLogicController = undefined;
 let currentObj = undefined;
 let {width,height} = Dimensions.get('window');
 
@@ -34,20 +30,20 @@ class ForwardChoose extends AppComponent {
         this.HasData = 0;//是否有选择数据
         this.RecordDto = null;//是有单选记录
         currentObj = this;
-        userController = this.appManagement.getUserLogicInstance();
-        imLogicController = this.appManagement.getIMLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imLogicController = this.appManagement.getIMLogicInstance();
     }
 
     componentWillUnmount() {
         super.componentWillUnmount();
         //初始化缓存数据
         this.props.initSelect();
-        userController = undefined;
-        imLogicController = undefined;
+        this.userController = undefined;
+        this.imLogicController = undefined;
     }
 
     componentDidMount() {
-        imLogicController.getConversationList();
+        this.imLogicController.getConversationList();
     }
 
     _refreshUI(type, params) {
@@ -149,7 +145,7 @@ class ForwardChoose extends AppComponent {
             return <ImagePlaceHolder style={styles.itemImage} imageUrl = {require('../../Common/resource/groupAvator.png')}/>
 
         } else {
-            let path = userController.getAccountHeadImagePath(Account);
+            let path = this.userController.getAccountHeadImagePath(Account);
             return <ImagePlaceHolder style={styles.itemImage} imageUrl ={path}/>
         }
     };
@@ -191,7 +187,7 @@ class ForwardChoose extends AppComponent {
             // this.CheckBoxData[index].onChange();
         }else{
             //调用发送方法
-            // imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
+            // this.imLogicController.ForwardMessage(this.props.rowData,[RecordDto]);
             // this.route.pop(this.props);
             this.forwardConfirm(RecordDto);
         }
@@ -201,9 +197,9 @@ class ForwardChoose extends AppComponent {
     forwardMessage=()=>{
         if(this.props.optionsType && this.HasData){
             let SelectRecord = Object.values(this.props.selectRecord);
-            imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+            this.imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
         }else{
-            imLogicController.ForwardMessage(this.props.rowData,[this.RecordDto]);
+            this.imLogicController.ForwardMessage(this.props.rowData,[this.RecordDto]);
         }
         this.route.pop(this.props);
     };
@@ -228,7 +224,7 @@ class ForwardChoose extends AppComponent {
         //是否有选中用户
         if(this.HasData){
             // let SelectRecord = Object.values(this.props.selectRecord);
-            // imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
+            // this.imLogicController.ForwardMessage(this.props.rowData,SelectRecord);
             // this.route.pop(this.props);
             this.forwardConfirm();
         }else{

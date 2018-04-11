@@ -20,17 +20,16 @@ import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
 import UserController from '../../../../TSController/UserController';
 import ImagePlaceHolder from '../../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 let currentObj = undefined;
-let userController = undefined;
 
 class QRCodeContent extends AppComponent {
     constructor(props){
         super(props)
-        userController = this.appManagement.getUserLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
     }
 
-    componentWillMount(){
-        let currentUser = userController.getCurrentAccount();
-        let code = userController.getAccountQRCode(currentUser.Account)
+    componentDidMount(){
+        let currentUser = this.userController.getCurrentAccount();
+        let code = this.userController.getAccountQRCode(currentUser.Account)
         this.state = {
             code:code
         };
@@ -38,7 +37,7 @@ class QRCodeContent extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
 

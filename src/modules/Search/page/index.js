@@ -17,11 +17,9 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import UserController from '../../../TSController/UserController';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum'
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
-let userController = undefined;
 
 
 let {height,width} = Dimensions.get('window');
@@ -36,13 +34,13 @@ export default class Search extends AppComponent {
             searchResult:[]
         }
         currentObj = this;
-        userController =  this.appManagement.getUserLogicInstance();
+        this.userController =  this.appManagement.getUserLogicInstance();
         this._goToChatDetail = this._goToChatDetail.bind(this);
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     componentDidMount(){
@@ -70,7 +68,7 @@ export default class Search extends AppComponent {
 
     searchInfo = (keyword)=>{
         Keyboard.dismiss();
-        userController.searchUserOrGroupByKeyword(keyword)
+        this.userController.searchUserOrGroupByKeyword(keyword)
     }
 
     _goToChatDetail(info){
@@ -90,7 +88,7 @@ export default class Search extends AppComponent {
         let path = "";
         let name = info.remark != "" ? info.remark:info.name;
         if(!info.group) {
-            path = userController.getAccountHeadImagePath(info.chatId);
+            path = this.userController.getAccountHeadImagePath(info.chatId);
         }
         return (
             <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this._goToChatDetail(info)}}>

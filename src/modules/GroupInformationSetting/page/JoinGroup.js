@@ -19,15 +19,12 @@ import {Text,
 import AppComponent from '../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import UserController from '../../../TSController/UserController';
 import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
-let userController = undefined;
 
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-let currentAccount = undefined;
 
 export default class JoinGroup extends AppComponent {
     constructor(props){
@@ -35,13 +32,13 @@ export default class JoinGroup extends AppComponent {
         this.state = {
         };
         currentObj = this;
-        userController =  this.appManagement.getUserLogicInstance();
-        currentAccount = userController.getCurrentAccount();
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
 
@@ -50,7 +47,7 @@ export default class JoinGroup extends AppComponent {
     }
 
     _joinGroup=()=>{
-        userController.joinGroup(this.props.groupId,this.props.source,(result)=>{
+        this.userController.joinGroup(this.props.groupId,this.props.source,(result)=>{
             if(result.Result === 1){
                 //跳转界面
                 this.route.push(this.props,{

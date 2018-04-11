@@ -10,15 +10,14 @@ import {
 } from 'react-native';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
 let currentObj;
-let userController = undefined;
+
 
 export default class Signature extends AppComponent {
     constructor(props){
         super(props);
-        userController = this.appManagement.getUserLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
         this.state = {
             Signature: props.Signature,
             Confirm:true,
@@ -28,7 +27,7 @@ export default class Signature extends AppComponent {
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
     componentDidMount(){
@@ -70,7 +69,7 @@ export default class Signature extends AppComponent {
 
     _modifySignature=()=>{
         let {onPress} = this.props;
-        // userController.modifyRemark(this.state.Signature);
+        // this.userController.modifyRemark(this.state.Signature);
         onPress && onPress(this.state.Signature);
         this.route.pop(this.props);
     };

@@ -20,7 +20,6 @@ import {
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
 import CameraConfig from './cameraConfig';
-import IMController from '../../../../TSController/IMLogic/IMControllerLogic'
 import AppComponent from '../../../../Core/Component/AppComponent';
 const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
 var ImagePicker = require('react-native-image-picker');

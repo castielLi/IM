@@ -13,10 +13,8 @@ import {
 } from 'react-native';
 import AppComponent from '../../../../Core/Component/AppComponent';
 import MyNavigationBar from '../../../Common/NavigationBar/NavigationBar';
-import UserController from '../../../../TSController/UserController';
 import Icon from 'react-native-vector-icons/FontAwesome';
 let currentObj;
-let userController = undefined;
 let {width, height} = Dimensions.get('window');
 
 let originData = [
@@ -38,12 +36,12 @@ export default class RadioCollection extends AppComponent {
         };
         this.cache = props.gender;
         this.setGender = this.setGender.bind(this);
-        userController = this.appManagement.getUserLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
     }
 
     componentWillUnmount(){
         super.componentWillUnmount();
-        userController = undefined;
+        this.userController = undefined;
     }
 
 
@@ -71,7 +69,7 @@ export default class RadioCollection extends AppComponent {
 
     setGender = ()=>{
         if(this.state.gender != this.cache){
-            userController.modifyGender(this.state.gender);
+            this.userController.modifyGender(this.state.gender);
             this.props.onChangeGender(this.state.gender);
         }
         this.route.pop(this.props)
