@@ -35,7 +35,7 @@ class ContactsChoose extends AppComponent {
     }
 
     componentDidMount() {
-        userController.getUserContactList(false,(contacts)=>{
+        this.userController.getUserContactList(false,(contacts)=>{
             this.setState({
                 ContactsData:contacts
             })

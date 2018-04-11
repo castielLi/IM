@@ -55,6 +55,7 @@ export default class GroupBackgroundImage extends AppComponent {
         this.useLocal = this.useLocal.bind(this);
         this._toDoSome = this._toDoSome.bind(this);
         this.imController = this.appManagement.getIMLogicInstance();
+        currentObj = this;
     }
 
     componentWillUnmount(){
@@ -75,7 +76,7 @@ export default class GroupBackgroundImage extends AppComponent {
         else {
 
             let responsePath = Platform.OS === 'ios' ? response.uri : 'file://' + response.path;
-            this.imController.setConversationBackgroundImage(responsePath);
+            currentObj.imController.setConversationBackgroundImage(responsePath);
         }
     }
 
