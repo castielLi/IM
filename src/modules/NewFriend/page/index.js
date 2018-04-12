@@ -178,13 +178,13 @@ class NewFriend extends AppComponent {
                     right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
                 />
                 <ScrollView>
-                    <View style={styles.listHeaderBox}>
-                        <TextInput
-                            style={styles.search}
-                            underlineColorAndroid = 'transparent'
-                        >
-                        </TextInput>
-                    </View>
+                    {/*<View style={styles.listHeaderBox}>*/}
+                        {/*<TextInput*/}
+                            {/*style={styles.search}*/}
+                            {/*underlineColorAndroid = 'transparent'*/}
+                        {/*>*/}
+                        {/*</TextInput>*/}
+                    {/*</View>*/}
                     <ListView
                         dataSource = {this.state.dataSource.cloneWithRows(this.state.applyRecord)}
                         renderRow = {this._renderRow}
@@ -246,13 +246,15 @@ const styles = StyleSheet.create({
     },
     basicBoxRight:{
         marginLeft:15,
+        justifyContent:'center'
     },
     headPic:{
         height:40,
-        width:40
+        width:40,
+        borderRadius:20
     },
     name:{
-        fontSize:15,
+        fontSize:14,
         color:'#000'
     },
     description:{

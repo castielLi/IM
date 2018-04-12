@@ -12,6 +12,7 @@ import {
     TextInput,
     Dimensions,
     FlatList,
+    InteractionManager
 } from 'react-native';
 import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
@@ -27,14 +28,11 @@ class GroupList extends AppComponent {
     constructor(props) {
         super(props);
         this.state={
-            data:[
-                {key:'',
-                    data:[]}
-            ],
-            sections:[],
-            totalItemLength:0,
-            contacts:[]
-        }
+            contacts:[],
+            text:''
+        };
+
+        this.contactsCache=[];
         this.relationStore = [];
         currentObj = this;
         this.userController = this.appManagement.getUserLogicInstance();
@@ -45,22 +43,53 @@ class GroupList extends AppComponent {
         this.userController = undefined;
     }
 
-    componentWillMount(){
-        //通过回调改变页面显示
-        this.userController.getGroupContactList(false,(contacts)=>{
-            currentObj.setState({
-                contacts
-            })
+    // componentWillMount(){
+    //     //通过回调改变页面显示
+    //     this.userController.getGroupContactList(false,(contacts)=>{
+    //         this.contactsCache = contacts;
+    //         currentObj.setState({
+    //             contacts
+    //         })
+    //     });
+    // }
+
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            //通过回调改变页面显示
+            this.userController.getGroupContactList(false,(contacts)=>{
+                this.contactsCache = contacts;
+                currentObj.setState({
+                    contacts
+                })
+            });
         });
     }
 
-    goToChat = (item)=>{
+    _goToChat = (item)=>{
         this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.Id,type:'group',HeadImageUrl:item.HeadImageUrl,Nick:item.Name}});
+    };
+
+    _searchKey = (value)=>{
+        if(value === ''){
+            this.setState({
+                contacts:this.contactsCache
+            });
+            return;
+        }
+        let array = [];
+        for(let item of this.relationStore){
+            if(item.Name.indexOf(value) !== -1){
+                array.push(item)
+            }
+        }
+        this.setState({
+            contacts:array
+        });
     };
 
     _renderItem = (info) => {
         return (
-            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToChat.bind(this,info.item)}>
                 <View  style={styles.itemBox} >
                     <ImagePlaceHolder style = {styles.pic} imageUrl = {require('../resource/groupAvator.png')}/>
                     <Text style={styles.itemText}>{info.item.Name}</Text>
@@ -76,6 +105,8 @@ class GroupList extends AppComponent {
                     <TextInput
                         style={styles.search}
                         underlineColorAndroid = 'transparent'
+                        placeholder={'搜索'}
+                        onChangeText={this._searchKey}
                     />
                 </View>
             </View>
@@ -142,7 +173,7 @@ const styles = StyleSheet.create({
         marginLeft:10
     },
     ItemSeparator:{
-        marginHorizontal:15,
+        marginHorizontal:10,
         borderBottomColor : '#eee',
         borderBottomWidth:1,
     },
@@ -157,7 +188,8 @@ const styles = StyleSheet.create({
         width:width-20,
         backgroundColor:'#fff',
         borderRadius:5,
-        color:'#000'
+        color:'#000',
+        paddingVertical:0
     },
     moreUse:{
         color:'#fff',
