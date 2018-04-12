@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     },
     itemBox:{
         flex:1,
-        height: 60,
+        height: 54,
         flexDirection:'row',
         alignItems:'center',
         paddingLeft:10

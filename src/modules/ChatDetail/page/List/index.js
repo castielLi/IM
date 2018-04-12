@@ -277,7 +277,6 @@ class Chat extends AppComponent {
                 justifyContent: 'center',
                 padding: 5,
                 borderRadius: 5,
-                marginTop: 5
             }}>
                 {
                     displayString.map((value, index) => {
@@ -334,11 +333,12 @@ class Chat extends AppComponent {
             return (
                 <View key={rowid}
                       style={[styles.informView, {marginHorizontal: 40, alignItems: 'center', marginBottom: 10}]}>
-                    <View style={{alignItems:'center'}}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
-                        </View>
-                    </View>
+                    {timer ?
+                        <View style={{alignItems:'center'}}>
+                            <View style={styles.timestampView}>
+                                <Text style={styles.timestamp}>{timer}</Text>
+                            </View>
+                        </View> : null}
                     {this.analysisInfo(message)}
 
                 </View>
@@ -348,11 +348,12 @@ class Chat extends AppComponent {
             return (
                 <View key={rowid}
                       style={[styles.informView, {marginHorizontal: 40, alignItems: 'center', marginBottom: 10}]}>
-                    <View style={{alignItems:'center'}}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
-                        </View>
-                    </View>
+                    {timer ?
+                        <View style={{alignItems:'center'}}>
+                            <View style={styles.timestampView}>
+                                 <Text style={styles.timestamp}>{timer}</Text>
+                            </View>
+                        </View> : null}
                     <View style={{
                         backgroundColor: '#cfcfcf',
                         flexDirection: 'row',
@@ -378,11 +379,12 @@ class Chat extends AppComponent {
         else if (sender.account == this.currentAccount.Account) {
             return (
                 <View key={rowid} style={styles.itemViewRight}>
-                    <View style={{alignItems:'center'}}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
-                        </View>
-                    </View>
+                    {timer ?
+                        <View style={{alignItems:'center'}}>
+                            <View style={styles.timestampView}>
+                                <Text style={styles.timestamp}>{timer}</Text>
+                            </View>
+                        </View> : null}
                     <View style={styles.infoViewRight}>
                         <View style={styles.msgStatus}>
                             <TouchableOpacity>
@@ -410,11 +412,12 @@ class Chat extends AppComponent {
         else {
             return (
                 <View key={rowid} style={styles.itemView}>
-                    <View style={{alignItems:'center'}}>
-                        <View style={styles.timestampView}>
-                            {timer ? <Text style={styles.timestamp}>{timer}</Text> : null}
-                        </View>
-                    </View>
+                    {timer ?
+                        <View style={{alignItems:'center'}}>
+                            <View style={styles.timestampView}>
+                                <Text style={styles.timestamp}>{timer}</Text>
+                            </View>
+                        </View> : null}
 
                     <View style={styles.infoView}>
                         <TouchableOpacity onPress={() => {
