@@ -126,7 +126,7 @@ class NewFriend extends AppComponent {
 
 
     _renderRow = (rowData, sectionID, rowID)=>{
-        let path = userController.getAccountHeadImagePath(rowData.sender)
+        let path = this.userController.getAccountHeadImagePath(rowData.sender)
 
         return(
             <View>
