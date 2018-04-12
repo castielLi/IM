@@ -36,9 +36,9 @@ class GroupQRCodeContent extends AppComponent {
     componentDidMount(){
         let currentUser = this.userController.getCurrentAccount();
         let code = this.userController.getGroupQRCode(this.props.groupId,currentUser.Account);
-        this.state = {
+        this.setState({
             code:code
-        };
+        })
     }
 
     componentWillUnmount(){

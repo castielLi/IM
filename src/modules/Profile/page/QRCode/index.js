@@ -33,9 +33,9 @@ class QRCodeContent extends AppComponent {
     componentDidMount(){
         let currentUser = this.userController.getCurrentAccount();
         let code = this.userController.getAccountQRCode(currentUser.Account)
-        this.state = {
+        this.setState({
             code:code
-        };
+        })
     }
 
     componentWillUnmount(){
