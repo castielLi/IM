@@ -28,6 +28,9 @@ class GroupQRCodeContent extends AppComponent {
     constructor(props){
         super(props)
         this.userController = this.appManagement.getUserLogicInstance();
+        this.state ={
+            code:""
+        }
     }
 
     componentDidMount(){
