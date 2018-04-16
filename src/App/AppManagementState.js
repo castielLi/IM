@@ -121,7 +121,9 @@ export class LoginedState extends IAppManagementState{
         appManagementObj.userController.getUserContactList(true, (result) => {
             appManagementObj.userController.getGroupContactList(true, (result) => {
             })
-        })
+        });
+
+        appManagementObj.userController.uploadContactList(appManagementObj.ContactsList);
 
         appManagementObj.applyController.getUncheckApplyFriendCount();
 
@@ -137,7 +139,9 @@ export class TokenValidateSuccessState extends IAppManagementState{
         appManagementObj.userController.getUserContactList(true, (result) => {
             appManagementObj.userController.getGroupContactList(true, (result) => {
             })
-        })
+        });
+
+        appManagementObj.userController.uploadContactList(appManagementObj.ContactsList);
 
         appManagementObj.applyController.getUncheckApplyFriendCount();
         appManagementObj.validateManager = null;

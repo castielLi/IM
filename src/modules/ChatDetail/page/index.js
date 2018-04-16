@@ -66,10 +66,9 @@ class ChatDetail extends AppComponent {
     }
 
 
-    getHistoryChatRecord(){
+    getHistoryChatRecord = ()=>{
         this.imController.getHistory();
-
-	}
+	};
 
     componentWillMount(){
         AppState.addEventListener('change', this._handleAppStateChange);

@@ -57,11 +57,12 @@ export default class AppManagement{
         this.normalNetwork = true;
         this.uniqueId = DeviceInfo.getUniqueID();
         this.androidChoosing = false;
+        this.ContactsList = [];
         currentApp = this;
     }
 
     Init(){
-        let initState = new InitState()
+        let initState = new InitState();
         initState.stateOpreation(this);
     }
 
