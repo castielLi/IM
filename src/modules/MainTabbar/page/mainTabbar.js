@@ -106,7 +106,7 @@ class TabBarComponent extends AppComponent {
                     />}
                     //badgeText={this.props.unReadMessageStore.unDealRequestNumber}
                     renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unDealRequestMark)}
-                    onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1)}}>
+                    onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1);this.props.contactsNeedRefresh(new Date().getTime())}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
 

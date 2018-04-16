@@ -57,6 +57,13 @@ class Contacts extends AppComponent {
         this.applyController = this.appManagement.getApplyLogicInstance();
 	}
 
+    componentWillReceiveProps(nextProps) {
+        let {contactsNeedRefreshTime} = nextProps;
+        if (this.props.contactsNeedRefreshTime !== nextProps.contactsNeedRefreshTime) {
+            this.userController.getUserContactList(false, null);
+        }
+    }
+
     componentDidMount(){
         InteractionManager.runAfterInteractions(()=> {
             this.userController.getUserContactList(false, null);
@@ -114,35 +121,6 @@ class Contacts extends AppComponent {
 	};
 	_renderHeader = () => {
 		return  <View>
-					{/*<View style={styles.listHeaderBox}>*/}
-						{/*<View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',alignItems:'center',borderRadius:5,}}>*/}
-                            {/*{this.state.isShowSearchInput ?*/}
-								{/*<TextInput*/}
-									{/*style={styles.search}*/}
-									{/*underlineColorAndroid='transparent'*/}
-									{/*placeholder = '搜索'*/}
-									{/*autoFocus = {true}*/}
-									{/*defaultValue = {this.state.text}*/}
-									{/*onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}*/}
-									{/*onChangeText={(v)=>{*/}
-										{/*if(v===''){*/}
-											{/*this.setState({isShowSearchInput:false})*/}
-										{/*}*/}
-                                        {/*this.setState({text:v})*/}
-									{/*}*/}
-									{/*}*/}
-								{/*>*/}
-								{/*</TextInput>:*/}
-								{/*<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>*/}
-									{/*<View style={styles.searchView}>*/}
-										{/*<Icon name="search" size={14} color="#aaa" /><Text style={{color:'#aaa',marginLeft:10,fontSize:14}}>搜索</Text>*/}
-									{/*</View>*/}
-								{/*</TouchableWithoutFeedback>*/}
-                            {/*}*/}
-                            {/*{this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:'',isShowSearchInput:false})}} style={{marginHorizontal:10}}/>}*/}
-						{/*</View>*/}
-
-					{/*</View>*/}
 					<View style={styles.listOtherUseBox}>
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
 							<View  style={styles.itemBox} >
@@ -215,19 +193,19 @@ class Contacts extends AppComponent {
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
-				<MySectionList
-					ref={'mySectionList'}
-					keyExtractor={(item,index)=>("index"+index+item)}
-					renderSectionHeader={this._sectionComp}
-					renderItem={this._renderItem}
-					sections={this.relationStore}
-					keyArray={this.sectionStore}
-					ItemSeparatorComponent={this._renderSeparator}
-					ListHeaderComponent={this._renderHeader}
-					ListFooterComponent = {this._renderFooter}
-					stickySectionHeadersEnabled={true}
-					viewOffset={22}
-				/>
+		    	<MySectionList
+                    ref={'mySectionList'}
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    renderSectionHeader={this._sectionComp}
+                    renderItem={this._renderItem}
+                    sections={this.relationStore}
+                    keyArray={this.sectionStore}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    ListHeaderComponent={this._renderHeader}
+                    ListFooterComponent = {this._renderFooter}
+                    stickySectionHeadersEnabled={true}
+                    viewOffset={22}
+                    />
                 <Features navigator={this.props.navigator}/>
 		    </View>
 		);
@@ -357,7 +335,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     unDealRequestMark:state.unReadMessageStore.unDealRequestMark,
-    unReadApplyMessageMark:state.unReadApplyMessageStore.unReadApplyMessageMark
+    unReadApplyMessageMark:state.unReadApplyMessageStore.unReadApplyMessageMark,
+    contactsNeedRefreshTime:state.unReadMessageStore.contactsNeedRefreshTime
 });
 
 const mapDispatchToProps = (dispatch) => {

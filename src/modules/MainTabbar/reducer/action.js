@@ -30,6 +30,14 @@ export function changeUnReadZoomMessageNumber(number){
 
 }
 
+export function contactsNeedRefresh(time){
+    return {
+        type: 'CHANGE_CONTACT_NEEDREFRESHTIME',
+        time
+    };
+
+}
+
 export function changeUnSettingNumber(number){
     return {
         type: 'CHANGE_UNSETTING_NUMBER',
