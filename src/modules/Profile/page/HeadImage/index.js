@@ -89,7 +89,7 @@ class HeadImage extends AppComponent {
         else {
 
             let data = Platform.OS === 'ios' ? response.data : response.data;
-            this.userController.modifyHeadImage(data)
+            currentObj.userController.modifyHeadImage(data)
         }
     }
 
