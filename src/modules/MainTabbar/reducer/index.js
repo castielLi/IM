@@ -4,14 +4,19 @@ const initialState = {
     unReadMessageNumber:0,//未读消息数量
     unDealRequestMark:false,//未处理请求数量
     unReadZoomMessageNumber:0,//未读朋友圈消息数量
-    unSettingNumber:0//我的
+    unSettingNumber:0,//我的
+    contactsNeedRefreshTime:new Date().getTime()
 };
 
 export  function unReadMessageStore(state=initialState, action){
 
     switch(action.type){
 
-
+        case 'CHANGE_CONTACT_NEEDREFRESHTIME':
+            return {
+                ...state,
+                contactsNeedRefreshTime:action.time
+            };
 
         case 'CHANGE_UNREADMESSAGE_NUMBER':
             return {
