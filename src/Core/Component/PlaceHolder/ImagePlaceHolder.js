@@ -17,38 +17,94 @@ export default class ImagePlaceHolder extends Component {
 
     constructor(props) {
         super(props);
+        this.state={
+            newImage:false
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (this.props.imageUrl !== nextProps.imageUrl) {
+            // let _style = this.props.style ? this.props.style : styles.avatar;
+            // this.defaultImage.setNativeProps({
+            //     style:styles.hide
+            // })
+            // this.image.setNativeProps({
+            //     style:_style
+            // })
+            this.setState({
+                newImage:true
+            })
+        }
+    }
+
+    shouldComponentUpdate(nextProps,nextState){
+        if (this.props.imageUrl != nextProps.imageUrl) {
+            return true;
+        }else{
+            return false;
+        }
     }
 
     render() {
         let _style = this.props.style ? this.props.style : styles.avatar;
         let url = (typeof this.props.imageUrl === 'string') ? {uri:this.props.imageUrl } : this.props.imageUrl;
-        return (
-            <View>
-                <Image ref={ image => this.image = image}
-                    source={url} style={[_style]}
-                       onError={()=>{
-                           this.defaultImage.setNativeProps({
-                               style:_style
-                           })
-                           this.image.setNativeProps({
-                               style:styles.hide
-                           })
-                       }}
-                       onLoad={()=>{
-                           // this.defaultImage.setNativeProps({
-                           //     style:styles.hide
-                           // })
-                           // this.image.setNativeProps({
-                           //     style:_style
-                           // })
-                       }}
-                />
-                <Image
-                    ref={ defaultImage => this.defaultImage = defaultImage}
-                    source={require('./resource/avator.jpg')} style={styles.defaultAvator}/>
 
-            </View>
-        );
+        if(this.state.newImage){
+            return (
+                <View style={[_style]}>
+                    <Image source={url} style={[_style,{display:"flex"}]}
+                           onError={()=>{
+                               this.defaultImage.setNativeProps({
+                                   style:_style
+                               })
+                               this.image.setNativeProps({
+                                   style:styles.hide
+                               })
+                               console.log("加载新下载资源失败！！！！")
+                           }}
+                           onLoad={()=>{
+                               this.defaultImage.setNativeProps({
+                                   style:styles.hide
+                               })
+                               console.log("加载新下载资源成功！！！！")
+                           }}
+                    />
+                    <Image
+                        ref={ defaultImage => this.defaultImage = defaultImage}
+                        source={require('./resource/avator.jpg')} style={styles.defaultAvator}/>
+                </View>
+            );
+        }else{
+            return (
+                <View>
+                    <Image ref={ image => this.image = image}
+                           source={url} style={[_style]}
+                           onError={()=>{
+                               this.defaultImage.setNativeProps({
+                                   style:_style
+                               })
+                               this.image.setNativeProps({
+                                   style:styles.hide
+                               })
+                               console.log("加载资源失败！！！！")
+                           }}
+                           onLoad={()=>{
+                               // this.defaultImage.setNativeProps({
+                               //     style:styles.hide
+                               // })
+                               // this.image.setNativeProps({
+                               //     style:_style
+                               // })
+                               console.log("加载资源成功！！！！")
+                           }}
+                    />
+                    <Image
+                        ref={ defaultImage => this.defaultImage = defaultImage}
+                        source={require('./resource/avator.jpg')} style={styles.defaultAvator}/>
+
+                </View>
+            );
+        }
     }
 }
 
