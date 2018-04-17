@@ -23,7 +23,7 @@ export default class ImagePlaceHolder extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.imageUrl !== nextProps.imageUrl) {
+        if (this.props.imageUrl !== nextProps.imageUrl && typeof nextProps.imageUrl === 'string') {
             // let _style = this.props.style ? this.props.style : styles.avatar;
             // this.defaultImage.setNativeProps({
             //     style:styles.hide
