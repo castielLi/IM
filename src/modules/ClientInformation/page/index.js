@@ -137,7 +137,7 @@ class ClientInformation extends AppComponent {
         let hasRemark = Remark != '' ? true : false;
         return (
             <View style={styles.basicBox}>
-               <ImagePlaceHolder style={styles.headPic} imageUrl ={path}/>
+                {Account!= undefined ?<ImagePlaceHolder style={styles.headPic} imageUrl ={path}/>:null}
                 <View style={styles.basicBoxRight}>
                     <Text style={styles.name}>{hasRemark ? Remark : Nickname}</Text>
                     <View>
@@ -260,6 +260,7 @@ class ClientInformation extends AppComponent {
                     {this._remarkControl(Account,Remark)}
                     {this._dataControl()}
                     {this._buttonControl(Account)}
+
                 </View>
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
