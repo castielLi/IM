@@ -23,7 +23,7 @@ export default class ImagePlaceHolder extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.imageUrl !== nextProps.imageUrl && typeof nextProps.imageUrl === 'string') {
+        if (this.props.imageUrl !== nextProps.imageUrl) {
             // let _style = this.props.style ? this.props.style : styles.avatar;
             // this.defaultImage.setNativeProps({
             //     style:styles.hide
@@ -53,6 +53,7 @@ export default class ImagePlaceHolder extends Component {
             return (
                 <View style={[_style]}>
                     <Image source={url} style={[_style,{display:"flex"}]}
+                           ref={ image => this.image = image}
                            onError={()=>{
                                this.defaultImage.setNativeProps({
                                    style:_style
