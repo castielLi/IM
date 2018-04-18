@@ -12,7 +12,7 @@ import {
 	StyleSheet,
 	SectionList
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {
 	checkDeviceHeight,
 	checkDeviceWidth
@@ -37,32 +37,113 @@ var originData = [
 			'data': [{
 					'name': "扫一扫",
                 	'icon':'sao'
-				}, {
-					'name': "摇一摇",
-                	'icon':'yao'
 				}]
 			},
-			{
-			'key':'3',
-			'data': [{
-					'name': "附近的人",
-				}, {
-					'name': "购物",
-				}]
-			},
-			{
-			'key':'4',
-			'data': [{
-					'name': "游戏",
-				}]
-			},			
-	]
+			// {
+			// 'key':'3',
+			// 'data': [{
+			// 		'name': "附近的人",
+			// 	}, {
+			// 		'name': "购物",
+			// 	}]
+			// },
+			// {
+			// 'key':'4',
+			// 'data': [{
+			// 		'name': "游戏",
+			// 	}]
+			// },
+	];
 
+class Zoom extends AppComponent {
+	constructor(props) {
+		super(props);
+	}
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
+	componentWillMount(){
+        styles = super.componentWillMount(styles)
+	}
+
+	itemClick = (info)=>{
+		switch (info.item.name){
+			case "扫一扫":
+                this.route.push(this.props,{key: 'ScanCode',routeId: 'ScanCode',params:{}});
+                break;
+			default:
+				break;
+		}
+	}
+
+    chooseImage = (name)=>{
+        switch (name){
+			case '圈子':
+                return	<Image source={require('../resource/zoom.png')} style={styles.pic} />;
+            case '扫一扫':
+                return	<Image source={require('../resource/sao.png')} style={styles.pic} />;
+            // case '摇一摇':
+            //     return	<Image source={require('../resource/yao.png')} style={styles.pic} />;
+            // case '附近的人':
+            //     return	<Image source={require('../resource/place.png')} style={styles.pic} />;
+            // case '购物':
+            //     return	<Image source={require('../resource/shop.png')} style={styles.pic} />;
+            // case '游戏':
+            //     return	<Image source={require('../resource/game.png')} style={styles.pic} />;
+            default:
+                break;
+		}
+	}
+	_renderItem = (info)=>{
+		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.itemClick(info)}>
+					<View style={styles.itemBox}>
+						<View  style={styles.itemLeftBox} >
+							{this.chooseImage(info.item.name)}
+							<Text style={styles.itemText}>{info.item.name}</Text>
+						</View>
+						<Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
+					</View>
+			   </TouchableHighlight>
+	}
+	_renderSection = ()=>{
+		return <View style={styles.sction}/>
+	}
+	_renderSeparator = () =>{
+		return <View style={styles.ItemSeparator}/>
+	}
+	render() {
+		let PopContent = this.PopContent;
+		return (
+			<View style = {styles.container}>
+				<MyNavigationBar
+					left = {'云信'}
+					right = {[
+                        {func:()=>{
+                            this.route.push(this.props,{key: 'Search',routeId: 'Search'});
+						},icon:'search'},
+                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
+                    ]}
+				/>
+				<SectionList
+			      keyExtractor={(item,index)=>("index"+index+item)}
+			      renderSectionHeader={this._renderSection}
+			      renderItem={this._renderItem}
+			      sections={originData}
+			      ItemSeparatorComponent={this._renderSeparator}
+				  stickySectionHeadersEnabled={false} 
+				/>
+				<Features navigator={this.props.navigator}/>
+
+			</View>
+		)
+	}
+}
 let styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#f2f2f2"
+        backgroundColor: "#ebebeb"
     },
     sction:{
         height:20
@@ -101,82 +182,6 @@ let styles = StyleSheet.create({
         color:'#aaa'
     },
 });
-
-
-class Zoom extends ContainerComponent {
-	constructor(props) {
-		super(props);
-		this.state = {
-			
-		};
-	}
-
-	componentWillMount(){
-        styles = super.componentWillMount(styles)
-	}
-
-	changeShowFeature=(newState)=>{
-		this.setState({showFeatures:newState});
-	}
-    chooseImage = (name)=>{
-		if(name == '圈子'){
-			return	<Image source={require('../resource/zoom.png')} style={styles.pic} ></Image>
-        }else if(name == '扫一扫'){
-            return	<Image source={require('../resource/sao.png')} style={styles.pic} ></Image>
-        }else if(name == '摇一摇'){
-            return	<Image source={require('../resource/yao.png')} style={styles.pic} ></Image>
-        }else if(name == '附近的人'){
-            return	<Image source={require('../resource/place.png')} style={styles.pic} ></Image>
-        }else if(name == '购物'){
-            return	<Image source={require('../resource/shop.png')} style={styles.pic} ></Image>
-        }else if(name == '游戏'){
-            return	<Image source={require('../resource/game.png')} style={styles.pic} ></Image>
-        }
-	}
-	_renderItem = (info)=>{
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('未开发')}}>
-					<View style={styles.itemBox}>
-						<View  style={styles.itemLeftBox} >
-							{this.chooseImage(info.item.name)}
-							<Text style={styles.itemText}>{info.item.name}</Text>
-						</View>
-						{/*<Text style={styles.arrow}>{'>'}</Text>*/}
-						<Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-					</View>
-			   </TouchableHighlight>
-	}
-	_renderSection = ()=>{
-		return <View style={styles.sction}></View>
-	}
-	_renderSeparator = () =>{
-		return <View style={styles.ItemSeparator}></View>
-	}
-	render() {
-		let PopContent = this.PopContent;
-		return (
-			<View style = {styles.container}>
-				<MyNavigationBar
-					left = {'云信'}
-					right = {[
-                        {func:()=>{alert('搜索')},icon:'search'},
-                        {func:()=>{this.props.showFeatures()},icon:'list-ul'}
-                    ]}
-				/>
-				<SectionList
-			      keyExtractor={(item,index)=>("index"+index+item)}
-			      renderSectionHeader={this._renderSection}
-			      renderItem={this._renderItem}
-			      sections={originData}
-			      ItemSeparatorComponent={this._renderSeparator}
-				  stickySectionHeadersEnabled={false} 
-				/>
-				<Features navigator={this.props.navigator}/>
-
-			</View>
-		)
-	}
-}
-
 
 const mapStateToProps = state => ({
 });

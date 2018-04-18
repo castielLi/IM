@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -14,34 +14,40 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import SettingController from '../../../Logic/Setting/settingController';
-let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
-class GroupAnnouncement extends ContainerComponent {
-    constructor(){
-        super()
+class GroupAnnouncement extends AppComponent {
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             rightButtonText:'',
             rightButtonDisabled:false,
-            text:'',
+            text:props.Note,
             isChangeText:false
         };
 
         currentObj = this;
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+    }
 
     componentDidMount(){
-        this.setState({
-            text:this.props.Description
-        })
-        if(this.props.Owner===this.props.accountId){
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
+        if(this.props.Owner===this.currentAccount.Account){
             this.setState({
                 rightButtonText:'编辑'
             })
@@ -61,16 +67,12 @@ class GroupAnnouncement extends ContainerComponent {
     }
 
     toChangeDiscription = ()=>{
-        let {accountId,ID,navigator} = this.props;
+        let {Id,navigator} = this.props;
         currentObj.showLoading();
-        let params = {"Operater":accountId,"GroupId":ID,"Desc":this.state.text};
-        settingController.toChangeDiscription(params,(result)=>{
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-            if(result.data.Data){
+
+        this.userController.updateGroupBulletin(Id,this.state.text,(result)=>{
+            currentObj.hideLoading();
+            if(result.Result == 1){
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -79,18 +81,17 @@ class GroupAnnouncement extends ContainerComponent {
                         break;
                     }
                 }
-                // alert('发布成功');
                 //跳转到群设置
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":ID}
+                    params:{"groupId":Id}
                 },index)
             }else{
-                alert("http请求出错")
+                alert('更改失败');
             }
-        })
-    }
+        });
+    };
 
     render() {
         let Popup = this.PopContent;
@@ -115,9 +116,9 @@ class GroupAnnouncement extends ContainerComponent {
                         {this.state.rightButtonText ==='编辑'||this.state.rightButtonText ===''?
                             <Text style={styles.content}>{this.state.text}</Text>:
                             <TextInput
+                                ref={e=>this._TextInput = e}
                                 underlineColorAndroid = {'transparent'}
                                 multiline={true}
-                                autoFocus = {true}
                                 defaultValue={this.state.text}
                                 maxLength = {150}
                                 onChangeText={(v)=>{this._onChangeText(v)}}
@@ -125,7 +126,7 @@ class GroupAnnouncement extends ContainerComponent {
                             >
                             </TextInput>
                         }
-                        {this.props.Owner===this.props.accountId?null:
+                        {this.props.Owner===this.currentAccount.Account?null:
                             <View style={{height:50,justifyContent:'center',alignItems:'center'}}>
                                 <Text>仅群主可编辑</Text>
                             </View>
@@ -163,8 +164,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
 
-    accountName:state.loginStore.accountMessage.Nick,
-    accountId:state.loginStore.accountMessage.accountId
+    accountName:state.loginStore.accountMessage.Nickname,
+    accountId:state.loginStore.accountMessage.Account
 });
 
 const mapDispatchToProps = dispatch => ({

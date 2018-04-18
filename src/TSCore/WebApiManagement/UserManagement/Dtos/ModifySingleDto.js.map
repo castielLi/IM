@@ -1,0 +1,1 @@
+{"version":3,"file":"ModifySingleDto.js","sourceRoot":"","sources":["../../../../../TSCore/WebApiManagement/UserManagement/Dtos/ModifySingleDto.ts"],"names":[],"mappings":"AAAA;;GAEG;AACH,MAAM,CAAC,OAAO;IAIV;QACI,IAAI,CAAC,OAAO,GAAG,EAAE,CAAC;QAClB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;IACvB,CAAC;CACJ"}

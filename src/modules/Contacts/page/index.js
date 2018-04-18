@@ -12,26 +12,26 @@ import {
 	TouchableWithoutFeedback,
 	TextInput,
 	Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    InteractionManager
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate} from './formateData';
 import * as featuresAction from '../../Common/menu/reducer/action';
 import * as tabBarActions from '../../MainTabbar/reducer/action';
-import ContactController from '../../../Logic/Contact/contactController'
-
-let contactController = new ContactController();
+import * as applyActions from '../reducer/action';
+import Features from '../../Common/menu/features';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
+import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import MySectionList from '../../Common/Component/MySectionList/'
 let currentObj = undefined;
 
-var {height, width} = Dimensions.get('window');
-import Features from '../../Common/menu/features';
-
-class Contacts extends ContainerComponent {
+class Contacts extends AppComponent {
 
 	constructor(props) {
 		super(props);
@@ -45,276 +45,210 @@ class Contacts extends ContainerComponent {
 			//右边title导航
 			rightSectionItemModalIndex:'',
 
-			isShowSearchInput:false,
+			// isShowSearchInput:false,
 			text:'',//textInput文字
 
             contacts:[],
 		}
         this.relationStore = [];
         currentObj = this;
+
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.applyController = this.appManagement.getApplyLogicInstance();
 	}
 
-	onPressRightSectionItemIn = (index) =>{
-		this.refs.mySectionList.scrollToLocation({
-		animated : true,
-		sectionIndex: index,
-		itemIndex : 0,
-		viewPosition: 0,
-		viewOffset : 35
-		})
-		this.setState({
-			rightSectionItemModalIndex:index
-		})
-	}
-	onPressRightSectionItemOut = () =>{
-		this.setState({
-			rightSectionItemModalIndex:''
-		})
-	}
-	_getSections = ()=>{
-		if(this.relationStore.length === 0){
-			return null
-		}else{
-            let sections = this.sectionStore;
-            let array = new Array();
-            for (let i = 0; i < sections.length; i++) {
-                array.push(
-					<View key={i}>
-						<TouchableWithoutFeedback
-							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
-							onPressOut={this.onPressRightSectionItemOut}
-							//pointerEvents="none"
-							ref={'sectionItem' + i}>
-							<View style={styles.rightSectionView}>
-								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
-							</View>
-						</TouchableWithoutFeedback>
-                        {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
-					</View>)
-            }
-            return array;
-		}
+    componentWillReceiveProps(nextProps) {
+        let {contactsNeedRefreshTime} = nextProps;
+        if (this.props.contactsNeedRefreshTime !== nextProps.contactsNeedRefreshTime) {
+            this.userController.getUserContactList(false, null);
+        }
     }
 
-	goToChat = (item)=>{
-		//this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.name,type:item.type}});
-        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation:true,Relation:item}});
-
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            this.userController.getUserContactList(false, null);
+            this.applyController.getUncheckApplyFriendCount();
+        });
     }
+
+    _refreshUI(type,params){
+    	//这里如果没有点击通讯录界面是不会进行初始化的，不会初始化就会导致下层通知上层的时候不会显示contact 申请的红点
+        switch (type){
+            case AppPageMarkEnum.Contacts:
+                currentObj.setState({
+                    contacts:params
+                });
+                break;
+			case AppPageMarkEnum.UnReadMessage:
+                if(params.type == TabTypeEnum.Contact){
+                    //显示未读好友申请红点
+                    currentObj.props.showUnReadMark();
+				}
+				break;
+			case AppPageMarkEnum.ChangeRemark:
+                currentObj.setState({
+                    contacts:currentObj.state.contacts
+                });
+        }
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+        this.applyController = undefined;
+    }
+
+    //todo:头像应该还有本地地址
 	_renderItem = (info) => {
-		var txt = '  ' + info.item.Nick;
-		let lastItem = (info.index + 1) == info.section.data.length?true:false;
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
-					<View  style={ lastItem?styles.itemBox:[styles.itemBox,styles.ItemSeparator]} >
-						{info.item.avator?<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>:<Image source={require('../resource/avator.jpg')} style={styles.pic} ></Image>}
-						<Text style={styles.itemText}>{txt}</Text>
-					</View>
-			   </TouchableHighlight>
-	}
+		let name = info.item.Remark != "" ? info.item.Remark:info.item.Nickname;
+		let path = this.userController.getAccountHeadImagePath(info.item.Account);
+		// let lastItem = (info.index + 1) == info.section.data.length?true:false;
+		return (
+			<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToClientInfo.bind(this,info.item.Account)}>
+				<View  style={styles.itemBox} >
+					<ImagePlaceHolder style={styles.pic} imageUrl ={path}/>
+					<Text style={styles.itemText}>{name}</Text>
+				</View>
+			</TouchableHighlight>
+		)
 
+	};
 	_sectionComp = (info) => {
 		var txt = info.section.key;
 		return  <View style={styles.sectionHeaderBox}>
 					<Text style={styles.sectionHeader}>{txt}</Text>
 				</View>
-	}
-    goToNewFriend = () =>{
-		this.props.changeUnDealRequestNumber(0);
-        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
-
-    }
+	};
 	_renderHeader = () => {
 		return  <View>
-					<View style={styles.listHeaderBox}>
-						<View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',alignItems:'center',borderRadius:5,}}>
-                            {this.state.isShowSearchInput ?
-								<TextInput
-									style={styles.search}
-									underlineColorAndroid='transparent'
-									placeholder = '搜索'
-									autoFocus = {true}
-									defaultValue = {this.state.text}
-									onBlur = {()=>{if(this.state.text === ''){this.setState({isShowSearchInput:false})}}}
-									onChangeText={(v)=>{
-										if(v===''){
-											this.setState({isShowSearchInput:false})
-										}
-                                        this.setState({text:v})
-									}
-									}
-								>
-								</TextInput>:
-								<TouchableWithoutFeedback onPress={()=>{this.setState({isShowSearchInput:true})}}>
-									<View style={styles.searchView}>
-										<Icon name="search" size={14} color="#aaa" /><Text style={{color:'#aaa',marginLeft:10,fontSize:14}}>搜索</Text>
-									</View>
-								</TouchableWithoutFeedback>
-                            }
-                            {this.state.text === ''?null:<Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:'',isShowSearchInput:false})}} style={{marginHorizontal:10}}/>}
-						</View>
-
-					</View>
 					<View style={styles.listOtherUseBox}>
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
-							<View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-									<Image source={require('../resource/newFriends.png')} style={styles.pic} ></Image>
-									<Text style={[styles.itemText,{paddingLeft:10}]}>新的朋友</Text>
-									{this.props.unDealRequestNumber?
-										<View style={styles.circle}>
-											<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>
-										</View>:
-										null
-									}
-								</View>
+							<View  style={styles.itemBox} >
+								<Image source={require('../resource/newFriends.png')} style={styles.pic} />
+								<Text style={styles.itemText}>新的朋友</Text>
+								{this.props.unReadApplyMessageMark?
+									<View style={styles.circle}>
+										{/*<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>*/}
+									</View>:
+									null
+								}
 							</View>
 					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{
-
-                           this.route.push(this.props,{key:'Contacts',routeId:'GroupList',params:{}});
-					   }}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Image source={require('../resource/friendsChat.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>群聊</Text>
-							</View>
-							</View>
+						<View style={styles.ItemSeparator}/>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToGroupList}>
+						   <View  style={styles.itemBox} >
+								<Image source={require('../resource/friendsChat.png')} style={styles.pic} />
+								<Text style={styles.itemText}>群聊</Text>
+						   </View>
 					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Image source={require('../resource/public.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>公众号</Text>
-							</View>
-							</View>
-					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Image source={require('../resource/logo.png')} style={styles.pic} ></Image>
-								<Text style={[styles.itemText,{paddingLeft:10}]}>标签</Text>
-								</View>
-							</View>
+						<View style={styles.ItemSeparator}/>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('即将推出...')}}>
+						   <View  style={styles.itemBox} >
+								<Image source={require('../resource/public.png')} style={styles.pic} />
+								<Text style={styles.itemText}>公众号</Text>
+						   </View>
 					   </TouchableHighlight>
 					</View>
 				</View>
-			      			}
+			      			};
 	_renderSeparator = () =>{
-		return <View style={styles.ItemSeparator}><Text></Text></View>
-	}
+		return <View style={styles.ItemSeparator}/>
+	};
 	_renderFooter = () =>{
         let amount = 0;
 		for(let i = 0; i< this.relationStore.length;i++){
 			amount+= this.relationStore[i].data.length;
 		}
 		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{amount+'位联系人'}</Text></View>
-	}
-    goToAddFriends = ()=>{
-        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
+	};
 
-    }
+    goToGroupList = ()=>{
+        this.route.push(this.props,{key:'Contacts',routeId:'GroupList',params:{}});
+    };
+    goToNewFriend = () =>{
+        if(this.props.unDealRequestMark){
+            this.props.hideUnDealRequest();
+        }
+        if(this.props.unReadApplyMessageMark){
+            this.props.hideUnReadMark();
+        }
+        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
+    };
+    goToClientInfo = (Account)=>{
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:Account}});
+    };
 
-
-    changeShowFeature=(newState)=>{
-        this.setState({showFeatures:newState});
-    }
-
-    componentWillMount(){
-        //通过回调改变页面显示
-        contactController.getLatestContactList(function (contacts) {
-            currentObj.setState({
-                contacts
-            })
-        });
-        // let arr = [];
-        // for(let i=0;i<10;i++){
-        // 	arr.push({
-        //         OtherComment : "公告:"+i,
-        //         RelationId : 'Z-'+i,
-        //         Nick : "测试"+i,
-        //         Remark : "",
-        //         BlackList : false,
-        //         avator : "",
-        //         Email : "",
-        //         localImage : "",
-        //         Type : "private",
-        //         owner : "wg003724",
-        //         show : true
-        //     })
-        // }
-        // this.setState({
-			// contacts:arr
-        // })
-	}
 	render() {
-		let objData = initDataFormate('private',this.state.contacts,this.state.text);
-		this.relationStore = objData.needArr;
-		this.sectionStore = objData.sectionArr;
+		let objData = initDataFormate(this.state.contacts,this.state.text);
+		this.relationStore = objData.SectionArray;
+		this.sectionStore = objData.KeyArray;
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
 					left = {'云信'}
 					right={[
-                        {func:()=>{alert('搜索')},icon:'search'},
+                        {func:()=>{
+                            this.route.push(this.props,{key: 'Search',routeId: 'Search'});
+						},icon:'search'},
                         {func:()=>{this.props.showFeatures()},icon:'list-ul'}
                     ]}
 				/>
-			    <SectionList
-			      ref={'mySectionList'}
-			      keyExtractor={(item,index)=>("index"+index+item)}
-			      renderSectionHeader={this._sectionComp}
-			      renderItem={this._renderItem}
-			      sections={this.relationStore}
-			      // ItemSeparatorComponent={this._renderSeparator}
-			      ListHeaderComponent={this._renderHeader}
-				  ListFooterComponent = {this._renderFooter}
-				  stickySectionHeadersEnabled={true}
-				/>
-				<View style={styles.rightSection}>
-					{this._getSections()}
-				</View>
+		    	<MySectionList
+                    ref={'mySectionList'}
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    renderSectionHeader={this._sectionComp}
+                    renderItem={this._renderItem}
+                    sections={this.relationStore}
+                    keyArray={this.sectionStore}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    ListHeaderComponent={this._renderHeader}
+                    ListFooterComponent = {this._renderFooter}
+                    stickySectionHeadersEnabled={true}
+                    viewOffset={22}
+                    />
                 <Features navigator={this.props.navigator}/>
 		    </View>
-	);
-}
-
+		);
+	}
 }
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+        backgroundColor: "#fff"
 	},
     sectionHeaderBox:{
-        height: 30,
-        backgroundColor: '#eee',
+        height: 22,
+        backgroundColor: '#ebebeb',
 		paddingLeft:10,
 		justifyContent:'center'
     },
 	sectionHeader:{
-		color: '#aaa', 
+		color: '#989898',
 		fontSize: 14,
 	},
 	itemBox:{
-		flex:1,
-		height: 60, 
+		height: 54,
 		flexDirection:'row',
 		alignItems:'center',
-		paddingLeft:10
+		paddingHorizontal:15
 	},
 	pic:{
 		width:40,
 		height:40,
-		resizeMode:'stretch'
+		borderRadius:20
 	},
 	itemText:{		
 		textAlignVertical: 'center',
-		color: '#5C5C5C', 
-		fontSize: 15
+		color: '#000',
+		fontSize: 15,
+		marginLeft:10
 	},
 	ItemSeparator:{
 		// height:1,
 		borderBottomColor : '#eee',
-		borderBottomWidth:1
+		borderBottomWidth:1,
+		marginHorizontal:15
 		// backgroundColor: '#eee',
 	},
 	listHeaderBox:{
@@ -400,14 +334,17 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = state => ({
-    unDealRequestNumber:state.unReadMessageStore.unDealRequestNumber,
+    unDealRequestMark:state.unReadMessageStore.unDealRequestMark,
+    unReadApplyMessageMark:state.unReadApplyMessageStore.unReadApplyMessageMark,
+    contactsNeedRefreshTime:state.unReadMessageStore.contactsNeedRefreshTime
 });
 
 const mapDispatchToProps = (dispatch) => {
   return{
 
       ...bindActionCreators(featuresAction, dispatch),
-      ...bindActionCreators(tabBarActions, dispatch)
+      ...bindActionCreators(tabBarActions, dispatch),
+	  ...bindActionCreators(applyActions,dispatch)
 
   }};
 

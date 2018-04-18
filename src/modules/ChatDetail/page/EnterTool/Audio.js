@@ -2,7 +2,7 @@ import {
   Platform,
   PermissionsAndroid
 } from 'react-native';
-import Sound from 'react-native-sound';
+// import Sound from 'react-native-sound';
 import {
   AudioRecorder,
   AudioUtils
@@ -16,7 +16,7 @@ export default class Audio {
       currentTime: 0.0,
       recording: false,
       finished: false,
-      audioPath: AudioUtils.DocumentDirectoryPath + '/'+accountId+'/audio/chat/' + type + '-' +name + '/' + fileName +'.aac',
+      audioPath: AudioUtils.DocumentDirectoryPath + '/Files/'+ accountId +'/Audio/' + fileName +'.aac',
       hasPermission: undefined,
     };
 

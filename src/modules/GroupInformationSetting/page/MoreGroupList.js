@@ -6,90 +6,63 @@ import React, {Component} from 'react';
 import {Text,
     StyleSheet,
     View,
-    TextInput,
-    TouchableOpacity,
-    KeyboardAvoidingView,
-    Platform,
     Image,
-    TouchableHighlight,
     Dimensions,
-    Switch,
     FlatList,
     TouchableWithoutFeedback,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
-import Icon from 'react-native-vector-icons/FontAwesome';
-
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
 
 
 
-class MoreGroupList extends ContainerComponent {
-    constructor(){
-        super();
+class MoreGroupList extends AppComponent {
+    constructor(props){
+        super(props);
         this.state = {
-
-            searchResult:true,
-
-        }
+            memberList:[]
+        };
         this.render = this.render.bind(this);
 
         currentObj = this;
+        this.userController =  this.appManagement.getUserLogicInstance();
     }
 
-    searchUser = (keyword)=>{
-
-        currentObj.showLoading()
-        this.fetchData("POST","Member/SearchUser",function(result){
-            currentObj.hideLoading()
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-
-
-            if(result.data.Data){
-
-
-                let relations = currentObj.props.relations;
-                let needRelation = null;
-                let hasRelation = false;
-                for(let item in relations){
-                    if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-                        hasRelation = !hasRelation;
-                        needRelation = relations[item];
-                        break;
-                    }
-                }
-                if(hasRelation===false){
-                    needRelation = result.data.Data;
-                }
-                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-
-
-            }else{
-                that.setState({
-                    searchResult:false
-                })
-            }
-        },{"Keyword":keyword})
+    componentWillMount(){
+        this.userController.getGroupMembersInfo(this.props.groupId,(result)=>{
+            this.setState({
+                memberList:result
+            })
+        },null,true)
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+    }
+
+    _goToClientInfo = (keyword)=>{
+        currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
+    };
 
     _renderItem = (item) => {
-
-            return   <TouchableWithoutFeedback onPress={()=>{this.searchUser(item.item.Account)}}>
-                        <View style={styles.itemBox}>
-                            {item.item.HeadImageUrl ? <Image style={styles.itemImage} source={{uri:item.item.HeadImageUrl}}/> : <Image source={require('../resource/avator.jpg')} style={styles.itemImage} />}
-                            <Text style={styles.itemText}>{item.item.Nickname}</Text>
-                        </View>
-                    </TouchableWithoutFeedback>
-
-    }
+        let path = this.userController.getAccountHeadImagePath(item.item.Account);
+        let name = item.item.Remark != "" ? item.item.Remark:item.item.Nickname;
+            return (
+                <TouchableWithoutFeedback onPress={()=>{this._goToClientInfo(item.item.Account)}}>
+                    <View style={styles.itemBox}>
+                        <ImagePlaceHolder style={styles.itemImage} imageUrl={path}/>
+                        <Text style={styles.itemText} numberOfLines={1}>{name}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
+            )
+    };
     render() {
         
         let Popup = this.PopContent;
@@ -100,13 +73,13 @@ class MoreGroupList extends ContainerComponent {
                     heading={"群成员"}
                     left={{func:()=>{this.route.pop(this.props)},text:'返回'}}
                 />
-                <View style={styles.listHeaderBox}>
-                    <TextInput
-                        style={styles.search}
-                        underlineColorAndroid = 'transparent'
-                    >
-                    </TextInput>
-                </View>
+                {/*<View style={styles.listHeaderBox}>*/}
+                    {/*<TextInput*/}
+                        {/*style={styles.search}*/}
+                        {/*underlineColorAndroid = 'transparent'*/}
+                    {/*>*/}
+                    {/*</TextInput>*/}
+                {/*</View>*/}
                 <View  style={{flex:1,backgroundColor:'#fff'}}>
                     <View  style={{flex:1,backgroundColor:'#fff'}}>
                         <FlatList
@@ -119,7 +92,7 @@ class MoreGroupList extends ContainerComponent {
                             horizontal={false}
                             keyExtractor={(item,index)=>(index)}
                             style={{backgroundColor:'#fff'}}
-                            data={this.props.memberList}>
+                            data={this.state.memberList}>
                         </FlatList>
                     </View>
                 </View>
@@ -203,30 +176,35 @@ const styles = StyleSheet.create({
     },
     itemBox:{
         width:width/5,
-        height:70,
         alignItems:'center',
     },
     itemImage:{
         width:50,
         height:50,
-        borderRadius:5
+        borderRadius:25
     },
     itemText:{
-        fontSize:14,
-        color:'#000'
+        color:'#989898',
+        fontSize:13,
+        textAlignVertical:'center',
+        includeFontPadding:false,
+        maxWidth:50,
+        marginTop:3,
     },
     lastItemBox:{
-        width:49,
-        height:49,
-        borderWidth:1,
-        borderColor:'#aaa',
-        borderRadius:5,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
+        height:50,
+        width:50,
+        borderWidth:1,
+        borderColor:'#d9d9d9',
+        borderRadius:25
     },
     lastItemText:{
-        fontSize:25,
-        color:'#ccc'
+        color:'#989898',
+        fontSize:30,
+        textAlignVertical:'center',
+        includeFontPadding:false,
     },
     listFooter:{
         height:50,
@@ -243,7 +221,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId,
+    accountId:state.loginStore.accountMessage.Account,
     recentListStore:state.recentListStore,
     relations:state.relationStore
 });

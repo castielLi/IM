@@ -1,21 +1,19 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard}from 'react-native';
+import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions,Alert,Keyboard,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import {
-    Navigator
-} from 'react-native-deprecated-custom-components';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import Confirm from './confirm';
+import AppComponent from '../../../Core/Component/AppComponent';
+import LoginController from '../../../TSController/LoginController';
 
+let loginController = undefined;
 let currentObj = undefined;
 
-export default class Register extends ContainerComponent {
+export default class Register extends AppComponent {
 
-	constructor(){
-		super();
+	constructor(props){
+		super(props);
 
         this.state = {
-            NickNameText:'',
+            NicknameText:'',
             phoneText:'',
             passWordText:'',
             codeText:'',
@@ -23,7 +21,12 @@ export default class Register extends ContainerComponent {
         }
 
         currentObj = this;
+        loginController = new LoginController();
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 
 
@@ -34,41 +37,50 @@ export default class Register extends ContainerComponent {
         }
 
         this.showLoading();
-        this.fetchData("POST","Member/GetMobileCaptchaForRegistion",function(result){
-            currentObj.hideLoading()
-        	if(!result.success) {
-                currentObj.alert(result.errorMessage,"错误");
-            }else{
-            	currentObj.alert("验证码已经发送")
+        loginController.GetCaptcha(this.state.phoneText,(response)=>{
+            currentObj.hideLoading();
+            switch (response.data.Result){
+                case 2:
+                    currentObj.alert("请填写正确的手机号!");
+                    break;
+                case 5001:
+                    currentObj.alert("达到今日次数限制!");
+                    break;
+				case 5002:
+					currentObj.alert("手机号已存在!");
+					break;
+                case 5003:
+                    currentObj.alert("手机号不存在!");
+                    break;
+                case 5004:
+                    currentObj.alert("请求频繁，亲稍后再试!");
+                    break;
+
 			}
-		},{"PhoneNumber":this.state.phoneText})
+        });
 	}
 
 	register=()=>{
 
-		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.passWordText&&this.state.NickNameText){
-			// this.setState({
-			// 	showConfirm:true,
-			// });
+		if((/^1[34578]\d{9}$/.test(this.state.phoneText)) && this.state.passWordText&&this.state.NicknameText){
 
             this.showLoading();
-            this.fetchData("POST","Member/RegistByMobilePhone",function(result){
-                currentObj.hideLoading()
-                if(!result.success) {
-                    currentObj.alert(result.errorMessage,"错误");
-                }else{
 
-                	currentObj.alert("您已经成功注册账号","提示",function(){
-                        currentObj.route.replaceTop(currentObj.props,{
-                            key:'Login',
-                            routeId: 'PhoneLogin'
-                        })
-					})
-				}
-            },{"PhoneNumber":this.state.phoneText,"Nickname":this.state.NickNameText,"Captcha":this.state.codeText,"Password":this.state.passWordText})
+            loginController.Registered(this.state.phoneText,this.state.passWordText,this.state.NicknameText,this.state.codeText,(response)=>{
+                currentObj.hideLoading();
+                switch (response.data.Result){
+                    case 1:
+                        Alert.alert("成功","注册成功!");
+                        currentObj.route.pop(currentObj.props)
+                        break;
+                    case 5005:
+                        currentObj.alert("错误","验证码无效!");
+                        break;
 
+                }
+			});
 		}else{
-			alert('信息不能为空!');
+            currentObj.alert("错误",'信息不能为空!');
 		}
 	}
 	cancelSend = (hideConfirm)=>{
@@ -81,6 +93,7 @@ export default class Register extends ContainerComponent {
         let Loading = this.Loading;
 
 		return (
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<View style={styles.container}>
 				<View style = {styles.Title}>
 					<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.pop(this.props);}}>
@@ -91,13 +104,13 @@ export default class Register extends ContainerComponent {
 				<View style={styles.content}>
 					<View style={styles.inputBox}>
 						<View style={styles.imageBox}>
-							<Text style = {styles.NickName}>昵称</Text>
+							<Text style = {styles.Nickname}>昵称</Text>
 						</View>
 						<TextInput 
 							style = {[styles.textInput,{marginLeft:-10}]}
 							placeholderTextColor = '#bebebe' 
 							placeholder = '例如：王凯'
-							onChangeText={(Text)=>{this.setState({NickNameText:Text})}}
+							onChangeText={(Text)=>{this.setState({NicknameText:Text})}}
 							underlineColorAndroid= {'transparent'}
 						></TextInput>
 					</View>
@@ -115,6 +128,7 @@ export default class Register extends ContainerComponent {
 						<Text style = {styles.NumberBefore}>+86</Text>
 						<TextInput
 						style = {styles.textInput}
+						keyboardType = {'numeric'}
 						maxLength = {11}
 						placeholderTextColor = '#bebebe' 
 						placeholder = '请输入手机号码' 
@@ -142,8 +156,9 @@ export default class Register extends ContainerComponent {
 						<TextInput
 						maxLength = {6}
 						style = {[styles.textInput,{marginLeft:-10}]} 
-						placeholderTextColor = '#bebebe' 
-						placeholder = '请输入验证码' 
+						placeholderTextColor = '#bebebe'
+						placeholder = '请输入验证码'
+						keyboardType = {'numeric'}
 						onChangeText={(Text)=>{this.setState({codeText:Text})}}
 						underlineColorAndroid= {'transparent'}></TextInput>
 						<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.getValidateCode()}}>
@@ -152,7 +167,7 @@ export default class Register extends ContainerComponent {
 					</View>
 					<Text style={{fontSize:checkDeviceHeight(24),color:'#bebebe'}}>密码由8-12位组成, 其中最少包括一个字母和数字，不能使用符号</Text>
 
-							<TouchableOpacity disabled={!(this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NickNameText)} activeOpacity = {0.8} style={[styles.register,{backgroundColor:this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NickNameText?'#1aad19':'#ccc' }]} onPress = {()=>this.register()}>
+							<TouchableOpacity disabled={!(this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NicknameText)} activeOpacity = {0.8} style={[styles.register,{backgroundColor:this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NicknameText?'#1aad19':'#ccc' }]} onPress = {()=>this.register()}>
 								<Text style = {[styles.registerText]}>注册</Text>
 							</TouchableOpacity>
 
@@ -163,16 +178,10 @@ export default class Register extends ContainerComponent {
 						</Text>
 					</View>
 				</View>
-				{/*{*/}
-					{/*this.state.showConfirm?*/}
-					{/*<Confirm */}
-					{/*phoneText = {this.state.phoneText}*/}
-					{/*cancelSend = {this.cancelSend}*/}
-					{/*></Confirm>:null*/}
-				{/*}*/}
 				<Popup ref={ popup => this.popup = popup}/>
 				<Loading ref = { loading => this.loading = loading}/>
 			</View>
+			</TouchableWithoutFeedback>
 		)
 	}
 } 
@@ -196,21 +205,22 @@ const styles = StyleSheet.create({
 	goBackBtn:{
 		position:'absolute',
 		left:0,
-		marginTop:checkDeviceHeight(35),
+		marginTop:checkDeviceHeight(50),
 		marginLeft:checkDeviceWidth(20),
 		alignSelf:'flex-start',
 	},
 	phoneTitle:{
 		color:'#333333',
-		fontSize:checkDeviceHeight(32),
+		fontSize:checkDeviceHeight(50),
 		alignSelf:'center',
+        marginTop:checkDeviceHeight(60),
 	},
 	content:{
 		alignItems:'center',
 		width:Dimensions.get('window').width - checkDeviceHeight(80),
 		flex:1,
 	},
-	NickName:{
+	Nickname:{
 		fontSize:checkDeviceHeight(30),
 		color:'#333333',
 	},

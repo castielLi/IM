@@ -11,12 +11,13 @@
  * 路由配置项
  * 可配置默认参数 props: params
  */
+import Mark from '../App/Enum/AppPageMarkEnum'
+import Root from './Root/root'
 import Login from './Login/page/main'
 import PhoneLogin from './Login/page/phoneLogin'
 import EmailLogin from './Login/page/emailLogin'
 import Register from './Login/page/register'
 import FindPassword from './Login/page/findPassword'
-import ChangePassword from './Login/page/changePassword'
 import MainTabbar from './MainTabbar/page/mainTabbar'
 import ChatDetail from './ChatDetail/page'
 import Start from './Start/page'
@@ -33,7 +34,7 @@ import Me from './Me/page'
 import GroupList from './Contacts/page/GroupList'
 
 import Validate from './AddFriends/validate'
-import ChooseClient from './ChooseClient/page'
+import ChooseClient from './ChooseClient/page/index'
 import GroupInformationSetting from './GroupInformationSetting/page'
 import MoreGroupList from './GroupInformationSetting/page/MoreGroupList'
 import GroupAnnouncement from './GroupInformationSetting/page/GroupAnnouncement'
@@ -41,6 +42,30 @@ import GroupName from './GroupInformationSetting/page/GroupName'
 import DeleteGroupMember from './GroupInformationSetting/page/DeleteGroupMember'
 import Player from './ChatDetail/page/List/player'
 import Gallery from './ChatDetail/page/List/gallery'
+import ForwardChoose from './ForwardChoose/page/ForwardChoose'
+import ContactsChoose from './ForwardChoose/page/ContactsChoose'
+import GroupsChoose from './ForwardChoose/page/GroupsChoose'
+import Profile from './Profile/page'
+import HeadImage from './Profile/page/HeadImage'
+import NickName from './Profile/page/Nickname'
+import SelectGroup from './ChooseClient/page/SelectGroup'
+import RemarkInfo from './ClientInformation/page/RemarkInfo'
+import QRCodeContent from './Profile/page/QRCode'
+import ScanCode from './ScanCode/page'
+import MoreSetting from './Profile/page/More'
+import Signature from './Profile/page/More/Signature'
+import ScanUnknow from './ScanCode/page/ScanUnknowPage'
+import Gender from './Profile/page/More/RadioCollection'
+import GroupQRCodeContent from './GroupInformationSetting/page/QRCode'
+import GroupBackgroundImage from './GroupInformationSetting/page/BackgroundImage'
+import PrivateChatBackgroundImage from './ChatSetting/page/BackgroundImage'
+import Setting from './Me/page/setting'
+import ChangePassword from './Me/page/setting/changePassword'
+import ConfigSetting from './Me/page/setting/configSetting'
+import Search from './Search/page'
+import JoinGroup from './GroupInformationSetting/page/JoinGroup'
+import ResetPassword from './Login/page/resetPassrod'
+
 
 export const MainPage = {
     key: 'MainTabbar',
@@ -52,202 +77,322 @@ export const InitialRoute = {
     routeId: 'Start'
 }
 
+export const RootRoute = {
+    key : 'Root',
+    routeId : 'Root'
+}
+
 export const LoginRoute = {
     key: 'Login',
-    routeId: 'Login'
+    routeId: 'PhoneLogin'
 }
 
 export const RouteMap = {
     'Root': {
         'Root': {
-            component: ChatDetail,
-            params: {}
+            component: Root,
+            params: {"name":"Root"}
         }
     },
     'Start': {
         'Start': {
             component: Start,
-            params: {}
+            params: {"name":"Start"}
         }
     },
     'MainTabbar': {
         'MainTabbar':{
             component: MainTabbar,
-            params: {}
+            params: {"name":"MainTabbar"},
+            markType:Mark.UnReadMessage
         },
         'TabOne': {
             component: RecentList,
-            params: {}
+            params: {"name":"RecentList"},
+            markType:[Mark.ConversationList,Mark.AppStatus]
         },
         'TabTwo': {
             component: Contacts,
-            params: {}
+            params: {"name":"Contacts"},
+            markType:[Mark.Contacts,Mark.UnReadMessage,Mark.ChangeRemark]
         },
         'TabThree': {
             component: Zoom,
-            params: {}
+            params: {"name":"Zoom"}
         },
         'TabFour': {
             component: Me,
-            params: {}
+            params: {"name":"Me"},
+            markType:[Mark.ChangeNickname,Mark.ChangeHeadImage]
         }
     },
     'Login': {
-        'Login': {
-            component: Login,
-            params: {}
-        },
         'PhoneLogin':{
             component: PhoneLogin,
-            params: {}
-        },
-        'EmailLogin':{
-            component: EmailLogin,
-            params: {}
+            params: {"name":"PhoneLogin"},
+            markType:Mark.ConversationDetail
         }
     },
     'Register':{
         'Register': {
             component: Register,
-            params: {}
+            params: {"name":"Register"}
         }
     },
     'FindPassword':{
          'FindPassword': {
             component: FindPassword,
-            params: {}
+            params: {"name":"FindPassword"}
         }
     },
-    'ChangePassword':{
-         'ChangePassword': {
-            component: ChangePassword,
-            params: {}
+    'ResetPassword':{
+        'ResetPassword': {
+            component: ResetPassword,
+            params: {"name":"ResetPassword"}
         }
     },
     'ChatDetail': {
         'ChatDetail': {
             component: ChatDetail,
-            params: {}
+            params: {"name":"ChatDetail"},
+            markType:[Mark.ConversationDetail,Mark.ModifyGroupName,Mark.ModifyGroupSetting,Mark.ConversationDetailBackgroundImage,Mark.GroupMemberName]
         }
     },
     'RecentList': {
         'RecentList': {
             component: RecentList,
-            params: {}
+            params: {"name":"RecentList"},
+            markType:Mark.ConversationList
         }
     },
     'Contacts': {
         'Contacts': {
             component: Contacts,
-            params: {}
+            params: {"name":"Contacts"},
+            markType:[Mark.Contacts,Mark.UnReadMessage]
         },
         'GroupList':{
             component:GroupList,
-            params:{}
+            params:{"name":"GroupList"}
         }
     },
     'Zoom': {
         'Zoom': {
             component: Zoom,
-            params: {}
+            params: {"name":"Zoom"}
         }
     },
     'AddFriends':{
         'AddFriends':{
             component: AddFriends,
-            params: {}
+            params: {"name":"AddFriends"}
         }
     },
     'ClientInformation': {
         'ClientInformation': {
             component: ClientInformation,
-            params: {}
+            params: {"name":"ClientInformation"},
+            markType: Mark.ChangeRemark
         }
     },
     'InformationSetting': {
         'InformationSetting': {
             component: InformationSetting,
-            params: {}
+            params: {"name":"InformationSetting"}
         }
     },
     'NewFriend': {
         'NewFriend': {
             component: NewFriend,
-            params: {}
+            params: {"name":"NewFriend"},
+            markType:Mark.ApplyMessage
         }
     },
     'SearchNewFriend': {
         'SearchNewFriend': {
             component: SearchNewFriend,
-            params: {}
+            params: {"name":"SearchNewFriend"}
         }
     },
     'ChatSetting': {
         'ChatSetting': {
             component: ChatSetting,
-            params: {}
+            params: {"name":"ChatSetting"}
+        },
+        'PrivateChatBackgroundImage':{
+            component:PrivateChatBackgroundImage,
+            params:{}
         }
     },
     'Me': {
         'Me': {
             component: Me,
-            params: {}
+            params: {"name":"Me"}
+        },
+        'Setting':{
+            component:Setting,
+            params:{}
+        },
+        'ChangePassword':{
+            component:ChangePassword,
+            params:{}
+        },
+        'ConfigSetting':{
+            component:ConfigSetting,
+            params:{}
         }
     },
     'Validate': {
         'Validate': {
             component: Validate,
-            params: {}
+            params: {"name":"Validate"}
         }
     },
     'ChooseClient': {
         'ChooseClient': {
             component: ChooseClient,
-            params: {}
+            params: {"name":"ChooseClient"}
         }
     },
     'GroupInformationSetting': {
         'GroupInformationSetting': {
             component: GroupInformationSetting,
-            params: {}
+            params: {"name":"GroupInformationSetting"},
+            markType:[Mark.ChangeRemark,Mark.ModifyGroupName]
+        },
+        "GroupQRCodeContent":{
+            component:GroupQRCodeContent,
+            params:{}
+        },
+        'GroupBackgroundImage':{
+            component:GroupBackgroundImage,
+            params:{}
+        }
+    },
+    'JoinGroup':{
+        'JoinGroup': {
+            component: JoinGroup,
+            params: {"name":"JoinGroup"}
         }
     },
     'MoreGroupList': {
         'MoreGroupList': {
             component: MoreGroupList,
-            params: {}
+            params: {"name":"MoreGroupList"}
         }
     },
     'GroupAnnouncement': {
         'GroupAnnouncement': {
             component: GroupAnnouncement,
-            params: {}
+            params: {"name":"GroupAnnouncement"}
         }
     },
     'GroupName': {
         'GroupName': {
             component: GroupName,
-            params: {}
+            params: {"name":"GroupName"}
         }
     },
     'DeleteGroupMember': {
         'DeleteGroupMember': {
             component: DeleteGroupMember,
-            params: {}
+            params: {"name":"DeleteGroupMember"}
         }
     },
     'Player' : {
         'Player' : {
             component: Player,
-            params: {}
+            params: {"name":"Player"}
         }
     },
     'Gallery' : {
         'Gallery' : {
         component: Gallery,
-            params: {}
+            params: {"name":"Gallery"}
         }
     },
+    'ForwardChoose':{
+        'ForwardChoose': {
+            component: ForwardChoose,
+            params: {"name":"ForwardChoose"},
+            markType:Mark.ConversationList
+        }
+    },
+    'ContactsChoose':{
+        'ContactsChoose': {
+            component: ContactsChoose,
+            params: {"name":"ContactsChoose"}
+        }
+    },
+    'GroupsChoose':{
+        'GroupsChoose': {
+            component: GroupsChoose,
+            params: {"name":"GroupsChoose"}
+        }
+    },
+    'Profile':{
+        'Profile': {
+            component: Profile,
+            params: {"name":"Profile"},
+            markType:[Mark.ChangeHeadImage,Mark.ChangeNickname]
+        },
+        'HeadImage':{
+            component: HeadImage,
+            params:{"name":"HeadImage"},
+            markType:Mark.ChangeHeadImage
+        },
+        'NickName':{
+            component:NickName,
+            params:{"name":"NickName"}
+        },
+        'QRCode': {
+            component: QRCodeContent,
+            params: {"name":"QRCode"}
+        },
+        'MoreSetting':{
+            component: MoreSetting,
+            params: {"name":"MoreSetting"}
+        },
+        'Signature':{
+            component: Signature,
+            params: {"name":"Signature"}
+        },
+        'GenderChange':{
+            component:Gender,
+            params:{}
+        }
+
+    },
+    'SelectGroup':{
+        'SelectGroup': {
+            component: SelectGroup,
+            params: {"name":"SelectGroup"}
+        }
+    },
+    'RemarkInfo':{
+        'RemarkInfo': {
+            component: RemarkInfo,
+            params: {"name":"RemarkInfo"}
+        }
+    },
+    'ScanCode':{
+        'ScanCode': {
+            component: ScanCode,
+            params: {"name":"ScanCode"}
+        },
+        'ScanUnknow':{
+            component:ScanUnknow,
+            params:{"name":"ScanUnknow"}
+        }
+    },
+    'Search':{
+        'Search': {
+            component: Search,
+            params: {"name":"Search"},
+            markType:Mark.SearchByKeyword
+        }
+    },
+
 };
 
 

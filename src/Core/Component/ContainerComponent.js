@@ -5,16 +5,11 @@
 
 import React, { Component } from 'react';
 import {BackHandler} from 'react-native';
-import netWorking from '../Networking/Network'
-import BaseComponent from './index'
 import Popup from 'react-native-popup';
 import Loading from './Popup/loading'
 import Route from '../route/router'
 import style from '../StyleSheet/style'
 import StyleSheetHelper from '../StyleSheet/index'
-import {
-    View
-} from 'react-native';
 import Localization from '../Localization';
 
 export default class ContainerComponent extends Component {
@@ -24,12 +19,12 @@ export default class ContainerComponent extends Component {
         this.PopContent = Popup;
         this.Loading = Loading;
         this.route = Route;
+
         this.viewModel = {};
         this.style = style;
         this.Localization = Localization;
         this._handleBack = this._handleBack.bind(this);
     }
-
 
     componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress', this._handleBack)
@@ -39,7 +34,6 @@ export default class ContainerComponent extends Component {
         const styles = StyleSheetHelper.mergeStyleSheets(style,newStyles);
         return styles;
     }
-
 
     alert(content,title="",clickCallback=undefined) {
         if(title == ""){
@@ -109,21 +103,4 @@ export default class ContainerComponent extends Component {
             }
         });
     }
-
-    fetchData(method,requestURL,callback,params){
-        let network = new netWorking();
-        if(method == 'GET'){
-            network.methodGET(requestURL,callback,false);
-        }else{
-            network.methodPOST(requestURL,params,callback,false);
-        }
-    }
-
-    setFetchAuthorization(authorization){
-
-        netWorking.setNeedAuth(true)
-        netWorking.setAuthorization(authorization);
-
-    }
-
 }

@@ -7,30 +7,21 @@ import {Text,
     TouchableHighlight,
     Switch
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionSheet from 'react-native-actionsheet'
-
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import {bindActionCreators} from 'redux';
-import SettingController from '../../../Logic/Setting/settingController';
-import ContactControlller from '../../../Logic/Contact/contactController';
-import IMController from '../../../Logic/Im/imController';
 
-let imController = new IMController();
-let settingController = new SettingController();
-let contactControlller = new ContactControlller();
-
-let currentObj;
-
+let currentObj = undefined;
 const options = ['取消','确认删除']
 const title = '你确定要删除这位好友么'
 
-class InformationSetting extends ContainerComponent {
-    constructor(){
-        super()
+class InformationSetting extends AppComponent {
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.handlePress = this.handlePress.bind(this);
         this.state = {
@@ -39,118 +30,76 @@ class InformationSetting extends ContainerComponent {
             joinBlackList:false,
         }
         currentObj = this;
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.imControllerLogic = this.appManagement.getIMLogicInstance();
     }
-    //定义上导航的左按钮
-    _leftButton() {
-        return  <TouchableOpacity style={{justifyContent:'center'}} onPress={()=>this.route.pop(this.props)}>
-            <View style={styles.back}>
 
-                <Icon name="angle-left" size={30} color="#fff" style={{textAlignVertical:'center',marginRight:8}}/>
-
-                <Text style={{fontSize:16,textAlignVertical:'center',color:'#fff'}}>{'详细资料'}</Text>
-            </View>
-        </TouchableOpacity>
-    }
-    //定义上导航的标题
-    _title() {
-        return {
-            title: "资料设置",
-            tintColor:'#fff',
-        }
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+        this.imControllerLogic = undefined;
     }
 
     componentWillMount(){
-        // this.props.changeTabBar(0)
-
-        let setting = settingController.getIsBlackList(this.props.client);
-        let value ;
-        if(setting == "false"||setting == false){
-            value = false;
-        }else{
-            value = true;
-        }
-
-        this.setState({
-            joinBlackList:value,
+        this.userController.getUserInfo(this.props.clientId,false,(result)=>{
+            let BlackList = result.BlackList ? true : false;
+            this.setState({
+                joinBlackList:BlackList,
+            })
+        });
+        this.userController.getUserSetting(this.props.clientId,(result)=>{
+            this.setState({
+                notSeeHisZoom:result.ScanZoom,
+                notSeeMyZoom:result.ReScanZoom,
+            })
         })
 
     }
 
-    changeNotSeeMyZoom = ()=>{
+    //不然他看我朋友圈
+    changeNotSeeMyZoom = (value)=>{
         this.setState({
-            notSeeMyZoom:!this.state.notSeeMyZoom
-        })
-    }
-    changeNotSeeHisZoom = ()=>{
+            notSeeMyZoom:value
+        });
+        this.userController.modifyScanZoom(this.props.clientId,value)
+    };
+    //不看她朋友圈
+    changeNotSeeHisZoom = (value)=>{
         this.setState({
-            notSeeHisZoom:!this.state.notSeeHisZoom
-        })
-    }
+            notSeeHisZoom:value
+        });
+        this.userController.modifyReScanZoom(this.props.clientId,value)
+    };
+    //黑名单
     changeJoinBlackList = (value)=>{
-
-
-
-        currentObj.showLoading()
-        if(!value){
-            let params = {  "Applicant":currentObj.props.accountId,
-                            "Account":currentObj.props.client,
-                            "IsDelete":false}
-            settingController.removeBlackMember(params,(results)=>{
-                currentObj.hideLoading()
-                if(results.success){
-                    this.setState({
-                        joinBlackList:value
-                    })
-                }else{
-                    currentObj.alert(result.errorMessage,"错误");
-                }
-            })
-
-        }else{
-            let params = {"Applicant":currentObj.props.accountId,"Account":currentObj.props.client}
-            settingController.addBlackMember(params,(results)=>{
-                currentObj.hideLoading()
-                if(results.success){
-                    this.setState({
-                        joinBlackList:value
-                    })
-                }else{
-                    currentObj.alert(result.errorMessage,"错误");
-                }
-            })
-        }
-
-
-    }
+        this.setState({
+            joinBlackList:value
+        });
+        this.userController.setBlackList(this.props.clientId,value,(result)=>{
+        });
+    };
 
 
     handlePress(i){
-        let {client,type,accountId} = this.props;
+        let {clientId,type} = this.props;
         //删除好友
         if(1 == i){
             currentObj.showLoading();
-            let params = {"Applicant":accountId,"Friend":client};
-            contactControlller.removeFriend(params,(results)=>{
+            this.userController.removeFriend(this.props.clientId,(result)=>{
                 currentObj.hideLoading();
-                if(results.success){
-                    imController.removeConverse(client,false);
-                    let pages = currentObj.props.navigator.getCurrentRoutes();
-                    let target = pages[pages.length - 3];
-
-                    currentObj.route.popToSpecialRoute(currentObj.props,target);
-                }else{
-                    alert("http请求出错")
-                }
-            })
-
+                let pages = currentObj.props.navigator.getCurrentRoutes();
+                let target = pages[pages.length - 3];
+                currentObj.route.popToSpecialRoute(currentObj.props,target);
+            });
+            //删除会话列表对应会话
+            this.imControllerLogic.removeConverse(this.props.clientId,false)
         }
+
     }
 
     showActionSheet() {
         this.ActionSheet.show()
     }
-
-
 
     render() {
         let Popup = this.PopContent;
@@ -162,20 +111,13 @@ class InformationSetting extends ContainerComponent {
                     left={{func:()=>{this.route.pop(this.props)},text:'详细资料'}}
                 />
                 <View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')} style={{marginTop:15}}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>设置备注和标签</Text>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </View>
-                    </TouchableHighlight>
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
                             <Text style={styles.remarks}>不让他看我朋友圈</Text>
                             <Switch
                                 value={this.state.notSeeMyZoom}
                                 onValueChange={this.changeNotSeeMyZoom}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <View>
@@ -184,7 +126,7 @@ class InformationSetting extends ContainerComponent {
                             <Switch
                                 value={this.state.notSeeHisZoom}
                                 onValueChange={this.changeNotSeeHisZoom}
-                            ></Switch>
+                            />
                         </View>
                     </View>
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
@@ -193,16 +135,9 @@ class InformationSetting extends ContainerComponent {
                             <Switch
                                 value={this.state.joinBlackList}
                                 onValueChange={this.changeJoinBlackList}
-                            ></Switch>
+                            />
                         </View>
                     </View>
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
-                        <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>投诉</Text>
-                            {/*<Text style={styles.arrow}>{'>'}</Text>*/}
-                            <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
-                        </View>
-                    </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={styles.sendMessageBox}>
                         <Text style={styles.sendMessage}>删除</Text>
                     </TouchableHighlight>
@@ -275,7 +210,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId,
+    accountId:state.loginStore.accountMessage.Account,
 });
 
 const mapDispatchToProps = dispatch => ({

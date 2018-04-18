@@ -2,139 +2,116 @@ import React, {
     Component
 } from 'react';
 import {
-    AppRegistry,
     View,
     Text,
-    SectionList,
     StyleSheet,
-    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
     TextInput,
     Dimensions,
-    TouchableOpacity,
     FlatList
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
-import SettingController from '../../../Logic/Setting/settingController'
+import UserController from '../../../TSController/UserController';
+import CheckBox from '../../Common/Component/CheckBox';
 
-var {height, width} = Dimensions.get('window');
-
+let userController = undefined;
+let {height, width} = Dimensions.get('window');
 let currentObj = undefined;
-let title = null;
-let settingController = new SettingController();
+let currentAccount = undefined;
 
-class DeleteGroupMember extends ContainerComponent {
+class DeleteGroupMember extends AppComponent {
 
     constructor(props) {
         super(props);
         this.state={
-            data:props.realMemberList,
-            needData:[],
-            text:''
-        }
-        this.relationStore = []
-        this._rightButton = this._rightButton.bind(this);
+            data:[],
+            refresh:false
+        };
+        this.CheckBoxData = [];
+        this.selectData = [];
         currentObj = this;
+        userController =  this.appManagement.getUserLogicInstance();
+        currentAccount = userController.getCurrentAccount();
     }
 
-
-
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        userController = undefined;
+    }
     componentWillMount(){
-
-    }
-
-    circleStyle = (isChoose)=>{
-
-            return <View style={[styles.circle,{backgroundColor:isChoose?'green':'transparent'}]}/>
-
-
-    }
-
-    _renderAvator= (HeadImageUrl)=>{
-        if(!HeadImageUrl||HeadImageUrl === ''){
-            return <Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
-        }else{
-            return <Image style = {styles.pic} source = {{uri:HeadImageUrl}}></Image>
-        }
-    }
-
-    choose = (item) =>{
-        //修改this.state.needData
-        if(!item.isChoose){
-            this.state.needData.push(item.Account)
+        userController.getGroupMembersInfo(this.props.groupId,(result)=>{
             this.setState({
-                needData:this.state.needData.concat()
+                data:result
             })
+        })
+    }
+
+    // _renderAvator= (HeadImageUrl)=>{
+    //     if(!HeadImageUrl||HeadImageUrl === ''){
+    //         return <Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
+    //     }else{
+    //         return <Image style = {styles.pic} source = {{uri:HeadImageUrl}}></Image>
+    //     }
+    // }
+
+    choose = (Account,index) =>{
+        this.CheckBoxData[index].onChange();//改变选中框样式
+        let Sub = this.selectData.indexOf(Account);
+        if(Sub !== -1){
+            this.selectData.splice(Sub,1);
         }else{
-            for(let j=0;j<this.state.needData.length;j++){
-                if(this.state.needData[j]==item.Account){
-                    this.state.needData.splice(j,1);
-                    j--;
-                }
-            }
+            this.selectData.push(Account);
+        }
+
+        if(this.state.refresh != (this.selectData.length != 0)){
             this.setState({
-                needData:this.state.needData.concat()
+                refresh:!this.state.refresh
             })
         }
-        //this.state.needData组成字符串发送请求
-        let needStr = '';
-        this.state.needData.forEach((value,index)=>{
-            needStr+=value+','
-        })
-        if(needStr[needStr.length-1] == ','){//如果最后一个字符为','
-            needStr = needStr.substring(0,needStr.length-1);
-        }
-
-        this.needStr = needStr;
-        //修改this.state.data
-        for(let i=0;i<this.state.data.length;i++){
-            if(this.state.data[i].Account === item.Account){
-                this.state.data[i].isChoose = !item.isChoose;
-                break;
-            }
-        }
-        this.setState({
-            data:this.state.data.concat(),
-            text:''
-        })
-
-    }
+    };
 
     _renderItem = (info) => {
-        var txt = '  ' + info.item.Nickname;
-        if(info.item.Account === this.props.accountId) return null;
-        if(txt.indexOf(this.state.text) >= 0){
-            return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item)}}>
-                        <View  style={styles.itemBox} >
-                            {this.circleStyle(info.item.isChoose)}
-                            {this._renderAvator(info.item.HeadImageUrl)}
-                            <Text style={styles.itemText}>{txt}</Text>
-                        </View>
-                    </TouchableHighlight>
+        let txt = '  ' + info.item.Nickname;
+        let path = userController.getAccountHeadImagePath(info.item.Account);
+        if(info.item.Account === currentAccount.Account) return null;
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item.Account,info.index)}}>
+                <View style={styles.itemView}>
+                    <View style={styles.itemBox}>
+                        <ImagePlaceHolder style={styles.pic} imageUrl ={path}/>
+                        <Text style={styles.itemText}>{txt}</Text>
+                    </View>
+                    <CheckBox ref={e=>this._initCheckBoxData(e)} checked={2}/>
+                </View>
+            </TouchableHighlight>
+        )
+    };
+
+    /*记录checkBox*/
+    _initCheckBoxData=(checkBox)=>{
+        if(checkBox!=null){
+            this.CheckBoxData.push(checkBox);
         }
-    }
+    };
+
+    _renderSeparator=()=>{
+        return <View style={styles.ItemSeparator}/>
+    };
 
 
     //定义上导航的右按钮
-    _rightButton() {
-        let {accountId,ID,navigator} = this.props;
-        let params = {"Operater":accountId,"GroupId":ID,"Accounts":this.needStr};
-        let close = currentObj.props.realMemberList.length-currentObj.state.needData.length<=1 ? true : false;
+    _removeGroupMember=()=> {
+        let {groupId,navigator} = this.props;
+        let AccountStr = this.selectData.join(',');
         currentObj.showLoading();
-        callback = (result)=>{
-            if(result.success && result.data.Data){
-                if(close){
-                    currentObj.alert('群解散了');
-                    currentObj.route.toMain(currentObj.props);
-                    return;
-                }
-
+        userController.removeGroupMember(groupId,AccountStr,(result)=>{
+            currentObj.hideLoading();
+            if(result &&　result.Result == 1){
                 let routes = navigator.getCurrentRoutes();
                 let index;
                 for (let i = 0; i < routes.length; i++) {
@@ -147,48 +124,51 @@ class DeleteGroupMember extends ContainerComponent {
                 currentObj.route.replaceAtIndex(currentObj.props,{
                     key:'GroupInformationSetting',
                     routeId: 'GroupInformationSetting',
-                    params:{"groupId":ID,onUpdateHeadName:currentObj.props.UpdateHeadName},
+                    params:{"groupId":groupId},
 
                 },index)
+            }else{
+                alert('移除群成员失败');
             }
-            else{
-                console.log("http请求出错")
-            }
-        }
-        settingController.removeGroupMember(params,close,callback);
-    }
+
+        });
+    };
+
+    _rightButton = ()=>{
+        this.confirm('确定要删除指定成员？','','确定',this._removeGroupMember,'取消')
+    };
 
 
     render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-        let needData = this.state.needData;
         return (
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
-                    heading={title}
-                    right={{func:()=>{this.confirm(currentObj.props.realMemberList.length-currentObj.state.needData.length<=1?'确定要解散该群吗？':'确定要删除指定成员？','','确定',this._rightButton,'取消')},text:'完成',disabled:needData.length>0?false:true}}
+                    heading={'删除群成员'}
+                    right={{func:()=>{this._rightButton()},text:'完成',disabled:!this.state.refresh}}
                 />
-                <View style={styles.listHeaderBox}>
-                    <TextInput
-                        style={styles.search}
-                        underlineColorAndroid = 'transparent'
-                        placeholder = '搜索'
-                        autoFocus = {false}
-                        defaultValue = {this.state.text}
-                        onChangeText={(t)=>{
-                            this.setState({text:t,data:this.state.data.concat()})
-                        }
-                        }
-                    >
-                    </TextInput>
-                </View>
+                {/*<View style={styles.listHeaderBox}>*/}
+                    {/*<TextInput*/}
+                        {/*style={styles.search}*/}
+                        {/*underlineColorAndroid = 'transparent'*/}
+                        {/*placeholder = '搜索'*/}
+                        {/*autoFocus = {false}*/}
+                        {/*defaultValue = {this.state.text}*/}
+                        {/*onChangeText={(t)=>{*/}
+                            {/*this.setState({text:t,data:this.state.data.concat()})*/}
+                        {/*}*/}
+                        {/*}*/}
+                    {/*>*/}
+                    {/*</TextInput>*/}
+                {/*</View>*/}
                 <FlatList
                     ref={(flatList)=>this._flatList = flatList}
                     renderItem={this._renderItem}
-                    data={this.state.data}>
-                </FlatList>
+                    data={this.state.data}
+                    ItemSeparatorComponent={this._renderSeparator}
+                />
 
                 <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
@@ -212,14 +192,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingLeft:10
     },
+    itemView:{
+        backgroundColor:'#fff',
+        flexDirection:'row',
+        height:54,
+        alignItems:'center',
+        justifyContent:'space-between',
+        paddingHorizontal:15,
+    },
     itemBox:{
-        flex:1,
-        height: 60,
         flexDirection:'row',
         alignItems:'center',
-        paddingLeft:10,
-        borderBottomWidth:1,
-        borderColor:'#aaa'
     },
     circle:{
         width:20,
@@ -232,8 +215,7 @@ const styles = StyleSheet.create({
     pic:{
         width:40,
         height:40,
-        resizeMode:'stretch',
-        marginLeft:10
+        borderRadius:20
     },
     itemText:{
         textAlignVertical: 'center',
@@ -305,13 +287,13 @@ const styles = StyleSheet.create({
         fontSize:20,
         textAlign: 'center',
         textAlignVertical: 'center',
-    }
+    },
 })
 
 const mapStateToProps = state => ({
 
-    accountName:state.loginStore.accountMessage.Nick,
-    accountId:state.loginStore.accountMessage.accountId,
+    accountName:state.loginStore.accountMessage.Nickname,
+    accountId:state.loginStore.accountMessage.Account,
 });
 
 const mapDispatchToProps = (dispatch) => {

@@ -9,34 +9,43 @@ import {
     checkDeviceWidth
 } from '../../../Core/Helper/UIAdapter';
 import TabNavigator from 'react-native-tab-navigator';
-import DisplayComponent from '../../../Core/Component/index';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import tabBarPageEnum from './tabBarPageEnum';
 import * as unReadMessageActions from '../../MainTabbar/reducer/action';
 import * as featuresAction from '../../Common/menu/reducer/action';
-import * as IMHandle from '../../../Logic/AppHandler/receiveHandleMessage'
-import ImController from '../../../Logic/Im/imController'
-import TabTypeEnum from '../../../Logic/Im/dto/TabTypeEnum'
-let imController = new ImController();
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
+import AppManagement from '../../../App/AppManagement';
+import AppPageRequestEnum from '../../../App/Enum/AppPageRequestEnum';
+import TabTypeEnum from '../../../TSController/Enums/TabTypeEnum'
+let currentObj = undefined;
 
-
-let handleRecieveMessage = function(count,type){
-    IMHandle.handleRecieveMessage(count,type);
-}
-
-let handleKickOutMessage = function(){
-    IMHandle.handleKickOutMessage()
-}
-
-
-
-
-class TabBarComponent extends DisplayComponent {
+class TabBarComponent extends AppComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
+        currentObj = this;
+    }
 
+    _refreshUI(type,params){
+        switch (type){
+            case AppPageMarkEnum.UnReadMessage:
+                if(params.type == TabTypeEnum.RecentList){
+                    currentObj.props.changeUnReadMessageNumber(params.number);
+                }else if(params.type == TabTypeEnum.Contact){
+                    currentObj.props.showUnDealRequest();
+                }
+                break;
+        }
+    }
+
+    componentWillMount(){
+        currentObj.props.changeTabBar(0);
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
     }
 
     isShowFeature = (number)=>{
@@ -45,9 +54,6 @@ class TabBarComponent extends DisplayComponent {
         }
     }
 
-    componentWillMount(){
-        imController.connectApp(handleRecieveMessage,handleKickOutMessage)
-    }
     badgeComponent(title,count){
         if(title == '云信'){
             if(count>0||count == '99+'){
@@ -56,7 +62,7 @@ class TabBarComponent extends DisplayComponent {
                 return null;
             }
         }else{
-            if(count>0){
+            if(count){
                 return <View style={styles.otherBadge}></View>
             }else{
                 return null;
@@ -70,7 +76,7 @@ class TabBarComponent extends DisplayComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '云信'}
-                    title="云信"
+                    title= {this.Localization.mainTab.Chat}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/qixin.png')}
                                               style={[styles.icon]}
@@ -88,7 +94,7 @@ class TabBarComponent extends DisplayComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '通讯录'}
-                    title="通讯录"
+                    title= {this.Localization.mainTab.Contacts}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/contact.png')}
                                               style={[styles.icon]}
@@ -99,14 +105,14 @@ class TabBarComponent extends DisplayComponent {
                                                       resizeMode={Image.resizeMode.contain}
                     />}
                     //badgeText={this.props.unReadMessageStore.unDealRequestNumber}
-                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unDealRequestNumber)}
-                    onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1)}}>
+                    renderBadge={this.badgeComponent.bind(this,'通讯录',this.props.unReadMessageStore.unDealRequestMark)}
+                    onPress={() => {this.props.changeTabBar(1);this.isShowFeature(1);this.props.contactsNeedRefresh(new Date().getTime())}}>
                     {this.route.getComponentByRouteIdNavigator("MainTabbar","TabTwo",this.props.navigator)}
                 </TabNavigator.Item>
 
                 <TabNavigator.Item
                     selected={selectedTab === '发现'}
-                    title="发现"
+                    title= {this.Localization.mainTab.Discovery}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/zoom.png')}
                                               style={[styles.icon]}
@@ -124,7 +130,7 @@ class TabBarComponent extends DisplayComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '我'}
-                    title="我"
+                    title= {this.Localization.mainTab.Me}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/me.png')}
                                               style={[styles.icon]}

@@ -1,89 +1,82 @@
 /**
  * Created by Hsu. on 2017/9/8.
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     StyleSheet,
     Text,
     View,
     Dimensions,
-    TouchableOpacity,
     Image,
-    Alert,
-    Platform
 } from 'react-native';
 
-import Sound from 'react-native-sound';
-import Thouch from '../../../Common/Thouch/index'
-
 let {width, height} = Dimensions.get('window');
-let stopSoundObj = null;
 
-export default class ChatMessageSound extends Component {
+export default class ChatMessageSound extends PureComponent {
     constructor(props){
-        super(props)
-    }
-
-    static defaultProps = {
-    };
-
-    static propTypes = {
-    };
-
-    playSound = (SoundUrl) => {
-
-        if (Platform.OS === 'ios') {
-            Sound.enable(true);
-        }
-
-        const callback = (error, sound) => {
-            if (error) {
-                Alert.alert('error', error.message);
-            }
-            if(stopSoundObj){
-                stopSoundObj.stop(()=>{
-                    if(stopSoundObj && sound._filename == stopSoundObj._filename){
-                        stopSoundObj = null;
-                        return;
-                    }
-                    stopSoundObj = sound;
-                    sound.play(() => {
-                        stopSoundObj = null;
-                        sound.release();
-                    });
-
-                }).release()
-            }
-            else{
-                stopSoundObj = sound;
-                sound.play(() => {
-                    stopSoundObj = null;
-                    sound.release();
-                });
-            }
+        super(props);
+        this.state={
+            hidden:true
         };
-        const sound = new Sound(SoundUrl,'', error => callback(error, sound));
     }
+
+    changeVolumeHidden = (value)=>{
+        this.setState({
+            hidden:value
+        })
+    };
 
     getSoundTime = (Time)=>{
-        let soundWidth = 50;
+        let soundWidth = 70;
         if(Time>5){
-            soundWidth = (width-260)*((Time-5)/55)+50;
+            soundWidth = (width-260)*((Time-5)/55)+70;
         }
         return soundWidth;
-    }
-    render() {
-        let {data,style} = this.props;
-        let {localSource,remoteSource,time} = data.message;
-        let soundObjConfig = this.getSoundTime(time);
+    };
 
-        return(
-            <View style={[style,{width:soundObjConfig},styles.bubble]}>
-                <Thouch onPress={()=>this.playSound(localSource)}>
-                    <Text>{time}"</Text>
-                </Thouch>
-            </View>
-        )
+    render() {
+        let {data,style,sender} = this.props;
+        let {LocalSource,RemoteSource,Time} = data.message;
+        let {status} = data;
+        let soundObjConfig = this.getSoundTime(Time);
+
+        if(status == 4){
+            return(
+                <View style={styles.defaultSound}>
+                    <Text style={styles.defaultText}>音频下载中...</Text>
+                </View>
+            )
+        }if(status == 2){
+            return(
+                <View style={styles.defaultSound}>
+                    <Text style={styles.defaultText}>音频重新下载中...</Text>
+                </View>
+            )
+        }else{
+            if(sender){
+                return(
+                    <View style={[style,{width:soundObjConfig},styles.bubble]}>
+                        <View style={styles.rightText}>
+                            <Text>{Time}"</Text>
+                        </View>
+                        {
+                            this.state.hidden?null: <Image source={require('../../resource/volumeRight.png')} style={styles.img}/>
+                        }
+                    </View>
+                )
+            }else{
+                return(
+                    <View style={[style,{width:soundObjConfig},styles.bubble]}>
+                        {
+                            this.state.hidden?null: <Image source={require('../../resource/volumeLeft.png')} style={styles.img}/>
+                        }
+                        <View style={styles.leftText}>
+                            <Text>{Time}"</Text>
+                        </View>
+                    </View>
+                )
+            }
+        }
     }
 }
 
@@ -91,10 +84,36 @@ export default class ChatMessageSound extends Component {
 
 const styles = StyleSheet.create({
     bubble:{
+        flex:1,
         maxWidth:width-100,
-        justifyContent:'center',
         borderRadius:5,
-        height:40,
         paddingHorizontal:10,
+        paddingVertical:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between'
     },
+    defaultSound:{
+        alignItems:'center',
+        justifyContent:'center',
+    },
+    defaultText:{
+        includeFontPadding:false,
+        fontSize:16,
+        lineHeight:20,
+        color:'#000'
+    },
+    img:{
+        alignItems: 'flex-end',
+        height:18,
+        width:14,
+    },
+    leftText:{
+        alignItems:'flex-end',
+        flex:1
+    },
+    rightText:{
+        alignItems:'flex-start',
+        flex:1
+    }
 });

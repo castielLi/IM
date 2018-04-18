@@ -1,4 +1,4 @@
-import React, { Component } from 'react';  
+import React, { PureComponent } from 'react';
 import {  
   StyleSheet,  
   Text,  
@@ -17,16 +17,10 @@ import {
 } from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as Actions from '../../reducer/action';
-
-const ptToPx = pt=>PixelRatio.getPixelSizeForLayoutSize(pt);
-const pxToPt = px=>PixelRatio.roundToNearestPixel(px);
-
-
-var {height, width} = Dimensions.get('window');
   
 
 
-class ThouchBarBoxBottomBox extends Component {  
+class ThouchBarBoxBottomBox extends PureComponent {
   constructor(props) {  
     super(props); 
 

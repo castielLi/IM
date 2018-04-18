@@ -7,14 +7,18 @@ import React from 'react';
 import {
     Navigator,
     View,
-    InteractionManager
+    InteractionManager,
 } from 'react-native';
 import NavigationBar from 'react-native-navbar';
 import * as commons from '../Helper/index'
+import AppManagement from '../../App/AppManagement'
 
-let rootNavigator;
+
 //指定mainTabBar显示页面
 let assignMainTabBarPage = undefined;
+//是否正在进行路由处理
+let routering = false;
+let rootNavigator;
 class Route {
 
     /**
@@ -33,7 +37,8 @@ class Route {
             RouteMap,
             MainPage,
             InitialRoute,
-            LoginRoute
+            LoginRoute,
+            RootRoute
         } = router;
         this.routerMap = Object.assign(this.routerMap, RouteMap);
         this.mainPage = MainPage;
@@ -53,19 +58,22 @@ class Route {
         let id = route.key,
             params = route.params || {},
             routeObj = this.routerMap[id],
+            markType = undefined,
             Component;
         if (routeObj) {
             let ComponentInfo = routeObj[route.routeId]
             Component = ComponentInfo.component;
             //合并默认参数
             Object.assign(params, ComponentInfo.params);
+            if(ComponentInfo.markType) {
+                markType = ComponentInfo.markType;
+            }
         } else {
             // Component = Error;
             // params = {message: '当前页面没有找到：' + id};
         }
 
-        return <Component navigator={navigator} {...params} />
-
+        return <Component navigator={navigator} {...params} MarkType={markType} />
     }
 
 
@@ -89,16 +97,20 @@ class Route {
         let id = key,
             routeObj = this.routerMap[id],
             params = {},
+            markType = undefined,
             Component;
         if (routeObj) {
             let ComponentInfo = routeObj[routeId];
             Component = ComponentInfo.component;
             Object.assign(params, ComponentInfo.params);
+            if(ComponentInfo.markType) {
+                markType = ComponentInfo.markType;
+            }
         } else {
             // Component = Error;
             // params = {message: '当前页面没有找到：' + id};
         }
-        return <Component {...params} navigator={navigator}/>;
+        return <Component {...params} navigator={navigator} MarkType={markType}/>;
     }
 
     static push(props, route) {
@@ -141,7 +153,13 @@ class Route {
     }
 
     static androidBack(props){
+        //todo:在pop后动画结束前并没有立马卸载页面 下一次getCurrentRoutes会获取一样的场景 导致处理错误
         let routes = props.navigator.getCurrentRoutes();
+        let presentedIndex = props.navigator.state.presentedIndex;
+        let transitionFromIndex = props.navigator.state.transitionFromIndex;
+        if(presentedIndex != transitionFromIndex && transitionFromIndex != null){
+            return true;
+        }
         let contain = false;
         let containIndex = 0;
         for (let i = 0; i < routes.length; i++) {
@@ -151,15 +169,13 @@ class Route {
                 break;
             }
         }
-
         if(contain){
             if(routes.length - 1 > containIndex){
                 props.navigator.pop();
                 return true;
             }else{
-                return false;
+                return false
             }
-
         }else{
             if(routes.length > 2){
                 props.navigator.pop();
@@ -193,8 +209,23 @@ class Route {
         // })
     }
 
-    static ToLogin() {
-        let routes = rootNavigator.getCurrentRoutes();
+    static pushifExistRoute(props,existRoute){
+        let routes = props.navigator.getCurrentRoutes();
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i]["key"] == existRoute["key"] && routes[i]["routeId"] == existRoute["routeId"]) {
+                props.navigator.replaceAtIndex(existRoute,i,()=>{
+                    props.navigator.popToRoute(props.navigator.getCurrentRoutes()[i]);
+                });
+                return;
+            }
+        }
+        props.navigator.push(existRoute);
+    }
+
+    static ToLogin(props) {
+        let navigator = null;
+        props ? navigator = props.navigator : navigator = rootNavigator;
+        let routes = navigator.getCurrentRoutes();
         let route;
         let contain = false;
         for (let i = 0; i < routes.length; i++) {
@@ -206,11 +237,11 @@ class Route {
         }
         if (!contain) {
             let loginRoute = this.loginRoute;
-            rootNavigator.replaceAtIndex(this.loginRoute,1,function(){
-                rootNavigator.jumpTo(loginRoute)
+            navigator.replaceAtIndex(this.loginRoute,1,function(){
+                navigator.popToRoute(loginRoute)
             });
         }else{
-            rootNavigator.jumpTo(route)
+            navigator.popToRoute(route)
         }
     }
 }

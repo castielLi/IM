@@ -13,14 +13,20 @@ import {
     TouchableWithoutFeedback
 } from 'react-native';
 
-import ContainerComponent from '../../Core/Component/ContainerComponent';
+import AppComponent from '../../Core/Component/AppComponent';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
 
 
-export default class AddFriends extends ContainerComponent {
+export default class AddFriends extends AppComponent {
     constructor(props){
         super(props)
+        this.userController =  this.appManagement.getUserLogicInstance();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
     }
 
     static defaultProps = {
@@ -49,6 +55,7 @@ export default class AddFriends extends ContainerComponent {
     }
 
     render() {
+        let AccountObj = this.userController.getCurrentAccount();
         return(
             <View style={styles.container}>
                 <MyNavigationBar
@@ -66,7 +73,7 @@ export default class AddFriends extends ContainerComponent {
                         </View>
                     </TouchableWithoutFeedback>
                     <View style={styles.userInfo}>
-                        <Text>我的手机号:{'18580607008'.replace(/(^\d{3}|\d{4}\B)/g,"$1 ")}</Text>
+                        <Text>我的手机号:{AccountObj.PhoneNumber.replace(/(^\d{3}|\d{4}\B)/g,"$1 ")}</Text>
                     </View>
                 </View>
                 <View style={styles.addWayView}>

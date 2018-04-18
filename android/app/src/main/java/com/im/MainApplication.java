@@ -2,7 +2,14 @@ package com.im;
 
 import android.app.Application;
 
+import com.LifeCycle.RNLifeCyclePackage;
+import com.AdjustType.AdjustTypePackage;
+
 import com.facebook.react.ReactApplication;
+import com.rt2zz.reactnativecontacts.ReactNativeContacts;
+import org.devio.rn.splashscreen.SplashScreenReactPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.github.yamill.orientation.OrientationPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.reactlibrary.RNUUIDGeneratorPackage;
@@ -33,6 +40,10 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeContacts(),
+            new SplashScreenReactPackage(),
+            new RNDeviceInfo(),
+            new OrientationPackage(),
             new ReactVideoPackage(),
             new VectorIconsPackage(),
             new RNUUIDGeneratorPackage(),
@@ -42,7 +53,9 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFSPackage(),
             new RCTCameraPackage(),
             new SQLitePluginPackage(),
-            new ReactNativeAudioPackage()
+            new ReactNativeAudioPackage(),
+            new RNLifeCyclePackage(),
+            new AdjustTypePackage()
       );
     }
   };

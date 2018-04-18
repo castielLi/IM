@@ -15,20 +15,14 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
-import ContainerComponent from '../../Core/Component/ContainerComponent';
+import AppComponent from '../../Core/Component/AppComponent';
 import MyNavigationBar from '../Common/NavigationBar/NavigationBar';
-
 import {bindActionCreators} from 'redux';
 
-import RelationModel from '../../Logic/Common/dto/RelationDto'
-import ChatWayEnum from '../../Core/Management/Common/dto/ChatWayEnum';
-import ApplyFriendController from '../../Logic/ApplyFriend/applyFriendController';
-
-
 let currentObj;
-let applyFriendController = new ApplyFriendController();
 
-class Validate extends ContainerComponent {
+
+class Validate extends AppComponent {
     constructor(props){
         super(props)
         this.state={
@@ -36,6 +30,14 @@ class Validate extends ContainerComponent {
             text:''
         }
         currentObj = this;
+        this.userController = this.appManagement.getUserLogicInstance();
+        this.applyController = this.appManagement.getApplyLogicInstance();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+        this.applyController = undefined;
     }
 
     static defaultProps = {
@@ -62,28 +64,23 @@ class Validate extends ContainerComponent {
 
     sendApplyMessage= ()=>{
         let {Applicant,Respondent} = this.props;
-        // currentObj.showLoading()
         Keyboard.dismiss();
-        // im.addMessage(addMessage,function(){
-        //     currentObj.hideLoading()
-            currentObj.alert("申请消息已经发送,等待对方验证","提醒",
-                function(){
+
+        this.applyController.applyFriend(Applicant,Respondent,this.state.text,(result)=>{
+            if(result && result.Result === 1){
+                if(result.Data instanceof Object){
+                    currentObj.props.changeAddFriendButton(true);
                     currentObj.route.pop(currentObj.props);
-                });
-
-            //向数据库添加关系，并且标记这条关系显示为false;
-            let relation = new RelationModel();
-            relation.Nick = currentObj.props.relation.Nickname;
-            relation.RelationId = currentObj.props.relation.Account;
-            relation.OtherComment = currentObj.props.relation.Gender;
-            relation.avator = currentObj.props.relation.HeadImageUrl;
-            relation.Type = ChatWayEnum.Private;
-            relation.show = 'false';
-            // user.AddNewRelation(relation);
-            applyFriendController.tempApplyFriend(relation);
-            //currentObj.props.addRelation(relation);
-
-        // })
+                }else if(typeof result.Data === 'string'){
+                    currentObj.alert("申请消息已经发送,等待对方验证","提醒",
+                        function(){
+                            currentObj.route.pop(currentObj.props);
+                        });
+                }
+            }else{
+                currentObj.alert('发送好友申请失败');
+            }
+        });
     }
     render() {
         let Popup = this.PopContent;
@@ -172,9 +169,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    accountId:state.loginStore.accountMessage.accountId,
-    accountName:state.loginStore.accountMessage.Nick,
-    avator:state.loginStore.accountMessage.avator,
+    accountId:state.loginStore.accountMessage.Account,
+    accountName:state.loginStore.accountMessage.Nickname,
+    avator:state.loginStore.accountMessage.HeadImageUrl,
 });
 const mapDispatchToProps = dispatch => ({
 

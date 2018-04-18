@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -12,27 +12,38 @@ import {Text,
     Dimensions,
     Switch
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import settingController from '../../../Logic/Setting/settingController';
-
+let currentAccount = undefined;
 
 let {height,width} = Dimensions.get('window');
 let currentObj;
-let SettingController = new settingController();
 
-class SearchNewFriend extends ContainerComponent {
-    constructor(){
-        super()
+class SearchNewFriend extends AppComponent {
+    constructor(props){
+        super(props)
         this.render = this.render.bind(this);
         this.state = {
             text:'',
             searchResult:true
         }
         currentObj = this;
+        this.userController =  this.appManagement.getUserLogicInstance();
     }
 
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
+    }
+
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
+    }
 
     backToAddFriends = ()=>{
         this.route.pop(this.props);
@@ -42,76 +53,21 @@ class SearchNewFriend extends ContainerComponent {
 
 
     searchUser = (keyword)=>{
-        if(keyword == this.props.loginStore.accountId||keyword == this.props.loginStore.phone){
-            currentObj.alert("添加好友不允许添加自己","错误");
-            return;
-        }
-
-        let params = {"Keyword":keyword};
+        currentAccount = this.userController.getCurrentAccount();
         currentObj.showLoading();
-        callback = (result) =>{
+        if(currentAccount.Account == keyword || currentAccount.PhoneNumber == keyword){
             currentObj.hideLoading();
-            if(result.success && result.data.Data){
-                let relations = currentObj.props.relations;
-                let needRelation = null;
-                let hasRelation = false;
-                // for(let item in relations){
-                //     if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-                //         hasRelation = !hasRelation;
-                //         needRelation = relations[item];
-                //         break;
-                //     }
-                // }
-                let temp = SettingController.getUserRelationByIdFromCache(result.data.Data.Account);
-                if(temp){
-                    hasRelation = true;
-                    needRelation = temp;
-                }else {
-                    needRelation = result.data.Data;;
+            this.alert('你不能添加自己到通讯录')
+        }else{
+            this.userController.getUserInfo(keyword,true,(result)=>{
+                currentObj.hideLoading();
+                if(result){
+                    currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
+                }else{
+                    currentObj.alert("该用户不存在","错误");
                 }
-
-                currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-            }
-            else{
-                currentObj.alert("用户不存在","错误");
-            }
-        };
-        SettingController.searchUser(params,callback);
-
-        // currentObj.showLoading()
-        // this.fetchData("POST","Member/SearchUser",function(result){
-        //     currentObj.hideLoading()
-        //     if(!result.success){
-        //         alert(result.errorMessage);
-        //         return;
-        //     }
-        //
-        //
-        //     if(result.data.Data){
-        //
-        //
-        //         let relations = currentObj.props.relations;
-        //         let needRelation = null;
-        //         let hasRelation = false;
-        //         for(let item in relations){
-        //              if(relations[item].RelationId == result.data.Data.Account && relations[item].show === 'true'){
-        //                  hasRelation = !hasRelation;
-        //                  needRelation = relations[item];
-        //                  break;
-        //              }
-        //         }
-        //         if(hasRelation===false){
-        //             needRelation = result.data.Data;
-        //         }
-        //         currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{hasRelation,Relation:needRelation}});
-        //
-        //
-        //     }else{
-        //         that.setState({
-        //             searchResult:false
-        //         })
-        //     }
-        // },{"Keyword":keyword})
+            });
+        }
     }
 
     render() {
@@ -125,10 +81,10 @@ class SearchNewFriend extends ContainerComponent {
                         <View style={styles.searchBox}>
                             <Icon name="search" size={20} color="#aaa" />
                             <TextInput
+                                ref={e=>this._TextInput = e}
                                 style={styles.search}
                                 underlineColorAndroid = 'transparent'
-                                autoFocus = {true}
-                                placeholder = '微信号/手机号'
+                                placeholder = '奇信号/手机号'
                                 defaultValue = {this.state.text}
                                 onChangeText={(v)=>{this.setState({text:v})}}
                             >
@@ -159,7 +115,7 @@ class SearchNewFriend extends ContainerComponent {
                 </View>
             </View>
             )
-            
+
     }
 }
 
@@ -210,10 +166,11 @@ const styles = StyleSheet.create({
     },
     search:{
         flex:1,
+        height:30,
         backgroundColor:'#fff',
         color:'#000',
         padding:0,
-        fontSize:12
+        fontSize:16
     },
     itemBox:{
         height:60,

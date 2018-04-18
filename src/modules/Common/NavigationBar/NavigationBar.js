@@ -20,8 +20,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as NavigationBottomAction from './reducer/action';
+import AppComponent from '../../../Core/Component/AppComponent'
 
-class MyNavigationBar extends Component {
+class MyNavigationBar extends AppComponent {
     constructor(props){
         super(props)
     }
@@ -38,7 +39,7 @@ class MyNavigationBar extends Component {
         if(!left){
             return null;
         }
-        else if(typeof left == 'string'){
+        if(typeof left == 'string'){
             return(
                 <View style={styles.leftTextView}>
                     <Text style={styles.leftTextContent}>{left}</Text>
@@ -66,16 +67,14 @@ class MyNavigationBar extends Component {
         if(!heading){
             return null;
         }
-        // return {
-        //     title: heading,
-        //     tintColor:'#fff',
-        //     numberOfLines:1
-        // }
-
-        return (
-                <Text numberOfLines = {1} style={styles.title}>{heading}</Text>
-
-        )
+        return {
+            title: heading,
+            tintColor:'#fff',
+            numberOfLines:1
+        }
+        // return (
+        //     <Text numberOfLines = {1} style={styles.title}>{heading}</Text>
+        // )
     };
 
     _rightButton = ()=>{
@@ -91,7 +90,7 @@ class MyNavigationBar extends Component {
 
                         <TouchableOpacity key={index} style={styles.justifyCenter} onPress={item.func} disabled={item.disabled?true:false}>
                             <View style={styles.rightBox}>
-                                <Icon name={item.icon} size={25} color="#fff"/>
+                                {item.icon != '' ? <Icon name={item.icon} size={25} color="#fff"/> : null}
                             </View>
                         </TouchableOpacity>
                     )}
@@ -121,12 +120,6 @@ class MyNavigationBar extends Component {
                     {...this.props}
                 >
                 </NavigationBar>
-                {this.props.NavigationBottomStore ?
-                    <View style={{justifyContent:'center',alignItems:'center',height:30}}>
-                        <Text style={{}}>Loading...</Text>
-                    </View>
-                    : null
-                }
             </View>
         )
     }
@@ -179,12 +172,16 @@ const styles = StyleSheet.create({
         flex:1,
         paddingHorizontal:15
     },
+    titleView:{
+        justifyContent:'center'
+    },
     title:{
         fontSize:17,
         textAlignVertical:'center',
         color:'#fff',
         fontWeight:'600',
         maxWidth:200,
+        includeFontPadding:false
     }
 });
 

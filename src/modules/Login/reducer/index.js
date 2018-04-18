@@ -7,10 +7,16 @@ import * as TYPES from './actionTypes';
 const initialState = {
     isLoggedIn : false,
     accountMessage:{
-        accountId:'',
-        SessionToken:'',
-        Nick:'',
-        avator:""
+        Account:"",
+        Email:"",
+        FamilyName:"",
+        Gender:0,
+        GivenName:"",
+        HeadImageUrl:"",
+        IMToken:"",
+        Nickname:"",
+        PhoneNumber: "",
+        SessionToken:""
     }
 };
 

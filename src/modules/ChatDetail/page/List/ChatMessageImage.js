@@ -1,81 +1,58 @@
 /**
  * Created by Hsu. on 2017/9/8.
  */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
     StyleSheet,
-    Text,
     View,
     Image,
     Dimensions,
-    TouchableOpacity,
 } from 'react-native';
 
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import * as Actions from '../../reducer/action'
-import ContainerComponent from '../../../../Core/Component/ContainerComponent'
-import Thouch from '../../../Common/Thouch/index'
-import {
-    Navigator,
-} from 'react-native-deprecated-custom-components';
+
+import AppComponent from '../../../../Core/Component/AppComponent';
+import {Navigator,} from 'react-native-deprecated-custom-components';
 
 let {width, height} = Dimensions.get('window');
-
-class ChatMessageImage extends ContainerComponent {
+export default class ChatMessageImage extends PureComponent {
     constructor(props){
-        super(props)
+        super(props);
+    }
 
-        // this.Size = {
-        //     width : 0,
-        //     height: 0,
-        // }
-
-        this.state = {
-            Size: {
-                width: 0,
-                height: 0,
-            }
+    //重新构建路径
+    rebuildPath=(LocalSource)=>{
+        if(LocalSource.indexOf('file:') == -1){
+            LocalSource = 'file://'+LocalSource;
         }
-    }
-
-    static defaultProps = {
+        return LocalSource;
     };
 
-    static propTypes = {
+    defaultPicture=(data)=>{
+        let {LocalSource,RemoteSource} = data.message;
+        let {status} = data;
+        if(status == 4 || status == 2){
+            return(
+                <Image
+                    resizeMode={Image.resizeMode.cover}
+                    source={require('../../resource/avator.jpg')}
+                    style={[styles.imageStyle]}
+                />
+            )
+        }
+        return (
+            <Image
+                resizeMode={Image.resizeMode.cover}
+                source={{uri:LocalSource}}
+                style={[styles.imageStyle]}
+            />
+        )
     };
-
-    getImageSize = (uri)=>{
-        Image.getSize(uri, (w, h) => {
-            // this.Size = {width,height}
-
-            this.setState({
-                Size : {width:w,height:h}
-            })
-            //alert(this.Size.width+"22")
-        })
-    }
-
-    localSourceObj = (Source)=>{
-        return {uri:Source}
-    }
-
-    goToGallery = (path,url,data)=>{
-        this.route.push(this.props,{key: 'Gallery',routeId: 'Gallery',params:{"path":path,"url":url,"message":data},sceneConfig:Navigator.SceneConfigs.FloatFromBottomAndroid});
-    }
     render() {
         let {data, style} = this.props;
-        let {localSource,remoteSource} = data.message;
-
+        data.message.LocalSource = this.rebuildPath(data.message.LocalSource);
         return(
             <View style={[style,styles.bubble]}>
-                <Thouch onPress={()=>this.goToGallery(localSource,remoteSource,data)}>
-                    <Image
-                        resizeMode={Image.resizeMode.cover}
-                        source={this.localSourceObj(localSource)}
-                        style={[styles.imageStyle]}
-                    />
-                </Thouch>
+                {this.defaultPicture(data)}
             </View>
         )
     }
@@ -92,13 +69,3 @@ const styles = StyleSheet.create({
         width:100,
     }
 });
-
-const mapStateToProps = state => ({
-    imageModalStore: state.imageModalStore
-});
-
-const mapDispatchToProps = dispatch => ({
-    ...bindActionCreators(Actions,dispatch)
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ChatMessageImage);

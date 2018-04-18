@@ -7,8 +7,7 @@ import phoneLogin from './phoneLogin';
 
 
 export default class ContentPage extends Component {
-	componentWillUnmount() {
-	}
+
 	static navigationOptions ={
 		header:null,
 	}

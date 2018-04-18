@@ -8,8 +8,8 @@ import phoneLogin from './phoneLogin';
 import {
     Navigator
 } from 'react-native-deprecated-custom-components';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-export default class EmailLogin extends ContainerComponent {
+import AppComponent from '../../../Core/Component/AppComponent';
+export default class EmailLogin extends AppComponent {
 	constructor(props) {
 	  super(props);
 	
@@ -18,12 +18,15 @@ export default class EmailLogin extends ContainerComponent {
 		passWordText:'',
 	  };
 	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
 	render(){
 		return (
 			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{key:'Login',
-                	routeId: 'Login',
-                	sceneConfig: Navigator.SceneConfigs.FloatFromLeft});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 				<View style = {styles.content}>
 					<Text style= {styles.loginTitle}>QQ号/邮箱登录</Text>	
 					
@@ -59,19 +62,17 @@ export default class EmailLogin extends ContainerComponent {
 						></TextInput>
 					</View>
 					
-					{
-						this.state.phoneText && this.state.passWordText?
-						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{Keyboard.dismiss();checkReg(2,this.state.phoneText)}}>
-								<Text style = {styles.loginText}>登录</Text>
-							</TouchableOpacity>)
-						:(
-							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notLogin.png')}></Image>
-							)
-					}
+
+					<TouchableOpacity activeOpacity = {0.8} style={[styles.Login,{backgroundColor:this.state.phoneText && this.state.passWordText?'#1aad19':'#ccc'}]} onPress = {()=>{Keyboard.dismiss();checkReg(2,this.state.phoneText)}} disabled={!(this.state.phoneText && this.state.passWordText)}>
+						<Text style = {styles.loginText}>登录</Text>
+					</TouchableOpacity>
 					<View style= {styles.footer}>
-						<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'Login',routeId: 'PhoneLogin'})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
-						<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
+						<TouchableOpacity onPress = {()=>{this.route.pop(this.props)}} activeOpacity = {0.8}>
+							<Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text>
+						</TouchableOpacity>
+						<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}>
+							<Text style= {styles.footerText}>忘记密码</Text>
+						</TouchableOpacity>
 					</View>
 				</View>
 			</View>

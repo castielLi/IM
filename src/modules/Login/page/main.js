@@ -3,12 +3,17 @@ import {View,TextInput,Text,Image,TouchableOpacity,StyleSheet,Dimensions}from 'r
 import Login from './phoneLogin';
 import Register from './register';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import {
-    Navigator
-} from 'react-native-deprecated-custom-components';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 
-export default class Main extends ContainerComponent {
+export default class Main extends AppComponent {
+
+	constructor(props){
+		super(props)
+	}
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
 
 	render(){
 		return (

@@ -10,13 +10,16 @@ export function changeUnReadMessageNumber(number){
 
 }
 
-
-export function changeUnDealRequestNumber(number){
+export function showUnDealRequest(){
     return {
-        type: 'CHANGE_UNDEALREQUEST_NUMBER',
-        number
+        type: 'SHOW_UNDEALREQUEST',
     };
+}
 
+export function hideUnDealRequest(){
+    return {
+        type: 'HIDE_UNDEALREQUEST',
+    };
 }
 
 export function changeUnReadZoomMessageNumber(number){
@@ -27,17 +30,18 @@ export function changeUnReadZoomMessageNumber(number){
 
 }
 
-export function changeUnSettingNumber(number){
+export function contactsNeedRefresh(time){
     return {
-        type: 'CHANGE_UNSETTING_NUMBER',
-        number
+        type: 'CHANGE_CONTACT_NEEDREFRESHTIME',
+        time
     };
 
 }
 
-export function clearUnDealRequestNumber(){
+export function changeUnSettingNumber(number){
     return {
-        type: 'CLEAR_UNDEALREQUEST_NUMBER',
+        type: 'CHANGE_UNSETTING_NUMBER',
+        number
     };
 
 }

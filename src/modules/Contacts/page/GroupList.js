@@ -5,125 +5,122 @@ import React, {
     Component
 } from 'react';
 import {
-    AppRegistry,
     View,
     Text,
-    SectionList,
     StyleSheet,
-    Image,
     TouchableHighlight,
-    TouchableWithoutFeedback,
     TextInput,
     Dimensions,
     FlatList,
-    TouchableOpacity
+    InteractionManager
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-
-import User from '../../../Core/Management/UserGroup';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initFlatListData} from './formateData';
-import ContactController from '../../../Logic/Contact/contactController'
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+let {height, width} = Dimensions.get('window');
 
-let contactController = new ContactController();
-var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 
-class GroupList extends ContainerComponent {
+class GroupList extends AppComponent {
 
     constructor(props) {
         super(props);
         this.state={
-            data:[
-                {key:'',
-                    data:[]}
-            ],
-            sections:[],
-            totalItemLength:0,
-            contacts:[]
-        }
+            contacts:[],
+            text:''
+        };
+
+        this.contactsCache=[];
         this.relationStore = [];
         currentObj = this;
+        this.userController = this.appManagement.getUserLogicInstance();
     }
 
-    goToChat = (item)=>{
-        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.RelationId,type:item.Type,HeadImageUrl:item.avator,Nick:item.Nick}});
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
     }
 
-    _renderAvator= (Obj)=>{
-        if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
-                return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
+    // componentWillMount(){
+    //     //通过回调改变页面显示
+    //     this.userController.getGroupContactList(false,(contacts)=>{
+    //         this.contactsCache = contacts;
+    //         currentObj.setState({
+    //             contacts
+    //         })
+    //     });
+    // }
 
-            }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
+    componentDidMount(){
+        InteractionManager.runAfterInteractions(()=> {
+            //通过回调改变页面显示
+            this.userController.getGroupContactList(false,(contacts)=>{
+                this.contactsCache = contacts;
+                currentObj.setState({
+                    contacts
+                })
+            });
+        });
+    }
 
-        }else{
-            return null
+    _goToChat = (item)=>{
+        this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:item.Id,type:'group',HeadImageUrl:item.HeadImageUrl,Nick:item.Name}});
+    };
+
+    _searchKey = (value)=>{
+        if(value === ''){
+            this.setState({
+                contacts:this.contactsCache
+            });
+            return;
         }
-    }
+        let array = [];
+        for(let item of this.relationStore){
+            if(item.Name.indexOf(value) !== -1){
+                array.push(item)
+            }
+        }
+        this.setState({
+            contacts:array
+        });
+    };
+
     _renderItem = (info) => {
-        var txt = '  ' + info.item.Nick;
-        return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToChat.bind(this,info.item)}>
-            <View  style={styles.itemBox} >
-                {this._renderAvator(info.item)}
-                <Text style={styles.itemText}>{txt}</Text>
-            </View>
-        </TouchableHighlight>
-    }
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToChat.bind(this,info.item)}>
+                <View  style={styles.itemBox} >
+                    <ImagePlaceHolder style = {styles.pic} imageUrl = {require('../resource/groupAvator.png')}/>
+                    <Text style={styles.itemText}>{info.item.Name}</Text>
+                </View>
+            </TouchableHighlight>
+        )
+    };
 
     _renderHeader = () => {
-        return  <View>
-            <View style={styles.listHeaderBox}>
-                <TextInput
-                    style={styles.search}
-                    underlineColorAndroid = 'transparent'
-                >
-                </TextInput>
+        return (
+            <View>
+                <View style={styles.listHeaderBox}>
+                    <TextInput
+                        style={styles.search}
+                        underlineColorAndroid = 'transparent'
+                        placeholder={'搜索'}
+                        onChangeText={this._searchKey}
+                    />
+                </View>
             </View>
-        </View>
-    }
+        )
+    };
     _renderSeparator = () =>{
         return <View style={styles.ItemSeparator}/>
-    }
+    };
     _renderFooter = () =>{
         return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'个群聊'}</Text></View>
-    }
+    };
 
-
-    componentWillMount(){
-        //通过回调改变页面显示
-        contactController.getGroupContactList(function (contacts) {
-            currentObj.setState({
-                contacts
-            })
-        });
-
-        // let arr = [];
-        // for(let i=0;i<10;i++){
-        //     arr.push({
-        //         OtherComment : "公告:"+i,
-        //         RelationId : 'Z-'+i,
-        //         Nick : "测试"+i,
-        //         Remark : "",
-        //         BlackList : false,
-        //         avator : "",
-        //         Email : "",
-        //         localImage : "",
-        //         Type : "group",
-        //         owner : "wg003724",
-        //         show : true
-        //     })
-        // }
-        // this.setState({
-        //     contacts:arr
-        // })
-    }
     render() {
-        this.relationStore = initFlatListData('group',this.state.contacts);
+        this.relationStore = initFlatListData(this.state.contacts);
         return (
             <View style={styles.container}>
                 <MyNavigationBar
@@ -141,7 +138,6 @@ class GroupList extends ContainerComponent {
             </View>
         );
     }
-
 }
 
 const styles = StyleSheet.create({
@@ -160,7 +156,7 @@ const styles = StyleSheet.create({
     },
     itemBox:{
         flex:1,
-        height: 60,
+        height: 54,
         flexDirection:'row',
         alignItems:'center',
         paddingLeft:10
@@ -168,18 +164,18 @@ const styles = StyleSheet.create({
     pic:{
         width:40,
         height:40,
-        resizeMode:'stretch'
+        borderRadius:20
     },
     itemText:{
         textAlignVertical: 'center',
-        color: '#5C5C5C',
-        fontSize: 15
+        color: '#000',
+        fontSize: 15,
+        marginLeft:10
     },
     ItemSeparator:{
-        // height:1,
+        marginHorizontal:10,
         borderBottomColor : '#eee',
-        borderBottomWidth:1
-        // backgroundColor: '#eee',
+        borderBottomWidth:1,
     },
     listHeaderBox:{
         backgroundColor: '#ddd',
@@ -192,7 +188,8 @@ const styles = StyleSheet.create({
         width:width-20,
         backgroundColor:'#fff',
         borderRadius:5,
-        color:'#000'
+        color:'#000',
+        paddingVertical:0
     },
     moreUse:{
         color:'#fff',

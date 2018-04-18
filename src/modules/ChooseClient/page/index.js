@@ -1,513 +1,333 @@
+/**
+ * Created by Hsu. on 2018/3/12.
+ */
 import React, {
-	Component
+    Component
 } from 'react';
 import {
-	AppRegistry,
-	View,
-	Text,
-	SectionList,
-	StyleSheet,
-	Image,
-	TouchableHighlight,
-	TouchableWithoutFeedback,
-	TextInput,
-	Dimensions,
+    AppRegistry,
+    View,
+    Text,
+    SectionList,
+    StyleSheet,
+    Image,
+    TouchableHighlight,
+    TextInput,
+    Dimensions,
     FlatList,
     TouchableOpacity
 } from 'react-native';
-import uuidv1 from 'uuid/v1';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import AppComponent from '../../../Core/Component/AppComponent';
+import AppManagement from '../../../App/AppManagement'
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-
-import RNFS from 'react-native-fs';
-
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar';
 import {initDataFormate,initFlatListData} from './formateData';
-import SettingController from '../../../Logic/Setting/settingController';
-import contactController from '../../../Logic/Contact/contactController'
-import RelationDto from '../../../Logic/Common/dto/RelationDto'
-let settingController = new SettingController();
-let ContactController = new contactController();
-var {height, width} = Dimensions.get('window');
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+import MySectionList from '../../Common/Component/MySectionList/';
+import CheckBox from '../../Common/Component/CheckBox';
+import {SectionDataFormate} from '../../Common/Helper/DataFromate/SectionListData';
 
+var {height, width} = Dimensions.get('window');
 let currentObj = undefined;
 let title = null;
 
-class ChooseClient extends ContainerComponent {
+class ChooseClient extends AppComponent {
 
-	constructor(props) {
-		super(props);
-		this.state={
-			data:[
-				{key:'',
-				data:[]}
-			],
-			sections:[],
-			totalItemLength:0,
-			//右边title导航
-			rightSectionItemModalIndex:'',
+    constructor(props) {
+        super(props);
+        this.state={
+            contacts:[],
+            refresh:false
+        };
+        this.selectData = [];//选中的用户
+        this.defaulData = props.Accounts;//默认选中用户
+        this.CheckBoxData = {};
+        currentObj = this;
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount()
+    }
 
-			chooseArr:[],//选择的好友的id
-            chooseObj:[],//选择的好友的id
-			text:'',//输入框文字,
-            isShowFlatList:false,
-            relationStore:[],
-            sectionStore:[],
-
-            contacts:[]
-
-        }
-        this.splNeedArr = [];
-		this._rightButton = this._rightButton.bind(this);
-		currentObj = this;
-	}
-
-	onPressRightSectionItemIn = (index) =>{
-		this.refs.mySectionList.scrollToLocation({
-		animated : true,
-		sectionIndex: index,
-		itemIndex : 0,
-		viewPosition: 0,
-		viewOffset : 35
-		})
-		this.setState({
-			rightSectionItemModalIndex:index
-		})
-	}
-	onPressRightSectionItemOut = () =>{
-		this.setState({
-			rightSectionItemModalIndex:''
-		})
-	}
-	_getSections = ()=>{
-		if(this.state.relationStore.length === 0){
-			return null
-		}else{
-            let sections = this.state.sectionStore;
-            let array = new Array();
-            for (let i = 0; i < sections.length; i++) {
-                array.push(
-					<View key={i}>
-						<TouchableWithoutFeedback
-							onPressIn={this.onPressRightSectionItemIn.bind(this,i)}
-							onPressOut={this.onPressRightSectionItemOut}
-							//pointerEvents="none"
-							ref={'sectionItem' + i}>
-							<View style={styles.rightSectionView}>
-								<Text style={styles.rightSectionItem}>{sections[i]}</Text>
-							</View>
-						</TouchableWithoutFeedback>
-                        {i===this.state.rightSectionItemModalIndex?<Text style={styles.rightSectionItemModal}>{sections[i]}</Text>:null}
-					</View>)
-            }
-            return array;
-		}
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
     }
 
     componentWillMount(){
-		if(this.props.members){
-			this.hasGroup = true;
-			title = '选中联系人'
-		}
-		else{
-			title = '发起群聊'
-		}
-	}
-	componentDidMount(){
-        ContactController.getLatestContactList(function (contact) {
-            let contacts = contact;
-            let data = initDataFormate('private',contact);
-            let relationStore = data.needArr;
-            let sectionStore = data.sectionArr;
-            currentObj.setState({
-                contacts,
-                sectionStore,
-                relationStore
-            })
-        })
-	}
-    choose=(item,hasMember)=>{
-    	if(hasMember) return;
-		//改变选中颜色{RelationId:true,RelationId:false...}
-		this.state.chooseObj[item.RelationId] = !this.state.chooseObj[item.RelationId];
-		let obj = {...this.state.chooseObj};
-		this.setState({
-            chooseObj:obj
-		})
-		//对象转为所需数组
-		let arr = Object.keys(obj);
-		let needArr = [];
-		let concatList = initFlatListData('private',this.state.contacts,'');
-		for(let i=0;i<arr.length;i++){
-			//已选中 选项
-			if(obj[arr[i]]){
-				for(let j=0;j<concatList.length;j++){
-					if(concatList[j].RelationId === arr[i]){
-                        needArr.push(concatList[j]);
-                        break;
-					}
-				}
-			}
-		}
-        this.setState({
-            chooseArr:needArr,
-			isShowFlatList:false,
-			text:'',
-            relationStore:this.state.relationStore.concat()
-        })
-	}
-
-    circleStyle = (info,hasMember)=>{
-    	if(!this.hasGroup){
-    		return (
-				<View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}/>
-			)
-		}else{
-    		if(hasMember){
-    			return <View style={[styles.circle,{backgroundColor:'red'}]}/>
-			}else{
-    			return <View style={[styles.circle,{backgroundColor:this.state.chooseObj[info.item.RelationId]?'green':'transparent'}]}/>
-			}
-		}
-	}
-
-    _renderAvator= (Obj)=>{
-        if(Obj){
-            if((!Obj.LocalImage||Obj.LocalImage === '')&&!Obj.avator){
-                return 	<Image style = {styles.pic} source = {require('../resource/avator.jpg')}></Image>
-
-            }
-            return 	<Image style = {styles.pic} source = {{uri:(Obj.LocalImage&&Obj.LocalImage!=='')?Obj.LocalImage:Obj.avator}}></Image>
-
-        }else{
-            return null
+        if(this.props.build){
+            title = '发起群聊'
         }
-    }
-	_renderItem = (info) => {
-		var txt = '  ' + info.item.Nick;
-		let hasMember;
-        if(this.hasGroup){
-            hasMember = this.props.members.indexOf(info.item.RelationId);
-            hasMember !== -1 ? hasMember = true : hasMember = false;
-		}
-		return <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this.choose(info.item,hasMember)}}>
-					<View  style={[styles.itemBox,this.state.isShowFlatList?{borderBottomWidth:1,borderColor:'#bbb'}:{}]} >
-						{this.circleStyle(info,hasMember)}
-                        {this._renderAvator(info.item)}
-						{/*<Image source={{uri:info.item.avator}} style={styles.pic} ></Image>*/}
-						<Text style={styles.itemText}>{txt}</Text>
-					</View>
-			   </TouchableHighlight>
-	}
-
-	_sectionComp = (info) => {
-		var txt = info.section.key;
-		return <Text style={styles.sectionHeader}>{txt}</Text>
-	}
-    goToNewFriend = () =>{
-        this.route.push(this.props,{key:'NewFriend',routeId:'NewFriend',params:{}});
-
-    }
-	_renderHeader = () => {
-    	if(this.hasGroup) return null;
-		return  <View>
-					<View style={styles.listOtherUseBox}>
-
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Text style={[styles.itemText,{paddingLeft:10}]}>选择一个群</Text>
-							</View>
-							</View>
-					   </TouchableHighlight>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('message')}}>
-						   <View style={styles.ItemSeparator}>
-								<View  style={styles.itemBox} >
-								<Text style={[styles.itemText,{paddingLeft:10}]}>面对面建群</Text>
-								</View>
-							</View>
-					   </TouchableHighlight>
-					</View>
-				</View>
-			      			}
-	_renderSeparator = () =>{
-		return <View style={styles.ItemSeparator}><Text></Text></View>
-	}
-
-    goToAddFriends = ()=>{
-        this.route.push(this.props,{key:'AddFriends',routeId:'AddFriends',params:{}});
-
-    }
-		//定义上导航的右按钮
-	_rightButton() {
-
-        let chooseArr = this.state.chooseArr;
-		let accounts = "";
-		let Nicks = "";
-		//let members = [];
-		let splNeedArr = [];
-		//拼接选中用户id
-		for(let item in chooseArr){
-			accounts+= chooseArr[item].RelationId+",";
-            splNeedArr.push({Account:chooseArr[item].RelationId});
-			if(item < chooseArr.length - 1){
-				Nicks += chooseArr[item].Nick+",";
-			}else{
-				Nicks += chooseArr[item].Nick;
-			}
-
-			//members.push({"Account":chooseArr[item].RelationId})
-		}
-		this.splNeedArr = splNeedArr;
-		accounts += currentObj.props.accountId;
-
-		//已有群 添加新成员
-
-		if(this.hasGroup) {
-            currentObj.showLoading()
-			let params = {"Operater": this.props.accountId, "GroupId": this.props.groupId, "Accounts": accounts};
-            settingController.addGroupMember(this.props.accountId,Nicks,this.splNeedArr,this.props.groupId,this.state.chooseArr,params,(result)=>{
-                    currentObj.hideLoading();
-                    if (result.success) {
-                        if (result.data.Data == null) {
-                            alert("返回群数据出错")
-                            return;
-                        }
-
-                        let routes = currentObj.props.navigator.getCurrentRoutes();
-                        let index;
-                        for (let i = 0; i < routes.length; i++) {
-                            if (routes[i]["key"] == "GroupInformationSetting") {
-                                index = i;
-                                break;
-                            }
-                        }
-                        alert('添加成功');
-                        //跳转到群设置
-                        currentObj.route.replaceAtIndex(currentObj.props,{
-                            key:'GroupInformationSetting',
-                            routeId: 'GroupInformationSetting',
-                            params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
-
-                        },index)
-                    }else{
-                        alert(result.errorMessage);
-                        return;
-                    }
-            })
-
-        }
-        //未有群 创建群
         else{
-
-        	if(chooseArr.length == 1){
-                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:chooseArr[0].RelationId,type:'private',Nick:chooseArr[0].Nick}});
-                return;
-			}
-
-            currentObj.showLoading()
-            let params = {"Operater":this.props.accountId,"Name":this.props.accountName + "发起的群聊","Accounts":accounts};
-        	settingController.createGroup(this.props.accountId,this.props.accountName,this.splNeedArr,Nicks,params,(result)=>{
-                currentObj.hideLoading();
-                if (result.success) {
-                    if (result.data.Data == null) {
-                        console.log("返回群数据出错")
-                        return;
-                    }
-
-                    currentObj.route.push(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.data.Data,
-						type:"group",HeadImageUrl:result.data.relation.localImage,Nick:result.data.relation.Nick}});
-
-                }else{
-                    alert(result.errorMessage);
-                    return;
-                }
+            title = '选中联系人'
+        }
+    }
+    componentDidMount(){
+        this.userController.getUserContactList(false,(contacts)=>{
+            this.setState({
+                contacts
             })
-		}
-	}
+        });
+    }
 
-	render() {
+    _sectionComp = (info) => {
+        let txt = info.section.key;
+        return (
+            <View style={styles.sectionHeaderBox}>
+                <Text style={styles.sectionHeader}>{txt}</Text>
+            </View>
+        )
+    };
+    _renderItem = (info) => {
+        let content = info.item;
+        let index = info.index;
+        let key = info.section.key;
+        let name = content.Remark != "" ? content.Remark:content.Nickname;
+        let path = this.userController.getAccountHeadImagePath(content.Account);
+        let checked = this.selectData.indexOf(content.Account) != -1 ? 1 : 2;
+        if(this.defaulData){
+            checked = this.defaulData.indexOf(content.Account) != -1 ? 0 : checked;
+        }
+        return (
+            <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{this._itemTouch(content.Account,index,key)}}>
+                <View style={styles.itemView}>
+                    <View style={styles.itemContent}>
+                        <ImagePlaceHolder style={styles.pic} imageUrl ={path}/>
+                        <Text style={styles.itemText}>{name}</Text>
+                    </View>
+                    <CheckBox ref={e=>this._initCheckBoxData(e,key)} checked={checked}/>
+                </View>
+            </TouchableHighlight>
+        )
+    };
+    _renderSeparator = () =>{
+        return <View style={styles.ItemSeparator}/>
+    };
+    _renderHeader=()=>{
+        if(!this.props.build) return null;
+        return (
+            <View style={styles.headerModule}>
+                <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToSelectGroup}>
+                    <View  style={styles.headerBox} >
+                        <Text style={styles.headerText}>选择一个群</Text>
+                    </View>
+                </TouchableHighlight>
+            </View>
+        )
+    };
+
+    _goToSelectGroup=()=>{
+        this.route.push(this.props,{key:'SelectGroup',routeId:'SelectGroup',params:{}});
+    };
+
+    /*记录checkBox*/
+    _initCheckBoxData=(checkBox,key)=>{
+        if(checkBox!=null){
+            if(!this.CheckBoxData[key]){
+                this.CheckBoxData[key] = [];
+            }
+            this.CheckBoxData[key].push(checkBox);
+        }
+    };
+
+    _itemTouch=(Account,index,key)=>{
+         // alert(Account+'/'+index+'/'+key+'/'+this.CheckBoxData[key][index])
+        if(this.defaulData && this.defaulData.indexOf(Account) !== -1) return;//为默认跳过
+        this.CheckBoxData[key][index].onChange();//改变选中框样式
+        let Sub = this.selectData.indexOf(Account);
+        if(Sub !== -1){
+            this.selectData.splice(Sub,1);
+        }else{
+            this.selectData.push(Account);
+        }
+
+        if(this.state.refresh != (this.selectData.length != 0)){
+            this.setState({
+                refresh:!this.state.refresh
+            })
+        }
+
+    };
+
+    _rightButton=()=>{
+        let accountStr = this.selectData.join(',');//'wg003724,wg003723'
+        let AccountsNum = this.selectData.length;
+
+        if(this.props.build){
+            if(this.defaulData){
+                accountStr += ','+ this.defaulData.join(',');
+                AccountsNum += this.defaulData.length;
+            }
+            if(AccountsNum === 1){
+                let client = this.selectData[0].Account;
+                let Nick = this.selectData[0].Remark != '' ?　this.selectData[0].Remark : this.selectData[0].Nickname;
+                this.route.push(this.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client,type:'private',Nick}});
+                return;
+            }
+            currentObj.showLoading();
+            let groupName = this.currentAccount.Nickname + "发起的群聊";
+            this.userController.createGroup(groupName,accountStr,(result)=>{
+                currentObj.hideLoading();
+                if(result.Result == 1){
+                    currentObj.route.pushifExistRoute(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
+                }else{
+                    this.alert('创建失败');
+                }
+            });
+        }else{
+            currentObj.showLoading();
+            this.userController.addGroupMember(this.props.groupId,accountStr,(result)=>{
+                currentObj.hideLoading();
+                if(result.Result == 1){
+                    let routes = currentObj.props.navigator.getCurrentRoutes();
+                    let index;
+                    for (let i = 0; i < routes.length; i++) {
+                        if (routes[i]["key"] == "GroupInformationSetting") {
+                            index = i;
+                            break;
+                        }
+                    }
+                    currentObj.route.replaceAtIndex(currentObj.props,{
+                        key:'GroupInformationSetting',
+                        routeId: 'GroupInformationSetting',
+                        params:{"groupId":currentObj.props.groupId,onUpdateHeadName:currentObj.props.UpdateHeadName},
+
+                    },index)
+                }else{
+                    this.alert('添加成员失败');
+                }
+            });
+        }
+    };
+
+    render() {
         let Popup = this.PopContent;
         let Loading = this.Loading;
-		let chooseArr = this.state.chooseArr;
-        this.relationFlatListStore = initFlatListData('private',this.state.contacts,this.state.text);
-
-
-		return (
-			<View style={styles.container}>
-				<MyNavigationBar
-					left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
-					heading={title}
-					right={{func:()=>{this._rightButton()},text:'完成',disabled:chooseArr.length>0?false:true}}
-				/>
-				<View style={styles.listHeaderBox}>
-					<TextInput
-						style={styles.search}
-						underlineColorAndroid = 'transparent'
-						placeholder = '搜索'
-						autoFocus = {false}
-						defaultValue = {this.state.text}
-						onChangeText={(v)=>{
-                            this.setState({text:v,isShowFlatList:v?true:false})
-                        }
-						}
-					>
-					</TextInput>
-				</View>
-				{this.state.isShowFlatList?
-					<FlatList
-						ref={(flatList)=>this._flatList = flatList}
-						renderItem={this._renderItem}
-						data={this.relationFlatListStore}>
-					</FlatList>:
-					<SectionList
-						ref={'mySectionList'}
-						keyExtractor={(item,index)=>("index"+index+item)}
-						renderSectionHeader={this._sectionComp}
-						renderItem={this._renderItem}
-						sections={this.state.relationStore}
-						ItemSeparatorComponent={this._renderSeparator}
-						ListHeaderComponent={this._renderHeader}
-						stickySectionHeadersEnabled={true}
-					/>
-				}
-                {this.state.isShowFlatList?
-					null:
-					<View style={styles.rightSection}>
-                        {this._getSections()}
-					</View>
-                }
-
-
-				<Popup ref={ popup => this.popup = popup}/>
-				<Loading ref = { loading => this.loading = loading}/>
-		    </View>
-	);
-}
+        this.contactsData = SectionDataFormate(this.state.contacts);
+        this.CheckBoxData = [];
+        return (
+            <View style={styles.container}>
+                <MyNavigationBar
+                    left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
+                    heading={title}
+                    right={{func:()=>{this._rightButton()},text:'完成',disabled:!this.state.refresh}}
+                />
+                <View style={styles.listHeaderBox}>
+                    <TextInput
+                        style={styles.search}
+                        underlineColorAndroid = 'transparent'
+                        placeholder = '搜索'
+                        defaultValue = {this.state.text}
+                        onChangeText={(v)=>{this.setState({text:v,isShowFlatList:v?true:false})}}
+                    />
+                </View>
+                <MySectionList
+                    ref={'mySectionList'}
+                    keyExtractor={(item,index)=>("index"+index+item)}
+                    renderSectionHeader={this._sectionComp}
+                    renderItem={this._renderItem}
+                    sections={this.contactsData.SectionArray}
+                    keyArray={this.contactsData.KeyArray}
+                    ItemSeparatorComponent={this._renderSeparator}
+                    ListHeaderComponent={this._renderHeader}
+                    stickySectionHeadersEnabled={true}
+                    viewOffset={22}
+                />
+                <Popup ref={ popup => this.popup = popup}/>
+                <Loading ref = { loading => this.loading = loading}/>
+            </View>
+        );
+    }
 
 }
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor:"white"
-	},
-	sectionHeader:{
-		height: 30,
-		textAlign: 'left', 
-		textAlignVertical: 'center', 
-		backgroundColor: '#eee', 
-		color: '#aaa', 
-		fontSize: 16,
-		paddingLeft:10
-	},
-	itemBox:{
-		flex:1,
-		height: 60, 
-		flexDirection:'row',
-		alignItems:'center',
-		paddingLeft:10
-	},
-    circle:{
-		width:20,
-		height:20,
-		borderWidth:1,
-		borderColor:'#aaa',
-		backgroundColor:'green',
-		borderRadius:15
-	},
-	pic:{
-		width:40,
-		height:40,
-		resizeMode:'stretch',
-		marginLeft:10
-	},
-	itemText:{		
-		textAlignVertical: 'center',
-		color: '#5C5C5C', 
-		fontSize: 15
-	},
-	ItemSeparator:{
-		// height:1,
-		borderBottomColor : '#eee',
-		borderBottomWidth:1
-		// backgroundColor: '#eee',
-	},
-	listHeaderBox:{
-		backgroundColor: '#ddd', 
-		alignItems: 'center',
-		height:50,
-		padding:10
-	},
-	search:{
-		flex:1,
-		width:width-20,
-		backgroundColor:'#fff',
-		borderRadius:5,
-		color:'#000',
+    container: {
+        flex: 1,
+        backgroundColor:"#fff"
+    },
+    listHeaderBox:{
+        backgroundColor: '#ddd',
+        alignItems: 'center',
+        height:50,
+        padding:10
+    },
+    search:{
+        flex:1,
+        width:width-20,
+        backgroundColor:'#fff',
+        borderRadius:5,
+        color:'#000',
         padding:0,
         paddingHorizontal:10
-	},
-    moreUse:{
-		color:'#fff',
-		fontSize:30,
-		textAlignVertical:'center',
-		marginRight:20
-	},
-	listFooterBox:{
-		borderTopWidth:1,
-		borderColor:'#eee',
-		backgroundColor: "#ffffff",
-		alignItems: 'center',
-		height: 50
-	},
-	listFooter:{
-		height: 50,
-		textAlignVertical: 'center',
-		fontSize: 15,
-		color: '#aaa'
-	},
-	rightSection:{
-		position:'absolute',
-		right:0,
-		top:120,
+    },
+    sectionHeaderBox:{
+        height: 22,
+        backgroundColor: '#ebebeb',
+        paddingLeft:10,
+        justifyContent:'center'
+    },
+    sectionHeader:{
+        color: '#989898',
+        fontSize: 14,
+    },
+    ItemSeparator:{
+        marginHorizontal:15,
+        height:0,
+        borderBottomWidth:1,
+        borderBottomColor:'#eee'
+    },
+    headerModule:{
+        backgroundColor:'#fff',
+    },
+    headerBox:{
+        justifyContent:'center',
+        paddingHorizontal:15,
+        minHeight:56,
+    },
+    headerBoxBorder:{
+        borderBottomColor:'#eee',
+        borderBottomWidth:1,
+    },
+    headerText:{
+        color:'#000',
+        fontSize:16,
+        textAlignVertical:'center',
+        includeFontPadding:false
+    },
+    itemView:{
+        backgroundColor:'#fff',
+        flexDirection:'row',
+        paddingVertical:8,
+        alignItems:'center',
+        justifyContent:'space-between',
+        paddingLeft:15,
+        paddingRight:45
+    },
+    itemContent:{
+        flexDirection:'row',
+        alignItems:'center',
+    },
+    pic:{
+        width:40,
+        height:40,
+        borderRadius:20,
+    },
+    itemText:{
+        textAlignVertical: 'center',
+        color: '#000',
+        fontSize: 15,
+        marginLeft:10
+    },
 
-	},
-	rightSectionView:{
-
-	},
-	rightSectionItem:{
-		fontSize:12,
-		color:'#000',
-		paddingVertical:5,
-		paddingHorizontal:10
-	},
-	rightSectionItemModal:{
-		position:'absolute',
-		top:-15,
-		right:50,
-		width:50,
-		height:50,
-		backgroundColor:'#ddd',
-		borderRadius:10,
-		color:'#fff',
-		fontSize:20,
-		textAlign: 'center', 
-		textAlignVertical: 'center', 
-	}
-})
+});
 
 const mapStateToProps = state => ({
-	accountName:state.loginStore.accountMessage.Nick,
-    accountId:state.loginStore.accountMessage.accountId,
+
 });
 
 const mapDispatchToProps = (dispatch) => {
-  return{
+    return{
 
 
-  }};
+    }};
 
- export default connect(mapStateToProps, mapDispatchToProps)(ChooseClient);
+export default connect(mapStateToProps, mapDispatchToProps)(ChooseClient);

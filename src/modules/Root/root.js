@@ -14,36 +14,35 @@ import {
 } from 'react-native'
 import {
     Navigator,
-    NavigationBar
 } from 'react-native-deprecated-custom-components';
 import {
     connect
 } from 'react-redux';
-import * as router from '../routerMap'
-import DisplayComponent from '../../Core/Component'
+import AppComponent from '../../Core/Component/AppComponent'
+
 
 let initRootNavigation = false;
 
-class Root extends DisplayComponent {
+class Root extends AppComponent {
     constructor(props) {
         super(props);
         this.render = this.render.bind(this);
     }
 
+    componentWillUnmount(){
+        initRootNavigation = false;
+        super.componentWillUnmount();
+    }
+
     renderScene(Route, navigator) {
-        // this.route = route;
         this.navigator = navigator;
         console.log('renderScene启动')
-        //如果已登录，再点击登录页面或者再返回登录页面，将跳转到TestRefresh
-        // if(Route.key === 'Login' && this.props.isLoggedIn === true){
-        // 	Route.routeId = 'TestRefresh';
-        // 	Route.key = 'TestRefresh';
-        // }
 
         //初始化跟导航器
         if(!initRootNavigation){
             this.route.setRootNavigator(navigator);
             initRootNavigation = !initRootNavigation;
+            this.appManagement.setRoot(this);
         }
 
         return this.route.getRoutePage(Route, navigator);
@@ -54,11 +53,12 @@ class Root extends DisplayComponent {
         if (route.sceneConfig) {
              return route.sceneConfig;
          }
-        //return Navigator.SceneConfigs.FloatFromRight;
+
         return ({
             ...Navigator.SceneConfigs.FloatFromRight,
             //禁止手势
-            gestures: null
+            gestures: null,
+            defaultTransitionVelocity:10
         });
     }
     
@@ -80,12 +80,6 @@ class Root extends DisplayComponent {
     }
 }
 
-const styles = StyleSheet.create({
-    navContainer: {
-        height: 40,
-        backgroundColor: '#fff'
-    }
-})
 
 function MapState(store) {
     return {

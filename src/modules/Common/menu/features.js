@@ -52,13 +52,18 @@ class Features extends ContainerComponent {
 		this.props.hideFeatures();
 	}
     goToChooseClient = ()=>{
-        this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{}});
+        this.route.push(this.props,{key: 'ChooseClient',routeId: 'ChooseClient',params:{build:true}});
 
     }
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
 
     }
+
+    scanCode = ()=>{
+        this.route.push(this.props,{key: 'ScanCode',routeId: 'ScanCode',params:{}});
+    }
+
 	render(){
 		if(this.props.FeaturesStore){
             return (
@@ -70,30 +75,30 @@ class Features extends ContainerComponent {
 								<Text style = {styles.Text}>发起群聊</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-							<View style = {styles.featureBox}>
-								<Image style={styles.logo} source = {require('./resource/pay.png')}/>
-								<Text style = {styles.Text}>收付款</Text>
-							</View>
-						</TouchableOpacity>
+						{/*<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>*/}
+							{/*<View style = {styles.featureBox}>*/}
+								{/*<Image style={styles.logo} source = {require('./resource/pay.png')}/>*/}
+								{/*<Text style = {styles.Text}>收付款</Text>*/}
+							{/*</View>*/}
+						{/*</TouchableOpacity>*/}
 						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState();this.goToAddFriends();}}>
 							<View style = {styles.featureBox}>
 								<Image style={styles.logo} source = {require('./resource/addFriends.png')}/>
 								<Text style = {styles.Text}>添加朋友</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
+						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState(); this.scanCode()}}>
 							<View style = {styles.featureBox}>
 								<Image style={styles.logo} source = {require('./resource/sweep.png')}/>
 								<Text style = {styles.Text}>扫一扫</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>
-							<View style = {[styles.featureBox,{borderBottomWidth:0}]}>
-								<Image style={styles.logo} source = {require('./resource/help.png')}/>
-								<Text style = {styles.Text}>帮助与反馈</Text>
-							</View>
-						</TouchableOpacity>
+						{/*<TouchableOpacity style = {styles.featureButton} onPress = {()=>{this.changeFeatureState()}}>*/}
+							{/*<View style = {[styles.featureBox,{borderBottomWidth:0}]}>*/}
+								{/*<Image style={styles.logo} source = {require('./resource/help.png')}/>*/}
+								{/*<Text style = {styles.Text}>帮助与反馈</Text>*/}
+							{/*</View>*/}
+						{/*</TouchableOpacity>*/}
 					</View>
 				</TouchableHighlight>
             )
@@ -109,10 +114,10 @@ const styles = StyleSheet.create({
 		position:'absolute',
 		right:0,
 		top:checkDeviceHeight(70),
-		height:checkDeviceHeight(450),
+		// height:checkDeviceHeight(450),
 		marginRight:checkDeviceWidth(20),
 		backgroundColor:'#35343a',
-		width:checkDeviceWidth(400)
+		width:checkDeviceWidth(300)
 	},
 	featureButton:{
 		flex:1,
@@ -124,6 +129,7 @@ const styles = StyleSheet.create({
 		borderBottomWidth:1,
 		borderColor:'#000000',
 		alignItems:'center',
+		paddingVertical:8
 	},
 
 	logo:{

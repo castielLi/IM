@@ -4,7 +4,7 @@ import {Text,
     StyleSheet,
     View,
     TextInput,
-    TouchableOpacity,
+    InteractionManager,
     KeyboardAvoidingView,
     Platform,
     Image,
@@ -14,96 +14,79 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import uuidv1 from 'uuid/v1';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {bindActionCreators} from 'redux';
 
-
-import SettingController from '../../../Logic/Setting/settingController'
-
-
-let settingController = new SettingController();
 let {height,width} = Dimensions.get('window');
 
 let currentObj = undefined;
 
-class GroupName extends ContainerComponent {
-    constructor(){
-        super()
-        this.render = this.render.bind(this);
+class GroupName extends AppComponent {
+    constructor(props){
+        super(props)
         this.state = {
-            rightButtonText:'',
-            rightButtonDisabled:false,
-            text:'',
-            isChangeText:false
+            // rightButtonText:'',
+            rightButtonDisabled:true,
+            text:props.Name,
+            defaultValue:props.Name,
+            // isChangeText:false
         };
 
         currentObj = this;
+        this.userController =  this.appManagement.getUserLogicInstance();
+        this.currentAccount = this.userController.getCurrentAccount();
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.userController = undefined;
     }
 
 
     componentDidMount(){
-        this.setState({
-            text:this.props.Name
-        })
-        if(this.state.isChangeText===false){
-            this.setState({rightButtonDisabled:true})
-        }
+        // if(this.state.isChangeText===false){
+        //     this.setState({rightButtonDisabled:true})
+        // }
+        //完成导航动画在获取输入框焦点
+        InteractionManager.runAfterInteractions(()=> {
+            if(this._TextInput){
+                this._TextInput.focus();
+            }
+        });
     }
 
 
 
     _onChangeText=(v)=>{
-        this.setState({isChangeText:true})
-        if(v === this.state.text||v === ''){
+        // this.setState({isChangeText:true})
+        if(this.state.groupName === this.state.text){
             this.setState({text:v,rightButtonDisabled:true})
         }else{
             this.setState({text:v,rightButtonDisabled:false})
         }
-
+    }
+    ClearText(){
+        this.setState({text:'',rightButtonDisabled:true})
     }
 
     toChangeName = ()=>{
-        let {accountId,ID,navigator} = this.props;
+        let {Id,navigator} = this.props;
         currentObj.showLoading();
-        let params = {"Operater":accountId,"GroupId":ID,"Name":this.state.text};
-        settingController.updateGroupName(accountId,ID,params,(result)=>{
+
+        this.userController.updateGroupName(this.currentAccount.Account,Id,this.state.text,(result)=>{
             currentObj.hideLoading();
-            if(!result.success){
-                alert(result.errorMessage);
-                return;
-            }
-            if(result.data.Data){
+            if(result.Result == 1){
 
-                if(currentObj.props.UpdateHeadName != undefined){
-                    currentObj.props.UpdateHeadName(currentObj.state.text);
-                }
 
-                //路由跳转
-                let routes = navigator.getCurrentRoutes();
-                let index;
-                for (let i = 0; i < routes.length; i++) {
-                    if (routes[i]["key"] == "GroupInformationSetting") {
-                        index = i;
-                        break;
-                    }
-                }
                 //跳转到群设置
-                currentObj.route.replaceAtIndex(currentObj.props,{
-                    key:'GroupInformationSetting',
-                    routeId: 'GroupInformationSetting',
-                    params:{"groupId":ID,onUpdateHeadName:currentObj.props.UpdateHeadName},
-
-                },index)
+                currentObj.route.pop(currentObj.props)
             }else{
-                console.log("http请求出错")
+                alert('修改失败');
             }
         });
-
-    }
+    };
 
     render() {
         let Popup = this.PopContent;
@@ -123,15 +106,15 @@ class GroupName extends ContainerComponent {
                         </View>
                         <View style={styles.inputBox}>
                             <TextInput
+                                ref={e=>this._TextInput = e}
                                 underlineColorAndroid = {'transparent'}
-                                autoFocus = {true}
-                                defaultValue={this.state.text}
+                                value={this.state.text}
                                 maxLength = {20}
                                 onChangeText={(v)=>{this._onChangeText(v)}}
                                 style={styles.input}
                             >
                             </TextInput>
-                            <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.setState({text:''})}} style={{marginHorizontal:10}}/>
+                            <Icon name="times-circle" size={20} color="#aaa" onPress={()=>{this.ClearText()}} style={{marginHorizontal:10}}/>
                         </View>
 
 
@@ -179,14 +162,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-
-    accountName:state.loginStore.accountMessage.Nick,
-    accountId:state.loginStore.accountMessage.accountId
 });
-
 const mapDispatchToProps = dispatch => ({
-
-
 });
-
 export default connect(mapStateToProps, mapDispatchToProps)(GroupName);

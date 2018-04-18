@@ -1,6 +1,11 @@
 package com.im;
 
+import android.os.Bundle;
+import org.devio.rn.splashscreen.SplashScreen;
+
 import com.facebook.react.ReactActivity;
+import android.content.Intent;
+import android.content.res.Configuration;
 
 public class MainActivity extends ReactActivity {
 
@@ -12,4 +17,24 @@ public class MainActivity extends ReactActivity {
     protected String getMainComponentName() {
         return "IM";
     }
+
+    @Override
+    public void invokeDefaultOnBackPressed() {
+        // do not call super. invokeDefaultOnBackPressed() as it will close the app.  Instead lets just put it in the background.
+        moveTaskToBack(true);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Intent intent = new Intent("onConfigurationChanged");
+        intent.putExtra("newConfig", newConfig);
+        this.sendBroadcast(intent);
+    }
+
+    @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            SplashScreen.show(this);
+            super.onCreate(savedInstanceState);
+        }
 }

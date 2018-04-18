@@ -14,23 +14,19 @@ import {Text,
     ListView,
     ScrollView
 } from 'react-native';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
 import {connect} from 'react-redux';
 import MyNavigationBar from '../../Common/NavigationBar/NavigationBar'
 import {bindActionCreators} from 'redux';
-//import * as friendApplicationActions from '../../../Core/Redux/applyFriend/action'
-import ApplyFriendEnum from '../../../Core/Management/Common/dto/ApplyFriendEnum'
-
+import ApplyFriendEnum from '../Enum/ApplyFriendEnum'
 import  * as unReadMessageActions from '../../MainTabbar/reducer/action'
-import ContactController from '../../../Logic/Contact/contactController';
-import ApplyFriendController from '../../../Logic/ApplyFriend/applyFriendController';
+import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
+import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHolder';
+
 let {height,width} = Dimensions.get('window');
-
 let currentObj = undefined;
-let contactController = new ContactController();
-let applyFriendController = new ApplyFriendController();
+class NewFriend extends AppComponent {
 
-class NewFriend extends ContainerComponent {
     constructor(props){
         super(props)
         this.render = this.render.bind(this);
@@ -42,38 +38,51 @@ class NewFriend extends ContainerComponent {
             applyRecord:[],
         };
         currentObj = this;
+        this.applyController =  this.appManagement.getApplyLogicInstance();
+        this.userController = this.appManagement.getUserLogicInstance();
     }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+        this.applyController = undefined;
+        this.userController = undefined;
+    }
+
     goToAddFriends = ()=>{
         this.route.push(this.props,{key: 'AddFriends',routeId: 'AddFriends',params:{}});
     }
 
     componentWillMount(){
-        applyFriendController.setApplyFriendRecord(function(applyRecord) {
-            currentObj.setState({
-                applyRecord
-            })
-        })
+        this.applyController.setApplyFriendRecord();
+        this.applyController.clearUncheckCount();
     }
 
-    acceptFriend = (data)=>{
-        let {key} = data;
-        let params = {key};
-        this.showLoading();
-        callback = (results) => {
-            currentObj.hideLoading();
-            if(results.success){
-                console.log('接受好友申請成功')
-            }else{
-                console.log('接受好友申請失败')
-            }
+    _refreshUI(type,params){
+        switch (type){
+            case AppPageMarkEnum.ApplyMessage:
+                currentObj.setState({
+                    applyRecord: params
+                });
+                break;
         }
+    }
 
-        applyFriendController.acceptFriend(params,callback)
+    acceptFriend = (key)=>{
+        this.showLoading();
+        let callback = (result)=>{
+            currentObj.hideLoading();
+            if(result.Result == 1){
+                this.alert('接受好友申請成功',"提醒")
+            }else{
+                this.alert('接受好友申請失败',"错误")
+            }
+        };
+        this.applyController.acceptFriend(key,callback);
 
     }
 
     deleteApply = (index)=>{
-        alert('删除好友申请')
+        this.alert('删除好友申请',"提醒")
     };
 
     applyMsgStyle = (rowID,rowData)=>{
@@ -82,7 +91,7 @@ class NewFriend extends ContainerComponent {
             return (
                 <TouchableHighlight
                     underlayColor="#1FB579"
-                    onPress={()=>{this.acceptFriend(rowData)}}
+                    onPress={()=>{this.acceptFriend(rowData.key)}}
                     style={styles.btnBox}>
                     <View style={styles.btnView}>
                         <Text style={styles.btnText}>接受</Text>
@@ -99,13 +108,26 @@ class NewFriend extends ContainerComponent {
     }
 
     _renderAvator= (path)=>{
-        if(path && path !== ' '){
-            return 	<Image style = {styles.headPic} source = {{uri:path}}/>
-        }else{
-            return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
-        }
+
+        return <ImagePlaceHolder style={styles.headPic}
+                          imageUrl ={path}
+        />
+
+        // if(path && path !== ' '){
+        //     return 	<Image style = {styles.headPic} source = {{uri:path}}/>
+        // }else{
+        //     return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
+        // }
     }
+
+    _goToClientInfo=(account,applyKey)=>{
+        this.route.push(this.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:account,applyKey:applyKey}});
+    };
+
+
     _renderRow = (rowData, sectionID, rowID)=>{
+        let path = this.userController.getAccountHeadImagePath(rowData.sender)
+
         return(
             <View>
                 {/*<Swipeout*/}
@@ -128,13 +150,13 @@ class NewFriend extends ContainerComponent {
                     {/*autoClose={true}*/}
                 {/*>*/}
 
-                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>alert('备注')}>
+                    <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToClientInfo(rowData.sender,rowData.key)}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
-                                {this._renderAvator(rowData.avator)}
+                                {this._renderAvator(path)}
                                 <View style={styles.basicBoxRight}>
-                                    <Text style={styles.name}>{rowData.nick}</Text>
-                                    <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment}</Text>
+                                    <Text style={styles.name}>{rowData.Nickname}</Text>
+                                    <Text style={styles.description} ellipsizeMode='tail' numberOfLines={1}>{rowData.comment && rowData.comment != 'undefined' ? rowData.comment : ''}</Text>
                                 </View>
                             </View>
                             {this.applyMsgStyle(rowID,rowData)}
@@ -146,6 +168,7 @@ class NewFriend extends ContainerComponent {
     };
 
     render() {
+        let Popup = this.PopContent;
         let Loading = this.Loading;
         return (
             <View style={styles.container}>
@@ -155,13 +178,13 @@ class NewFriend extends ContainerComponent {
                     right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
                 />
                 <ScrollView>
-                    <View style={styles.listHeaderBox}>
-                        <TextInput
-                            style={styles.search}
-                            underlineColorAndroid = 'transparent'
-                        >
-                        </TextInput>
-                    </View>
+                    {/*<View style={styles.listHeaderBox}>*/}
+                        {/*<TextInput*/}
+                            {/*style={styles.search}*/}
+                            {/*underlineColorAndroid = 'transparent'*/}
+                        {/*>*/}
+                        {/*</TextInput>*/}
+                    {/*</View>*/}
                     <ListView
                         dataSource = {this.state.dataSource.cloneWithRows(this.state.applyRecord)}
                         renderRow = {this._renderRow}
@@ -171,14 +194,11 @@ class NewFriend extends ContainerComponent {
                     </ListView>
 
                 </ScrollView>
+                <Popup ref={ popup => this.popup = popup}/>
                 <Loading ref = { loading => this.loading = loading}/>
             </View>
             )
             
-    }
-
-    componentWillUnmount(){
-        applyFriendController.outApplyFriendPage()
     }
 }
 
@@ -226,13 +246,15 @@ const styles = StyleSheet.create({
     },
     basicBoxRight:{
         marginLeft:15,
+        justifyContent:'center'
     },
     headPic:{
         height:40,
-        width:40
+        width:40,
+        borderRadius:20
     },
     name:{
-        fontSize:15,
+        fontSize:14,
         color:'#000'
     },
     description:{
@@ -263,8 +285,8 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    accountName:state.loginStore.accountMessage.Nick,
-    accountId:state.loginStore.accountMessage.accountId
+    accountName:state.loginStore.accountMessage.Nickname,
+    accountId:state.loginStore.accountMessage.Account
 });
 
 const mapDispatchToProps = dispatch => ({

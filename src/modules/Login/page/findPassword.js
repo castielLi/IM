@@ -1,47 +1,62 @@
 import React,{Component}from 'react';
-import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert}from 'react-native';
+import {View,TextInput,Text,Image,Keyboard,TouchableOpacity,StyleSheet,Dimensions,Alert,KeyboardAvoidingView,TouchableWithoutFeedback}from 'react-native';
 import {checkDeviceHeight,checkDeviceWidth} from '../../../Core/Helper/UIAdapter';
-import {
-    Navigator
-} from 'react-native-deprecated-custom-components';
-import Main from './main';
-import {connect} from 'react-redux';
-import checkReg from './regExp';
 import Confirm from './confirm';
-import emailLogin from './emailLogin';
-import PhoneLogin from './phoneLogin';
-import changePassword from './changePassword';
-import ContainerComponent from '../../../Core/Component/ContainerComponent';
+import AppComponent from '../../../Core/Component/AppComponent';
+import LoginController from '../../../TSController/LoginController';
+let loginController = undefined;
+let currentObj = undefined;
 
 
-export default class Login extends ContainerComponent {
+
+export default class FindPassword extends AppComponent {
 	constructor(props) {
 	  super(props);
 	
 	  this.state = {
 	  	phoneText:'',//账号框的内容
-		passWordText:'',//密码框的内容
-		showConfirm:false,//是否显示确认电话号码组件 false:不显示 true:显示
+		validateText:'',//密码框的内容
 		textMessage:true,//true表示密码登录，false表示短信验证登录
 	  };
+	  currentObj = this;
+	  loginController = new LoginController();
 	}
 	//当点击短信验证的时候检测手机号码的方法
-	changeShowConfirm=()=>{
+    sendValidate=()=>{
 		if((/^1[34578]\d{9}$/.test(this.state.phoneText))){
-			this.setState({
-				showConfirm:true,
-			});
+			this.showLoading();
+            loginController.ForgetPassword(this.state.phoneText,(response)=>{
+                this.hideLoading();
+                if (response.success){
+                    this.alert("发送短信成功","");
+                }else
+                    this.alert("发送短信失败，请重新点击发送","错误");
+            });
 		}else{
 			alert('手机号码错误');
 		}
 	}
 
-	//子组件修改showConfirm
-	cancelSend = (hideConfirm)=>{
-		this.setState({
-			showConfirm:hideConfirm
-		})
+	confirm(){
+        if((/^1[34578]\d{9}$/.test(this.state.phoneText))){
+            if(this.state.validateText != ""){
+                this.showLoading();
+                loginController.RetrievePassword(this.state.phoneText,this.state.validateText,(response)=>{
+                    this.hideLoading();
+                    if (response.success){
+                        this.route.replaceTop(this.props,{key:'ResetPassword',routeId:'ResetPassword',params:{"validateKey":response.data.Data,"phone":this.state.phoneText}
+						})
+                    }else
+                        this.alert("无效验证码","错误");
+				});
+			}else{
+                alert('验证码不能为空');
+			}
+        }else{
+            alert('手机号码错误');
+        }
 	}
+
 	componentWillUpdate() {
 		console.log(this.props.loading)
 		if(!this.state.textMessage){
@@ -57,95 +72,74 @@ export default class Login extends ContainerComponent {
 	}
 	
 	render(){
+        let Popup = this.PopContent;
+        let Loading = this.Loading;
 		return (
-
-			<View style= {styles.container}>
-				<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.push(this.props,{
-				key:'Login',
-                routeId: 'Login',
-                sceneConfig: Navigator.SceneConfigs.FloatFromLeft
-				});}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
-				<View style = {styles.content}>
-					<Text style= {styles.loginTitle}>找回密码</Text>	
-					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
-						<View style = {styles.area}>
-							<Text style = {styles.areaTitle}>国家/地区</Text>
-							<Text style = {styles.country}>中国</Text>
-							<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}></Image>
-						</View>
-					</TouchableOpacity>
-					<View style= {styles.inputBox}>
-						<View style={styles.imageBox}>
-							<Image style = {styles.loginImage} source = {require('../resource/ipone.png')}></Image>
-						</View>
-						<Text style = {styles.NumberBefore}>+86</Text>
-						<TextInput
-						style = {styles.textInput}
-						maxLength = {11}
-						placeholderTextColor = '#cecece' 
-						placeholder = '请输入手机号码' 
-						underlineColorAndroid= {'transparent'}
-						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
-						></TextInput>
-						
-					</View>
-					<View style = {styles.inputBox}>
-						<View style={styles.imageBox}>
-							<Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/code.png')}></Image>
-						</View>	
-						<TextInput
-						ref = {(c)=>{this._textInput = c}}
-						maxLength = {16}
-						style = {[styles.textInput,{marginLeft:-10,}]} 
-						placeholderTextColor = '#cecece' 
-						secureTextEntry = {true} 
-						placeholder = '请输入验证码' 
-						underlineColorAndroid= {'transparent'}
-						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
-						></TextInput>
-						<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.changeShowConfirm()}}>
-							<Text style= {styles.information}>获取验证码</Text>
+			<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+				<View style= {styles.container}>
+					<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
+					<View style = {styles.content}>
+						<Text style= {styles.loginTitle}>找回密码</Text>
+						<TouchableOpacity>
+							<View style = {styles.area}>
+								<Text style = {styles.areaTitle}>国家/地区</Text>
+								<Text style = {styles.country}>中国</Text>
+								<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}/>
+							</View>
 						</TouchableOpacity>
+						<View style= {styles.inputBox}>
+							<View style={styles.imageBox}>
+								<Image style = {styles.loginImage} source = {require('../resource/ipone.png')}></Image>
+							</View>
+							<Text style = {styles.NumberBefore}>+86</Text>
+							<TextInput
+								style = {styles.textInput}
+								maxLength = {11}
+								keyboardType = {'numeric'}
+								placeholderTextColor = '#cecece'
+								placeholder = '请输入手机号码'
+								underlineColorAndroid= {'transparent'}
+								onChangeText={(Text)=>{this.setState({phoneText:Text})}}
+							></TextInput>
+
+						</View>
+						<View style = {styles.inputBox}>
+							<View style={styles.imageBox}>
+								<Image style = {[styles.loginImage,{width:checkDeviceWidth(35),marginLeft:5}]} source = {require('../resource/code.png')}></Image>
+							</View>
+							<TextInput
+								ref = {(c)=>{this._textInput = c}}
+								maxLength = {16}
+								keyboardType = {'numeric'}
+								style = {[styles.textInput,{marginLeft:-10,}]}
+								placeholderTextColor = '#cecece'
+								secureTextEntry = {true}
+								placeholder = '请输入验证码'
+								underlineColorAndroid= {'transparent'}
+								onChangeText={(Text)=>{this.setState({validateText:Text})}}
+							></TextInput>
+							<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.sendValidate()}}>
+								<Text style= {styles.information}>获取验证码</Text>
+							</TouchableOpacity>
+						</View>
+                        {
+                            this.state.phoneText && this.state.validateText?
+                                (
+									<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.confirm();}}>
+										<Text style = {styles.loginText}>确定</Text>
+									</TouchableOpacity>)
+                                :(
+								<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notSure.png')}></Image>
+                            )
+                        }
 					</View>
-					{
-						this.state.phoneText && this.state.passWordText?
-						(
-							<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.route.push(this.props,{
-								key:'ChangePassword',
-                				routeId: 'ChangePassword'
-							})}}>
-								<Text style = {styles.loginText}>确定</Text>
-							</TouchableOpacity>)
-						:(
-							<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notSure.png')}></Image>
-							)
-					}
-				<View style= {styles.footer}>
-					<TouchableOpacity onPress = {()=>{this.route.push(this.props,{
-						key:'Login',
-						routeId:'EmailLogin'
-					})}} activeOpacity = {0.8}><Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>其他方式登录</Text></TouchableOpacity>
-					<TouchableOpacity  activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>
+					<Popup ref={ popup => this.popup = popup}/>
+					<Loading ref = { loading => this.loading = loading}/>
 				</View>
-				</View>
-				{
-					this.state.showConfirm?
-					<Confirm 
-					phoneText = {this.state.phoneText}
-					cancelSend = {this.cancelSend}
-					></Confirm>:null
-				}
-			</View>
-			
+			</TouchableWithoutFeedback>
 		)
 	}
 
-} 
-
-function mapStateToProps(store) {
-	return {
-		loading:store.loginIn.loading
-	}
 }
 
 const styles = StyleSheet.create({
@@ -161,11 +155,11 @@ const styles = StyleSheet.create({
 	goBackBtn:{
 		alignSelf:'flex-start',
 		marginLeft:checkDeviceWidth(20),
-		marginTop:checkDeviceHeight(35),
+		marginTop:checkDeviceHeight(50),
 	},
 	loginTitle:{
 		fontSize:checkDeviceHeight(50),
-		marginTop:checkDeviceHeight(20),
+		marginTop:checkDeviceHeight(60),
 		color:'#333333',
 		marginBottom:checkDeviceHeight(110),
 	},

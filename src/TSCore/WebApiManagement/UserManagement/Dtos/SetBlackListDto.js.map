@@ -1,0 +1,1 @@
+{"version":3,"file":"SetBlackListDto.js","sourceRoot":"","sources":["../../../../../TSCore/WebApiManagement/UserManagement/Dtos/SetBlackListDto.ts"],"names":[],"mappings":"AAAA,MAAM,CAAC,OAAO;IAIV;QACI,IAAI,CAAC,SAAS,GAAG,KAAK,CAAC;QACvB,IAAI,CAAC,OAAO,GAAG,EAAE,CAAC;IACtB,CAAC;CACJ"}
