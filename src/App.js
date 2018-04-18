@@ -19,9 +19,8 @@ import AppPageMarkEnum from './App/Enum/AppPageMarkEnum';
 import AppManagement from './App/AppManagement';
 import AppStatusEnum from './App/Enum/AppStatusEnum';
 import Orientation from 'react-native-orientation';
-import SystemManager from './TSController/SystemManager';
 import SplashScreen from 'react-native-splash-screen';
-
+import Language from './Core/Localization'
 
 export default function App() {
 
@@ -29,6 +28,10 @@ export default function App() {
     console.disableYellowBox = true
 
     let appManagement = new AppManagement();
+
+    //设置本地语言
+    let language = Language.getInterfaceLanguage();
+    Language.setLanguage(language);
 
     let store = Store;
     //初始化路由表

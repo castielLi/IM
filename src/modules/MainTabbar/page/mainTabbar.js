@@ -76,7 +76,7 @@ class TabBarComponent extends AppComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '云信'}
-                    title="云信"
+                    title= {this.Localization.mainTab.Chat}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/qixin.png')}
                                               style={[styles.icon]}
@@ -94,7 +94,7 @@ class TabBarComponent extends AppComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '通讯录'}
-                    title="通讯录"
+                    title= {this.Localization.mainTab.Contacts}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/contact.png')}
                                               style={[styles.icon]}
@@ -112,7 +112,7 @@ class TabBarComponent extends AppComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '发现'}
-                    title="发现"
+                    title= {this.Localization.mainTab.Discovery}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/zoom.png')}
                                               style={[styles.icon]}
@@ -130,7 +130,7 @@ class TabBarComponent extends AppComponent {
 
                 <TabNavigator.Item
                     selected={selectedTab === '我'}
-                    title="我"
+                    title= {this.Localization.mainTab.Me}
                     selectedTitleStyle={{color:'#1aad19'}}
                     renderIcon={() =>  <Image source={require('../resources/me.png')}
                                               style={[styles.icon]}
