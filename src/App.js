@@ -19,6 +19,7 @@ import AppPageMarkEnum from './App/Enum/AppPageMarkEnum';
 import AppManagement from './App/AppManagement';
 import AppStatusEnum from './App/Enum/AppStatusEnum';
 import Orientation from 'react-native-orientation';
+import SystemManager from './TSController/SystemManager';
 import SplashScreen from 'react-native-splash-screen';
 import Language from './Core/Localization'
 
@@ -29,7 +30,7 @@ export default function App() {
 
     let appManagement = new AppManagement();
 
-    //设置本地语言
+    //设置多语言
     let language = Language.getInterfaceLanguage();
     Language.setLanguage(language);
 
@@ -39,12 +40,12 @@ export default function App() {
     Route.setAssignMainTabBarPage(()=>{store.dispatch(changeTabBar(0))});
 
 
-    // require('ErrorUtils').setGlobalHandler((err)=> {
-    //     alert(err.stack);
-    //     let errorString = "==================================错误=================================== "
-    //         + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
-    //     SystemManager.ErrorLog(errorString);
-    // });
+    require('ErrorUtils').setGlobalHandler((err)=> {
+        alert(err.stack);
+        let errorString = "==================================错误=================================== "
+            + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
+        SystemManager.ErrorLog(errorString);
+    });
 
     class InitApp extends Component {
         constructor() {
