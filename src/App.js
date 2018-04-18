@@ -99,9 +99,11 @@ export default function App() {
             console.log("")
 
             if(appState == 'background'){
-                 appManagement.systemBackGround();
+                 // appManagement.systemBackGround();
             }else if(appState == "active"){
                 appManagement.systemActive();
+            }else{
+                appManagement.systemBackGround();
             }
         }
 
