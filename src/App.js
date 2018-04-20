@@ -22,6 +22,7 @@ import Orientation from 'react-native-orientation';
 import SystemManager from './TSController/SystemManager';
 import SplashScreen from 'react-native-splash-screen';
 import Language from './Core/Localization'
+var RNPlaySoundControl = require('react-native').NativeModules.RNPlaySoundControl;
 
 export default function App() {
 
@@ -34,6 +35,11 @@ export default function App() {
     let language = Language.getInterfaceLanguage();
     Language.setLanguage(language);
 
+    if(Platform.OS === 'ios') {
+        //添加播放传感器通知设置（iOS）
+        RNPlaySoundControl.setPlaySoundSetting();
+    }
+
     let store = Store;
     //初始化路由表
     Route.initRouteMap(router);
@@ -41,9 +47,20 @@ export default function App() {
 
 
     require('ErrorUtils').setGlobalHandler((err)=> {
-        alert(err.stack);
-        let errorString = "==================================错误=================================== "
-            + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
+        let errorString = "";
+        if(err.constructor.name == "ErrorManagerDto"){
+            alert(JSON.stringify(err));
+            errorString = "==================================ErrorManager错误=================================== "
+                + new Date().getTime().toString() + "   " + JSON.stringify(err);
+        }else if(err.constructor.name == "ErrorToolDto"){
+            alert(JSON.stringify(err));
+            errorString = "==================================ErrorTool错误=================================== "
+                + new Date().getTime().toString() + "   " + JSON.stringify(err);
+        }else{
+            alert(err.stack);
+            errorString = "==================================错误=================================== "
+                + new Date().getTime().toString() + "   " + JSON.stringify(err.stack);
+        }
         SystemManager.ErrorLog(errorString);
     });
 
