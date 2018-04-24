@@ -78,6 +78,9 @@ export default class AppManagement{
         return this.applyController;
     }
 
+    getLoginInstance(){
+        return this.loginController;
+    }
 
     setRoot(rootComponent){
         this.root = rootComponent;

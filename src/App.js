@@ -23,6 +23,12 @@ import SystemManager from './TSController/SystemManager';
 import SplashScreen from 'react-native-splash-screen';
 import Language from './Core/Localization'
 var RNPlaySoundControl = require('react-native').NativeModules.RNPlaySoundControl;
+import JPushModule from 'jpush-react-native'
+
+const receiveCustomMsgEvent = 'receivePushMsg'
+const receiveNotificationEvent = 'receiveNotification'
+const openNotificationEvent = 'openNotification'
+const getRegistrationIdEvent = 'getRegistrationId'
 
 export default function App() {
 
@@ -84,6 +90,11 @@ export default function App() {
             Orientation.lockToPortrait();
         }
 
+        componentWillUnMount(){
+            // JPushModule.removeReceiveCustomMsgListener();
+            // JPushModule.removeReceiveNotificationListener();
+        }
+
         componentDidMount() {
             SplashScreen.hide();
             AppState.addEventListener('change', this._handleAppStateChange);
@@ -100,6 +111,25 @@ export default function App() {
                 });
             // }
 
+            // JPushModule.notifyJSDidLoad((resultCode) => {
+            //     if (resultCode === 0) {}
+            // });
+            //
+            // // 接收自定义消息
+            // JPushModule.addReceiveCustomMsgListener((message) => {
+            //     this.setState({pushMsg: message});
+            // });
+            // // 接收推送通知
+            // JPushModule.addReceiveNotificationListener((message) => {
+            //     console.log("receive notification: " + message);
+            // });
+            // // 打开通知
+            // JPushModule.addReceiveOpenNotificationListener((map) => {
+            //     console.log("Opening notification!");
+            //     console.log("map.extra: " + map.extras);
+            //     // 可执行跳转操作，也可跳转原生页面
+            //     // this.props.navigation.navigate("SecondActivity");
+            // });
 
             NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
         }
