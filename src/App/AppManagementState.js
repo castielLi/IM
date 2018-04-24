@@ -24,6 +24,8 @@ export class InitState extends IAppManagementState{
 
             if(appManagementObj.imLogicController != undefined){
                 appManagementObj.imLogicController.destroyInstance();
+                appManagementObj.imLogicController = undefined;
+                appManagementObj.ConnectState = false;
             }
             if(appManagementObj.userController != undefined){
                 appManagementObj.userController.destroyInstance();
@@ -37,6 +39,7 @@ export class InitState extends IAppManagementState{
             }
 
             if(appManagementObj.loginController != undefined){
+                appManagementObj.loginController.destroyInstance();
                 appManagementObj.loginController = undefined;
             }
 

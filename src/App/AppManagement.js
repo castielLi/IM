@@ -366,6 +366,7 @@ export default class AppManagement{
         if(this.imLogicController!=undefined && this.Logined) {
             if(!this.androidChoosing) {
                 this.imLogicController.stopSocket();
+                this.ConnectState = false;
             }
         }
     }
