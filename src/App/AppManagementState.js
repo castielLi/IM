@@ -187,6 +187,12 @@ export class TokenValidateFailedState extends IAppManagementState{
 
 export class LogoutState extends IAppManagementState{
     stateOpreation(appManagementObj){
+        if(appManagementObj.loginController != undefined){
+            appManagementObj.loginController.logout();
+            appManagementObj.loginController.destroyInstance();
+            appManagementObj.loginController = undefined;
+        }
+        appManagementObj.loginController = new LoginController()
         appManagementObj.ConnectState = false;
         appManagementObj.Logined = false;
         if(appManagementObj.imLogicController != undefined){
@@ -201,11 +207,6 @@ export class LogoutState extends IAppManagementState{
             appManagementObj.applyController.destroyInstance();
             appManagementObj.applyController = undefined;
         }
-        if(appManagementObj.loginController != undefined){
-            appManagementObj.loginController.destroyInstance();
-            appManagementObj.loginController = undefined;
-        }
-        appManagementObj.loginController = new LoginController()
         appManagementObj.root.route.ToLogin(appManagementObj.root);
         appManagementObj.setState(this);
     }

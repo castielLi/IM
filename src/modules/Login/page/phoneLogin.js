@@ -218,14 +218,14 @@ const styles = StyleSheet.create({
     },
     loginTitle:{
         fontSize:checkDeviceHeight(50),
-        marginTop:checkDeviceHeight(70),
+        marginTop:checkDeviceHeight(110),
         color:'#333333',
         marginBottom:checkDeviceHeight(110),
     },
     content:{
         alignItems:'center',
         flex:1,
-        paddingHorizontal:checkDeviceWidth(40)
+        paddingHorizontal:checkDeviceWidth(60)
     },
     area:{
         width:Dimensions.get('window').width - checkDeviceWidth(80),
