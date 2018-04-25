@@ -15,7 +15,6 @@ import {
     Alert,
     AppState
 } from 'react-native';
-var {height} = Dimensions.get('window');
 import {
   connect
 } from 'react-redux';
@@ -33,7 +32,10 @@ import RNFS from 'react-native-fs';
 import {
     Navigator,
 } from 'react-native-deprecated-custom-components';
-var RNPlaySoundControl = require('react-native').NativeModules.RNPlaySoundControl;
+import { NativeModules } from 'react-native';
+var RNPlaySoundControl = NativeModules.RNPlaySoundControl;
+let RNSoundControl = NativeModules.RNSoundControl;
+var {height} = Dimensions.get('window');
 let stopSoundObj = null;
 let soundComponent = null;
 let currentObj = undefined;
@@ -176,6 +178,8 @@ class ChatDetail extends AppComponent {
             stopSoundObj.stop(()=>{
                 if(Platform.OS === 'ios') {
                     RNPlaySoundControl.stopPlaySound();
+                }else{
+                    RNSoundControl.onUninstallListener();
                 }
                 stopSoundObj = null;
                 if(soundComponent) soundComponent.changeVolumeHidden(true);
@@ -196,7 +200,6 @@ class ChatDetail extends AppComponent {
     };
     //Audio
     _playSound = (SoundUrl,component,durant) => {
-
         if(component!=null){
             component.changeVolumeHidden(false);
             // setTimeout(()=>{
@@ -216,6 +219,8 @@ class ChatDetail extends AppComponent {
                 stopSoundObj.stop(()=>{
                     if(Platform.OS === 'ios') {
                         RNPlaySoundControl.stopPlaySound();
+                    }else{
+                        RNSoundControl.onUninstallListener();
                     }
                     if(stopSoundObj && sound._filename == stopSoundObj._filename){
                         stopSoundObj = null;
@@ -227,6 +232,8 @@ class ChatDetail extends AppComponent {
                     sound.play(() => {
                         if(Platform.OS === 'ios') {
                             RNPlaySoundControl.beginPlaySound();
+                        }else{
+                            RNSoundControl.sensorListener();
                         }
                         component.changeVolumeHidden(true);
                         stopSoundObj = null;
@@ -239,9 +246,12 @@ class ChatDetail extends AppComponent {
             else{
                 stopSoundObj = sound;
                 soundComponent = component;
+
                 sound.play(() => {
                     if(Platform.OS === 'ios') {
                         RNPlaySoundControl.beginPlaySound();
+                    }else{
+                        RNSoundControl.sensorListener();
                     }
                     component.changeVolumeHidden(true);
                     stopSoundObj = null;

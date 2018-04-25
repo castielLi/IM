@@ -29,9 +29,11 @@ export class InitState extends IAppManagementState{
             }
             if(appManagementObj.userController != undefined){
                 appManagementObj.userController.destroyInstance();
+                appManagementObj.userController = undefined;
             }
             if(appManagementObj.applyController != undefined){
                 appManagementObj.applyController.destroyInstance();
+                appManagementObj.applyController = undefined;
             }
 
             if(appManagementObj.validateManager != undefined){

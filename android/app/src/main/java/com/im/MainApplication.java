@@ -2,9 +2,9 @@ package com.im;
 
 import android.app.Application;
 
-import com.LifeCycle.RNLifeCyclePackage;
-import com.AdjustType.AdjustTypePackage;
+import com.RNSoundControl.RNSoundControlPackage;
 
+import cn.jpush.reactnativejpush.JPushPackage;
 import com.facebook.react.ReactApplication;
 import com.rt2zz.reactnativecontacts.ReactNativeContacts;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -30,6 +30,9 @@ import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
+  private boolean SHUTDOWN_TOAST = false;
+  private boolean SHUTDOWN_LOG = false;
+
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
     public boolean getUseDeveloperSupport() {
@@ -54,8 +57,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RCTCameraPackage(),
             new SQLitePluginPackage(),
             new ReactNativeAudioPackage(),
-            new RNLifeCyclePackage(),
-            new AdjustTypePackage()
+            new JPushPackage(SHUTDOWN_TOAST, SHUTDOWN_LOG),
+            new RNSoundControlPackage()
       );
     }
   };
