@@ -46,6 +46,7 @@ export class InitState extends IAppManagementState{
             }
 
             SystemManager.init(() => {
+                appManagementObj.loginController = new LoginController()
                 appManagementObj.validateManager = new ValidateManager();
                 appManagementObj.validateManager.init(
                     appManagementObj.dispatchAppTokenState,
@@ -99,10 +100,9 @@ export class WaitValidateTokenState extends IAppManagementState{
 
 export class LoginedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-
-        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
+        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
         appManagementObj.imLogicController.init(
             appManagementObj.dispatchMessageToMarkPage,
             appManagementObj.pageInitReady
@@ -166,13 +166,21 @@ export class TokenValidateFailedState extends IAppManagementState{
         appManagementObj.validateManager = null;
         if(appManagementObj.imLogicController != undefined){
             appManagementObj.imLogicController.destroyInstance();
+            appManagementObj.imLogicController = undefined;
         }
         if(appManagementObj.userController != undefined){
             appManagementObj.userController.destroyInstance();
+            appManagementObj.userController = undefined;
         }
         if(appManagementObj.applyController != undefined){
             appManagementObj.applyController.destroyInstance();
+            appManagementObj.applyController = undefined;
         }
+        if(appManagementObj.loginController != undefined){
+            appManagementObj.loginController.destroyInstance();
+            appManagementObj.loginController = undefined;
+        }
+        appManagementObj.loginController = new LoginController()
         appManagementObj.setState(this)
     }
 }
@@ -180,21 +188,26 @@ export class TokenValidateFailedState extends IAppManagementState{
 
 export class LogoutState extends IAppManagementState{
     stateOpreation(appManagementObj){
-        if(appManagementObj.loginController == undefined){
-            appManagementObj.loginController = new LoginController();
+        if(appManagementObj.loginController != undefined){
+            appManagementObj.loginController.logout();
+            appManagementObj.loginController.destroyInstance();
+            appManagementObj.loginController = undefined;
         }
-        appManagementObj.loginController.logout();
-        appManagementObj.ConnectState = false;
-        appManagementObj.Logined = false;
         if(appManagementObj.imLogicController != undefined){
             appManagementObj.imLogicController.destroyInstance();
+            appManagementObj.imLogicController = undefined;
         }
         if(appManagementObj.userController != undefined){
             appManagementObj.userController.destroyInstance();
+            appManagementObj.userController = undefined;
         }
         if(appManagementObj.applyController != undefined){
             appManagementObj.applyController.destroyInstance();
+            appManagementObj.applyController = undefined;
         }
+        appManagementObj.loginController = new LoginController()
+        appManagementObj.ConnectState = false;
+        appManagementObj.Logined = false;
         appManagementObj.root.route.ToLogin(appManagementObj.root);
         appManagementObj.setState(this);
     }
