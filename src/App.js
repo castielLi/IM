@@ -91,8 +91,8 @@ export default function App() {
         }
 
         componentWillUnMount(){
-            // JPushModule.removeReceiveCustomMsgListener();
-            // JPushModule.removeReceiveNotificationListener();
+            JPushModule.removeReceiveCustomMsgListener();
+            JPushModule.removeReceiveNotificationListener();
         }
 
         componentDidMount() {
@@ -100,36 +100,55 @@ export default function App() {
             AppState.addEventListener('change', this._handleAppStateChange);
             AppState.addEventListener('memoryWarning', this._handleMemoryWarning);
 
-            // if(Platform.OS === 'android'){
-                NetInfo.isConnected.fetch().done((isConnected) => {
-                    console.log('First, is ' + (isConnected ? 'online' : 'offline'));
-                    //im.setNetEnvironment(isConnected);
-                    if(!isConnected){
-                        appManagement.normalNetwork = false;
-                        window["network"] =  "none"
-                    }
-                });
-            // }
+            NetInfo.isConnected.fetch().done((isConnected) => {
+                console.log('First, is ' + (isConnected ? 'online' : 'offline'));
+                //im.setNetEnvironment(isConnected);
+                if(!isConnected){
+                    appManagement.normalNetwork = false;
+                    window["network"] =  "none"
+                }
+            });
 
-            // JPushModule.notifyJSDidLoad((resultCode) => {
-            //     if (resultCode === 0) {}
-            // });
-            //
-            // // 接收自定义消息
-            // JPushModule.addReceiveCustomMsgListener((message) => {
-            //     this.setState({pushMsg: message});
-            // });
-            // // 接收推送通知
-            // JPushModule.addReceiveNotificationListener((message) => {
-            //     console.log("receive notification: " + message);
-            // });
-            // // 打开通知
-            // JPushModule.addReceiveOpenNotificationListener((map) => {
-            //     console.log("Opening notification!");
-            //     console.log("map.extra: " + map.extras);
-            //     // 可执行跳转操作，也可跳转原生页面
-            //     // this.props.navigation.navigate("SecondActivity");
-            // });
+            //注册极光推送通知回调方法
+            if(Platform.OS === "android"){
+                JPushModule.notifyJSDidLoad((resultCode) => {
+                    if (resultCode === 0) {}
+                });
+
+                // 接收自定义消息
+                JPushModule.addReceiveCustomMsgListener((message) => {
+                    this.setState({pushMsg: message});
+                });
+
+            }else{
+                JPushModule.addnetworkDidLoginListener(() => {
+                    console.log('极光sdk登录成功');
+                });
+
+                JPushModule.addConnectionChangeListener((result) => {
+                    if (result) {
+                        console.log('极光网络已连接');
+                    } else {
+                        console.log('极光网络已断开');
+                    }
+                })
+
+                JPushModule.addOpenNotificationLaunchAppListener((result) => {
+                    console.log('addOpenNotificationLaunchAppListener', 'the notification is :' + JSON.stringify(result))
+                })
+            }
+
+            // 接收推送通知
+            JPushModule.addReceiveNotificationListener((message) => {
+                console.log("receive notification: " + message);
+            });
+            // 打开通知
+            JPushModule.addReceiveOpenNotificationListener((map) => {
+                console.log("Opening notification!");
+                console.log("map.extra: " + map.extras);
+                // 可执行跳转操作，也可跳转原生页面
+                // this.props.navigation.navigate("SecondActivity");
+            });
 
             NetInfo.addEventListener('connectionChange', this._handleConnectionInfoChange);
         }
