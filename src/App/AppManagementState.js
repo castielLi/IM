@@ -98,10 +98,9 @@ export class WaitValidateTokenState extends IAppManagementState{
 
 export class LoginedState extends IAppManagementState{
     stateOpreation(appManagementObj){
-
-        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
         appManagementObj.userController = UserController.getSingleInstance();
         appManagementObj.applyController = ApplyController.getSingleInstance();
+        appManagementObj.imLogicController = IMLogicController.getSingleInstance();
         appManagementObj.imLogicController.init(
             appManagementObj.dispatchMessageToMarkPage,
             appManagementObj.pageInitReady
@@ -192,9 +191,6 @@ export class LogoutState extends IAppManagementState{
             appManagementObj.loginController.destroyInstance();
             appManagementObj.loginController = undefined;
         }
-        appManagementObj.loginController = new LoginController()
-        appManagementObj.ConnectState = false;
-        appManagementObj.Logined = false;
         if(appManagementObj.imLogicController != undefined){
             appManagementObj.imLogicController.destroyInstance();
             appManagementObj.imLogicController = undefined;
@@ -207,6 +203,9 @@ export class LogoutState extends IAppManagementState{
             appManagementObj.applyController.destroyInstance();
             appManagementObj.applyController = undefined;
         }
+        appManagementObj.loginController = new LoginController()
+        appManagementObj.ConnectState = false;
+        appManagementObj.Logined = false;
         appManagementObj.root.route.ToLogin(appManagementObj.root);
         appManagementObj.setState(this);
     }
