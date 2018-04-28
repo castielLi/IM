@@ -20,6 +20,7 @@ export default class FindPassword extends AppComponent {
 	  };
 	  currentObj = this;
 	  loginController = new LoginController();
+	  this.sendValidate = this.sendValidate.bind(this);
 	}
 	//当点击短信验证的时候检测手机号码的方法
     sendValidate=()=>{
@@ -28,12 +29,12 @@ export default class FindPassword extends AppComponent {
             loginController.ForgetPassword(this.state.phoneText,(response)=>{
                 this.hideLoading();
                 if (response.success){
-                    this.alert("发送短信成功","");
+                    this.alert(this.Localization.FindPassword.messageSendSuccess,"");
                 }else
-                    this.alert("发送短信失败，请重新点击发送","错误");
+                    this.alert(this.Localization.FindPassword.messageSendError,this.Localization.Common.Error);
             });
 		}else{
-			alert('手机号码错误');
+			alert(this.Localization.FindPassword.phoneNumberErrorMessage);
 		}
 	}
 
@@ -47,13 +48,13 @@ export default class FindPassword extends AppComponent {
                         this.route.replaceTop(this.props,{key:'ResetPassword',routeId:'ResetPassword',params:{"validateKey":response.data.Data,"phone":this.state.phoneText}
 						})
                     }else
-                        this.alert("无效验证码","错误");
+                        this.alert(this.Localization.FindPassword.validateError,this.Localization.Common.Error);
 				});
 			}else{
-                alert('验证码不能为空');
+                alert(this.Localization.FindPassword.validateEmptyError);
 			}
         }else{
-            alert('手机号码错误');
+            alert(this.Localization.FindPassword.phoneNumberErrorMessage);
         }
 	}
 
@@ -79,11 +80,11 @@ export default class FindPassword extends AppComponent {
 				<View style= {styles.container}>
 					<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}><Text style = {styles.goBack}>返回</Text></TouchableOpacity>
 					<View style = {styles.content}>
-						<Text style= {styles.loginTitle}>找回密码</Text>
+						<Text style= {styles.loginTitle}>{this.Localization.FindPassword.Title}</Text>
 						<TouchableOpacity>
 							<View style = {styles.area}>
-								<Text style = {styles.areaTitle}>国家/地区</Text>
-								<Text style = {styles.country}>中国</Text>
+								<Text style = {styles.areaTitle}>{this.Localization.FindPassword.location}</Text>
+								<Text style = {styles.country}>{this.Localization.FindPassword.country}</Text>
 								<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}/>
 							</View>
 						</TouchableOpacity>
@@ -97,7 +98,7 @@ export default class FindPassword extends AppComponent {
 								maxLength = {11}
 								keyboardType = {'numeric'}
 								placeholderTextColor = '#cecece'
-								placeholder = '请输入手机号码'
+								placeholder = {this.Localization.FindPassword.phonePlaceHolder}
 								underlineColorAndroid= {'transparent'}
 								onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 							></TextInput>
@@ -114,19 +115,19 @@ export default class FindPassword extends AppComponent {
 								style = {[styles.textInput,{marginLeft:-10,}]}
 								placeholderTextColor = '#cecece'
 								secureTextEntry = {true}
-								placeholder = '请输入验证码'
+								placeholder = {this.Localization.FindPassword.validatePlaceHolder}
 								underlineColorAndroid= {'transparent'}
 								onChangeText={(Text)=>{this.setState({validateText:Text})}}
 							></TextInput>
 							<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.sendValidate()}}>
-								<Text style= {styles.information}>获取验证码</Text>
+								<Text style= {styles.information}>{this.Localization.FindPassword.getValidateCode}</Text>
 							</TouchableOpacity>
 						</View>
                         {
                             this.state.phoneText && this.state.validateText?
                                 (
 									<TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.confirm();}}>
-										<Text style = {styles.loginText}>确定</Text>
+										<Text style = {styles.loginText}>{this.Localization.Common.Confirm}</Text>
 									</TouchableOpacity>)
                                 :(
 								<Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notSure.png')}></Image>

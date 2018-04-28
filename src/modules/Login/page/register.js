@@ -22,6 +22,8 @@ export default class Register extends AppComponent {
 
         currentObj = this;
         loginController = new LoginController();
+        this.register = this.register.bind(this);
+        this.getValidateCode = this.getValidateCode.bind(this);
 	}
 
     componentWillUnmount(){
@@ -32,7 +34,7 @@ export default class Register extends AppComponent {
 
 	getValidateCode = () =>{
         if(!this.state.phoneText){
-            this.alert("电话号码不能为空!")
+            this.alert(this.Localization.Register.phoneNumberErrorMessage)
             return;
         }
 
@@ -41,19 +43,19 @@ export default class Register extends AppComponent {
             currentObj.hideLoading();
             switch (response.data.Result){
                 case 2:
-                    currentObj.alert("请填写正确的手机号!");
+                    currentObj.alert(this.Localization.Register.phoneNumberErrorInfo);
                     break;
                 case 5001:
-                    currentObj.alert("达到今日次数限制!");
+                    currentObj.alert(this.Localization.Register.maxTimesError);
                     break;
 				case 5002:
-					currentObj.alert("手机号已存在!");
+					currentObj.alert(this.Localization.Register.phoneNumberExist);
 					break;
                 case 5003:
-                    currentObj.alert("手机号不存在!");
+                    currentObj.alert(this.Localization.Register.phoneNumberNotExist);
                     break;
                 case 5004:
-                    currentObj.alert("请求频繁，亲稍后再试!");
+                    currentObj.alert(this.Localization.Register.requestErrorMessage);
                     break;
 
 			}
@@ -70,17 +72,17 @@ export default class Register extends AppComponent {
                 currentObj.hideLoading();
                 switch (response.data.Result){
                     case 1:
-                        Alert.alert("成功","注册成功!");
+                        Alert.alert(this.Localization.Common.Success,this.Localization.Register.registerSuccess);
                         currentObj.route.pop(currentObj.props)
                         break;
                     case 5005:
-                        currentObj.alert("错误","验证码无效!");
+                        currentObj.alert(this.Localization.Common.Error,this.Localization.Register.requestErrorMessage);
                         break;
 
                 }
 			});
 		}else{
-            currentObj.alert("错误",'信息不能为空!');
+            currentObj.alert(this.Localization.Common.Error,this.Localization.Register.EmptyError);
 		}
 	}
 	cancelSend = (hideConfirm)=>{
@@ -97,27 +99,27 @@ export default class Register extends AppComponent {
 			<View style={styles.container}>
 				<View style = {styles.Title}>
 					<TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{this.route.pop(this.props);}}>
-						<Text style = {styles.goBack}>返回</Text>
+						<Text style = {styles.goBack}>{this.Localization.Common.Back}</Text>
 					</TouchableOpacity>
-					<Text style = {styles.phoneTitle}>手机号注册</Text>
+					<Text style = {styles.phoneTitle}>{this.Localization.Register.Title}</Text>
 				</View>
 				<View style={styles.content}>
 					<View style={styles.inputBox}>
 						<View style={styles.imageBox}>
-							<Text style = {styles.Nickname}>昵称</Text>
+							<Text style = {styles.Nickname}>{this.Localization.Register.nick}</Text>
 						</View>
 						<TextInput 
 							style = {[styles.textInput,{marginLeft:-10}]}
 							placeholderTextColor = '#bebebe' 
-							placeholder = '例如：王凯'
+							placeholder = {this.Localization.Register.nickPlaceHolder}
 							onChangeText={(Text)=>{this.setState({NicknameText:Text})}}
 							underlineColorAndroid= {'transparent'}
 						></TextInput>
 					</View>
-					<TouchableOpacity onPress={()=>{Alert.alert('更换地区')}}>
+					<TouchableOpacity onPress={()=>{Alert.alert(this.Localization.Register.changeLocation)}}>
 						<View style = {styles.area}>
-							<Text style = {styles.areaTitle}>国家/地区</Text>
-							<Text style = {styles.country}>中国+86</Text>
+							<Text style = {styles.areaTitle}>{this.Localization.Register.location}</Text>
+							<Text style = {styles.country}>{this.Localization.Register.country}</Text>
 							<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}></Image>
 						</View>
 					</TouchableOpacity>
@@ -131,7 +133,7 @@ export default class Register extends AppComponent {
 						keyboardType = {'numeric'}
 						maxLength = {11}
 						placeholderTextColor = '#bebebe' 
-						placeholder = '请输入手机号码' 
+						placeholder = {this.Localization.Register.phonePlaceHolder}
 						onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						underlineColorAndroid= {'transparent'}></TextInput>
 						
@@ -145,7 +147,7 @@ export default class Register extends AppComponent {
 						style = {[styles.textInput,{marginLeft:-10}]} 
 						placeholderTextColor = '#bebebe' 
 						secureTextEntry = {true} 
-						placeholder = '请输入密码' 
+						placeholder = {this.Localization.Register.passwordPlaceHolder}
 						onChangeText={(Text)=>{this.setState({passWordText:Text})}}
 						underlineColorAndroid= {'transparent'}></TextInput>
 					</View>
@@ -157,24 +159,24 @@ export default class Register extends AppComponent {
 						maxLength = {6}
 						style = {[styles.textInput,{marginLeft:-10}]} 
 						placeholderTextColor = '#bebebe'
-						placeholder = '请输入验证码'
+						placeholder = {this.Localization.Register.validatePlaceHolder}
 						keyboardType = {'numeric'}
 						onChangeText={(Text)=>{this.setState({codeText:Text})}}
 						underlineColorAndroid= {'transparent'}></TextInput>
 						<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.getValidateCode()}}>
-							<Text style= {styles.information}>获取验证码</Text>
+							<Text style= {styles.information}>{this.Localization.Register.getValidateCode}</Text>
 						</TouchableOpacity>
 					</View>
-					<Text style={{fontSize:checkDeviceHeight(24),color:'#bebebe'}}>密码由8-12位组成, 其中最少包括一个字母和数字，不能使用符号</Text>
+					<Text style={{fontSize:checkDeviceHeight(24),color:'#bebebe'}}>{this.Localization.Register.passwordInfo}</Text>
 
 							<TouchableOpacity disabled={!(this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NicknameText)} activeOpacity = {0.8} style={[styles.register,{backgroundColor:this.state.phoneText && this.state.passWordText&&this.state.codeText&&this.state.NicknameText?'#1aad19':'#ccc' }]} onPress = {()=>this.register()}>
-								<Text style = {[styles.registerText]}>注册</Text>
+								<Text style = {[styles.registerText]}>{this.Localization.Register.register}</Text>
 							</TouchableOpacity>
 
 					<View>
 						<Text style = {styles.explanation}>
-							点击上面的“注册”按钮,即表示你同意
-							<Text style={styles.protocol}>《APP软件许可及服务协议》</Text>和<Text style = {styles.protocol}>《APP隐私政策》</Text>
+                            {this.Localization.Register.info}
+							<Text style={styles.protocol}>{this.Localization.Register.protocolInfoTwo}</Text>{this.Localization.Register.plus}<Text style = {styles.protocol}>{this.Localization.Register.protocolInfo}</Text>
 						</Text>
 					</View>
 				</View>

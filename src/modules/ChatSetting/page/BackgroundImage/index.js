@@ -23,21 +23,7 @@ var ImagePicker = require('react-native-image-picker');
 let currentObj;
 let {width, height} = Dimensions.get('window');
 
-let originData = [
-    {
-        'key':'1',
-        'data': [{
-            'name': "从手机相册选择",
-            'icon': true,
-        },{
-            'name': "拍一张",
-            'icon': true,
-        },{
-            'name': "清除背景图片",
-            'icon': false,
-        }]
-    }
-];
+
 
 var cameraOptions = {
     allowsEditing:true,//允许编辑image
@@ -59,6 +45,22 @@ export default class PrivateChatBackgroundImage extends AppComponent {
         this._toDoSome = this._toDoSome.bind(this);
         this.imController = this.appManagement.getIMLogicInstance();
         currentObj = this;
+
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': this.Localization.ChatSettingBackgroundImage.chooseFromLibrary,
+                    'icon': true,
+                },{
+                    'name': this.Localization.ChatSettingBackgroundImage.takePhoto,
+                    'icon': true,
+                },{
+                    'name': this.Localization.ChatSettingBackgroundImage.clear,
+                    'icon': false,
+                }]
+            }
+        ];
     }
 
     componentWillUnmount(){
@@ -93,13 +95,13 @@ export default class PrivateChatBackgroundImage extends AppComponent {
 
     _toDoSome = (name)=>{
         switch (name){
-            case '拍一张':
+            case this.Localization.ChatSettingBackgroundImage.takePhoto:
                 this.useCamera();
                 break;
-            case '从手机相册选择':
+            case this.Localization.ChatSettingBackgroundImage.chooseFromLibrary:
                 this.useLocal();
                 break;
-            case '清除背景图片':
+            case this.Localization.ChatSettingBackgroundImage.clear:
                 this.imController.setConversationBackgroundImage("");
                 break;
             default:
@@ -142,7 +144,7 @@ export default class PrivateChatBackgroundImage extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{this.route.pop(this.props)}}}
-                    heading={'聊天背景'}
+                    heading={this.Localization.ChatSettingBackgroundImage.Title}
                 />
 
                 <SectionList
@@ -150,7 +152,7 @@ export default class PrivateChatBackgroundImage extends AppComponent {
                     // ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
-                    sections={originData}
+                    sections={this.originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />

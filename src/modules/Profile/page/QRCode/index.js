@@ -49,7 +49,7 @@ class QRCodeContent extends AppComponent {
         return(
             <View style={styles.container}>
                 <MyNavigationBar
-                    heading={'二维码'}
+                    heading={this.Localization.QRCode.Title}
                     left={{func:()=>{this.route.pop(this.props)}}}
                 />
                 <View style={styles.Box}>
@@ -58,7 +58,7 @@ class QRCodeContent extends AppComponent {
                             <ImagePlaceHolder style = {styles.userHeadImage} imageUrl = {this.props.headImageUrl}/>
                             <View style={styles.userDataBox}>
                                 <Text style={styles.userName}>{this.props.nickname}</Text>
-                                <Text style={styles.address}>中国</Text>
+                                <Text style={styles.address}>{this.Localization.QRCode.location}</Text>
                             </View>
                         </View>
                         <View style={styles.QRCode}>

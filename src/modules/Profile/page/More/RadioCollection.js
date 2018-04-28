@@ -17,16 +17,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 let currentObj;
 let {width, height} = Dimensions.get('window');
 
-let originData = [
-    {
-        'key':'1',
-        'data': [{
-            'name': "男",
-        },{
-            'name': "女",
-        }]
-    }
-];
 export default class RadioCollection extends AppComponent {
     constructor(props){
         super(props);
@@ -37,6 +27,18 @@ export default class RadioCollection extends AppComponent {
         this.cache = props.gender;
         this.setGender = this.setGender.bind(this);
         this.userController = this.appManagement.getUserLogicInstance();
+
+
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': this.Localization.Gender.male,
+                },{
+                    'name': this.Localization.Gender.female,
+                }]
+            }
+        ];
     }
 
     componentWillUnmount(){
@@ -52,12 +54,12 @@ export default class RadioCollection extends AppComponent {
 
     _toDoSome = (name)=>{
         switch (name){
-            case '女':
+            case this.Localization.Gender.female:
                 this.setState({
                     gender:2
                 });
                 break;
-            case '男':
+            case this.Localization.Gender.male:
                 this.setState({
                     gender:1
                 });
@@ -80,7 +82,7 @@ export default class RadioCollection extends AppComponent {
     };
 
     _checkIcon = (name) =>{
-        if((this.state.gender == 1 && name == "男") || (this.state.gender == 2 && name == "女")){
+        if((this.state.gender == 1 && name == this.Localization.Gender.male) || (this.state.gender == 2 && name == this.Localization.Gender.female)){
             return <View style={styles.itemRightBox}>
                 <Icon name="check" size={35} color="#fff" style={styles.arrow}/>
             </View>
@@ -118,8 +120,8 @@ export default class RadioCollection extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{this.route.pop(this.props)}}}
-                    heading={'设置性别'}
-                    right={{func:()=>{this.setGender()},text:'完成'}}
+                    heading={this.Localization.Gender.Title}
+                    right={{func:()=>{this.setGender()},text:this.Localization.Common.Complete}}
                 />
 
                 <SectionList
@@ -127,7 +129,7 @@ export default class RadioCollection extends AppComponent {
                     // ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
-                    sections={originData}
+                    sections={this.originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />

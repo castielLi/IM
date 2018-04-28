@@ -24,23 +24,25 @@ import {
     bindActionCreators
 } from 'redux';
 import * as unReadMessageActions from '../../../../modules/MainTabbar/reducer/action';
-let originData = [
-    {
-        'key':'1',
-        'data': [{
-            'name': "修改密码",
-        },{
-            'name': "设置服务器地址",
-        },{
-            'name': "版本",
-        }]
-    }
-];
 
 class Setting extends AppComponent {
     constructor(props){
         super(props);
         this._toDoSome = this._toDoSome.bind(this);
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': this.Localization.Setting.changePassword,
+                },{
+                    'name': this.Localization.Setting.host,
+                },{
+                    'name': this.Localization.Setting.version,
+                }]
+            }
+        ];
+        this._toDoSome = this._toDoSome.bind(this);
+        this._fillingValue = this._fillingValue.bind(this);
     }
 
     componentWillUnmount(){
@@ -74,10 +76,10 @@ class Setting extends AppComponent {
 
     _toDoSome = (name)=>{
         switch (name){
-            case '修改密码':
+            case this.Localization.Setting.changePassword:
                 this.route.push(this.props,{key: 'Me',routeId: 'ChangePassword',params:{}});
                 break;
-            case '设置服务器地址':
+            case this.Localization.Setting.host:
                 this.route.push(this.props,{key: 'Me',routeId: 'ConfigSetting',params:{}});
                 break;
             default:
@@ -87,7 +89,7 @@ class Setting extends AppComponent {
 
     _fillingValue=(info)=>{
         switch (info.item.name){
-            case '版本':
+            case this.Localization.Setting.version:
                 return(
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemContent}>{this.getVersion()}</Text>
@@ -117,18 +119,18 @@ class Setting extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{this.route.pop(this.props)}}}
-                    heading={'设置'}
+                    heading={this.Localization.Setting.Title}
                 />
                 <SectionList
                     keyExtractor={(item,index)=>("index"+index+item)}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
-                    sections={originData}
+                    sections={this.originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />
                 <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.loginOut} style={[styles.sendMessageBox,{marginBottom:20}]}>
-                    <Text style={styles.sendMessage}>退出登录</Text>
+                    <Text style={styles.sendMessage}>{this.Localization.Setting.logout}</Text>
                 </TouchableHighlight>
             </View>
         )

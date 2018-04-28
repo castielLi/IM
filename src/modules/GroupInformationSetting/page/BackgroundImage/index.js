@@ -23,18 +23,6 @@ var ImagePicker = require('react-native-image-picker');
 let currentObj;
 let {width, height} = Dimensions.get('window');
 
-let originData = [
-    {
-        'key':'1',
-        'data': [{
-            'name': "从手机相册选择",
-        },{
-            'name': "拍一张",
-        },{
-            'name':'清除背景图片'
-        }]
-    }
-];
 
 var cameraOptions = {
     allowsEditing:true,//允许编辑image
@@ -56,6 +44,19 @@ export default class GroupBackgroundImage extends AppComponent {
         this._toDoSome = this._toDoSome.bind(this);
         this.imController = this.appManagement.getIMLogicInstance();
         currentObj = this;
+
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': this.Localization.GroupSettingBackgroundImage.chooseFromLibrary,
+                },{
+                    'name': this.Localization.GroupSettingBackgroundImage.takePhoto,
+                },{
+                    'name':this.Localization.GroupSettingBackgroundImage.clear
+                }]
+            }
+        ];
     }
 
     componentWillUnmount(){
@@ -90,13 +91,13 @@ export default class GroupBackgroundImage extends AppComponent {
 
     _toDoSome = (name)=>{
         switch (name){
-            case '拍一张':
+            case this.Localization.GroupSettingBackgroundImage.takePhoto:
                 this.useCamera();
                 break;
-            case '从手机相册选择':
+            case this.Localization.GroupSettingBackgroundImage.chooseFromLibrary:
                 this.useLocal();
                 break;
-            case '清除背景图片':
+            case this.Localization.GroupSettingBackgroundImage.clearMessage:
                 this.imController.setConversationBackgroundImage("");
                 break;
             default:
@@ -138,7 +139,7 @@ export default class GroupBackgroundImage extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{this.route.pop(this.props)}}}
-                    heading={'聊天背景'}
+                    heading={this.Localization.GroupSettingBackgroundImage.Title}
                 />
 
                 <SectionList
@@ -146,7 +147,7 @@ export default class GroupBackgroundImage extends AppComponent {
                     // ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
-                    sections={originData}
+                    sections={this.originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />

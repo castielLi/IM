@@ -54,10 +54,10 @@ class ChooseClient extends AppComponent {
 
     componentWillMount(){
         if(this.props.build){
-            title = '发起群聊'
+            title = this.Localization.ChooseClient.startGroupChat
         }
         else{
-            title = '选中联系人'
+            title = this.Localization.ChooseClient.chooseClient
         }
     }
     componentDidMount(){
@@ -107,7 +107,7 @@ class ChooseClient extends AppComponent {
             <View style={styles.headerModule}>
                 <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._goToSelectGroup}>
                     <View  style={styles.headerBox} >
-                        <Text style={styles.headerText}>选择一个群</Text>
+                        <Text style={styles.headerText}>{this.Localization.ChooseClient.chooseOneGroup}</Text>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -163,13 +163,13 @@ class ChooseClient extends AppComponent {
                 return;
             }
             currentObj.showLoading();
-            let groupName = this.currentAccount.Nickname + "发起的群聊";
+            let groupName = this.currentAccount.Nickname + this.Localization.ChooseClient.startGroupChatName;
             this.userController.createGroup(groupName,accountStr,(result)=>{
                 currentObj.hideLoading();
                 if(result.Result == 1){
                     currentObj.route.pushifExistRoute(currentObj.props,{key:'ChatDetail',routeId:'ChatDetail',params:{client:result.Data,type:"group",Nick:groupName}});
                 }else{
-                    this.alert('创建失败');
+                    this.alert(this.Localization.ChooseClient.createGroupFailed);
                 }
             });
         }else{
@@ -192,7 +192,7 @@ class ChooseClient extends AppComponent {
 
                     },index)
                 }else{
-                    this.alert('添加成员失败');
+                    this.alert(this.Localization.ChooseClient.addMemberFailed);
                 }
             });
         }
@@ -206,15 +206,15 @@ class ChooseClient extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left={{func:()=>{this.route.pop(this.props)},text:'取消'}}
+                    left={{func:()=>{this.route.pop(this.props)},text:this.Localization.Common.Cancel}}
                     heading={title}
-                    right={{func:()=>{this._rightButton()},text:'完成',disabled:!this.state.refresh}}
+                    right={{func:()=>{this._rightButton()},text:this.Localization.Common.Complete,disabled:!this.state.refresh}}
                 />
                 <View style={styles.listHeaderBox}>
                     <TextInput
                         style={styles.search}
                         underlineColorAndroid = 'transparent'
-                        placeholder = '搜索'
+                        placeholder = {this.Localization.ChooseClient.search}
                         defaultValue = {this.state.text}
                         onChangeText={(v)=>{this.setState({text:v,isShowFlatList:v?true:false})}}
                     />

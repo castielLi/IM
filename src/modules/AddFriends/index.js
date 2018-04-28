@@ -29,22 +29,13 @@ export default class AddFriends extends AppComponent {
         this.userController = undefined;
     }
 
-    static defaultProps = {
-        addType:[
-            {typeName:'雷达加朋友',intro:'添加身边的朋友',typeID:1,source:require('./resource/radar.png')},
-            {typeName:'面对面建群',intro:'与身边的朋友进入同一个群聊',typeID:2,source:require('./resource/face.png')},
-            {typeName:'扫一扫',intro:'扫描二维码名片',typeID:3,source:require('./resource/scanning.png')},
-            {typeName:'手机联系人',intro:'添加或邀请通讯录中的朋友',typeID:4,source:require('./resource/contact.png')},
-            {typeName:'公众号',intro:'获取更多资讯和服务',typeID:5,source:require('./resource/public.png')}
-        ]
-    };
 
     static propTypes = {
     };
 
     _title =  () => {
         return {
-            title: "添加朋友",
+            title: this.Localization.AddFriend.AddFriend,
             tintColor:'#fff',
         }
     }
@@ -59,7 +50,7 @@ export default class AddFriends extends AppComponent {
         return(
             <View style={styles.container}>
                 <MyNavigationBar
-                    heading={'添加朋友'}
+                    heading={this.Localization.AddFriend.AddFriend}
                     left={{func:()=>{this.route.pop(this.props)}}}
                 />
                 <View>
@@ -67,7 +58,7 @@ export default class AddFriends extends AppComponent {
                         <View style={styles.searchView}>
                             <View style={styles.search}>
                                 <Icon name="search" size={22} color="#66CD00" style={styles.searchIcon}/>
-                                <Text style={styles.searchText}>奇信号/QQ号/手机号</Text>
+                                <Text style={styles.searchText}>{this.Localization.AddFriend.PlaceHolder}</Text>
                             </View>
                             <View style={styles.searchLine}/>
                         </View>

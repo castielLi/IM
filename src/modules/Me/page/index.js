@@ -27,43 +27,6 @@ import ImagePlaceHolder from '../../../Core/Component/PlaceHolder/ImagePlaceHold
 let currentObj = undefined;
 
 
-let originData = [
-    // {
-    //     'key':'1',
-    //     'data': [{
-    //         'name': "钱包",
-    //     }]
-    // },
-    // {
-    //     'key':'2',
-    //     'data': [{
-    //         'name': "卡包",
-    //     }, {
-    //         'name': "收藏",
-    //     }, {
-    //         'name': "相册",
-    //     }, {
-    //         'name': "表情",
-    //     }]
-    // },
-    {
-        'key':'1',
-        'data': [{
-            'name': "昵称",
-        },{'name':'性别'}
-        ,{
-            'name': "二维码",
-        }]
-    },
-    {
-        'key':'2',
-        'data': [{
-            'name': "设置",
-        }]
-    },
-
-];
-
 class Me extends AppComponent {
     constructor(props){
         super(props);
@@ -78,6 +41,29 @@ class Me extends AppComponent {
         };
 
         currentObj = this;
+
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': this.Localization.Me.nick,
+                },{'name':this.Localization.Me.gender}
+                    ,{
+                        'name': this.Localization.Me.QRcode,
+                    }]
+            },
+            {
+                'key':'2',
+                'data': [{
+                    'name': this.Localization.Me.setting,
+                }]
+            },
+
+        ];
+
+        this._genderType = this._genderType.bind(this);
+        this._fillingValue = this._fillingValue.bind(this);
+        this._renderHeader = this._renderHeader.bind(this);
     }
 
     componentWillUnmount(){
@@ -114,16 +100,16 @@ class Me extends AppComponent {
     toDoSome = (name)=>{
         let {name:nickname,headImageUrl} = this.state;
         switch (name){
-            case '昵称':
+            case this.Localization.Me.nick:
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
-            case '性别':
+            case this.Localization.Me.gender:
                 this.route.push(this.props,{key: 'Profile',routeId: 'GenderChange',params:{"gender":this.state.gender,"onChangeGender":this.onChangGender}});
                 break;
-            case '二维码':
+            case this.Localization.Me.QRcode:
                 this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{nickname,headImageUrl}});
                 break;
-            case '设置':
+            case this.Localization.Me.setting:
                 this.route.push(this.props,{key: 'Me',routeId: 'Setting',params:{}});
                 break;
             default:
@@ -157,24 +143,24 @@ class Me extends AppComponent {
     _genderType = ()=>{
         switch (this.state.gender){
             case 1:
-                return '男';
+                return this.Localization.Me.male;
             case 2:
-                return '女';
+                return this.Localization.Me.female;
             default:
-                return '未设置';
+                return this.Localization.Me.unsetting;
         }
     };
 
     _fillingValue=(info)=>{
         switch (info.item.name){
-            case '二维码':
+            case this.Localization.Me.QRcode:
                 return(
                     <View style={styles.itemRightBox}>
                         <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 );
-            case '性别':
+            case this.Localization.Me.gender:
                 return (
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemContent}>{this._genderType()}</Text>
@@ -216,7 +202,7 @@ class Me extends AppComponent {
                         <ImagePlaceHolder style={styles.topPic} imageUrl ={this.state.headImageUrl}/>
                         <View style={styles.topInfo}>
                             <Text style={styles.headerText}>{this.state.name}</Text>
-                            <Text style={styles.itemSmallText}>{'云信号：'+this.currentAccount.Account}</Text>
+                            <Text style={styles.itemSmallText}>{this.Localization.Me.cloudId +this.currentAccount.Account}</Text>
                         </View>
                     </View>
                     <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -231,7 +217,7 @@ class Me extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left = {'云信'}
+                    left = {this.Localization.Common.AppName}
                     right={[
                         {func:()=>{
                             this.route.push(this.props,{key: 'Search',routeId: 'Search'});
@@ -244,7 +230,7 @@ class Me extends AppComponent {
                     ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
-                    sections={originData}
+                    sections={this.originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />

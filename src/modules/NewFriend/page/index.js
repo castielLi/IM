@@ -40,6 +40,8 @@ class NewFriend extends AppComponent {
         currentObj = this;
         this.applyController =  this.appManagement.getApplyLogicInstance();
         this.userController = this.appManagement.getUserLogicInstance();
+        this.applyMsgStyle = this.applyMsgStyle.bind(this);
+        this.acceptFriend = this.acceptFriend.bind(this);
     }
 
     componentWillUnmount(){
@@ -72,9 +74,9 @@ class NewFriend extends AppComponent {
         let callback = (result)=>{
             currentObj.hideLoading();
             if(result.Result == 1){
-                this.alert('接受好友申請成功',"提醒")
+                this.alert(this.Localization.NewFriend.successMessage,this.Localization.Common.Info)
             }else{
-                this.alert('接受好友申請失败',"错误")
+                this.alert(this.Localization.NewFriend.errorMessage,this.Localization.Common.Error)
             }
         };
         this.applyController.acceptFriend(key,callback);
@@ -82,7 +84,7 @@ class NewFriend extends AppComponent {
     }
 
     deleteApply = (index)=>{
-        this.alert('删除好友申请',"提醒")
+        this.alert(this.Localization.NewFriend.deleteApplyFriend,this.Localization.Common.Info)
     };
 
     applyMsgStyle = (rowID,rowData)=>{
@@ -94,16 +96,16 @@ class NewFriend extends AppComponent {
                     onPress={()=>{this.acceptFriend(rowData.key)}}
                     style={styles.btnBox}>
                     <View style={styles.btnView}>
-                        <Text style={styles.btnText}>接受</Text>
+                        <Text style={styles.btnText}>{this.Localization.NewFriend.accept}</Text>
                     </View>
                 </TouchableHighlight>
             )
         }
         else if (rowData.status === ApplyFriendEnum.ADDED){
-            return <Text style={styles.arrow}>{'已添加'}</Text>
+            return <Text style={styles.arrow}>{this.Localization.NewFriend.added}</Text>
         }
         else{
-           return <Text style={styles.arrow}>{'已过期'}</Text>
+           return <Text style={styles.arrow}>{this.Localization.NewFriend.outOfDate}</Text>
         }
     }
 
@@ -112,12 +114,6 @@ class NewFriend extends AppComponent {
         return <ImagePlaceHolder style={styles.headPic}
                           imageUrl ={path}
         />
-
-        // if(path && path !== ' '){
-        //     return 	<Image style = {styles.headPic} source = {{uri:path}}/>
-        // }else{
-        //     return 	<Image style = {styles.headPic} source = {require('../resource/avator.jpg')}/>
-        // }
     }
 
     _goToClientInfo=(account,applyKey)=>{
@@ -130,26 +126,6 @@ class NewFriend extends AppComponent {
 
         return(
             <View>
-                {/*<Swipeout*/}
-                    {/*right = {*/}
-                        {/*[{*/}
-                            {/*text:'删除',*/}
-                            {/*type:'delete',*/}
-                            {/*onPress:()=>{this.deleteApply(rowID)}*/}
-                        {/*}]*/}
-                    {/*}*/}
-                    {/*rowID = {rowID}*/}
-                    {/*sectionID = {sectionID}*/}
-                    {/*close = {!(this.state.sectionID === sectionID && this.state.rowID === rowID)}*/}
-                    {/*onOpen={(sectionID, rowID) => {*/}
-                        {/*this.setState({*/}
-                            {/*sectionID:sectionID,*/}
-                            {/*rowID:rowID,*/}
-                        {/*})*/}
-                    {/*}}*/}
-                    {/*autoClose={true}*/}
-                {/*>*/}
-
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this._goToClientInfo(rowData.sender,rowData.key)}>
                         <View  style={styles.itemBox}>
                             <View style={styles.basicBox}>
@@ -162,7 +138,6 @@ class NewFriend extends AppComponent {
                             {this.applyMsgStyle(rowID,rowData)}
                         </View>
                     </TouchableHighlight>
-                {/*</Swipeout>*/}
             </View>
         )
     };
@@ -173,18 +148,11 @@ class NewFriend extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
-                    heading={"新的朋友"}
-                    right={{func:()=>{this.goToAddFriends()},text:'添加朋友'}}
+                    left={{func:()=>{this.route.pop(this.props)},text:this.Localization.NewFriend.contact}}
+                    heading={this.Localization.NewFriend.Title}
+                    right={{func:()=>{this.goToAddFriends()},text:this.Localization.NewFriend.addFriend}}
                 />
                 <ScrollView>
-                    {/*<View style={styles.listHeaderBox}>*/}
-                        {/*<TextInput*/}
-                            {/*style={styles.search}*/}
-                            {/*underlineColorAndroid = 'transparent'*/}
-                        {/*>*/}
-                        {/*</TextInput>*/}
-                    {/*</View>*/}
                     <ListView
                         dataSource = {this.state.dataSource.cloneWithRows(this.state.applyRecord)}
                         renderRow = {this._renderRow}

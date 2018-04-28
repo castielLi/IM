@@ -28,7 +28,15 @@ class Start extends AppComponent {
     }
 
     componentWillMount(){
-        // this.appManagement.dispatchAppTokenState(AppTokenStateEnum.Init)
+    }
+
+    componentWillUnmount(){
+        super.componentWillUnmount();
+    }
+
+
+    componentDidMount(){
+        this.loading.show();
         Contacts.getAll((err,contacts)=>{
             if(err === 'denied'){
                 //error
@@ -53,15 +61,6 @@ class Start extends AppComponent {
             }
         });
         this.appManagement.Init()
-    }
-
-    componentWillUnmount(){
-        super.componentWillUnmount();
-    }
-
-
-    componentDidMount(){
-        this.loading.show();
     }
 
     render() {

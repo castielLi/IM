@@ -72,13 +72,13 @@ class Validate extends AppComponent {
                     currentObj.props.changeAddFriendButton(true);
                     currentObj.route.pop(currentObj.props);
                 }else if(typeof result.Data === 'string'){
-                    currentObj.alert("申请消息已经发送,等待对方验证","提醒",
+                    currentObj.alert(currentObj.Localization.Validate.ValidateMessage,currentObj.Localization.Common.Info,
                         function(){
                             currentObj.route.pop(currentObj.props);
                         });
                 }
             }else{
-                currentObj.alert('发送好友申请失败');
+                currentObj.alert(currentObj.Localization.Validate.ValidateErrorMessage);
             }
         });
     }
@@ -88,14 +88,14 @@ class Validate extends AppComponent {
         return(
             <View style={styles.container}>
                 <MyNavigationBar
-                    heading={'验证申请'}
+                    heading={this.Localization.Validate.Title}
                     left={{func:()=>{this.route.pop(this.props)}}}
-                    right={{func:this.sendApplyMessage,text:'发送'}}
+                    right={{func:this.sendApplyMessage,text:this.Localization.Validate.Send}}
                 />
                 <View style={styles.Box}>
                     <View>
                         <View style={styles.textBox}>
-                            <Text style={styles.rowTitle}>你需要发送验证申请，等对方通过</Text>
+                            <Text style={styles.rowTitle}>{this.Localization.Validate.NeedValidateMessage}</Text>
                         </View>
                         <View style={styles.validateView}>
                             <TextInput
@@ -109,11 +109,11 @@ class Validate extends AppComponent {
                     </View>
                     <View style={styles.rowBox}>
                         <View style={styles.textBox}>
-                            <Text style={styles.rowTitle}>朋友圈权限</Text>
+                            <Text style={styles.rowTitle}>{this.Localization.Validate.RightOfCircle}</Text>
                         </View>
                         <View style={styles.rowSetting}>
                             <View style={styles.textBox}>
-                                <Text style={styles.rowText}>不让他(她)看我的朋友圈</Text>
+                                <Text style={styles.rowText}>{this.Localization.Validate.ForbidWatchCircle}</Text>
                             </View>
                             <Switch
                                 value={this.state.privilege}

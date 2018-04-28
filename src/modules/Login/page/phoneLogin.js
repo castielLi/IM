@@ -25,6 +25,8 @@ class PhoneLogin extends AppComponent {
         };
         this.addUser = this.addUser.bind(this)
         currentObj = this;
+        this.changeShowConfirm = this.changeShowConfirm.bind(this);
+        this.addUser = this.addUser.bind(this);
     }
     //当点击短信验证的时候检测手机号码的方法
     changeShowConfirm=()=>{
@@ -33,7 +35,7 @@ class PhoneLogin extends AppComponent {
                 showConfirm:true,
             });
         }else{
-            alert('手机号码错误');
+            alert(this.Localization.Login.phoneNumberErrorMessage);
         }
     }
 
@@ -60,7 +62,7 @@ class PhoneLogin extends AppComponent {
     addUser = ()=>{
 
         if(!checkReg(1,this.state.phoneText)){
-            this.alert("账号格式不正确")
+            this.alert(this.this.Localization.Login.accountErrorMessage)
             return;
         }
 
@@ -74,19 +76,19 @@ class PhoneLogin extends AppComponent {
             if(response.Result !== 1){
                 switch (response.Result){
                     case 1001:
-                        currentObj.alert("会员不存在","错误");
+                        currentObj.alert(this.this.Localization.Login.memberDoesntExist,this.Localization.Common.Error);
                         break;
                     case 1002:
-                        currentObj.alert("账号被冻结,请您联系工作人员","错误");
+                        currentObj.alert(this.this.Localization.Login.accountFreezen,this.Localization.Common.Error);
                         break;
                     case 1003:
-                        currentObj.alert("账号或者密码错误","错误");
+                        currentObj.alert(this.this.Localization.Login.accountOrPasswordError,this.Localization.Common.Error);
                         break;
                     case 6001:
-                        currentObj.alert("网络出现故障，请检查当前设备网络连接状态","错误");
+                        currentObj.alert(this.this.Localization.Login.networkError,this.Localization.Common.Error);
                         break;
                     default:
-                        currentObj.alert("登录请求出错","错误");
+                        currentObj.alert(this.this.Localization.Login.requestError,this.Localization.Common.Error);
                         break;
                 }
                 return;
@@ -110,11 +112,11 @@ class PhoneLogin extends AppComponent {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 			<KeyboardAvoidingView behavior="position" style={styles.container}   keyboardVerticalOffset={-150}>
 				<View  style  = {styles.content}>
-					<Text style= {styles.loginTitle}>使用手机号登录</Text>
+					<Text style= {styles.loginTitle}>{this.this.Localization.Login.Title}</Text>
 					<TouchableOpacity>
 						<View style = {styles.area}>
-							<Text style = {styles.areaTitle}>国家/地区</Text>
-							<Text style = {styles.country}>中国</Text>
+							<Text style = {styles.areaTitle}>{this.this.Localization.Login.location}</Text>
+							<Text style = {styles.country}>{this.this.Localization.Login.country}</Text>
 							<Image style= {styles.rightLogo} source = {require('../resource/jiantou.png')}/>
 						</View>
 					</TouchableOpacity>
@@ -131,7 +133,7 @@ class PhoneLogin extends AppComponent {
 							keyboardType = {'numeric'}
 							maxLength = {11}
 							placeholderTextColor = '#cecece'
-							placeholder = '请输入手机号码'
+							placeholder = {this.this.Localization.Login.phonePlaceHolder}
 							underlineColorAndroid= {'transparent'}
 							onChangeText={(Text)=>{this.setState({phoneText:Text})}}
 						/>
@@ -151,14 +153,14 @@ class PhoneLogin extends AppComponent {
 							style = {[styles.textInput,{marginLeft:-10,}]}
 							placeholderTextColor = '#cecece'
 							secureTextEntry = {true}
-							placeholder = '请输入密码'
+							placeholder = {this.this.Localization.Login.passwordPlaceHolder}
 							underlineColorAndroid= {'transparent'}
 							onChangeText={(Text)=>{this.setState({passWordText:Text})}}
 						/>
                         {
                             !this.state.textMessage?(
 								<TouchableOpacity style = {styles.codeBtn} onPress = {()=>{this.changeShowConfirm()}}>
-									<Text style= {styles.information}>获取验证码</Text>
+									<Text style= {styles.information}>{this.this.Localization.Login.getValidateCode}</Text>
 								</TouchableOpacity>):null
                         }
 					</View>
@@ -170,10 +172,10 @@ class PhoneLogin extends AppComponent {
 					<View style= {styles.footer}>
 						{/*<TouchableOpacity onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'})}} activeOpacity = {0.8}><Text style= {styles.footerText}>忘记密码</Text></TouchableOpacity>*/}
 						<Touch onPress = {()=>{this.route.push(this.props,{key:'FindPassword',routeId: 'FindPassword'});}} activeOpacity = {0.8}>
-                            <Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>忘记密码</Text>
+                            <Text style= {[styles.footerText,{marginRight:checkDeviceWidth(110)}]}>{this.this.Localization.Login.forgetPassword}</Text>
                         </Touch>
                         <Touch onPress = {()=>{this.route.push(this.props,{key:'Register',routeId: 'Register'})}} activeOpacity = {0.8}>
-                            <Text style= {styles.footerText}>注册账号</Text>
+                            <Text style= {styles.footerText}>{this.this.Localization.Login.register}</Text>
                         </Touch>
                     </View>
 				</View>

@@ -64,7 +64,7 @@ class ScanCode extends AppComponent {
                     left = {{func:()=>{
                         this.route.pop(this.props)
                     }}}
-                    heading={'二维码/条码'}
+                    heading={this.Localization.ScanCode.Title}
                 />
                 < QRScannerView
                     onScanResultReceived={this.barcodeReceived.bind(this)}

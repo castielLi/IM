@@ -36,6 +36,7 @@ class GroupList extends AppComponent {
         this.relationStore = [];
         currentObj = this;
         this.userController = this.appManagement.getUserLogicInstance();
+        this._renderHeader = this._renderHeader.bind(this);
     }
 
     componentWillUnmount(){
@@ -105,7 +106,7 @@ class GroupList extends AppComponent {
                     <TextInput
                         style={styles.search}
                         underlineColorAndroid = 'transparent'
-                        placeholder={'搜索'}
+                        placeholder={this.Localization.GroupList.searchPlaceHolder}
                         onChangeText={this._searchKey}
                     />
                 </View>
@@ -116,7 +117,7 @@ class GroupList extends AppComponent {
         return <View style={styles.ItemSeparator}/>
     };
     _renderFooter = () =>{
-        return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+'个群聊'}</Text></View>
+        return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{this.relationStore.length+this.Localization.GroupList.groupCount}</Text></View>
     };
 
     render() {
@@ -124,8 +125,8 @@ class GroupList extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    left={{func:()=>{this.route.pop(this.props)},text:'通讯录'}}
-                    heading={'群聊'}
+                    left={{func:()=>{this.route.pop(this.props)},text:this.Localization.GroupList.leftLabel}}
+                    heading={this.Localization.GroupList.Title}
                 />
                 <FlatList
                     keyExtractor={(item,index)=>("index"+index+item)}

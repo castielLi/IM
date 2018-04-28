@@ -60,7 +60,7 @@ export default class Search extends AppComponent {
                         searchResult:params
                     })
                 }else{
-                    currentObj.alert("没有搜索到本地相应的用户(群)信息","提醒")
+                    currentObj.alert(this.Localization.Search.message,this.Localization.Common.Info)
                 }
                 break;
         }
@@ -110,7 +110,7 @@ export default class Search extends AppComponent {
                     left={{func:()=>{
                         this.route.pop(this.props);
                     }}}
-                    heading={"搜索"} />
+                    heading={this.Localization.Search.Title} />
                 <View style={styles.listHeaderBox}>
                     <View style={styles.searchBox}>
                         <Icon name="search" size={20} color="#aaa" />
@@ -118,7 +118,7 @@ export default class Search extends AppComponent {
                             ref={e=>this._TextInput = e}
                             style={styles.search}
                             underlineColorAndroid = 'transparent'
-                            placeholder = '好友昵称/好友云信号/群昵称'
+                            placeholder = {this.Localization.Search.placeHolder}
                             defaultValue = {this.state.text}
                             onChangeText={(v)=>{this.setState({text:v})}}
                         >
@@ -136,7 +136,7 @@ export default class Search extends AppComponent {
                             <Icon name="search" size={20} color="#fff" />
                         </View>
                         <Text style={{marginLeft:10}}>
-                            <Text style={{fontSize:18,color:'#000'}}>搜索：</Text>
+                            <Text style={{fontSize:18,color:'#000'}}>{this.Localization.Search.search}</Text>
                             <Text style={{fontSize:16,color:'green'}}>{this.state.text}</Text>
                         </Text>
                     </View>

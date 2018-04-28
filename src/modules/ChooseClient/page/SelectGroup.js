@@ -64,7 +64,7 @@ export default class SelectGroup extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
-                    heading={'选择群聊'}
+                    heading={this.Localization.SelectGroup.Title}
                 />
                 <FlatList
                     data={this.state.GroupsData}

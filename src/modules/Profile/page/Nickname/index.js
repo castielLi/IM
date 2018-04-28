@@ -43,7 +43,7 @@ class ModifyNickName extends AppComponent {
 
     finished = ()=>{
         if(this.state.nickname == ""){
-            this.alert("昵称不能为空",'错误');
+            this.alert(this.Localization.Nickname.errorMessage,this.Localization.Common.Error);
             return;
         }
 
@@ -60,9 +60,9 @@ class ModifyNickName extends AppComponent {
         return(
             <View style={styles.container}>
                 <MyNavigationBar
-                    heading={'设置名字'}
-                    left={{func:()=>{this.route.pop(this.props)},text:"取消"}}
-                    right={{func:this.finished,text:'完成'}}
+                    heading={this.Localization.Nickname.Title}
+                    left={{func:()=>{this.route.pop(this.props)},text:this.Localization.Common.Cancel}}
+                    right={{func:this.finished,text:this.Localization.Common.Complete}}
                 />
                 <View style={styles.Box}>
                     <View>

@@ -107,13 +107,13 @@ class InformationSetting extends AppComponent {
         return (
             <View style={styles.container}>
                 <MyNavigationBar
-                    heading={"资料设置"}
-                    left={{func:()=>{this.route.pop(this.props)},text:'详细资料'}}
+                    heading={this.Localization.InfomationSetting.Title}
+                    left={{func:()=>{this.route.pop(this.props)},text:this.Localization.InfomationSetting.leftLabel}}
                 />
                 <View>
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>不让他看我朋友圈</Text>
+                            <Text style={styles.remarks}>{this.Localization.InfomationSetting.forbidWatchCricle}</Text>
                             <Switch
                                 value={this.state.notSeeMyZoom}
                                 onValueChange={this.changeNotSeeMyZoom}
@@ -122,7 +122,7 @@ class InformationSetting extends AppComponent {
                     </View>
                     <View>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>不看他朋友圈</Text>
+                            <Text style={styles.remarks}>{this.Localization.InfomationSetting.unWatchCricle}</Text>
                             <Switch
                                 value={this.state.notSeeHisZoom}
                                 onValueChange={this.changeNotSeeHisZoom}
@@ -131,7 +131,7 @@ class InformationSetting extends AppComponent {
                     </View>
                     <View style={{marginTop:15,borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>加入黑名单</Text>
+                            <Text style={styles.remarks}>{this.Localization.InfomationSetting.addBlackList}</Text>
                             <Switch
                                 value={this.state.joinBlackList}
                                 onValueChange={this.changeJoinBlackList}
@@ -139,7 +139,7 @@ class InformationSetting extends AppComponent {
                         </View>
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.showActionSheet()} style={styles.sendMessageBox}>
-                        <Text style={styles.sendMessage}>删除</Text>
+                        <Text style={styles.sendMessage}>{this.Localization.Common.Delete}</Text>
                     </TouchableHighlight>
                     <ActionSheet
                         ref={o => this.ActionSheet = o}

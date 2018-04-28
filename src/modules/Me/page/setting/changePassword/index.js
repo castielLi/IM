@@ -23,6 +23,7 @@ export default class ChangePassword extends AppComponent {
 	  };
 	  this.userController = this.appManagement.getUserLogicInstance();
 	  this.finished = this.finished.bind(this);
+	  this.changeShowConfirm = this.changeShowConfirm.bind(this);
 	}
 
     componentWillUnmount(){
@@ -46,7 +47,7 @@ export default class ChangePassword extends AppComponent {
 				showConfirm:true,
 			});
 		}else{
-			alert('手机号码错误');
+			alert(this.Localization.ChangePassword.phoneNumberErrorMessage);
 		}
 	};
 
@@ -57,15 +58,15 @@ export default class ChangePassword extends AppComponent {
             this.userController.modifyPassword(oldPassWord,newPassWord,(result)=>{
 				if(result &&　result.Result === 1){
                     //修改成功，页面跳转到登录页面
-                    alert('密码修改成功，请重新登录!');
+                    alert(this.Localization.ChangePassword.successMessage);
                     Keyboard.dismiss();
                     this.route.ToLogin(this.props);
 				}else{
-                    this.alert('修改密码失败',"错误");
+                    this.alert(this.Localization.ChangePassword.errorMessage,this.Localization.Common.Error);
 				}
 			});
 		}else {
-			this.alert('两次输入密码不匹配',"错误");
+			this.alert(this.Localization.ChangePassword.passwordDifference,this.Localization.Common.Error);
 		}
 	};
 
@@ -77,12 +78,12 @@ export default class ChangePassword extends AppComponent {
 			<View style= {styles.container}>
 				<MyNavigationBar
 					left = {{func:()=>{this.route.pop(this.props)}}}
-					heading={'修改密码'}
-					right={{func:this.finished,text:'完成'}}
+					heading={this.Localization.ChangePassword.Title}
+					right={{func:this.finished,text:this.Localization.Common.Complete}}
 				/>
 				<View>
 					<View style={styles.textBox}>
-						<Text style={styles.rowTitle}>输入旧的密码</Text>
+						<Text style={styles.rowTitle}>{this.Localization.ChangePassword.oldPasswordLabel}</Text>
 					</View>
 					<View style={styles.validateView}>
 						<TextInput
@@ -99,7 +100,7 @@ export default class ChangePassword extends AppComponent {
 
 				<View>
 					<View style={styles.textBox}>
-						<Text style={styles.rowTitle}>输入新的密码</Text>
+						<Text style={styles.rowTitle}>{this.Localization.ChangePassword.newPasswordLabel}</Text>
 					</View>
 					<View style={styles.validateView}>
 						<TextInput
@@ -116,7 +117,7 @@ export default class ChangePassword extends AppComponent {
 
 				<View>
 					<View style={styles.textBox}>
-						<Text style={styles.rowTitle}>再次输入新密码</Text>
+						<Text style={styles.rowTitle}>{this.Localization.ChangePassword.confirmPassword}</Text>
 					</View>
 					<View style={styles.validateView}>
 						<TextInput

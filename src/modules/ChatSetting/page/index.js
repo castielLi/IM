@@ -62,7 +62,7 @@ class ChatSetting extends AppComponent {
 
     _clearMessages = ()=> {
         this.imController.removeAllMessage(this.props.Account,false);
-        this.alert("清空聊天记录成功","提醒")
+        this.alert(this.Localization.ChatSetting.clearMessageSuccess,this.Localization.Common.Info)
     }
 
     _createGroup=()=>{
@@ -76,7 +76,7 @@ class ChatSetting extends AppComponent {
             <View style={styles.container}>
                 <MyNavigationBar
                     left={{func:()=>{this.route.pop(this.props)}}}
-                    heading={'聊天设置'} />
+                    heading={this.Localization.ChatSetting.Title} />
                 <View style={styles.userModuleBox}>
                     <TouchableHighlight onPress={this._goToClientInfo} underlayColor={'transparent'}>
                         <View style={styles.userBox}>
@@ -93,7 +93,7 @@ class ChatSetting extends AppComponent {
                 <View>
                     <View style={{borderBottomWidth:1,borderColor:'#eee'}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>置顶聊天</Text>
+                            <Text style={styles.remarks}>{this.Localization.ChatSetting.setTopChat}</Text>
                             <Switch
                                 value={this.state.isStickyChat}
                                 onValueChange={this.changeIsStickyChat}
@@ -102,13 +102,13 @@ class ChatSetting extends AppComponent {
                     </View>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.gotoGroupBackgroundImage} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>设置当前聊天背景</Text>
+                            <Text style={styles.remarks}>{this.Localization.ChatSetting.setChatBackgroundImage}</Text>
                             <Icon name="angle-right" size={20} color="#aaa" />
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this._clearMessages} style={{marginTop:15}}>
                         <View  style={styles.remarksBox}>
-                            <Text style={styles.remarks}>清空聊天记录</Text>
+                            <Text style={styles.remarks}>{this.Localization.ChatSetting.clearMessage}</Text>
                         </View>
                     </TouchableHighlight>
                 </View>

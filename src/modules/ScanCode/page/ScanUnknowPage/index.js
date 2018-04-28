@@ -41,7 +41,7 @@ class ScanUnknow extends AppComponent {
                     left = {{func:()=>{
                         this.route.pop(this.props)
                     }}}
-                    heading={'扫描结果'}
+                    heading={this.Localization.ScanUnKnowPage.Title}
                 />
                 <Text>{this.props.data}</Text>
             </View>

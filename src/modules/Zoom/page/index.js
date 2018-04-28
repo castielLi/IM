@@ -23,41 +23,43 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as featuresAction from '../../Common/menu/reducer/action';
-
-var originData = [
-		{
-			'key':'1',
-			'data': [{
-					'name': "圈子",
-					'icon':'zoom'
-				}]
-			},
-			{
-			'key':'2',
-			'data': [{
-					'name': "扫一扫",
-                	'icon':'sao'
-				}]
-			},
-			// {
-			// 'key':'3',
-			// 'data': [{
-			// 		'name': "附近的人",
-			// 	}, {
-			// 		'name': "购物",
-			// 	}]
-			// },
-			// {
-			// 'key':'4',
-			// 'data': [{
-			// 		'name': "游戏",
-			// 	}]
-			// },
-	];
+let currentObj = undefined;
 
 class Zoom extends AppComponent {
 	constructor(props) {
 		super(props);
+        currentObj = this;
+
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': this.Localization.Zoom.Zoom,
+                    'icon':'zoom'
+                }]
+            },
+            {
+                'key':'2',
+                'data': [{
+                    'name': "扫一扫",
+                    'icon':'sao'
+                }]
+            },
+            // {
+            // 'key':'3',
+            // 'data': [{
+            // 		'name': "附近的人",
+            // 	}, {
+            // 		'name': "购物",
+            // 	}]
+            // },
+            // {
+            // 'key':'4',
+            // 'data': [{
+            // 		'name': "游戏",
+            // 	}]
+            // },
+        ];
 	}
 
     componentWillUnmount(){
@@ -70,7 +72,7 @@ class Zoom extends AppComponent {
 
 	itemClick = (info)=>{
 		switch (info.item.name){
-			case "扫一扫":
+			case this.Localization.Zoom.Scan:
                 this.route.push(this.props,{key: 'ScanCode',routeId: 'ScanCode',params:{}});
                 break;
 			default:
@@ -80,9 +82,9 @@ class Zoom extends AppComponent {
 
     chooseImage = (name)=>{
         switch (name){
-			case '圈子':
+			case this.Localization.Zoom.Zoom:
                 return	<Image source={require('../resource/zoom.png')} style={styles.pic} />;
-            case '扫一扫':
+            case this.Localization.Zoom.Scan:
                 return	<Image source={require('../resource/sao.png')} style={styles.pic} />;
             // case '摇一摇':
             //     return	<Image source={require('../resource/yao.png')} style={styles.pic} />;
@@ -118,7 +120,7 @@ class Zoom extends AppComponent {
 		return (
 			<View style = {styles.container}>
 				<MyNavigationBar
-					left = {'云信'}
+					left = {this.Localization.Common.AppName}
 					right = {[
                         {func:()=>{
                             this.route.push(this.props,{key: 'Search',routeId: 'Search'});
@@ -130,7 +132,7 @@ class Zoom extends AppComponent {
 			      keyExtractor={(item,index)=>("index"+index+item)}
 			      renderSectionHeader={this._renderSection}
 			      renderItem={this._renderItem}
-			      sections={originData}
+			      sections={this.originData}
 			      ItemSeparatorComponent={this._renderSeparator}
 				  stickySectionHeadersEnabled={false} 
 				/>
@@ -140,6 +142,8 @@ class Zoom extends AppComponent {
 		)
 	}
 }
+
+
 let styles = StyleSheet.create({
     container: {
         flex: 1,

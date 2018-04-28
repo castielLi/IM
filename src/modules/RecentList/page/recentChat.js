@@ -56,6 +56,7 @@ class RecentChat extends AppComponent {
         this.applyController = this.appManagement.getApplyLogicInstance();
         this.imLogicController = this.appManagement.getIMLogicInstance();
         this._changeAppStatus = this._changeAppStatus.bind(this);
+        this._deleteSomeRow = this._deleteSomeRow.bind(this);
     }
 
     componentWillUnmount(){
@@ -120,7 +121,7 @@ class RecentChat extends AppComponent {
             rowMap[data.chatId].closeRow();
             this.imLogicController.removeConverse(data.chatId,data.group);
         }
-        this.confirm('提示', '删除后，将清空该聊天的消息记录', okButtonTitle = "删除", oKCallback, cancelButtonTitle = "取消", cancelCallback = undefined);
+        this.confirm(this.Localization.Common.Info, this.Localization.RecentList.confirm, okButtonTitle = this.Localization.Common.Delete, oKCallback, cancelButtonTitle = this.Localization.Common.Cancel, cancelCallback = undefined);
 
     }
     _renderAvator = (userId,group,nosound,unreadCount) => {
@@ -149,7 +150,7 @@ class RecentChat extends AppComponent {
                                     color="black"
                                     style={{width:20,height:20}}
                                 />
-                                <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>登录验证中...</Text></View>
+                                <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.waitLogin}</Text></View>
                             </View>
                         </TouchableHighlight>
                     );
@@ -160,14 +161,14 @@ class RecentChat extends AppComponent {
                 return (
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
-                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络连接不可用</Text></View>
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.networkError}</Text></View>
                     </View>
                 );
             case AppStatusEnum.SocketConnectError:
                 return (
                     <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                         <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
-                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>接收消息失败</Text></View>
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.receiveMessageError}</Text></View>
                     </View>
                 );
             case AppStatusEnum.Loginning:
@@ -178,7 +179,7 @@ class RecentChat extends AppComponent {
                             color="black"
                             style={{width:20,height:20}}
                         />
-                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>连接中...</Text></View>
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.connecting}</Text></View>
                     </View>
                 );
             case AppStatusEnum.SocketConnecting:
@@ -189,7 +190,7 @@ class RecentChat extends AppComponent {
                             color="black"
                             style={{width:20,height:20}}
                         />
-                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>接收消息...</Text></View>
+                        <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.receiveMessage}</Text></View>
                     </View>
                 );
             case AppStatusEnum.SocketResetConnect:
@@ -201,13 +202,13 @@ class RecentChat extends AppComponent {
                                 color="black"
                                 style={{width:20,height:20}}
                             />
-                            <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络重新连接中...</Text></View>
+                            <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.reConnect}</Text></View>
                         </View>
                     )
                     :(
                         <View style={{backgroundColor:'#FFC1C1',flexDirection:'row',paddingVertical:12,paddingLeft:15}}>
                             <Image style={{width:20,height:20}} source={require('../resource/fail.png')}/>
-                            <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>网络重新连接中...</Text></View>
+                            <View style={{height:20,alignItems:'center',marginLeft:5}}><Text>{this.Localization.RecentList.reConnect}</Text></View>
                         </View>
                     );
                 break;
@@ -260,7 +261,7 @@ class RecentChat extends AppComponent {
         return (
 			<View style = {styles.container}>
 				<MyNavigationBar
-					left = {'云信'}
+					left = {this.Localization.Common.AppName}
 					right = {[
                         {func:()=>{
                             this.route.push(this.props, {
@@ -287,7 +288,7 @@ class RecentChat extends AppComponent {
                             <View style={{alignItems:'flex-end'}}>
                                 <TouchableHighlight onPress={()=>this._deleteSomeRow(data.item,rowMap)}>
                                     <View style={{backgroundColor:'red',justifyContent:'center', alignItems:'center',width:70,flex:1,marginVertical:1}}>
-                                        <Text style={{fontSize:14, color:'#fff'}}>删除</Text>
+                                        <Text style={{fontSize:14, color:'#fff'}}>{this.Localization.Common.Delete}</Text>
                                     </View>
                                 </TouchableHighlight>
                             </View>

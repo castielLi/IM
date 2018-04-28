@@ -28,26 +28,6 @@ import AppPageMarkEnum from '../../../App/Enum/AppPageMarkEnum';
 let currentObj = undefined;
 
 
-var originData = [
-    {
-        'key':'1',
-        'data': [{
-            'name': "头像",
-        },{
-            'name': "昵称",
-        }, {
-            'name': "我的二维码",
-        }, {
-            'name': "更多",
-        }]
-    },
-    {
-        'key':'2',
-        'data': [{
-            'name': "我的地址",
-        }]
-    },
-];
 
 class Profile extends AppComponent {
     constructor(props){
@@ -63,6 +43,27 @@ class Profile extends AppComponent {
             nickname:this.currentAccount.Nickname
         };
         currentObj = this;
+
+        this.originData = [
+            {
+                'key':'1',
+                'data': [{
+                    'name': currentObj.Localization.Profile.avator,
+                },{
+                    'name': currentObj.Localization.Profile.nick,
+                }, {
+                    'name': currentObj.Localization.Profile.QRCode,
+                }, {
+                    'name': currentObj.Localization.Profile.more,
+                }]
+            },
+            {
+                'key':'2',
+                'data': [{
+                    'name': this.Localization.Profile.address,
+                }]
+            },
+        ];
     }
 
     componentWillUnmount(){
@@ -88,16 +89,16 @@ class Profile extends AppComponent {
     toDoSome = (name)=>{
         let {nickname,headImageUrl} = this.state;
         switch (name){
-            case '头像':
+            case this.Localization.Profile.avator:
                 this.route.push(this.props,{key: 'Profile',routeId: 'HeadImage'});
                 break;
-            case '昵称':
+            case this.Localization.Profile.nick:
                 this.route.push(this.props,{key: 'Profile',routeId: 'NickName',params:{}});
                 break;
-            case '我的二维码':
+            case this.Localization.Profile.QRCode:
                 this.route.push(this.props,{key: 'Profile',routeId: 'QRCode',params:{nickname,headImageUrl}});
                 break;
-            case '更多':
+            case this.Localization.Profile.more:
                 this.route.push(this.props,{key: 'Profile',routeId: 'MoreSetting',params:{"account":this.state.currentAccount}});
                 break;
             default:
@@ -131,7 +132,7 @@ class Profile extends AppComponent {
 
     _fillingValue=(info)=>{
         switch (info.item.name){
-            case '头像':
+            case this.Localization.Profile.avator:
                 return (
                     <View style={styles.itemRightBox}>
                         <ImagePlaceHolder style={styles.topPic}
@@ -140,21 +141,21 @@ class Profile extends AppComponent {
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 );
-            case '昵称':
+            case this.Localization.Profile.nick:
                 return(
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemText}>{this.state.nickname}</Text>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
-            case '云信号':
+            case this.Localization.Profile.cloudId:
                 return(
                     <View style={styles.itemRightBox}>
                         <Text style={styles.itemText}>{this.state.currentAccount.Account}</Text>
                         <Icon name="angle-right" size={35} color="#fff" style={styles.arrow}/>
                     </View>
                 )
-            case '我的二维码':
+            case this.Localization.Profile.QRCode:
                 return(
                     <View style={styles.itemRightBox}>
                         <Icon name="qrcode" size={35} color="#fff" style={styles.arrow}/>
@@ -177,7 +178,7 @@ class Profile extends AppComponent {
                     left = {{func:()=>{
                         this.route.pop(this.props)
                     }}}
-                    heading={'个人信息'}
+                    heading={this.Localization.Profile.Title}
                 />
 
                 <SectionList
@@ -185,7 +186,7 @@ class Profile extends AppComponent {
                     // ListHeaderComponent={this._renderHeader}
                     renderSectionHeader={this._renderSection}
                     renderItem={this._renderItem}
-                    sections={originData}
+                    sections={this.originData}
                     ItemSeparatorComponent={this._renderSeparator}
                     stickySectionHeadersEnabled={false}
                 />
@@ -193,6 +194,7 @@ class Profile extends AppComponent {
         )
     }
 }
+
 
 const styles = StyleSheet.create({
     container: {

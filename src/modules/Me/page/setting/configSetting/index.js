@@ -43,7 +43,7 @@ export default class ConfigSetting extends AppComponent {
         }
 
         if(this.state.configSetting == ""){
-            this.alert("服务器地址不能为空","错误")
+            this.alert(this.Localization.ConfigSetting.emptyErrorMessage,this.Localization.Common.Error)
             return;
         }
 
@@ -53,10 +53,10 @@ export default class ConfigSetting extends AppComponent {
             }else{
                 switch (result.errorType){
                     case 1:
-                        this.alert("文件保存出错,请重新再试","错误")
+                        this.alert(this.Localization.ConfigSetting.errorMessage,this.Localization.Common.Error)
                         break;
                     case 2:
-                        this.alert("服务器地址输入不正确请重新输入","错误")
+                        this.alert(this.Localization.ConfigSetting.hostErrorMessage,this.Localization.Common.Error)
                         break;
                 }
             }
@@ -69,12 +69,12 @@ export default class ConfigSetting extends AppComponent {
             <View style= {styles.container}>
                 <MyNavigationBar
                     left = {{func:()=>{this.route.pop(this.props)}}}
-                    heading={'修改配置文件'}
-                    right={{func:this.finished,text:'完成'}}
+                    heading={this.Localization.ConfigSetting.Title}
+                    right={{func:this.finished,text:this.Localization.Common.Complete}}
                 />
                 <View>
                     <View style={styles.textBox}>
-                        <Text style={styles.rowTitle}>输入配置地址</Text>
+                        <Text style={styles.rowTitle}>{this.Localization.ConfigSetting.enterLabel}</Text>
                     </View>
                     <View style={styles.validateView}>
                         <TextInput

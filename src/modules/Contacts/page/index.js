@@ -55,6 +55,7 @@ class Contacts extends AppComponent {
 
         this.userController =  this.appManagement.getUserLogicInstance();
         this.applyController = this.appManagement.getApplyLogicInstance();
+        this._renderHeader = this._renderHeader.bind(this);
 	}
 
     componentWillReceiveProps(nextProps) {
@@ -125,7 +126,7 @@ class Contacts extends AppComponent {
 						<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToNewFriend}>
 							<View  style={styles.itemBox} >
 								<Image source={require('../resource/newFriends.png')} style={styles.pic} />
-								<Text style={styles.itemText}>新的朋友</Text>
+								<Text style={styles.itemText}>{this.Localization.Contacts.newFriend}</Text>
 								{this.props.unReadApplyMessageMark?
 									<View style={styles.circle}>
 										{/*<Text style={{fontSize:12,color:'#fff'}}>{this.props.unDealRequestNumber}</Text>*/}
@@ -138,14 +139,14 @@ class Contacts extends AppComponent {
 					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={this.goToGroupList}>
 						   <View  style={styles.itemBox} >
 								<Image source={require('../resource/friendsChat.png')} style={styles.pic} />
-								<Text style={styles.itemText}>群聊</Text>
+								<Text style={styles.itemText}>{this.Localization.Contacts.groupChat}</Text>
 						   </View>
 					   </TouchableHighlight>
 						<View style={styles.ItemSeparator}/>
-					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert('即将推出...')}}>
+					   <TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>{alert(this.Localization.Contacts.wait)}}>
 						   <View  style={styles.itemBox} >
 								<Image source={require('../resource/public.png')} style={styles.pic} />
-								<Text style={styles.itemText}>公众号</Text>
+								<Text style={styles.itemText}>{this.Localization.Contacts.publicAccount}</Text>
 						   </View>
 					   </TouchableHighlight>
 					</View>
@@ -159,7 +160,7 @@ class Contacts extends AppComponent {
 		for(let i = 0; i< this.relationStore.length;i++){
 			amount+= this.relationStore[i].data.length;
 		}
-		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{amount+'位联系人'}</Text></View>
+		return <View style={styles.listFooterBox}><Text style={styles.listFooter}>{amount+this.Localization.Contacts.contactCount}</Text></View>
 	};
 
     goToGroupList = ()=>{
@@ -185,7 +186,7 @@ class Contacts extends AppComponent {
 		return (
 			<View style={styles.container}>
 				<MyNavigationBar
-					left = {'云信'}
+					left = {this.Localization.Common.AppName}
 					right={[
                         {func:()=>{
                             this.route.push(this.props,{key: 'Search',routeId: 'Search'});

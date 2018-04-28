@@ -17,12 +17,13 @@ export default class ResetPassword extends AppComponent {
             textMessage:true,//true表示密码登录，false表示短信验证登录
         };
         loginController = new LoginController();
+        this.confirm = this.confirm.bind(this);
     }
 
     confirm(){
 
         if(this.state.ConfirmPasswordText == "" || this.state.NewPasswordText == ""){
-            this.alert("新密码或者确认密码不能为空，请重新输入","错误");
+            this.alert(this.Localization.ResetPassword.passwordEmptyError,this.Localization.Common.Error);
         }
 
         if((this.state.ConfirmPasswordText == this.state.NewPasswordText)){
@@ -32,23 +33,23 @@ export default class ResetPassword extends AppComponent {
                 if(response.success){
                     this.route.pop(this.props)
                 }else{
-                    this.alert("重置密码发生错误，请重新设置","错误");
+                    this.alert(this.Localization.ResetPassword.resetError,this.Localization.Common.Error);
                 }
             })
         }else{
-            this.alert("两次输入密码不一致,请重新输入","错误");
+            this.alert(this.Localization.ResetPassword.passwordDifference,this.Localization.Common.Error);
         }
     }
 
     passwordEndEditing = ()=>{
         if(this.state.NewPasswordText.length < 8){
-            this.alert("密码必须超过8位","错误");
+            this.alert(this.Localization.ResetPassword.passwordInfo,this.Localization.Common.Error);
         }
     }
 
     confirmEndEditing = ()=>{
         if((this.state.ConfirmPasswordText != this.state.NewPasswordText)){
-            this.alert("两次输入密码不一致,请重新输入","错误");
+            this.alert(this.Localization.ResetPassword.passwordDifference,this.Localization.Common.Error);
         }
     }
 
@@ -71,9 +72,9 @@ export default class ResetPassword extends AppComponent {
 
                 <View style = {styles.Title}>
                     <TouchableOpacity style={styles.goBackBtn}  onPress = {()=>{Keyboard.dismiss();this.route.pop(this.props)}}>
-                        <Text style = {styles.goBack}>返回</Text>
+                        <Text style = {styles.goBack}>{this.Localization.Common.Back}</Text>
                     </TouchableOpacity>
-                    <Text style= {styles.phoneTitle}>重置密码</Text>
+                    <Text style= {styles.phoneTitle}>{this.Localization.ResetPassword.Title}</Text>
                 </View>
 
 
@@ -87,7 +88,7 @@ export default class ResetPassword extends AppComponent {
                             style = {[styles.textInput,{marginLeft:-10,}]}
                             maxLength = {11}
                             placeholderTextColor = '#cecece'
-                            placeholder = '请输入新密码'
+                            placeholder = {this.Localization.ResetPassword.newPasswordLabel}
                             secureTextEntry = {true}
                             underlineColorAndroid= {'transparent'}
                             onChangeText={(Text)=>{this.setState({NewPasswordText:Text})}}
@@ -105,7 +106,7 @@ export default class ResetPassword extends AppComponent {
                             style = {[styles.textInput,{marginLeft:-10,}]}
                             placeholderTextColor = '#cecece'
                             secureTextEntry = {true}
-                            placeholder = '请确定新密码'
+                            placeholder = {this.Localization.ResetPassword.confirmPassword}
                             underlineColorAndroid= {'transparent'}
                             onChangeText={(Text)=>{this.setState({ConfirmPasswordText:Text})}}
                         ></TextInput>
@@ -114,7 +115,7 @@ export default class ResetPassword extends AppComponent {
                         this.state.NewPasswordText && this.state.ConfirmPasswordText?
                             (
                                 <TouchableOpacity activeOpacity = {0.8} style={styles.Login} onPress = {()=>{this.confirm();}}>
-                                    <Text style = {styles.loginText}>确定</Text>
+                                    <Text style = {styles.loginText}>{this.Localization.Common.Confirm}</Text>
                                 </TouchableOpacity>)
                             :(
                             <Image style={[styles.Login,{backgroundColor:'transparent'}]} source = {require('../resource/notSure.png')}></Image>

@@ -57,14 +57,14 @@ class SearchNewFriend extends AppComponent {
         currentObj.showLoading();
         if(currentAccount.Account == keyword || currentAccount.PhoneNumber == keyword){
             currentObj.hideLoading();
-            this.alert('你不能添加自己到通讯录')
+            this.alert(this.Localization.SearchNewFriend.warnning)
         }else{
             this.userController.getUserInfo(keyword,true,(result)=>{
                 currentObj.hideLoading();
                 if(result){
                     currentObj.route.push(currentObj.props,{key:'ClientInformation',routeId:'ClientInformation',params:{clientId:keyword}});
                 }else{
-                    currentObj.alert("该用户不存在","错误");
+                    currentObj.alert(this.Localization.SearchNewFriend.errorMessage,this.Localization.Common.Error);
                 }
             });
         }
@@ -84,7 +84,7 @@ class SearchNewFriend extends AppComponent {
                                 ref={e=>this._TextInput = e}
                                 style={styles.search}
                                 underlineColorAndroid = 'transparent'
-                                placeholder = '奇信号/手机号'
+                                placeholder = {this.Localization.SearchNewFriend.placeHolder}
                                 defaultValue = {this.state.text}
                                 onChangeText={(v)=>{this.setState({text:v})}}
                             >
@@ -94,7 +94,7 @@ class SearchNewFriend extends AppComponent {
 
                         </View>
                         <View style={styles.cancelView}>
-                            <Text style={styles.cancel} onPress={this.backToAddFriends}>取消</Text>
+                            <Text style={styles.cancel} onPress={this.backToAddFriends}>{this.Localization.Common.Cancel}</Text>
                         </View>
                     </View>
                     {this.state.text === ''?null:<TouchableHighlight underlayColor={'#bbb'} activeOpacity={0.5} onPress={()=>this.searchUser(this.state.text)}>
@@ -103,7 +103,7 @@ class SearchNewFriend extends AppComponent {
                                 <Icon name="search" size={20} color="#fff" />
                             </View>
                             <Text style={{marginLeft:10}}>
-                                <Text style={{fontSize:18,color:'#000'}}>搜索：</Text>
+                                <Text style={{fontSize:18,color:'#000'}}>{this.Localization.SearchNewFriend.search}</Text>
                                 <Text style={{fontSize:16,color:'green'}}>{this.state.text}</Text>
                             </Text>
                         </View>

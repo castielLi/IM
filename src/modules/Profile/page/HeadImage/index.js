@@ -32,9 +32,6 @@ import AppComponent from '../../../../Core/Component/AppComponent'
 
 let currentObj = undefined;
 
-const options = ['取消','拍照','从手机相册选择']
-const title = '更改你的头像'
-
 var cameraOptions = {
     allowsEditing:true,//允许编辑image
     quality:CameraConfig.PHOTO_QUALITY,
@@ -58,6 +55,9 @@ class HeadImage extends AppComponent {
         this.state = {
             headImageUrl:this.headImagePath
         };
+
+        this.options = [this.Localization.Common.Cancel,this.Localization.HeadImage.takePhoto,this.Localization.HeadImage.chooseFromLibrary]
+        this.title = this.Localization.HeadImage.modalTitle;
     }
 
     componentWillUnmount(){
@@ -120,9 +120,9 @@ class HeadImage extends AppComponent {
                 <MyNavigationBar
                     left = {{func:()=>{
                         this.route.pop(this.props)
-                    },text:"个人信息"}}
-                    right={{func:()=>{this.headImageSetting()},text:'设置'}}
-                    heading={"头像"}
+                    },text:this.Localization.HeadImage.leftLabel}}
+                    right={{func:()=>{this.headImageSetting()},text:this.Localization.HeadImage.rightLabel}}
+                    heading={this.Localization.HeadImage.Title}
                 />
                 <ImageZoom cropWidth={width}
                            cropHeight={height}
@@ -139,7 +139,7 @@ class HeadImage extends AppComponent {
                 <ActionSheet
                     ref={o => this.ActionSheet = o}
                     title={title}
-                    options={options}
+                    options={this.options}
                     cancelButtonIndex={0}
                     onPress={this.handlePress}
                 />
